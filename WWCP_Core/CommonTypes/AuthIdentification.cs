@@ -172,6 +172,21 @@ namespace org.GraphDefined.WWCP
             => new AuthIdentification(RemoteIdentification: RemoteIdentification,
                                       Description:          Description);
 
+
+        /// <summary>
+        /// Create a new authentication info based on the given
+        /// e-mobility account identification.
+        /// </summary>
+        /// <param name="RemoteIdentification">An e-mobility account identification.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static AuthIdentification FromRemoteIdentification(eMobilityAccount_Id?  RemoteIdentification,
+                                                                  I18NString            Description  = null)
+
+            => RemoteIdentification.HasValue
+                   ? new AuthIdentification(RemoteIdentification: RemoteIdentification,
+                                            Description:          Description)
+                   : null;
+
         #endregion
 
         #region (static) FromPublicKey                  (PublicKey,                   Description = null)

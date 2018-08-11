@@ -30,11 +30,523 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using System.IO;
+using System.Collections;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
+
+    public class ChargingSessionStore : IEnumerable<ChargingSession>
+    {
+
+        #region Data
+
+        private readonly Dictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The attached roaming network.
+        /// </summary>
+        public RoamingNetwork  RoamingNetwork        { get; }
+
+        /// <summary>
+        /// The charging sessions log file name.
+        /// </summary>
+        public String          SessionLogFileName    { get; }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a new charging session was registered.
+        /// </summary>
+        public event OnNewChargingSessionDelegate OnNewChargingSession;
+
+        #endregion
+
+        #region Constructor(s)
+
+        public ChargingSessionStore(RoamingNetwork RoamingNetwork)
+        {
+
+            this.RoamingNetwork      = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
+
+            this._ChargingSessions   = new Dictionary<ChargingSession_Id, ChargingSession>();
+            this.SessionLogFileName  = "Sessions-" + RoamingNetwork.Id + ".log";
+
+        }
+
+        #endregion
+
+
+        public Boolean TryGet(ChargingSession_Id SessionId, out ChargingSession _ChargingSession)
+            => _ChargingSessions.TryGetValue(SessionId, out _ChargingSession);
+
+
+
+        public void ReloadData()
+        {
+
+            String[] elements = null;
+
+            if (File.Exists(SessionLogFileName))
+            {
+
+                foreach (var text in File.ReadAllLines(SessionLogFileName))
+                {
+
+                    elements = text.Split(',');
+
+                    switch (elements[1])
+                    {
+
+                        case "Start":
+
+                            // 0: Timestamp
+                            // 1: "Start"
+                            // 2: OperatorId
+                            // 3: EVSEId
+                            // 4: ChargingProduct
+                            // 5: AuthIdentification?.AuthToken
+                            // 6: eMA Id
+                            // 7: result.AuthorizatorId
+                            // 8: result.ProviderId
+                            // 9: result.SessionId
+
+                            var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[9]),
+                                                                         elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow) {
+                                                         AuthorizatorId       = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
+                                                         //AuthService          = result.ISendAuthorizeStartStop,
+                                                         ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
+                                                         EVSE                 = RoamingNetwork.GetEVSEbyId(EVSE_Id.Parse(elements[3])),
+                                                         EVSEId               = EVSE_Id.Parse(elements[3]),
+                                                         IdentificationStart  = elements[5] != "" ? AuthIdentification.FromAuthToken           (Auth_Token.Parse(elements[5]))
+                                                                              : elements[6] != "" ? AuthIdentification.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
+                                                                              : null,
+                                                         ChargingProduct      = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
+                                                     };
+
+                            if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
+                                _ChargingSessions.Remove(NewChargingSession.Id);
+
+                            _ChargingSessions.Add(NewChargingSession.Id, NewChargingSession);
+
+                            break;
+
+
+                        case "Stop":
+
+                            // 0: Timestamp
+                            // 1: "Stop"
+                            // 2: EVSEId
+                            // 3: SessionId
+                            // 4: RFID UID
+                            // 5: eMAId
+
+                            break;
+
+
+                        case "SendCDR":
+
+                            // 0: Timestamp
+                            // 1: "SendCDR"
+                            // 2: EVSEId
+                            // 3: SessionId
+                            // 4: SendCDRResult
+                            // 5: Warnings, aggregatedWith "/"
+
+                            var EVSEId     = elements[2] != "" ? EVSE_Id.           Parse(elements[2]) : new EVSE_Id?();
+                            var SessionId  =                     ChargingSession_Id.Parse(elements[3]);
+
+                            //if (EVSEId.HasValue)
+                            //{
+                            //    if (_ChargingSessions.TryGetValue(SessionId, out ChargingSession CS1) && CS1.EVSEId == EVSEId.Value)
+                            //        _ChargingSessions.Remove(SessionId);
+                            //}
+
+                            //else
+                                _ChargingSessions.Remove(SessionId);
+
+                            break;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        #region Start(NewChargingSession)
+
+        public void Start(ChargingSession NewChargingSession)
+        {
+
+            lock (_ChargingSessions)
+            {
+
+                if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
+                    _ChargingSessions.Remove(NewChargingSession.Id);
+
+                _ChargingSessions.Add(NewChargingSession.Id, NewChargingSession);
+
+                //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                //    RegisterExternalChargingSession(DateTime.UtcNow,
+                //                                    this,
+                //                                    NewChargingSession);
+
+                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),                                                   ",",
+                                            "Start,",
+                                            NewChargingSession.ChargingStationOperatorId,                                  ",",
+                                            NewChargingSession.EVSEId,                                                     ",",
+                                            NewChargingSession.ChargingProduct,                                            ",",
+                                            NewChargingSession.IdentificationStart.AuthToken?.           ToString() ?? "", ",",
+                                            NewChargingSession.IdentificationStart.RemoteIdentification?.ToString() ?? "", ",",
+                                            NewChargingSession.AuthorizatorId,                                             ",",
+                                            NewChargingSession.ProviderIdStart,                                            ",",
+                                            NewChargingSession.Id);
+
+                File.AppendAllText(SessionLogFileName,
+                                   LogLine + Environment.NewLine);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Stop(OperatorId, EVSE, authIdentification, SessionId)
+
+        public void Stop(ChargingStationOperator_Id?  OperatorId,
+                         EVSE_Id                      EVSEId,
+                         AuthIdentification           authIdentification,
+                         ChargingSession_Id           SessionId)
+        {
+
+            lock (_ChargingSessions)
+            {
+
+                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+                                            "Stop,",
+                                            OperatorId,         ",",
+                                            EVSEId,             ",",
+                                            authIdentification, ",",
+                                            SessionId);
+
+                File.AppendAllText(SessionLogFileName,
+                                   LogLine + Environment.NewLine);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SendCDR(SendCDRResult)
+
+        public void SendCDR(SendCDRResult sendCDRResult)
+        {
+
+            lock (_ChargingSessions)
+            {
+
+                _ChargingSessions.Remove(sendCDRResult.ChargeDetailRecord.SessionId);
+
+                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+                                            "SendCDR,",
+                                            sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
+                                            sendCDRResult.ChargeDetailRecord.SessionId, ",",
+                                            sendCDRResult.ChargeDetailRecord.IdentificationStart, ",",
+                                            sendCDRResult.ChargeDetailRecord.IdentificationStop, ",",
+                                            sendCDRResult.Result, ",",
+                                            sendCDRResult.Warnings.AggregateWith("/"));
+
+                File.AppendAllText(SessionLogFileName,
+                                   LogLine + Environment.NewLine);
+
+            }
+
+        }
+
+        #endregion
+
+
+
+        #region RegisterExternalChargingSession(Timestamp, Sender, ChargingSession)
+
+        /// <summary>
+        /// Register an external charging session which was not registered
+        /// via the RemoteStart or AuthStart mechanisms.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="Sender">The sender of the charging session.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public void RegisterExternalChargingSession(DateTime         Timestamp,
+                                                    Object           Sender,
+                                                    ChargingSession  ChargingSession)
+        {
+
+            #region Initial checks
+
+            if (ChargingSession == null)
+                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
+
+            #endregion
+
+
+            //if (!_ChargingSessions_RFID.ContainsKey(ChargingSession.Id))
+            //{
+
+                DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
+
+                //_ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
+
+                if (ChargingSession.EVSEId.HasValue)
+                {
+
+                    var _EVSE = RoamingNetwork.GetEVSEbyId(ChargingSession.EVSEId.Value);
+
+                    if (_EVSE != null)
+                    {
+
+                        ChargingSession.EVSE = _EVSE;
+
+                        // Will NOT set the EVSE status!
+                        _EVSE.ChargingSession = ChargingSession;
+
+                    }
+
+                }
+
+                // else charging station
+
+                // else charging pool
+
+                //SendNewChargingSession(Timestamp, Sender, ChargingSession);
+
+            //}
+
+        }
+
+        #endregion
+
+        #region RemoveExternalChargingSession(Timestamp, Sender, ChargingSession)
+
+        /// <summary>
+        /// Register an external charging session which was not registered
+        /// via the RemoteStart or AuthStart mechanisms.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="Sender">The sender of the charging session.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public void RemoveExternalChargingSession(DateTime         Timestamp,
+                                                  Object           Sender,
+                                                  ChargingSession  ChargingSession)
+        {
+
+            #region Initial checks
+
+            if (ChargingSession == null)
+                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
+
+            #endregion
+
+            ChargingStationOperator _cso = null;
+
+            //if (_ChargingSessions_RFID.TryRemove(ChargingSession.Id, out _cso))
+            //{
+
+                DebugX.LogT("Removing external charging session '" + ChargingSession.Id + "'!");
+
+            //}
+
+            if (ChargingSession.EVSE != null)
+            {
+
+                if (ChargingSession.EVSE.ChargingSession != null &&
+                    ChargingSession.EVSE.ChargingSession == ChargingSession)
+                {
+
+                    ChargingSession.EVSE.ChargingSession = null;
+
+                }
+
+            }
+
+            else if (ChargingSession.EVSEId.HasValue)
+            {
+
+                var _EVSE = RoamingNetwork.GetEVSEbyId(ChargingSession.EVSEId.Value);
+
+                if (_EVSE                 != null &&
+                    _EVSE.ChargingSession != null &&
+                    _EVSE.ChargingSession == ChargingSession)
+                {
+
+                    _EVSE.ChargingSession = null;
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region (internal) SendNewChargingSession(Timestamp, Sender, Session)
+
+        internal void SendNewChargingSession(DateTime         Timestamp,
+                                             Object           Sender,
+                                             ChargingSession  Session)
+        {
+
+            if (Session != null)
+            {
+
+                if (Session.RoamingNetwork == null)
+                    Session.RoamingNetwork = RoamingNetwork;
+
+            }
+
+            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
+
+        }
+
+        #endregion
+
+
+        #region IEnumerable<ChargingSession>
+
+        public IEnumerator<ChargingSession> GetEnumerator()
+            => _ChargingSessions.Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => _ChargingSessions.Values.GetEnumerator();
+
+        #endregion
+
+    }
+
+
+    public class ChargeDetailRecordStore : IEnumerable<ChargeDetailRecord>
+    {
+
+        #region Data
+
+        private readonly         Dictionary<ChargingSession_Id, ChargeDetailRecord> _ChargeDetailRecords;
+
+        private static readonly  Char                                               RS  = (Char) 30;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The attached roaming network.
+        /// </summary>
+        public RoamingNetwork  RoamingNetwork    { get; }
+
+        /// <summary>
+        /// The charging sessions log file name.
+        /// </summary>
+        public String          CDRLogFileName    { get; }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was registered.
+        /// </summary>
+        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+
+        #endregion
+
+        #region Constructor(s)
+
+        public ChargeDetailRecordStore(RoamingNetwork RoamingNetwork)
+        {
+
+            this.RoamingNetwork        = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
+
+            this._ChargeDetailRecords  = new Dictionary<ChargingSession_Id, ChargeDetailRecord>();
+            this.CDRLogFileName        = "ChargeDetailRecords-" + RoamingNetwork.Id + ".log";
+
+        }
+
+        #endregion
+
+
+        public Boolean TryGet(ChargingSession_Id SessionId, out ChargeDetailRecord _ChargeDetailRecord)
+            => _ChargeDetailRecords.TryGetValue(SessionId, out _ChargeDetailRecord);
+
+
+        #region Add(ChargeDetailRecord)
+
+        public void Add(ChargeDetailRecord ChargeDetailRecord)
+        {
+
+            lock (_ChargeDetailRecords)
+            {
+
+                var Now = DateTime.UtcNow;
+
+                _ChargeDetailRecords.Add(ChargeDetailRecord.SessionId, ChargeDetailRecord);
+
+                //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                //    RegisterExternalChargingSession(DateTime.UtcNow,
+                //                                    this,
+                //                                    NewChargingSession);
+
+                File.AppendAllText(CDRLogFileName,
+                                   Now.ToIso8601() + RS + ChargeDetailRecord.ToJSON() + Environment.NewLine);
+
+                OnNewChargeDetailRecord?.Invoke(Now,
+                                                RoamingNetwork,
+                                                ChargeDetailRecord);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Add(ChargeDetailRecords)
+
+        public void Add(IEnumerable<ChargeDetailRecord> ChargeDetailRecords)
+        {
+
+            lock (_ChargeDetailRecords)
+            {
+
+                foreach (var NewChargeDetailRecord in ChargeDetailRecords)
+                    Add(NewChargeDetailRecord);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region IEnumerable<ChargeDetailRecord>
+
+        public IEnumerator<ChargeDetailRecord> GetEnumerator()
+            => _ChargeDetailRecords.Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => _ChargeDetailRecords.Values.GetEnumerator();
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The common interface of all roaming networks.
@@ -57,8 +569,6 @@ namespace org.GraphDefined.WWCP
                                   IRoamingNetwork,
                                   IEnumerable<IEntity>
     {
-
-        private static readonly SemaphoreSlim  SessionLogSemaphore  = new SemaphoreSlim(1, 1);
 
         #region Data
 
@@ -237,11 +747,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator    { get; }
 
-        /// <summary>
-        /// The charging sessions log file name.
-        /// </summary>
-        public String                                    SessionLogFileName                           { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -296,8 +801,8 @@ namespace org.GraphDefined.WWCP
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
-            this._ChargingSessions                                  = new ConcurrentDictionary<ChargingSession_Id, ChargingSession>();
-            this._ChargeDetailRecords                               = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
+            this._ChargingSessionStore                              = new ChargingSessionStore(this);
+            this._ChargeDetailRecords                               = new ChargeDetailRecordStore(this);
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
@@ -308,8 +813,6 @@ namespace org.GraphDefined.WWCP
             this.ChargingStationSignatureGenerator                  = ChargingStationSignatureGenerator;
             this.ChargingPoolSignatureGenerator                     = ChargingPoolSignatureGenerator;
             this.ChargingStationOperatorSignatureGenerator          = ChargingStationOperatorSignatureGenerator;
-
-            this.SessionLogFileName                                 = "Sessions-" + Id + ".log";
 
             #endregion
 
@@ -340,95 +843,6 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this.OnPropertyChanged += UpdateData;
-
-
-            String[] elements = null;
-
-            if (File.Exists(SessionLogFileName))
-            {
-
-                foreach (var text in File.ReadAllLines(SessionLogFileName))
-                {
-
-                    elements = text.Split(',');
-
-                    switch (elements[1])
-                    {
-
-                        case "Start":
-
-                            // 0: Timestamp
-                            // 1: "Start"
-                            // 2: OperatorId
-                            // 3: EVSEId
-                            // 4: ChargingProduct
-                            // 5: AuthIdentification?.AuthToken
-                            // 6: eMA Id
-                            // 7: result.AuthorizatorId
-                            // 8: result.ProviderId
-                            // 9: result.SessionId
-
-                            var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[9]),
-                                                                         elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow) {
-                                                         AuthorizatorId       = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
-                                                         //AuthService          = result.ISendAuthorizeStartStop,
-                                                         ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
-                                                         EVSE                 = GetEVSEbyId(EVSE_Id.Parse(elements[3])),
-                                                         EVSEId               = EVSE_Id.Parse(elements[3]),
-                                                         IdentificationStart  = elements[5] != "" ? AuthIdentification.FromAuthToken           (Auth_Token.Parse(elements[5]))
-                                                                              : elements[6] != "" ? AuthIdentification.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
-                                                                              : null,
-                                                         ChargingProduct      = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
-                                                     };
-
-                            if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
-                                _ChargingSessions.TryRemove(NewChargingSession.Id, out ChargingSession CS);
-
-                            _ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession);
-
-                            break;
-
-
-                        case "Stop":
-
-                            // 0: Timestamp
-                            // 1: "Stop"
-                            // 2: EVSEId
-                            // 3: SessionId
-                            // 4: RFID UID
-                            // 5: eMAId
-
-                            break;
-
-
-                        case "SendCDR":
-
-                            // 0: Timestamp
-                            // 1: "SendCDR"
-                            // 2: EVSEId
-                            // 3: SessionId
-                            // 4: SendCDRResult
-                            // 5: Warnings, aggregatedWith "/"
-
-                            var EVSEId     = elements[2] != "" ? EVSE_Id.           Parse(elements[2]) : new EVSE_Id?();
-                            var SessionId  =                     ChargingSession_Id.Parse(elements[3]);
-
-                            if (EVSEId.HasValue)
-                            {
-                                if (_ChargingSessions.TryGetValue(SessionId, out ChargingSession CS1) && CS1.EVSEId == EVSEId.Value)
-                                    _ChargingSessions.TryRemove(SessionId, out CS1);
-                            }
-
-                            else
-                                _ChargingSessions.TryRemove(SessionId, out ChargingSession CS2);
-
-                            break;
-
-                    }
-
-                }
-
-            }
 
         }
 
@@ -4449,63 +4863,7 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartEVSEResultType.Success)
-                {
-
-                    //    _ChargingSessions.TryAdd(result.Session.Id,
-                    //                             result.Session.SetChargingStationOperator(_ChargingStationOperator));
-
-                    var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
-
-                    if (success)
-                    {
-                        try
-                        {
-
-                            _ChargingSessions.TryAdd(result.Session.Id,
-                                                     result.Session.SetChargingStationOperator(_ChargingStationOperator));
-
-                            //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                            //    RegisterExternalChargingSession(DateTime.UtcNow,
-                            //                                    this,
-                            //                                    NewChargingSession);
-
-                            // 0: "Start"
-                            // 1: OperatorId
-                            // 2: EVSEId
-                            // 3: ChargingProduct
-                            // 4: AuthIdentification?.AuthToken
-                            // 5: eMA Id
-                            // 6: result.AuthorizatorId
-                            // 7: result.ProviderId
-                            // 8: result.SessionId
-
-                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
-                                                        "Start,",
-                                                        EVSEId.OperatorId,              ",",
-                                                        EVSEId,                         ",",
-                                                        ChargingProduct,                ",",
-                                                        ",", //AuthIdentification?.AuthToken,
-                                                        eMAId,                          ",",
-                                                                                        ",",
-                                                        ProviderId,              ",",
-                                                        SessionId);
-
-                            File.AppendAllText(SessionLogFileName,
-                                               LogLine + Environment.NewLine);
-
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                        }
-                        finally
-                        {
-                            SessionLogSemaphore.Release();
-                        }
-
-                    }
-
-                }
+                    _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(_ChargingStationOperator));
 
             }
 
@@ -4518,12 +4876,12 @@ namespace org.GraphDefined.WWCP
                (result.Result == RemoteStartEVSEResultType.UnknownEVSE)))
             {
 
-                foreach (var _EMPRoamingProvier in _EMPRoamingProviders.
-                                                       OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
-                                                       Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                foreach (var _EMPRoamingProvider in _EMPRoamingProviders.
+                                                        OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
+                                                        Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
                 {
 
-                    result = await _EMPRoamingProvier.
+                    result = await _EMPRoamingProvider.
                                        RemoteStart(EVSEId,
                                                    ChargingProduct,
                                                    ReservationId,
@@ -4538,51 +4896,7 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == RemoteStartEVSEResultType.Success)
-                    {
-
-                        var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
-
-                        if (success)
-                        {
-                            try
-                            {
-
-                                _ChargingSessions.TryAdd(result.Session.Id,
-                                                         result.Session.SetEMPRoamingProvider(_EMPRoamingProvier));
-
-                                //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                                //    RegisterExternalChargingSession(DateTime.UtcNow,
-                                //                                    this,
-                                //                                    NewChargingSession);
-
-
-                                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
-                                                            "Start,",
-                                                            EVSEId.OperatorId,              ",",
-                                                            EVSEId,                         ",",
-                                                            ChargingProduct,                ",",
-                                                            //AuthIdentification?.AuthToken,  ",",
-                                                            eMAId,                          ",",
-                                                                                            ",",
-                                                            ProviderId,                     ",",
-                                                            SessionId);
-
-                                File.AppendAllText(SessionLogFileName,
-                                                   LogLine + Environment.NewLine);
-
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e.Message);
-                            }
-                            finally
-                            {
-                                SessionLogSemaphore.Release();
-                            }
-
-                        }
-
-                    }
+                        _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider(_EMPRoamingProvider));
 
                 }
 
@@ -4713,9 +5027,7 @@ namespace org.GraphDefined.WWCP
 
             #region Try to lookup the charging station operator given in the charging station identification...
 
-            ChargingStationOperator _ChargingStationOperator;
-
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
             {
 
                 result = await _ChargingStationOperator.
@@ -4733,8 +5045,7 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartChargingStationResultType.Success)
-                    _ChargingSessions.TryAdd(result.Session.Id,
-                                             result.Session.SetChargingStationOperator(_ChargingStationOperator));
+                    _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(_ChargingStationOperator));
 
             }
 
@@ -4767,8 +5078,7 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == RemoteStartChargingStationResultType.Success)
-                        _ChargingSessions.TryAdd(result.Session.Id,
-                                                 result.Session.SetEMPRoamingProvider(_EMPRoamingProvider));
+                        _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider(_EMPRoamingProvider));
 
                 }
 
@@ -4928,7 +5238,7 @@ namespace org.GraphDefined.WWCP
 
             #region Check charging station operator charging session lookup...
 
-            if (_ChargingSessions.TryRemove(SessionId, out ChargingSession _ChargingSession))
+            if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession _ChargingSession))
             {
 
                 if (_ChargingSession.ChargingStationOperator != null)
@@ -4956,34 +5266,34 @@ namespace org.GraphDefined.WWCP
                                                   RequestTimeout);
 
 
-                var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
+                //var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
 
-                if (success)
-                {
-                    try
-                    {
+                //if (success)
+                //{
+                //    try
+                //    {
 
-                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                    "Stop,",
-                                                    ",",
-                                                    SessionId, ",",
-                                                    ",",
-                                                    eMAId);
+                //        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+                //                                    "Stop,",
+                //                                    ",",
+                //                                    SessionId, ",",
+                //                                    ",",
+                //                                    eMAId);
 
-                        File.AppendAllText(SessionLogFileName,
-                                           LogLine + Environment.NewLine);
+                //        File.AppendAllText(SessionLogFileName,
+                //                           LogLine + Environment.NewLine);
 
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                    finally
-                    {
-                        SessionLogSemaphore.Release();
-                    }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        Console.WriteLine(e.Message);
+                //    }
+                //    finally
+                //    {
+                //        SessionLogSemaphore.Release();
+                //    }
 
-                }
+                //}
 
             }
 
@@ -5163,7 +5473,7 @@ namespace org.GraphDefined.WWCP
 
             #region Check charging station operator charging session lookup...
 
-            if (_ChargingSessions.TryRemove(SessionId, out ChargingSession _ChargingSession))
+            if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession _ChargingSession))
             {
 
                 if (_ChargingSession.ChargingStationOperator != null)
@@ -5261,34 +5571,10 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
-
-            if (success)
-            {
-                try
-                {
-
-                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                "Stop,",
-                                                EVSEId, ",",
-                                                SessionId, ",",
-                                                ",",
-                                                eMAId);
-
-                    File.AppendAllText(SessionLogFileName,
-                                       LogLine + Environment.NewLine);
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-                finally
-                {
-                    SessionLogSemaphore.Release();
-                }
-
-            }
+            _ChargingSessionStore.Stop(null,
+                                       EVSEId,
+                                       AuthIdentification.FromRemoteIdentification(eMAId),
+                                       SessionId);
 
 
             #region Send OnRemoteEVSEStopResponse event
@@ -5402,7 +5688,7 @@ namespace org.GraphDefined.WWCP
 
             #region Check charging station operator charging session lookup...
 
-            if (_ChargingSessions.TryRemove(SessionId, out ChargingSession _ChargingSession))
+            if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession _ChargingSession))
             {
 
                 if (_ChargingSession.ChargingStationOperator != null)
@@ -5432,34 +5718,34 @@ namespace org.GraphDefined.WWCP
                                                   RequestTimeout);
 
 
-                var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
+                //var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
 
-                if (success)
-                {
-                    try
-                    {
+                //if (success)
+                //{
+                //    try
+                //    {
 
-                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                    "Stop,",
-                                                    ",",
-                                                    SessionId, ",",
-                                                    ",",
-                                                    eMAId);
+                //        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+                //                                    "Stop,",
+                //                                    ",",
+                //                                    SessionId, ",",
+                //                                    ",",
+                //                                    eMAId);
 
-                        File.AppendAllText(SessionLogFileName,
-                                           LogLine + Environment.NewLine);
+                //        File.AppendAllText(SessionLogFileName,
+                //                           LogLine + Environment.NewLine);
 
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                    finally
-                    {
-                        SessionLogSemaphore.Release();
-                    }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        Console.WriteLine(e.Message);
+                //    }
+                //    finally
+                //    {
+                //        SessionLogSemaphore.Release();
+                //    }
 
-                }
+                //}
 
             }
 
@@ -5678,19 +5964,20 @@ namespace org.GraphDefined.WWCP
                     // Will be deleted when the charge detail record was sent!
 
                     var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId       = result.AuthorizatorId,
-                                                 AuthService          = result.ISendAuthorizeStartStop,
-                                                 ChargingStationOperatorId           = OperatorId,
-                                                 IdentificationStart  = AuthIdentification,
-                                                 ChargingProduct      = ChargingProduct
+                                                 AuthorizatorId             = result.AuthorizatorId,
+                                                 ProviderIdStart            = result.ProviderId,
+                                                 AuthService                = result.ISendAuthorizeStartStop,
+                                                 ChargingStationOperatorId  = OperatorId,
+                                                 IdentificationStart        = AuthIdentification,
+                                                 ChargingProduct            = ChargingProduct
                                              };
 
-                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.UtcNow,
-                                                        this,
-                                                        NewChargingSession);
+                    _ChargingSessionStore.Start(NewChargingSession);
 
                 }
+
+                else
+                    DebugX.Log("AuthStart response without charging session identification!");
 
             }
 
@@ -5850,63 +6137,25 @@ namespace org.GraphDefined.WWCP
                 if (result.SessionId.HasValue)
                 {
 
-                    var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
+                    // Store the upstream session id in order to contact the right authenticator at later requests!
+                    // Will be deleted when the charge detail record was sent!
 
-                    if (success)
-                    {
-                        try
-                        {
+                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                                                 AuthorizatorId             = result.AuthorizatorId,
+                                                 ProviderIdStart            = result.ProviderId,
+                                                 AuthService                = result.ISendAuthorizeStartStop,
+                                                 ChargingStationOperatorId  = OperatorId,
+                                                 EVSEId                     = EVSEId,
+                                                 IdentificationStart        = AuthIdentification,
+                                                 ChargingProduct            = ChargingProduct
+                                             };
 
-                            // Store the upstream session id in order to contact the right authenticator at later requests!
-                            // Will be deleted when the charge detail record was sent!
-
-                            var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                         AuthorizatorId             = result.AuthorizatorId,
-                                                         ProviderIdStart            = result.ProviderId,
-                                                         AuthService                = result.ISendAuthorizeStartStop,
-                                                         ChargingStationOperatorId  = OperatorId,
-                                                         EVSEId                     = EVSEId,
-                                                         IdentificationStart        = AuthIdentification,
-                                                         ChargingProduct            = ChargingProduct
-                                                     };
-
-                            if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
-                                _ChargingSessions.TryRemove(NewChargingSession.Id, out ChargingSession CS);
-
-                            _ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession);
-
-                            //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                            //    RegisterExternalChargingSession(DateTime.UtcNow,
-                            //                                    this,
-                            //                                    NewChargingSession);
-
-                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),          ",",
-                                                        "Start,",
-                                                        OperatorId,                           ",",
-                                                        NewChargingSession.EVSEId,            ",",
-                                                        NewChargingSession.ChargingProduct,   ",",
-                                                        AuthIdentification?.AuthToken,        ",",
-                                                        ",", // eMA Id
-                                                        NewChargingSession.AuthorizatorId,    ",",
-                                                        NewChargingSession.ProviderIdStart,   ",",
-                                                        NewChargingSession.Id);
-
-                            File.AppendAllText(SessionLogFileName,
-                                               LogLine + Environment.NewLine);
-
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                        }
-                        finally
-                        {
-                            SessionLogSemaphore.Release();
-                        }
-
-                    }
+                    _ChargingSessionStore.Start(NewChargingSession);
 
                 }
+
+                else
+                    DebugX.Log("AuthStart response without charging session identification!");
 
             }
 
@@ -6065,18 +6314,16 @@ namespace org.GraphDefined.WWCP
                     // Will be deleted when the charge detail record was sent!
 
                     var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId       = result.AuthorizatorId,
-                                                 AuthService          = result.ISendAuthorizeStartStop,
-                                                 ChargingStationOperatorId           = OperatorId,
-                                                 ChargingStationId    = ChargingStationId,
-                                                 IdentificationStart  = AuthIdentification,
-                                                 ChargingProduct      = ChargingProduct
+                                                 AuthorizatorId             = result.AuthorizatorId,
+                                                 ProviderIdStart            = result.ProviderId,
+                                                 AuthService                = result.ISendAuthorizeStartStop,
+                                                 ChargingStationOperatorId  = OperatorId,
+                                                 ChargingStationId          = ChargingStationId,
+                                                 IdentificationStart        = AuthIdentification,
+                                                 ChargingProduct            = ChargingProduct
                                              };
 
-                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.UtcNow,
-                                                        this,
-                                                        NewChargingSession);
+                    _ChargingSessionStore.Start(NewChargingSession);
 
                 }
 
@@ -6239,18 +6486,16 @@ namespace org.GraphDefined.WWCP
                     // Will be deleted when the charge detail record was sent!
 
                     var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId       = result.AuthorizatorId,
-                                                 AuthService          = result.ISendAuthorizeStartStop,
-                                                 ChargingStationOperatorId           = OperatorId,
-                                                 ChargingPoolId       = ChargingPoolId,
-                                                 IdentificationStart  = AuthIdentification,
-                                                 ChargingProduct      = ChargingProduct
+                                                 AuthorizatorId             = result.AuthorizatorId,
+                                                 ProviderIdStart            = result.ProviderId,
+                                                 AuthService                = result.ISendAuthorizeStartStop,
+                                                 ChargingStationOperatorId  = OperatorId,
+                                                 ChargingPoolId             = ChargingPoolId,
+                                                 IdentificationStart        = AuthIdentification,
+                                                 ChargingProduct            = ChargingProduct
                                              };
 
-                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.UtcNow,
-                                                        this,
-                                                        NewChargingSession);
+                    _ChargingSessionStore.Start(NewChargingSession);
 
                 }
 
@@ -6593,7 +6838,7 @@ namespace org.GraphDefined.WWCP
 
             #region An authenticator was found for the upstream SessionId!
 
-            if (_ChargingSessions.TryRemove(SessionId, out ChargingSession _ChargingSession) &&
+            if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession _ChargingSession) &&
                 _ChargingSession. AuthService != null)
             {
 
@@ -6639,38 +6884,10 @@ namespace org.GraphDefined.WWCP
 
 
             if (result.Result == AuthStopEVSEResultType.Authorized)
-            {
-
-                var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
-
-                if (success)
-                {
-                    try
-                    {
-
-                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                    "Stop,",
-                                                    OperatorId,         ",",
-                                                    EVSEId,             ",",
-                                                    AuthIdentification, ",",
-                                                    SessionId);
-
-                        File.AppendAllText(SessionLogFileName,
-                                           LogLine + Environment.NewLine);
-
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                    finally
-                    {
-                        SessionLogSemaphore.Release();
-                    }
-
-                }
-
-            }
+                _ChargingSessionStore.Stop(OperatorId,
+                                           EVSEId,
+                                           AuthIdentification,
+                                           SessionId);
 
 
             #region Send OnAuthorizeEVSEStopResponse event
@@ -7168,26 +7385,40 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingSessions
 
-        private readonly ConcurrentDictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
+        private readonly ChargingSessionStore _ChargingSessionStore;
 
         /// <summary>
         /// Return all current charging sessions identifications.
         /// </summary>
         public IEnumerable<ChargingSession_Id> ChargingSessionIds
-            => _ChargingSessions.Keys;
+            => _ChargingSessionStore.SafeSelect(session => session.Id);
 
         /// <summary>
         /// Return all current charging sessions.
         /// </summary>
         public IEnumerable<ChargingSession> ChargingSessions
-            => _ChargingSessions.Values;
+            => _ChargingSessionStore;
 
         #endregion
+
+        #region OnNewChargingSession
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
-        public event OnNewChargingSessionDelegate OnNewChargingSession;
+        public event OnNewChargingSessionDelegate OnNewChargingSession
+        {
+            add
+            {
+                _ChargingSessionStore.OnNewChargingSession += value;
+            }
+            remove
+            {
+                _ChargingSessionStore.OnNewChargingSession -= value;
+            }
+        }
+
+        #endregion
 
         #region RegisterExternalChargingSession(Timestamp, Sender, ChargingSession)
 
@@ -7202,47 +7433,7 @@ namespace org.GraphDefined.WWCP
                                                     Object           Sender,
                                                     ChargingSession  ChargingSession)
         {
-
-            #region Initial checks
-
-            if (ChargingSession == null)
-                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
-
-            #endregion
-
-
-            //if (!_ChargingSessions_RFID.ContainsKey(ChargingSession.Id))
-            //{
-
-                DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
-
-                //_ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
-
-                if (ChargingSession.EVSEId.HasValue)
-                {
-
-                    var _EVSE = GetEVSEbyId(ChargingSession.EVSEId.Value);
-
-                    if (_EVSE != null)
-                    {
-
-                        ChargingSession.EVSE = _EVSE;
-
-                        // Will NOT set the EVSE status!
-                        _EVSE.ChargingSession = ChargingSession;
-
-                    }
-
-                }
-
-                // else charging station
-
-                // else charging pool
-
-                //SendNewChargingSession(Timestamp, Sender, ChargingSession);
-
-            //}
-
+            _ChargingSessionStore.RegisterExternalChargingSession(Timestamp, Sender, ChargingSession);
         }
 
         #endregion
@@ -7260,73 +7451,18 @@ namespace org.GraphDefined.WWCP
                                                   Object           Sender,
                                                   ChargingSession  ChargingSession)
         {
-
-            #region Initial checks
-
-            if (ChargingSession == null)
-                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
-
-            #endregion
-
-            ChargingStationOperator _cso = null;
-
-            //if (_ChargingSessions_RFID.TryRemove(ChargingSession.Id, out _cso))
-            //{
-
-                DebugX.LogT("Removing external charging session '" + ChargingSession.Id + "'!");
-
-            //}
-
-            if (ChargingSession.EVSE != null)
-            {
-
-                if (ChargingSession.EVSE.ChargingSession != null &&
-                    ChargingSession.EVSE.ChargingSession == ChargingSession)
-                {
-
-                    ChargingSession.EVSE.ChargingSession = null;
-
-                }
-
-            }
-
-            else if (ChargingSession.EVSEId.HasValue)
-            {
-
-                var _EVSE = GetEVSEbyId(ChargingSession.EVSEId.Value);
-
-                if (_EVSE                 != null &&
-                    _EVSE.ChargingSession != null &&
-                    _EVSE.ChargingSession == ChargingSession)
-                {
-
-                    _EVSE.ChargingSession = null;
-
-                }
-
-            }
-
+            _ChargingSessionStore.RemoveExternalChargingSession(Timestamp, Sender, ChargingSession);
         }
 
         #endregion
 
-        #region (internal) SendNewChargingSession(Timestamp, Sender, Session)
+        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
-                                             ChargingSession  Session)
+                                             ChargingSession  ChargingSession)
         {
-
-            if (Session != null)
-            {
-
-                if (Session.RoamingNetwork == null)
-                    Session.RoamingNetwork = this;
-
-            }
-
-            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
-
+            _ChargingSessionStore.SendNewChargingSession(Timestamp, Sender, ChargingSession);
         }
 
         #endregion
@@ -7337,14 +7473,13 @@ namespace org.GraphDefined.WWCP
 
         #region ChargeDetailRecords
 
-        private readonly ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord> _ChargeDetailRecords;
+        private readonly ChargeDetailRecordStore _ChargeDetailRecords;
 
         /// <summary>
         /// Return all current charge detail records.
         /// </summary>
         public IEnumerable<ChargeDetailRecord> ChargeDetailRecords
-
-            => _ChargeDetailRecords.Select(kvp => kvp.Value);
+            => _ChargeDetailRecords;
 
         #endregion
 
@@ -7362,11 +7497,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        ///// <summary>
-        ///// An event fired whenever a new charge detail record was created.
-        ///// </summary>
-        //public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+        #region OnNewChargeDetailRecord
 
+        /// <summary>
+        /// An event fired whenever a new charge detail record was created.
+        /// </summary>
+        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord
+        {
+            add
+            {
+                _ChargeDetailRecords.OnNewChargeDetailRecord += value;
+            }
+            remove
+            {
+                _ChargeDetailRecords.OnNewChargeDetailRecord -= value;
+            }
+        }
+
+        #endregion
 
         #region OnFilterCDRRecords
 
@@ -7389,8 +7537,6 @@ namespace org.GraphDefined.WWCP
         public event OnCDRWasFilteredDelegate OnCDRWasFiltered;
 
         #endregion
-
-        #region SendChargeDetailRecords(ChargeDetailRecords, ...)
 
         #region IReceiveChargeDetailRecords.SendChargeDetailRecords(ChargeDetailRecords, ...)
 
@@ -7421,6 +7567,8 @@ namespace org.GraphDefined.WWCP
                                            RequestTimeout);
 
         #endregion
+
+        #region SendChargeDetailRecords(ChargeDetailRecords, ...)
 
         /// <summary>
         /// Send a charge detail record.
@@ -7536,8 +7684,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Store all CDRs...
 
-                //foreach (var ChargeDetailRecord in ChargeDetailRecordsList)
-                //    _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
+                _ChargeDetailRecords.Add(ChargeDetailRecords);
 
                 #endregion
 
@@ -7620,7 +7767,7 @@ namespace org.GraphDefined.WWCP
                 foreach (var cdr in ChargeDetailRecordsToProcess.ToArray())
                 {
 
-                    if (_ChargingSessions.TryGetValue(cdr.SessionId, out chargingSession))
+                    if (_ChargingSessionStore.TryGet(cdr.SessionId, out chargingSession))
                     {
 
                         // Might occur when the software had been restarted
@@ -7748,43 +7895,45 @@ namespace org.GraphDefined.WWCP
 
                 #region Store "SendCDR"-information within
 
-                var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
+                //var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
 
-                if (success)
-                {
-                    try
-                    {
+                //if (success)
+                //{
+                //    try
+                //    {
 
                         foreach (var sendCDRResult in resultMap)
                         {
 
-                            _ChargingSessions.TryRemove(sendCDRResult.ChargeDetailRecord.SessionId, out ChargingSession CS);
+                            _ChargingSessionStore.SendCDR(sendCDRResult);
 
-                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                        "SendCDR,",
-                                                        sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
-                                                        sendCDRResult.ChargeDetailRecord.SessionId, ",",
-                                                        sendCDRResult.ChargeDetailRecord.IdentificationStart, ",",
-                                                        sendCDRResult.ChargeDetailRecord.IdentificationStop, ",",
-                                                        sendCDRResult.Result, ",",
-                                                        sendCDRResult.Warnings.AggregateWith("/"));
+                            //_ChargingSessions.TryRemove(sendCDRResult.ChargeDetailRecord.SessionId, out ChargingSession CS);
 
-                            File.AppendAllText(SessionLogFileName,
-                                               LogLine + Environment.NewLine);
+                            //var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+                            //                            "SendCDR,",
+                            //                            sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
+                            //                            sendCDRResult.ChargeDetailRecord.SessionId, ",",
+                            //                            sendCDRResult.ChargeDetailRecord.IdentificationStart, ",",
+                            //                            sendCDRResult.ChargeDetailRecord.IdentificationStop, ",",
+                            //                            sendCDRResult.Result, ",",
+                            //                            sendCDRResult.Warnings.AggregateWith("/"));
+
+                            //File.AppendAllText(SessionLogFileName,
+                            //                   LogLine + Environment.NewLine);
 
                         }
 
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                    finally
-                    {
-                        SessionLogSemaphore.Release();
-                    }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        Console.WriteLine(e.Message);
+                //    }
+                //    finally
+                //    {
+                //        SessionLogSemaphore.Release();
+                //    }
 
-                }
+                //}
 
                 #endregion
 
