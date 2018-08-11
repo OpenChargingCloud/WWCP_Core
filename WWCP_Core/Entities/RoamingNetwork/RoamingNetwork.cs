@@ -5880,16 +5880,16 @@ namespace org.GraphDefined.WWCP
                             //                                    this,
                             //                                    NewChargingSession);
 
-                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
+                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),          ",",
                                                         "Start,",
-                                                        OperatorId,                     ",",
-                                                        EVSEId,                         ",",
-                                                        ChargingProduct,                ",",
-                                                        AuthIdentification?.AuthToken,  ",",
+                                                        OperatorId,                           ",",
+                                                        NewChargingSession.EVSEId,            ",",
+                                                        NewChargingSession.ChargingProduct,   ",",
+                                                        AuthIdentification?.AuthToken,        ",",
                                                         ",", // eMA Id
-                                                        result.AuthorizatorId,          ",",
-                                                        result.ProviderId,              ",",
-                                                        result.SessionId);
+                                                        NewChargingSession.AuthorizatorId,    ",",
+                                                        NewChargingSession.ProviderIdStart,   ",",
+                                                        NewChargingSession.Id);
 
                             File.AppendAllText(SessionLogFileName,
                                                LogLine + Environment.NewLine);
@@ -7171,13 +7171,16 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
 
         /// <summary>
-        /// Return all current CSO charging sessions.
+        /// Return all current charging sessions identifications.
+        /// </summary>
+        public IEnumerable<ChargingSession_Id> ChargingSessionIds
+            => _ChargingSessions.Keys;
+
+        /// <summary>
+        /// Return all current charging sessions.
         /// </summary>
         public IEnumerable<ChargingSession> ChargingSessions
-
             => _ChargingSessions.Values;
-         //   => _ChargingStationOperators.
-         //           SelectMany(cso => cso.ChargingSessions);
 
         #endregion
 
@@ -7734,7 +7737,7 @@ namespace org.GraphDefined.WWCP
 
                 Endtime  = DateTime.UtcNow;
                 Runtime  = Endtime - StartTime;
-                result   = new SendCDRsResult(this.Id,
+                result   = new SendCDRsResult(Id,
                                               this as IReceiveChargeDetailRecords,
                                               GlobalResults[0].Covert(),
                                               resultMap,

@@ -59,21 +59,20 @@ namespace org.GraphDefined.WWCP
 
         #region ToJSON(this ChargingSessions)
 
-        public static JArray ToJSON(this IEnumerable<ChargingSession>  ChargingSessions)
-        {
+        public static JArray ToJSON(this IEnumerable<ChargingSession>  ChargingSessions,
+                                    UInt64?                            Skip       = null,
+                                    UInt64?                            Take       = null,
+                                    Boolean                            Embedded   = false)
 
-            #region Initial checks
+            => ChargingSessions == null || !ChargingSessions.Any()
 
-            if (ChargingSessions == null)
-                return new JArray();
+                   ? null
 
-            #endregion
-
-            return ChargingSessions != null && ChargingSessions.Any()
-                       ? new JArray(ChargingSessions.SafeSelect(session => session.ToJSON()))
-                       : new JArray();
-
-        }
+                   : new JArray(ChargingSessions.
+                                    Where     (session => session != null).
+                                    OrderBy   (session => session.Id).
+                                    SkipTakeFilter(Skip, Take).
+                                    SafeSelect(evse => evse.ToJSON(Embedded)));
 
         #endregion
 
@@ -692,12 +691,15 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public JObject ToJSON()
+        public JObject ToJSON(Boolean Embedded = false)
 
             => JSONObject.Create(
 
-                   new JProperty("@id",            Id.ToString()),
-                   new JProperty("@context",       ""),
+                   Id.ToJSON("@id"),
+
+                   Embedded
+                       ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/chargingSession")
+                       : null,
 
                    new JProperty("sessionTime",           JSONObject.Create(
                          new JProperty("start",             SessionTime.StartTime.ToIso8601()),
