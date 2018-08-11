@@ -844,6 +844,8 @@ namespace org.GraphDefined.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
+            _ChargingSessionStore.ReloadData();
+
         }
 
         #endregion
