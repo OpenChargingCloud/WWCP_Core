@@ -612,6 +612,9 @@ namespace org.GraphDefined.WWCP
         public ICSORoamingProvider        CSORoamingProvider        { get; set; }
 
 
+        public ISendChargeDetailRecords   ISendChargeDetailRecords   { get; set; }
+
+
         public DateTime                   CDRSent                   { get; set; }
 
         public Boolean                    RemoveMe                  { get; set; }
@@ -686,6 +689,12 @@ namespace org.GraphDefined.WWCP
         public ChargingSession SetEMPRoamingProvider(IEMPRoamingProvider EMPRoamingProvider)
         {
             this.EMPRoamingProvider = EMPRoamingProvider;
+            return this;
+        }
+
+        public ChargingSession SetISendChargeDetailRecords(ISendChargeDetailRecords ISendChargeDetailRecords)
+        {
+            this.ISendChargeDetailRecords = ISendChargeDetailRecords;
             return this;
         }
 

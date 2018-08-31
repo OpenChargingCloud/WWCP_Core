@@ -4801,17 +4801,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartEVSEResult>
 
-            RemoteStart(EVSE_Id                  EVSEId,
-                        ChargingProduct          ChargingProduct     = null,
-                        ChargingReservation_Id?  ReservationId       = null,
-                        ChargingSession_Id?      SessionId           = null,
-                        eMobilityProvider_Id?    ProviderId          = null,
-                        eMobilityAccount_Id?     eMAId               = null,
+            RemoteStart(EVSE_Id                   EVSEId,
+                        ChargingProduct           ChargingProduct            = null,
+                        ChargingReservation_Id?   ReservationId              = null,
+                        ChargingSession_Id?       SessionId                  = null,
+                        eMobilityProvider_Id?     ProviderId                 = null,
+                        eMobilityAccount_Id?      eMAId                      = null,
+                        ISendChargeDetailRecords  ISendChargeDetailRecords   = null,
 
-                        DateTime?                Timestamp           = null,
-                        CancellationToken?       CancellationToken   = null,
-                        EventTracking_Id         EventTrackingId     = null,
-                        TimeSpan?                RequestTimeout      = null)
+                        DateTime?                 Timestamp                  = null,
+                        CancellationToken?        CancellationToken          = null,
+                        EventTracking_Id          EventTrackingId            = null,
+                        TimeSpan?                 RequestTimeout             = null)
 
         {
 
@@ -4880,7 +4881,8 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartEVSEResultType.Success)
-                    _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(_ChargingStationOperator));
+                    _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(_ChargingStationOperator).
+                                                               SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
             }
 
@@ -4913,7 +4915,8 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == RemoteStartEVSEResultType.Success)
-                        _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider(_EMPRoamingProvider));
+                        _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider      (_EMPRoamingProvider).
+                                                                   SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
                 }
 
@@ -6164,7 +6167,8 @@ namespace org.GraphDefined.WWCP
                                                  ChargingStationOperatorId  = OperatorId,
                                                  EVSEId                     = EVSEId,
                                                  IdentificationStart        = AuthIdentification,
-                                                 ChargingProduct            = ChargingProduct
+                                                 ChargingProduct            = ChargingProduct,
+                                                 //ISendChargeDetailRecords   = result.ISendChargeDetailRecords
                                              };
 
                     _ChargingSessionStore.Start(NewChargingSession);
@@ -7779,12 +7783,10 @@ namespace org.GraphDefined.WWCP
                 foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
                     _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
 
-                ChargingSession chargingSession = null;
-
                 foreach (var cdr in ChargeDetailRecordsToProcess.ToArray())
                 {
 
-                    if (_ChargingSessionStore.TryGet(cdr.SessionId, out chargingSession))
+                    if (_ChargingSessionStore.TryGet(cdr.SessionId, out ChargingSession chargingSession))
                     {
 
                         // Might occur when the software had been restarted

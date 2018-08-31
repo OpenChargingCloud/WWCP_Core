@@ -35,15 +35,15 @@ namespace org.GraphDefined.WWCP
     public interface ISendChargeDetailRecords
     {
 
-        IId Id { get; }
+        IId               Id                               { get; }
 
-        IEnumerable<IId> Ids { get; }
+        IEnumerable<IId>  Ids                              { get; }
 
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  DisableSendChargeDetailRecords   { get; set; }
+        Boolean           DisableSendChargeDetailRecords   { get; set; }
 
 
         // Events?
