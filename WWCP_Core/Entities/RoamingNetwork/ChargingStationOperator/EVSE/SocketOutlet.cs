@@ -26,6 +26,29 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
+    public static class SocketOutletExtetions
+    {
+
+        public static Boolean IsDC(this SocketOutlet socketOutlet)
+        {
+
+            switch (socketOutlet.Plug)
+            {
+
+                case PlugTypes.CCSCombo1Plug_CableAttached:
+                case PlugTypes.CCSCombo2Plug_CableAttached:
+                case PlugTypes.CHAdeMO:
+                    return true;
+
+            }
+
+            return false;
+
+        }
+
+    }
+
+
     /// <summary>
     /// A socket outlet to connect an electric vehicle (EV)
     /// to an Electric Vehicle Supply Equipment (EVSE).

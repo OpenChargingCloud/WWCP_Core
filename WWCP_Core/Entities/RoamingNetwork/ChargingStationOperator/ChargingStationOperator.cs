@@ -3185,7 +3185,8 @@ namespace org.GraphDefined.WWCP
 
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
-                                         Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+                                         Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
+                                         Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
 
                                          Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                          UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3228,7 +3229,8 @@ namespace org.GraphDefined.WWCP
 
                                                Members,
                                                MemberIds,
-                                               AutoIncludeStations,
+                                               AutoIncludeEVSEIds,
+                                               AutoIncludeEVSEs,
                                                StatusAggregationDelegate,
                                                MaxGroupAdminStatusListSize,
                                                MaxGroupStatusListSize);
@@ -3298,7 +3300,8 @@ namespace org.GraphDefined.WWCP
 
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
-                                         Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+                                         Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
+                                         Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
 
                                          Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                          UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3328,7 +3331,8 @@ namespace org.GraphDefined.WWCP
 
                                    Members,
                                    MemberIds,
-                                   AutoIncludeStations,
+                                   AutoIncludeEVSEIds,
+                                   AutoIncludeEVSEs,
                                    StatusAggregationDelegate,
                                    MaxGroupAdminStatusListSize,
                                    MaxGroupStatusListSize,
@@ -3370,7 +3374,8 @@ namespace org.GraphDefined.WWCP
 
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,
-                                              Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+                                              Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
+                                              Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
 
                                               Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                               UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3405,7 +3410,8 @@ namespace org.GraphDefined.WWCP
 
                                        Members,
                                        MemberIds,
-                                       AutoIncludeStations,
+                                       AutoIncludeEVSEIds,
+                                       AutoIncludeEVSEs,
                                        StatusAggregationDelegate,
                                        MaxGroupAdminStatusListSize,
                                        MaxGroupStatusListSize,
@@ -3449,7 +3455,8 @@ namespace org.GraphDefined.WWCP
 
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,
-                                              Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+                                              Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
+                                              Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
 
                                               Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                               UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3479,7 +3486,8 @@ namespace org.GraphDefined.WWCP
 
                                         Members,
                                         MemberIds,
-                                        AutoIncludeStations,
+                                        AutoIncludeEVSEIds,
+                                        AutoIncludeEVSEs,
                                         StatusAggregationDelegate,
                                         MaxGroupAdminStatusListSize,
                                         MaxGroupStatusListSize,

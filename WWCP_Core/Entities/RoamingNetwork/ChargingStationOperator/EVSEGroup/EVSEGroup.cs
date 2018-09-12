@@ -191,7 +191,9 @@ namespace org.GraphDefined.WWCP
         public IEnumerable<EVSE_Id> AllowedMemberIds
             => _AllowedMemberIds;
 
-        public Func<EVSE, Boolean> AutoIncludeStations { get; }
+        public Func<EVSE,    Boolean> AutoIncludeEVSEs      { get; }
+
+        public Func<EVSE_Id, Boolean> AutoIncludeEVSEIds    { get; }
 
 
 
@@ -392,7 +394,8 @@ namespace org.GraphDefined.WWCP
 
                            IEnumerable<EVSE>                             Members                      = null,
                            IEnumerable<EVSE_Id>                          MemberIds                    = null,
-                           Func<EVSE, Boolean>                           AutoIncludeStations          = null,
+                           Func<EVSE_Id, Boolean>                        AutoIncludeEVSEIds           = null,
+                           Func<EVSE,    Boolean>                        AutoIncludeEVSEs             = null,
 
                            Func<EVSEStatusReport, EVSEGroupStatusTypes>  StatusAggregationDelegate    = null,
                            UInt16                                        MaxGroupStatusListSize       = DefaultMaxGroupStatusListSize,
@@ -424,7 +427,8 @@ namespace org.GraphDefined.WWCP
             this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
             this._AllowedMemberIds           = MemberIds != null ? new HashSet<EVSE_Id>(MemberIds) : new HashSet<EVSE_Id>();
-            this.AutoIncludeStations         = AutoIncludeStations ?? (MemberIds == null ? (Func<EVSE, Boolean>) (evse => true) : evse => false);
+            this.AutoIncludeEVSEIds          = AutoIncludeEVSEIds ?? (MemberIds == null ? (Func<EVSE_Id, Boolean>) (evseid => true) : evseid => false);
+            this.AutoIncludeEVSEs            = AutoIncludeEVSEs   ?? (MemberIds == null ? (Func<EVSE,    Boolean>) (evse   => true) : evse   => false);
             this._EVSEs                      = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
@@ -481,7 +485,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (_AllowedMemberIds.Contains(EVSE.Id) &&
-                AutoIncludeStations(EVSE))
+                AutoIncludeEVSEs(EVSE))
             {
                 _EVSEs.TryAdd(EVSE.Id, EVSE);
             }

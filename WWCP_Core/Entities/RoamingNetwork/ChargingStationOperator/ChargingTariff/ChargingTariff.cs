@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP
                              foreach (var evse in station)
                                  foreach (var group in evse.Operator.EVSEGroups.Where(group => group.Tariff != null))
                                      if (group.AllowedMemberIds.Contains(evse.Id) ||
-                                         (group.AutoIncludeStations != null && group.AutoIncludeStations(evse.Operator.GetEVSEbyId(evse.Id))))
+                                         (group.AutoIncludeEVSEs != null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEbyId(evse.Id))))
                                          results.Add(new String[] {
                                                          evse.Id.                            ToString(),
                                                       //   station.Brand.Name.                 FirstText(),
