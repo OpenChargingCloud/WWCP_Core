@@ -446,12 +446,12 @@ namespace org.GraphDefined.WWCP
     }
 
 
-    public class ChargeDetailRecordStore : IEnumerable<ChargeDetailRecord>
+    public class ChargeDetailRecordStore : IEnumerable<IEnumerable<ChargeDetailRecord>>
     {
 
         #region Data
 
-        private readonly         Dictionary<ChargingSession_Id, ChargeDetailRecord> _ChargeDetailRecords;
+        private readonly         Dictionary<ChargingSession_Id, List<ChargeDetailRecord>> _ChargeDetailRecords;
 
         private static readonly  Char                                               RS  = (Char) 30;
 
@@ -487,7 +487,7 @@ namespace org.GraphDefined.WWCP
 
             this.RoamingNetwork        = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
 
-            this._ChargeDetailRecords  = new Dictionary<ChargingSession_Id, ChargeDetailRecord>();
+            this._ChargeDetailRecords  = new Dictionary<ChargingSession_Id, List<ChargeDetailRecord>>();
             this.CDRLogFileName        = "ChargeDetailRecords-" + RoamingNetwork.Id + ".log";
 
         }
@@ -505,7 +505,10 @@ namespace org.GraphDefined.WWCP
 
                 var Now = DateTime.UtcNow;
 
-                _ChargeDetailRecords.Add(ChargeDetailRecord.SessionId, ChargeDetailRecord);
+                if (!_ChargeDetailRecords.ContainsKey(ChargeDetailRecord.SessionId))
+                    _ChargeDetailRecords.Add(ChargeDetailRecord.SessionId, new List<ChargeDetailRecord>());
+
+                _ChargeDetailRecords[ChargeDetailRecord.SessionId].Add(ChargeDetailRecord);
 
                 //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
                 //    RegisterExternalChargingSession(DateTime.UtcNow,
@@ -542,17 +545,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryGet(SessionId, out ChargeDetailRecord)
+        #region TryGet(SessionId, out ChargeDetailRecords)
 
-        public Boolean TryGet(ChargingSession_Id SessionId, out ChargeDetailRecord ChargeDetailRecord)
-            => _ChargeDetailRecords.TryGetValue(SessionId, out ChargeDetailRecord);
+        public Boolean TryGet(ChargingSession_Id SessionId, out List<ChargeDetailRecord> ChargeDetailRecords)
+            => _ChargeDetailRecords.TryGetValue(SessionId, out ChargeDetailRecords);
 
         #endregion
 
 
         #region IEnumerable<ChargeDetailRecord>
 
-        public IEnumerator<ChargeDetailRecord> GetEnumerator()
+        public IEnumerator<IEnumerable<ChargeDetailRecord>> GetEnumerator()
             => _ChargeDetailRecords.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -816,8 +819,8 @@ namespace org.GraphDefined.WWCP
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
-            this._ChargeDetailRecords                               = new ChargeDetailRecordStore(this);
-            this._ChargingSessionStore                              = new ChargingSessionStore   (this, _ChargeDetailRecords.Add);
+            this._ChargeDetailRecordStore                               = new ChargeDetailRecordStore(this);
+            this._ChargingSessionStore                              = new ChargingSessionStore   (this, _ChargeDetailRecordStore.Add);
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
@@ -866,11 +869,11 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        private readonly PriorityList<ISendData>                       _ISendData                       = new PriorityList<ISendData>();
-        private readonly PriorityList<ISendAdminStatus>                _ISendAdminStatus                = new PriorityList<ISendAdminStatus>();
-        private readonly PriorityList<ISendStatus>                     _ISendStatus                     = new PriorityList<ISendStatus>();
-        private readonly PriorityList<ISendAuthorizeStartStop>         _ISend2RemoteAuthorizeStartStop  = new PriorityList<ISendAuthorizeStartStop>();
-        private readonly PriorityList<ISendChargeDetailRecords>        _IRemoteSendChargeDetailRecord   = new PriorityList<ISendChargeDetailRecords>();
+        private readonly PriorityList<ISendData>                 _ISendData                        = new PriorityList<ISendData>();
+        private readonly PriorityList<ISendAdminStatus>          _ISendAdminStatus                 = new PriorityList<ISendAdminStatus>();
+        private readonly PriorityList<ISendStatus>               _ISendStatus                      = new PriorityList<ISendStatus>();
+        private readonly PriorityList<ISendAuthorizeStartStop>   _ISend2RemoteAuthorizeStartStop   = new PriorityList<ISendAuthorizeStartStop>();
+        private readonly PriorityList<ISendChargeDetailRecords>  _IRemoteSendChargeDetailRecord    = new PriorityList<ISendChargeDetailRecords>();
 
 
         #region Data/(Admin-)Status management
@@ -7494,13 +7497,13 @@ namespace org.GraphDefined.WWCP
 
         #region ChargeDetailRecords
 
-        private readonly ChargeDetailRecordStore _ChargeDetailRecords;
+        private readonly ChargeDetailRecordStore _ChargeDetailRecordStore;
 
         /// <summary>
         /// Return all current charge detail records.
         /// </summary>
-        public IEnumerable<ChargeDetailRecord> ChargeDetailRecords
-            => _ChargeDetailRecords;
+        public IEnumerable<IEnumerable<ChargeDetailRecord>> ChargeDetailRecords
+            => _ChargeDetailRecordStore;
 
         #endregion
 
@@ -7527,11 +7530,11 @@ namespace org.GraphDefined.WWCP
         {
             add
             {
-                _ChargeDetailRecords.OnNewChargeDetailRecord += value;
+                _ChargeDetailRecordStore.OnNewChargeDetailRecord += value;
             }
             remove
             {
-                _ChargeDetailRecords.OnNewChargeDetailRecord -= value;
+                _ChargeDetailRecordStore.OnNewChargeDetailRecord -= value;
             }
         }
 
@@ -7705,7 +7708,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Store all CDRs...
 
-                _ChargeDetailRecords.Add(ChargeDetailRecords);
+                _ChargeDetailRecordStore.Add(ChargeDetailRecords);
 
                 #endregion
 
@@ -7783,6 +7786,11 @@ namespace org.GraphDefined.WWCP
                 foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
                     _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
 
+                #endregion
+
+
+                #region Try to send the CDRs to their target based on their SessionId...
+
                 foreach (var cdr in ChargeDetailRecordsToProcess.ToArray())
                 {
 
@@ -7806,14 +7814,313 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                #region Any CDRs left? => bad!
+                #region Any CDRs left? => Ask all e-mobility providers!
 
-                if (ChargeDetailRecordsToProcess.Count > 0)
+                foreach (var _cdr in ChargeDetailRecordsToProcess)
                 {
 
-                    foreach (var _cdr in ChargeDetailRecordsToProcess)
-                        resultMap.Add(new SendCDRResult(_cdr,
-                                                        SendCDRResultTypes.UnknownSessionId));
+                    #region We have a valid (start) provider identification
+
+                    if (_cdr.ProviderIdStart.HasValue && _eMobilityProviders.TryGet(_cdr.ProviderIdStart.Value, out eMobilityProvider eMobPro))
+                    {
+                        _ISendChargeDetailRecords[eMobPro].Add(_cdr);
+                        ChargeDetailRecordsToProcess.Remove(_cdr);
+                    }
+
+                    #endregion
+
+                    #region We have a valid (stop)  provider identification
+
+                    else if (_cdr.ProviderIdStop.HasValue && _eMobilityProviders.TryGet(_cdr.ProviderIdStop.Value, out eMobPro))
+                    {
+                        _ISendChargeDetailRecords[eMobPro].Add(_cdr);
+                        ChargeDetailRecordsToProcess.Remove(_cdr);
+                    }
+
+                    #endregion
+
+
+                    #region We have a valid (start) AuthToken/RFID identification
+
+                    else if (_cdr.IdentificationStart?.AuthToken != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (stop)  AuthToken/RFID identification
+
+                    else if (_cdr.IdentificationStop?.AuthToken != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (start) QR-Code identification
+
+                    else if (_cdr.IdentificationStart?.QRCodeIdentification != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (stop)  QR-Code identification
+
+                    else if (_cdr.IdentificationStop?.QRCodeIdentification != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (start) Plug'n'Charge identification
+
+                    else if (_cdr.IdentificationStart?.PlugAndChargeIdentification != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (stop)  Plug'n'Charge identification
+
+                    else if (_cdr.IdentificationStop?.PlugAndChargeIdentification != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (start) remote identification
+
+                    else if (_cdr.IdentificationStart?.RemoteIdentification != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (stop)  remote identification
+
+                    else if (_cdr.IdentificationStop?.RemoteIdentification != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (start) public key
+
+                    else if (_cdr.IdentificationStart?.PublicKey != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region We have a valid (stop)  public key
+
+                    else if (_cdr.IdentificationStop?.PublicKey != null)
+                    {
+
+                        // Use a lookup...
+
+                        // Ask all e-mobility providers...
+                        foreach (var eMob in _eMobilityProviders)
+                        {
+
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+
+                            if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                authStartResult.Result == AuthStartResultType.Blocked)
+                            {
+                                _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    #endregion
+
+                }
+
+                #endregion
+
+                #region Any CDRs left? => bad!
+
+                foreach (var unknownCDR in ChargeDetailRecordsToProcess)
+                {
+
+                    resultMap.Add(new SendCDRResult(unknownCDR,
+                                                    SendCDRResultTypes.UnknownSessionId));
 
                     ChargeDetailRecordsToProcess.Clear();
 
@@ -7858,6 +8165,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 #endregion
+
 
                 #region Check if we really received a response for every charge detail record!
 
@@ -7918,8 +8226,8 @@ namespace org.GraphDefined.WWCP
 
                 //if (success)
                 //{
-                //    try
-                //    {
+                    try
+                    {
 
                         foreach (var sendCDRResult in resultMap)
                         {
@@ -7942,11 +8250,11 @@ namespace org.GraphDefined.WWCP
 
                         }
 
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        Console.WriteLine(e.Message);
-                //    }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
                 //    finally
                 //    {
                 //        SessionLogSemaphore.Release();
