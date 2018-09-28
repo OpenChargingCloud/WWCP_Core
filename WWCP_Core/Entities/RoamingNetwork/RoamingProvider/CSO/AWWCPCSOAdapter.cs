@@ -98,6 +98,7 @@ namespace org.GraphDefined.WWCP
         protected              UInt64                                                           _CDRRunId                         = 1;
 
         protected readonly     SemaphoreSlim                                                    DataAndStatusLock                 = new SemaphoreSlim(1, 1);
+        protected readonly     Object                                                           DataAndStatusLockOld              = new Object();
 
         protected readonly     SemaphoreSlim                                                    FlushEVSEDataAndStatusLock        = new SemaphoreSlim(1, 1);
         protected readonly     Timer                                                            FlushEVSEDataAndStatusTimer;

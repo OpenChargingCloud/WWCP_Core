@@ -372,7 +372,7 @@ namespace org.GraphDefined.WWCP
                 #endregion
 
                 //var LockTaken = await DataAndStatusLock.WaitAsync(0);
-                lock (DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     if (_IncludeEVSEs == null ||
@@ -456,7 +456,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock (DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     if (_IncludeEVSEs == null ||
@@ -551,7 +551,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock (DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     if (_IncludeEVSEs == null ||
@@ -648,7 +648,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock (DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     if (_IncludeEVSEs == null ||
@@ -734,7 +734,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     var FilteredEVSEs = EVSEs.Where(evse => _IncludeEVSEs  (evse) &&
@@ -824,7 +824,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     var FilteredEVSEs = EVSEs.Where(evse => _IncludeEVSEs  (evse) &&
@@ -914,7 +914,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     var FilteredEVSEs = EVSEs.Where(evse => _IncludeEVSEs  (evse) &&
@@ -1004,7 +1004,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     var FilteredEVSEs = EVSEs.Where(evse => _IncludeEVSEs  (evse) &&
@@ -1134,7 +1134,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock (DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     var FilteredUpdates = StatusUpdates.Where(statusupdate => _IncludeEVSEs  (statusupdate.EVSE) &&
@@ -1237,7 +1237,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     foreach (var evse in ChargingStation)
@@ -1326,7 +1326,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     foreach (var evse in ChargingStation)
@@ -1421,7 +1421,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     var AddData = false;
@@ -1792,7 +1792,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     foreach (var evse in ChargingPool.EVSEs)
@@ -1881,7 +1881,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     foreach (var evse in ChargingPool.EVSEs)
@@ -1976,7 +1976,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     var AddData = false;
@@ -3933,7 +3933,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                lock(DataAndStatusLock)
+                lock(DataAndStatusLockOld)
                 {
 
                     ChargeDetailRecordQueue.AddRange(ChargeDetailRecords);
@@ -4047,7 +4047,7 @@ namespace org.GraphDefined.WWCP
             var ChargingStationsUpdateLogCopy      = new Dictionary<ChargingStation, PropertyUpdateInfos[]>();
             var ChargingPoolsUpdateLogCopy         = new Dictionary<ChargingPool,    PropertyUpdateInfos[]>();
 
-            lock (DataAndStatusLock)
+            lock(DataAndStatusLockOld)
             {
 
                 // Copy 'EVSEs to add', remove originals...
@@ -4192,7 +4192,7 @@ namespace org.GraphDefined.WWCP
 
             var EVSEStatusFastQueueCopy = new List<EVSEStatusUpdate>();
 
-            lock (DataAndStatusLock)
+            lock(DataAndStatusLockOld)
             {
 
                 // Copy 'EVSE status changes', remove originals...
