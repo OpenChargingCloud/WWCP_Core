@@ -1249,14 +1249,24 @@ namespace org.GraphDefined.WWCP
 
                 // Merge existing charging pool with new pool data...
 
-                return _ChargingPools.
-                           GetById(ChargingPoolId).
-                           UpdateWith(new ChargingPool(ChargingPoolId,
-                                                       this,
-                                                       Configurator,
-                                                       null,
-                                                       new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
-                                                       new Timestamped<ChargingPoolStatusTypes>(DateTime.MinValue, ChargingPoolStatusTypes.Available)));
+                try
+                {
+
+                    return _ChargingPools.
+                               GetById(ChargingPoolId).
+                               UpdateWith(new ChargingPool(ChargingPoolId,
+                                                           this,
+                                                           Configurator,
+                                                           null,
+                                                           new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
+                                                           new Timestamped<ChargingPoolStatusTypes>(DateTime.MinValue, ChargingPoolStatusTypes.Available)));
+
+                } catch (Exception e)
+                {
+                    DebugX.Log("CSO.CreateOrUpdateChargingPool(...) failed: " + e.Message);
+                }
+
+                return null;
 
             }
 
