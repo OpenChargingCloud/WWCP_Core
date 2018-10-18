@@ -699,6 +699,12 @@ namespace org.GraphDefined.WWCP
         }
 
 
+        public void AddEnergyMeterValue(Timestamped<Single> Value)
+        {
+            _EnergyMeterValues.Add(Value);
+        }
+
+
 
         public JObject ToJSON(Boolean Embedded = false)
 
