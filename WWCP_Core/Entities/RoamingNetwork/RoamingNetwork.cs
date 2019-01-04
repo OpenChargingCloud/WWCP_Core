@@ -7816,7 +7816,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Any CDRs left? => Ask all e-mobility providers!
 
-                foreach (var _cdr in ChargeDetailRecordsToProcess)
+                foreach (var _cdr in ChargeDetailRecordsToProcess.ToList())
                 {
 
                     #region We have a valid (start) provider identification
