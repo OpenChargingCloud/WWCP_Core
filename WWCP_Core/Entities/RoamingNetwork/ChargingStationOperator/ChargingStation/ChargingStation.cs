@@ -705,7 +705,7 @@ namespace org.GraphDefined.WWCP
                 if (value != _Accessibility && value != ChargingPool?.Accessibility)
                 {
 
-                    if (value != null)
+                    if (value == null)
                         DeleteProperty(ref _Accessibility);
 
                     else
