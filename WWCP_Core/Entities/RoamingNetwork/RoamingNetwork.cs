@@ -73,15 +73,18 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public ChargingSessionStore(RoamingNetwork              RoamingNetwork,
-                                    Action<ChargeDetailRecord>  AddChargeDetailRecordAction)
+        public ChargingSessionStore(RoamingNetwork                   RoamingNetwork,
+                                    Func<RoamingNetwork_Id, String>  SessionLogFileNameCreator,
+                                    Action<ChargeDetailRecord>       AddChargeDetailRecordAction)
         {
 
             this.RoamingNetwork               = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
             this.AddChargeDetailRecordAction  = AddChargeDetailRecordAction;
 
             this._ChargingSessions            = new Dictionary<ChargingSession_Id, ChargingSession>();
-            this.SessionLogFileName           = "Sessions-" + RoamingNetwork.Id + ".log";
+            this.SessionLogFileName           = SessionLogFileNameCreator != null
+                                                    ? SessionLogFileNameCreator(RoamingNetwork.Id)
+                                                    : "Sessions-" + RoamingNetwork.Id + ".log";
 
         }
 
@@ -340,18 +343,29 @@ namespace org.GraphDefined.WWCP
         public void ReloadData()
         {
 
-            String[] elements = null;
-
             if (File.Exists(SessionLogFileName))
             {
+
+                String[] elements  = null;
+                String   line      = null;
 
                 foreach (var text in File.ReadAllLines(SessionLogFileName))
                 {
 
-                    elements = text.Split(',');
+                    if (text.IsNullOrWhiteSpace())
+                        continue;
+
+                    line = text.Trim();
+
+                    if (line.IsNullOrEmpty() || line.StartsWith("//") || line.StartsWith("#"))
+                        continue;
+
+                    elements = line.Split(',');
 
                     switch (elements[1])
                     {
+
+                        #region Start
 
                         case "Start":
 
@@ -386,6 +400,9 @@ namespace org.GraphDefined.WWCP
 
                             break;
 
+                        #endregion
+
+                        #region Stop
 
                         case "Stop":
 
@@ -398,6 +415,9 @@ namespace org.GraphDefined.WWCP
 
                             break;
 
+                        #endregion
+
+                        #region SendCDR
 
                         case "SendCDR":
 
@@ -421,6 +441,8 @@ namespace org.GraphDefined.WWCP
                                 _ChargingSessions.Remove(SessionId);
 
                             break;
+
+                        #endregion
 
                     }
 
@@ -482,13 +504,16 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public ChargeDetailRecordStore(RoamingNetwork RoamingNetwork)
+        public ChargeDetailRecordStore(RoamingNetwork                   RoamingNetwork,
+                                       Func<RoamingNetwork_Id, String>  ChargeDetailRecordLogFileNameCreator)
         {
 
             this.RoamingNetwork        = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
 
             this._ChargeDetailRecords  = new Dictionary<ChargingSession_Id, List<ChargeDetailRecord>>();
-            this.CDRLogFileName        = "ChargeDetailRecords-" + RoamingNetwork.Id + ".log";
+            this.CDRLogFileName        = ChargeDetailRecordLogFileNameCreator != null
+                                             ? ChargeDetailRecordLogFileNameCreator(RoamingNetwork.Id)
+                                             : "ChargeDetailRecords-" + RoamingNetwork.Id + ".log";
 
         }
 
@@ -791,7 +816,9 @@ namespace org.GraphDefined.WWCP
                               UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
                               ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
                               ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
-                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null)
+                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
+                              Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                  = null,
+                              Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator       = null)
 
             : base(Id)
 
@@ -819,8 +846,12 @@ namespace org.GraphDefined.WWCP
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
-            this._ChargeDetailRecordStore                               = new ChargeDetailRecordStore(this);
-            this._ChargingSessionStore                              = new ChargingSessionStore   (this, _ChargeDetailRecordStore.Add);
+            this._ChargeDetailRecordStore                           = new ChargeDetailRecordStore(this,
+                                                                                                  ChargeDetailRecordLogFileNameCreator);
+
+            this._ChargingSessionStore                              = new ChargingSessionStore   (this,
+                                                                                                  SessionLogFileNameCreator,
+                                                                                                  _ChargeDetailRecordStore.Add);
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);

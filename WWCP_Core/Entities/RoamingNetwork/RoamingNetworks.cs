@@ -134,7 +134,9 @@ namespace org.GraphDefined.WWCP
                                                       UInt16                                    MaxStatusListSize                          = RoamingNetwork.DefaultMaxStatusListSize,
                                                       ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
                                                       ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
-                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null)
+                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
+                                                      Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                  = null,
+                                                      Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator       = null)
 
         {
 
@@ -157,7 +159,9 @@ namespace org.GraphDefined.WWCP
                                                      MaxStatusListSize,
                                                      ChargingStationSignatureGenerator,
                                                      ChargingPoolSignatureGenerator,
-                                                     ChargingStationOperatorSignatureGenerator);
+                                                     ChargingStationOperatorSignatureGenerator,
+                                                     SessionLogFileNameCreator,
+                                                     ChargeDetailRecordLogFileNameCreator);
 
             Configurator?.Invoke(_RoamingNetwork);
 
