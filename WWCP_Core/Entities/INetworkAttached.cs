@@ -37,10 +37,10 @@ namespace org.GraphDefined.WWCP
 
         IPTransport                          IPTransport                { get; }
         DNSClient                            DNSClient                  { get; }
-        String                               Hostname                   { get; }
+        HTTPHostname                         Hostname                   { get; }
         IPPort                               TCPPort                    { get; }
+        HTTPHostname?                        VirtualHostname            { get; }
         RemoteCertificateValidationCallback  RemoteCertificateValidator { get; }
-        String                               VirtualHost                { get; }
         HTTPURI                              URIPrefix                  { get; }
         TimeSpan                             RequestTimeout             { get; }
 

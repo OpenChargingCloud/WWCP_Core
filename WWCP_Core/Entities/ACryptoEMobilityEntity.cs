@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
 
         public Signature Sign()
 
-            => new Signature("");
+            => null;// new Signature("");
 
         #endregion
 
