@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
         IPPort                               TCPPort                    { get; }
         HTTPHostname?                        VirtualHostname            { get; }
         RemoteCertificateValidationCallback  RemoteCertificateValidator { get; }
-        HTTPURI                              URIPrefix                  { get; }
+        HTTPPath                             URIPrefix                  { get; }
         TimeSpan                             RequestTimeout             { get; }
 
     }
