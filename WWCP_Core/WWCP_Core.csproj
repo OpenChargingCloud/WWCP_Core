@@ -311,7 +311,6 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorStatusReport.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorStatusType.cs" />
-    <Compile Include="CommonTypes\OriginFormatType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEAdminStatusTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEAdminStatusReport.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStationAdminStatusDiff.cs" />
