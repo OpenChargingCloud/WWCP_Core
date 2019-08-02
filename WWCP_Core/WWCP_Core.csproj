@@ -52,8 +52,10 @@
   <ItemGroup>
     <Compile Include="Commands\AdminStatus\IReceiveAdminStatus.cs" />
     <Compile Include="Commands\AdminStatus\ISendAdminStatus.cs" />
+    <Compile Include="Commands\RemoteStartStop\RemoteStartResult.cs" />
     <Compile Include="CommonTypes\RFIDUID7.cs" />
     <Compile Include="CommonTypes\RFIDUID5.cs" />
+    <Compile Include="CommonTypes\ChargingLocation.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingStation\PushChargingStationAdminStatusResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingPool\PushChargingPoolAdminStatusResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffGroupExceptions.cs" />

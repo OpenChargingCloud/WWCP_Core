@@ -4796,6 +4796,16 @@ namespace org.GraphDefined.WWCP
         #region OnRemote...Start / OnRemote...Started
 
         /// <summary>
+        /// An event fired whenever a remote start command was received.
+        /// </summary>
+        public event OnRemoteStartRequestDelegate                  OnRemoteStartRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote start command completed.
+        /// </summary>
+        public event OnRemoteStartResponseDelegate                 OnRemoteStartResponse;
+
+        /// <summary>
         /// An event fired whenever a remote start EVSE command was received.
         /// </summary>
         public event OnRemoteStartEVSERequestDelegate              OnRemoteEVSEStartRequest;
@@ -5174,6 +5184,204 @@ namespace org.GraphDefined.WWCP
             catch (Exception e)
             {
                 e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteChargingStationStartResponse));
+            }
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+
+        #region RemoteStart(ChargingLocation,            ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+
+        /// <summary>
+        /// Start a charging session at the given charging location.
+        /// </summary>
+        /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="ChargingProduct">The choosen charging product.</param>
+        /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<RemoteStartResult>
+
+            RemoteStart(ChargingLocation          ChargingLocation,
+                        ChargingProduct           ChargingProduct            = null,
+                        ChargingReservation_Id?   ReservationId              = null,
+                        ChargingSession_Id?       SessionId                  = null,
+                        eMobilityProvider_Id?     ProviderId                 = null,
+                        RemoteAuthentication      RemoteAuthentication       = null,
+                        ISendChargeDetailRecords  ISendChargeDetailRecords   = null,
+
+                        DateTime?                 Timestamp                  = null,
+                        CancellationToken?        CancellationToken          = null,
+                        EventTracking_Id          EventTrackingId            = null,
+                        TimeSpan?                 RequestTimeout             = null)
+
+        {
+
+            #region Initial checks
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.UtcNow;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+
+            RemoteStartResult result = null;
+
+            #endregion
+
+            #region Send OnRemoteStartRequest event
+
+            var StartTime = DateTime.UtcNow;
+
+            try
+            {
+
+                OnRemoteStartRequest?.Invoke(StartTime,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             Id,
+                                             ChargingLocation,
+                                             ChargingProduct,
+                                             ReservationId,
+                                             SessionId,
+                                             ProviderId,
+                                             RemoteAuthentication,
+                                             RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStartRequest));
+            }
+
+            #endregion
+
+            if (ChargingLocation.IsDefined)
+            {
+
+                #region Try to lookup the charging station operator given in the EVSE identification...
+
+                ChargingStationOperator _ChargingStationOperator;
+
+                if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out _ChargingStationOperator) ||
+                    TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out _ChargingStationOperator) ||
+                    TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out _ChargingStationOperator) ||
+                    TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out _ChargingStationOperator))
+                {
+
+                    //result = await _ChargingStationOperator.
+                    //                   RemoteStart(ChargingLocation,
+                    //                               ChargingProduct,
+                    //                               ReservationId,
+                    //                               SessionId,
+                    //                               ProviderId,
+                    //                               RemoteAuthentication,
+
+                    //                               Timestamp,
+                    //                               CancellationToken,
+                    //                               EventTrackingId,
+                    //                               RequestTimeout);
+
+
+                    if (result.Result == RemoteStartResultType.Success)
+                        _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(_ChargingStationOperator).
+                                                                   SetISendChargeDetailRecords(ISendChargeDetailRecords));
+
+                }
+
+                #endregion
+
+                #region ...or try every EMP roaming provider...
+
+                if (result        == null ||
+                   (result        != null &&
+                   (result.Result == RemoteStartResultType.UnknownLocation)))
+                {
+
+                    foreach (var _EMPRoamingProvider in _EMPRoamingProviders.
+                                                            OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
+                                                            Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                    {
+
+                        //result = await _EMPRoamingProvider.
+                        //                   RemoteStart(ChargingLocation,
+                        //                               ChargingProduct,
+                        //                               ReservationId,
+                        //                               SessionId,
+                        //                               ProviderId,
+                        //                               RemoteAuthentication,
+
+                        //                               Timestamp,
+                        //                               CancellationToken,
+                        //                               EventTrackingId,
+                        //                               RequestTimeout);
+
+
+                        if (result.Result == RemoteStartResultType.Success)
+                            _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider      (_EMPRoamingProvider).
+                                                                       SetISendChargeDetailRecords(ISendChargeDetailRecords));
+
+                    }
+
+                }
+
+                #endregion
+
+                #region ...or fail!
+
+                if (result == null)
+                    result = RemoteStartResult.UnknownOperator;
+
+                #endregion
+
+            }
+
+            else
+                result = RemoteStartResult.UnknownLocation;
+
+
+            #region Send OnRemoteChargingStationStartResponse event
+
+            var EndTime = DateTime.UtcNow;
+
+            try
+            {
+
+                OnRemoteStartResponse?.Invoke(EndTime,
+                                              Timestamp.Value,
+                                              this,
+                                              EventTrackingId,
+                                              Id,
+                                              ChargingLocation,
+                                              ChargingProduct,
+                                              ReservationId,
+                                              SessionId,
+                                              ProviderId,
+                                              RemoteAuthentication,
+                                              RequestTimeout,
+                                              result,
+                                              EndTime - StartTime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion

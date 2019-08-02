@@ -74,6 +74,17 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public I18NString            Description                    { get; }
 
+
+        public Boolean IsDefined
+
+            => AuthToken.                  HasValue ||
+               QRCodeIdentification        != null  ||
+               PlugAndChargeIdentification.HasValue ||
+               RemoteIdentification.       HasValue ||
+               PIN.                        HasValue ||
+               PublicKey                   != null;
+
+
         #endregion
 
         #region Constructor(s)
@@ -298,7 +309,7 @@ namespace org.GraphDefined.WWCP
             if (PublicKey != null && AAuthentication.PublicKey != null)
                 return PublicKey.Fingerprint.ToHexString().CompareTo(AAuthentication.PublicKey.Fingerprint.ToHexString());
 
-            return String.Compare(ToString(), AAuthentication.ToString(), StringComparison.Ordinal);
+            return String.Compare(ToString(), AAuthentication.ToString(), StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -343,8 +354,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) AAuthentication == null)
                 return false;
 
-            if (AuthToken != null && AAuthentication.AuthToken != null)
-                return AuthToken.Equals(AAuthentication.AuthToken);
+            if (AuthToken.HasValue && AAuthentication.AuthToken.HasValue)
+                return AuthToken.Value.Equals(AAuthentication.AuthToken.Value);
 
             if (QRCodeIdentification != null && AAuthentication.QRCodeIdentification != null)
                 return QRCodeIdentification.Equals(AAuthentication.QRCodeIdentification);
