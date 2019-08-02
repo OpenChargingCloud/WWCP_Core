@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP
                                                           EventTracking_Id              EventTrackingId,
                                                           RoamingNetwork_Id             RoamingNetworkId,
                                                           ChargingStationOperator_Id?   OperatorId,
-                                                          AuthIdentification            AuthIdentification,
+                                                          LocalAuthentication           LocalAuthentication,
                                                           ChargingProduct               ChargingProduct,
                                                           ChargingSession_Id?           SessionId,
                                                           TimeSpan?                     RequestTimeout);
@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP
                                                           EventTracking_Id              EventTrackingId,
                                                           RoamingNetwork_Id             RoamingNetworkId,
                                                           ChargingStationOperator_Id?   OperatorId,
-                                                          AuthIdentification            AuthIdentification,
+                                                          LocalAuthentication           LocalAuthentication,
                                                           ChargingProduct               ChargingProduct,
                                                           ChargingSession_Id?           SessionId,
                                                           TimeSpan?                     RequestTimeout,
@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -108,7 +108,7 @@ namespace org.GraphDefined.WWCP
                                                               EventTracking_Id                       EventTrackingId,
                                                               RoamingNetwork_Id                      RoamingNetworkId,
                                                               ChargingStationOperator_Id?            OperatorId,
-                                                              AuthIdentification                     AuthIdentification,
+                                                              LocalAuthentication                    LocalAuthentication,
                                                               EVSE_Id                                EVSEId,
                                                               ChargingProduct                        ChargingProduct,
                                                               ChargingSession_Id?                    SessionId,
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -139,7 +139,7 @@ namespace org.GraphDefined.WWCP
                                                               EventTracking_Id                       EventTrackingId,
                                                               RoamingNetwork_Id                      RoamingNetworkId,
                                                               ChargingStationOperator_Id?            OperatorId,
-                                                              AuthIdentification                     AuthIdentification,
+                                                              LocalAuthentication                    LocalAuthentication,
                                                               EVSE_Id                                EVSEId,
                                                               ChargingProduct                        ChargingProduct,
                                                               ChargingSession_Id?                    SessionId,
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -172,7 +172,7 @@ namespace org.GraphDefined.WWCP
                                                                          EventTracking_Id              EventTrackingId,
                                                                          RoamingNetwork_Id             RoamingNetworkId,
                                                                          ChargingStationOperator_Id?   OperatorId,
-                                                                         AuthIdentification            AuthIdentification,
+                                                                         LocalAuthentication           LocalAuthentication,
                                                                          ChargingStation_Id            ChargingStationId,
                                                                          ChargingProduct               ChargingProduct,
                                                                          ChargingSession_Id?           SessionId,
@@ -187,7 +187,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP
                                                                          EventTracking_Id                 EventTrackingId,
                                                                          RoamingNetwork_Id                RoamingNetworkId,
                                                                          ChargingStationOperator_Id?      OperatorId,
-                                                                         AuthIdentification               AuthIdentification,
+                                                                         LocalAuthentication              LocalAuthentication,
                                                                          ChargingStation_Id               ChargingStationId,
                                                                          ChargingProduct                  ChargingProduct,
                                                                          ChargingSession_Id?              SessionId,
@@ -221,7 +221,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -233,7 +233,7 @@ namespace org.GraphDefined.WWCP
                                                                       EventTracking_Id              EventTrackingId,
                                                                       RoamingNetwork_Id             RoamingNetworkId,
                                                                       ChargingStationOperator_Id?   OperatorId,
-                                                                      AuthIdentification            AuthIdentification,
+                                                                      LocalAuthentication           LocalAuthentication,
                                                                       ChargingPool_Id               ChargingPoolId,
                                                                       ChargingProduct               ChargingProduct,
                                                                       ChargingSession_Id?           SessionId,
@@ -248,7 +248,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="AuthIdentification">An user identification.</param>
+    /// <param name="LocalAuthentication">An user identification.</param>
     /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -262,7 +262,7 @@ namespace org.GraphDefined.WWCP
                                                                       EventTracking_Id              EventTrackingId,
                                                                       RoamingNetwork_Id             RoamingNetworkId,
                                                                       ChargingStationOperator_Id?   OperatorId,
-                                                                      AuthIdentification            AuthIdentification,
+                                                                      LocalAuthentication           LocalAuthentication,
                                                                       ChargingPool_Id               ChargingPoolId,
                                                                       ChargingProduct               ChargingProduct,
                                                                       ChargingSession_Id?           SessionId,

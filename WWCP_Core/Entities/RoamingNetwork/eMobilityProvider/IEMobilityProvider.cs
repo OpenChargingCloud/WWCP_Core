@@ -42,24 +42,24 @@ namespace org.GraphDefined.WWCP
 
         //Authorizator_Id AuthorizatorId { get; }
 
-        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> BlockedTokens        { get; }
+        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> AllTokens            { get; }
+        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
+        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
+        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> BlockedTokens        { get; }
 
 
         // User and credential management
 
-        #region AddToken   (AuthIdentification, AuthenticationResult = AuthenticationResult.Allowed)
+        #region AddToken   (LocalAuthentication, AuthenticationResult = AuthenticationResult.Allowed)
 
-        Boolean AddToken(AuthIdentification            AuthIdentification,
+        Boolean AddToken(LocalAuthentication           LocalAuthentication,
                          TokenAuthorizationResultType  AuthenticationResult = TokenAuthorizationResultType.Authorized);
 
         #endregion
 
-        #region RemoveToken(AuthIdentification)
+        #region RemoveToken(LocalAuthentication)
 
-        Boolean RemoveToken(AuthIdentification AuthIdentification);
+        Boolean RemoveToken(LocalAuthentication  LocalAuthentication);
 
         #endregion
 
@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -88,19 +88,19 @@ namespace org.GraphDefined.WWCP
         Task<ReservationResult>
 
             Reserve(EVSE_Id                           EVSEId,
-                    DateTime?                         StartTime           = null,
-                    TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id?           ReservationId       = null,
-                    AuthIdentification                Identification      = null,
-                    ChargingProduct                   ChargingProduct     = null,
-                    IEnumerable<Auth_Token>           AuthTokens          = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                    IEnumerable<UInt32>               PINs                = null,
+                    DateTime?                         StartTime              = null,
+                    TimeSpan?                         Duration               = null,
+                    ChargingReservation_Id?           ReservationId          = null,
+                    RemoteAuthentication              RemoteAuthentication   = null,
+                    ChargingProduct                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
+                    IEnumerable<UInt32>               PINs                   = null,
 
-                    DateTime?                         Timestamp           = null,
-                    CancellationToken?                CancellationToken   = null,
-                    EventTracking_Id                  EventTrackingId     = null,
-                    TimeSpan?                         RequestTimeout      = null);
+                    DateTime?                         Timestamp              = null,
+                    CancellationToken?                CancellationToken      = null,
+                    EventTracking_Id                  EventTrackingId        = null,
+                    TimeSpan?                         RequestTimeout         = null);
 
         #endregion
 
@@ -115,7 +115,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// <param name="EVSEId">An optional identification of the EVSE.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<CancelReservationResult>
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
@@ -130,7 +130,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region RemoteStart(...EVSEId, ChargingProduct = null, ReservationId = null, SessionId = null, eMAId = null, ...)
+        #region RemoteStart(...EVSEId, ChargingProduct = null, ReservationId = null, SessionId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session at the given EVSE.
@@ -139,7 +139,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProduct">The choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -148,19 +148,19 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                  EVSEId,
-                        ChargingProduct          ChargingProduct     = null,
-                        ChargingReservation_Id?  ReservationId       = null,
-                        ChargingSession_Id?      SessionId           = null,
-                        eMobilityAccount_Id?     eMAId               = null,
+                        ChargingProduct          ChargingProduct        = null,
+                        ChargingReservation_Id?  ReservationId          = null,
+                        ChargingSession_Id?      SessionId              = null,
+                        RemoteAuthentication     RemoteAuthentication   = null,
 
-                        DateTime?                Timestamp           = null,
-                        CancellationToken?       CancellationToken   = null,
-                        EventTracking_Id         EventTrackingId     = null,
-                        TimeSpan?                RequestTimeout      = null);
+                        DateTime?                Timestamp              = null,
+                        CancellationToken?       CancellationToken      = null,
+                        EventTracking_Id         EventTrackingId        = null,
+                        TimeSpan?                RequestTimeout         = null);
 
         #endregion
 
-        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, eMAId = null, ...)
+        #region RemoteStop (...EVSEId, SessionId, ReservationHandling, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Stop the given charging session at the given EVSE.
@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of the EVSE to be stopped.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -179,12 +179,12 @@ namespace org.GraphDefined.WWCP
             RemoteStop(EVSE_Id               EVSEId,
                        ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
-                       eMobilityAccount_Id?  eMAId               = null,
+                       RemoteAuthentication  RemoteAuthentication   = null,
 
-                       DateTime?             Timestamp           = null,
-                       CancellationToken?    CancellationToken   = null,
-                       EventTracking_Id      EventTrackingId     = null,
-                       TimeSpan?             RequestTimeout      = null);
+                       DateTime?             Timestamp              = null,
+                       CancellationToken?    CancellationToken      = null,
+                       EventTracking_Id      EventTrackingId        = null,
+                       TimeSpan?             RequestTimeout         = null);
 
         #endregion
 

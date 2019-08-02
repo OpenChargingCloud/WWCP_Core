@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
         public Double              MeterValue       { get; }
         public EnergyMeter_Id      MeterId          { get; }
         public EVSE_Id             EVSEId           { get; }
-        public AuthIdentification  UserId           { get; }
+        public AAuthentication     UserId           { get; }
         public PgpPublicKey        PublicKey        { get; }
         public String              lastSignature    { get; }
         public String              Signature        { get; private set; }
@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP
                                    Double              MeterValue,
                                    EnergyMeter_Id      MeterId,
                                    EVSE_Id             EVSEId,
-                                   AuthIdentification  UserId,
+                                   AAuthentication     UserId,
                                    PgpPublicKey        PublicKey,
                                    String              lastSignature  = "",
                                    String              Signature      = "")
@@ -242,13 +242,13 @@ namespace org.GraphDefined.WWCP
         /// The identification used for starting this charging process.
         /// </summary>
         [Optional]
-        public AuthIdentification               IdentificationStart    { get; }
+        public AAuthentication                  IdentificationStart    { get; }
 
         /// <summary>
         /// The identification used for stopping this charging process.
         /// </summary>
         [Optional]
-        public AuthIdentification               IdentificationStop     { get; }
+        public AAuthentication                  IdentificationStop     { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
@@ -402,8 +402,8 @@ namespace org.GraphDefined.WWCP
                                   ChargingProduct                      ChargingProduct             = null,
                                   Decimal?                             ChargingPrice               = null,
 
-                                  AuthIdentification                   IdentificationStart         = null,
-                                  AuthIdentification                   IdentificationStop          = null,
+                                  AAuthentication                      IdentificationStart         = null,
+                                  AAuthentication                      IdentificationStop          = null,
                                   eMobilityProvider_Id?                ProviderIdStart             = null,
                                   eMobilityProvider_Id?                ProviderIdStop              = null,
 
@@ -417,7 +417,7 @@ namespace org.GraphDefined.WWCP
 
                                   EnergyMeter_Id?                      EnergyMeterId               = null,
                                   IEnumerable<Timestamped<Single>>     EnergyMeteringValues        = null,
-                                  IEnumerable<SignedMeteringValue>        SignedMeteringValues        = null,
+                                  IEnumerable<SignedMeteringValue>     SignedMeteringValues        = null,
                                   IEnumerable<String>                  Signatures                  = null,
 
                                   IReadOnlyDictionary<String, Object>  CustomData                  = null)

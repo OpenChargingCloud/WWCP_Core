@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP
         public eMobilityProvider_Id?  ProviderId          { get; }
 
         [Optional]
-        public AuthIdentification     Identification      { get; }
+        public RemoteAuthentication   Identification      { get; }
 
         [Optional]
         public RoamingNetwork         RoamingNetwork      { get; }
@@ -277,7 +277,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingReservationLevel          ReservationLevel,
 
                                    eMobilityProvider_Id?             ProviderId          = null,
-                                   AuthIdentification                Identification      = null,
+                                   RemoteAuthentication              Identification      = null,
 
                                    RoamingNetwork                    RoamingNetwork      = null,
                                    ChargingPool_Id?                  ChargingPoolId      = null,

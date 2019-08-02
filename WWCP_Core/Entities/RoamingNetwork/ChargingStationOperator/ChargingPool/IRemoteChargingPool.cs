@@ -58,7 +58,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<ReservationResult> Reserve(DateTime                          Timestamp,
                                         CancellationToken                 CancellationToken,
                                         EventTracking_Id                  EventTrackingId,
@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP
                                         IEnumerable<Auth_Token>           AuthTokens          = null,
                                         IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                                         IEnumerable<UInt32>               PINs                = null,
-                                        TimeSpan?                         QueryTimeout        = null);
+                                        TimeSpan?                         RequestTimeout        = null);
 
         /// <summary>
         /// Reserve the possibility to charge.
@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<ReservationResult> Reserve(DateTime                          Timestamp,
                                         CancellationToken                 CancellationToken,
                                         EventTracking_Id                  EventTrackingId,
@@ -99,7 +99,7 @@ namespace org.GraphDefined.WWCP
                                         IEnumerable<Auth_Token>           AuthTokens          = null,
                                         IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                                         IEnumerable<UInt32>               PINs                = null,
-                                        TimeSpan?                         QueryTimeout        = null);
+                                        TimeSpan?                         RequestTimeout        = null);
 
         #endregion
 
@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
                                                         CancellationToken                      CancellationToken,
                                                         EventTracking_Id                       EventTrackingId,

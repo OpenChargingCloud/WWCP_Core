@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnRemoteStopRequestDelegate(DateTime               LogTimestamp,
                                                      DateTime               RequestTimestamp,
@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
                                                      ChargingSession_Id     SessionId,
                                                      ReservationHandling?   ReservationHandling,
                                                      eMobilityProvider_Id?  ProviderId,
-                                                     eMobilityAccount_Id?   eMAId,
+                                                     RemoteAuthentication   RemoteAuthentication,
                                                      TimeSpan?              RequestTimeout);
 
     /// <summary>
@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP
                                                       ChargingSession_Id     SessionId,
                                                       ReservationHandling?   ReservationHandling,
                                                       eMobilityProvider_Id?  ProviderId,
-                                                      eMobilityAccount_Id?   eMAId,
+                                                      RemoteAuthentication   RemoteAuthentication,
                                                       TimeSpan?              RequestTimeout,
                                                       RemoteStopResult       Result,
                                                       TimeSpan               Runtime);
@@ -88,7 +88,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStopResult> OnRemoteStopDelegate(DateTime               Timestamp,
                                                                 CancellationToken      CancellationToken,
@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP
                                                                 ReservationHandling?   ReservationHandling,
                                                                 ChargingSession_Id     SessionId,
                                                                 eMobilityProvider_Id?  ProviderId,
-                                                                eMobilityAccount_Id?   eMAId,
+                                                                RemoteAuthentication   RemoteAuthentication,
                                                                 TimeSpan?              RequestTimeout);
 
 }

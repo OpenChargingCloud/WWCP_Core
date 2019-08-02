@@ -465,13 +465,13 @@ namespace org.GraphDefined.WWCP
         /// The identification used for starting this charging process.
         /// </summary>
         [Optional]
-        public AuthIdentification               IdentificationStart    { get; set; }
+        public AAuthentication                  IdentificationStart    { get; set; }
 
         /// <summary>
         /// The identification used for stopping this charging process.
         /// </summary>
         [Optional]
-        public AuthIdentification               IdentificationStop     { get; set; }
+        public AAuthentication                  IdentificationStop     { get; set; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.

@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnRemoteStartEVSERequestDelegate(DateTime                  LogTimestamp,
                                                           DateTime                  RequestTimestamp,
@@ -53,7 +53,7 @@ namespace org.GraphDefined.WWCP
                                                           ChargingReservation_Id?   ReservationId,
                                                           ChargingSession_Id?       SessionId,
                                                           eMobilityProvider_Id?     ProviderId,
-                                                          eMobilityAccount_Id?      eMAId,
+                                                          RemoteAuthentication      RemoteAuthentication,
                                                           TimeSpan?                 RequestTimeout);
 
 
@@ -69,7 +69,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStartEVSEResult> OnRemoteStartEVSEDelegate(DateTime                  Timestamp,
                                                                           CancellationToken         CancellationToken,
@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP
                                                                           ChargingReservation_Id?   ReservationId,
                                                                           ChargingSession_Id?       SessionId,
                                                                           eMobilityProvider_Id?     ProviderId,
-                                                                          eMobilityAccount_Id?      eMAId,
+                                                                          RemoteAuthentication      RemoteAuthentication,
                                                                           TimeSpan?                 RequestTimeout  = null);
 
 
@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
@@ -110,7 +110,7 @@ namespace org.GraphDefined.WWCP
                                                            ChargingReservation_Id?   ReservationId,
                                                            ChargingSession_Id?       SessionId,
                                                            eMobilityProvider_Id?     ProviderId,
-                                                           eMobilityAccount_Id?      eMAId,
+                                                           RemoteAuthentication      RemoteAuthentication,
                                                            TimeSpan?                 RequestTimeout,
                                                            RemoteStartEVSEResult     Result,
                                                            TimeSpan                  Runtime);

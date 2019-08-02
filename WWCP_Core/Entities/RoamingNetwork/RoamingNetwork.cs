@@ -133,7 +133,7 @@ namespace org.GraphDefined.WWCP
 
         public void Stop(ChargingStationOperator_Id?  OperatorId,
                          EVSE_Id                      EVSEId,
-                         AuthIdentification           authIdentification,
+                         AAuthentication              authIdentification,
                          ChargingSession_Id           SessionId)
         {
 
@@ -387,10 +387,10 @@ namespace org.GraphDefined.WWCP
                                                          ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
                                                          EVSE                 = RoamingNetwork.GetEVSEbyId(EVSE_Id.Parse(elements[3])),
                                                          EVSEId               = EVSE_Id.Parse(elements[3]),
-                                                         IdentificationStart  = elements[5] != "" ? AuthIdentification.FromAuthToken           (Auth_Token.Parse(elements[5]))
-                                                                              : elements[6] != "" ? AuthIdentification.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
+                                                         IdentificationStart  = elements[5] != "" ? (AAuthentication) LocalAuthentication. FromAuthToken           (Auth_Token.Parse(elements[5]))
+                                                                              : elements[6] != "" ? (AAuthentication) RemoteAuthentication.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
                                                                               : null,
-                                                         ChargingProduct      = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
+                                                         ChargingProduct      = elements[4] != "" ? ChargingProduct.Parse(elements[4]) : null
                                                      };
 
                             if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
@@ -4029,7 +4029,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -4042,20 +4042,20 @@ namespace org.GraphDefined.WWCP
         public async Task<ReservationResult>
 
             Reserve(EVSE_Id                           EVSEId,
-                    DateTime?                         StartTime           = null,
-                    TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id?           ReservationId       = null,
-                    eMobilityProvider_Id?             ProviderId          = null,
-                    AuthIdentification                Identification      = null,
-                    ChargingProduct                   ChargingProduct     = null,
-                    IEnumerable<Auth_Token>           AuthTokens          = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                    IEnumerable<UInt32>               PINs                = null,
+                    DateTime?                         StartTime              = null,
+                    TimeSpan?                         Duration               = null,
+                    ChargingReservation_Id?           ReservationId          = null,
+                    eMobilityProvider_Id?             ProviderId             = null,
+                    RemoteAuthentication              RemoteAuthentication   = null,
+                    ChargingProduct                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
+                    IEnumerable<UInt32>               PINs                   = null,
 
-                    DateTime?                         Timestamp           = null,
-                    CancellationToken?                CancellationToken   = null,
-                    EventTracking_Id                  EventTrackingId     = null,
-                    TimeSpan?                         RequestTimeout      = null)
+                    DateTime?                         Timestamp              = null,
+                    CancellationToken?                CancellationToken      = null,
+                    EventTracking_Id                  EventTrackingId        = null,
+                    TimeSpan?                         RequestTimeout         = null)
 
         {
 
@@ -4095,7 +4095,7 @@ namespace org.GraphDefined.WWCP
                                              StartTime,
                                              Duration,
                                              ProviderId,
-                                             Identification,
+                                             RemoteAuthentication,
                                              ChargingProduct,
                                              AuthTokens,
                                              eMAIds,
@@ -4120,7 +4120,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
-                                           Identification,
+                                           RemoteAuthentication,
                                            ChargingProduct,
                                            AuthTokens,
                                            eMAIds,
@@ -4152,7 +4152,7 @@ namespace org.GraphDefined.WWCP
                                                Duration,
                                                ReservationId,
                                                ProviderId,
-                                               Identification,
+                                               RemoteAuthentication,
                                                ChargingProduct,
                                                AuthTokens,
                                                eMAIds,
@@ -4197,7 +4197,7 @@ namespace org.GraphDefined.WWCP
                                               StartTime,
                                               Duration,
                                               ProviderId,
-                                              Identification,
+                                              RemoteAuthentication,
                                               ChargingProduct,
                                               AuthTokens,
                                               eMAIds,
@@ -4230,7 +4230,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -4243,20 +4243,20 @@ namespace org.GraphDefined.WWCP
         public async Task<ReservationResult>
 
             Reserve(ChargingStation_Id                ChargingStationId,
-                    DateTime?                         StartTime           = null,
-                    TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id?           ReservationId       = null,
-                    eMobilityProvider_Id?             ProviderId          = null,
-                    AuthIdentification                Identification      = null,
-                    ChargingProduct                   ChargingProduct     = null,
-                    IEnumerable<Auth_Token>           AuthTokens          = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                    IEnumerable<UInt32>               PINs                = null,
+                    DateTime?                         StartTime              = null,
+                    TimeSpan?                         Duration               = null,
+                    ChargingReservation_Id?           ReservationId          = null,
+                    eMobilityProvider_Id?             ProviderId             = null,
+                    RemoteAuthentication              RemoteAuthentication   = null,
+                    ChargingProduct                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
+                    IEnumerable<UInt32>               PINs                   = null,
 
-                    DateTime?                         Timestamp           = null,
-                    CancellationToken?                CancellationToken   = null,
-                    EventTracking_Id                  EventTrackingId     = null,
-                    TimeSpan?                         RequestTimeout      = null)
+                    DateTime?                         Timestamp              = null,
+                    CancellationToken?                CancellationToken      = null,
+                    EventTracking_Id                  EventTrackingId        = null,
+                    TimeSpan?                         RequestTimeout         = null)
 
         {
 
@@ -4296,7 +4296,7 @@ namespace org.GraphDefined.WWCP
                                                         Duration,
                                                         ReservationId,
                                                         ProviderId,
-                                                        Identification,
+                                                        RemoteAuthentication,
                                                         ChargingProduct,
                                                         AuthTokens,
                                                         eMAIds,
@@ -4321,7 +4321,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
-                                           Identification,
+                                           RemoteAuthentication,
                                            ChargingProduct,
                                            AuthTokens,
                                            eMAIds,
@@ -4358,7 +4358,7 @@ namespace org.GraphDefined.WWCP
                                                          Duration,
                                                          ReservationId,
                                                          ProviderId,
-                                                         Identification,
+                                                         RemoteAuthentication,
                                                          ChargingProduct,
                                                          AuthTokens,
                                                          eMAIds,
@@ -4817,7 +4817,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStart(EVSEId,            ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
+        #region RemoteStart(EVSEId,            ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session at the given EVSE.
@@ -4827,7 +4827,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -4840,7 +4840,7 @@ namespace org.GraphDefined.WWCP
                         ChargingReservation_Id?   ReservationId              = null,
                         ChargingSession_Id?       SessionId                  = null,
                         eMobilityProvider_Id?     ProviderId                 = null,
-                        eMobilityAccount_Id?      eMAId                      = null,
+                        RemoteAuthentication      RemoteAuthentication       = null,
                         ISendChargeDetailRecords  ISendChargeDetailRecords   = null,
 
                         DateTime?                 Timestamp                  = null,
@@ -4883,7 +4883,7 @@ namespace org.GraphDefined.WWCP
                                                  ReservationId,
                                                  SessionId,
                                                  ProviderId,
-                                                 eMAId,
+                                                 RemoteAuthentication,
                                                  RequestTimeout);
 
             }
@@ -4906,7 +4906,7 @@ namespace org.GraphDefined.WWCP
                                                ReservationId,
                                                SessionId,
                                                ProviderId,
-                                               eMAId,
+                                               RemoteAuthentication,
 
                                                Timestamp,
                                                CancellationToken,
@@ -4940,7 +4940,7 @@ namespace org.GraphDefined.WWCP
                                                    ReservationId,
                                                    SessionId,
                                                    ProviderId,
-                                                   eMAId,
+                                                   RemoteAuthentication,
 
                                                    Timestamp,
                                                    CancellationToken,
@@ -4983,7 +4983,7 @@ namespace org.GraphDefined.WWCP
                                                   ReservationId,
                                                   SessionId,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
                                                   RequestTimeout,
                                                   result,
                                                   EndTime - StartTime);
@@ -5002,7 +5002,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStart(ChargingStationId, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
+        #region RemoteStart(ChargingStationId, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session at the given charging station.
@@ -5012,7 +5012,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -5021,16 +5021,16 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStartChargingStationResult>
 
             RemoteStart(ChargingStation_Id       ChargingStationId,
-                        ChargingProduct          ChargingProduct     = null,
-                        ChargingReservation_Id?  ReservationId       = null,
-                        ChargingSession_Id?      SessionId           = null,
-                        eMobilityProvider_Id?    ProviderId          = null,
-                        eMobilityAccount_Id?     eMAId               = null,
+                        ChargingProduct          ChargingProduct        = null,
+                        ChargingReservation_Id?  ReservationId          = null,
+                        ChargingSession_Id?      SessionId              = null,
+                        eMobilityProvider_Id?    ProviderId             = null,
+                        RemoteAuthentication     RemoteAuthentication   = null,
 
-                        DateTime?                Timestamp           = null,
-                        CancellationToken?       CancellationToken   = null,
-                        EventTracking_Id         EventTrackingId     = null,
-                        TimeSpan?                RequestTimeout      = null)
+                        DateTime?                Timestamp              = null,
+                        CancellationToken?       CancellationToken      = null,
+                        EventTracking_Id         EventTrackingId        = null,
+                        TimeSpan?                RequestTimeout         = null)
 
         {
 
@@ -5067,7 +5067,7 @@ namespace org.GraphDefined.WWCP
                                                             ReservationId,
                                                             SessionId,
                                                             ProviderId,
-                                                            eMAId,
+                                                            RemoteAuthentication,
                                                             RequestTimeout);
 
             }
@@ -5090,7 +5090,7 @@ namespace org.GraphDefined.WWCP
                                                ReservationId,
                                                SessionId,
                                                ProviderId,
-                                               eMAId,
+                                               RemoteAuthentication,
 
                                                Timestamp,
                                                CancellationToken,
@@ -5123,7 +5123,7 @@ namespace org.GraphDefined.WWCP
                                                    ReservationId,
                                                    SessionId,
                                                    ProviderId,
-                                                   eMAId,
+                                                   RemoteAuthentication,
 
                                                    Timestamp,
                                                    CancellationToken,
@@ -5165,7 +5165,7 @@ namespace org.GraphDefined.WWCP
                                                              ReservationId,
                                                              SessionId,
                                                              ProviderId,
-                                                             eMAId,
+                                                             RemoteAuthentication,
                                                              RequestTimeout,
                                                              result,
                                                              EndTime - StartTime);
@@ -5219,7 +5219,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(                   SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop(                   SessionId, ReservationHandling, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Stop the given charging session.
@@ -5227,7 +5227,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -5237,13 +5237,13 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+                       eMobilityProvider_Id?  ProviderId             = null,
+                       RemoteAuthentication   RemoteAuthentication   = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+                       DateTime?              Timestamp              = null,
+                       CancellationToken?     CancellationToken      = null,
+                       EventTracking_Id       EventTrackingId        = null,
+                       TimeSpan?              RequestTimeout         = null)
 
         {
 
@@ -5278,7 +5278,7 @@ namespace org.GraphDefined.WWCP
                                             SessionId,
                                             ReservationHandling,
                                             ProviderId,
-                                            eMAId,
+                                            RemoteAuthentication,
                                             RequestTimeout);
 
             }
@@ -5300,7 +5300,7 @@ namespace org.GraphDefined.WWCP
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5312,7 +5312,7 @@ namespace org.GraphDefined.WWCP
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5367,7 +5367,7 @@ namespace org.GraphDefined.WWCP
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5396,7 +5396,7 @@ namespace org.GraphDefined.WWCP
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5432,7 +5432,7 @@ namespace org.GraphDefined.WWCP
                                              SessionId,
                                              ReservationHandling,
                                              ProviderId,
-                                             eMAId,
+                                             RemoteAuthentication,
                                              RequestTimeout,
                                              result,
                                              EndTime - StartTime);
@@ -5451,7 +5451,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(EVSEId,            SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop(EVSEId,            SessionId, ReservationHandling, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Stop the given charging session at the given EVSE.
@@ -5460,7 +5460,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -5471,13 +5471,13 @@ namespace org.GraphDefined.WWCP
             RemoteStop(EVSE_Id                EVSEId,
                        ChargingSession_Id     SessionId,
                        ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+                       eMobilityProvider_Id?  ProviderId             = null,
+                       RemoteAuthentication   RemoteAuthentication   = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+                       DateTime?              Timestamp              = null,
+                       CancellationToken?     CancellationToken      = null,
+                       EventTracking_Id       EventTrackingId        = null,
+                       TimeSpan?              RequestTimeout         = null)
 
         {
 
@@ -5513,7 +5513,7 @@ namespace org.GraphDefined.WWCP
                                                 SessionId,
                                                 ReservationHandling,
                                                 ProviderId,
-                                                eMAId,
+                                                RemoteAuthentication,
                                                 RequestTimeout);
 
             }
@@ -5536,7 +5536,7 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5549,7 +5549,7 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5575,7 +5575,7 @@ namespace org.GraphDefined.WWCP
                                                    SessionId,
                                                    ReservationHandling,
                                                    ProviderId,
-                                                   eMAId,
+                                                   RemoteAuthentication,
 
                                                    Timestamp,
                                                    CancellationToken,
@@ -5604,7 +5604,7 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5627,7 +5627,7 @@ namespace org.GraphDefined.WWCP
 
             _ChargingSessionStore.Stop(null,
                                        EVSEId,
-                                       AuthIdentification.FromRemoteIdentification(eMAId),
+                                       RemoteAuthentication,
                                        SessionId);
 
 
@@ -5647,7 +5647,7 @@ namespace org.GraphDefined.WWCP
                                                  SessionId,
                                                  ReservationHandling,
                                                  ProviderId,
-                                                 eMAId,
+                                                 RemoteAuthentication,
                                                  RequestTimeout,
                                                  result,
                                                  EndTime - StartTime);
@@ -5666,7 +5666,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(ChargingStationId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop(ChargingStationId, SessionId, ReservationHandling, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Stop the given charging session at the given charging station.
@@ -5675,7 +5675,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -5686,13 +5686,13 @@ namespace org.GraphDefined.WWCP
             RemoteStop(ChargingStation_Id     ChargingStationId,
                        ChargingSession_Id     SessionId,
                        ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+                       eMobilityProvider_Id?  ProviderId             = null,
+                       RemoteAuthentication   RemoteAuthentication   = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+                       DateTime?              Timestamp              = null,
+                       CancellationToken?     CancellationToken      = null,
+                       EventTracking_Id       EventTrackingId        = null,
+                       TimeSpan?              RequestTimeout         = null)
 
         {
 
@@ -5728,7 +5728,7 @@ namespace org.GraphDefined.WWCP
                                                            SessionId,
                                                            ReservationHandling,
                                                            ProviderId,
-                                                           eMAId,
+                                                           RemoteAuthentication,
                                                            RequestTimeout);
 
             }
@@ -5751,7 +5751,7 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5764,7 +5764,7 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5818,7 +5818,7 @@ namespace org.GraphDefined.WWCP
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
-                                              eMAId,
+                                              RemoteAuthentication,
 
                                               Timestamp,
                                               CancellationToken,
@@ -5847,7 +5847,7 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
-                                                  eMAId,
+                                                  RemoteAuthentication,
 
                                                   Timestamp,
                                                   CancellationToken,
@@ -5884,7 +5884,7 @@ namespace org.GraphDefined.WWCP
                                                             SessionId,
                                                             ReservationHandling,
                                                             ProviderId,
-                                                            eMAId,
+                                                            RemoteAuthentication,
                                                             RequestTimeout,
                                                             result,
                                                             EndTime - StartTime);
@@ -5907,12 +5907,12 @@ namespace org.GraphDefined.WWCP
 
         #region AuthorizeStart/-Stop
 
-        #region AuthorizeStart(AuthIdentification,                    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(LocalAuthentication,                    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
@@ -5923,7 +5923,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartResult>
 
-            AuthorizeStart(AuthIdentification           AuthIdentification,
+            AuthorizeStart(LocalAuthentication          LocalAuthentication,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
@@ -5940,8 +5940,8 @@ namespace org.GraphDefined.WWCP
             if (OperatorId == null)
                 throw new ArgumentNullException(nameof(OperatorId),  "The given charging station operator must not be null!");
 
-            if (AuthIdentification  == null)
-                throw new ArgumentNullException(nameof(AuthIdentification),   "The given authentication token must not be null!");
+            if (LocalAuthentication  == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication),   "The given authentication token must not be null!");
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
@@ -5968,7 +5968,7 @@ namespace org.GraphDefined.WWCP
                                                 EventTrackingId,
                                                 Id,
                                                 OperatorId,
-                                                AuthIdentification,
+                                                LocalAuthentication,
                                                 ChargingProduct,
                                                 SessionId,
                                                 RequestTimeout);
@@ -5984,7 +5984,7 @@ namespace org.GraphDefined.WWCP
 
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                              AuthorizeStart(AuthIdentification,
+                                                                              AuthorizeStart(LocalAuthentication,
                                                                                              ChargingProduct,
                                                                                              SessionId,
                                                                                              OperatorId,
@@ -6022,7 +6022,7 @@ namespace org.GraphDefined.WWCP
                                                  ProviderIdStart            = result.ProviderId,
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
-                                                 IdentificationStart        = AuthIdentification,
+                                                 IdentificationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
@@ -6052,7 +6052,7 @@ namespace org.GraphDefined.WWCP
                                                  EventTrackingId,
                                                  Id,
                                                  OperatorId,
-                                                 AuthIdentification,
+                                                 LocalAuthentication,
                                                  ChargingProduct,
                                                  SessionId,
                                                  RequestTimeout,
@@ -6073,12 +6073,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthIdentification, EVSEId,            ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(LocalAuthentication, EVSEId,            ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given EVSE.
         /// </summary>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
@@ -6090,7 +6090,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartEVSEResult>
 
-            AuthorizeStart(AuthIdentification           AuthIdentification,
+            AuthorizeStart(LocalAuthentication          LocalAuthentication,
                            EVSE_Id                      EVSEId,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
@@ -6105,8 +6105,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthIdentification  == null)
-                throw new ArgumentNullException(nameof(AuthIdentification),   "The given authentication token must not be null!");
+            if (LocalAuthentication  == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication),   "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -6134,7 +6134,7 @@ namespace org.GraphDefined.WWCP
                                                     EventTrackingId,
                                                     Id,
                                                     OperatorId,
-                                                    AuthIdentification,
+                                                    LocalAuthentication,
                                                     EVSEId,
                                                     ChargingProduct,
                                                     SessionId,
@@ -6150,12 +6150,12 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            DebugX.LogT("RN AuthStart Request: " + AuthIdentification);
+            DebugX.LogT("RN AuthStart Request: " + LocalAuthentication);
             DebugX.LogT(_ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", "));
 
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                              AuthorizeStart(AuthIdentification,
+                                                                              AuthorizeStart(LocalAuthentication,
                                                                                              EVSEId,
                                                                                              ChargingProduct,
                                                                                              SessionId,
@@ -6181,7 +6181,7 @@ namespace org.GraphDefined.WWCP
             DebugX.LogT("RN AuthStart Response: " + result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ??
                                                     result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ??
                                                     ""  +
-                                                    ": " + AuthIdentification + " => " + result);
+                                                    ": " + LocalAuthentication + " => " + result);
 
             #region If Authorized...
 
@@ -6200,7 +6200,7 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  EVSEId                     = EVSEId,
-                                                 IdentificationStart        = AuthIdentification,
+                                                 IdentificationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct,
                                                  //ISendChargeDetailRecords   = result.ISendChargeDetailRecords
                                              };
@@ -6231,7 +6231,7 @@ namespace org.GraphDefined.WWCP
                                                      EventTrackingId,
                                                      Id,
                                                      OperatorId,
-                                                     AuthIdentification,
+                                                     LocalAuthentication,
                                                      EVSEId,
                                                      ChargingProduct,
                                                      SessionId,
@@ -6254,12 +6254,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthIdentification, ChargingStationId, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(LocalAuthentication, ChargingStationId, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
@@ -6271,7 +6271,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartChargingStationResult>
 
-            AuthorizeStart(AuthIdentification           AuthIdentification,
+            AuthorizeStart(LocalAuthentication          LocalAuthentication,
                            ChargingStation_Id           ChargingStationId,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
@@ -6286,8 +6286,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthIdentification == null)
-                throw new ArgumentNullException(nameof(AuthIdentification), "The given authentication token must not be null!");
+            if (LocalAuthentication == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -6315,7 +6315,7 @@ namespace org.GraphDefined.WWCP
                                                                EventTrackingId,
                                                                Id,
                                                                OperatorId,
-                                                               AuthIdentification,
+                                                               LocalAuthentication,
                                                                ChargingStationId,
                                                                ChargingProduct,
                                                                SessionId,
@@ -6332,7 +6332,7 @@ namespace org.GraphDefined.WWCP
 
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                              AuthorizeStart(AuthIdentification,
+                                                                              AuthorizeStart(LocalAuthentication,
                                                                                              ChargingStationId,
                                                                                              ChargingProduct,
                                                                                              SessionId,
@@ -6374,7 +6374,7 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  ChargingStationId          = ChargingStationId,
-                                                 IdentificationStart        = AuthIdentification,
+                                                 IdentificationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
@@ -6401,7 +6401,7 @@ namespace org.GraphDefined.WWCP
                                                                 EventTrackingId,
                                                                 Id,
                                                                 OperatorId,
-                                                                AuthIdentification,
+                                                                LocalAuthentication,
                                                                 ChargingStationId,
                                                                 ChargingProduct,
                                                                 SessionId,
@@ -6423,12 +6423,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthIdentification, ChargingPoolId,    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(LocalAuthentication, ChargingPoolId,    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
@@ -6440,7 +6440,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartChargingPoolResult>
 
-            AuthorizeStart(AuthIdentification           AuthIdentification,
+            AuthorizeStart(LocalAuthentication          LocalAuthentication,
                            ChargingPool_Id              ChargingPoolId,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
@@ -6455,8 +6455,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthIdentification == null)
-                throw new ArgumentNullException(nameof(AuthIdentification), "The given authentication token must not be null!");
+            if (LocalAuthentication == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -6487,7 +6487,7 @@ namespace org.GraphDefined.WWCP
                                                             EventTrackingId,
                                                             Id,
                                                             OperatorId,
-                                                            AuthIdentification,
+                                                            LocalAuthentication,
                                                             ChargingPoolId,
                                                             ChargingProduct,
                                                             SessionId,
@@ -6504,7 +6504,7 @@ namespace org.GraphDefined.WWCP
 
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                              AuthorizeStart(AuthIdentification,
+                                                                              AuthorizeStart(LocalAuthentication,
                                                                                              ChargingPoolId,
                                                                                              ChargingProduct,
                                                                                              SessionId,
@@ -6546,7 +6546,7 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  ChargingPoolId             = ChargingPoolId,
-                                                 IdentificationStart        = AuthIdentification,
+                                                 IdentificationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
@@ -6573,7 +6573,7 @@ namespace org.GraphDefined.WWCP
                                                              EventTrackingId,
                                                              Id,
                                                              OperatorId,
-                                                             AuthIdentification,
+                                                             LocalAuthentication,
                                                              ChargingPoolId,
                                                              ChargingProduct,
                                                              SessionId,
@@ -6658,13 +6658,13 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region AuthorizeStop(SessionId, AuthIdentification,                    OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, LocalAuthentication,                    OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -6674,7 +6674,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          AuthIdentification           AuthIdentification,
+                          LocalAuthentication          LocalAuthentication,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
                           DateTime?                    Timestamp           = null,
@@ -6686,8 +6686,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthIdentification == null)
-                throw new ArgumentNullException(nameof(AuthIdentification), "The given parameter must not be null!");
+            if (LocalAuthentication == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication), "The given parameter must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -6719,7 +6719,7 @@ namespace org.GraphDefined.WWCP
                                                Id,
                                                OperatorId,
                                                SessionId,
-                                               AuthIdentification,
+                                               LocalAuthentication,
                                                RequestTimeout);
 
             }
@@ -6757,7 +6757,7 @@ namespace org.GraphDefined.WWCP
                 result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
                                                                               AuthorizeStop(SessionId,
-                                                                                            AuthIdentification,
+                                                                                            LocalAuthentication,
                                                                                             OperatorId,
 
                                                                                             Timestamp,
@@ -6796,7 +6796,7 @@ namespace org.GraphDefined.WWCP
                                                 Id,
                                                 OperatorId,
                                                 SessionId,
-                                                AuthIdentification,
+                                                LocalAuthentication,
                                                 RequestTimeout,
                                                 result,
                                                 Endtime - StartTime);
@@ -6815,13 +6815,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(SessionId, AuthIdentification, EVSEId,            OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, LocalAuthentication, EVSEId,            OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -6832,7 +6832,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopEVSEResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          AuthIdentification           AuthIdentification,
+                          LocalAuthentication          LocalAuthentication,
                           EVSE_Id                      EVSEId,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -6845,8 +6845,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthIdentification == null)
-                throw new ArgumentNullException(nameof(AuthIdentification), "The given parameter must not be null!");
+            if (LocalAuthentication == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication), "The given parameter must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -6879,7 +6879,7 @@ namespace org.GraphDefined.WWCP
                                                    OperatorId,
                                                    EVSEId,
                                                    SessionId,
-                                                   AuthIdentification,
+                                                   LocalAuthentication,
                                                    RequestTimeout);
 
             }
@@ -6898,7 +6898,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 result = await _ChargingSession.AuthService.AuthorizeStop(SessionId,
-                                                                          AuthIdentification,
+                                                                          LocalAuthentication,
                                                                           EVSEId,
                                                                           OperatorId,
 
@@ -6915,7 +6915,7 @@ namespace org.GraphDefined.WWCP
                 result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
                                                                               AuthorizeStop(SessionId,
-                                                                                            AuthIdentification,
+                                                                                            LocalAuthentication,
                                                                                             EVSEId,
                                                                                             OperatorId,
 
@@ -6941,7 +6941,7 @@ namespace org.GraphDefined.WWCP
             if (result.Result == AuthStopEVSEResultType.Authorized)
                 _ChargingSessionStore.Stop(OperatorId,
                                            EVSEId,
-                                           AuthIdentification,
+                                           LocalAuthentication,
                                            SessionId);
 
 
@@ -6961,7 +6961,7 @@ namespace org.GraphDefined.WWCP
                                                     OperatorId,
                                                     EVSEId,
                                                     SessionId,
-                                                    AuthIdentification,
+                                                    LocalAuthentication,
                                                     RequestTimeout,
                                                     result,
                                                     Endtime - StartTime);
@@ -6980,13 +6980,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(SessionId, AuthIdentification, ChargingStationId, OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, LocalAuthentication, ChargingStationId, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given charging station.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -6997,7 +6997,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopChargingStationResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          AuthIdentification           AuthIdentification,
+                          LocalAuthentication          LocalAuthentication,
                           ChargingStation_Id           ChargingStationId,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -7010,8 +7010,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthIdentification == null)
-                throw new ArgumentNullException(nameof(AuthIdentification),  "The given parameter must not be null!");
+            if (LocalAuthentication == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication),  "The given parameter must not be null!");
 
             if (ChargingStationId  == null)
                 throw new ArgumentNullException(nameof(ChargingStationId),   "The given parameter must not be null!");
@@ -7047,7 +7047,7 @@ namespace org.GraphDefined.WWCP
                                                               OperatorId,
                                                               ChargingStationId,
                                                               SessionId,
-                                                              AuthIdentification,
+                                                              LocalAuthentication,
                                                               RequestTimeout);
 
             }
@@ -7096,7 +7096,7 @@ namespace org.GraphDefined.WWCP
                 result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
                                                                               AuthorizeStop(SessionId,
-                                                                                            AuthIdentification,
+                                                                                            LocalAuthentication,
                                                                                             ChargingStationId,
                                                                                             OperatorId,
 
@@ -7160,7 +7160,7 @@ namespace org.GraphDefined.WWCP
                                                                OperatorId,
                                                                ChargingStationId,
                                                                SessionId,
-                                                               AuthIdentification,
+                                                               LocalAuthentication,
                                                                RequestTimeout,
                                                                result,
                                                                Runtime);
@@ -7179,13 +7179,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(SessionId, AuthIdentification, ChargingPoolId,    OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, LocalAuthentication, ChargingPoolId,    OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given charging station.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthIdentification">An user identification.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -7196,7 +7196,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopChargingPoolResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          AuthIdentification           AuthIdentification,
+                          LocalAuthentication          LocalAuthentication,
                           ChargingPool_Id              ChargingPoolId,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -7209,8 +7209,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthIdentification == null)
-                throw new ArgumentNullException(nameof(AuthIdentification),  "The given parameter must not be null!");
+            if (LocalAuthentication == null)
+                throw new ArgumentNullException(nameof(LocalAuthentication),  "The given parameter must not be null!");
 
             if (ChargingPoolId     == null)
                 throw new ArgumentNullException(nameof(ChargingPoolId),      "The given parameter must not be null!");
@@ -7246,7 +7246,7 @@ namespace org.GraphDefined.WWCP
                                                            OperatorId,
                                                            ChargingPoolId,
                                                            SessionId,
-                                                           AuthIdentification,
+                                                           LocalAuthentication,
                                                            RequestTimeout);
 
             }
@@ -7295,7 +7295,7 @@ namespace org.GraphDefined.WWCP
                 result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
                                                                               AuthorizeStop(SessionId,
-                                                                                            AuthIdentification,
+                                                                                            LocalAuthentication,
                                                                                             ChargingPoolId,
                                                                                             OperatorId,
 
@@ -7358,7 +7358,7 @@ namespace org.GraphDefined.WWCP
                                                             OperatorId,
                                                             ChargingPoolId,
                                                             SessionId,
-                                                            AuthIdentification,
+                                                            LocalAuthentication,
                                                             RequestTimeout,
                                                             result,
                                                             Endtime - StartTime);
@@ -7882,7 +7882,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -7909,7 +7909,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -7936,7 +7936,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -7963,7 +7963,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -7990,7 +7990,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -8017,7 +8017,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -8044,7 +8044,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -8071,7 +8071,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -8098,7 +8098,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -8125,7 +8125,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)

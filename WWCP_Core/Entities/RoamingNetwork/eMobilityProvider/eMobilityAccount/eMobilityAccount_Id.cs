@@ -44,6 +44,7 @@ namespace org.GraphDefined.WWCP
                                                                            @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{6})-([0-9|X])$ |"     +   // OICP DIN HYPEN: DE-BMW-0010LY-3
                                                                            @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{6})([0-9|X])$ |"        +   // OICP DIN:       DEBMW0010LY3
 
+                                                                           @"^([A-Za-z]{2}\*[A-Za-z0-9]{3})\*C([A-Za-z0-9]{9})$ |"            +   //                 FR*MSP*C0001000LY
                                                                            @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-C([A-Za-z0-9]{8})-([0-9|X])$ |"    +   // OICP ISO Hypen: DE-BMW-C001000LY-3
                                                                            @"^([A-Za-z]{2}[A-Za-z0-9]{3})C([A-Za-z0-9]{8})([0-9|X])$ |"       +   // OICP ISO:       DEBMWC001000LY3
 
@@ -156,17 +157,24 @@ namespace org.GraphDefined.WWCP
                                                _MatchCollection[0].Groups[9].Value[0]);
 
 
-            // OICP ISO Hypen: DE-BMW-C001000LY-3
+
+
+            //                 FR*MSP*C0001000LY
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
                 return new eMobilityAccount_Id(_ProviderId,
-                                               _MatchCollection[0].Groups[11].Value,
-                                               _MatchCollection[0].Groups[12].Value[0]);
+                                               _MatchCollection[0].Groups[11].Value);
+
+            // OICP ISO Hypen: DE-BMW-C001000LY-3
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[12].Value, out _ProviderId))
+                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
+                                               _MatchCollection[0].Groups[13].Value,
+                                               _MatchCollection[0].Groups[14].Value[0]);
 
             // OICP ISO:       DEBMWC001000LY3
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[13].Value, out _ProviderId))
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[15].Value, out _ProviderId))
                 return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
-                                               _MatchCollection[0].Groups[14].Value,
-                                               _MatchCollection[0].Groups[15].Value[0]);
+                                               _MatchCollection[0].Groups[16].Value,
+                                               _MatchCollection[0].Groups[17].Value[0]);
 
 
             // OCHP
@@ -229,9 +237,7 @@ namespace org.GraphDefined.WWCP
         public static eMobilityAccount_Id? TryParse(String Text)
         {
 
-            eMobilityAccount_Id eMAId;
-
-            if (TryParse(Text, out eMAId))
+            if (TryParse(Text, out eMobilityAccount_Id eMAId))
                 return eMAId;
 
             return new eMobilityAccount_Id?();
@@ -318,14 +324,28 @@ namespace org.GraphDefined.WWCP
                 #endregion
 
 
-                #region OICP ISO Hypen: DE-BMW-C001000LY-3
+                #region                 FR*MSP*C0001000LY
 
                 if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
                 {
 
                     eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
-                                                                 _MatchCollection[0].Groups[11].Value,
-                                                                 _MatchCollection[0].Groups[12].Value[0]);
+                                                                 _MatchCollection[0].Groups[11].Value);
+
+                    return true;
+
+                }
+
+                #endregion
+
+                #region OICP ISO Hypen: DE-BMW-C001000LY-3
+
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[12].Value, out _ProviderId))
+                {
+
+                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
+                                                                 _MatchCollection[0].Groups[13].Value,
+                                                                 _MatchCollection[0].Groups[14].Value[0]);
 
                     return true;
 
@@ -335,12 +355,12 @@ namespace org.GraphDefined.WWCP
 
                 #region OICP ISO:       DEBMWC001000LY3
 
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[13].Value, out _ProviderId))
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[15].Value, out _ProviderId))
                 {
 
                     eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
-                                                                 _MatchCollection[0].Groups[14].Value,
-                                                                 _MatchCollection[0].Groups[15].Value[0]);
+                                                                 _MatchCollection[0].Groups[16].Value,
+                                                                 _MatchCollection[0].Groups[17].Value[0]);
 
                     return true;
 
@@ -376,9 +396,7 @@ namespace org.GraphDefined.WWCP
         public static Boolean TryParse(String Text, out eMobilityAccount_Id? eMobilityAccountId)
         {
 
-            eMobilityAccount_Id eMAId;
-
-            if (TryParse(Text, out eMAId))
+            if (TryParse(Text, out eMobilityAccount_Id eMAId))
             {
                 eMobilityAccountId = eMAId;
                 return true;

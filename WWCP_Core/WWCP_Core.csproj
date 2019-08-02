@@ -288,7 +288,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\ARoamingProvider.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSO\AWWCPCSOAdapter.cs" />
-    <Compile Include="CommonTypes\AuthIdentification.cs" />
+    <Compile Include="CommonTypes\AAuthentication.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecord.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolAdminStatusReport.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolStatusReport.cs" />
@@ -389,6 +389,10 @@
     <Compile Include="JSON_IO\SimpleTypes.cs" />
     <Compile Include="JSON_IO\SmartCities.cs" />
     <Compile Include="JSON_IO\SocketOutlets.cs" />
+    <Compile Include="Entities\NetworkEntities\ExtentionMethods.cs" />
+    <Compile Include="Entities\NetworkEntities\NetworkChargingStationStub.cs" />
+    <Compile Include="Entities\NetworkEntities\NetworkEVSEStub.cs" />
+    <Compile Include="Entities\NetworkEntities\RemoteEVSEOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\EMP\AEMPRoamingProvider.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSO\CSORoamingProvider_Id.cs" />
@@ -397,8 +401,14 @@
     <Compile Include="Commands\AuthorizeStartStop\AuthStopEVSEResult.cs" />
     <Compile Include="Commands\SendCDRs\SendCDRsResult.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="Entities\ProxyEntities\ExtentionMethods.cs" />
+    <Compile Include="Entities\ProxyEntities\ProxyChargingStation.cs" />
     <Compile Include="Semantics.cs" />
     <Compile Include="Version.cs" />
+    <Compile Include="Entities\VirtualEntities\ExtentionMethods.cs" />
+    <Compile Include="Entities\VirtualEntities\VirtualChargingPool.cs" />
+    <Compile Include="Entities\VirtualEntities\VirtualChargingStation.cs" />
+    <Compile Include="Entities\VirtualEntities\VirtualEVSE.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="JSON_IO\README.md" />
