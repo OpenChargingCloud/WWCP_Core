@@ -386,30 +386,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text, out eMobilityAccountId)
-
-        /// <summary>
-        /// Parse the given string as an electric mobility account identification.
-        /// </summary>
-        /// <param name="Text">A text representation of an electric mobility account identification.</param>
-        /// <param name="eMobilityAccountId">The parsed electric mobility account identification.</param>
-        public static Boolean TryParse(String Text, out eMobilityAccount_Id? eMobilityAccountId)
-        {
-
-            if (TryParse(Text, out eMobilityAccount_Id eMAId))
-            {
-                eMobilityAccountId = eMAId;
-                return true;
-            }
-
-            eMobilityAccountId = new eMobilityAccount_Id?();
-
-            return false;
-
-        }
-
-        #endregion
-
         #region Clone
 
         /// <summary>

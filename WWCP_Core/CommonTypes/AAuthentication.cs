@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An authentication token, e.g. the identification of a RFID card.
         /// </summary>
-        public Auth_Token            AuthToken                      { get; }
+        public Auth_Token?           AuthToken                      { get; }
 
         /// <summary>
         /// A e-mobility account identification and its password/PIN.
@@ -60,6 +60,11 @@ namespace org.GraphDefined.WWCP
         public eMobilityAccount_Id?  RemoteIdentification           { get; }
 
         /// <summary>
+        /// A PIN.
+        /// </summary>
+        public UInt32?               PIN                            { get; }
+
+        /// <summary>
         /// A PGP/GPG public key.
         /// </summary>
         public PgpPublicKey          PublicKey                      { get; }
@@ -73,18 +78,20 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        protected AAuthentication(Auth_Token            AuthToken                     = null,
-                                     eMAIdWithPIN2         QRCodeIdentification          = null,
-                                     eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
-                                     eMobilityAccount_Id?  RemoteIdentification          = null,
-                                     PgpPublicKey          PublicKey                     = null,
-                                     I18NString            Description                   = null)
+        protected AAuthentication(Auth_Token?           AuthToken                     = null,
+                                  eMAIdWithPIN2         QRCodeIdentification          = null,
+                                  eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
+                                  eMobilityAccount_Id?  RemoteIdentification          = null,
+                                  UInt32?               PIN                           = null,
+                                  PgpPublicKey          PublicKey                     = null,
+                                  I18NString            Description                   = null)
         {
 
             this.AuthToken                    = AuthToken;
             this.QRCodeIdentification         = QRCodeIdentification;
             this.PlugAndChargeIdentification  = PlugAndChargeIdentification;
             this.RemoteIdentification         = RemoteIdentification;
+            this.PIN                          = PIN;
             this.PublicKey                    = PublicKey;
             this.Description                  = Description;
 
@@ -97,7 +104,7 @@ namespace org.GraphDefined.WWCP
 
             => JSONObject.Create(
 
-                   AuthToken                    != null
+                   AuthToken.HasValue
                        ? new JProperty("authToken",                     AuthToken.                      ToString())
                        : null,
 
@@ -105,12 +112,16 @@ namespace org.GraphDefined.WWCP
                        ? new JProperty("QRCodeIdentification",          QRCodeIdentification.           ToString())
                        : null,
 
-                   PlugAndChargeIdentification  != null
+                   PlugAndChargeIdentification.HasValue
                        ? new JProperty("plugAndChargeIdentification",   PlugAndChargeIdentification.    ToString())
                        : null,
 
-                   RemoteIdentification         != null
+                   RemoteIdentification.HasValue
                        ? new JProperty("remoteIdentification",          RemoteIdentification.           ToString())
+                       : null,
+
+                   PIN.HasValue
+                       ? new JProperty("PIN",                           PIN.                            ToString())
                        : null,
 
                    PublicKey                    != null
@@ -269,8 +280,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) AAuthentication == null)
                 throw new ArgumentNullException(nameof(AAuthentication),  "The given abstract authentication must not be null!");
 
-            if (AuthToken != null && AAuthentication.AuthToken != null)
-                return AuthToken.CompareTo(AAuthentication.AuthToken);
+            if (AuthToken.HasValue && AAuthentication.AuthToken.HasValue)
+                return AuthToken.Value.CompareTo(AAuthentication.AuthToken.Value);
 
             if (QRCodeIdentification != null && AAuthentication.QRCodeIdentification != null)
                 return QRCodeIdentification.CompareTo(AAuthentication.QRCodeIdentification);
@@ -280,6 +291,9 @@ namespace org.GraphDefined.WWCP
 
             if (RemoteIdentification.HasValue && AAuthentication.RemoteIdentification.HasValue)
                 return RemoteIdentification.Value.CompareTo(AAuthentication.RemoteIdentification.Value);
+
+            if (PIN.HasValue && AAuthentication.PIN.HasValue)
+                return PIN.Value.CompareTo(AAuthentication.PIN.Value);
 
             if (PublicKey != null && AAuthentication.PublicKey != null)
                 return PublicKey.Fingerprint.ToHexString().CompareTo(AAuthentication.PublicKey.Fingerprint.ToHexString());
@@ -341,6 +355,9 @@ namespace org.GraphDefined.WWCP
             if (RemoteIdentification.HasValue && AAuthentication.RemoteIdentification.HasValue)
                 return RemoteIdentification.Value.Equals(AAuthentication.RemoteIdentification.Value);
 
+            if (PIN.HasValue && AAuthentication.PIN.HasValue)
+                return PIN.Value.Equals(AAuthentication.PIN.Value);
+
             if (PublicKey != null && AAuthentication.PublicKey != null)
                 return PublicKey.Fingerprint.ToHexString().Equals(AAuthentication.PublicKey.Fingerprint.ToHexString());
 
@@ -376,7 +393,7 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            if (AuthToken            != null)
+            if (AuthToken.HasValue)
                 return AuthToken.                        ToString();
 
             if (QRCodeIdentification != null)
@@ -387,6 +404,9 @@ namespace org.GraphDefined.WWCP
 
             if (RemoteIdentification.HasValue)
                 return RemoteIdentification.       Value.ToString();
+
+            if (PIN.HasValue)
+                return PIN.                        Value.ToString();
 
             if (PublicKey            != null)
                 return PublicKey.Fingerprint.            ToHexString();
@@ -406,10 +426,11 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        protected internal LocalAuthentication(Auth_Token            AuthToken                     = null,
+        protected internal LocalAuthentication(Auth_Token?           AuthToken                     = null,
                                                eMAIdWithPIN2         QRCodeIdentification          = null,
                                                eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                eMobilityAccount_Id?  RemoteIdentification          = null,
+                                               UInt32?               PIN                           = null,
                                                PgpPublicKey          PublicKey                     = null,
                                                I18NString            Description                   = null)
 
@@ -417,6 +438,7 @@ namespace org.GraphDefined.WWCP
                    QRCodeIdentification,
                    PlugAndChargeIdentification,
                    RemoteIdentification,
+                   PIN,
                    PublicKey,
                    Description)
 
@@ -521,6 +543,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) FromPIN       (PIN,        Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given PIN.
+        /// </summary>
+        /// <param name="PIN">An PIN.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static LocalAuthentication FromPIN(UInt32      PIN,
+                                                  I18NString  Description  = null)
+
+            => new LocalAuthentication(PIN:          PIN,
+                                       Description:  Description);
+
+
+        /// <summary>
+        /// Create a new authentication info based on the given PIN.
+        /// </summary>
+        /// <param name="PIN">An PIN.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static LocalAuthentication FromPIN(UInt32?     PIN,
+                                                  I18NString  Description  = null)
+
+            => PIN.HasValue
+                   ? new LocalAuthentication(PIN:          PIN,
+                                             Description:  Description)
+                   : null;
+
+        #endregion
+
         #region (static) FromPublicKey                  (PublicKey,                   Description = null)
 
         /// <summary>
@@ -545,6 +596,7 @@ namespace org.GraphDefined.WWCP
                                         QRCodeIdentification,
                                         PlugAndChargeIdentification,
                                         RemoteIdentification,
+                                        PIN,
                                         PublicKey,
                                         Description);
 
@@ -556,10 +608,11 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        protected internal RemoteAuthentication(Auth_Token            AuthToken                     = null,
+        protected internal RemoteAuthentication(Auth_Token?           AuthToken                     = null,
                                                 eMAIdWithPIN2         QRCodeIdentification          = null,
                                                 eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                 eMobilityAccount_Id?  RemoteIdentification          = null,
+                                                UInt32?               PIN                           = null,
                                                 PgpPublicKey          PublicKey                     = null,
                                                 I18NString            Description                   = null)
 
@@ -567,6 +620,7 @@ namespace org.GraphDefined.WWCP
                    QRCodeIdentification,
                    PlugAndChargeIdentification,
                    RemoteIdentification,
+                   PIN,
                    PublicKey,
                    Description)
 
@@ -671,6 +725,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) FromPIN       (PIN,        Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given PIN.
+        /// </summary>
+        /// <param name="PIN">An PIN.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static RemoteAuthentication FromPIN(UInt32      PIN,
+                                                   I18NString  Description  = null)
+
+            => new RemoteAuthentication(PIN:          PIN,
+                                        Description:  Description);
+
+
+        /// <summary>
+        /// Create a new authentication info based on the given PIN.
+        /// </summary>
+        /// <param name="PIN">An PIN.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static RemoteAuthentication FromPIN(UInt32?     PIN,
+                                                   I18NString  Description  = null)
+
+            => PIN.HasValue
+                   ? new RemoteAuthentication(PIN:          PIN,
+                                              Description:  Description)
+                   : null;
+
+        #endregion
+
         #region (static) FromPublicKey                  (PublicKey,                   Description = null)
 
         /// <summary>
@@ -694,6 +777,7 @@ namespace org.GraphDefined.WWCP
                                        QRCodeIdentification,
                                        PlugAndChargeIdentification,
                                        RemoteIdentification,
+                                       PIN,
                                        PublicKey,
                                        Description);
 

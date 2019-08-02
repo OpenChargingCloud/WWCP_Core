@@ -33,64 +33,23 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Created
-
-        private readonly DateTime _Created;
-
-        public DateTime Created
-        {
-            get
-            {
-                return _Created;
-            }
-        }
-
-        #endregion
-
-        #region ListOfAuthStopTokens
-
-        private readonly IEnumerable<Auth_Token> _ListOfAuthStopTokens;
+        public DateTime                      Created                 { get; }
 
         /// <summary>
         /// An optional list of authorize stop tokens.
         /// </summary>
-        public IEnumerable<Auth_Token> ListOfAuthStopTokens
-        {
-            get
-            {
-                return _ListOfAuthStopTokens;
-            }
-        }
+        public IEnumerable<AAuthentication>  ListOfAuthStopTokens    { get; }
 
-        #endregion
-
-        #region ListOfAuthStopPINs
-
-        private readonly IEnumerable<UInt32> _ListOfAuthStopPINs;
-
-        /// <summary>
-        /// An optional list of authorize stop PINs.
-        /// </summary>
-        public IEnumerable<UInt32> ListOfAuthStopPINs
-        {
-            get
-            {
-                return _ListOfAuthStopPINs;
-            }
-        }
-
-        #endregion
-
-        public Boolean Finished     { get; set; }
+        public Boolean                       Finished                { get; set; }
 
         #endregion
 
         #region Constructor(s)
 
-        public SessionInfo(Auth_Token Token)
+        public SessionInfo(AAuthentication Token)
         {
-            this._Created               = DateTime.UtcNow;
-            this._ListOfAuthStopTokens  = new List<Auth_Token>() { Token };
+            this.Created               = DateTime.UtcNow;
+            this.ListOfAuthStopTokens  = new List<AAuthentication>() { Token };
         }
 
         #endregion

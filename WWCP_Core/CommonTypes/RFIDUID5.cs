@@ -28,11 +28,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A unique authentication token.
+    /// A 5-byte RFID UID.
     /// </summary>
-    public struct Auth_Token : IId,
-                               IEquatable<Auth_Token>,
-                               IComparable<Auth_Token>
+    public struct RFIDUID5
     {
 
         #region Data
@@ -59,10 +57,10 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new authentication token based on the given string.
+        /// Generate a new 5-byte RFID UID based on the given string.
         /// </summary>
-        /// <param name="Text">The text representation of an authentication token.</param>
-        internal Auth_Token(String Text)
+        /// <param name="Text">The text representation of the 5-byte RFID UID.</param>
+        private RFIDUID5(String Text)
         {
             InternalId = Text;
         }
@@ -70,10 +68,10 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) Random(Length = 20)
+        #region (static) Random
 
-        public static Auth_Token Random(Byte Length = 20)
-            => new Auth_Token(_Random.RandomString(Length));
+        public static RFIDUID5 Random
+            => new RFIDUID5(_Random.RandomString(10));
 
         #endregion
 
@@ -81,10 +79,10 @@ namespace org.GraphDefined.WWCP
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as an authentication token.
+        /// Parse the given string as a 5-byte RFID UID.
         /// </summary>
-        /// <param name="Text">A text representation of an authentication token.</param>
-        public static Auth_Token Parse(String Text)
+        /// <param name="Text">A text representation of a 5-byte RFID UID.</param>
+        public static RFIDUID5 Parse(String Text)
         {
 
             #region Initial checks
@@ -93,14 +91,14 @@ namespace org.GraphDefined.WWCP
                 Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of an authentication token must not be null or empty!");
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a 5-byte RFID UID must not be null or empty!");
 
             #endregion
 
-            if (TryParse(Text, out Auth_Token AuthToken))
-                return AuthToken;
+            if (TryParse(Text, out RFIDUID5 RFIDUID5))
+                return RFIDUID5;
 
-            throw new ArgumentNullException(nameof(Text), "The given text representation of an authentication token is invalid!");
+            throw new ArgumentNullException(nameof(Text), "The given text representation of a 5-byte RFID UID is invalid!");
 
         }
 
@@ -109,29 +107,29 @@ namespace org.GraphDefined.WWCP
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as an authentication token.
+        /// Try to parse the given string as a 5-byte RFID UID.
         /// </summary>
-        /// <param name="Text">A text representation of an authentication token.</param>
-        public static Auth_Token? TryParse(String Text)
+        /// <param name="Text">A text representation of a 5-byte RFID UID.</param>
+        public static RFIDUID5? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Auth_Token AuthToken))
-                return AuthToken;
+            if (TryParse(Text, out RFIDUID5 RFIDUID5))
+                return RFIDUID5;
 
-            return new Auth_Token?();
+            return new RFIDUID5?();
 
         }
 
         #endregion
 
-        #region (static) TryParse(Text, out AuthToken)
+        #region (static) TryParse(Text, out RFIDUID5)
 
         /// <summary>
-        /// Try to parse the given string as an authentication token.
+        /// Try to parse the given string as a 5-byte RFID UID.
         /// </summary>
-        /// <param name="Text">A text representation of an authentication token.</param>
-        /// <param name="AuthToken">The parsed authentication token.</param>
-        public static Boolean TryParse(String Text, out Auth_Token AuthToken)
+        /// <param name="Text">A text representation of a 5-byte RFID UID.</param>
+        /// <param name="RFIDUID5">The parsed 5-byte RFID UID.</param>
+        public static Boolean TryParse(String Text, out RFIDUID5 RFIDUID5)
         {
 
             #region Initial checks
@@ -141,7 +139,7 @@ namespace org.GraphDefined.WWCP
 
             if (Text.IsNullOrEmpty())
             {
-                AuthToken = default;
+                RFIDUID5 = default;
                 return false;
             }
 
@@ -149,13 +147,13 @@ namespace org.GraphDefined.WWCP
 
             try
             {
-                AuthToken = new Auth_Token(Text);
+                RFIDUID5 = new RFIDUID5(Text);
                 return true;
             }
             catch (Exception)
             { }
 
-            AuthToken = default;
+            RFIDUID5 = default;
             return false;
 
         }
@@ -165,126 +163,139 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this authentication token.
+        /// Clone this 5-byte RFID UID.
         /// </summary>
-        public Auth_Token Clone
+        public RFIDUID5 Clone
 
-            => new Auth_Token(
+            => new RFIDUID5(
                    new String(InternalId.ToCharArray())
                );
 
         #endregion
 
 
+        #region (implicit) => Auth_Token
+
+        /// <summary>
+        /// Convert to an Auth_Token.
+        /// </summary>
+        /// <param name="RFIDUID5">A 5-byte RFID UID.</param>
+        public static implicit operator Auth_Token(RFIDUID5 RFIDUID5)
+
+            => new Auth_Token(RFIDUID5.InternalId);
+
+        #endregion
+
+
         #region Operator overloading
 
-        #region Provider == (AuthToken1, AuthToken2)
+        #region Provider == (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AuthToken1">An authentication token.</param>
-        /// <param name="AuthToken2">Another authentication token.</param>
+        /// <param name="RFIDUID51">A 5-byte RFID UID.</param>
+        /// <param name="RFIDUID52">Another 5-byte RFID UID.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Auth_Token AuthToken1, Auth_Token AuthToken2)
+        public static Boolean operator == (RFIDUID5 RFIDUID51, RFIDUID5 RFIDUID52)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(AuthToken1, AuthToken2))
+            if (Object.ReferenceEquals(RFIDUID51, RFIDUID52))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) AuthToken1 == null) || ((Object) AuthToken2 == null))
+            if (((Object) RFIDUID51 == null) || ((Object) RFIDUID52 == null))
                 return false;
 
-            return AuthToken1.Equals(AuthToken2);
+            return RFIDUID51.Equals(RFIDUID52);
 
         }
 
         #endregion
 
-        #region Provider != (AuthToken1, AuthToken2)
+        #region Provider != (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AuthToken1">An authentication token.</param>
-        /// <param name="AuthToken2">Another authentication token.</param>
+        /// <param name="RFIDUID51">A 5-byte RFID UID.</param>
+        /// <param name="RFIDUID52">Another 5-byte RFID UID.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Auth_Token AuthToken1, Auth_Token AuthToken2)
-            => !(AuthToken1 == AuthToken2);
+        public static Boolean operator != (RFIDUID5 RFIDUID51, RFIDUID5 RFIDUID52)
+            => !(RFIDUID51 == RFIDUID52);
 
         #endregion
 
-        #region Provider <  (AuthToken1, AuthToken2)
+        #region Provider <  (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AuthToken1">An authentication token.</param>
-        /// <param name="AuthToken2">Another authentication token.</param>
+        /// <param name="RFIDUID51">A 5-byte RFID UID.</param>
+        /// <param name="RFIDUID52">Another 5-byte RFID UID.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Auth_Token AuthToken1, Auth_Token AuthToken2)
+        public static Boolean operator < (RFIDUID5 RFIDUID51, RFIDUID5 RFIDUID52)
         {
 
-            if ((Object) AuthToken1 == null)
-                throw new ArgumentNullException(nameof(AuthToken1), "The given AuthToken1 must not be null!");
+            if ((Object) RFIDUID51 == null)
+                throw new ArgumentNullException(nameof(RFIDUID51), "The given RFIDUID51 must not be null!");
 
-            return AuthToken1.CompareTo(AuthToken2) < 0;
+            return RFIDUID51.CompareTo(RFIDUID52) < 0;
 
         }
 
         #endregion
 
-        #region Provider <= (AuthToken1, AuthToken2)
+        #region Provider <= (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AuthToken1">An authentication token.</param>
-        /// <param name="AuthToken2">Another authentication token.</param>
+        /// <param name="RFIDUID51">A 5-byte RFID UID.</param>
+        /// <param name="RFIDUID52">Another 5-byte RFID UID.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Auth_Token AuthToken1, Auth_Token AuthToken2)
-            => !(AuthToken1 > AuthToken2);
+        public static Boolean operator <= (RFIDUID5 RFIDUID51, RFIDUID5 RFIDUID52)
+            => !(RFIDUID51 > RFIDUID52);
 
         #endregion
 
-        #region Provider >  (AuthToken1, AuthToken2)
+        #region Provider >  (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AuthToken1">An authentication token.</param>
-        /// <param name="AuthToken2">Another authentication token.</param>
+        /// <param name="RFIDUID51">A 5-byte RFID UID.</param>
+        /// <param name="RFIDUID52">Another 5-byte RFID UID.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Auth_Token AuthToken1, Auth_Token AuthToken2)
+        public static Boolean operator > (RFIDUID5 RFIDUID51, RFIDUID5 RFIDUID52)
         {
 
-            if ((Object) AuthToken1 == null)
-                throw new ArgumentNullException(nameof(AuthToken1), "The given AuthToken1 must not be null!");
+            if ((Object) RFIDUID51 == null)
+                throw new ArgumentNullException(nameof(RFIDUID51), "The given RFIDUID51 must not be null!");
 
-            return AuthToken1.CompareTo(AuthToken2) > 0;
+            return RFIDUID51.CompareTo(RFIDUID52) > 0;
 
         }
 
         #endregion
 
-        #region Provider >= (AuthToken1, AuthToken2)
+        #region Provider >= (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AuthToken1">An authentication token.</param>
-        /// <param name="AuthToken2">Another authentication token.</param>
+        /// <param name="RFIDUID51">A 5-byte RFID UID.</param>
+        /// <param name="RFIDUID52">Another 5-byte RFID UID.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Auth_Token AuthToken1, Auth_Token AuthToken2)
-            => !(AuthToken1 < AuthToken2);
+        public static Boolean operator >= (RFIDUID5 RFIDUID51, RFIDUID5 RFIDUID52)
+            => !(RFIDUID51 < RFIDUID52);
 
         #endregion
 
         #endregion
 
-        #region IComparable<AuthToken> Members
+        #region IComparable<RFIDUID5> Members
 
         #region CompareTo(Object)
 
@@ -298,29 +309,29 @@ namespace org.GraphDefined.WWCP
             if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            if (!(Object is Auth_Token AuthToken))
-                throw new ArgumentException("The given object is not an authentication token!",
+            if (!(Object is RFIDUID5 RFIDUID5))
+                throw new ArgumentException("The given object is not a 5-byte RFID UID!",
                                             nameof(Object));
 
-            return CompareTo(AuthToken);
+            return CompareTo(RFIDUID5);
 
         }
 
         #endregion
 
-        #region CompareTo(AuthToken)
+        #region CompareTo(RFIDUID5)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AuthToken">An object to compare with.</param>
-        public Int32 CompareTo(Auth_Token AuthToken)
+        /// <param name="RFIDUID5">An object to compare with.</param>
+        public Int32 CompareTo(RFIDUID5 RFIDUID5)
         {
 
-            if ((Object) AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken),  "The given authentication token must not be null!");
+            if ((Object) RFIDUID5 == null)
+                throw new ArgumentNullException(nameof(RFIDUID5),  "The given 5-byte RFID UID must not be null!");
 
-            return String.Compare(InternalId, AuthToken.InternalId, StringComparison.OrdinalIgnoreCase);
+            return String.Compare(InternalId, RFIDUID5.InternalId, StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -328,7 +339,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<AuthToken> Members
+        #region IEquatable<RFIDUID5> Members
 
         #region Equals(Object)
 
@@ -343,29 +354,29 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            if (!(Object is Auth_Token AuthToken))
+            if (!(Object is RFIDUID5 RFIDUID5))
                 return false;
 
-            return Equals(AuthToken);
+            return Equals(RFIDUID5);
 
         }
 
         #endregion
 
-        #region Equals(AuthToken)
+        #region Equals(RFIDUID5)
 
         /// <summary>
-        /// Compares two AuthTokens for equality.
+        /// Compares two 5-byte RFID UIDs for equality.
         /// </summary>
-        /// <param name="AuthToken">An authentication token to compare with.</param>
+        /// <param name="RFIDUID5">A 5-byte RFID UID to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Auth_Token AuthToken)
+        public Boolean Equals(RFIDUID5 RFIDUID5)
         {
 
-            if ((Object) AuthToken == null)
+            if ((Object) RFIDUID5 == null)
                 return false;
 
-            return InternalId.ToLower().Equals(AuthToken.InternalId.ToLower());
+            return InternalId.ToLower().Equals(RFIDUID5.InternalId.ToLower());
 
         }
 

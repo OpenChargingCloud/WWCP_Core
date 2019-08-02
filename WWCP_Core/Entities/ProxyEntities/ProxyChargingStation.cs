@@ -53,15 +53,15 @@ namespace org.GraphDefined.WWCP.ChargingStations
         public static readonly HTTPHostname  DefaultHostname                 = HTTPHostname.Parse("graphdefined.com");
         public static readonly IPPort        DefaultTCPPort                  = IPPort.Parse(3004);
         public static readonly HTTPHostname  DefaultVirtualHost              = DefaultHostname;
-        public static readonly HTTPPath       DefaultURIPrefix                = HTTPPath.Parse("/ext/BoschEBike");
-        public const           String        HTTPLogin                       = "boschsi";
-        public const           String        HTTPPassword                    = "fad/09q23w!rf";
+        public static readonly HTTPPath      DefaultURIPrefix                = HTTPPath.Parse("/test");
+        public const           String        HTTPLogin                       = "test";
+        public const           String        HTTPPassword                    = "wgt354zh35zh3e5";
         public static readonly TimeSpan      DefaultRequestTimeout           = TimeSpan.FromSeconds(180);
         public const           String        UserAgent                       = "GraphDefined OpenChargingCloud";
 
         private readonly Timer EVSEStatusImportTimer;
 
-        public static readonly TimeSpan  BoschEBikeImportTimerIntervall  = TimeSpan.FromSeconds(5);
+        public static readonly TimeSpan  EVSEStatusImportTimerIntervall  = TimeSpan.FromSeconds(5);
 
         private static Object UpdateEVSEDataAndStatusLock = new Object();
 
@@ -69,19 +69,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #region Properties
 
-        #region RemoteWhiteList
-
-        private readonly HashSet<LocalAuthentication> _RemoteWhiteList;
-
-        public HashSet<LocalAuthentication> RemoteWhiteList
-        {
-            get
-            {
-                return _RemoteWhiteList;
-            }
-        }
-
-        #endregion
+        public HashSet<LocalAuthentication> RemoteWhiteList { get; }
 
         #endregion
 
@@ -127,11 +115,11 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         {
 
-            EVSEStatusImportTimer  = new Timer(EVSEStatusImporter, null, BoschEBikeImportTimerIntervall, BoschEBikeImportTimerIntervall);
+            EVSEStatusImportTimer  = new Timer(EVSEStatusImporter, null, EVSEStatusImportTimerIntervall, EVSEStatusImportTimerIntervall);
 
             #region Download white list
 
-            _RemoteWhiteList = new HashSet<LocalAuthentication>();
+            RemoteWhiteList = new HashSet<LocalAuthentication>();
 
             // Will put the results into _RemoteWhiteList!
             GetWhiteList(DateTime.UtcNow, new CancellationTokenSource().Token, EventTracking_Id.New).Wait();
@@ -1309,7 +1297,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
-        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop (...EVSEId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
 
         /// <summary>
         /// Stop the given charging session at the given EVSE.
@@ -1526,9 +1514,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
             if (response.HTTPStatusCode != HTTPStatusCode.OK)
                 return new LocalAuthentication[0];
 
-            Auth_Token            AuthToken  = null;
-            eMobilityAccount_Id?  eMAId      = null;
-            var AuthInfos                    = new HashSet<LocalAuthentication>();
+            var AuthInfos  = new HashSet<LocalAuthentication>();
 
             foreach (JObject entry in JObject.Parse(response.HTTPBody.ToUTF8String())["Identifications"] as JArray)
             {
@@ -1540,23 +1526,23 @@ namespace org.GraphDefined.WWCP.ChargingStations
                 {
 
                     case "RFID":
-                        if (!Auth_Token.TryParse(entry["id"].Value<String>(), out AuthToken))
+                        if (!Auth_Token.TryParse(entry["id"].Value<String>(), out Auth_Token AuthToken))
                             continue;
                         AuthInfos.Add(LocalAuthentication.FromAuthToken(AuthToken));
                         break;
 
                     case "eMAId":
-                        if (!eMobilityAccount_Id.TryParse(entry["id"].Value<String>(), out eMAId))
+                        if (!eMobilityAccount_Id.TryParse(entry["id"].Value<String>(), out eMobilityAccount_Id eMAId))
                             continue;
-                        AuthInfos.Add(LocalAuthentication.FromRemoteIdentification(eMAId.Value));
+                        AuthInfos.Add(LocalAuthentication.FromRemoteIdentification(eMAId));
                         break;
 
                 }
 
             }
 
-            _RemoteWhiteList.Clear();
-            AuthInfos.ForEach(authinfo => _RemoteWhiteList.Add(authinfo));
+            RemoteWhiteList.Clear();
+            AuthInfos.ForEach(authinfo => RemoteWhiteList.Add(authinfo));
 
             return AuthInfos;
 
@@ -1972,7 +1958,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
                                                       EventTrackingId,
                                                       RequestTimeout);
 
-            var ToRemove = CurrentWhiteList.Where(item => item.AuthToken             != null && !AuthTokens.Contains(item.AuthToken) ||
+            var ToRemove = CurrentWhiteList.Where(item => item.AuthToken.HasValue            && !AuthTokens.Contains(item.AuthToken.Value) ||
                                                           item.RemoteIdentification.HasValue && !eMAIds.    Contains(item.RemoteIdentification.Value)).ToArray();
 
             var ToInsert = AuthTokens.Where (item => !CurrentWhiteList.Contains(LocalAuthentication.FromAuthToken(item))).
@@ -1985,7 +1971,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
                               ? await REMOVEFromWhiteList(DateTime.UtcNow,
                                                           CancellationToken,
                                                           EventTrackingId,
-                                                          ToRemove.Where(item => item.AuthToken             != null).Select(item => item.AuthToken),
+                                                          ToRemove.Where(item => item.AuthToken.           HasValue).Select(item => item.AuthToken.           Value),
                                                           ToRemove.Where(item => item.RemoteIdentification.HasValue).Select(item => item.RemoteIdentification.Value),
                                                           RequestTimeout)
                               : new AuthInfoStatus[0];
@@ -1994,7 +1980,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
                               ? await ADDToWhiteList(DateTime.UtcNow,
                                                      CancellationToken,
                                                      EventTrackingId,
-                                                     ToInsert.Where(item => item.AuthToken             != null).Select(item => item.AuthToken),
+                                                     ToInsert.Where(item => item.AuthToken.           HasValue).Select(item => item.AuthToken.           Value),
                                                      ToInsert.Where(item => item.RemoteIdentification.HasValue).Select(item => item.RemoteIdentification.Value),
                                                      RequestTimeout)
                               : new AuthInfoStatus[0];

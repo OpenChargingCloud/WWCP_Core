@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
                                                             LocalCertificateSelectionCallback         LocalCertificateSelector          = null,
                                                             X509Certificate                           ClientCert                        = null,
                                                             HTTPHostname?                             VirtualHost                       = null,
-                                                            HTTPPath?                                  URIPrefix                         = null,
+                                                            HTTPPath?                                 URIPrefix                         = null,
                                                             TimeSpan?                                 RequestTimeout                    = null,
                                                             Action<ProxyChargingStation>              ProxyChargingStationConfigurator  = null,
                                                             Action<ChargingStation>                   OnSuccess                         = null,
