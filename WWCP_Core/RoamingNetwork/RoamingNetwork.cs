@@ -4019,6 +4019,8 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        // ToDo: AddReservationToWaitinglist!
+
         #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
@@ -5195,7 +5197,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region RemoteStart(ChargingLocation,            ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session at the given charging location.
@@ -5272,20 +5274,21 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+
             if (ChargingLocation.IsDefined)
             {
 
                 #region Try to lookup the charging station operator given in the EVSE identification...
 
-                ChargingStationOperator _ChargingStationOperator;
+                ChargingStationOperator chargingStationOperator;
 
-                if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out _ChargingStationOperator) ||
-                    TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out _ChargingStationOperator) ||
-                    TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out _ChargingStationOperator) ||
-                    TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out _ChargingStationOperator))
+                if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out chargingStationOperator) ||
+                    TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out chargingStationOperator) ||
+                    TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out chargingStationOperator) ||
+                    TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out chargingStationOperator))
                 {
 
-                    //result = await _ChargingStationOperator.
+                    //result = await chargingStationOperator.
                     //                   RemoteStart(ChargingLocation,
                     //                               ChargingProduct,
                     //                               ReservationId,
@@ -5300,13 +5303,14 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == RemoteStartResultType.Success)
-                        _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(_ChargingStationOperator).
+                        _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(chargingStationOperator).
                                                                    SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
                 }
 
                 #endregion
 
+                //ToDo: Add routing!
                 #region ...or try every EMP roaming provider...
 
                 if (result        == null ||
@@ -5314,7 +5318,7 @@ namespace org.GraphDefined.WWCP
                    (result.Result == RemoteStartResultType.UnknownLocation)))
                 {
 
-                    foreach (var _EMPRoamingProvider in _EMPRoamingProviders.
+                    foreach (var empRoamingProvider in _EMPRoamingProviders.
                                                             OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
                                                             Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
                     {
@@ -5334,7 +5338,7 @@ namespace org.GraphDefined.WWCP
 
 
                         if (result.Result == RemoteStartResultType.Success)
-                            _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider      (_EMPRoamingProvider).
+                            _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider      (empRoamingProvider).
                                                                        SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
                     }
@@ -5500,11 +5504,11 @@ namespace org.GraphDefined.WWCP
 
             #region Check charging station operator charging session lookup...
 
-            if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession _ChargingSession))
+            if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession chargingSession))
             {
 
-                if (_ChargingSession.ChargingStationOperator != null)
-                    result = await _ChargingSession.ChargingStationOperator.
+                if (chargingSession.ChargingStationOperator != null)
+                    result = await chargingSession.ChargingStationOperator.
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
@@ -5515,8 +5519,8 @@ namespace org.GraphDefined.WWCP
                                                   EventTrackingId,
                                                   RequestTimeout);
 
-                if (result == null && _ChargingSession.EMPRoamingProvider != null)
-                    result = await _ChargingSession.EMPRoamingProvider.
+                if (result == null && chargingSession.EMPRoamingProvider != null)
+                    result = await chargingSession.EMPRoamingProvider.
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
@@ -5526,36 +5530,6 @@ namespace org.GraphDefined.WWCP
                                                   CancellationToken,
                                                   EventTrackingId,
                                                   RequestTimeout);
-
-
-                //var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
-
-                //if (success)
-                //{
-                //    try
-                //    {
-
-                //        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                //                                    "Stop,",
-                //                                    ",",
-                //                                    SessionId, ",",
-                //                                    ",",
-                //                                    eMAId);
-
-                //        File.AppendAllText(SessionLogFileName,
-                //                           LogLine + Environment.NewLine);
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        Console.WriteLine(e.Message);
-                //    }
-                //    finally
-                //    {
-                //        SessionLogSemaphore.Release();
-                //    }
-
-                //}
 
             }
 
@@ -5568,10 +5542,10 @@ namespace org.GraphDefined.WWCP
                (result.Result == RemoteStopResultType.InvalidSessionId)))
             {
 
-                foreach (var Operator in _ChargingStationOperators)
+                foreach (var chargingStationOperator in _ChargingStationOperators)
                 {
 
-                    result = await Operator.
+                    result = await chargingStationOperator.
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
@@ -5595,12 +5569,12 @@ namespace org.GraphDefined.WWCP
                (result.Result == RemoteStopResultType.InvalidSessionId)))
             {
 
-                foreach (var EMPRoamingService in _EMPRoamingProviders.
-                                                      OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
-                                                      Select(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                foreach (var empRoamingProvider in _EMPRoamingProviders.
+                                                       OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
+                                                       Select(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
                 {
 
-                    result = await EMPRoamingService.
+                    result = await empRoamingProvider.
                                        RemoteStop(SessionId,
                                                   ReservationHandling,
                                                   ProviderId,
