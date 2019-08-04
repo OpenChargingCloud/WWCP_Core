@@ -71,16 +71,16 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public ChargingLocation FromEVSEId(EVSE_Id EVSEId)
+        public static ChargingLocation FromEVSEId(EVSE_Id EVSEId)
             => new ChargingLocation(EVSEId: EVSEId);
 
-        public ChargingLocation FromChargingStationId(ChargingStation_Id ChargingStationId)
+        public static ChargingLocation FromChargingStationId(ChargingStation_Id ChargingStationId)
             => new ChargingLocation(ChargingStationId: ChargingStationId);
 
-        public ChargingLocation FromChargingPoolId(ChargingPool_Id ChargingPoolId)
+        public static ChargingLocation FromChargingPoolId(ChargingPool_Id ChargingPoolId)
             => new ChargingLocation(ChargingPoolId: ChargingPoolId);
 
-        public ChargingLocation FromChargingStationOperatorId(ChargingStationOperator_Id ChargingStationOperatorId)
+        public static ChargingLocation FromChargingStationOperatorId(ChargingStationOperator_Id ChargingStationOperatorId)
             => new ChargingLocation(ChargingStationOperatorId: ChargingStationOperatorId);
 
 

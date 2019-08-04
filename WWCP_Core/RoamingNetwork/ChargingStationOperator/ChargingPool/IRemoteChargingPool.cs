@@ -33,185 +33,48 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteChargingPool
+    /// <summary>
+    /// The interface of a remote charging pool.
+    /// </summary>
+    public interface IRemoteChargingPool : ILocalReserveRemoteStartStop
     {
 
-        #region Reserve(...)
+        #region Properties
 
         /// <summary>
-        /// Remote charging reservations.
+        /// The unique identification of this charging pool.
         /// </summary>
-        IEnumerable<ChargingReservation> ChargingReservations { get; }
+        ChargingPool_Id             Id                      { get; }
 
         /// <summary>
-        /// Reserve the possibility to charge at the given EVSE.
+        /// An description of this charging pool.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of this request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSEId">The unique identification of the EVSE to be reserved.</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<ReservationResult> Reserve(DateTime                          Timestamp,
-                                        CancellationToken                 CancellationToken,
-                                        EventTracking_Id                  EventTrackingId,
-                                        EVSE_Id                           EVSEId,
-                                        DateTime?                         StartTime,
-                                        TimeSpan?                         Duration,
-                                        ChargingReservation_Id?           ReservationId       = null,
-                                        eMobilityProvider_Id?             ProviderId          = null,
-                                        ChargingProduct_Id?               ChargingProductId   = null,
-                                        IEnumerable<Auth_Token>           AuthTokens          = null,
-                                        IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                                        IEnumerable<UInt32>               PINs                = null,
-                                        TimeSpan?                         RequestTimeout        = null);
-
-        /// <summary>
-        /// Reserve the possibility to charge.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of this request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<ReservationResult> Reserve(DateTime                          Timestamp,
-                                        CancellationToken                 CancellationToken,
-                                        EventTracking_Id                  EventTrackingId,
-                                        DateTime?                         StartTime,
-                                        TimeSpan?                         Duration,
-                                        ChargingReservation_Id?           ReservationId       = null,
-                                        eMobilityProvider_Id?             ProviderId          = null,
-                                        ChargingProduct_Id?               ChargingProductId   = null,
-                                        IEnumerable<Auth_Token>           AuthTokens          = null,
-                                        IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                                        IEnumerable<UInt32>               PINs                = null,
-                                        TimeSpan?                         RequestTimeout        = null);
+        I18NString                  Description             { get; set; }
 
         #endregion
 
-        Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation);
+        #region Events
 
-
-        /// <summary>
-        /// Try to remove the given charging reservation.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of this request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="ReservationId">The unique charging reservation identification.</param>
-        /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
-                                                        CancellationToken                      CancellationToken,
-                                                        EventTracking_Id                       EventTrackingId,
-                                                        ChargingReservation_Id                 ReservationId,
-                                                        ChargingReservationCancellationReason  Reason,
-                                                        TimeSpan?                              RequestTimeout = null);
+        #region OnEVSEData/(Admin)StatusChanged
 
         /// <summary>
-        /// Initiate a remote start of the given charging session at the given charging station
-        /// and for the given provider/eMAId.
+        /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// <returns>A RemoteStartResult task.</returns>
-        Task<RemoteStartChargingStationResult> RemoteStart(DateTime                 Timestamp,
-                                                           CancellationToken        CancellationToken,
-                                                           EventTracking_Id         EventTrackingId,
-                                                           ChargingProduct_Id?      ChargingProductId,
-                                                           ChargingReservation_Id?  ReservationId,
-                                                           ChargingSession_Id?      SessionId,
-                                                           eMobilityProvider_Id?    ProviderId,
-                                                           eMobilityAccount_Id?     eMAId,
-                                                           TimeSpan?                RequestTimeout = null);
+        event OnRemoteChargingPoolDataChangedDelegate         OnDataChanged;
 
         /// <summary>
-        /// Initiate a remote start of the given charging session at the given EVSE
-        /// and for the given Provider/eMAId.
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// <returns>A RemoteStartResult task.</returns>
-        Task<RemoteStartEVSEResult> RemoteStart(DateTime                 Timestamp,
-                                                CancellationToken        CancellationToken,
-                                                EventTracking_Id         EventTrackingId,
-                                                EVSE_Id                  EVSEId,
-                                                ChargingProduct_Id?      ChargingProductId,
-                                                ChargingReservation_Id?  ReservationId,
-                                                ChargingSession_Id?      SessionId,
-                                                eMobilityProvider_Id?    ProviderId,
-                                                eMobilityAccount_Id?     eMAId,
-                                                TimeSpan?                RequestTimeout = null);
-
-
+        event OnRemoteChargingPoolAdminStatusChangedDelegate  OnAdminStatusChanged;
 
         /// <summary>
-        /// Stop the given charging session at the given charging station.
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <returns>A RemoteStopResult task.</returns>
-        Task<RemoteStopResult> RemoteStop(DateTime               Timestamp,
-                                          CancellationToken      CancellationToken,
-                                          EventTracking_Id       EventTrackingId,
-                                          ChargingSession_Id     SessionId,
-                                          ReservationHandling    ReservationHandling,
-                                          eMobilityProvider_Id?  ProviderId,
-                                          TimeSpan?              RequestTimeout = null);
+        event OnRemoteChargingPoolStatusChangedDelegate       OnStatusChanged;
 
+        #endregion
 
-        /// <summary>
-        /// Stop the given charging session at the given EVSE.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <returns>A RemoteStopResult task.</returns>
-        Task<RemoteStopEVSEResult> RemoteStop(DateTime               Timestamp,
-                                              CancellationToken      CancellationToken,
-                                              EventTracking_Id       EventTrackingId,
-                                              EVSE_Id                EVSEId,
-                                              ChargingSession_Id     SessionId,
-                                              ReservationHandling    ReservationHandling,
-                                              eMobilityProvider_Id?  ProviderId,
-                                              TimeSpan?              RequestTimeout = null);
-
-
-        /// <summary>
-        /// Stop the given charging session at the given charging station.
-        /// </summary>
-        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <returns>A RemoteStopResult task.</returns>
-        Task<RemoteStopChargingStationResult> RemoteStop(DateTime               Timestamp,
-                                                         CancellationToken      CancellationToken,
-                                                         EventTracking_Id       EventTrackingId,
-                                                         ChargingStation_Id     ChargingStationId,
-                                                         ChargingSession_Id     SessionId,
-                                                         ReservationHandling    ReservationHandling,
-                                                         eMobilityProvider_Id?  ProviderId,
-                                                         TimeSpan?              RequestTimeout = null);
+        #endregion
 
     }
 

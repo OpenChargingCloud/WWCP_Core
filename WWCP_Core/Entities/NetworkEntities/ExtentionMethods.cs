@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Cloud <https://github.com/GraphDefined/WWCP_Cloud>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,14 @@
 
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using System;
 using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.ChargingStations
+namespace org.GraphDefined.WWCP.Networking
 {
 
     /// <summary>
@@ -35,66 +37,66 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #region CreateNewRemoteStation(this ChargingPool, ChargingStationId, ChargingStationConfigurator = null, RemoteChargingStationConfigurator = null, OnSuccess = null, OnError = null)
 
-        /// <summary>
-        /// Create a new remote charging station.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="ChargingStationId">The charging station identification for the charging station to be created.</param>
-        /// <param name="ChargingStationConfigurator">An optional delegate to configure the new (local) charging station.</param>
-        /// <param name="RemoteChargingStationConfigurator">An optional delegate to configure the new (remote) charging station.</param>
-        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
-        /// <param name="OnError">An optional delegate for reporting an error.</param>
-        public static ChargingStation CreateNewRemoteStation(//this ChargingPool                         ChargingPool,
-                                                             //ChargingStation_Id                        ChargingStationId                  = null,
-                                                             //Action<ChargingStation>                   ChargingStationConfigurator        = null,
-                                                             //UInt16                                    MaxStatusListSize                  = NetworkChargingStationStub.DefaultMaxStatusListSize,
-                                                             //UInt16                                    MaxAdminStatusListSize             = NetworkChargingStationStub.DefaultMaxAdminStatusListSize,
-                                                             //Action<NetworkChargingStationStub>        RemoteChargingStationConfigurator  = null,
-                                                             //Action<ChargingStation>                   OnSuccess                          = null,
-                                                             //Action<ChargingPool, ChargingStation_Id>  OnError                            = null)
-                                                             this ChargingPool                         ChargingPool,
-                                                             ChargingStation_Id                        ChargingStationId,
-                                                             Action<ChargingStation>                   ChargingStationConfigurator        = null,
-                                                             TimeSpan?                                 SelfCheckTimeSpan                  = null,
-                                                             UInt16                                    MaxStatusListSize                  = ChargingStations.NetworkChargingStationStub.DefaultMaxStatusListSize,
-                                                             UInt16                                    MaxAdminStatusListSize             = ChargingStations.NetworkChargingStationStub.DefaultMaxAdminStatusListSize,
-                                                             IPTransport                               IPTransport                        = IPTransport.IPv4only,
-                                                             DNSClient                                 DNSClient                          = null,
-                                                             String                                    Hostname                           = null,
-                                                             IPPort?                                   TCPPort                            = null,
-                                                             String                                    Service                            = null,
-                                                             RemoteCertificateValidationCallback       RemoteCertificateValidator         = null,
-                                                             String                                    VirtualHost                        = null,
-                                                             String                                    URIPrefix                          = null,
-                                                             TimeSpan?                                 RequestTimeout                       = null,
-                                                             Action<NetworkChargingStationStub>        RemoteChargingStationConfigurator  = null,
-                                                             Action<ChargingStation>                   OnSuccess                          = null,
-                                                             Action<ChargingPool, ChargingStation_Id>  OnError                            = null)
-        {
+        ///// <summary>
+        ///// Create a new remote charging station.
+        ///// </summary>
+        ///// <param name="ChargingPool">A charging pool.</param>
+        ///// <param name="ChargingStationId">The charging station identification for the charging station to be created.</param>
+        ///// <param name="ChargingStationConfigurator">An optional delegate to configure the new (local) charging station.</param>
+        ///// <param name="RemoteChargingStationConfigurator">An optional delegate to configure the new (remote) charging station.</param>
+        ///// <param name="OnSuccess">An optional delegate for reporting success.</param>
+        ///// <param name="OnError">An optional delegate for reporting an error.</param>
+        //public static ChargingStation CreateNewRemoteStation(//this ChargingPool                         ChargingPool,
+        //                                                     //ChargingStation_Id                        ChargingStationId                  = null,
+        //                                                     //Action<ChargingStation>                   ChargingStationConfigurator        = null,
+        //                                                     //UInt16                                    MaxStatusListSize                  = NetworkChargingStationStub.DefaultMaxStatusListSize,
+        //                                                     //UInt16                                    MaxAdminStatusListSize             = NetworkChargingStationStub.DefaultMaxAdminStatusListSize,
+        //                                                     //Action<NetworkChargingStationStub>        RemoteChargingStationConfigurator  = null,
+        //                                                     //Action<ChargingStation>                   OnSuccess                          = null,
+        //                                                     //Action<ChargingPool, ChargingStation_Id>  OnError                            = null)
+        //                                                     this ChargingPool                         ChargingPool,
+        //                                                     ChargingStation_Id                        ChargingStationId,
+        //                                                     Action<ChargingStation>                   ChargingStationConfigurator        = null,
+        //                                                     TimeSpan?                                 SelfCheckTimeSpan                  = null,
+        //                                                     UInt16                                    MaxStatusListSize                  = ChargingStations.NetworkChargingStationStub.DefaultMaxStatusListSize,
+        //                                                     UInt16                                    MaxAdminStatusListSize             = ChargingStations.NetworkChargingStationStub.DefaultMaxAdminStatusListSize,
+        //                                                     IPTransport                               IPTransport                        = IPTransport.IPv4only,
+        //                                                     DNSClient                                 DNSClient                          = null,
+        //                                                     String                                    Hostname                           = null,
+        //                                                     IPPort?                                   TCPPort                            = null,
+        //                                                     String                                    Service                            = null,
+        //                                                     RemoteCertificateValidationCallback       RemoteCertificateValidator         = null,
+        //                                                     String                                    VirtualHost                        = null,
+        //                                                     String                                    URIPrefix                          = null,
+        //                                                     TimeSpan?                                 RequestTimeout                       = null,
+        //                                                     Action<NetworkChargingStationStub>        RemoteChargingStationConfigurator  = null,
+        //                                                     Action<ChargingStation>                   OnSuccess                          = null,
+        //                                                     Action<ChargingPool, ChargingStation_Id>  OnError                            = null)
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+        //    if (ChargingPool == null)
+        //        throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
-            #endregion
+        //    #endregion
 
-            return ChargingPool.CreateChargingStation(ChargingStationId,
-                                                      ChargingStationConfigurator,
-                                                      newstation => {
+        //    return ChargingPool.CreateChargingStation(ChargingStationId,
+        //                                              ChargingStationConfigurator,
+        //                                              newstation => {
 
-                                                          var remotestation = new NetworkChargingStationStub(newstation, MaxStatusListSize, MaxAdminStatusListSize);
+        //                                                  var remotestation = new NetworkChargingStationStub(newstation, MaxStatusListSize, MaxAdminStatusListSize);
 
-                                                          RemoteChargingStationConfigurator?.Invoke(remotestation);
+        //                                                  RemoteChargingStationConfigurator?.Invoke(remotestation);
 
-                                                          return remotestation;
+        //                                                  return remotestation;
 
-                                                      },
+        //                                              },
 
-                                                      OnSuccess: OnSuccess,
-                                                      OnError:   OnError);
+        //                                              OnSuccess: OnSuccess,
+        //                                              OnError:   OnError);
 
-        }
+        //}
 
         #endregion
 

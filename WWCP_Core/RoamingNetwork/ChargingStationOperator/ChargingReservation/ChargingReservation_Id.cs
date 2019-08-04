@@ -38,6 +38,8 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
+        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
+
         /// <summary>
         /// The regular expression for parsing a charging reservation identification.
         /// </summary>
@@ -93,6 +95,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region (static) Random(OperatorId, Length = 20)
+
+        public static ChargingReservation_Id Random(ChargingStationOperator_Id  OperatorId,
+                                                    Byte                        Length  = 20)
+
+            => new ChargingReservation_Id(OperatorId,
+                                          _Random.RandomString(Length));
+
+        #endregion
 
         #region Parse(Text)
 

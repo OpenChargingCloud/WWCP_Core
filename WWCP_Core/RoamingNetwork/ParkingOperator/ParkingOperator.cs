@@ -856,7 +856,7 @@ namespace org.GraphDefined.WWCP
         //            _ParkingGarage.OnAdminStatusChanged                 += UpdateParkingGarageAdminStatus;
 
         //            _ParkingGarage.OnNewReservation                     += SendNewReservation;
-        //            _ParkingGarage.OnReservationCancelled               += SendOnReservationCancelled;
+        //            _ParkingGarage.OnCancelReservationResponse               += SendOnCancelReservationResponse;
         //            _ParkingGarage.OnNewChargingSession                 += SendNewChargingSession;
         //            _ParkingGarage.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
@@ -2839,18 +2839,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OnReservationCancelled
+        #region OnCancelReservationResponse
 
         /// <summary>
         /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        public event OnCancelReservationResponseDelegate OnReservationCancelled;
+        public event OnCancelReservationResponseDelegate OnCancelReservationResponse;
 
         #endregion
 
-        #region SendOnReservationCancelled(...)
+        #region SendOnCancelReservationResponse(...)
 
-        private void SendOnReservationCancelled(DateTime                               LogTimestamp,
+        private void SendOnCancelReservationResponse(DateTime                               LogTimestamp,
                                                 DateTime                               RequestTimestamp,
                                                 Object                                 Sender,
                                                 EventTracking_Id                       EventTrackingId,
@@ -2868,7 +2868,7 @@ namespace org.GraphDefined.WWCP
 
             _ParkingReservations.TryRemove(ReservationId, out _ParkingGarage);
 
-            OnReservationCancelled?.Invoke(LogTimestamp,
+            OnCancelReservationResponse?.Invoke(LogTimestamp,
                                            RequestTimestamp,
                                            Sender,
                                            EventTrackingId,

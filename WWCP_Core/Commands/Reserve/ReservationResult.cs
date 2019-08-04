@@ -149,14 +149,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownEVSE
+        #region (static) UnknownLocation
 
         /// <summary>
-        /// The EVSE is unknown.
+        /// The charging location is unknown.
         /// </summary>
-        public static ReservationResult UnknownEVSE
+        public static ReservationResult UnknownLocation
 
-            => new ReservationResult(ReservationResultType.UnknownEVSE);
+            => new ReservationResult(ReservationResultType.UnknownLocation);
 
         #endregion
 
@@ -333,9 +333,9 @@ namespace org.GraphDefined.WWCP
         UnknownChargingStation,
 
         /// <summary>
-        /// The EVSE is unknown.
+        /// The charging location is unknown.
         /// </summary>
-        UnknownEVSE,
+        UnknownLocation,
 
 
         /// <summary>

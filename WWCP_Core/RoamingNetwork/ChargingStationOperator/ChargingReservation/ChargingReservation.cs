@@ -178,16 +178,16 @@ namespace org.GraphDefined.WWCP
         public RemoteAuthentication   Identification      { get; }
 
         [Optional]
-        public RoamingNetwork         RoamingNetwork      { get; }
+        public RoamingNetwork         RoamingNetwork      { get; internal set; }
 
         [Optional]
-        public ChargingPool_Id?       ChargingPoolId      { get; }
+        public ChargingPool_Id?       ChargingPoolId      { get; internal set; }
 
         [Optional]
-        public ChargingStation_Id?    ChargingStationId   { get; }
+        public ChargingStation_Id?    ChargingStationId   { get; internal set; }
 
         [Optional]
-        public EVSE_Id?               EVSEId              { get; }
+        public EVSE_Id?               EVSEId              { get; internal set; }
 
         [Optional]
         public ChargingProduct        ChargingProduct     { get; }
@@ -261,6 +261,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        public ChargingReservation ParentReservation { get; internal set; }
+
+
+        private HashSet<ChargingReservation> _SubReservations;
+
+        public IEnumerable<ChargingReservation> SubReservations
+            => _SubReservations;
+
         #endregion
 
         #region Constructor(s)
@@ -287,7 +296,9 @@ namespace org.GraphDefined.WWCP
 
                                    IEnumerable<Auth_Token>           AuthTokens          = null,
                                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                                   IEnumerable<UInt32>               PINs                = null)
+                                   IEnumerable<UInt32>               PINs                = null,
+
+                                   IEnumerable<ChargingReservation>  SubReservations     = null)
 
         {
 
@@ -308,9 +319,11 @@ namespace org.GraphDefined.WWCP
             this.EVSEId                    = EVSEId;
             this.ChargingProduct           = ChargingProduct;
 
-            this._AuthTokens               = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
-            this._eMAIds                   = eMAIds     != null ? new HashSet<eMobilityAccount_Id>    (eMAIds)     : new HashSet<eMobilityAccount_Id>();
-            this._PINs                     = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
+            this._AuthTokens               = AuthTokens      != null ? new HashSet<Auth_Token>         (AuthTokens)      : new HashSet<Auth_Token>();
+            this._eMAIds                   = eMAIds          != null ? new HashSet<eMobilityAccount_Id>(eMAIds)          : new HashSet<eMobilityAccount_Id>();
+            this._PINs                     = PINs            != null ? new HashSet<UInt32>             (PINs)            : new HashSet<UInt32>();
+
+            this._SubReservations          = SubReservations != null ? new HashSet<ChargingReservation>(SubReservations) : new HashSet<ChargingReservation>();
 
         }
 

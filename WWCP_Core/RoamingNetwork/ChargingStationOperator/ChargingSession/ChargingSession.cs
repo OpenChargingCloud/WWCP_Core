@@ -185,6 +185,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region RemoteChargingStationOperator
+
+        /// <summary>
+        /// The remote charging station operator serving this session.
+        /// </summary>
+        public IRemoteChargingStationOperator RemoteChargingStationOperator { get; internal set; }
+
+        #endregion
+
         #region ChargingStationOperatorId
 
         /// <summary>

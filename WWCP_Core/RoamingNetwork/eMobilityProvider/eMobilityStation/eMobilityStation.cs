@@ -937,7 +937,7 @@ namespace org.GraphDefined.WWCP
                     _eVehicle.OnAdminStatusChanged                 += UpdateEVehicleAdminStatus;
 
                     //_eVehicle.OnNewReservation                     += SendNewReservation;
-                    //_eVehicle.OnReservationCancelled               += SendOnReservationCancelled;
+                    //_eVehicle.OnCancelReservationResponse               += SendOnCancelReservationResponse;
                     //_eVehicle.OnNewChargingSession                 += SendNewChargingSession;
                     //_eVehicle.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 

@@ -40,25 +40,30 @@ namespace org.GraphDefined.WWCP
         InDeployment        = 2,
 
         /// <summary>
+        /// Private or internal use.
+        /// </summary>
+        InternalUse         = 3,
+
+        /// <summary>
         /// The charging pool is not ready for charging because it is under maintenance.
         /// </summary>
-        OutOfService        = 3,
+        OutOfService        = 4,
 
         /// <summary>
         /// The charging pool is ready to charge.
         /// </summary>
-        Operational         = 4,
+        Operational         = 5,
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        Other               = 5,
+        Other               = 6,
 
         /// <summary>
         /// The charging pool was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownPool         = 6
+        UnknownPool         = 7
 
     }
 

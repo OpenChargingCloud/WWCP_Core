@@ -15,14 +15,20 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
+#endregion
+
+namespace org.GraphDefined.WWCP.Networking
 {
 
     /// <summary>
-    /// A remote charging station attached via a computer network (TCP/IP).
+    /// A remote charging station attached via a computer network (HTTPS/TCP/IP).
     /// </summary>
-    public interface INetworkChargingStation : IRemoteChargingStation,
-                                               INetworkAttached
+    public interface INetworkChargingStation : IHTTPClient,
+                                               IRemoteChargingStation
     { }
 
 }

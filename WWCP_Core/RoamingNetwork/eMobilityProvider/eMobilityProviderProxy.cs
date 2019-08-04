@@ -630,12 +630,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.
         /// </summary>
-        public event OnReserveEVSERequestDelegate              OnReserveEVSERequest;
+        public event OnReserveRequestDelegate              OnReserveEVSERequest;
 
         /// <summary>
         /// An event fired whenever an EVSE was reserved.
         /// </summary>
-        public event OnReserveEVSEResponseDelegate             OnReserveEVSEResponse;
+        public event OnReserveResponseDelegate             OnReserveEVSEResponse;
 
         #endregion
 
@@ -644,26 +644,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote start EVSE command was received.
         /// </summary>
-        public event OnRemoteStartEVSERequestDelegate               OnRemoteEVSEStartRequest;
+        public event OnRemoteStartRequestDelegate              OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start EVSE command completed.
         /// </summary>
-        public event OnRemoteStartEVSEResponseDelegate             OnRemoteEVSEStartResponse;
+        public event OnRemoteStartResponseDelegate             OnRemoteStartResponse;
 
         #endregion
 
         #region OnRemote...Stop / OnRemote...Stopped
 
         /// <summary>
-        /// An event fired whenever a remote stop EVSE command was received.
+        /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopEVSERequestDelegate                OnRemoteEVSEStop;
+        public event OnRemoteStopRequestDelegate   OnRemoteStopRequest;
 
         /// <summary>
-        /// An event fired whenever a remote stop EVSE command completed.
+        /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopEVSEResponseDelegate             OnRemoteEVSEStopped;
+        public event OnRemoteStopResponseDelegate  OnRemoteStopResponse;
 
         #endregion
 
@@ -838,7 +838,7 @@ namespace org.GraphDefined.WWCP
                     _eMobilityStation.OnAdminStatusChanged                 += UpdateeMobilityStationAdminStatus;
 
                     //_eMobilityStation.OnNewReservation                     += SendNewReservation;
-                    //_eMobilityStation.OnReservationCancelled               += SendOnReservationCancelled;
+                    //_eMobilityStation.OnCancelReservationResponse               += SendOnCancelReservationResponse;
                     //_eMobilityStation.OnNewChargingSession                 += SendNewChargingSession;
                     //_eMobilityStation.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
@@ -1223,7 +1223,7 @@ namespace org.GraphDefined.WWCP
                     _eVehicle.OnAdminStatusChanged                 += UpdateEVehicleAdminStatus;
 
                     //_eVehicle.OnNewReservation                     += SendNewReservation;
-                    //_eVehicle.OnReservationCancelled               += SendOnReservationCancelled;
+                    //_eVehicle.OnCancelReservationResponse               += SendOnCancelReservationResponse;
                     //_eVehicle.OnNewChargingSession                 += SendNewChargingSession;
                     //_eVehicle.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
@@ -4013,9 +4013,9 @@ namespace org.GraphDefined.WWCP
                                                                   RequestTimeout);
 
 
-            //var OnReservationCancelledLocal = OnReservationCancelled;
-            //if (OnReservationCancelledLocal != null)
-            //    OnReservationCancelledLocal(DateTime.UtcNow,
+            //var OnCancelReservationResponseLocal = OnCancelReservationResponse;
+            //if (OnCancelReservationResponseLocal != null)
+            //    OnCancelReservationResponseLocal(DateTime.UtcNow,
             //                                this,
             //                                EventTracking_Id.New,
             //                                ReservationId,
@@ -4028,12 +4028,12 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region RemoteStart(...EVSEId, ChargingProduct = null, ReservationId = null, SessionId = null, eMAId = null, ...)
+        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, eMAId = null, ...)
 
         /// <summary>
-        /// Start a charging session at the given EVSE.
+        /// Start a charging session.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be started.</param>
+        /// <param name="ChargingLocation">The charging location.</param>
         /// <param name="ChargingProduct">The choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -4043,9 +4043,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartEVSEResult>
+        public async Task<RemoteStartResult>
 
-            RemoteStart(EVSE_Id                  EVSEId,
+            RemoteStart(ChargingLocation         ChargingLocation,
                         ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
@@ -4060,48 +4060,51 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
-
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
+
+            RemoteStartResult result = null;
+
             #endregion
 
-            #region Send OnRemoteEVSEStartRequest event
+            #region Send OnRemoteStartRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnRemoteEVSEStartRequest?.Invoke(DateTime.UtcNow,
-                                                 Timestamp.Value,
-                                                 this,
-                                                 EventTrackingId,
-                                                 RoamingNetwork.Id,
-                                                 EVSEId,
-                                                 ChargingProduct,
-                                                 ReservationId,
-                                                 SessionId,
-                                                 Id,
-                                                 RemoteAuthentication,
-                                                 RequestTimeout);
+                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             RoamingNetwork.Id,
+                                             ChargingLocation,
+                                             ChargingProduct,
+                                             ReservationId,
+                                             SessionId,
+                                             Id,
+                                             RemoteAuthentication,
+                                             RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStartRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
 
 
             var response = await RoamingNetwork.
-                                     RemoteStart(EVSEId,
+                                     RemoteStart(ChargingLocation,
                                                  ChargingProduct,
                                                  ReservationId,
                                                  SessionId,
@@ -4115,32 +4118,32 @@ namespace org.GraphDefined.WWCP
                                                  RequestTimeout);
 
 
-            #region Send OnRemoteEVSEStartResponse event
+            #region Send OnRemoteStartResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnRemoteEVSEStartResponse?.Invoke(DateTime.UtcNow,
-                                                  Timestamp.Value,
-                                                  this,
-                                                  EventTrackingId,
-                                                  RoamingNetwork.Id,
-                                                  EVSEId,
-                                                  ChargingProduct,
-                                                  ReservationId,
-                                                  SessionId,
-                                                  Id,
-                                                  RemoteAuthentication,
-                                                  RequestTimeout,
-                                                  response,
-                                                  Runtime.Elapsed);
+                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
+                                              Timestamp.Value,
+                                              this,
+                                              EventTrackingId,
+                                              RoamingNetwork.Id,
+                                              ChargingLocation,
+                                              ChargingProduct,
+                                              ReservationId,
+                                              SessionId,
+                                              Id,
+                                              RemoteAuthentication,
+                                              RequestTimeout,
+                                              response,
+                                              Runtime.Elapsed);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStartResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -4151,12 +4154,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, eMAId = null, ...)
+        #region RemoteStop (SessionId, ReservationHandling = null, RemoteAuthentication = null, ...)
 
         /// <summary>
-        /// Stop the given charging session at the given EVSE.
+        /// Stop the given charging session.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be stopped.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
@@ -4165,11 +4167,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopEVSEResult>
+        public async Task<RemoteStopResult>
 
-            RemoteStop(EVSE_Id               EVSEId,
-                       ChargingSession_Id    SessionId,
-                       ReservationHandling   ReservationHandling,
+            RemoteStop(ChargingSession_Id    SessionId,
+                       ReservationHandling?  ReservationHandling    = null,
                        RemoteAuthentication  RemoteAuthentication   = null,
 
                        DateTime?             Timestamp              = null,
@@ -4180,9 +4181,6 @@ namespace org.GraphDefined.WWCP
         {
 
             #region Initial checks
-
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),     "The given EVSE identification must not be null!");
 
             if (SessionId == null)
                 throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
@@ -4195,71 +4193,69 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send OnRemoteEVSEStop event
+            #region Send OnRemoteStopRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnRemoteEVSEStop?.Invoke(DateTime.UtcNow,
-                                         Timestamp.Value,
-                                         this,
-                                         EventTrackingId,
-                                         RoamingNetwork.Id,
-                                         EVSEId,
-                                         SessionId,
-                                         ReservationHandling,
-                                         Id,
-                                         RemoteAuthentication,
-                                         RequestTimeout);
+                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
+                                            Timestamp.Value,
+                                            this,
+                                            EventTrackingId,
+                                            RoamingNetwork.Id,
+                                            SessionId,
+                                            ReservationHandling,
+                                            Id,
+                                            RemoteAuthentication,
+                                            RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
 
 
-            var response = await RoamingNetwork.RemoteStop(EVSEId,
-                                                           SessionId,
-                                                           ReservationHandling,
-                                                           Id,
-                                                           RemoteAuthentication,
+            var response = await RoamingNetwork.
+                                     RemoteStop(SessionId,
+                                                ReservationHandling,
+                                                Id,
+                                                RemoteAuthentication,
 
-                                                           Timestamp,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           RequestTimeout);
+                                                Timestamp,
+                                                CancellationToken,
+                                                EventTrackingId,
+                                                RequestTimeout);
 
 
-            #region Send OnRemoteEVSEStopped event
+            #region Send OnRemoteStopResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnRemoteEVSEStopped?.Invoke(DateTime.UtcNow,
-                                            Timestamp.Value,
-                                            this,
-                                            EventTrackingId,
-                                            RoamingNetwork.Id,
-                                            EVSEId,
-                                            SessionId,
-                                            ReservationHandling,
-                                            Id,
-                                            RemoteAuthentication,
-                                            RequestTimeout,
-                                            response,
-                                            Runtime.Elapsed);
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             RoamingNetwork.Id,
+                                             SessionId,
+                                             ReservationHandling,
+                                             Id,
+                                             RemoteAuthentication,
+                                             RequestTimeout,
+                                             response,
+                                             Runtime.Elapsed);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStopped));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion

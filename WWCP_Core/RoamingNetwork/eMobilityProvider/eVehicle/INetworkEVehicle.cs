@@ -21,8 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A remote charging station attached via a computer network (TCP/IP).
     /// </summary>
-    public interface INetworkEVehicle : IRemoteEVehicle,
-                                        INetworkAttached
+    public interface INetworkEVehicle : IRemoteEVehicle
     { }
 
 }

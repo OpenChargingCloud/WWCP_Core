@@ -44,39 +44,11 @@ namespace org.GraphDefined.WWCP
                                                      DateTime               RequestTimestamp,
                                                      Object                 Sender,
                                                      EventTracking_Id       EventTrackingId,
-                                                     RoamingNetwork_Id      RoamingNetworkId,
                                                      ChargingSession_Id     SessionId,
                                                      ReservationHandling?   ReservationHandling,
                                                      eMobilityProvider_Id?  ProviderId,
                                                      RemoteAuthentication   RemoteAuthentication,
                                                      TimeSpan?              RequestTimeout);
-
-    /// <summary>
-    /// Indicate a remote stop of the given charging session.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    /// <param name="Result">The remote stop result.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStopResponseDelegate(DateTime               LogTimestamp,
-                                                      DateTime               RequestTimestamp,
-                                                      Object                 Sender,
-                                                      EventTracking_Id       EventTrackingId,
-                                                      RoamingNetwork_Id      RoamingNetworkId,
-                                                      ChargingSession_Id     SessionId,
-                                                      ReservationHandling?   ReservationHandling,
-                                                      eMobilityProvider_Id?  ProviderId,
-                                                      RemoteAuthentication   RemoteAuthentication,
-                                                      TimeSpan?              RequestTimeout,
-                                                      RemoteStopResult       Result,
-                                                      TimeSpan               Runtime);
 
 
     /// <summary>
@@ -98,5 +70,32 @@ namespace org.GraphDefined.WWCP
                                                                 eMobilityProvider_Id?  ProviderId,
                                                                 RemoteAuthentication   RemoteAuthentication,
                                                                 TimeSpan?              RequestTimeout);
+
+
+    /// <summary>
+    /// Indicate a remote stop of the given charging session.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    /// <param name="Result">The remote stop result.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnRemoteStopResponseDelegate(DateTime               LogTimestamp,
+                                                      DateTime               RequestTimestamp,
+                                                      Object                 Sender,
+                                                      EventTracking_Id       EventTrackingId,
+                                                      ChargingSession_Id     SessionId,
+                                                      ReservationHandling?   ReservationHandling,
+                                                      eMobilityProvider_Id?  ProviderId,
+                                                      RemoteAuthentication   RemoteAuthentication,
+                                                      TimeSpan?              RequestTimeout,
+                                                      RemoteStopResult       Result,
+                                                      TimeSpan               Runtime);
 
 }

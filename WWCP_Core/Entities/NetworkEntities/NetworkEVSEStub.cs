@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Cloud <https://github.com/GraphDefined/WWCP_Cloud>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
+using System.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.ChargingStations
+namespace org.GraphDefined.WWCP.Networking
 {
 
     /// <summary>
@@ -83,13 +84,13 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
             get
             {
-                return _Description ?? _ChargingStation.Description;
+                return _Description ?? _ANetworkChargingStation.Description;
             }
 
             set
             {
 
-                if (value == _ChargingStation.Description)
+                if (value == _ANetworkChargingStation.Description)
                     value = null;
 
                 if (_Description != value)
@@ -438,14 +439,14 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #region ChargingStation
 
-        private readonly NetworkChargingStationStub _ChargingStation;
+        private readonly ANetworkChargingStation _ANetworkChargingStation;
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
         [InternalUseOnly]
         public IRemoteChargingStation ChargingStation
-            => _ChargingStation;
+            => _ANetworkChargingStation;
 
         #endregion
 
@@ -456,7 +457,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// </summary>
         [InternalUseOnly]
         public ChargingStationOperator_Id OperatorId
-            => _ChargingStation.Id.OperatorId;
+            => _ANetworkChargingStation.Id.OperatorId;
 
         #endregion
 
@@ -509,10 +510,10 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// <param name="ChargingStation">The parent charging station.</param>
         /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
-        internal NetworkEVSEStub(EVSE_Id                     Id,
-                                 NetworkChargingStationStub  ChargingStation,
-                                 UInt16                      MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
-                                 UInt16                      MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+        internal NetworkEVSEStub(EVSE_Id                  Id,
+                                 ANetworkChargingStation  ChargingStation,
+                                 UInt16                   MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
+                                 UInt16                   MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
 
             : base(Id)
 
@@ -527,7 +528,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
             #region Init data and properties
 
-            this._ChargingStation       = ChargingStation;
+            this._ANetworkChargingStation       = ChargingStation;
 
             this._Description           = new I18NString();
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
@@ -789,74 +790,59 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #region Reservations...
 
-        #region Reservation
+        #region Data
 
-        private ChargingReservation _Reservation;
+        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
 
         /// <summary>
-        /// The charging reservation, if available.
+        /// All current charging reservations.
         /// </summary>
-        [InternalUseOnly]
-        public ChargingReservation Reservation
-        {
+        public IEnumerable<ChargingReservation> Reservations
+            => _Reservations.Select(_ => _.Value);
 
-            get
-            {
-                return _Reservation;
-            }
+        #region TryGetReservationById(ReservationId, out Reservation)
 
-            set
-            {
-
-                // Skip, if the reservation is already known... 
-                if (_Reservation != value)
-                {
-
-                    _Reservation = value;
-
-                    if (_Reservation != null)
-                    {
-
-                        SetStatus(EVSEStatusTypes.Reserved);
-
-                        OnNewReservation?.Invoke(DateTime.UtcNow, this, _Reservation);
-
-                    }
-
-                    // Let the remote charging station set the new status!
-                    //else
-                    //    SetStatus(EVSEStatusType.Available);
-
-                }
-
-            }
-
-        }
+        /// <summary>
+        /// Return the charging reservation specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        /// <param name="Reservation">The charging reservation.</param>
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
+            => _Reservations.TryGetValue(ReservationId, out Reservation);
 
         #endregion
 
-        #region OnNewReservation
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a charging location is being reserved.
+        /// </summary>
+        public event OnReserveRequestDelegate             OnReserveRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging location was reserved.
+        /// </summary>
+        public event OnReserveResponseDelegate            OnReserveResponse;
+
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
-        public event OnNewReservationDelegate OnNewReservation;
-
-        #endregion
-
-        #region OnReservationCancelled
+        public event OnNewReservationDelegate             OnNewReservation;
 
         /// <summary>
         /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        public event OnCancelReservationResponseDelegate OnReservationCancelled;
+        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
 
         #endregion
 
-        #region Reserve(...StartTime, Duration, ReservationId = null, ProviderId = null, ...)
+        #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
-        /// Reserve the possibility to charge.
+        /// Reserve the possibility to charge at this EVSE.
         /// </summary>
         /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
@@ -872,118 +858,119 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public virtual async Task<ReservationResult>
+        public Task<ReservationResult>
 
-            Reserve(ChargingReservationLevel          ChargingReservationLevel   = ChargingReservationLevel.EVSE,
-                    DateTime?                         StartTime                  = null,
-                    TimeSpan?                         Duration                   = null,
-                    ChargingReservation_Id?           ReservationId              = null,
-                    eMobilityProvider_Id?             ProviderId                 = null,
-                    RemoteAuthentication              RemoteAuthentication       = null,
-                    ChargingProduct                   ChargingProduct            = null,
-                    IEnumerable<Auth_Token>           AuthTokens                 = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                     = null,
-                    IEnumerable<UInt32>               PINs                       = null,
+            Reserve(DateTime?                         StartTime              = null,
+                    TimeSpan?                         Duration               = null,
+                    ChargingReservation_Id?           ReservationId          = null,
+                    eMobilityProvider_Id?             ProviderId             = null,
+                    RemoteAuthentication              RemoteAuthentication   = null,
+                    ChargingProduct                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
+                    IEnumerable<UInt32>               PINs                   = null,
 
-                    DateTime?                         Timestamp                  = null,
-                    CancellationToken?                CancellationToken          = null,
-                    EventTracking_Id                  EventTrackingId            = null,
-                    TimeSpan?                         RequestTimeout             = null)
+                    DateTime?                         Timestamp              = null,
+                    CancellationToken?                CancellationToken      = null,
+                    EventTracking_Id                  EventTrackingId        = null,
+                    TimeSpan?                         RequestTimeout         = null)
 
-        {
 
-            #region Try to remove an existing reservation if this is an update!
+                => Reserve(ChargingLocation.FromEVSEId(Id),
+                           ChargingReservationLevel.EVSE,
+                           StartTime,
+                           Duration,
+                           ReservationId,
+                           ProviderId,
+                           RemoteAuthentication,
+                           ChargingProduct,
+                           AuthTokens,
+                           eMAIds,
+                           PINs,
 
-            if (ReservationId != null && _Reservation.Id != ReservationId)
-            {
-
-                return ReservationResult.UnknownChargingReservationId;
-
-                // Send DeleteReservation event!
-
-            }
-
-            #endregion
-
-            switch (Status.Value)
-            {
-
-                case EVSEStatusTypes.OutOfService:
-                    return ReservationResult.OutOfService;
-
-                case EVSEStatusTypes.Charging:
-                    return ReservationResult.AlreadyInUse;
-
-                case EVSEStatusTypes.Reserved:
-                    return ReservationResult.AlreadyReserved;
-
-                case EVSEStatusTypes.Available:
-
-                    this._Reservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Parse(OperatorId, _random.RandomString(25)),
-                                                                Timestamp:               Timestamp.Value,
-                                                                StartTime:               StartTime. HasValue ? StartTime.Value : DateTime.UtcNow,
-                                                                Duration:                Duration.  HasValue ? Duration. Value : MaxReservationDuration,
-                                                                EndTime:                 (StartTime.HasValue ? StartTime.Value : DateTime.UtcNow) + (Duration.HasValue ? Duration.Value : MaxReservationDuration),
-                                                                ConsumedReservationTime: TimeSpan.FromSeconds(0),
-                                                                ReservationLevel:        ChargingReservationLevel.EVSE,
-                                                                ProviderId:              ProviderId,
-                                                                Identification:          RemoteAuthentication,
-                                                                RoamingNetwork:          null, //ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
-                                                                ChargingPoolId:          null, //ChargingStation.ChargingPool.Id,
-                                                                ChargingStationId:       ChargingStation.Id,
-                                                                EVSEId:                  Id,
-                                                                ChargingProduct:         ChargingProduct,
-                                                                AuthTokens:              AuthTokens,
-                                                                eMAIds:                  eMAIds,
-                                                                PINs:                    PINs);
-
-                    SetStatus(EVSEStatusTypes.Reserved);
-
-                    return ReservationResult.Success(_Reservation);
-
-                default:
-                    return ReservationResult.Error();
-
-            }
-
-        }
+                           Timestamp,
+                           CancellationToken,
+                           EventTrackingId,
+                           RequestTimeout);
 
         #endregion
 
-        #region (internal) CheckReservationTime()
+        #region Reserve(ChargingLocation, ReservationLevel = EVSE, StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
-        /// Check if the reservation is expired.
+        /// Reserve the possibility to charge at the given charging location.
         /// </summary>
-        internal async Task CheckReservationTime()
+        /// <param name="ChargingLocation">A charging location.</param>
+        /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
+        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="Duration">The duration of the reservation.</param>
+        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="ChargingProduct">The charging product to be reserved.</param>
+        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<ReservationResult>
+
+            Reserve(ChargingLocation                  ChargingLocation,
+                    ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
+                    DateTime?                         StartTime              = null,
+                    TimeSpan?                         Duration               = null,
+                    ChargingReservation_Id?           ReservationId          = null,
+                    eMobilityProvider_Id?             ProviderId             = null,
+                    RemoteAuthentication              RemoteAuthentication   = null,
+                    ChargingProduct                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
+                    IEnumerable<UInt32>               PINs                   = null,
+
+                    DateTime?                         Timestamp              = null,
+                    CancellationToken?                CancellationToken      = null,
+                    EventTracking_Id                  EventTrackingId        = null,
+                    TimeSpan?                         RequestTimeout         = null)
+
         {
 
-            if (_Reservation != null &&
+            if (_ANetworkChargingStation == null)
+                return ReservationResult.OutOfService;
 
-                // The remote charging station might already have sent another status!
-                //Status.Value == EVSEStatusType.Reserved &&
+            return await _ANetworkChargingStation.
+                             Reserve(ChargingLocation,
+                                     ReservationLevel,
+                                     StartTime,
+                                     Duration,
+                                     ReservationId,
+                                     ProviderId,
+                                     RemoteAuthentication,
+                                     ChargingProduct,
+                                     AuthTokens,
+                                     eMAIds,
+                                     PINs,
 
-                _Reservation.IsExpired(ReservationSelfCancelAfter))
-
-            {
-
-                await CancelReservation(_Reservation.Id,
-                                        ChargingReservationCancellationReason.Expired);
-
-            }
+                                     Timestamp,
+                                     CancellationToken,
+                                     EventTrackingId,
+                                     RequestTimeout);
 
         }
 
         #endregion
 
 
-        #region CancelReservation(...ReservationId, Reason, ...)
+        #region CancelReservation(ReservationId, Reason, ProviderId = null, ...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
+        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -993,53 +980,28 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId          = null,
+                              eMobilityProvider_Id?                  ProviderId         = null,
 
-                              DateTime?                              Timestamp           = null,
-                              CancellationToken?                     CancellationToken   = null,
-                              EventTracking_Id                       EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null)
+                              DateTime?                              Timestamp          = null,
+                              CancellationToken?                     CancellationToken  = null,
+                              EventTracking_Id                       EventTrackingId    = null,
+                              TimeSpan?                              RequestTimeout     = null)
 
         {
 
-            #region Initial checks
+            if (_ANetworkChargingStation == null)
+                return CancelReservationResult.OutOfService(ReservationId,
+                                                            Reason);
 
-            if (_Reservation == null)
-                return CancelReservationResult.Success(ReservationId,
-                                                       Reason);
+            return await _ANetworkChargingStation.
+                             CancelReservation(ReservationId,
+                                               Reason,
+                                               ProviderId,
 
-            if (_Reservation.Id != ReservationId)
-                return CancelReservationResult.UnknownReservationId(ReservationId,
-                                                                    Reason);
-
-            #endregion
-
-
-            var SavedReservation = _Reservation;
-
-            _Reservation = null;
-
-            var result = CancelReservationResult.Success(ReservationId,
-                                                         Reason,
-                                                         SavedReservation);
-
-            OnReservationCancelled?.Invoke(DateTime.UtcNow,
-                                           Timestamp.Value,
-                                           this,
-                                           EventTrackingId,
-
-                                           new RoamingNetwork_Id?(),
-                                           ProviderId,
-                                           SavedReservation.Id,
-                                           SavedReservation,
-                                           Reason,
-                                           result,
-                                           TimeSpan.FromMilliseconds(5),
-                                           RequestTimeout);
-
-            //SetStatus(EVSEStatusType.Available);
-
-            return result;
+                                               Timestamp,
+                                               CancellationToken,
+                                               EventTrackingId,
+                                               RequestTimeout);
 
         }
 
@@ -1047,11 +1009,40 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
-        #region RemoteStart/-Stop and Sessions
+        #region RemoteStart/-Stop and Sessions...
 
-        #region ChargingSession
+        #region Data
 
         private ChargingSession _ChargingSession;
+
+
+        public IEnumerable<ChargingSession> ChargingSessions
+            => _ChargingSession != null
+                   ? new ChargingSession[] { _ChargingSession }
+                   : new ChargingSession[0];
+
+        #region TryGetChargingSessionById(SessionId, out ChargingSession)
+
+        /// <summary>
+        /// Return the charging session specified by the given identification.
+        /// </summary>
+        /// <param name="SessionId">The charging session identification.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
+        {
+
+            if (SessionId == _ChargingSession.Id)
+            {
+                ChargingSession = _ChargingSession;
+                return true;
+            }
+
+            ChargingSession = null;
+            return false;
+
+        }
+
+        #endregion
 
         /// <summary>
         /// The current charging session, if available.
@@ -1079,9 +1070,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
                         SetStatus(EVSEStatusTypes.Charging);
 
-                        var OnNewChargingSessionLocal = OnNewChargingSession;
-                        if (OnNewChargingSessionLocal != null)
-                            OnNewChargingSessionLocal(DateTime.UtcNow, this, _ChargingSession);
+                        OnNewChargingSession?.Invoke(DateTime.UtcNow, this, _ChargingSession);
 
                     }
 
@@ -1096,7 +1085,29 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
-        #region OnNewChargingSession/-ChargeDetailRecord
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a remote start command was received.
+        /// </summary>
+        public event OnRemoteStartRequestDelegate     OnRemoteStartRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote start command completed.
+        /// </summary>
+        public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
+
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopRequestDelegate      OnRemoteStopRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
+
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
@@ -1110,8 +1121,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
-
-        #region RemoteStart(...ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+        #region RemoteStart(                  ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session.
@@ -1126,7 +1136,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartEVSEResult>
+        public Task<RemoteStartResult>
 
             RemoteStart(ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
@@ -1139,13 +1149,57 @@ namespace org.GraphDefined.WWCP.ChargingStations
                         EventTracking_Id         EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
 
+
+                => RemoteStart(ChargingLocation.FromEVSEId(Id),
+                               ChargingProduct,
+                               ReservationId,
+                               SessionId,
+                               ProviderId,
+                               RemoteAuthentication,
+
+                               Timestamp,
+                               CancellationToken,
+                               EventTrackingId,
+                               RequestTimeout);
+
+        #endregion
+
+        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+
+        /// <summary>
+        /// Start a charging session.
+        /// </summary>
+        /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="ChargingProduct">The choosen charging product.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<RemoteStartResult>
+
+            RemoteStart(ChargingLocation         ChargingLocation,
+                        ChargingProduct          ChargingProduct        = null,
+                        ChargingReservation_Id?  ReservationId          = null,
+                        ChargingSession_Id?      SessionId              = null,
+                        eMobilityProvider_Id?    ProviderId             = null,
+                        RemoteAuthentication     RemoteAuthentication   = null,
+
+                        DateTime?                Timestamp              = null,
+                        CancellationToken?       CancellationToken      = null,
+                        EventTracking_Id         EventTrackingId        = null,
+                        TimeSpan?                RequestTimeout         = null)
         {
 
-            if (_ChargingStation == null)
-                return RemoteStartEVSEResult.Offline;
+            if (_ANetworkChargingStation == null)
+                return RemoteStartResult.OutOfService;
 
-            return await _ChargingStation.
-                             RemoteStart(Id,
+            return await _ANetworkChargingStation.
+                             RemoteStart(ChargingLocation.FromEVSEId(Id),
                                          ChargingProduct,
                                          ReservationId,
                                          SessionId,
@@ -1161,7 +1215,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
-        #region RemoteStop(...SessionId, ReservationHandling = null, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Stop the given charging session.
@@ -1175,7 +1229,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopEVSEResult>
+        public async Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
@@ -1189,33 +1243,19 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         {
 
-            if (_ChargingStation == null)
-                return RemoteStopEVSEResult.Offline(SessionId);
+            if (_ANetworkChargingStation == null)
+                return RemoteStopResult.OutOfService(SessionId);
 
-            RemoteStopEVSEResult result = null;
+            return await _ANetworkChargingStation.
+                             RemoteStop(SessionId,
+                                        ReservationHandling,
+                                        ProviderId,
+                                        RemoteAuthentication,
 
-            var response = await _ChargingStation.
-                                     RemoteStop(SessionId,
-                                                ReservationHandling,
-                                                ProviderId,
-                                                RemoteAuthentication,
-
-                                                Timestamp,
-                                                CancellationToken,
-                                                EventTrackingId,
-                                                RequestTimeout);
-
-            switch (response.Result)
-            {
-
-                case RemoteStopResultType.Error:
-                    result = RemoteStopEVSEResult.Error(SessionId, response.Message);
-                    break;
-
-
-            }
-
-            return result;
+                                        Timestamp,
+                                        CancellationToken,
+                                        EventTrackingId,
+                                        RequestTimeout);
 
         }
 

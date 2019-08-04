@@ -34,7 +34,6 @@ namespace org.GraphDefined.WWCP
     public static class IRemoteEVSEExtentions
     {
 
-
         #region Reserve(...StartTime, Duration, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
@@ -98,7 +97,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The interface of a remote EVSE.
     /// </summary>
-    public interface IRemoteEVSE
+    public interface IRemoteEVSE : ILocalReserveRemoteStartStop
     {
 
         #region Properties
@@ -180,29 +179,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        /// <summary>
-        /// An event fired whenever a new charging reservation was created.
-        /// </summary>
-        event OnNewReservationDelegate      OnNewReservation;
-
-
-        /// <summary>
-        /// An event fired whenever a charging reservation was cancelled.
-        /// </summary>
-        event OnCancelReservationResponseDelegate OnReservationCancelled;
-
-
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        event OnNewChargingSessionDelegate  OnNewChargingSession;
-
         #endregion
 
 
@@ -227,125 +203,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Reservations
-
-        /// <summary>
-        /// Reserve the possibility to charge.
-        /// </summary>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProduct">The charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<ReservationResult>
-
-            Reserve(ChargingReservationLevel          ChargingReservationLevel   = ChargingReservationLevel.EVSE,
-                    DateTime?                         StartTime                  = null,
-                    TimeSpan?                         Duration                   = null,
-                    ChargingReservation_Id?           ReservationId              = null,
-                    eMobilityProvider_Id?             ProviderId                 = null,
-                    RemoteAuthentication              RemoteAuthentication       = null,
-                    ChargingProduct                   ChargingProduct            = null,
-                    IEnumerable<Auth_Token>           AuthTokens                 = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                     = null,
-                    IEnumerable<UInt32>               PINs                       = null,
-
-                    DateTime?                         Timestamp                  = null,
-                    CancellationToken?                CancellationToken          = null,
-                    EventTracking_Id                  EventTrackingId            = null,
-                    TimeSpan?                         RequestTimeout             = null);
-
-
-        /// <summary>
-        /// Try to remove the given charging reservation.
-        /// </summary>
-        /// <param name="ReservationId">The unique charging reservation identification.</param>
-        /// <param name="Reason">A reason for this cancellation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<CancelReservationResult>
-
-            CancelReservation(ChargingReservation_Id                 ReservationId,
-                              ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId          = null,
-
-                              DateTime?                              Timestamp           = null,
-                              CancellationToken?                     CancellationToken   = null,
-                              EventTracking_Id                       EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null);
-
-        ChargingReservation Reservation { get; set; }
-
-        #endregion
-
-        #region RemoteStart/-Stop
-
-        /// <summary>
-        /// Start a charging session.
-        /// </summary>
-        /// <param name="ChargingProduct">The choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<RemoteStartEVSEResult>
-
-            RemoteStart(ChargingProduct          ChargingProduct,
-                        ChargingReservation_Id?  ReservationId,
-                        ChargingSession_Id?      SessionId,
-                        eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
-
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null);
-
-
-        /// <summary>
-        /// Stop the given charging session.
-        /// </summary>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<RemoteStopEVSEResult>
-
-            RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       eMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication   RemoteAuthentication   = null,
-
-                       DateTime?              Timestamp              = null,
-                       CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id       EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null);
-
-        ChargingSession ChargingSession { get; set; }
-
-        #endregion
 
 
         Task CheckIfReservationIsExpired();

@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of a cancel reservation operation.
         /// </summary>
-        public CancelReservationResults               Result            { get; }
+        public CancelReservationResultTypes               Result            { get; }
 
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Message">An optional message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The optional runtime of this request.</param>
-        private CancelReservationResult(CancelReservationResults               Result,
+        private CancelReservationResult(CancelReservationResultTypes               Result,
                                         ChargingReservation_Id                 ReservationId,
                                         ChargingReservationCancellationReason  Reason,
                                         ChargingReservation                    Reservation      = null,
@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
                                                               ChargingReservationCancellationReason  Reason,
                                                               TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResults.UnknownEVSE,
+            => new CancelReservationResult(CancelReservationResultTypes.UnknownEVSE,
                                            ReservationId,
                                            Reason,
                                            Runtime: Runtime);
@@ -136,7 +136,7 @@ namespace org.GraphDefined.WWCP
                                                                    ChargingReservationCancellationReason  Reason,
                                                                    TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResults.UnknownReservationId,
+            => new CancelReservationResult(CancelReservationResultTypes.UnknownReservationId,
                                            ReservationId,
                                            Reason,
                                            Runtime: Runtime);
@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP
                                                                   ChargingReservationCancellationReason  Reason,
                                                                   TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResults.UnknownChargingPool,
+            => new CancelReservationResult(CancelReservationResultTypes.UnknownChargingPool,
                                            ReservationId,
                                            Reason,
                                            Runtime: Runtime);
@@ -174,7 +174,7 @@ namespace org.GraphDefined.WWCP
                                                                      ChargingReservationCancellationReason  Reason,
                                                                      TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResults.UnknownChargingStation,
+            => new CancelReservationResult(CancelReservationResultTypes.UnknownChargingStation,
                                            ReservationId,
                                            Reason,
                                            Runtime: Runtime);
@@ -193,7 +193,7 @@ namespace org.GraphDefined.WWCP
                                                           ChargingReservationCancellationReason  Reason,
                                                           TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResults.UnknownEVSE,
+            => new CancelReservationResult(CancelReservationResultTypes.UnknownEVSE,
                                            ReservationId,
                                            Reason,
                                            Runtime: Runtime);
@@ -216,7 +216,7 @@ namespace org.GraphDefined.WWCP
                                                            String                                 AdditionalInfo  = null,
                                                            TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResults.OutOfService,
+            => new CancelReservationResult(CancelReservationResultTypes.OutOfService,
                                            ReservationId,
                                            Reason,
                                            Message:         Message,
@@ -241,7 +241,7 @@ namespace org.GraphDefined.WWCP
                                                       String                                 AdditionalInfo  = null,
                                                       TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResults.Offline,
+            => new CancelReservationResult(CancelReservationResultTypes.Offline,
                                            ReservationId,
                                            Reason,
                                            Message:         Message,
@@ -264,7 +264,7 @@ namespace org.GraphDefined.WWCP
                                                       ChargingReservation                    Reservation  = null,
                                                       TimeSpan?                              Runtime      = null)
 
-            => new CancelReservationResult(CancelReservationResults.Success,
+            => new CancelReservationResult(CancelReservationResultTypes.Success,
                                            ReservationId,
                                            Reason,
                                            Reservation,
@@ -288,7 +288,7 @@ namespace org.GraphDefined.WWCP
                                                       String                                 AdditionalInfo  = null,
                                                       TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResults.Timeout,
+            => new CancelReservationResult(CancelReservationResultTypes.Timeout,
                                            ReservationId,
                                            Reason,
                                            Message:         Message,
@@ -313,7 +313,7 @@ namespace org.GraphDefined.WWCP
                                                                  String                                 AdditionalInfo  = null,
                                                                  TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResults.CommunicationError,
+            => new CancelReservationResult(CancelReservationResultTypes.CommunicationError,
                                            ReservationId,
                                            Reason,
                                            Message:         Message,
@@ -338,7 +338,7 @@ namespace org.GraphDefined.WWCP
                                                     String                                 AdditionalInfo  = null,
                                                     TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResults.Error,
+            => new CancelReservationResult(CancelReservationResultTypes.Error,
                                            ReservationId,
                                            Reason,
                                            Message:         Message,
@@ -353,7 +353,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The result types of a cancel reservation operation.
     /// </summary>
-    public enum CancelReservationResults
+    public enum CancelReservationResultTypes
     {
 
         /// <summary>
