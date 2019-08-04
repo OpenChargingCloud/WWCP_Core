@@ -76,6 +76,28 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region EVSEs
+
+        Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE RemoteEVSE);
+
+        #endregion
+
+        #region Charging stations
+
+        IEnumerable<IRemoteChargingStation> ChargingStations { get; }
+
+        Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId);
+
+        IRemoteChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId);
+
+        Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IRemoteChargingStation ChargingStation);
+
+        Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IRemoteChargingStation ChargingStation);
+
+        #endregion
+
+
     }
 
 }

@@ -20,23 +20,27 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Math.EC;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Parameters;
+
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.WWCP.ChargingPools;
 using org.GraphDefined.Vanaheimr.Hermod;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using System.Diagnostics;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.ChargingStations
+namespace org.GraphDefined.WWCP.Virtual
 {
 
     /// <summary>
-    /// A demo implementation of a virtual WWCP charging station.
+    /// A virtual charging station.
     /// </summary>
     public class VirtualChargingStation : AEMobilityEntity<ChargingStation_Id>,
                                           IEquatable<VirtualChargingStation>, IComparable<VirtualChargingStation>, IComparable,
@@ -59,15 +63,15 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(15);
+        public  static readonly TimeSpan  MaxReservationDuration    = TimeSpan.FromMinutes(15);
 
         /// <summary>
         /// The default time span between self checks.
         /// </summary>
-        public static readonly TimeSpan DefaultSelfCheckTimeSpan = TimeSpan.FromSeconds(3);
+        public  static readonly TimeSpan  DefaultSelfCheckTimeSpan  = TimeSpan.FromSeconds(15);
 
-        private static readonly Object SelfCheckLock = new Object();
-        private Timer _SelfCheckTimer;
+        private        readonly Object    ReservationExpiredLock;
+        private        readonly Timer     ReservationExpiredTimer;
 
 
         public const String DefaultWhiteListName = "default";
@@ -76,10 +80,12 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #region Properties
 
-        public PgpSecretKeyRing SecretKeyRing   { get; }
-
-        public PgpPublicKeyRing PublicKeyRing   { get; }
-
+        /// <summary>
+        /// The identification of the operator of this virtual EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingStationOperator_Id OperatorId
+            => Id.OperatorId;
 
         #region Description
 
@@ -238,47 +244,34 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// </summary>
         public TimeSpan SelfCheckTimeSpan { get; }
 
-        #endregion
-
-        #region Links
-
-        /// <summary>
-        /// The optional linked charging pool.
-        /// </summary>
-        public VirtualChargingPool  ChargingPool      { get; }
-
-        #region OperatorId
-
-        /// <summary>
-        /// The identification of the operator of this virtual EVSE.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingStationOperator_Id OperatorId
-            => Id.OperatorId;
-
-        #endregion
+        public String                  EllipticCurve            { get; }
+        public X9ECParameters          ECP                      { get; }
+        public ECDomainParameters      ECSpec                   { get; }
+        public FpCurve                 C                        { get; }
+        public ECPrivateKeyParameters  PrivateKey               { get; }
+        public PublicKeyCertificates   PublicKeyCertificates    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a virtual charging station.
+        /// Create a new virtual charging station.
         /// </summary>
         /// <param name="Id">The unique identification of this EVSE.</param>
-        /// <param name="ChargingPool">The parent virtual charging pool.</param>
         /// <param name="SelfCheckTimeSpan">The time span between self checks.</param>
         /// <param name="MaxStatusListSize">The maximum size of the charging station status list.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the charging station admin status list.</param>
         public VirtualChargingStation(ChargingStation_Id               Id,
-                                      VirtualChargingPool              ChargingPool             = null,
-                                      PgpSecretKeyRing                 SecretKeyRing            = null,
-                                      PgpPublicKeyRing                 PublicKeyRing            = null,
+                                      I18NString                       Description              = null,
                                       ChargingStationAdminStatusTypes  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
                                       ChargingStationStatusTypes       InitialStatus            = ChargingStationStatusTypes.Available,
+                                      String                           EllipticCurve            = "P-256",
+                                      ECPrivateKeyParameters           PrivateKey               = null,
+                                      PublicKeyCertificates            PublicKeyCertificates    = null,
+                                      TimeSpan?                        SelfCheckTimeSpan        = null,
                                       UInt16                           MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                      UInt16                           MaxStatusListSize        = DefaultMaxStatusListSize,
-                                      TimeSpan?                        SelfCheckTimeSpan        = null)
+                                      UInt16                           MaxStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id)
 
@@ -286,9 +279,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
             #region Init data and properties
 
-            this.ChargingPool          = ChargingPool;
-            this.SecretKeyRing         = SecretKeyRing;
-            this.PublicKeyRing         = PublicKeyRing;
+            this._Description          = Description ?? I18NString.Empty;
 
             this._EVSEs                = new HashSet<IRemoteEVSE>();
 
@@ -298,13 +289,57 @@ namespace org.GraphDefined.WWCP.ChargingStations
             this._StatusSchedule       = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.Insert(InitialStatus);
 
-            this.WhiteLists           = new Dictionary<String, HashSet<LocalAuthentication>>();
+            this.WhiteLists            = new Dictionary<String, HashSet<LocalAuthentication>>();
             WhiteLists.Add("default", new HashSet<LocalAuthentication>());
 
-            this.SelfCheckTimeSpan    = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
-            this._SelfCheckTimer       = new Timer(SelfCheck, null, this.SelfCheckTimeSpan, this.SelfCheckTimeSpan);
+            this.SelfCheckTimeSpan     = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
+
+            ReservationExpiredLock     = new Object();
+            ReservationExpiredTimer    = new Timer(CheckIfReservationIsExpired, null, this.SelfCheckTimeSpan, this.SelfCheckTimeSpan);
+
 
             this._ChargingSessions     = new Dictionary<ChargingSession_Id, ChargingSession>();
+
+            #endregion
+
+            #region Setup crypto
+
+            this.EllipticCurve          = EllipticCurve ?? "P-256";
+            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
+            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
+            this.C                      = (FpCurve) ECSpec.Curve;
+            this.PrivateKey             = PrivateKey;
+            this.PublicKeyCertificates  = PublicKeyCertificates;
+
+            if (PrivateKey == null && PublicKeyCertificates == null)
+            {
+
+                var generator = GeneratorUtilities.GetKeyPairGenerator("ECDH");
+                generator.Init(new ECKeyGenerationParameters(ECSpec, new SecureRandom()));
+
+                var  keyPair                = generator.GenerateKeyPair();
+                this.PrivateKey             = keyPair.Private as ECPrivateKeyParameters;
+                this.PublicKeyCertificates  = new PublicKeyCertificate(
+                                                  PublicKeys:          new PublicKeyLifetime[] {
+                                                                           new PublicKeyLifetime(
+                                                                               PublicKey:  keyPair.Public as ECPublicKeyParameters,
+                                                                               NotBefore:  DateTime.UtcNow,
+                                                                               NotAfter:   DateTime.UtcNow + TimeSpan.FromDays(365),
+                                                                               Algorithm:  "P-256",
+                                                                               Comment:    I18NString.Empty
+                                                                           )
+                                                                       },
+                                                  Description:         I18NString.Create(Languages.eng, "Auto-generated test keys for a virtual charging station!"),
+                                                  Operations:          JSONObject.Create(
+                                                                           new JProperty("signMeterValues",  true),
+                                                                           new JProperty("signCertificates",
+                                                                               JSONObject.Create(
+                                                                                   new JProperty("maxChilds", 1)
+                                                                               ))
+                                                                       ),
+                                                  ChargingStationId:   Id);
+
+            }
 
             #endregion
 
@@ -519,46 +554,10 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
-        #region (private) SelfCheck(Context)
-
-        private void SelfCheck(Object Context)
-        {
-
-            if (Monitor.TryEnter(SelfCheckLock))
-            {
-
-                try
-                {
-
-                    foreach (var _EVSE in _EVSEs)
-                        _EVSE.CheckIfReservationIsExpired().Wait();
-
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException != null)
-                        e = e.InnerException;
-
-                    DebugX.LogT("VirtualChargingStation SelfCheck() '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
-
-                }
-
-                finally
-                {
-                    Monitor.Exit(SelfCheckLock);
-                }
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region EVSEs...
 
         #region EVSEs
+
+        #region Data
 
         private readonly HashSet<IRemoteEVSE> _EVSEs;
 
@@ -567,107 +566,6 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// </summary>
         public IEnumerable<IRemoteEVSE> EVSEs
             => _EVSEs;
-
-        #endregion
-
-        #region CreateVirtualEVSE(EVSEId, Configurator = null, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// Create and register a new EVSE having the given
-        /// unique EVSE identification.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of the new EVSE.</param>
-        /// <param name="Configurator">An optional delegate to configure the new EVSE after its creation.</param>
-        /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
-        /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public VirtualEVSE CreateVirtualEVSE(EVSE_Id                       EVSEId,
-                                             EnergyMeter_Id                EnergyMeterId,
-                                             PgpSecretKeyRing              SecretKeyRing            = null,
-                                             PgpPublicKeyRing              PublicKeyRing            = null,
-                                             EVSEAdminStatusTypes          InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
-                                             EVSEStatusTypes               InitialStatus            = EVSEStatusTypes.Available,
-                                             UInt16                        MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                             UInt16                        MaxStatusListSize        = DefaultMaxStatusListSize,
-                                             Action<VirtualEVSE>           Configurator             = null,
-                                             Action<VirtualEVSE>           OnSuccess                = null,
-                                             Action<VirtualEVSE, EVSE_Id>  OnError                  = null)
-        {
-
-            #region Initial checks
-
-            if (_EVSEs.Any(evse => evse.Id == EVSEId))
-            {
-                throw new Exception("EVSEAlreadyExistsInStation");
-               // if (OnError == null)
-               //     throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
-               // else
-               //     OnError?.Invoke(this, EVSEId);
-            }
-
-            #endregion
-
-            var Now           = DateTime.UtcNow;
-            var _VirtualEVSE  = new VirtualEVSE(EVSEId,
-                                                this,
-                                                EnergyMeterId,
-                                                SecretKeyRing,
-                                                PublicKeyRing,
-                                                InitialAdminStatus,
-                                                InitialStatus,
-                                                MaxAdminStatusListSize,
-                                                MaxStatusListSize);
-
-            Configurator?.Invoke(_VirtualEVSE);
-
-            if (_EVSEs.Add(_VirtualEVSE))
-            {
-
-                //_VirtualChargingStation.OnPropertyChanged        += (Timestamp, Sender, PropertyName, OldValue, NewValue)
-                //                                           => UpdateEVSEData(Timestamp, Sender as VirtualChargingStation, PropertyName, OldValue, NewValue);
-                //
-                //_VirtualChargingStation.OnStatusChanged          += UpdateEVSEStatus;
-                //_VirtualChargingStation.OnAdminStatusChanged     += UpdateEVSEAdminStatus;
-                //_VirtualChargingStation.OnNewReservation         += SendNewReservation;
-                //_VirtualChargingStation.OnNewChargingSession     += SendNewChargingSession;
-                //_VirtualChargingStation.OnNewChargeDetailRecord  += SendNewChargeDetailRecord;
-                //_VirtualChargingStation.OnCancelReservationResponse   += SendOnCancelReservationResponse;
-
-                OnSuccess?.Invoke(_VirtualEVSE);
-
-                return _VirtualEVSE;
-
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        public IRemoteEVSE AddEVSE(IRemoteEVSE                       EVSE,
-                                   Action<EVSE>                      Configurator  = null,
-                                   Action<EVSE>                      OnSuccess     = null,
-                                   Action<ChargingStation, EVSE_Id>  OnError       = null)
-
-        {
-
-            _EVSEs.Add(EVSE);
-
-            return EVSE;
-
-        }
-
-
-        #region ContainsEVSE(EVSE)
-
-        /// <summary>
-        /// Check if the given EVSE is already present within the charging station.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        public Boolean ContainsEVSE(EVSE EVSE)
-            => _EVSEs.Any(evse => evse.Id == EVSE.Id);
-
-        #endregion
 
         #region ContainsEVSE(EVSEId)
 
@@ -687,9 +585,9 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
-        #region TryGetEVSEbyId(EVSEId, out EVSE)
+        #region TryGetEVSEById(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out IRemoteEVSE EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE EVSE)
         {
 
             EVSE = GetEVSEById(EVSEId);
@@ -700,8 +598,9 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
         #endregion
 
+        #endregion
 
-        #region OnRemoteEVSEData/(Admin)StatusChanged
+        #region Events
 
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
@@ -719,6 +618,135 @@ namespace org.GraphDefined.WWCP.ChargingStations
         public event OnRemoteEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
 
         #endregion
+
+        #region (private) AddEVSE(NewRemoteEVSE)
+
+        private Boolean AddNewEVSE(IRemoteEVSE NewRemoteEVSE)
+        {
+
+            if (_EVSEs.Add(NewRemoteEVSE))
+            {
+
+                NewRemoteEVSE.OnAdminStatusChanged     += UpdateEVSEAdminStatus;
+                NewRemoteEVSE.OnStatusChanged          += UpdateEVSEStatus;
+
+                NewRemoteEVSE.OnNewReservation         += SendNewReservation;
+                NewRemoteEVSE.OnReservationCanceled    += SendReservationCanceled;
+                NewRemoteEVSE.OnNewChargingSession     += SendNewChargingSession;
+                NewRemoteEVSE.OnNewChargeDetailRecord  += SendNewChargeDetailRecord;
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region CreateVirtualEVSE(EVSEId, ..., Configurator = null, OnSuccess = null, OnError = null, ...)
+
+        /// <summary>
+        /// Create and register a new EVSE having the given
+        /// unique EVSE identification.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of the new EVSE.</param>
+        /// <param name="Configurator">An optional delegate to configure the new EVSE after its creation.</param>
+        /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
+        /// <param name="OnError">An optional delegate for signaling errors.</param>
+        public VirtualEVSE CreateVirtualEVSE(EVSE_Id                       EVSEId,
+                                             I18NString                    Description              = null,
+                                             EVSEAdminStatusTypes          InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
+                                             EVSEStatusTypes               InitialStatus            = EVSEStatusTypes.Available,
+                                             EnergyMeter_Id?               EnergyMeterId            = null,
+                                             String                        EllipticCurve            = "P-256",
+                                             ECPrivateKeyParameters        PrivateKey               = null,
+                                             PublicKeyCertificates         PublicKeyCertificates    = null,
+                                             TimeSpan?                     SelfCheckTimeSpan        = null,
+                                             Action<VirtualEVSE>           Configurator             = null,
+                                             Action<VirtualEVSE>           OnSuccess                = null,
+                                             Action<VirtualEVSE, EVSE_Id>  OnError                  = null,
+                                             UInt16                        MaxAdminStatusListSize   = VirtualEVSE.DefaultMaxAdminStatusListSize,
+                                             UInt16                        MaxStatusListSize        = VirtualEVSE.DefaultMaxStatusListSize)
+        {
+
+            #region Initial checks
+
+            if (_EVSEs.Any(evse => evse.Id == EVSEId))
+            {
+                throw new Exception("EVSEAlreadyExistsInStation");
+               // if (OnError == null)
+               //     throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
+               // else
+               //     OnError?.Invoke(this, EVSEId);
+            }
+
+            #endregion
+
+            var Now             = DateTime.UtcNow;
+            var newVirtualEVSE  = new VirtualEVSE(EVSEId,
+                                                  Description,
+                                                  InitialAdminStatus,
+                                                  InitialStatus,
+                                                  EnergyMeterId,
+                                                  EllipticCurve,
+                                                  PrivateKey,
+                                                  PublicKeyCertificates,
+                                                  SelfCheckTimeSpan,
+                                                  MaxAdminStatusListSize,
+                                                  MaxStatusListSize);
+
+            Configurator?.Invoke(newVirtualEVSE);
+
+            if (AddNewEVSE(newVirtualEVSE))
+            {
+                OnSuccess?.Invoke(newVirtualEVSE);
+                return newVirtualEVSE;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region AddEVSE(RemoteEVSE, Configurator = null, OnSuccess = null, OnError = null)
+
+        public IRemoteEVSE AddEVSE(IRemoteEVSE                       RemoteEVSE,
+                                   Action<IRemoteEVSE>               Configurator  = null,
+                                   Action<IRemoteEVSE>               OnSuccess     = null,
+                                   Action<ChargingStation, EVSE_Id>  OnError       = null)
+
+        {
+
+            #region Initial checks
+
+            if (_EVSEs.Any(evse => evse.Id == RemoteEVSE.Id))
+            {
+                throw new Exception("EVSEAlreadyExistsInStation");
+                // if (OnError == null)
+                //     throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
+                // else
+                //     OnError?.Invoke(this, EVSEId);
+            }
+
+            #endregion
+
+            Configurator?.Invoke(RemoteEVSE);
+
+            if (AddNewEVSE(RemoteEVSE))
+            {
+                OnSuccess?.Invoke(RemoteEVSE);
+                return RemoteEVSE;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
 
         #region (internal) UpdateEVSEData(Timestamp, RemoteEVSE, OldStatus, NewStatus)
 
@@ -804,10 +832,20 @@ namespace org.GraphDefined.WWCP.ChargingStations
         #endregion
 
 
-        IRemoteEVSE IRemoteChargingStation.CreateNewEVSE(EVSE_Id EVSEId, Action<EVSE> Configurator = null, Action<EVSE> OnSuccess = null, Action<ChargingStation, EVSE_Id> OnError = null)
-        {
-            throw new NotImplementedException();
-        }
+        #region GetEVSEStatus(...)
+
+        public async Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime           Timestamp,
+                                                                 CancellationToken  CancellationToken,
+                                                                 EventTracking_Id   EventTrackingId,
+                                                                 TimeSpan?          RequestTimeout  = null)
+
+            => _EVSEs.Select(evse => new EVSEStatus(evse.Id,
+                                                    new Timestamped<EVSEStatusTypes>(
+                                                        evse.Status.Timestamp,
+                                                        evse.Status.Value
+                                                    )));
+
+        #endregion
 
 
         // Socket events
@@ -843,22 +881,6 @@ namespace org.GraphDefined.WWCP.ChargingStations
                 return SocketOutletRemoval;
             }
         }
-
-        #endregion
-
-
-        #region GetEVSEStatus(...)
-
-        public async Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime           Timestamp,
-                                                                 CancellationToken  CancellationToken,
-                                                                 EventTracking_Id   EventTrackingId,
-                                                                 TimeSpan?          RequestTimeout  = null)
-
-            => _EVSEs.Select(evse => new EVSEStatus(evse.Id,
-                                                    new Timestamped<EVSEStatusTypes>(
-                                                        evse.Status.Timestamp,
-                                                        evse.Status.Value
-                                                    )));
 
         #endregion
 
@@ -928,7 +950,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
         #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
-        /// Reserve the possibility to charge at this station.
+        /// Reserve the possibility to charge at this charging station.
         /// </summary>
         /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
@@ -1066,159 +1088,169 @@ namespace org.GraphDefined.WWCP.ChargingStations
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnReserveRequest));
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
 
 
-            if (ChargingLocation.ChargingStationId.HasValue && ChargingLocation.ChargingStationId.Value != Id)
-                result = ReservationResult.UnknownLocation;
-
-            else if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                     AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+            try
             {
 
-                #region Check if the eMAId is on the white list
+                if (ChargingLocation.ChargingStationId.HasValue && ChargingLocation.ChargingStationId.Value != Id)
+                    result = ReservationResult.UnknownLocation;
 
-                if (UseWhiteLists &&
-                   !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
-                {
-                    result = ReservationResult.InvalidCredentials;
-                }
-
-                #endregion
-
-                else
+                else if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                         AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
                 {
 
-                    if (ReservationLevel == ChargingReservationLevel.EVSE &&
-                        ChargingLocation.EVSEId.HasValue &&
-                        TryGetEVSEbyId(ChargingLocation.EVSEId.Value, out IRemoteEVSE remoteEVSE))
+                    #region Check if the eMAId is on the white list
+
+                    if (UseWhiteLists &&
+                       !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
                     {
-
-                        result = await remoteEVSE.
-                                           Reserve(ChargingLocation,
-                                                   ReservationLevel,
-                                                   StartTime,
-                                                   Duration,
-                                                   ReservationId,
-                                                   ProviderId,
-                                                   RemoteAuthentication,
-                                                   ChargingProduct,
-                                                   AuthTokens,
-                                                   eMAIds,
-                                                   PINs,
-
-                                                   Timestamp,
-                                                   CancellationToken,
-                                                   EventTrackingId,
-                                                   RequestTimeout);
-
-                        newReservation = result.Reservation;
-
+                        result = ReservationResult.InvalidCredentials;
                     }
 
-                    else if (ReservationLevel == ChargingReservationLevel.ChargingStation &&
-                             ChargingLocation.ChargingStationId.HasValue)
+                    #endregion
+
+                    else
                     {
 
-                        var results = new List<ReservationResult>();
-
-                        foreach (var remoteEVSE2 in _EVSEs)
+                        if (ReservationLevel == ChargingReservationLevel.EVSE &&
+                            ChargingLocation.EVSEId.HasValue &&
+                            TryGetEVSEById(ChargingLocation.EVSEId.Value, out IRemoteEVSE remoteEVSE))
                         {
 
-                            results.Add(await remoteEVSE2.
-                                                  Reserve(ChargingLocation,
-                                                          ReservationLevel,
-                                                          StartTime,
-                                                          Duration,
-                                                          ChargingReservation_Id.Random(OperatorId),
-                                                          ProviderId,
-                                                          RemoteAuthentication,
-                                                          ChargingProduct,
-                                                          AuthTokens,
-                                                          eMAIds,
-                                                          PINs,
+                            result = await remoteEVSE.
+                                               Reserve(ChargingLocation,
+                                                       ReservationLevel,
+                                                       StartTime,
+                                                       Duration,
+                                                       ReservationId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
+                                                       ChargingProduct,
+                                                       AuthTokens,
+                                                       eMAIds,
+                                                       PINs,
 
-                                                          Timestamp,
-                                                          CancellationToken,
-                                                          EventTrackingId,
-                                                          RequestTimeout));
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
+
+                            newReservation = result.Reservation;
 
                         }
 
-                        var newReservations = results.Where (_result => _result.Result == ReservationResultType.Success).
-                                                      Select(_result => _result.Reservation).
-                                                      ToArray();
-
-                        if (newReservations.Length > 0)
+                        else if (ReservationLevel == ChargingReservationLevel.ChargingStation &&
+                                 ChargingLocation.ChargingStationId.HasValue)
                         {
 
-                            newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
-                                                                     Timestamp:               Timestamp.Value,
-                                                                     StartTime:               StartTime ?? DateTime.UtcNow,
-                                                                     Duration:                Duration  ?? MaxReservationDuration,
-                                                                     EndTime:                 (StartTime ?? DateTime.UtcNow) + (Duration ?? MaxReservationDuration),
-                                                                     ConsumedReservationTime: TimeSpan.FromSeconds(0),
-                                                                     ReservationLevel:        ReservationLevel,
-                                                                     ProviderId:              ProviderId,
-                                                                     Identification:          RemoteAuthentication,
-                                                                     RoamingNetwork:          null,
-                                                                     ChargingPoolId:          null,
-                                                                     ChargingStationId:       Id,
-                                                                     EVSEId:                  null,
-                                                                     ChargingProduct:         ChargingProduct,
-                                                                     SubReservations:         newReservations);
+                            var results = new List<ReservationResult>();
 
-                            foreach (var subReservation in newReservation.SubReservations)
+                            foreach (var remoteEVSE2 in _EVSEs)
                             {
-                                subReservation.ParentReservation = newReservation;
-                                subReservation.ChargingStationId = Id;
+
+                                results.Add(await remoteEVSE2.
+                                                      Reserve(ChargingLocation,
+                                                              ReservationLevel,
+                                                              StartTime,
+                                                              Duration,
+                                                              ChargingReservation_Id.Random(OperatorId),
+                                                              ProviderId,
+                                                              RemoteAuthentication,
+                                                              ChargingProduct,
+                                                              AuthTokens,
+                                                              eMAIds,
+                                                              PINs,
+
+                                                              Timestamp,
+                                                              CancellationToken,
+                                                              EventTrackingId,
+                                                              RequestTimeout));
+
                             }
 
-                            result = ReservationResult.Success(newReservation);
+                            var newReservations = results.Where (_result => _result.Result == ReservationResultType.Success).
+                                                          Select(_result => _result.Reservation).
+                                                          ToArray();
+
+                            if (newReservations.Length > 0)
+                            {
+
+                                newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
+                                                                         Timestamp:               Timestamp.Value,
+                                                                         StartTime:               StartTime ?? DateTime.UtcNow,
+                                                                         Duration:                Duration  ?? MaxReservationDuration,
+                                                                         EndTime:                 (StartTime ?? DateTime.UtcNow) + (Duration ?? MaxReservationDuration),
+                                                                         ConsumedReservationTime: TimeSpan.FromSeconds(0),
+                                                                         ReservationLevel:        ReservationLevel,
+                                                                         ProviderId:              ProviderId,
+                                                                         Identification:          RemoteAuthentication,
+                                                                         RoamingNetwork:          null,
+                                                                         ChargingPoolId:          null,
+                                                                         ChargingStationId:       Id,
+                                                                         EVSEId:                  null,
+                                                                         ChargingProduct:         ChargingProduct,
+                                                                         SubReservations:         newReservations);
+
+                                foreach (var subReservation in newReservation.SubReservations)
+                                {
+                                    subReservation.ParentReservation = newReservation;
+                                    subReservation.ChargingStationId = Id;
+                                }
+
+                                result = ReservationResult.Success(newReservation);
+
+                            }
+
+                            else
+                                result = ReservationResult.AlreadyReserved;
 
                         }
 
                         else
-                            result = ReservationResult.AlreadyReserved;
+                            result = ReservationResult.UnknownLocation;
 
                     }
 
-                    else
-                        result = ReservationResult.UnknownLocation;
-
                 }
-
-            }
-            else
-            {
-
-                switch (AdminStatus.Value)
+                else
                 {
 
-                    default:
-                        return ReservationResult.OutOfService;
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = ReservationResult.OutOfService;
+                            break;
+
+                    }
+
+                }
+
+
+                if (result.Result == ReservationResultType.Success &&
+                    newReservation != null)
+                {
+
+                    _Reservations.Add(newReservation.Id, newReservation);
+
+                    foreach (var subReservation in newReservation.SubReservations)
+                        _Reservations.Add(subReservation.Id, subReservation);
+
+                    OnNewReservation?.Invoke(DateTime.UtcNow,
+                                             this,
+                                             newReservation);
 
                 }
 
             }
-
-
-            if (result.Result == ReservationResultType.Success &&
-                newReservation != null)
+            catch (Exception e)
             {
-
-                _Reservations.Add(newReservation.Id, newReservation);
-
-                foreach (var subReservation in newReservation.SubReservations)
-                    _Reservations.Add(subReservation.Id, subReservation);
-
-                OnNewReservation?.Invoke(DateTime.UtcNow,
-                                         this,
-                                         newReservation);
-
+                result = ReservationResult.Error(e.Message);
             }
 
 
@@ -1250,7 +1282,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnReserveResponse));
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -1299,82 +1331,239 @@ namespace org.GraphDefined.WWCP.ChargingStations
                 EventTrackingId = EventTracking_Id.New;
 
 
-            CancelReservationResult result = null;
+            ChargingReservation     canceledReservation  = null;
+            CancelReservationResult result               = null;
 
             #endregion
 
-            #region Check admin status
+            #region Send OnCancelReservationRequest event
 
-            if (AdminStatus.Value != ChargingStationAdminStatusTypes.Operational &&
-                AdminStatus.Value != ChargingStationAdminStatusTypes.InternalUse)
-                return CancelReservationResult.OutOfService(ReservationId,
-                                                            Reason);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                OnCancelReservationRequest?.Invoke(DateTime.UtcNow,
+                                                   Timestamp.Value,
+                                                   this,
+                                                   EventTrackingId,
+                                                   ProviderId,
+                                                   ReservationId,
+                                                   Reason,
+                                                   RequestTimeout);
+
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnCancelReservationRequest));
+            }
 
             #endregion
 
 
-            var _Reservation = Reservations.FirstOrDefault(reservation => reservation.Id == ReservationId);
-
-            if (_Reservation        != null &&
-                _Reservation.EVSEId.HasValue)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
-                result = await GetEVSEById(_Reservation.EVSEId.Value).
-                                   CancelReservation(ReservationId,
-                                                     Reason,
-                                                     ProviderId,
+                if (TryGetChargingReservationById(ReservationId, out canceledReservation))
+                {
 
-                                                     Timestamp,
-                                                     CancellationToken,
-                                                     EventTrackingId,
-                                                     RequestTimeout);
+                    if (canceledReservation.EVSEId.HasValue)
+                    {
 
-                if (result.Result != CancelReservationResultTypes.UnknownReservationId)
-                    return result;
+                        result = await GetEVSEById(canceledReservation.EVSEId.Value).
+                                           CancelReservation(ReservationId,
+                                                             Reason,
+                                                             ProviderId,
+
+                                                             Timestamp,
+                                                             CancellationToken,
+                                                             EventTrackingId,
+                                                             RequestTimeout);
+
+                    }
+
+                    if (result.Result == CancelReservationResultTypes.UnknownReservationId)
+                    {
+                        foreach (var evse in _EVSEs)
+                        {
+
+                            result = await evse.CancelReservation(ReservationId,
+                                                                  Reason,
+                                                                  ProviderId,
+
+                                                                  Timestamp,
+                                                                  CancellationToken,
+                                                                  EventTrackingId,
+                                                                  RequestTimeout);
+
+                        }
+                    }
+
+
+                    if (canceledReservation.SubReservations.SafeAny())
+                    {
+
+                        var results = new List<CancelReservationResult>();
+
+                        foreach (var subReservation in canceledReservation.SubReservations)
+                        {
+                            if (subReservation.EVSEId.HasValue)
+                            {
+
+                                results.Add(await GetEVSEById(subReservation.EVSEId.Value).
+                                                      CancelReservation(ReservationId,
+                                                                        Reason,
+                                                                        ProviderId,
+
+                                                                        Timestamp,
+                                                                        CancellationToken,
+                                                                        EventTrackingId,
+                                                                        RequestTimeout));
+
+                            }
+                        }
+
+                        if (result.Result                         == CancelReservationResultTypes.Success &&
+                            results.All(result2 => result2.Result == CancelReservationResultTypes.Success ||
+                                                   result2.Result == CancelReservationResultTypes.UnknownReservationId))
+                        {
+                            result = CancelReservationResult.Success(ReservationId,
+                                                                     Reason);
+                        }
+
+                        //ToDo: Define a better result!
+
+                    }
+
+                }
+
+
+            }
+            else
+            {
+
+                switch (AdminStatus.Value)
+                {
+
+                    default:
+                        result = CancelReservationResult.OutOfService(ReservationId,
+                                                                      Reason);
+                        break;
+
+                }
 
             }
 
-            foreach (var evse in _EVSEs)
+
+            #region Send OnCancelReservationResponse event
+
+            Runtime.Stop();
+
+            try
             {
 
-                result = await evse.CancelReservation(ReservationId,
-                                                      Reason,
-                                                      ProviderId,
-
-                                                      Timestamp,
-                                                      CancellationToken,
-                                                      EventTrackingId,
-                                                      RequestTimeout);
-
-                if (result.Result != CancelReservationResultTypes.UnknownReservationId)
-                    return result;
+                OnCancelReservationResponse?.Invoke(DateTime.UtcNow,
+                                                    Timestamp.Value,
+                                                    this,
+                                                    EventTrackingId,
+                                                    ProviderId,
+                                                    ReservationId,
+                                                    canceledReservation,
+                                                    Reason,
+                                                    result,
+                                                    Runtime.Elapsed,
+                                                    RequestTimeout);
 
             }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnCancelReservationResponse));
+            }
 
-            return CancelReservationResult.UnknownReservationId(ReservationId,
-                                                                Reason);
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region CheckIfReservationIsExpired(State)
+
+        /// <summary>
+        /// Check if the reservation is expired.
+        /// </summary>
+        public void CheckIfReservationIsExpired(Object State)
+        {
+
+            if (Monitor.TryEnter(ReservationExpiredLock))
+            {
+
+                try
+                {
+
+                    ChargingReservation[] expiredReservations = null;
+
+                    lock (_Reservations)
+                    {
+                        expiredReservations = _Reservations.Values.Where(reservation => reservation.IsExpired()).ToArray();
+                    }
+
+                    foreach (var expiredReservation in expiredReservations)
+                    {
+
+                        lock (_Reservations)
+                        {
+                            _Reservations.Remove(expiredReservation.Id);
+                        }
+
+                        //if (Status.Value == EVSEStatusTypes.Reserved &&
+                        //    !_Reservations.Any())
+                        //{
+                        //    // Will send events!
+                        //    SetStatus(EVSEStatusTypes.Available);
+                        //}
+
+                        OnReservationCanceled?.Invoke(DateTime.UtcNow,
+                                                      this,
+                                                      expiredReservation,
+                                                      ChargingReservationCancellationReason.Expired);
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogT(e.Message);
+                }
+                finally
+                {
+                    Monitor.Exit(ReservationExpiredLock);
+                }
+
+            }
 
         }
 
         #endregion
 
 
-        #region SendNewReservation
+        #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
         internal void SendNewReservation(DateTime             Timestamp,
                                          Object               Sender,
                                          ChargingReservation  Reservation)
         {
 
-            OnNewReservation?.Invoke(Timestamp,
-                                     Sender,
-                                     Reservation);
+            OnNewReservation?.Invoke(Timestamp, Sender, Reservation);
 
         }
 
         #endregion
 
-        #region SendReservationCanceled
+        #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
         internal void SendReservationCanceled(DateTime                               Timestamp,
                                               Object                                 Sender,
@@ -1382,10 +1571,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
                                               ChargingReservationCancellationReason  Reason)
         {
 
-            OnReservationCanceled?.Invoke(Timestamp,
-                                          Sender,
-                                          Reservation,
-                                          Reason);
+            OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
 
         }
 
@@ -1428,6 +1614,11 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// </summary>
         public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
 
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate     OnNewChargingSession;
+
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
@@ -1438,12 +1629,6 @@ namespace org.GraphDefined.WWCP.ChargingStations
         /// An event fired whenever a remote stop command completed.
         /// </summary>
         public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
-
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate     OnNewChargingSession;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
@@ -1524,9 +1709,13 @@ namespace org.GraphDefined.WWCP.ChargingStations
                         CancellationToken?       CancellationToken      = null,
                         EventTracking_Id         EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
+
         {
 
             #region Initial checks
+
+            if (SessionId == null)
+                SessionId = ChargingSession_Id.New;
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
@@ -1542,51 +1731,128 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
             #endregion
 
-            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+            #region Send OnRemoteStartRequest event
+
+            var Runtime = Stopwatch.StartNew();
+
+            try
             {
 
-                #region Check if the eMAId is on the white list
-
-                if (UseWhiteLists &&
-                   !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
-                    return RemoteStartResult.InvalidCredentials;
-
-                #endregion
-
-                if (!ChargingLocation.EVSEId.HasValue)
-                    return RemoteStartResult.UnknownLocation;
-
-                var remoteEVSE = GetEVSEById(ChargingLocation.EVSEId.Value);
-                if (remoteEVSE == null)
-                    return RemoteStartResult.UnknownLocation;
-
-
-                return await remoteEVSE.
-                                 RemoteStart(ChargingProduct,
+                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             ChargingLocation,
+                                             ChargingProduct,
                                              ReservationId,
                                              SessionId,
                                              ProviderId,
                                              RemoteAuthentication,
-
-                                             Timestamp,
-                                             CancellationToken,
-                                             EventTrackingId,
                                              RequestTimeout);
 
             }
-            else
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnRemoteStartRequest));
+            }
+
+            #endregion
+
+
+            try
             {
 
-                switch (AdminStatus.Value)
+                if (ChargingLocation.ChargingStationId.HasValue &&
+                    ChargingLocation.ChargingStationId.Value != Id)
+                {
+                    result = RemoteStartResult.UnknownLocation;
+                }
+
+                else if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                         AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
                 {
 
-                    default:
-                        return RemoteStartResult.OutOfService;
+                    #region Check if the eMAId is on the white list
+
+                    if (UseWhiteLists &&
+                       !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
+                    {
+                        result = RemoteStartResult.InvalidCredentials;
+                    }
+
+                    #endregion
+
+                    else if (!ChargingLocation.EVSEId.HasValue)
+                        result = RemoteStartResult.UnknownLocation;
+
+                    else if (!TryGetEVSEById(ChargingLocation.EVSEId.Value, out IRemoteEVSE remoteEVSE))
+                        result = RemoteStartResult.UnknownLocation;
+
+                    else
+                        result = await remoteEVSE.
+                                           RemoteStart(ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
+
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
+
+                }
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = RemoteStartResult.OutOfService;
+                            break;
+
+                    }
 
                 }
 
             }
+            catch (Exception e)
+            {
+                result = RemoteStartResult.Error(e.Message);
+            }
+
+
+            #region Send OnRemoteStartResponse event
+
+            Runtime.Stop();
+
+            try
+            {
+
+                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
+                                              Timestamp.Value,
+                                              this,
+                                              EventTrackingId,
+                                              ChargingLocation,
+                                              ChargingProduct,
+                                              ReservationId,
+                                              SessionId,
+                                              ProviderId,
+                                              RemoteAuthentication,
+                                              RequestTimeout,
+                                              result,
+                                              Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnRemoteStartResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
@@ -1622,6 +1888,9 @@ namespace org.GraphDefined.WWCP.ChargingStations
 
             #region Initial checks
 
+            if (SessionId == null)
+                SessionId = ChargingSession_Id.New;
+
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
 
@@ -1631,115 +1900,203 @@ namespace org.GraphDefined.WWCP.ChargingStations
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
+
+            RemoteStopResult result = null;
+
+            #endregion
+
+            #region Send OnRemoteStopRequest event
+
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
+                                            Timestamp.Value,
+                                            this,
+                                            EventTrackingId,
+                                            SessionId,
+                                            ReservationHandling,
+                                            ProviderId,
+                                            RemoteAuthentication,
+                                            RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnRemoteStopRequest));
+            }
+
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
+            try
             {
 
-                #region Check if the eMAId is on the white list
-
-                if (UseWhiteLists &&
-                   !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
-                    return RemoteStopResult.InvalidCredentials(SessionId);
-
-                #endregion
-
-                var remoteEVSE = _EVSEs.FirstOrDefault(evse => evse.ChargingSessions.Any(session => session.Id == SessionId));
-
-                if (remoteEVSE == null)
-                    return RemoteStopResult.InvalidSessionId(SessionId);
-
-
-                var result = await remoteEVSE.
-                                       RemoteStop(SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  RemoteAuthentication,
-
-                                                  Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  RequestTimeout);
-
-                switch (result.Result)
+                if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                    AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
                 {
 
-                    case RemoteStopResultType.Error:
-                        return RemoteStopResult.Error(SessionId, result.Message);
+                    #region Check if the eMAId is on the white list
 
-                    case RemoteStopResultType.InternalUse:
-                        return RemoteStopResult.InternalUse(SessionId);
+                    if (UseWhiteLists &&
+                       !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
+                    {
+                        result = RemoteStopResult.InvalidCredentials(SessionId);
+                    }
 
-                    case RemoteStopResultType.InvalidSessionId:
-                        return RemoteStopResult.InvalidSessionId(SessionId);
+                    #endregion
 
-                    case RemoteStopResultType.Offline:
-                        return RemoteStopResult.Offline(SessionId);
+                    else if (!TryGetChargingSessionById(SessionId, out ChargingSession chargingSession))
+                    {
 
-                    case RemoteStopResultType.OutOfService:
-                        return RemoteStopResult.OutOfService(SessionId);
+                        foreach (var remoteEVSE in _EVSEs)
+                        {
 
-                    case RemoteStopResultType.Success:
-                        if (result.ChargeDetailRecord != null)
-                            return RemoteStopResult.Success(result.ChargeDetailRecord, result.ReservationId, result.ReservationHandling);
-                        else
-                            return RemoteStopResult.Success(result.SessionId, result.ReservationId, result.ReservationHandling);
+                            result = await remoteEVSE.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
 
-                    case RemoteStopResultType.Timeout:
-                        return RemoteStopResult.Timeout(SessionId);
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
 
-                    case RemoteStopResultType.UnknownOperator:
-                        return RemoteStopResult.UnknownOperator(SessionId);
+                            if (result.Result == RemoteStopResultType.Success)
+                                break;
 
-                    case RemoteStopResultType.Unspecified:
-                        return RemoteStopResult.Unspecified(SessionId);
+                        }
+
+                        if (result.Result != RemoteStopResultType.Success)
+                            result = RemoteStopResult.InvalidSessionId(SessionId);
+
+                    }
+
+                    else if (chargingSession.EVSE != null)
+                    {
+
+                        result = await chargingSession.EVSE.RemoteEVSE.
+                                           RemoteStop(SessionId,
+                                                      ReservationHandling,
+                                                      ProviderId,
+                                                      RemoteAuthentication,
+
+                                                      Timestamp,
+                                                      CancellationToken,
+                                                      EventTrackingId,
+                                                      RequestTimeout);
+
+                    }
+
+                    else if (chargingSession.EVSEId.HasValue &&
+                             TryGetEVSEById(chargingSession.EVSEId.Value, out IRemoteEVSE remoteEVSE))
+                    {
+
+                        result = await remoteEVSE.
+                                           RemoteStop(SessionId,
+                                                      ReservationHandling,
+                                                      ProviderId,
+                                                      RemoteAuthentication,
+
+                                                      Timestamp,
+                                                      CancellationToken,
+                                                      EventTrackingId,
+                                                      RequestTimeout);
+
+                    }
+
+                    result = RemoteStopResult.UnknownLocation(SessionId);
+
+                }
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = RemoteStopResult.OutOfService(SessionId);
+                            break;
+
+                    }
 
                 }
 
-                return RemoteStopResult.Error(SessionId);
-
             }
-            else
+            catch (Exception e)
+            {
+                result = RemoteStopResult.Error(SessionId,
+                                                e.Message);
+            }
+
+
+            #region Send OnRemoteStopResponse event
+
+            Runtime.Stop();
+
+            try
             {
 
-                switch (AdminStatus.Value)
-                {
-
-                    default:
-                        return RemoteStopResult.OutOfService(SessionId);
-
-                }
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             SessionId,
+                                             ReservationHandling,
+                                             ProviderId,
+                                             RemoteAuthentication,
+                                             RequestTimeout,
+                                             result,
+                                             Runtime.Elapsed);
 
             }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingStation) + "." + nameof(OnRemoteStopResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
         #endregion
 
 
-        #region SendNewChargingSession
+        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
-                                             ChargingSession  ChargingSession)
+                                             ChargingSession  Session)
         {
 
-            OnNewChargingSession?.Invoke(Timestamp, Sender, ChargingSession);
+            if (Session != null)
+            {
+
+                if (Session.ChargingStation == null)
+                    Session.ChargingStationId  = Id;
+
+                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
+
+            }
 
         }
 
         #endregion
 
-        #region SendNewChargeDetailRecord
+        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
         internal void SendNewChargeDetailRecord(DateTime            Timestamp,
                                                 Object              Sender,
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
+            if (ChargeDetailRecord != null)
+                OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
 
@@ -1773,6 +2130,113 @@ namespace org.GraphDefined.WWCP.ChargingStations
         #endregion
 
 
+        #region Operator overloading
+
+        #region Operator == (VirtualChargingStation1, VirtualChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingStation1">A virtual charging station.</param>
+        /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(VirtualChargingStation1, VirtualChargingStation2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if ((VirtualChargingStation1 is null) || (VirtualChargingStation2 is null))
+                return false;
+
+            return VirtualChargingStation1.Equals(VirtualChargingStation2);
+
+        }
+
+        #endregion
+
+        #region Operator != (VirtualChargingStation1, VirtualChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingStation1">A virtual charging station.</param>
+        /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
+            => !(VirtualChargingStation1 == VirtualChargingStation2);
+
+        #endregion
+
+        #region Operator <  (VirtualChargingStation1, VirtualChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingStation1">A virtual charging station.</param>
+        /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
+        {
+
+            if (VirtualChargingStation1 is null)
+                throw new ArgumentNullException(nameof(VirtualChargingStation1), "The given VirtualChargingStation1 must not be null!");
+
+            return VirtualChargingStation1.CompareTo(VirtualChargingStation2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (VirtualChargingStation1, VirtualChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingStation1">A virtual charging station.</param>
+        /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
+            => !(VirtualChargingStation1 > VirtualChargingStation2);
+
+        #endregion
+
+        #region Operator >  (VirtualChargingStation1, VirtualChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingStation1">A virtual charging station.</param>
+        /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
+        {
+
+            if (VirtualChargingStation1 is null)
+                throw new ArgumentNullException(nameof(VirtualChargingStation1), "The given VirtualChargingStation1 must not be null!");
+
+            return VirtualChargingStation1.CompareTo(VirtualChargingStation2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (VirtualChargingStation1, VirtualChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingStation1">A virtual charging station.</param>
+        /// <param name="VirtualChargingStation2">Another virtual charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (VirtualChargingStation VirtualChargingStation1, VirtualChargingStation VirtualChargingStation2)
+            => !(VirtualChargingStation1 < VirtualChargingStation2);
+
+        #endregion
+
+        #endregion
 
         #region IComparable<VirtualChargingStation> Members
 
@@ -1785,7 +2249,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is VirtualChargingStation VirtualChargingStation))
@@ -1806,7 +2270,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
         public Int32 CompareTo(VirtualChargingStation VirtualChargingStation)
         {
 
-            if ((Object) VirtualChargingStation == null)
+            if (VirtualChargingStation is null)
                 throw new ArgumentNullException(nameof(VirtualChargingStation),  "The given virtual charging station must not be null!");
 
             return Id.CompareTo(VirtualChargingStation.Id);
@@ -1832,8 +2296,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
             if (Object == null)
                 return false;
 
-            var VirtualChargingStation = Object as VirtualChargingStation;
-            if ((Object) VirtualChargingStation == null)
+            if (!(Object is VirtualChargingStation VirtualChargingStation))
                 return false;
 
             return Equals(VirtualChargingStation);
@@ -1852,7 +2315,7 @@ namespace org.GraphDefined.WWCP.ChargingStations
         public Boolean Equals(VirtualChargingStation VirtualChargingStation)
         {
 
-            if ((Object) VirtualChargingStation == null)
+            if (VirtualChargingStation is null)
                 return false;
 
             return Id.Equals(VirtualChargingStation.Id);

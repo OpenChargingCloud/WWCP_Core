@@ -27,6 +27,7 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Bcpg;
 using System.IO;
 using System.Text.RegularExpressions;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -342,6 +343,9 @@ namespace org.GraphDefined.WWCP
         public IEnumerable<SignedMeteringValue>     SignedMeteringValues   { get; }
 
         #endregion
+
+
+        public ECPublicKeyParameters PublicKey { get; }
 
         private readonly HashSet<String> _Signatures;
 

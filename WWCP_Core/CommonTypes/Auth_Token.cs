@@ -178,7 +178,7 @@ namespace org.GraphDefined.WWCP
 
         #region Operator overloading
 
-        #region Provider == (AuthToken1, AuthToken2)
+        #region Operator == (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -203,7 +203,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider != (AuthToken1, AuthToken2)
+        #region Operator != (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -216,7 +216,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider <  (AuthToken1, AuthToken2)
+        #region Operator <  (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -236,7 +236,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider <= (AuthToken1, AuthToken2)
+        #region Operator <= (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -249,7 +249,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider >  (AuthToken1, AuthToken2)
+        #region Operator >  (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -269,7 +269,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider >= (AuthToken1, AuthToken2)
+        #region Operator >= (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.

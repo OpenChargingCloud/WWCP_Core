@@ -205,9 +205,9 @@ namespace org.GraphDefined.WWCP
 
 
 
-        Task CheckIfReservationIsExpired();
+        //Task CheckIfReservationIsExpired();
 
-        IRemoteChargingStation ChargingStation { get; }
+        //IRemoteChargingStation ChargingStation { get; }
         ChargingStationOperator_Id OperatorId { get; }
 
         IEnumerator<SocketOutlet> GetEnumerator();

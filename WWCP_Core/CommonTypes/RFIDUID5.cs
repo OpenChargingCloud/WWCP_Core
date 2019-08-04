@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP
 
         #region Operator overloading
 
-        #region Provider == (RFIDUID51, RFIDUID52)
+        #region Operator == (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -214,7 +214,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider != (RFIDUID51, RFIDUID52)
+        #region Operator != (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -227,7 +227,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider <  (RFIDUID51, RFIDUID52)
+        #region Operator <  (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -247,7 +247,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider <= (RFIDUID51, RFIDUID52)
+        #region Operator <= (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -260,7 +260,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider >  (RFIDUID51, RFIDUID52)
+        #region Operator >  (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Provider >= (RFIDUID51, RFIDUID52)
+        #region Operator >= (RFIDUID51, RFIDUID52)
 
         /// <summary>
         /// Compares two instances of this object.

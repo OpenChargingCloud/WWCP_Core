@@ -20,22 +20,26 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
+using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Math.EC;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Parameters;
 
-using org.GraphDefined.WWCP.ChargingStations;
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using Org.BouncyCastle.Bcpg.OpenPgp;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.ChargingPools
+namespace org.GraphDefined.WWCP.Virtual
 {
 
     /// <summary>
-    /// A demo implementation of a virtual WWCP charging pool.
+    /// A virtual charging pool.
     /// </summary>
     public class VirtualChargingPool : AEMobilityEntity<ChargingPool_Id>,
                                        IEquatable<VirtualChargingPool>, IComparable<VirtualChargingPool>, IComparable,
@@ -64,22 +68,12 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
         #region Properties
 
-        #region Id
-
-        private ChargingPool_Id _Id;
-
         /// <summary>
-        /// The unique identification of this virtual charging pool.
+        /// The identification of the operator of this virtual EVSE.
         /// </summary>
-        public ChargingPool_Id Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
-
-        #endregion
+        [InternalUseOnly]
+        public ChargingStationOperator_Id OperatorId
+            => Id.OperatorId;
 
         #region Description
 
@@ -206,23 +200,12 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
         #endregion
 
-        #endregion
-
-        #region Links
-
-        #region ChargingPool
-
-        private readonly ChargingPool _ChargingPool;
-
-        public ChargingPool ChargingPool
-        {
-            get
-            {
-                return _ChargingPool;
-            }
-        }
-
-        #endregion
+        public String                  EllipticCurve            { get; }
+        public X9ECParameters          ECP                      { get; }
+        public ECDomainParameters      ECSpec                   { get; }
+        public FpCurve                 C                        { get; }
+        public ECPrivateKeyParameters  PrivateKey               { get; }
+        public PublicKeyCertificates   PublicKeyCertificates    { get; }
 
         #endregion
 
@@ -235,11 +218,16 @@ namespace org.GraphDefined.WWCP.ChargingPools
         #region Constructor(s)
 
         /// <summary>
-        /// A virtual WWCP charging pool.
+        /// Create a new virtual charging pool.
         /// </summary>
         public VirtualChargingPool(ChargingPool_Id               Id,
+                                   I18NString                    Description              = null,
                                    ChargingPoolAdminStatusTypes  InitialAdminStatus       = ChargingPoolAdminStatusTypes.Operational,
                                    ChargingPoolStatusTypes       InitialStatus            = ChargingPoolStatusTypes.Available,
+                                   String                        EllipticCurve            = "P-256",
+                                   ECPrivateKeyParameters        PrivateKey               = null,
+                                   PublicKeyCertificates         PublicKeyCertificates    = null,
+                                   TimeSpan?                     SelfCheckTimeSpan        = null,
                                    UInt16                        MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
                                    UInt16                        MaxStatusListSize        = DefaultMaxStatusListSize)
 
@@ -249,13 +237,54 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
             #region Init data and properties
 
-            this._ChargingStations             = new HashSet<IRemoteChargingStation>();
+            this._Description          = Description ?? I18NString.Empty;
+
+            this._ChargingStations     = new HashSet<IRemoteChargingStation>();
 
             this._AdminStatusSchedule  = new StatusSchedule<ChargingPoolAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus);
 
             this._StatusSchedule       = new StatusSchedule<ChargingPoolStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.Insert(InitialStatus);
+
+            #endregion
+
+            #region Setup crypto
+
+            this.EllipticCurve          = EllipticCurve ?? "P-256";
+            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
+            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
+            this.C                      = (FpCurve) ECSpec.Curve;
+            this.PrivateKey             = PrivateKey;
+            this.PublicKeyCertificates  = PublicKeyCertificates;
+
+            if (PrivateKey == null && PublicKeyCertificates == null)
+            {
+
+                var generator = GeneratorUtilities.GetKeyPairGenerator("ECDH");
+                generator.Init(new ECKeyGenerationParameters(ECSpec, new SecureRandom()));
+
+                var  keyPair                = generator.GenerateKeyPair();
+                this.PrivateKey             = keyPair.Private as ECPrivateKeyParameters;
+                this.PublicKeyCertificates  = new PublicKeyCertificate(
+                                                  PublicKey:           new PublicKeyLifetime(
+                                                                           PublicKey:  keyPair.Public as ECPublicKeyParameters,
+                                                                           NotBefore:  DateTime.UtcNow,
+                                                                           NotAfter:   DateTime.UtcNow + TimeSpan.FromDays(365),
+                                                                           Algorithm:  "P-256",
+                                                                           Comment:    I18NString.Empty
+                                                                       ),
+                                                  Description:         I18NString.Create(Languages.eng, "Auto-generated test keys for a virtual charging pool!"),
+                                                  Operations:          JSONObject.Create(
+                                                                           new JProperty("signMeterValues",  true),
+                                                                           new JProperty("signCertificates",
+                                                                               JSONObject.Create(
+                                                                                   new JProperty("maxChilds", 2)
+                                                                               ))
+                                                                       ),
+                                                  ChargingPoolId:      Id);
+
+            }
 
             #endregion
 
@@ -273,6 +302,30 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
         #endregion
 
+
+        #region EVSEs...
+
+        #region TryGetEVSEById(EVSEId, out RemoteEVSE)
+
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE RemoteEVSE)
+        {
+
+            foreach (var station in _ChargingStations)
+            {
+
+                if (station.TryGetEVSEById(EVSEId, out RemoteEVSE))
+                    return true;
+
+            }
+
+            RemoteEVSE = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #endregion
 
         #region Charging stations...
 
@@ -359,27 +412,29 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
         #endregion
 
-        #region CreateVirtualStation(ChargingStation, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateVirtualStation(ChargingStationId, ..., Configurator = null, OnSuccess = null, OnError = null, ...)
 
         /// <summary>
         /// Create and register a new charging station having the given
         /// unique charging station identification.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ChargingStationId">The unique identification of the new charging station.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the charging station.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                               ChargingStationId,
-                                                           PgpSecretKeyRing                                 SecretKeyRing            = null,
-                                                           PgpPublicKeyRing                                 PublicKeyRing            = null,
-                                                           ChargingStationAdminStatusTypes                  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
-                                                           ChargingStationStatusTypes                       InitialStatus            = ChargingStationStatusTypes.Available,
-                                                           UInt16                                           MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                                           UInt16                                           MaxStatusListSize        = DefaultMaxStatusListSize,
-                                                           TimeSpan?                                        SelfCheckTimeSpan        = null,
-                                                           Action<VirtualChargingStation>                   Configurator             = null,
-                                                           Action<VirtualChargingStation>                   OnSuccess                = null,
-                                                           Action<VirtualChargingStation, ChargingStation_Id>  OnError                  = null)
+        public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                                  ChargingStationId,
+                                                           I18NString                                          Description              = null,
+                                                           ChargingStationAdminStatusTypes                     InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
+                                                           ChargingStationStatusTypes                          InitialStatus            = ChargingStationStatusTypes.Available,
+                                                           String                                              EllipticCurve            = "P-256",
+                                                           ECPrivateKeyParameters                              PrivateKey               = null,
+                                                           PublicKeyCertificates                               PublicKeyCertificates    = null,
+                                                           TimeSpan?                                           SelfCheckTimeSpan        = null,
+                                                           Action<VirtualChargingStation>                      Configurator             = null,
+                                                           Action<VirtualChargingStation>                      OnSuccess                = null,
+                                                           Action<VirtualChargingStation, ChargingStation_Id>  OnError                  = null,
+                                                           UInt16                                              MaxAdminStatusListSize   = VirtualChargingStation.DefaultMaxAdminStatusListSize,
+                                                           UInt16                                              MaxStatusListSize        = VirtualChargingStation.DefaultMaxStatusListSize)
         {
 
             #region Initial checks
@@ -397,14 +452,15 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
             var Now              = DateTime.UtcNow;
             var _VirtualStation  = new VirtualChargingStation(ChargingStationId,
-                                                              this,
-                                                              SecretKeyRing,
-                                                              PublicKeyRing,
+                                                              Description,
                                                               InitialAdminStatus,
                                                               InitialStatus,
+                                                              EllipticCurve,
+                                                              PrivateKey,
+                                                              PublicKeyCertificates,
+                                                              SelfCheckTimeSpan,
                                                               MaxAdminStatusListSize,
-                                                              MaxStatusListSize,
-                                                              SelfCheckTimeSpan);
+                                                              MaxStatusListSize);
 
             Configurator?.Invoke(_VirtualStation);
 
@@ -433,24 +489,13 @@ namespace org.GraphDefined.WWCP.ChargingPools
         #endregion
 
 
-        #region ContainsChargingStation(ChargingStation)
-
-        /// <summary>
-        /// Check if the given ChargingStation is already present within the charging station.
-        /// </summary>
-        /// <param name="ChargingStation">An ChargingStation.</param>
-        public Boolean ContainsChargingStation(ChargingStation ChargingStation)
-            => _ChargingStations.Any(evse => evse.Id == ChargingStation.Id);
-
-        #endregion
-
-        #region ContainsChargingStation(ChargingStationId)
+        #region ContainsChargingStationId(ChargingStationId)
 
         /// <summary>
         /// Check if the given ChargingStation identification is already present within the charging station.
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of an ChargingStation.</param>
-        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
+        public Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId)
             => _ChargingStations.Any(evse => evse.Id == ChargingStationId);
 
         #endregion
@@ -462,14 +507,38 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
         #endregion
 
-        #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation)
+        #region TryGetChargingStationById(ChargingStationId, out ChargingStation)
 
-        public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out IRemoteChargingStation ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IRemoteChargingStation ChargingStation)
         {
 
             ChargingStation = GetChargingStationById(ChargingStationId);
 
             return ChargingStation != null;
+
+        }
+
+        #endregion
+
+
+        #region TryGetChargingStationByEVSEId(EVSEId, out RemoteChargingStation)
+
+        public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IRemoteChargingStation RemoteChargingStation)
+        {
+
+            foreach (var station in _ChargingStations)
+            {
+
+                if (station.TryGetEVSEById(EVSEId, out IRemoteEVSE RemoteEVSE))
+                {
+                    RemoteChargingStation = station;
+                    return true;
+                }
+
+            }
+
+            RemoteChargingStation = null;
+            return false;
 
         }
 
@@ -665,121 +734,6 @@ namespace org.GraphDefined.WWCP.ChargingPools
         #endregion
 
 
-        #region IComparable<VirtualChargingPool> Members
-
-        #region CompareTo(Object)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
-
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var VirtualChargingPool = Object as VirtualChargingPool;
-            if ((Object) VirtualChargingPool == null)
-                throw new ArgumentException("The given object is not a virtual charging station!");
-
-            return CompareTo(VirtualChargingPool);
-
-        }
-
-        #endregion
-
-        #region CompareTo(VirtualChargingPool)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="VirtualChargingPool">An virtual charging station to compare with.</param>
-        public Int32 CompareTo(VirtualChargingPool VirtualChargingPool)
-        {
-
-            if ((Object) VirtualChargingPool == null)
-                throw new ArgumentNullException(nameof(VirtualChargingPool),  "The given virtual charging station must not be null!");
-
-            return Id.CompareTo(VirtualChargingPool.Id);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region IEquatable<VirtualChargingPool> Members
-
-        #region Equals(Object)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
-
-            if (Object == null)
-                return false;
-
-            var VirtualChargingPool = Object as VirtualChargingPool;
-            if ((Object) VirtualChargingPool == null)
-                return false;
-
-            return Equals(VirtualChargingPool);
-
-        }
-
-        #endregion
-
-        #region Equals(VirtualChargingPool)
-
-        /// <summary>
-        /// Compares two virtual charging stations for equality.
-        /// </summary>
-        /// <param name="VirtualChargingPool">A virtual charging station to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(VirtualChargingPool VirtualChargingPool)
-        {
-
-            if ((Object) VirtualChargingPool == null)
-                return false;
-
-            return Id.Equals(VirtualChargingPool.Id);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region GetHashCode()
-
-        /// <summary>
-        /// Get the hashcode of this object.
-        /// </summary>
-        public override Int32 GetHashCode()
-
-            => Id.GetHashCode();
-
-        #endregion
-
-        #region (override) ToString()
-
-        /// <summary>
-        /// Return a text representation of this object.
-        /// </summary>
-        public override String ToString()
-
-            => Id.ToString();
-
-        #endregion
-
-
-
-
         #region Reservations...
 
         #region Data
@@ -827,23 +781,33 @@ namespace org.GraphDefined.WWCP.ChargingPools
         /// </summary>
         public event OnReserveResponseDelegate            OnReserveResponse;
 
-
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
         public event OnNewReservationDelegate             OnNewReservation;
 
+
         /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
+        /// An event fired whenever a charging reservation is being canceled.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
         /// </summary>
         public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnReservationCanceledDelegate        OnReservationCanceled;
 
         #endregion
 
         #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
-        /// Reserve the possibility to charge at this station.
+        /// Reserve the possibility to charge at this charging pool.
         /// </summary>
         /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
@@ -950,65 +914,222 @@ namespace org.GraphDefined.WWCP.ChargingPools
                 EventTrackingId = EventTracking_Id.New;
 
 
-            ReservationResult result = null;
+            ChargingReservation newReservation  = null;
+            ReservationResult   result          = null;
+
+            #endregion
+
+            #region Send OnReserveRequest event
+
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                OnReserveRequest?.Invoke(DateTime.UtcNow,
+                                         Timestamp.Value,
+                                         this,
+                                         EventTrackingId,
+                                         ReservationId,
+                                         ChargingLocation,
+                                         StartTime,
+                                         Duration,
+                                         ProviderId,
+                                         RemoteAuthentication,
+                                         ChargingProduct,
+                                         AuthTokens,
+                                         eMAIds,
+                                         PINs,
+                                         RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnReserveRequest));
+            }
 
             #endregion
 
 
-
-            if (ChargingLocation.ChargingPoolId.HasValue && ChargingLocation.ChargingPoolId.Value != Id)
-                return ReservationResult.UnknownLocation;
-
-
-            if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+            try
             {
 
-                var EVSEId = ChargingLocation.EVSEId.Value;
-
-                var remoteStation = _ChargingStations.FirstOrDefault(station => station.EVSEs.Any(evse => evse.Id == EVSEId));
-
-                if (remoteStation != null)
-                {
-
-                    result = await remoteStation.Reserve(ChargingLocation,
-                                                         ReservationLevel,
-                                                         StartTime,
-                                                         Duration,
-                                                         ReservationId,
-                                                         ProviderId,
-                                                         RemoteAuthentication,
-                                                         ChargingProduct,
-                                                         AuthTokens,
-                                                         eMAIds,
-                                                         PINs,
-
-                                                         Timestamp,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         RequestTimeout);
-
-                }
-
-                else
+                if (ChargingLocation.ChargingPoolId.HasValue && ChargingLocation.ChargingPoolId.Value != Id)
                     result = ReservationResult.UnknownLocation;
 
-
-                return result;
-
-            }
-            else
-            {
-
-                switch (AdminStatus.Value)
+                else if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
+                         AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
                 {
 
-                    default:
-                        return ReservationResult.OutOfService;
+                    if (ReservationLevel == ChargingReservationLevel.EVSE &&
+                        ChargingLocation.EVSEId.HasValue &&
+                        TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.Value, out IRemoteChargingStation remoteStation))
+                    {
+
+                        result = await remoteStation.
+                                           Reserve(ChargingLocation,
+                                                   ReservationLevel,
+                                                   StartTime,
+                                                   Duration,
+                                                   ReservationId,
+                                                   ProviderId,
+                                                   RemoteAuthentication,
+                                                   ChargingProduct,
+                                                   AuthTokens,
+                                                   eMAIds,
+                                                   PINs,
+
+                                                   Timestamp,
+                                                   CancellationToken,
+                                                   EventTrackingId,
+                                                   RequestTimeout);
+
+                        newReservation = result.Reservation;
+
+                    }
+
+                    else if (ReservationLevel == ChargingReservationLevel.ChargingPool &&
+                             ChargingLocation.ChargingPoolId.HasValue)
+                    {
+
+                        var results = new List<ReservationResult>();
+
+                        foreach (var remoteStation2 in _ChargingStations)
+                        {
+
+                            results.Add(await remoteStation2.
+                                                  Reserve(ChargingLocation,
+                                                          ReservationLevel,
+                                                          StartTime,
+                                                          Duration,
+                                                          ChargingReservation_Id.Random(OperatorId),
+                                                          ProviderId,
+                                                          RemoteAuthentication,
+                                                          ChargingProduct,
+                                                          AuthTokens,
+                                                          eMAIds,
+                                                          PINs,
+
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout));
+
+                        }
+
+                        var newReservations = results.Where (_result => _result.Result == ReservationResultType.Success).
+                                                      Select(_result => _result.Reservation).
+                                                      ToArray();
+
+                        if (newReservations.Length > 0)
+                        {
+
+                            newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
+                                                                     Timestamp:               Timestamp.Value,
+                                                                     StartTime:               StartTime ?? DateTime.UtcNow,
+                                                                     Duration:                Duration  ?? MaxReservationDuration,
+                                                                     EndTime:                 (StartTime ?? DateTime.UtcNow) + (Duration ?? MaxReservationDuration),
+                                                                     ConsumedReservationTime: TimeSpan.FromSeconds(0),
+                                                                     ReservationLevel:        ReservationLevel,
+                                                                     ProviderId:              ProviderId,
+                                                                     Identification:          RemoteAuthentication,
+                                                                     RoamingNetwork:          null,
+                                                                     ChargingPoolId:          Id,
+                                                                     ChargingStationId:       null,
+                                                                     EVSEId:                  null,
+                                                                     ChargingProduct:         ChargingProduct,
+                                                                     SubReservations:         newReservations);
+
+                            foreach (var subReservation in newReservation.SubReservations)
+                            {
+                                subReservation.ParentReservation = newReservation;
+                                subReservation.ChargingPoolId    = Id;
+                            }
+
+                            result = ReservationResult.Success(newReservation);
+
+                        }
+
+                        else
+                            result = ReservationResult.AlreadyReserved;
+
+                    }
+
+                    else
+                        result = ReservationResult.UnknownLocation;
+
+                }
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = ReservationResult.OutOfService;
+                            break;
+
+                    }
+
+                }
+
+
+                if (result.Result == ReservationResultType.Success &&
+                    newReservation != null)
+                {
+
+                    _Reservations.Add(newReservation.Id, newReservation);
+
+                    foreach (var subReservation in newReservation.SubReservations)
+                        _Reservations.Add(subReservation.Id, subReservation);
+
+                    OnNewReservation?.Invoke(DateTime.UtcNow,
+                                             this,
+                                             newReservation);
 
                 }
 
             }
+            catch (Exception e)
+            {
+                result = ReservationResult.Error(e.Message);
+            }
+
+
+            #region Send OnReserveResponse event
+
+            Runtime.Stop();
+
+            try
+            {
+
+                OnReserveResponse?.Invoke(DateTime.UtcNow,
+                                          Timestamp.Value,
+                                          this,
+                                          EventTrackingId,
+                                          ReservationId,
+                                          ChargingLocation,
+                                          StartTime,
+                                          Duration,
+                                          ProviderId,
+                                          RemoteAuthentication,
+                                          ChargingProduct,
+                                          AuthTokens,
+                                          eMAIds,
+                                          PINs,
+                                          result,
+                                          Runtime.Elapsed,
+                                          RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnReserveResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
@@ -1112,7 +1233,7 @@ namespace org.GraphDefined.WWCP.ChargingPools
         #endregion
 
 
-        #region SendNewReservation
+        #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
         internal void SendNewReservation(DateTime             Timestamp,
                                          Object               Sender,
@@ -1125,35 +1246,15 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
         #endregion
 
-        #region SendOnCancelReservationResponse
+        #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
-        internal void SendOnCancelReservationResponse(DateTime                               LogTimestamp,
-                                                 DateTime                               RequestTimestamp,
-                                                 Object                                 Sender,
-                                                 EventTracking_Id                       EventTrackingId,
-
-                                                 RoamingNetwork_Id?                     RoamingNetworkId,
-                                                 eMobilityProvider_Id?                  ProviderId,
-                                                 ChargingReservation_Id                 ReservationId,
-                                                 ChargingReservation                    Reservation,
-                                                 ChargingReservationCancellationReason  Reason,
-                                                 CancelReservationResult                Result,
-                                                 TimeSpan                               Runtime,
-                                                 TimeSpan?                              RequestTimeout)
+        internal void SendReservationCanceled(DateTime                               Timestamp,
+                                         Object                                 Sender,
+                                         ChargingReservation                    Reservation,
+                                         ChargingReservationCancellationReason  Reason)
         {
 
-            OnCancelReservationResponse?.Invoke(LogTimestamp,
-                                           RequestTimestamp,
-                                           Sender,
-                                           EventTrackingId,
-                                           RoamingNetworkId,
-                                           ProviderId,
-                                           ReservationId,
-                                           Reservation,
-                                           Reason,
-                                           Result,
-                                           Runtime,
-                                           RequestTimeout);
+            OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
 
         }
 
@@ -1296,6 +1397,9 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
             #region Initial checks
 
+            if (SessionId == null)
+                SessionId = ChargingSession_Id.New;
+
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
 
@@ -1310,43 +1414,118 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
             #endregion
 
-            if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+            #region Send OnRemoteStartRequest event
+
+            var Runtime = Stopwatch.StartNew();
+
+            try
             {
 
-                if (!ChargingLocation.EVSEId.HasValue)
-                    return RemoteStartResult.UnknownLocation;
-
-                var remoteStation = _ChargingStations.FirstOrDefault(station => station.EVSEs.Any(evse => evse.Id == ChargingLocation.EVSEId.Value));
-                if (remoteStation == null)
-                    return RemoteStartResult.UnknownLocation;
-
-
-                return await remoteStation.
-                                 RemoteStart(ChargingProduct,
+                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             ChargingLocation,
+                                             ChargingProduct,
                                              ReservationId,
                                              SessionId,
                                              ProviderId,
                                              RemoteAuthentication,
-
-                                             Timestamp,
-                                             CancellationToken,
-                                             EventTrackingId,
                                              RequestTimeout);
 
             }
-            else
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStartRequest));
+            }
+
+            #endregion
+
+
+            try
             {
 
-                switch (AdminStatus.Value)
+                if (ChargingLocation.ChargingPoolId.HasValue &&
+                    ChargingLocation.ChargingPoolId.Value != Id)
+                {
+                    result = RemoteStartResult.UnknownLocation;
+                }
+
+                else if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
+                         AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
                 {
 
-                    default:
-                        return RemoteStartResult.OutOfService;
+                    if (!ChargingLocation.EVSEId.HasValue)
+                        result = RemoteStartResult.UnknownLocation;
+
+                    else if (!TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.Value, out IRemoteChargingStation remoteStation))
+                        result = RemoteStartResult.UnknownLocation;
+
+                    else
+                        result = await remoteStation.
+                                           RemoteStart(ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
+
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
+
+                }
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = RemoteStartResult.OutOfService;
+                            break;
+
+                    }
 
                 }
 
             }
+            catch (Exception e)
+            {
+                result = RemoteStartResult.Error(e.Message);
+            }
+
+
+            #region Send OnRemoteStartResponse event
+
+            Runtime.Stop();
+
+            try
+            {
+
+                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
+                                              Timestamp.Value,
+                                              this,
+                                              EventTrackingId,
+                                              ChargingLocation,
+                                              ChargingProduct,
+                                              ReservationId,
+                                              SessionId,
+                                              ProviderId,
+                                              RemoteAuthentication,
+                                              RequestTimeout,
+                                              result,
+                                              Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStartResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
@@ -1382,6 +1561,9 @@ namespace org.GraphDefined.WWCP.ChargingPools
 
             #region Initial checks
 
+            if (SessionId == null)
+                SessionId = ChargingSession_Id.New;
+
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
 
@@ -1391,110 +1573,416 @@ namespace org.GraphDefined.WWCP.ChargingPools
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
+
+            RemoteStopResult result = null;
+
+            #endregion
+
+            #region Send OnRemoteStopRequest event
+
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
+                                            Timestamp.Value,
+                                            this,
+                                            EventTrackingId,
+                                            SessionId,
+                                            ReservationHandling,
+                                            ProviderId,
+                                            RemoteAuthentication,
+                                            RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStopRequest));
+            }
+
             #endregion
 
 
-            if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
-                AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+            try
             {
 
-                var remoteStation = _ChargingStations.FirstOrDefault(station => station.ChargingSessions.Any(session => session.Id == SessionId));
-                if (remoteStation == null)
-                    return RemoteStopResult.InvalidSessionId(SessionId);
-
-
-                var result = await remoteStation.
-                                       RemoteStop(SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  RemoteAuthentication,
-
-                                                  Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  RequestTimeout);
-
-                switch (result.Result)
+                if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
+                    AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
                 {
 
-                    case RemoteStopResultType.Error:
-                        return RemoteStopResult.Error(SessionId, result.Message);
+                    if (!TryGetChargingSessionById(SessionId, out ChargingSession chargingSession))
+                    {
 
-                    case RemoteStopResultType.InternalUse:
-                        return RemoteStopResult.InternalUse(SessionId);
+                        foreach (var remoteStation in _ChargingStations)
+                        {
 
-                    case RemoteStopResultType.InvalidSessionId:
-                        return RemoteStopResult.InvalidSessionId(SessionId);
+                            result = await remoteStation.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
 
-                    case RemoteStopResultType.Offline:
-                        return RemoteStopResult.Offline(SessionId);
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
 
-                    case RemoteStopResultType.OutOfService:
-                        return RemoteStopResult.OutOfService(SessionId);
+                            if (result.Result == RemoteStopResultType.Success)
+                                break;
 
-                    case RemoteStopResultType.Success:
-                        if (result.ChargeDetailRecord != null)
-                            return RemoteStopResult.Success(result.ChargeDetailRecord, result.ReservationId, result.ReservationHandling);
-                        else
-                            return RemoteStopResult.Success(result.SessionId, result.ReservationId, result.ReservationHandling);
+                        }
 
-                    case RemoteStopResultType.Timeout:
-                        return RemoteStopResult.Timeout(SessionId);
+                        if (result.Result != RemoteStopResultType.Success)
+                            result = RemoteStopResult.InvalidSessionId(SessionId);
 
-                    case RemoteStopResultType.UnknownOperator:
-                        return RemoteStopResult.UnknownOperator(SessionId);
+                    }
 
-                    case RemoteStopResultType.Unspecified:
-                        return RemoteStopResult.Unspecified(SessionId);
+                    else if (chargingSession.ChargingStation != null)
+                    {
+
+                        result = await chargingSession.ChargingStation.RemoteChargingStation.
+                                           RemoteStop(SessionId,
+                                                      ReservationHandling,
+                                                      ProviderId,
+                                                      RemoteAuthentication,
+
+                                                      Timestamp,
+                                                      CancellationToken,
+                                                      EventTrackingId,
+                                                      RequestTimeout);
+
+                    }
+
+                    else if (chargingSession.ChargingStationId.HasValue &&
+                             TryGetChargingStationById(chargingSession.ChargingStationId.Value, out IRemoteChargingStation remoteStation))
+                    {
+
+                        result = await remoteStation.
+                                           RemoteStop(SessionId,
+                                                      ReservationHandling,
+                                                      ProviderId,
+                                                      RemoteAuthentication,
+
+                                                      Timestamp,
+                                                      CancellationToken,
+                                                      EventTrackingId,
+                                                      RequestTimeout);
+
+                    }
+
+                    result = RemoteStopResult.UnknownLocation(SessionId);
+
+                }
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = RemoteStopResult.OutOfService(SessionId);
+                            break;
+
+                    }
 
                 }
 
-                return RemoteStopResult.Error(SessionId);
-
             }
-            else
+            catch (Exception e)
+            {
+                result = RemoteStopResult.Error(SessionId,
+                                                e.Message);
+            }
+
+
+            #region Send OnRemoteStopResponse event
+
+            Runtime.Stop();
+
+            try
             {
 
-                switch (AdminStatus.Value)
-                {
-
-                    default:
-                        return RemoteStopResult.OutOfService(SessionId);
-
-                }
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             SessionId,
+                                             ReservationHandling,
+                                             ProviderId,
+                                             RemoteAuthentication,
+                                             RequestTimeout,
+                                             result,
+                                             Runtime.Elapsed);
 
             }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStopResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
         #endregion
 
 
-        #region SendNewChargingSession
+        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
-                                             ChargingSession  ChargingSession)
+                                             ChargingSession  Session)
         {
 
-            OnNewChargingSession?.Invoke(Timestamp, Sender, ChargingSession);
+            if (Session != null)
+            {
+
+                if (Session.ChargingPool == null)
+                    Session.ChargingPoolId  = Id;
+
+                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
+
+            }
 
         }
 
         #endregion
 
-        #region SendNewChargeDetailRecord
+        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
         internal void SendNewChargeDetailRecord(DateTime            Timestamp,
                                                 Object              Sender,
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
+            if (ChargeDetailRecord != null)
+                OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
 
         #endregion
+
+        #endregion
+
+
+        #region Operator overloading
+
+        #region Operator == (VirtualChargingPool1, VirtualChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
+        /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(VirtualChargingPool1, VirtualChargingPool2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if ((VirtualChargingPool1 is null) || (VirtualChargingPool2 is null))
+                return false;
+
+            return VirtualChargingPool1.Equals(VirtualChargingPool2);
+
+        }
+
+        #endregion
+
+        #region Operator != (VirtualChargingPool1, VirtualChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
+        /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
+            => !(VirtualChargingPool1 == VirtualChargingPool2);
+
+        #endregion
+
+        #region Operator <  (VirtualChargingPool1, VirtualChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
+        /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
+        {
+
+            if (VirtualChargingPool1 is null)
+                throw new ArgumentNullException(nameof(VirtualChargingPool1), "The given VirtualChargingPool1 must not be null!");
+
+            return VirtualChargingPool1.CompareTo(VirtualChargingPool2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (VirtualChargingPool1, VirtualChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
+        /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
+            => !(VirtualChargingPool1 > VirtualChargingPool2);
+
+        #endregion
+
+        #region Operator >  (VirtualChargingPool1, VirtualChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
+        /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
+        {
+
+            if (VirtualChargingPool1 is null)
+                throw new ArgumentNullException(nameof(VirtualChargingPool1), "The given VirtualChargingPool1 must not be null!");
+
+            return VirtualChargingPool1.CompareTo(VirtualChargingPool2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (VirtualChargingPool1, VirtualChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingPool1">A virtual charging pool.</param>
+        /// <param name="VirtualChargingPool2">Another virtual charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (VirtualChargingPool VirtualChargingPool1, VirtualChargingPool VirtualChargingPool2)
+            => !(VirtualChargingPool1 < VirtualChargingPool2);
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<VirtualChargingPool> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        public Int32 CompareTo(Object Object)
+        {
+
+            if (Object is null)
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
+
+            if (!(Object is VirtualChargingPool VirtualChargingPool))
+                throw new ArgumentException("The given object is not a virtual charging station!");
+
+            return CompareTo(VirtualChargingPool);
+
+        }
+
+        #endregion
+
+        #region CompareTo(VirtualChargingPool)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="VirtualChargingPool">An virtual charging station to compare with.</param>
+        public Int32 CompareTo(VirtualChargingPool VirtualChargingPool)
+        {
+
+            if (VirtualChargingPool is null)
+                throw new ArgumentNullException(nameof(VirtualChargingPool),  "The given virtual charging station must not be null!");
+
+            return Id.CompareTo(VirtualChargingPool.Id);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<VirtualChargingPool> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        /// <returns>true|false</returns>
+        public override Boolean Equals(Object Object)
+        {
+
+            if (Object is null)
+                return false;
+
+            if (!(Object is VirtualChargingPool VirtualChargingPool))
+                return false;
+
+            return Equals(VirtualChargingPool);
+
+        }
+
+        #endregion
+
+        #region Equals(VirtualChargingPool)
+
+        /// <summary>
+        /// Compares two virtual charging stations for equality.
+        /// </summary>
+        /// <param name="VirtualChargingPool">A virtual charging station to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(VirtualChargingPool VirtualChargingPool)
+        {
+
+            if (VirtualChargingPool is null)
+                return false;
+
+            return Id.Equals(VirtualChargingPool.Id);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region GetHashCode()
+
+        /// <summary>
+        /// Get the hashcode of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+
+            => Id.GetHashCode();
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => Id.ToString();
 
         #endregion
 

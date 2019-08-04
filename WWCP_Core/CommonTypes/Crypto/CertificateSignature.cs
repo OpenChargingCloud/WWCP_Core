@@ -15,34 +15,26 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
+using Org.BouncyCastle.Crypto.Parameters;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// The charging reservation type.
-    /// </summary>
-    public enum ChargingReservationLevel
+    public class CertificateSignature
     {
 
-        /// <summary>
-        /// The EVSE was reserved.
-        /// </summary>
-        EVSE,
-
-        /// <summary>
-        /// The charging station was reserved.
-        /// </summary>
-        ChargingStation,
-
-        /// <summary>
-        /// The charging pool was reserved.
-        /// </summary>
-        ChargingPool,
-
-        /// <summary>
-        /// The charging station operator was reserved.
-        /// </summary>
-        ChargingStationOperator
+        public ECPublicKeyParameters SignerPublicKey    { get; }
+        public DateTime              SignatureDate      { get; }
+        public String                Signature          { get; }
 
     }
 

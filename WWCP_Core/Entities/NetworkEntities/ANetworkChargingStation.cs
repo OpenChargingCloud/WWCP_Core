@@ -23,14 +23,20 @@ using System.Threading;
 using System.Net.Security;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
+
+using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using System.Security.Cryptography.X509Certificates;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Math.EC;
+using Org.BouncyCastle.Security;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -289,40 +295,13 @@ namespace org.GraphDefined.WWCP.Networking
 
         #endregion
 
-        #endregion
 
-        #region Links
-
-        #region ChargingStation
-
-        protected readonly ChargingStation _ChargingStation;
-
-        public ChargingStation ChargingStation
-        {
-            get
-            {
-                return _ChargingStation;
-            }
-        }
-
-        #endregion
-
-        #region EVSEs
-
-        protected readonly HashSet<IRemoteEVSE> _EVSEs;
-
-        /// <summary>
-        /// All registered EVSEs.
-        /// </summary>
-        public IEnumerable<IRemoteEVSE> EVSEs
-        {
-            get
-            {
-                return _EVSEs;
-            }
-        }
-
-        #endregion
+        public String                  EllipticCurve            { get; }
+        public X9ECParameters          ECP                      { get; }
+        public ECDomainParameters      ECSpec                   { get; }
+        public FpCurve                 C                        { get; }
+        public ECPrivateKeyParameters  PrivateKey               { get; }
+        public PublicKeyCertificates   PublicKeyCertificates    { get; }
 
         #endregion
 
@@ -347,24 +326,6 @@ namespace org.GraphDefined.WWCP.Networking
 
         #endregion
 
-        #region OnEVSEData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated EVSE changed.
-        /// </summary>
-        public event OnRemoteEVSEDataChangedDelegate         OnEVSEDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        public event OnRemoteEVSEStatusChangedDelegate       OnEVSEStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated EVSE changed.
-        /// </summary>
-        public event OnRemoteEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
-
-        #endregion
 
 
         // Socket events
@@ -428,26 +389,26 @@ namespace org.GraphDefined.WWCP.Networking
 
         #region Constructor(s)
 
-        #region NetworkChargingStationStub(ChargingStation)
+        #region NetworkChargingStationStub(Id)
 
         /// <summary>
         /// A charging station.
         /// </summary>
-        /// <param name="ChargingStation">A local charging station.</param>
-        public ANetworkChargingStation(ChargingStation  ChargingStation,
-                                       UInt16           MaxStatusListSize       = DefaultMaxStatusListSize,
-                                       UInt16           MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+        public ANetworkChargingStation(ChargingStation_Id               Id,
+                                       I18NString                       Description              = null,
+                                       ChargingStationAdminStatusTypes  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
+                                       ChargingStationStatusTypes       InitialStatus            = ChargingStationStatusTypes.Available,
+                                       String                           EllipticCurve            = "P-256",
+                                       ECPrivateKeyParameters           PrivateKey               = null,
+                                       PublicKeyCertificates            PublicKeyCertificates    = null,
+                                       TimeSpan?                        SelfCheckTimeSpan        = null,
+                                       UInt16                           MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                                       UInt16                           MaxStatusListSize        = DefaultMaxStatusListSize)
         {
 
-            #region Initial checks
+            #region Init data and properties
 
-            if (ChargingStation == null)
-                throw new ArgumentNullException("ChargingStation", "The given charging station parameter must not be null!");
-
-            #endregion
-
-            this.Id                     = ChargingStation.Id;
-            this._ChargingStation       = ChargingStation;
+            this.Id                     = Id;
             this._EVSEs                 = new HashSet<IRemoteEVSE>();
 
             this._StatusSchedule        = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusListSize);
@@ -456,16 +417,59 @@ namespace org.GraphDefined.WWCP.Networking
             this._AdminStatusSchedule   = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxStatusListSize);
             this._AdminStatusSchedule.Insert(ChargingStationAdminStatusTypes.OutOfService);
 
+            #endregion
+
+            #region Setup crypto
+
+            this.EllipticCurve          = EllipticCurve ?? "P-256";
+            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
+            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
+            this.C                      = (FpCurve) ECSpec.Curve;
+            this.PrivateKey             = PrivateKey;
+            this.PublicKeyCertificates  = PublicKeyCertificates;
+
+            if (PrivateKey == null && PublicKeyCertificates == null)
+            {
+
+                var generator = GeneratorUtilities.GetKeyPairGenerator("ECDH");
+                generator.Init(new ECKeyGenerationParameters(ECSpec, new SecureRandom()));
+
+                var  keyPair                = generator.GenerateKeyPair();
+                this.PrivateKey             = keyPair.Private as ECPrivateKeyParameters;
+
+                this.PublicKeyCertificates  = new PublicKeyCertificate(
+                                                  PublicKeys:          new PublicKeyLifetime[] {
+                                                                           new PublicKeyLifetime(
+                                                                               PublicKey:  keyPair.Public as ECPublicKeyParameters,
+                                                                               NotBefore:  DateTime.UtcNow,
+                                                                               NotAfter:   DateTime.UtcNow + TimeSpan.FromDays(365),
+                                                                               Algorithm:  "P-256",
+                                                                               Comment:    I18NString.Empty
+                                                                           )
+                                                                       },
+                                                  Description:         I18NString.Create(Languages.eng, "Auto-generated test keys for a network charging station!"),
+                                                  Operations:          JSONObject.Create(
+                                                                           new JProperty("signMeterValues",  true),
+                                                                           new JProperty("signCertificates",
+                                                                               JSONObject.Create(
+                                                                                   new JProperty("maxChilds", 1)
+                                                                               ))
+                                                                       ),
+                                                  ChargingStationId:   Id);
+
+            }
+
+            #endregion
 
             #region Init events
 
             // ChargingStation events
-            this.EVSEAddition               = new VotingNotificator<DateTime, IRemoteChargingStation, IRemoteEVSE, Boolean>(() => new VetoVote(), true);
-          //  this.EVSERemoval                = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition = new VotingNotificator<DateTime, IRemoteChargingStation, IRemoteEVSE, Boolean>(() => new VetoVote(), true);
+            //  this.EVSERemoval                = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
-          //  // EVSE events
-          //  this.SocketOutletAddition       = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-          //  this.SocketOutletRemoval        = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            //  // EVSE events
+            //  this.SocketOutletAddition       = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            //  this.SocketOutletRemoval        = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -735,8 +739,95 @@ namespace org.GraphDefined.WWCP.Networking
         }
 
 
-        IEnumerable<IRemoteEVSE> IRemoteChargingStation.EVSEs
-            => null;
+        #region EVSEs
+
+        #region Data
+
+        private readonly HashSet<IRemoteEVSE> _EVSEs;
+
+        /// <summary>
+        /// All registered EVSEs.
+        /// </summary>
+        public IEnumerable<IRemoteEVSE> EVSEs
+            => _EVSEs;
+
+        #region ContainsEVSE(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the charging station.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        public Boolean ContainsEVSE(EVSE_Id EVSEId)
+            => _EVSEs.Any(evse => evse.Id == EVSEId);
+
+        #endregion
+
+        #region GetEVSEById(EVSEId)
+
+        public IRemoteEVSE GetEVSEById(EVSE_Id EVSEId)
+            => _EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
+
+        #endregion
+
+        #region TryGetEVSEById(EVSEId, out EVSE)
+
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE EVSE)
+        {
+
+            EVSE = GetEVSEById(EVSEId);
+
+            return EVSE != null;
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        public event OnRemoteEVSEDataChangedDelegate         OnEVSEDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        public event OnRemoteEVSEStatusChangedDelegate       OnEVSEStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        public event OnRemoteEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+
+        #endregion
+
+        #region (private) AddEVSE(NewRemoteEVSE)
+
+        private Boolean AddNewEVSE(IRemoteEVSE NewRemoteEVSE)
+        {
+
+            if (_EVSEs.Add(NewRemoteEVSE))
+            {
+
+                NewRemoteEVSE.OnAdminStatusChanged     += UpdateEVSEAdminStatus;
+                NewRemoteEVSE.OnStatusChanged          += UpdateEVSEStatus;
+
+                NewRemoteEVSE.OnNewReservation         += SendNewReservation;
+                NewRemoteEVSE.OnReservationCanceled    += SendReservationCanceled;
+                NewRemoteEVSE.OnNewChargingSession     += SendNewChargingSession;
+                NewRemoteEVSE.OnNewChargeDetailRecord  += SendNewChargeDetailRecord;
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
 
         #region CreateNewEVSE(EVSEId, Configurator = null, OnSuccess = null, OnError = null)
 
@@ -759,13 +850,13 @@ namespace org.GraphDefined.WWCP.Networking
             if (EVSEId == null)
                 throw new ArgumentNullException(nameof(EVSEId), "The given EVSE identification must not be null!");
 
-            if (_EVSEs.Any(evse => evse.Id == EVSEId))
-            {
-                if (OnError == null)
-                    throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
-                else
-                    OnError?.Invoke(this, EVSEId);
-            }
+            //if (_EVSEs.Any(evse => evse.Id == EVSEId))
+            //{
+            //    if (OnError == null)
+            //        throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
+            //    else
+            //        OnError?.Invoke(this, EVSEId);
+            //}
 
             #endregion
 
@@ -804,21 +895,128 @@ namespace org.GraphDefined.WWCP.Networking
 
         #endregion
 
-        IRemoteEVSE IRemoteChargingStation.CreateNewEVSE(EVSE_Id EVSEId, Action<EVSE> Configurator = null, Action<EVSE> OnSuccess = null, Action<ChargingStation, EVSE_Id> OnError = null)
-            => this.CreateNewEVSE(EVSEId);
+        #region AddEVSE(RemoteEVSE, Configurator = null, OnSuccess = null, OnError = null)
 
-        public IRemoteEVSE AddEVSE(IRemoteEVSE                       EVSE,
-                                   Action<EVSE>                      Configurator  = null,
-                                   Action<EVSE>                      OnSuccess     = null,
+        public IRemoteEVSE AddEVSE(IRemoteEVSE                       RemoteEVSE,
+                                   Action<IRemoteEVSE>               Configurator  = null,
+                                   Action<IRemoteEVSE>               OnSuccess     = null,
                                    Action<ChargingStation, EVSE_Id>  OnError       = null)
 
         {
 
-            _EVSEs.Add(EVSE);
+            #region Initial checks
 
-            return EVSE;
+            if (_EVSEs.Any(evse => evse.Id == RemoteEVSE.Id))
+            {
+                throw new Exception("EVSEAlreadyExistsInStation");
+                // if (OnError == null)
+                //     throw new EVSEAlreadyExistsInStation(this.ChargingStation, EVSEId);
+                // else
+                //     OnError?.Invoke(this, EVSEId);
+            }
+
+            #endregion
+
+            Configurator?.Invoke(RemoteEVSE);
+
+            if (AddNewEVSE(RemoteEVSE))
+            {
+                OnSuccess?.Invoke(RemoteEVSE);
+                return RemoteEVSE;
+            }
+
+            return null;
 
         }
+
+        #endregion
+
+
+        #region (internal) UpdateEVSEData(Timestamp, RemoteEVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the data of a remote EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="RemoteEVSE">The remote EVSE.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal void UpdateEVSEData(DateTime     Timestamp,
+                                     IRemoteEVSE  RemoteEVSE,
+                                     String       PropertyName,
+                                     Object       OldValue,
+                                     Object       NewValue)
+        {
+
+            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
+            if (OnEVSEDataChangedLocal != null)
+                OnEVSEDataChangedLocal(Timestamp, RemoteEVSE, PropertyName, OldValue, NewValue);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current charging station status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="RemoteEVSE">The updated remote EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
+                                                  EventTracking_Id                  EventTrackingId,
+                                                  IRemoteEVSE                       RemoteEVSE,
+                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
+        {
+
+            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
+            if (OnEVSEAdminStatusChangedLocal != null)
+                await OnEVSEAdminStatusChangedLocal(Timestamp,
+                                                    EventTrackingId,
+                                                    RemoteEVSE,
+                                                    OldStatus,
+                                                    NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the remote EVSE station status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="RemoteEVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
+                                             EventTracking_Id             EventTrackingId,
+                                             IRemoteEVSE                  RemoteEVSE,
+                                             Timestamped<EVSEStatusTypes>  OldStatus,
+                                             Timestamped<EVSEStatusTypes>  NewStatus)
+        {
+
+            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
+            if (OnEVSEStatusChangedLocal != null)
+                await OnEVSEStatusChangedLocal(Timestamp,
+                                               EventTrackingId,
+                                               RemoteEVSE,
+                                               OldStatus,
+                                               NewStatus);
+
+        }
+
+        #endregion
+
+        #endregion
+
 
 
         public virtual async Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime           Timestamp,
@@ -881,16 +1079,26 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         public event OnReserveResponseDelegate            OnReserveResponse;
 
-
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
         public event OnNewReservationDelegate             OnNewReservation;
 
+
         /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
+        /// An event fired whenever a charging reservation is being canceled.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
         /// </summary>
         public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnReservationCanceledDelegate        OnReservationCanceled;
 
         #endregion
 
@@ -1031,7 +1239,7 @@ namespace org.GraphDefined.WWCP.Networking
         #endregion
 
 
-        #region SendNewReservation
+        #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
         internal void SendNewReservation(DateTime             Timestamp,
                                          Object               Sender,
@@ -1044,35 +1252,15 @@ namespace org.GraphDefined.WWCP.Networking
 
         #endregion
 
-        #region SendOnCancelReservationResponse
+        #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
-        internal void SendOnCancelReservationResponse(DateTime                               LogTimestamp,
-                                                 DateTime                               RequestTimestamp,
-                                                 Object                                 Sender,
-                                                 EventTracking_Id                       EventTrackingId,
-
-                                                 RoamingNetwork_Id?                     RoamingNetworkId,
-                                                 eMobilityProvider_Id?                  ProviderId,
-                                                 ChargingReservation_Id                 ReservationId,
-                                                 ChargingReservation                    Reservation,
-                                                 ChargingReservationCancellationReason  Reason,
-                                                 CancelReservationResult                Result,
-                                                 TimeSpan                               Runtime,
-                                                 TimeSpan?                              RequestTimeout)
+        internal void SendReservationCanceled(DateTime                               Timestamp,
+                                              Object                                 Sender,
+                                              ChargingReservation                    Reservation,
+                                              ChargingReservationCancellationReason  Reason)
         {
 
-            OnCancelReservationResponse?.Invoke(LogTimestamp,
-                                           RequestTimestamp,
-                                           Sender,
-                                           EventTrackingId,
-                                           RoamingNetworkId,
-                                           ProviderId,
-                                           ReservationId,
-                                           Reservation,
-                                           Reason,
-                                           Result,
-                                           Runtime,
-                                           RequestTimeout);
+            OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
 
         }
 
@@ -1115,6 +1303,11 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
 
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate     OnNewChargingSession;
+
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
@@ -1125,12 +1318,6 @@ namespace org.GraphDefined.WWCP.Networking
         /// An event fired whenever a remote stop command completed.
         /// </summary>
         public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
-
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate     OnNewChargingSession;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
@@ -1254,27 +1441,36 @@ namespace org.GraphDefined.WWCP.Networking
         #endregion
 
 
-        #region SendNewChargingSession
+        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
-                                             ChargingSession  ChargingSession)
+                                             ChargingSession  Session)
         {
 
-            OnNewChargingSession?.Invoke(Timestamp, Sender, ChargingSession);
+            if (Session != null)
+            {
+
+                if (Session.ChargingStation == null)
+                    Session.ChargingStationId  = Id;
+
+                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
+
+            }
 
         }
 
         #endregion
 
-        #region SendNewChargeDetailRecord
+        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
         internal void SendNewChargeDetailRecord(DateTime            Timestamp,
                                                 Object              Sender,
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
+            if (ChargeDetailRecord != null)
+                OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
 

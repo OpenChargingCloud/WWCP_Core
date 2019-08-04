@@ -826,16 +826,26 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         public event OnReserveResponseDelegate            OnReserveResponse;
 
-
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
         public event OnNewReservationDelegate             OnNewReservation;
 
+
         /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
+        /// An event fired whenever a charging reservation is being canceled.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
         /// </summary>
         public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnReservationCanceledDelegate        OnReservationCanceled;
 
         #endregion
 
@@ -1097,6 +1107,11 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
 
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate     OnNewChargingSession;
+
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
@@ -1107,12 +1122,6 @@ namespace org.GraphDefined.WWCP.Networking
         /// An event fired whenever a remote stop command completed.
         /// </summary>
         public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
-
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate     OnNewChargingSession;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.

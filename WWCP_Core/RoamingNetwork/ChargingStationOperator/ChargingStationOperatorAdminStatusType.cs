@@ -39,12 +39,16 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Operational                     = 2,
 
+        /// <summary>
+        /// Private or internal use.
+        /// </summary>
+        InternalUse                     = 3,
 
         /// <summary>
         /// The charging station operator was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownChargingStationOperator  = 3
+        UnknownChargingStationOperator  = 4
 
     }
 

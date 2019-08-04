@@ -39,7 +39,6 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteChargingStation : ILocalReserveRemoteStartStop
     {
 
-        IEnumerable<IRemoteEVSE>                     EVSEs       { get; }
         ChargingStation_Id                           Id          { get; }
         Timestamped<ChargingStationStatusTypes>      Status      { get; }
 
@@ -84,19 +83,10 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        ChargingStation_Id RemoteChargingStationId { get; set; }
-        String                 RemoteEVSEIdPrefix  { get; set; }
-        void AddMapping(EVSE_Id LocalEVSEId, EVSE_Id RemoteEVSEId);
-
-
-        IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,
-                                  Action<EVSE>                      Configurator  = null,
-                                  Action<EVSE>                      OnSuccess     = null,
-                                  Action<ChargingStation, EVSE_Id>  OnError       = null);
 
         IRemoteEVSE AddEVSE(IRemoteEVSE                       EVSE,
-                            Action<EVSE>                      Configurator  = null,
-                            Action<EVSE>                      OnSuccess     = null,
+                            Action<IRemoteEVSE>               Configurator  = null,
+                            Action<IRemoteEVSE>               OnSuccess     = null,
                             Action<ChargingStation, EVSE_Id>  OnError       = null);
 
 
@@ -106,6 +96,21 @@ namespace org.GraphDefined.WWCP
                                                     TimeSpan?                RequestTimeout = null);
 
 
+        IEnumerable<IRemoteEVSE> EVSEs { get; }
+
+
+
+        Boolean ContainsEVSE(EVSE_Id EVSEId);
+
+        IRemoteEVSE GetEVSEById(EVSE_Id EVSEId);
+
+        Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE EVSE);
+
+
+
+        ChargingStation_Id RemoteChargingStationId { get; set; }
+        String RemoteEVSEIdPrefix { get; set; }
+        void AddMapping(EVSE_Id LocalEVSEId, EVSE_Id RemoteEVSEId);
 
 
     }
