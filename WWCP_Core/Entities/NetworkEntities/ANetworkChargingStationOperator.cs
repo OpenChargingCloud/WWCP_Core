@@ -234,16 +234,26 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         public event OnReserveResponseDelegate            OnReserveResponse;
 
-
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
         public event OnNewReservationDelegate             OnNewReservation;
 
+
         /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
+        /// An event fired whenever a charging reservation is being canceled.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
         /// </summary>
         public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnReservationCanceledDelegate        OnReservationCanceled;
 
         #endregion
 
@@ -254,7 +264,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         /// <param name="ChargingLocation">A charging location.</param>
         /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -323,6 +333,34 @@ namespace org.GraphDefined.WWCP.Networking
 
             return Task.FromResult(CancelReservationResult.OutOfService(ReservationId,
                                                                         ChargingReservationCancellationReason.Aborted));
+
+        }
+
+        #endregion
+
+
+        #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
+
+        internal void SendNewReservation(DateTime             Timestamp,
+                                         Object               Sender,
+                                         ChargingReservation  Reservation)
+        {
+
+            OnNewReservation?.Invoke(Timestamp, Sender, Reservation);
+
+        }
+
+        #endregion
+
+        #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
+
+        internal void SendReservationCanceled(DateTime                               Timestamp,
+                                         Object                                 Sender,
+                                         ChargingReservation                    Reservation,
+                                         ChargingReservationCancellationReason  Reason)
+        {
+
+            OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
 
         }
 
@@ -455,6 +493,42 @@ namespace org.GraphDefined.WWCP.Networking
         {
 
             return Task.FromResult(RemoteStopResult.OutOfService(SessionId));
+
+        }
+
+        #endregion
+
+
+        #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
+
+        internal void SendNewChargingSession(DateTime         Timestamp,
+                                             Object           Sender,
+                                             ChargingSession  Session)
+        {
+
+            if (Session != null)
+            {
+
+                //if (Session.ChargingStationOperator == null)
+                //    Session.ChargingStationOperator = Id;
+
+                OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
+
+            }
+
+        }
+
+        #endregion
+
+        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
+
+        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
+                                                Object              Sender,
+                                                ChargeDetailRecord  ChargeDetailRecord)
+        {
+
+            if (ChargeDetailRecord != null)
+                OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
 

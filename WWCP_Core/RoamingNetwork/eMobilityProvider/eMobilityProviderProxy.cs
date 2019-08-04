@@ -20,7 +20,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -623,51 +622,6 @@ namespace org.GraphDefined.WWCP
         public event OnAuthorizeChargingPoolStopResponseDelegate     OnAuthorizeChargingPoolStopResponse;
 
         #endregion
-
-
-        #region OnReserve... / OnReserved...
-
-        /// <summary>
-        /// An event fired whenever an EVSE is being reserved.
-        /// </summary>
-        public event OnReserveRequestDelegate              OnReserveEVSERequest;
-
-        /// <summary>
-        /// An event fired whenever an EVSE was reserved.
-        /// </summary>
-        public event OnReserveResponseDelegate             OnReserveEVSEResponse;
-
-        #endregion
-
-        #region OnRemote...Start / OnRemote...Started
-
-        /// <summary>
-        /// An event fired whenever a remote start EVSE command was received.
-        /// </summary>
-        public event OnRemoteStartRequestDelegate              OnRemoteStartRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote start EVSE command completed.
-        /// </summary>
-        public event OnRemoteStartResponseDelegate             OnRemoteStartResponse;
-
-        #endregion
-
-        #region OnRemote...Stop / OnRemote...Stopped
-
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopRequestDelegate   OnRemoteStopRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote stop command completed.
-        /// </summary>
-        public event OnRemoteStopResponseDelegate  OnRemoteStopResponse;
-
-        #endregion
-
-        // CancelReservation
 
         #endregion
 
@@ -1927,7 +1881,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -1959,7 +1913,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2013,7 +1967,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2045,7 +1999,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2099,7 +2053,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2131,7 +2085,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2185,7 +2139,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2217,7 +2171,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2271,7 +2225,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2303,7 +2257,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2360,7 +2314,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2390,7 +2344,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2444,7 +2398,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2474,7 +2428,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2528,7 +2482,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2558,7 +2512,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2612,7 +2566,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2642,7 +2596,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2696,7 +2650,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusRequest event
 
-            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -2726,7 +2680,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnUpdateEVSEStatusResponse event
 
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.UtcNow,
+            // OnUpdateEVSEStatusResponse?.Invoke(EndTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    this.Id.ToString(),
@@ -3823,20 +3777,81 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Outgoing requests towards the roaming network
-
         //ToDo: Send Tokens!
         //ToDo: Download CDRs!
 
-        #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ...)
+        #region Reservations...
+
+        #region Data
+
+        //private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
+
+        ///// <summary>
+        ///// All current charging reservations.
+        ///// </summary>
+        //public IEnumerable<ChargingReservation> Reservations
+        //    => _Reservations.Select(_ => _.Value);
+
+        //#region TryGetReservationById(ReservationId, out Reservation)
+
+        ///// <summary>
+        ///// Return the charging reservation specified by the given identification.
+        ///// </summary>
+        ///// <param name="ReservationId">The charging reservation identification.</param>
+        ///// <param name="Reservation">The charging reservation.</param>
+        //public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
+        //    => _Reservations.TryGetValue(ReservationId, out Reservation);
+
+        //#endregion
+
+        #endregion
+
+        #region Events
 
         /// <summary>
-        /// Reserve the possibility to charge at the given EVSE.
+        /// An event fired whenever a charging location is being reserved.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be reserved.</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        public event OnReserveRequestDelegate             OnReserveRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging location was reserved.
+        /// </summary>
+        public event OnReserveResponseDelegate            OnReserveResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charging reservation was created.
+        /// </summary>
+        public event OnNewReservationDelegate             OnNewReservation;
+
+
+        /// <summary>
+        /// An event fired whenever a charging reservation is being canceled.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnReservationCanceledDelegate        OnReservationCanceled;
+
+        #endregion
+
+        #region Reserve(ChargingLocation, ReservationLevel = EVSE, StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
+
+        /// <summary>
+        /// Reserve the possibility to charge at the given charging location.
+        /// </summary>
+        /// <param name="ChargingLocation">A charging location.</param>
+        /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
@@ -3849,10 +3864,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(EVSE_Id                           EVSEId,
-                    DateTime?                         StartTime              = null,
+            Reserve(ChargingLocation                  ChargingLocation,
+                    ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
+                    DateTime?                         ReservationStartTime   = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
+                    eMobilityProvider_Id?             ProviderId             = null,
                     RemoteAuthentication              RemoteAuthentication   = null,
                     ChargingProduct                   ChargingProduct        = null,
                     IEnumerable<Auth_Token>           AuthTokens             = null,
@@ -3868,116 +3885,128 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
-
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
+
+            ReservationResult result = null;
+
             #endregion
 
-            #region Send OnReserveEVSERequest event
+            #region Send OnReserveRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnReserveEVSERequest?.Invoke(DateTime.UtcNow,
-                                             Timestamp.Value,
-                                             this,
-                                             EventTrackingId,
-                                             RoamingNetwork.Id,
-                                             ReservationId,
-                                             EVSEId,
-                                             StartTime,
-                                             Duration,
-                                             Id,
-                                             RemoteAuthentication,
-                                             ChargingProduct,
-                                             AuthTokens,
-                                             eMAIds,
-                                             PINs,
-                                             RequestTimeout);
+                OnReserveRequest?.Invoke(StartTime,
+                                         Timestamp.Value,
+                                         this,
+                                         EventTrackingId,
+                                         ReservationId,
+                                         ChargingLocation,
+                                         ReservationStartTime,
+                                         Duration,
+                                         ProviderId,
+                                         RemoteAuthentication,
+                                         ChargingProduct,
+                                         AuthTokens,
+                                         eMAIds,
+                                         PINs,
+                                         RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveEVSERequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
 
-
-            var response = await RoamingNetwork.
-                                     Reserve(EVSEId,
-                                             StartTime,
-                                             Duration,
-                                             ReservationId,
-                                             Id,
-                                             RemoteAuthentication,
-                                             ChargingProduct,
-                                             AuthTokens,
-                                             eMAIds,
-                                             PINs,
-
-                                             Timestamp,
-                                             CancellationToken,
-                                             EventTrackingId,
-                                             RequestTimeout);
-
-
-            #region Send OnReserveEVSEResponse event
-
-            Runtime.Stop();
 
             try
             {
 
-                OnReserveEVSEResponse?.Invoke(DateTime.UtcNow,
-                                              Timestamp.Value,
-                                              this,
-                                              EventTrackingId,
-                                              RoamingNetwork.Id,
-                                              ReservationId,
-                                              EVSEId,
-                                              StartTime,
-                                              Duration,
-                                              Id,
-                                              RemoteAuthentication,
-                                              ChargingProduct,
-                                              AuthTokens,
-                                              eMAIds,
-                                              PINs,
-                                              response,
-                                              Runtime.Elapsed,
-                                              RequestTimeout);
+                var response = await RoamingNetwork.
+                                         Reserve(ChargingLocation,
+                                                 ReservationLevel,
+                                                 ReservationStartTime,
+                                                 Duration,
+                                                 ReservationId,
+                                                 Id,
+                                                 RemoteAuthentication,
+                                                 ChargingProduct,
+                                                 AuthTokens,
+                                                 eMAIds,
+                                                 PINs,
+
+                                                 Timestamp,
+                                                 CancellationToken,
+                                                 EventTrackingId,
+                                                 RequestTimeout);
+
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveEVSEResponse));
+                result = ReservationResult.Error(e.Message);
+            }
+
+
+            #region Send OnReserveResponse event
+
+            var EndTime = DateTime.UtcNow;
+
+            try
+            {
+
+                OnReserveResponse?.Invoke(EndTime,
+                                          Timestamp.Value,
+                                          this,
+                                          EventTrackingId,
+                                          ReservationId,
+                                          ChargingLocation,
+                                          ReservationStartTime,
+                                          Duration,
+                                          ProviderId,
+                                          RemoteAuthentication,
+                                          ChargingProduct,
+                                          AuthTokens,
+                                          eMAIds,
+                                          PINs,
+                                          result,
+                                          EndTime - StartTime,
+                                          RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
 
-            return response;
+            return result;
 
         }
 
         #endregion
 
-        #region CancelReservation(...ReservationId, Reason, EVSEId = null, ...)
+        #region CancelReservation(ReservationId, Reason, ProviderId = null, ...)
 
         /// <summary>
-        /// Cancel the given charging reservation.
+        /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="EVSEId">An optional identification of the EVSE.</param>
+        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -3987,46 +4016,211 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              EVSE_Id?                               EVSEId              = null,
+                              eMobilityProvider_Id?                  ProviderId         = null,
 
-                              DateTime?                              Timestamp           = null,
-                              CancellationToken?                     CancellationToken   = null,
-                              EventTracking_Id                       EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null)
+                              DateTime?                              Timestamp          = null,
+                              CancellationToken?                     CancellationToken  = null,
+                              EventTracking_Id                       EventTrackingId    = null,
+                              TimeSpan?                              RequestTimeout     = null)
 
         {
+
+            #region Initial checks
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
-            var response = await RoamingNetwork.CancelReservation(ReservationId,
-                                                                  Reason,
-                                                                  Id,
-                                                                  EVSEId ?? new EVSE_Id?(),
 
-                                                                  Timestamp,
-                                                                  CancellationToken,
-                                                                  EventTrackingId,
-                                                                  RequestTimeout);
+            ChargingReservation     canceledReservation  = null;
+            CancelReservationResult result                = null;
+
+            #endregion
+
+            #region Send OnCancelReservationRequest event
+
+            var StartTime = DateTime.UtcNow;
+
+            try
+            {
+
+                OnCancelReservationRequest?.Invoke(StartTime,
+                                                   Timestamp.Value,
+                                                   this,
+                                                   EventTrackingId,
+                                                   ProviderId,
+                                                   ReservationId,
+                                                   Reason,
+                                                   RequestTimeout);
 
 
-            //var OnCancelReservationResponseLocal = OnCancelReservationResponse;
-            //if (OnCancelReservationResponseLocal != null)
-            //    OnCancelReservationResponseLocal(DateTime.UtcNow,
-            //                                this,
-            //                                EventTracking_Id.New,
-            //                                ReservationId,
-            //                                Reason);
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnCancelReservationRequest));
+            }
 
-            return response;
+            #endregion
+
+
+            try
+            {
+
+                var response = await RoamingNetwork.
+                                         CancelReservation(ReservationId,
+                                                           Reason,
+                                                           Id,
+                                                           //EVSEId ?? new EVSE_Id?(),
+
+                                                           Timestamp,
+                                                           CancellationToken,
+                                                           EventTrackingId,
+                                                           RequestTimeout);
+
+
+                //var OnCancelReservationResponseLocal = OnCancelReservationResponse;
+                //if (OnCancelReservationResponseLocal != null)
+                //    OnCancelReservationResponseLocal(DateTime.UtcNow,
+                //                                this,
+                //                                EventTracking_Id.New,
+                //                                ReservationId,
+                //                                Reason);
+
+
+            }
+            catch (Exception e)
+            {
+                result = CancelReservationResult.Error(ReservationId,
+                                                       Reason,
+                                                       e.Message);
+            }
+
+
+            #region Send OnCancelReservationResponse event
+
+            var EndTime = DateTime.UtcNow;
+
+            try
+            {
+
+                OnCancelReservationResponse?.Invoke(EndTime,
+                                                    Timestamp.Value,
+                                                    this,
+                                                    EventTrackingId,
+                                                    ProviderId,
+                                                    ReservationId,
+                                                    canceledReservation,
+                                                    Reason,
+                                                    result,
+                                                    EndTime - StartTime,
+                                                    RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnCancelReservationResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
         #endregion
 
+
+        #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
+
+        internal void SendNewReservation(DateTime             Timestamp,
+                                         Object               Sender,
+                                         ChargingReservation  Reservation)
+        {
+
+            OnNewReservation?.Invoke(Timestamp, Sender, Reservation);
+
+        }
+
+        #endregion
+
+        #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
+
+        internal void SendReservationCanceled(DateTime                               Timestamp,
+                                              Object                                 Sender,
+                                              ChargingReservation                    Reservation,
+                                              ChargingReservationCancellationReason  Reason)
+        {
+
+            OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region RemoteStart/-Stop and Sessions
+
+        #region Data
+
+        //private readonly Dictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
+
+        //public IEnumerable<ChargingSession> ChargingSessions
+        //    => _ChargingSessions.Select(_ => _.Value);
+
+        //#region TryGetChargingSessionById(SessionId, out ChargingSession)
+
+        ///// <summary>
+        ///// Return the charging session specified by the given identification.
+        ///// </summary>
+        ///// <param name="SessionId">The charging session identification.</param>
+        ///// <param name="ChargingSession">The charging session.</param>
+        //public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
+        //    => _ChargingSessions.TryGetValue(SessionId, out ChargingSession);
+
+        //#endregion
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// An event fired whenever a remote start command was received.
+        /// </summary>
+        public event OnRemoteStartRequestDelegate     OnRemoteStartRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote start command completed.
+        /// </summary>
+        public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate     OnNewChargingSession;
+
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopRequestDelegate      OnRemoteStopRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was created.
+        /// </summary>
+        public event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
+
+        #endregion
 
         #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, eMAId = null, ...)
 
@@ -4076,16 +4270,15 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStartRequest?.Invoke(StartTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
-                                             RoamingNetwork.Id,
                                              ChargingLocation,
                                              ChargingProduct,
                                              ReservationId,
@@ -4103,33 +4296,41 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var response = await RoamingNetwork.
-                                     RemoteStart(ChargingLocation,
-                                                 ChargingProduct,
-                                                 ReservationId,
-                                                 SessionId,
-                                                 Id,
-                                                 RemoteAuthentication,
-                                                 this,
+            try
+            {
 
-                                                 Timestamp,
-                                                 CancellationToken,
-                                                 EventTrackingId,
-                                                 RequestTimeout);
+                result = await RoamingNetwork.
+                                   RemoteStart(ChargingLocation,
+                                               ChargingProduct,
+                                               ReservationId,
+                                               SessionId,
+                                               Id,
+                                               RemoteAuthentication,
+                                               this,
+
+                                               Timestamp,
+                                               CancellationToken,
+                                               EventTrackingId,
+                                               RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                result = RemoteStartResult.Error(e.Message);
+            }
 
 
             #region Send OnRemoteStartResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStartResponse?.Invoke(EndTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
-                                              RoamingNetwork.Id,
                                               ChargingLocation,
                                               ChargingProduct,
                                               ReservationId,
@@ -4137,8 +4338,8 @@ namespace org.GraphDefined.WWCP
                                               Id,
                                               RemoteAuthentication,
                                               RequestTimeout,
-                                              response,
-                                              Runtime.Elapsed);
+                                              result,
+                                              EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -4148,7 +4349,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return response;
+            return result;
 
         }
 
@@ -4182,29 +4383,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
-
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.UtcNow;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
+
+
+            RemoteStopResult result = null;
 
             #endregion
 
             #region Send OnRemoteStopRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStopRequest?.Invoke(StartTime,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
-                                            RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
                                             Id,
@@ -4220,37 +4423,46 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var response = await RoamingNetwork.
-                                     RemoteStop(SessionId,
-                                                ReservationHandling,
-                                                Id,
-                                                RemoteAuthentication,
+            try
+            {
 
-                                                Timestamp,
-                                                CancellationToken,
-                                                EventTrackingId,
-                                                RequestTimeout);
+                result = await RoamingNetwork.
+                                   RemoteStop(SessionId,
+                                              ReservationHandling,
+                                              Id,
+                                              RemoteAuthentication,
+
+                                              Timestamp,
+                                              CancellationToken,
+                                              EventTrackingId,
+                                              RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                result = RemoteStopResult.Error(SessionId,
+                                                e.Message);
+            }
 
 
             #region Send OnRemoteStopResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStopResponse?.Invoke(EndTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
-                                             RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
                                              Id,
                                              RemoteAuthentication,
                                              RequestTimeout,
-                                             response,
-                                             Runtime.Elapsed);
+                                             result,
+                                             EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -4260,7 +4472,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return response;
+            return result;
 
         }
 
@@ -4270,7 +4482,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region IComparable<EVSE_Operator> Members
+        #region IComparable<eMobilityProvider> Members
 
         #region CompareTo(Object)
 
@@ -4281,33 +4493,31 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as eMobilityProvider;
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentException("The given object is not an EVSE_Operator!");
+            if (!(Object is eMobilityProvider eMobilityProvider))
+                throw new ArgumentException("The given object is not an eMobilityProvider!");
 
-            return CompareTo(EVSE_Operator);
+            return CompareTo(eMobilityProvider);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSE_Operator)
+        #region CompareTo(eMobilityProvider)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(eMobilityProvider EVSE_Operator)
+        /// <param name="eMobilityProvider">An EVSE_Operator object to compare with.</param>
+        public Int32 CompareTo(eMobilityProvider eMobilityProvider)
         {
 
-            if ((Object) EVSE_Operator == null)
+            if (eMobilityProvider is null)
                 throw new ArgumentNullException("The given EVSE_Operator must not be null!");
 
-            return Id.CompareTo(EVSE_Operator.Id);
+            return Id.CompareTo(eMobilityProvider.Id);
 
         }
 
@@ -4315,7 +4525,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVSE_Operator> Members
+        #region IEquatable<eMobilityProvider> Members
 
         #region Equals(Object)
 
@@ -4327,15 +4537,13 @@ namespace org.GraphDefined.WWCP
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as eMobilityProvider;
-            if ((Object) EVSE_Operator == null)
+            if (!(Object is eMobilityProvider eMobilityProvider))
                 return false;
 
-            return this.Equals(EVSE_Operator);
+            return Equals(eMobilityProvider);
 
         }
 
@@ -4344,17 +4552,17 @@ namespace org.GraphDefined.WWCP
         #region Equals(EVSE_Operator)
 
         /// <summary>
-        /// Compares two EVSE_Operator for equality.
+        /// Compares two eMobilityProviders for equality.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
+        /// <param name="eMobilityProvider">An eMobilityProvider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMobilityProvider EVSE_Operator)
+        public Boolean Equals(eMobilityProvider eMobilityProvider)
         {
 
-            if ((Object) EVSE_Operator == null)
+            if (eMobilityProvider is null)
                 return false;
 
-            return Id.Equals(EVSE_Operator.Id);
+            return Id.Equals(eMobilityProvider.Id);
 
         }
 

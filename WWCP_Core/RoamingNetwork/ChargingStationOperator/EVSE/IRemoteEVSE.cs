@@ -31,69 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace org.GraphDefined.WWCP
 {
 
-    public static class IRemoteEVSEExtentions
-    {
-
-        #region Reserve(...StartTime, Duration, ReservationId = null, ProviderId = null, ...)
-
-        /// <summary>
-        /// Reserve the possibility to charge at the given EVSE.
-        /// </summary>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProduct">The charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public static Task<ReservationResult>
-
-            Reserve(this IRemoteEVSE                  RemoteEVSE,
-                    DateTime?                         StartTime              = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
-
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
-
-
-                => RemoteEVSE.Reserve(ChargingReservationLevel.EVSE,
-                                      StartTime,
-                                      Duration,
-                                      ReservationId,
-                                      ProviderId,
-                                      RemoteAuthentication,
-                                      ChargingProduct,
-                                      AuthTokens,
-                                      eMAIds,
-                                      PINs,
-
-                                      Timestamp,
-                                      CancellationToken,
-                                      EventTrackingId,
-                                      RequestTimeout);
-
-        #endregion
-
-    }
-
-
-
     /// <summary>
     /// The interface of a remote EVSE.
     /// </summary>

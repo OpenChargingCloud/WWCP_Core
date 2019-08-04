@@ -86,7 +86,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingLocation">A charging location.</param>
         /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -268,7 +268,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Start a charging session.
         /// </summary>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>

@@ -1118,8 +1118,8 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStations           = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
 
-            this._ChargingReservations       = new ConcurrentDictionary<ChargingReservation_Id, ChargingStation>();
-            this._ChargingSessions           = new ConcurrentDictionary<ChargingSession_Id,     ChargingStation>();
+            //this._ChargingReservations       = new ConcurrentDictionary<ChargingReservation_Id, ChargingStation>();
+            //this._ChargingSessions           = new ConcurrentDictionary<ChargingSession_Id,     ChargingStation>();
 
             #endregion
 
@@ -1511,7 +1511,7 @@ namespace org.GraphDefined.WWCP
 
 
                 _ChargingStation.OnNewReservation               += SendNewReservation;
-                _ChargingStation.OnCancelReservationResponse         += SendOnCancelReservationResponse;
+                _ChargingStation.OnReservationCanceled          += SendReservationCanceled;
                 _ChargingStation.OnNewChargingSession           += SendNewChargingSession;
                 _ChargingStation.OnNewChargeDetailRecord        += SendNewChargeDetailRecord;
 
@@ -1525,7 +1525,7 @@ namespace org.GraphDefined.WWCP
 
                         var __EVSE = GetEVSEbyId(reservation.EVSEId.Value);
 
-                        __EVSE.Reservation = reservation;
+                        //__EVSE.Reservation = reservation;
 
                     };
 
@@ -1533,7 +1533,7 @@ namespace org.GraphDefined.WWCP
 
                         var __EVSE = GetEVSEbyId(session.EVSEId.Value);
 
-                        __EVSE.ChargingSession = session;
+                        //__EVSE.ChargingSession = session;
 
                     };
 
@@ -1546,7 +1546,7 @@ namespace org.GraphDefined.WWCP
                     };
 
 
-                    _ChargingStation.RemoteChargingStation.OnCancelReservationResponse += _ChargingStation.SendOnCancelReservationResponse;
+                    _ChargingStation.RemoteChargingStation.OnReservationCanceled += _ChargingStation.SendReservationCanceled;
 
                     _ChargingStation.RemoteChargingStation.OnEVSEStatusChanged += (Timestamp,
                                                                                    EventTrackingId,
@@ -2285,7 +2285,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Reserve the possibility to charge at this charging pool.
         /// </summary>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -2343,7 +2343,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingLocation">A charging location.</param>
         /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -2361,7 +2361,7 @@ namespace org.GraphDefined.WWCP
 
             Reserve(ChargingLocation                  ChargingLocation,
                     ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                         StartTime              = null,
+                    DateTime?                         ReservationStartTime   = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
                     eMobilityProvider_Id?             ProviderId             = null,
@@ -2396,18 +2396,18 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnReserveRequest?.Invoke(DateTime.UtcNow,
+                OnReserveRequest?.Invoke(StartTime,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
                                          ReservationId,
                                          ChargingLocation,
-                                         StartTime,
+                                         ReservationStartTime,
                                          Duration,
                                          ProviderId,
                                          RemoteAuthentication,
@@ -2442,7 +2442,7 @@ namespace org.GraphDefined.WWCP
                         result = await RemoteChargingPool.
                                            Reserve(ChargingLocation,
                                                    ReservationLevel,
-                                                   StartTime,
+                                                   ReservationStartTime,
                                                    Duration,
                                                    ReservationId,
                                                    ProviderId,
@@ -2495,18 +2495,18 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnReserveResponse?.Invoke(DateTime.UtcNow,
+                OnReserveResponse?.Invoke(EndTime,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
                                           ReservationId,
                                           ChargingLocation,
-                                          StartTime,
+                                          ReservationStartTime,
                                           Duration,
                                           ProviderId,
                                           RemoteAuthentication,
@@ -2515,7 +2515,7 @@ namespace org.GraphDefined.WWCP
                                           eMAIds,
                                           PINs,
                                           result,
-                                          Runtime.Elapsed,
+                                          EndTime - StartTime,
                                           RequestTimeout);
 
             }
@@ -2577,12 +2577,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnCancelReservationRequest?.Invoke(DateTime.UtcNow,
+                OnCancelReservationRequest?.Invoke(StartTime,
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
@@ -2655,12 +2655,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnCancelReservationResponse?.Invoke(DateTime.UtcNow,
+                OnCancelReservationResponse?.Invoke(EndTime,
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
@@ -2669,7 +2669,7 @@ namespace org.GraphDefined.WWCP
                                                     canceledReservation,
                                                     Reason,
                                                     result,
-                                                    Runtime.Elapsed,
+                                                    EndTime - StartTime,
                                                     RequestTimeout);
 
             }
@@ -2703,9 +2703,9 @@ namespace org.GraphDefined.WWCP
         #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
         internal void SendReservationCanceled(DateTime                               Timestamp,
-                                         Object                                 Sender,
-                                         ChargingReservation                    Reservation,
-                                         ChargingReservationCancellationReason  Reason)
+                                              Object                                 Sender,
+                                              ChargingReservation                    Reservation,
+                                              ChargingReservationCancellationReason  Reason)
         {
 
             OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
@@ -2867,12 +2867,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStartRequest?.Invoke(StartTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -2984,7 +2984,6 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-
             }
             catch (Exception e)
             {
@@ -2994,12 +2993,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStartResponse?.Invoke(EndTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -3011,7 +3010,7 @@ namespace org.GraphDefined.WWCP
                                               RemoteAuthentication,
                                               RequestTimeout,
                                               result,
-                                              Runtime.Elapsed);
+                                              EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -3073,12 +3072,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStopRequest?.Invoke(StartTime,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -3215,12 +3214,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStopResponse?.Invoke(EndTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -3230,7 +3229,7 @@ namespace org.GraphDefined.WWCP
                                              RemoteAuthentication,
                                              RequestTimeout,
                                              result,
-                                             Runtime.Elapsed);
+                                             EndTime - StartTime);
 
             }
             catch (Exception e)

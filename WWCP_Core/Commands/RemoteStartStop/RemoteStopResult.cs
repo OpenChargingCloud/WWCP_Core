@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using System;
 
 #endregion
@@ -62,6 +63,12 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public String                   Message                  { get; }
 
+        /// <summary>
+        /// An optional additional information on this error,
+        /// e.g. the HTTP error response.
+        /// </summary>
+        public Object                   AdditionalInfo           { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -74,14 +81,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Result">The result of the remote stop request.</param>
         /// <param name="ErrorMessage">A optional error message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         private RemoteStopResult(ChargingSession_Id    SessionId,
                                  RemoteStopResultType  Result,
-                                 String                ErrorMessage = null)
+                                 String                ErrorMessage    = null,
+                                 Object                AdditionalInfo  = null)
         {
 
-            this.SessionId  = SessionId;
-            this.Result     = Result;
-            this.Message    = ErrorMessage;
+            this.SessionId       = SessionId;
+            this.Result          = Result;
+            this.Message         = ErrorMessage;
+            this.AdditionalInfo  = AdditionalInfo;
 
         }
 
@@ -342,19 +352,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Error(SessionId, Message = null)
+        #region (static) Error(SessionId, Message = null, AdditionalInfo = null)
 
         /// <summary>
         /// The remote stop led to an error.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Message">An optional error message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         public static RemoteStopResult Error(ChargingSession_Id  SessionId,
-                                             String              Message = null)
+                                             String              Message         = null,
+                                             Object              AdditionalInfo  = null)
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultType.Error,
-                                    Message);
+                                    Message,
+                                    AdditionalInfo);
 
         #endregion
 

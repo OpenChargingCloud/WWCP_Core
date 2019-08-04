@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="ChargingLocation">A charging location.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="StartTime">The starting time of the reservation.</param>
+    /// <param name="ReservationStartTime">The starting time of the reservation.</param>
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingLocation">A charging location.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="StartTime">The starting time of the reservation.</param>
+    /// <param name="ReservationStartTime">The starting time of the reservation.</param>
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
@@ -116,7 +116,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="ChargingLocation">A charging location.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="StartTime">The starting time of the reservation.</param>
+    /// <param name="ReservationStartTime">The starting time of the reservation.</param>
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>

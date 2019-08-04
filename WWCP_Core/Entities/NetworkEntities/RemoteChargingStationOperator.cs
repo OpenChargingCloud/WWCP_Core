@@ -121,7 +121,7 @@
 //        /// Reserve the possibility to charge at the given EVSE.
 //        /// </summary>
 //        /// <param name="EVSEId">The unique identification of the EVSE to be reserved.</param>
-//        /// <param name="StartTime">The starting time of the reservation.</param>
+//        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
 //        /// <param name="Duration">The duration of the reservation.</param>
 //        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
 //        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -201,7 +201,7 @@
 //        /// Reserve the possibility to charge at the given charging station.
 //        /// </summary>
 //        /// <param name="ChargingStationId">The unique identification of the charging station to be reserved.</param>
-//        /// <param name="StartTime">The starting time of the reservation.</param>
+//        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
 //        /// <param name="Duration">The duration of the reservation.</param>
 //        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
 //        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -243,7 +243,7 @@
 //        /// Reserve the possibility to charge within the given charging pool.
 //        /// </summary>
 //        /// <param name="ChargingPoolId">The unique identification of the charging pool to be reserved.</param>
-//        /// <param name="StartTime">The starting time of the reservation.</param>
+//        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
 //        /// <param name="Duration">The duration of the reservation.</param>
 //        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
 //        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>

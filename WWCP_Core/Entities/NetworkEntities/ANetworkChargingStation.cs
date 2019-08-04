@@ -482,9 +482,15 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// Create a new remote charging station attached via a computer network (HTTPS/TCP/IP).
         /// </summary>
-        /// <param name="ChargingStation">A local charging station.</param>
+        /// <param name="ChargingStationId">A local charging station.</param>
         /// <param name="DNSClient">An optional DNS client used to resolve DNS names.</param>
-        public ANetworkChargingStation(ChargingStation                      ChargingStation,
+        public ANetworkChargingStation(ChargingStation_Id                   ChargingStationId,
+                                       I18NString                           Description                  = null,
+                                       ChargingStationAdminStatusTypes      InitialAdminStatus           = ChargingStationAdminStatusTypes.Operational,
+                                       ChargingStationStatusTypes           InitialStatus                = ChargingStationStatusTypes.Available,
+                                       String                               EllipticCurve                = "P-256",
+                                       ECPrivateKeyParameters               PrivateKey                   = null,
+                                       PublicKeyCertificates                PublicKeyCertificates        = null,
                                        TimeSpan?                            SelfCheckTimeSpan            = null,
                                        UInt16                               MaxStatusListSize            = DefaultMaxStatusListSize,
                                        UInt16                               MaxAdminStatusListSize       = DefaultMaxAdminStatusListSize,
@@ -500,7 +506,16 @@ namespace org.GraphDefined.WWCP.Networking
                                        HTTPPath?                            URIPrefix                    = null,
                                        TimeSpan?                            RequestTimeout               = null)
 
-            : this(ChargingStation, MaxStatusListSize, MaxAdminStatusListSize)
+            : this(ChargingStationId,
+                   Description,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   EllipticCurve,
+                   PrivateKey,
+                   PublicKeyCertificates,
+                   SelfCheckTimeSpan,
+                   MaxStatusListSize,
+                   MaxAdminStatusListSize)
 
         {
 
@@ -1107,7 +1122,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// Reserve the possibility to charge at this station.
         /// </summary>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -1165,7 +1180,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         /// <param name="ChargingLocation">A charging location.</param>
         /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>

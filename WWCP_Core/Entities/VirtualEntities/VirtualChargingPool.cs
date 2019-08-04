@@ -20,7 +20,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -29,9 +28,10 @@ using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -338,77 +338,6 @@ namespace org.GraphDefined.WWCP.Virtual
         /// </summary>
         public IEnumerable<IRemoteChargingStation> ChargingStations
             => _ChargingStations;
-
-        #endregion
-
-        #region CreateVirtualStation(ChargingStation, Configurator = null, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station after its creation.</param>
-        /// <param name="OnSuccess">An optional delegate called after successful creation of the charging station.</param>
-        /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                               ChargingStationId,
-                                                           ChargingStationAdminStatusTypes                  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
-                                                           ChargingStationStatusTypes                       InitialStatus            = ChargingStationStatusTypes.Available,
-                                                           UInt16                                           MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                                           UInt16                                           MaxStatusListSize        = DefaultMaxStatusListSize,
-                                                           TimeSpan?                                        SelfCheckTimeSpan        = null,
-                                                           Action<VirtualChargingStation>                   Configurator             = null,
-                                                           Action<VirtualChargingStation>                   OnSuccess                = null,
-                                                           Action<VirtualChargingStation, ChargingStation_Id>  OnError                  = null)
-        {
-
-            #region Initial checks
-
-            if (_ChargingStations.Any(station => station.Id == ChargingStationId))
-            {
-                throw new Exception("StationAlreadyExistsInPool");
-                //if (OnError == null)
-                //    throw new ChargingStationAlreadyExistsInStation(this.ChargingStation, ChargingStation.Id);
-                //else
-                //    OnError?.Invoke(this, ChargingStation.Id);
-            }
-
-            #endregion
-
-            var Now           = DateTime.UtcNow;
-            var _VirtualStation  = new VirtualChargingStation(ChargingStationId,
-                                                              this,
-                                                              null,
-                                                              null,
-                                                              InitialAdminStatus,
-                                                              InitialStatus,
-                                                              MaxAdminStatusListSize,
-                                                              MaxStatusListSize,
-                                                              SelfCheckTimeSpan);
-
-            Configurator?.Invoke(_VirtualStation);
-
-            if (_ChargingStations.Add(_VirtualStation))
-            {
-
-                //_VirtualEVSE.OnPropertyChanged        += (Timestamp, Sender, PropertyName, OldValue, NewValue)
-                //                                           => UpdateEVSEData(Timestamp, Sender as VirtualEVSE, PropertyName, OldValue, NewValue);
-                //
-                //_VirtualEVSE.OnStatusChanged          += UpdateEVSEStatus;
-                //_VirtualEVSE.OnAdminStatusChanged     += UpdateEVSEAdminStatus;
-                //_VirtualEVSE.OnNewReservation         += SendNewReservation;
-                //_VirtualEVSE.OnNewChargingSession     += SendNewChargingSession;
-                //_VirtualEVSE.OnNewChargeDetailRecord  += SendNewChargeDetailRecord;
-
-                OnSuccess?.Invoke(_VirtualStation);
-
-                return _VirtualStation;
-
-            }
-
-            return null;
-
-        }
 
         #endregion
 
@@ -738,11 +667,13 @@ namespace org.GraphDefined.WWCP.Virtual
 
         #region Data
 
+        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
+
         /// <summary>
         /// All current charging reservations.
         /// </summary>
         public IEnumerable<ChargingReservation> Reservations
-            => _ChargingStations.SelectMany(station => station.Reservations);
+            => _Reservations.Select(_ => _.Value);
 
         #region TryGetReservationById(ReservationId, out Reservation)
 
@@ -752,18 +683,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="ReservationId">The charging reservation identification.</param>
         /// <param name="Reservation">The charging reservation.</param>
         public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-        {
-
-            foreach (var station in _ChargingStations)
-            {
-                if (station.TryGetChargingReservationById(ReservationId, out Reservation))
-                    return true;
-            }
-
-            Reservation = null;
-            return false;
-
-        }
+            => _Reservations.TryGetValue(ReservationId, out Reservation);
 
         #endregion
 
@@ -809,7 +729,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <summary>
         /// Reserve the possibility to charge at this charging pool.
         /// </summary>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -867,7 +787,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// </summary>
         /// <param name="ChargingLocation">A charging location.</param>
         /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -885,7 +805,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             Reserve(ChargingLocation                  ChargingLocation,
                     ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                         StartTime              = null,
+                    DateTime?                         ReservationStartTime   = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
                     eMobilityProvider_Id?             ProviderId             = null,
@@ -921,18 +841,18 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnReserveRequest?.Invoke(DateTime.UtcNow,
+                OnReserveRequest?.Invoke(StartTime,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
                                          ReservationId,
                                          ChargingLocation,
-                                         StartTime,
+                                         ReservationStartTime,
                                          Duration,
                                          ProviderId,
                                          RemoteAuthentication,
@@ -969,7 +889,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         result = await remoteStation.
                                            Reserve(ChargingLocation,
                                                    ReservationLevel,
-                                                   StartTime,
+                                                   ReservationStartTime,
                                                    Duration,
                                                    ReservationId,
                                                    ProviderId,
@@ -1000,7 +920,7 @@ namespace org.GraphDefined.WWCP.Virtual
                             results.Add(await remoteStation2.
                                                   Reserve(ChargingLocation,
                                                           ReservationLevel,
-                                                          StartTime,
+                                                          ReservationStartTime,
                                                           Duration,
                                                           ChargingReservation_Id.Random(OperatorId),
                                                           ProviderId,
@@ -1026,9 +946,9 @@ namespace org.GraphDefined.WWCP.Virtual
 
                             newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                      Timestamp:               Timestamp.Value,
-                                                                     StartTime:               StartTime ?? DateTime.UtcNow,
+                                                                     StartTime:               ReservationStartTime ?? DateTime.UtcNow,
                                                                      Duration:                Duration  ?? MaxReservationDuration,
-                                                                     EndTime:                 (StartTime ?? DateTime.UtcNow) + (Duration ?? MaxReservationDuration),
+                                                                     EndTime:                 (ReservationStartTime ?? DateTime.UtcNow) + (Duration ?? MaxReservationDuration),
                                                                      ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                      ReservationLevel:        ReservationLevel,
                                                                      ProviderId:              ProviderId,
@@ -1098,12 +1018,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnReserveResponse?.Invoke(DateTime.UtcNow,
+                OnReserveResponse?.Invoke(EndTime,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
@@ -1118,7 +1038,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                           eMAIds,
                                           PINs,
                                           result,
-                                          Runtime.Elapsed,
+                                          EndTime - StartTime,
                                           RequestTimeout);
 
             }
@@ -1249,9 +1169,9 @@ namespace org.GraphDefined.WWCP.Virtual
         #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
         internal void SendReservationCanceled(DateTime                               Timestamp,
-                                         Object                                 Sender,
-                                         ChargingReservation                    Reservation,
-                                         ChargingReservationCancellationReason  Reason)
+                                              Object                                 Sender,
+                                              ChargingReservation                    Reservation,
+                                              ChargingReservationCancellationReason  Reason)
         {
 
             OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
@@ -1416,12 +1336,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStartRequest?.Invoke(StartTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -1498,12 +1418,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStartResponse?.Invoke(EndTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -1515,7 +1435,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                               RemoteAuthentication,
                                               RequestTimeout,
                                               result,
-                                              Runtime.Elapsed);
+                                              EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -1580,12 +1500,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStopRequest?.Invoke(StartTime,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -1698,12 +1618,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStopResponse?.Invoke(EndTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -1713,7 +1633,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              RemoteAuthentication,
                                              RequestTimeout,
                                              result,
-                                             Runtime.Elapsed);
+                                             EndTime - StartTime);
 
             }
             catch (Exception e)

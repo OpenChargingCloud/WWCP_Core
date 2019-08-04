@@ -20,7 +20,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -29,10 +28,11 @@ using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -952,7 +952,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <summary>
         /// Reserve the possibility to charge at this charging station.
         /// </summary>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -1010,7 +1010,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// </summary>
         /// <param name="ChargingLocation">A charging location.</param>
         /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
@@ -1028,7 +1028,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             Reserve(ChargingLocation                  ChargingLocation,
                     ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                         StartTime              = null,
+                    DateTime?                         ReservationStartTime   = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
                     eMobilityProvider_Id?             ProviderId             = null,
@@ -1064,18 +1064,18 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnReserveRequest?.Invoke(DateTime.UtcNow,
+                OnReserveRequest?.Invoke(StartTime,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
                                          ReservationId,
                                          ChargingLocation,
-                                         StartTime,
+                                         ReservationStartTime,
                                          Duration,
                                          ProviderId,
                                          RemoteAuthentication,
@@ -1125,7 +1125,7 @@ namespace org.GraphDefined.WWCP.Virtual
                             result = await remoteEVSE.
                                                Reserve(ChargingLocation,
                                                        ReservationLevel,
-                                                       StartTime,
+                                                       ReservationStartTime,
                                                        Duration,
                                                        ReservationId,
                                                        ProviderId,
@@ -1156,7 +1156,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                 results.Add(await remoteEVSE2.
                                                       Reserve(ChargingLocation,
                                                               ReservationLevel,
-                                                              StartTime,
+                                                              ReservationStartTime,
                                                               Duration,
                                                               ChargingReservation_Id.Random(OperatorId),
                                                               ProviderId,
@@ -1182,9 +1182,9 @@ namespace org.GraphDefined.WWCP.Virtual
 
                                 newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                          Timestamp:               Timestamp.Value,
-                                                                         StartTime:               StartTime ?? DateTime.UtcNow,
+                                                                         StartTime:               ReservationStartTime ?? DateTime.UtcNow,
                                                                          Duration:                Duration  ?? MaxReservationDuration,
-                                                                         EndTime:                 (StartTime ?? DateTime.UtcNow) + (Duration ?? MaxReservationDuration),
+                                                                         EndTime:                 (ReservationStartTime ?? DateTime.UtcNow) + (Duration ?? MaxReservationDuration),
                                                                          ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                          ReservationLevel:        ReservationLevel,
                                                                          ProviderId:              ProviderId,
@@ -1256,18 +1256,18 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnReserveResponse?.Invoke(DateTime.UtcNow,
+                OnReserveResponse?.Invoke(EndTime,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
                                           ReservationId,
                                           ChargingLocation,
-                                          StartTime,
+                                          ReservationStartTime,
                                           Duration,
                                           ProviderId,
                                           RemoteAuthentication,
@@ -1276,7 +1276,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                           eMAIds,
                                           PINs,
                                           result,
-                                          Runtime.Elapsed,
+                                          EndTime - StartTime,
                                           RequestTimeout);
 
             }
@@ -1338,12 +1338,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnCancelReservationRequest?.Invoke(DateTime.UtcNow,
+                OnCancelReservationRequest?.Invoke(StartTime,
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
@@ -1459,12 +1459,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnCancelReservationResponse?.Invoke(DateTime.UtcNow,
+                OnCancelReservationResponse?.Invoke(EndTime,
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
@@ -1473,7 +1473,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                     canceledReservation,
                                                     Reason,
                                                     result,
-                                                    Runtime.Elapsed,
+                                                    EndTime - StartTime,
                                                     RequestTimeout);
 
             }
@@ -1733,12 +1733,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStartRequest?.Invoke(StartTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -1825,12 +1825,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStartResponse?.Invoke(EndTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -1842,7 +1842,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                               RemoteAuthentication,
                                               RequestTimeout,
                                               result,
-                                              Runtime.Elapsed);
+                                              EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -1907,12 +1907,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
+                OnRemoteStopRequest?.Invoke(StartTime,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -2035,12 +2035,12 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
+                OnRemoteStopResponse?.Invoke(EndTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -2050,7 +2050,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              RemoteAuthentication,
                                              RequestTimeout,
                                              result,
-                                             Runtime.Elapsed);
+                                             EndTime - StartTime);
 
             }
             catch (Exception e)

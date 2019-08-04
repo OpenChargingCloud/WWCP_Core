@@ -386,7 +386,7 @@ namespace org.GraphDefined.WWCP
             //try
             //{
 
-            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //    OnEnqueueSendCDRRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    EventTrackingId,
@@ -471,7 +471,7 @@ namespace org.GraphDefined.WWCP
             //try
             //{
 
-            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //    OnEnqueueSendCDRRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    EventTrackingId,
@@ -558,7 +558,7 @@ namespace org.GraphDefined.WWCP
             //try
             //{
 
-            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //    OnEnqueueSendCDRRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    EventTrackingId,
@@ -659,7 +659,7 @@ namespace org.GraphDefined.WWCP
             //try
             //{
 
-            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //    OnEnqueueSendCDRRequest?.Invoke(StartTime,
             //                                    Timestamp.Value,
             //                                    this,
             //                                    EventTrackingId,
