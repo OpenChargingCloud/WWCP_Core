@@ -19,7 +19,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -37,68 +37,20 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Timestamp
-
-        private readonly DateTime _Timestamp;
-
-        [Mandatory]
-        public DateTime Timestamp
-        {
-            get
-            {
-                return _Timestamp;
-            }
-        }
-
-        #endregion
-
-        #region ReservationId
-
-        private readonly ChargingReservation_Id _ReservationId;
-
         /// <summary>
         /// The charging reservation identification.
         /// </summary>
         [Mandatory]
-        public ChargingReservation_Id Id
-        {
-            get
-            {
-                return _ReservationId;
-            }
-        }
-
-        #endregion
-
-        #region StartTime
-
-        private readonly DateTime _StartTime;
+        public ChargingReservation_Id    Id                         { get; }
 
         [Mandatory]
-        public DateTime StartTime
-        {
-            get
-            {
-                return _StartTime;
-            }
-        }
-
-        #endregion
-
-        #region Duration
-
-        private readonly TimeSpan _Duration;
+        public DateTime                  Timestamp                  { get; }
 
         [Mandatory]
-        public TimeSpan Duration
-        {
-            get
-            {
-                return _Duration;
-            }
-        }
+        public DateTime                  StartTime                  { get; }
 
-        #endregion
+        [Mandatory]
+        public TimeSpan                  Duration                   { get; }
 
         #region TimeLeft
 
@@ -107,9 +59,9 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                var _TimeLeft = _EndTime - DateTime.UtcNow;// _StartTime + _Duration - DateTime.UtcNow;
+                var _TimeLeft = EndTime - DateTime.UtcNow;// _StartTime + _Duration - DateTime.UtcNow;
 
-                return _ChargingSession == null
+                return ChargingSession == null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
                            : TimeSpan.FromSeconds(0);
 
@@ -118,102 +70,41 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EndTime
-
-        private DateTime _EndTime;
+        [Mandatory]
+        public DateTime                  EndTime                    { get; set; }
 
         [Mandatory]
-        public DateTime EndTime
-        {
-
-            get
-            {
-                return _EndTime;
-            }
-
-            set
-            {
-                _EndTime = value;
-            }
-
-        }
-
-        #endregion
-
-        #region ConsumedReservationTime
-
-        private TimeSpan _ConsumedReservationTime;
+        public TimeSpan                  ConsumedReservationTime    { get; private set; }
 
         [Mandatory]
-        public TimeSpan ConsumedReservationTime
-        {
-            get
-            {
-                return _ConsumedReservationTime;
-            }
-        }
+        public ChargingReservationLevel  ReservationLevel           { get; }
 
-        #endregion
+        [Optional]
+        public eMobilityProvider_Id?     ProviderId                 { get; }
 
-        #region ReservationLevel
+        [Optional]
+        public AAuthentication           StartAuthentication        { get; internal set; }
 
-        private readonly ChargingReservationLevel _ReservationLevel;
+        [Optional]
+        public AAuthentication           StopAuthentication         { get; internal set; }
+
+        [Optional]
+        public RoamingNetwork_Id?        RoamingNetworkId           { get; internal set; }
+
+        [Optional]
+        public ChargingPool_Id?          ChargingPoolId             { get; internal set; }
+
+        [Optional]
+        public ChargingStation_Id?       ChargingStationId          { get; internal set; }
+
+        [Optional]
+        public EVSE_Id?                  EVSEId                     { get; internal set; }
+
+        [Optional]
+        public ChargingProduct           ChargingProduct            { get; }
 
         [Mandatory]
-        public ChargingReservationLevel ReservationLevel
-        {
-            get
-            {
-                return _ReservationLevel;
-            }
-        }
-
-        #endregion
-
-
-        [Optional]
-        public eMobilityProvider_Id?  ProviderId          { get; }
-
-        [Optional]
-        public RemoteAuthentication   Identification      { get; }
-
-        [Optional]
-        public RoamingNetwork         RoamingNetwork      { get; internal set; }
-
-        [Optional]
-        public ChargingPool_Id?       ChargingPoolId      { get; internal set; }
-
-        [Optional]
-        public ChargingStation_Id?    ChargingStationId   { get; internal set; }
-
-        [Optional]
-        public EVSE_Id?               EVSEId              { get; internal set; }
-
-        [Optional]
-        public ChargingProduct        ChargingProduct     { get; }
-
-
-        #region ChargingSession
-
-        private ChargingSession _ChargingSession;
-
-        [Mandatory]
-        public ChargingSession ChargingSession
-        {
-
-            get
-            {
-                return _ChargingSession;
-            }
-
-            set
-            {
-                _ChargingSession = value;
-            }
-
-        }
-
-        #endregion
+        public ChargingSession           ChargingSession            { get; set; }
 
 
         #region AuthTokens
@@ -222,12 +113,7 @@ namespace org.GraphDefined.WWCP
 
         [Optional]
         public IEnumerable<Auth_Token> AuthTokens
-        {
-            get
-            {
-                return _AuthTokens;
-            }
-        }
+            => _AuthTokens;
 
         #endregion
 
@@ -237,35 +123,25 @@ namespace org.GraphDefined.WWCP
 
         [Optional]
         public IEnumerable<eMobilityAccount_Id> eMAIds
-        {
-            get
-            {
-                return _eMAIds;
-            }
-        }
+            => _eMAIds;
 
         #endregion
 
         #region PINs
 
-        private readonly IEnumerable<UInt32> _PINs;
+        private readonly HashSet<UInt32> _PINs;
 
         [Optional]
         public IEnumerable<UInt32> PINs
-        {
-            get
-            {
-                return _PINs;
-            }
-        }
+            => _PINs;
 
         #endregion
 
 
-        public ChargingReservation ParentReservation { get; internal set; }
+        public ChargingReservation       ParentReservation          { get; internal set; }
 
 
-        private HashSet<ChargingReservation> _SubReservations;
+        private readonly HashSet<ChargingReservation> _SubReservations;
 
         public IEnumerable<ChargingReservation> SubReservations
             => _SubReservations;
@@ -302,16 +178,16 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this._ReservationId            = ReservationId;
-            this._Timestamp                = Timestamp.ToUniversalTime();
-            this._StartTime                = StartTime.ToUniversalTime();
-            this._Duration                 = Duration;
-            this._EndTime                  = StartTime.ToUniversalTime() + Duration;
-            this._ConsumedReservationTime  = ConsumedReservationTime;
-            this._ReservationLevel         = ReservationLevel;
+            this.Id            = ReservationId;
+            this.Timestamp                = Timestamp.ToUniversalTime();
+            this.StartTime                = StartTime.ToUniversalTime();
+            this.Duration                 = Duration;
+            this.EndTime                  = StartTime.ToUniversalTime() + Duration;
+            this.ConsumedReservationTime  = ConsumedReservationTime;
+            this.ReservationLevel         = ReservationLevel;
 
             this.ProviderId                = ProviderId;
-            this.Identification            = Identification;
+            this.StartAuthentication            = Identification;
 
             this.RoamingNetwork            = RoamingNetwork;
             this.ChargingPoolId            = ChargingPoolId;
@@ -337,8 +213,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean IsExpired()
 
-            => _ChargingSession == null
-                   ? DateTime.UtcNow > _EndTime
+            => ChargingSession == null
+                   ? DateTime.UtcNow > EndTime
                    : false;
 
         #endregion
@@ -350,7 +226,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
 
-            => DateTime.UtcNow > (_EndTime + ReservationSelfCancelAfter);
+            => DateTime.UtcNow > (EndTime + ReservationSelfCancelAfter);
 
         #endregion
 
@@ -359,10 +235,59 @@ namespace org.GraphDefined.WWCP
 
         public void AddToConsumedReservationTime(TimeSpan Time)
         {
-            _ConsumedReservationTime = _ConsumedReservationTime.Add(Time);
+            ConsumedReservationTime = ConsumedReservationTime.Add(Time);
         }
 
         #endregion
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                   new JProperty("@id",                        Id.                     ToString()),
+                   new JProperty("timestamp",                  Timestamp.              ToIso8601()),
+                   new JProperty("startTime",                  StartTime.              ToIso8601()),
+                   new JProperty("duration",                   Duration.               TotalMinutes),
+                   new JProperty("endTime",                    EndTime.                ToIso8601()),
+
+                   new JProperty("consumedReservationTime",    ConsumedReservationTime.TotalMinutes),
+                   new JProperty("reservationLevel",           ReservationLevel.       ToString()),
+
+                   ProviderId.HasValue
+                       ? new JProperty("providerId",           ProviderId.             ToString())
+                       : null,
+
+                   StartAuthentication != null
+                       ? new JProperty("authentication",       EndTime.                ToIso8601())
+                       : null,
+
+                   RoamingNetworkId.HasValue
+                       ? new JProperty("roamingNetworkId",     RoamingNetworkId.       ToString())
+                       : null,
+
+                   ChargingPoolId.HasValue
+                       ? new JProperty("chargingPoolId",       ChargingPoolId.         ToString())
+                       : null,
+
+                   ChargingStationId.HasValue
+                       ? new JProperty("chargingStationId",    ChargingStationId.      ToString())
+                       : null,
+
+                   EVSEId.HasValue
+                       ? new JProperty("EVSEId",               EVSEId.                 ToString())
+                       : null,
+
+                   ChargingProduct != null
+                       ? new JProperty("chargingProduct",      ChargingProduct.        ToJSON())
+                       : null,
+
+                   ChargingSession != null
+                       ? new JProperty("chargingSessionId",    ChargingSession.Id.     ToString())
+                       : null
+
+               );
+
 
 
         #region IComparable<ChargingReservation> Members
@@ -402,7 +327,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingReservation == null)
                 throw new ArgumentNullException("The given charging reservation must not be null!");
 
-            return _ReservationId.CompareTo(ChargingReservation._ReservationId);
+            return Id.CompareTo(ChargingReservation.Id);
 
         }
 
@@ -449,7 +374,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingReservation == null)
                 return false;
 
-            return _ReservationId.Equals(ChargingReservation._ReservationId);
+            return Id.Equals(ChargingReservation.Id);
 
         }
 
@@ -464,7 +389,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override Int32 GetHashCode()
 
-            => _ReservationId.GetHashCode();
+            => Id.GetHashCode();
 
         #endregion
 
@@ -474,8 +399,7 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-
-            => _ReservationId.ToString();
+            => Id.ToString();
 
         #endregion
 

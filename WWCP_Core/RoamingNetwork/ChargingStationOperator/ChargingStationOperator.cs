@@ -36,6 +36,21 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace org.GraphDefined.WWCP
 {
 
+    public interface IChargingStationOperator : IEquatable<ChargingStationOperator>,
+                                                IComparable<ChargingStationOperator>,
+                                                IComparable,
+                                                IEnumerable<ChargingPool>,
+                                                IReserveRemoteStartStop,
+                                                IStatus<ChargingStationOperatorStatusTypes>
+    {
+
+        IRoamingNetwork RoamingNetwork { get; }
+
+        IRemoteChargingStationOperator RemoteChargingStationOperator { get; }
+
+    }
+
+
     /// <summary>
     /// The Charging Station Operator (CSO) is responsible for operating charging pools,
     /// charging stations and EVSEs (power connectors), but is not neccessarily also the
@@ -49,10 +64,7 @@ namespace org.GraphDefined.WWCP
     /// information or part of B2B contracts.
     /// </summary>
     public class ChargingStationOperator : ABaseEMobilityEntity<ChargingStationOperator_Id>,
-                                           IReserveRemoteStartStop,
-                                           IEquatable<ChargingStationOperator>, IComparable<ChargingStationOperator>, IComparable,
-                                           IEnumerable<ChargingPool>,
-                                           IStatus<ChargingStationOperatorStatusTypes>
+                                           IChargingStationOperator
     {
 
         #region Data
@@ -514,7 +526,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         public ChargingStationOperator(IEnumerable<ChargingStationOperator_Id>                Ids,
-                                       RoamingNetwork                                         RoamingNetwork,
+                                       IRoamingNetwork                                        RoamingNetwork,
                                        Action<ChargingStationOperator>                        Configurator                           = null,
                                        RemoteChargingStationOperatorCreatorDelegate           RemoteChargingStationOperatorCreator   = null,
                                        I18NString                                             Name                                   = null,

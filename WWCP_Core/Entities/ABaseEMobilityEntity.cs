@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The parent roaming network.
         /// </summary>
-        public RoamingNetwork  RoamingNetwork   { get; }
+        public IRoamingNetwork  RoamingNetwork   { get; }
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="PublicKeyRing">The public key ring of the entity.</param>
         /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         protected ABaseEMobilityEntity(TId               Id,
-                                       RoamingNetwork    RoamingNetwork,
+                                       IRoamingNetwork   RoamingNetwork,
                                        PgpPublicKeyRing  PublicKeyRing  = null,
                                        PgpSecretKeyRing  SecretKeyRing  = null)
 
@@ -86,7 +86,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="PublicKeyRing">The public key ring of the entity.</param>
         /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         protected ABaseEMobilityEntity(IEnumerable<TId>  Ids,
-                                       RoamingNetwork    RoamingNetwork,
+                                       IRoamingNetwork   RoamingNetwork,
                                        PgpPublicKeyRing  PublicKeyRing  = null,
                                        PgpSecretKeyRing  SecretKeyRing  = null)
 

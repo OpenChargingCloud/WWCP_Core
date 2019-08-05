@@ -36,6 +36,40 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace org.GraphDefined.WWCP
 {
 
+    public interface IChargingPool : IEquatable<ChargingPool>, IComparable<ChargingPool>, IComparable,
+                                     IEnumerable<ChargingStation>,
+                                     IStatus<ChargingPoolStatusTypes>
+    {
+
+        /// <summary>
+        /// The unique identification of this charging pool.
+        /// </summary>
+        ChargingPool_Id         Id                    { get; }
+
+        /// <summary>
+        /// The roaming network of this charging pool.
+        /// </summary>
+        IRoamingNetwork         RoamingNetwork        { get; }
+
+        /// <summary>
+        /// The charging station operator of this charging pool.
+        /// </summary>
+        [Optional]
+        ChargingStationOperator Operator              { get; }
+
+        /// <summary>
+        /// The remote charging pool.
+        /// </summary>
+        [Optional]
+        IRemoteChargingPool     RemoteChargingPool    { get; }
+
+
+
+        I18NString Name         { get; }
+        I18NString Description  { get; }
+
+    }
+
     /// <summary>
     /// A pool of electric vehicle charging stations.
     /// The geo locations of these charging stations will be close together and the charging pool
@@ -43,9 +77,7 @@ namespace org.GraphDefined.WWCP
     /// with the EVSE Operator backend.
     /// </summary>
     public class ChargingPool : AEMobilityEntity<ChargingPool_Id>,
-                                IEquatable<ChargingPool>, IComparable<ChargingPool>, IComparable,
-                                IEnumerable<ChargingStation>,
-                                IStatus<ChargingPoolStatusTypes>
+                                IChargingPool
     {
 
         #region Data
@@ -1026,6 +1058,13 @@ namespace org.GraphDefined.WWCP
         #region Links
 
         /// <summary>
+        /// The roaming network of this charging pool.
+        /// </summary>
+        [InternalUseOnly]
+        public IRoamingNetwork RoamingNetwork
+            => Operator?.RoamingNetwork;
+
+        /// <summary>
         /// The remote charging pool.
         /// </summary>
         [Optional]
@@ -1033,17 +1072,10 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The Charging Station Operator of this charging pool.
+        /// The charging station operator of this charging pool.
         /// </summary>
         [Optional]
         public ChargingStationOperator  Operator            { get; }
-
-        /// <summary>
-        /// The roaming network of this charging pool.
-        /// </summary>
-        [InternalUseOnly]
-        public RoamingNetwork RoamingNetwork
-            => Operator?.RoamingNetwork;
 
         #endregion
 
@@ -1117,9 +1149,6 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule.Insert(InitialStatus.Value);
 
             this._ChargingStations           = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
-
-            //this._ChargingReservations       = new ConcurrentDictionary<ChargingReservation_Id, ChargingStation>();
-            //this._ChargingSessions           = new ConcurrentDictionary<ChargingSession_Id,     ChargingStation>();
 
             #endregion
 
@@ -2223,25 +2252,20 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
-
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
-            => _Reservations.Select(_ => _.Value);
-
-        #region TryGetReservationById(ReservationId, out Reservation)
+        public IEnumerable<ChargingReservationCollection> Reservations
+            => RoamingNetwork.ReservationsStore.
+                   Where(reservation => reservation.First().ChargingPoolId == Id);
 
         /// <summary>
         /// Return the charging reservation specified by the given identification.
         /// </summary>
         /// <param name="ReservationId">The charging reservation identification.</param>
         /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-            => _Reservations.TryGetValue(ReservationId, out Reservation);
-
-        #endregion
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservationCollection Reservation)
+            => RoamingNetwork.ReservationsStore.TryGet(ReservationId, out Reservation);
 
         #endregion
 
@@ -2459,6 +2483,9 @@ namespace org.GraphDefined.WWCP
 
                         if (result.Result == ReservationResultType.Success)
                         {
+
+                            RoamingNetwork.ReservationsStore.Update(result.Reservation.Id,
+                                                                    reservation => reservation.ChargingPoolId = Id);
 
                             OnNewReservation?.Invoke(DateTime.UtcNow,
                                                      this,

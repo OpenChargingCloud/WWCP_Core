@@ -126,17 +126,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
         public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id                         RoamingNetworkId,
                                                       I18NString                                Name,
-                                                      I18NString                                Description                                = null,
-                                                      Action<RoamingNetwork>                    Configurator                               = null,
-                                                      RoamingNetworkAdminStatusTypes             AdminStatus                                = RoamingNetworkAdminStatusTypes.Operational,
-                                                      RoamingNetworkStatusTypes                  Status                                     = RoamingNetworkStatusTypes.Available,
-                                                      UInt16                                    MaxAdminStatusListSize                     = RoamingNetwork.DefaultMaxAdminStatusListSize,
-                                                      UInt16                                    MaxStatusListSize                          = RoamingNetwork.DefaultMaxStatusListSize,
-                                                      ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
-                                                      ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
-                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
-                                                      Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                  = null,
-                                                      Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator       = null)
+                                                      I18NString                                Description                                 = null,
+                                                      Action<RoamingNetwork>                    Configurator                                = null,
+                                                      RoamingNetworkAdminStatusTypes             AdminStatus                                 = RoamingNetworkAdminStatusTypes.Operational,
+                                                      RoamingNetworkStatusTypes                  Status                                      = RoamingNetworkStatusTypes.Available,
+                                                      UInt16                                    MaxAdminStatusListSize                      = RoamingNetwork.DefaultMaxAdminStatusListSize,
+                                                      UInt16                                    MaxStatusListSize                           = RoamingNetwork.DefaultMaxStatusListSize,
+                                                      ChargingStationSignatureDelegate          ChargingStationSignatureGenerator           = null,
+                                                      ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator              = null,
+                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator   = null,
+                                                      Func<RoamingNetwork_Id, String>           ReservationLogFileNameCreator               = null,
+                                                      Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                   = null,
+                                                      Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator        = null)
 
         {
 

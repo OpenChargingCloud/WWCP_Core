@@ -29,6 +29,27 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.WWCP
 {
 
+    public static class ChargingLocationExtentions
+    {
+
+        public static Boolean IsNull(this ChargingLocation ChargingLocation)
+
+            => ChargingLocation == null ||
+               !(ChargingLocation.EVSEId.                   HasValue ||
+                 ChargingLocation.ChargingStationId.        HasValue ||
+                 ChargingLocation.ChargingPoolId.           HasValue ||
+                 ChargingLocation.ChargingStationOperatorId.HasValue);
+
+        public static Boolean IsDefined(this ChargingLocation ChargingLocation)
+
+            => ChargingLocation != null &&
+              (ChargingLocation.EVSEId.                   HasValue ||
+               ChargingLocation.ChargingStationId.        HasValue ||
+               ChargingLocation.ChargingPoolId.           HasValue ||
+               ChargingLocation.ChargingStationOperatorId.HasValue);
+
+    }
+
     public class ChargingLocation : IEquatable<ChargingLocation>,
                                     IComparable<ChargingLocation>
     {
@@ -42,14 +63,6 @@ namespace org.GraphDefined.WWCP
         public ChargingPool_Id?             ChargingPoolId               { get; }
 
         public ChargingStationOperator_Id?  ChargingStationOperatorId    { get; private set; }
-
-
-        public Boolean IsDefined
-
-            => EVSEId.                   HasValue ||
-               ChargingStationId.        HasValue ||
-               ChargingPoolId.           HasValue ||
-               ChargingStationOperatorId.HasValue;
 
         #endregion
 

@@ -62,6 +62,16 @@
     <Compile Include="CommonTypes\ChargingLocation.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificates.cs" />
     <Compile Include="Entities\NetworkEntities\ANetworkChargingStationOperator.cs" />
+    <Compile Include="Networking\GeoJSON_IO.cs" />
+    <Compile Include="Networking\Tracker\RoamingNetworkInfo.cs" />
+    <Compile Include="Networking\Tracker\Tracker.cs" />
+    <Compile Include="Networking\Tracker\Tracker_Id.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecordsStore.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecordCollection.cs" />
+    <Compile Include="RoamingNetwork\ADataStore.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingReservation\ReservationCollection.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingReservation\ChargingReservationsStore.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\ChargingSessionsStore.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingStation\PushChargingStationAdminStatusResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingPool\PushChargingPoolAdminStatusResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffGroupExceptions.cs" />
@@ -206,6 +216,7 @@
     <Compile Include="Entities\GeoInformations\NavigationProvider\NavigationProvider_Id.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\INavigationProvider.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\IRemoteNavigationProvider.cs" />
+    <Compile Include="RoamingNetwork\IRoamingNetwork.cs" />
     <Compile Include="RoamingNetwork\RoamingProvider\CSO\CSORoamingProviderLogger.cs" />
     <Compile Include="RoamingNetwork\RoamingProvider\EMP\EMPRoamingProvider_Id.cs" />
     <Compile Include="Commands\RemoteStartStop\IReserveRemoteStartStop.cs" />

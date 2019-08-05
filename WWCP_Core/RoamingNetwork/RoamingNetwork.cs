@@ -36,571 +36,6 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 namespace org.GraphDefined.WWCP
 {
 
-    public class ChargingSessionStore : IEnumerable<ChargingSession>
-    {
-
-        #region Data
-
-        private readonly Dictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
-
-        private readonly Action<ChargeDetailRecord> AddChargeDetailRecordAction;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// The attached roaming network.
-        /// </summary>
-        public RoamingNetwork  RoamingNetwork        { get; }
-
-        /// <summary>
-        /// The charging sessions log file name.
-        /// </summary>
-        public String          SessionLogFileName    { get; }
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// An event fired whenever a new charging session was registered.
-        /// </summary>
-        public event OnNewChargingSessionDelegate OnNewChargingSession;
-
-        #endregion
-
-        #region Constructor(s)
-
-        public ChargingSessionStore(RoamingNetwork                   RoamingNetwork,
-                                    Func<RoamingNetwork_Id, String>  SessionLogFileNameCreator,
-                                    Action<ChargeDetailRecord>       AddChargeDetailRecordAction)
-        {
-
-            this.RoamingNetwork               = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
-            this.AddChargeDetailRecordAction  = AddChargeDetailRecordAction;
-
-            this._ChargingSessions            = new Dictionary<ChargingSession_Id, ChargingSession>();
-            this.SessionLogFileName           = SessionLogFileNameCreator != null
-                                                    ? SessionLogFileNameCreator(RoamingNetwork.Id)
-                                                    : "Sessions-" + RoamingNetwork.Id + ".log";
-
-        }
-
-        #endregion
-
-
-        #region Start(NewChargingSession)
-
-        public void Start(ChargingSession NewChargingSession)
-        {
-
-            lock (_ChargingSessions)
-            {
-
-                if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
-                    _ChargingSessions.Remove(NewChargingSession.Id);
-
-                _ChargingSessions.Add(NewChargingSession.Id, NewChargingSession);
-
-                //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                //    RegisterExternalChargingSession(DateTime.UtcNow,
-                //                                    this,
-                //                                    NewChargingSession);
-
-                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),                                                   ",",
-                                            "Start,",
-                                            NewChargingSession.ChargingStationOperatorId,                                  ",",
-                                            NewChargingSession.EVSEId,                                                     ",",
-                                            NewChargingSession.ChargingProduct,                                            ",",
-                                            NewChargingSession.IdentificationStart.AuthToken?.           ToString() ?? "", ",",
-                                            NewChargingSession.IdentificationStart.RemoteIdentification?.ToString() ?? "", ",",
-                                            NewChargingSession.AuthorizatorId,                                             ",",
-                                            NewChargingSession.ProviderIdStart,                                            ",",
-                                            NewChargingSession.Id);
-
-                File.AppendAllText(SessionLogFileName,
-                                   LogLine + Environment.NewLine);
-
-            }
-
-        }
-
-        #endregion
-
-        #region Stop(OperatorId, EVSE, authIdentification, SessionId)
-
-        public void Stop(ChargingStationOperator_Id?  OperatorId,
-                         EVSE_Id                      EVSEId,
-                         AAuthentication              authIdentification,
-                         ChargingSession_Id           SessionId)
-        {
-
-            lock (_ChargingSessions)
-            {
-
-                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                            "Stop,",
-                                            OperatorId,         ",",
-                                            EVSEId,             ",",
-                                            authIdentification, ",",
-                                            SessionId);
-
-                File.AppendAllText(SessionLogFileName,
-                                   LogLine + Environment.NewLine);
-
-            }
-
-        }
-
-        #endregion
-
-        #region SendCDR(SendCDRResult)
-
-        public void SendCDR(SendCDRResult sendCDRResult)
-        {
-
-            lock (_ChargingSessions)
-            {
-
-                AddChargeDetailRecordAction?.Invoke(sendCDRResult.ChargeDetailRecord);
-
-                _ChargingSessions.Remove(sendCDRResult.ChargeDetailRecord.SessionId);
-
-                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                            "SendCDR,",
-                                            sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
-                                            sendCDRResult.ChargeDetailRecord.SessionId, ",",
-                                            sendCDRResult.ChargeDetailRecord.IdentificationStart, ",",
-                                            sendCDRResult.ChargeDetailRecord.IdentificationStop, ",",
-                                            sendCDRResult.Result, ",",
-                                            sendCDRResult.Warnings.AggregateWith("/"));
-
-                File.AppendAllText(SessionLogFileName,
-                                   LogLine + Environment.NewLine);
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region RegisterExternalChargingSession(Timestamp, Sender, ChargingSession)
-
-        /// <summary>
-        /// Register an external charging session which was not registered
-        /// via the RemoteStart or AuthStart mechanisms.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="Sender">The sender of the charging session.</param>
-        /// <param name="ChargingSession">The charging session.</param>
-        public void RegisterExternalChargingSession(DateTime         Timestamp,
-                                                    Object           Sender,
-                                                    ChargingSession  ChargingSession)
-        {
-
-            #region Initial checks
-
-            if (ChargingSession == null)
-                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
-
-            #endregion
-
-
-            //if (!_ChargingSessions_RFID.ContainsKey(ChargingSession.Id))
-            //{
-
-                DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
-
-                //_ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
-
-                if (ChargingSession.EVSEId.HasValue)
-                {
-
-                    var _EVSE = RoamingNetwork.GetEVSEbyId(ChargingSession.EVSEId.Value);
-
-                    if (_EVSE != null)
-                    {
-
-                        ChargingSession.EVSE = _EVSE;
-
-                        // Will NOT set the EVSE status!
-                        //_EVSE.ChargingSession = ChargingSession;
-
-                    }
-
-                }
-
-                // else charging station
-
-                // else charging pool
-
-                //SendNewChargingSession(Timestamp, Sender, ChargingSession);
-
-            //}
-
-        }
-
-        #endregion
-
-        #region RemoveExternalChargingSession(Timestamp, Sender, ChargingSession)
-
-        /// <summary>
-        /// Register an external charging session which was not registered
-        /// via the RemoteStart or AuthStart mechanisms.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="Sender">The sender of the charging session.</param>
-        /// <param name="ChargingSession">The charging session.</param>
-        public void RemoveExternalChargingSession(DateTime         Timestamp,
-                                                  Object           Sender,
-                                                  ChargingSession  ChargingSession)
-        {
-
-            #region Initial checks
-
-            if (ChargingSession == null)
-                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
-
-            #endregion
-
-            ChargingStationOperator _cso = null;
-
-            //if (_ChargingSessions_RFID.TryRemove(ChargingSession.Id, out _cso))
-            //{
-
-                DebugX.LogT("Removing external charging session '" + ChargingSession.Id + "'!");
-
-            //}
-
-            if (ChargingSession.EVSE != null)
-            {
-
-                if (ChargingSession.EVSE.ChargingSession != null &&
-                    ChargingSession.EVSE.ChargingSession == ChargingSession)
-                {
-
-                    //ChargingSession.EVSE.ChargingSession = null;
-
-                }
-
-            }
-
-            else if (ChargingSession.EVSEId.HasValue)
-            {
-
-                var _EVSE = RoamingNetwork.GetEVSEbyId(ChargingSession.EVSEId.Value);
-
-                if (_EVSE                 != null &&
-                    _EVSE.ChargingSession != null &&
-                    _EVSE.ChargingSession == ChargingSession)
-                {
-
-                    //_EVSE.ChargingSession = null;
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region (internal) SendNewChargingSession(Timestamp, Sender, Session)
-
-        internal void SendNewChargingSession(DateTime         Timestamp,
-                                             Object           Sender,
-                                             ChargingSession  Session)
-        {
-
-            if (Session != null)
-            {
-
-                if (Session.RoamingNetwork == null)
-                    Session.RoamingNetwork = RoamingNetwork;
-
-            }
-
-            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
-
-        }
-
-        #endregion
-
-
-        #region TryGet(SessionId, out ChargingSession)
-
-        public Boolean TryGet(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
-            => _ChargingSessions.TryGetValue(SessionId, out ChargingSession);
-
-        #endregion
-
-
-        #region ReloadData()
-
-        public void ReloadData()
-        {
-
-            if (File.Exists(SessionLogFileName))
-            {
-
-                String[] elements  = null;
-                String   line      = null;
-
-                foreach (var text in File.ReadAllLines(SessionLogFileName))
-                {
-
-                    if (text.IsNullOrWhiteSpace())
-                        continue;
-
-                    line = text.Trim();
-
-                    if (line.IsNullOrEmpty() || line.StartsWith("//") || line.StartsWith("#"))
-                        continue;
-
-                    elements = line.Split(',');
-
-                    switch (elements[1])
-                    {
-
-                        #region Start
-
-                        case "Start":
-
-                            // 0: Timestamp
-                            // 1: "Start"
-                            // 2: OperatorId
-                            // 3: EVSEId
-                            // 4: ChargingProduct
-                            // 5: AuthIdentification?.AuthToken
-                            // 6: eMA Id
-                            // 7: result.AuthorizatorId
-                            // 8: result.ProviderId
-                            // 9: result.SessionId
-
-                            var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[9]),
-                                                                         elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow) {
-                                                         AuthorizatorId       = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
-                                                         //AuthService          = result.ISendAuthorizeStartStop,
-                                                         ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
-                                                         EVSE                 = RoamingNetwork.GetEVSEbyId(EVSE_Id.Parse(elements[3])),
-                                                         EVSEId               = EVSE_Id.Parse(elements[3]),
-                                                         IdentificationStart  = elements[5] != "" ? (AAuthentication) LocalAuthentication. FromAuthToken           (Auth_Token.Parse(elements[5]))
-                                                                              : elements[6] != "" ? (AAuthentication) RemoteAuthentication.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
-                                                                              : null,
-                                                         ChargingProduct      = elements[4] != "" ? ChargingProduct.Parse(elements[4]) : null
-                                                     };
-
-                            if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
-                                _ChargingSessions.Remove(NewChargingSession.Id);
-
-                            _ChargingSessions.Add(NewChargingSession.Id, NewChargingSession);
-
-                            break;
-
-                        #endregion
-
-                        #region Stop
-
-                        case "Stop":
-
-                            // 0: Timestamp
-                            // 1: "Stop"
-                            // 2: EVSEId
-                            // 3: SessionId
-                            // 4: RFID UID
-                            // 5: eMAId
-
-                            break;
-
-                        #endregion
-
-                        #region SendCDR
-
-                        case "SendCDR":
-
-                            // 0: Timestamp
-                            // 1: "SendCDR"
-                            // 2: EVSEId
-                            // 3: SessionId
-                            // 4: SendCDRResult
-                            // 5: Warnings, aggregatedWith "/"
-
-                            var EVSEId     = elements[2] != "" ? EVSE_Id.           Parse(elements[2]) : new EVSE_Id?();
-                            var SessionId  =                     ChargingSession_Id.Parse(elements[3]);
-
-                            //if (EVSEId.HasValue)
-                            //{
-                            //    if (_ChargingSessions.TryGetValue(SessionId, out ChargingSession CS1) && CS1.EVSEId == EVSEId.Value)
-                            //        _ChargingSessions.Remove(SessionId);
-                            //}
-
-                            //else
-                                _ChargingSessions.Remove(SessionId);
-
-                            break;
-
-                        #endregion
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region IEnumerable<ChargingSession>
-
-        public IEnumerator<ChargingSession> GetEnumerator()
-            => _ChargingSessions.Values.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => _ChargingSessions.Values.GetEnumerator();
-
-        #endregion
-
-    }
-
-
-    public class ChargeDetailRecordStore : IEnumerable<IEnumerable<ChargeDetailRecord>>
-    {
-
-        #region Data
-
-        private readonly         Dictionary<ChargingSession_Id, List<ChargeDetailRecord>> _ChargeDetailRecords;
-
-        private static readonly  Char                                               RS  = (Char) 30;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// The attached roaming network.
-        /// </summary>
-        public RoamingNetwork  RoamingNetwork    { get; }
-
-        /// <summary>
-        /// The charging sessions log file name.
-        /// </summary>
-        public String          CDRLogFileName    { get; }
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// An event fired whenever a new charge detail record was registered.
-        /// </summary>
-        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
-
-        #endregion
-
-        #region Constructor(s)
-
-        public ChargeDetailRecordStore(RoamingNetwork                   RoamingNetwork,
-                                       Func<RoamingNetwork_Id, String>  ChargeDetailRecordLogFileNameCreator)
-        {
-
-            this.RoamingNetwork        = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
-
-            this._ChargeDetailRecords  = new Dictionary<ChargingSession_Id, List<ChargeDetailRecord>>();
-            this.CDRLogFileName        = ChargeDetailRecordLogFileNameCreator != null
-                                             ? ChargeDetailRecordLogFileNameCreator(RoamingNetwork.Id)
-                                             : "ChargeDetailRecords-" + RoamingNetwork.Id + ".log";
-
-        }
-
-        #endregion
-
-
-        #region Add(ChargeDetailRecord)
-
-        public void Add(ChargeDetailRecord ChargeDetailRecord)
-        {
-
-            lock (_ChargeDetailRecords)
-            {
-
-                var Now = DateTime.UtcNow;
-
-                if (!_ChargeDetailRecords.ContainsKey(ChargeDetailRecord.SessionId))
-                    _ChargeDetailRecords.Add(ChargeDetailRecord.SessionId, new List<ChargeDetailRecord>());
-
-                _ChargeDetailRecords[ChargeDetailRecord.SessionId].Add(ChargeDetailRecord);
-
-                //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                //    RegisterExternalChargingSession(DateTime.UtcNow,
-                //                                    this,
-                //                                    NewChargingSession);
-
-                File.AppendAllText(CDRLogFileName,
-                                   Now.ToIso8601() + RS + ChargeDetailRecord.ToJSON() + Environment.NewLine);
-
-                OnNewChargeDetailRecord?.Invoke(Now,
-                                                RoamingNetwork,
-                                                ChargeDetailRecord);
-
-            }
-
-        }
-
-        #endregion
-
-        #region Add(ChargeDetailRecords)
-
-        public void Add(IEnumerable<ChargeDetailRecord> ChargeDetailRecords)
-        {
-
-            lock (_ChargeDetailRecords)
-            {
-
-                foreach (var NewChargeDetailRecord in ChargeDetailRecords)
-                    Add(NewChargeDetailRecord);
-
-            }
-
-        }
-
-        #endregion
-
-        #region TryGet(SessionId, out ChargeDetailRecords)
-
-        public Boolean TryGet(ChargingSession_Id SessionId, out List<ChargeDetailRecord> ChargeDetailRecords)
-            => _ChargeDetailRecords.TryGetValue(SessionId, out ChargeDetailRecords);
-
-        #endregion
-
-
-        #region IEnumerable<ChargeDetailRecord>
-
-        public IEnumerator<IEnumerable<ChargeDetailRecord>> GetEnumerator()
-            => _ChargeDetailRecords.Values.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => _ChargeDetailRecords.Values.GetEnumerator();
-
-        #endregion
-
-    }
-
-
-    /// <summary>
-    /// The common interface of all roaming networks.
-    /// </summary>
-    public interface IRoamingNetwork : IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
-                                       IStatus<RoamingNetworkStatusTypes>,
-                                       ISendAuthorizeStartStop,
-                                       IReceiveChargeDetailRecords,
-                                       ISendChargeDetailRecords
-    { }
-
-
     /// <summary>
     /// A Electric Vehicle Roaming Network is a service abstraction to allow multiple
     /// independent roaming services to be delivered over the same infrastructure.
@@ -608,8 +43,7 @@ namespace org.GraphDefined.WWCP
     /// discount) or allow a simplified testing (production, qa, featureX, ...)
     /// </summary>
     public class RoamingNetwork : ACryptoEMobilityEntity<RoamingNetwork_Id>,
-                                  IRoamingNetwork,
-                                  IEnumerable<IEntity>
+                                  IRoamingNetwork
     {
 
         #region Data
@@ -774,6 +208,10 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        public ChargingReservationsStore  ReservationsStore           { get; }
+        public ChargingSessionsStore      SessionsStore               { get; }
+        public ChargeDetailRecordsStore   ChargeDetailRecordsStore    { get; }
+
         /// <summary>
         /// A delegate to sign a charging station.
         /// </summary>
@@ -816,6 +254,7 @@ namespace org.GraphDefined.WWCP
                               ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
                               ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
                               ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
+                              Func<RoamingNetwork_Id, String>           ReservationLogFileNameCreator              = null,
                               Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                  = null,
                               Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator       = null)
 
@@ -845,12 +284,17 @@ namespace org.GraphDefined.WWCP
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
-            this._ChargeDetailRecordStore                           = new ChargeDetailRecordStore(this,
-                                                                                                  ChargeDetailRecordLogFileNameCreator);
 
-            this._ChargingSessionStore                              = new ChargingSessionStore   (this,
-                                                                                                  SessionLogFileNameCreator,
-                                                                                                  _ChargeDetailRecordStore.Add);
+            this.ReservationsStore                                   = new ChargingReservationsStore(this,
+                                                                                                    ReservationLogFileNameCreator);
+
+            this.SessionsStore                                       = new ChargingSessionsStore    (this,
+                                                                                                    SessionLogFileNameCreator,
+                                                                                                    _ChargeDetailRecordStore.Add);
+
+            this._ChargeDetailRecordStore                           = new ChargeDetailRecordsStore (this,
+                                                                                                    ChargeDetailRecordLogFileNameCreator);
+
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
@@ -892,7 +336,7 @@ namespace org.GraphDefined.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
-            _ChargingSessionStore.ReloadData();
+            SessionsStore.ReloadData();
 
         }
 
@@ -1735,7 +1179,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region e-Mobility Providers...
+        #region eMobility Providers...
 
         #region eMobilityProviders
 
@@ -3964,18 +3408,18 @@ namespace org.GraphDefined.WWCP
 
         #region Reservations...
 
-        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator> _ChargingReservations_AtChargingStationOperators;
-        private readonly ConcurrentDictionary<ChargingReservation_Id, IEMPRoamingProvider>     _ChargingReservations_AtEMPRoamingProviders;
+        //private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator> _ChargingReservations_AtChargingStationOperators;
+        //private readonly ConcurrentDictionary<ChargingReservation_Id, IEMPRoamingProvider>     _ChargingReservations_AtEMPRoamingProviders;
 
         #region Data
 
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
+        //private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
 
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
-            => _Reservations.Select(_ => _.Value);
+        public IEnumerable<ChargingReservationCollection> Reservations
+            => ReservationsStore;
 
         #region TryGetReservationById(ReservationId, out Reservation)
 
@@ -4521,19 +3965,19 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingSessions
 
-        private readonly ChargingSessionStore _ChargingSessionStore;
+
 
         /// <summary>
         /// Return all current charging sessions identifications.
         /// </summary>
         public IEnumerable<ChargingSession_Id> ChargingSessionIds
-            => _ChargingSessionStore.SafeSelect(session => session.Id);
+            => SessionsStore.SafeSelect(session => session.Id);
 
         /// <summary>
         /// Return all current charging sessions.
         /// </summary>
         public IEnumerable<ChargingSession> ChargingSessions
-            => _ChargingSessionStore;
+            => SessionsStore;
 
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
@@ -4548,9 +3992,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
-
-
 
         #region Events
 
@@ -4574,11 +4015,11 @@ namespace org.GraphDefined.WWCP
         {
             add
             {
-                _ChargingSessionStore.OnNewChargingSession += value;
+                SessionsStore.OnNewChargingSession += value;
             }
             remove
             {
-                _ChargingSessionStore.OnNewChargingSession -= value;
+                SessionsStore.OnNewChargingSession -= value;
             }
         }
 
@@ -4716,7 +4157,7 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == RemoteStartResultType.Success)
-                        _ChargingSessionStore.Start(result.Session.SetChargingStationOperator(chargingStationOperator).
+                        SessionsStore.Start(result.Session.SetChargingStationOperator(chargingStationOperator).
                                                                    SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
                 }
@@ -4751,7 +4192,7 @@ namespace org.GraphDefined.WWCP
 
 
                         if (result.Result == RemoteStartResultType.Success)
-                            _ChargingSessionStore.Start(result.Session.SetEMPRoamingProvider      (empRoamingProvider).
+                            SessionsStore.Start(result.Session.SetEMPRoamingProvider      (empRoamingProvider).
                                                                        SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
                     }
@@ -4882,7 +4323,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Check charging station operator charging session lookup...
 
-                if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession chargingSession))
+                if (SessionsStore.TryGet(SessionId, out ChargingSession chargingSession))
                 {
 
                     if (chargingSession.ChargingStationOperator != null)
@@ -5035,7 +4476,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 //OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
-                _ChargingSessionStore.SendNewChargingSession(Timestamp, Sender, Session);
+                SessionsStore.SendNewChargingSession(Timestamp, Sender, Session);
 
             }
 
@@ -5188,7 +4629,7 @@ namespace org.GraphDefined.WWCP
                                                  ChargingProduct            = ChargingProduct
                                              };
 
-                    _ChargingSessionStore.Start(NewChargingSession);
+                    SessionsStore.Start(NewChargingSession);
 
                 }
 
@@ -5367,7 +4808,7 @@ namespace org.GraphDefined.WWCP
                                                  //ISendChargeDetailRecords   = result.ISendChargeDetailRecords
                                              };
 
-                    _ChargingSessionStore.Start(NewChargingSession);
+                    SessionsStore.Start(NewChargingSession);
 
                 }
 
@@ -5540,7 +4981,7 @@ namespace org.GraphDefined.WWCP
                                                  ChargingProduct            = ChargingProduct
                                              };
 
-                    _ChargingSessionStore.Start(NewChargingSession);
+                    SessionsStore.Start(NewChargingSession);
 
                 }
 
@@ -5712,7 +5153,7 @@ namespace org.GraphDefined.WWCP
                                                  ChargingProduct            = ChargingProduct
                                              };
 
-                    _ChargingSessionStore.Start(NewChargingSession);
+                    SessionsStore.Start(NewChargingSession);
 
                 }
 
@@ -6055,7 +5496,7 @@ namespace org.GraphDefined.WWCP
 
             #region An authenticator was found for the upstream SessionId!
 
-            if (_ChargingSessionStore.TryGet(SessionId, out ChargingSession _ChargingSession) &&
+            if (SessionsStore.TryGet(SessionId, out ChargingSession _ChargingSession) &&
                 _ChargingSession. AuthService != null)
             {
 
@@ -6101,7 +5542,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (result.Result == AuthStopEVSEResultType.Authorized)
-                _ChargingSessionStore.Stop(OperatorId,
+                SessionsStore.Stop(OperatorId,
                                            EVSEId,
                                            LocalAuthentication,
                                            SessionId);
@@ -6613,7 +6054,7 @@ namespace org.GraphDefined.WWCP
                                                     Object           Sender,
                                                     ChargingSession  ChargingSession)
         {
-            _ChargingSessionStore.RegisterExternalChargingSession(Timestamp, Sender, ChargingSession);
+            SessionsStore.RegisterExternalChargingSession(Timestamp, Sender, ChargingSession);
         }
 
         #endregion
@@ -6631,7 +6072,7 @@ namespace org.GraphDefined.WWCP
                                                   Object           Sender,
                                                   ChargingSession  ChargingSession)
         {
-            _ChargingSessionStore.RemoveExternalChargingSession(Timestamp, Sender, ChargingSession);
+            SessionsStore.RemoveExternalChargingSession(Timestamp, Sender, ChargingSession);
         }
 
         #endregion
@@ -6642,13 +6083,11 @@ namespace org.GraphDefined.WWCP
 
         #region ChargeDetailRecords
 
-        private readonly ChargeDetailRecordStore _ChargeDetailRecordStore;
-
         /// <summary>
         /// Return all current charge detail records.
         /// </summary>
         public IEnumerable<IEnumerable<ChargeDetailRecord>> ChargeDetailRecords
-            => _ChargeDetailRecordStore;
+            => ChargeDetailRecordsStore;
 
         #endregion
 
@@ -6920,7 +6359,7 @@ namespace org.GraphDefined.WWCP
                 foreach (var cdr in ChargeDetailRecordsToProcess.ToArray())
                 {
 
-                    if (_ChargingSessionStore.TryGet(cdr.SessionId, out ChargingSession chargingSession))
+                    if (SessionsStore.TryGet(cdr.SessionId, out ChargingSession chargingSession))
                     {
 
                         // Might occur when the software had been restarted
@@ -7358,7 +6797,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var sendCDRResult in resultMap)
                         {
 
-                            _ChargingSessionStore.SendCDR(sendCDRResult);
+                            SessionsStore.SendCDR(sendCDRResult);
 
                             //_ChargingSessions.TryRemove(sendCDRResult.ChargeDetailRecord.SessionId, out ChargingSession CS);
 
