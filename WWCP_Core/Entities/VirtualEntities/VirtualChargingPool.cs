@@ -1055,14 +1055,13 @@ namespace org.GraphDefined.WWCP.Virtual
 
         #endregion
 
-        #region CancelReservation(ReservationId, Reason, ProviderId = null, ...)
+        #region CancelReservation(ReservationId, Reason, ...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1072,7 +1071,6 @@ namespace org.GraphDefined.WWCP.Virtual
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId         = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
@@ -1093,60 +1091,131 @@ namespace org.GraphDefined.WWCP.Virtual
                 EventTrackingId = EventTracking_Id.New;
 
 
-            CancelReservationResult result = null;
+            ChargingReservation     canceledReservation  = null;
+            CancelReservationResult result               = null;
 
             #endregion
 
-            #region Check admin status
+            #region Send OnCancelReservationRequest event
 
-            if (AdminStatus.Value != ChargingPoolAdminStatusTypes.Operational &&
-                AdminStatus.Value != ChargingPoolAdminStatusTypes.InternalUse)
-                return CancelReservationResult.OutOfService(ReservationId,
-                                                            Reason);
+            var StartTime = DateTime.UtcNow;
+
+            try
+            {
+
+                OnCancelReservationRequest?.Invoke(StartTime,
+                                                   Timestamp.Value,
+                                                   this,
+                                                   EventTrackingId,
+                                                   ReservationId,
+                                                   Reason,
+                                                   RequestTimeout);
+
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnCancelReservationRequest));
+            }
 
             #endregion
 
 
-            var _Reservation = Reservations.FirstOrDefault(reservation => reservation.Id == ReservationId);
-
-            if (_Reservation != null &&
-                _Reservation.ChargingStationId.HasValue)
+            try
             {
 
-                result = await GetChargingStationById(_Reservation.ChargingStationId.Value).
-                                   CancelReservation(ReservationId,
-                                                     Reason,
-                                                     ProviderId,
+                if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
+                    AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
+                {
 
-                                                     Timestamp,
-                                                     CancellationToken,
-                                                     EventTrackingId,
-                                                     RequestTimeout);
+                    var _Reservation = Reservations.FirstOrDefault(reservation => reservation.Id == ReservationId);
 
-                if (result.Result != CancelReservationResultTypes.UnknownReservationId)
-                    return result;
+                    if (_Reservation != null &&
+                        _Reservation.ChargingStationId.HasValue)
+                    {
+
+                        result = await GetChargingStationById(_Reservation.ChargingStationId.Value).
+                                           CancelReservation(ReservationId,
+                                                             Reason,
+
+                                                             Timestamp,
+                                                             CancellationToken,
+                                                             EventTrackingId,
+                                                             RequestTimeout);
+
+                        if (result.Result != CancelReservationResultTypes.UnknownReservationId)
+                            return result;
+
+                    }
+
+                    foreach (var chargingStation in _ChargingStations)
+                    {
+
+                        result = await chargingStation.CancelReservation(ReservationId,
+                                                                         Reason,
+
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout);
+
+                        if (result.Result != CancelReservationResultTypes.UnknownReservationId)
+                            break;
+
+                    }
+
+                }
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = CancelReservationResult.OutOfService(ReservationId,
+                                                                          Reason);
+                            break;
+
+                    }
+
+                }
 
             }
+            catch (Exception e)
+            {
+                result = CancelReservationResult.Error(ReservationId,
+                                                       Reason,
+                                                       e.Message);
+            }
 
-            foreach (var chargingStation in _ChargingStations)
+
+            #region Send OnCancelReservationResponse event
+
+            var EndTime = DateTime.UtcNow;
+
+            try
             {
 
-                result = await chargingStation.CancelReservation(ReservationId,
-                                                                 Reason,
-                                                                 ProviderId,
-
-                                                                 Timestamp,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 RequestTimeout);
-
-                if (result.Result != CancelReservationResultTypes.UnknownReservationId)
-                    return result;
+                OnCancelReservationResponse?.Invoke(EndTime,
+                                                    Timestamp.Value,
+                                                    this,
+                                                    EventTrackingId,
+                                                    ReservationId,
+                                                    canceledReservation,
+                                                    Reason,
+                                                    result,
+                                                    EndTime - StartTime,
+                                                    RequestTimeout);
 
             }
+            catch (Exception e)
+            {
+                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnCancelReservationResponse));
+            }
 
-            return CancelReservationResult.UnknownReservationId(ReservationId,
-                                                                Reason);
+            #endregion
+
+            return result;
 
         }
 

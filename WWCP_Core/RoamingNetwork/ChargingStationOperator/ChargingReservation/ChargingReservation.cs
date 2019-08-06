@@ -82,6 +82,9 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public eMobilityProvider_Id?     ProviderId                 { get; }
 
+
+        public EMPRoamingProvider_Id?    EMPRoamingProviderId       { get; internal set; }
+
         [Optional]
         public AAuthentication           StartAuthentication        { get; internal set; }
 
@@ -90,6 +93,8 @@ namespace org.GraphDefined.WWCP
 
         [Optional]
         public RoamingNetwork_Id?        RoamingNetworkId           { get; internal set; }
+
+        public ChargingStationOperator_Id? ChargingStationOperatorId{ get; internal set; }
 
         [Optional]
         public ChargingPool_Id?          ChargingPoolId             { get; internal set; }
@@ -153,7 +158,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(ChargingReservation_Id            ReservationId,
+        public ChargingReservation(ChargingReservation_Id            Id,
                                    DateTime                          Timestamp,
                                    DateTime                          StartTime,
                                    TimeSpan                          Duration,
@@ -161,45 +166,47 @@ namespace org.GraphDefined.WWCP
                                    TimeSpan                          ConsumedReservationTime,
                                    ChargingReservationLevel          ReservationLevel,
 
-                                   eMobilityProvider_Id?             ProviderId          = null,
-                                   RemoteAuthentication              Identification      = null,
+                                   eMobilityProvider_Id?             ProviderId                  = null,
+                                   RemoteAuthentication              StartAuthentication         = null,
 
-                                   RoamingNetwork                    RoamingNetwork      = null,
-                                   ChargingPool_Id?                  ChargingPoolId      = null,
-                                   ChargingStation_Id?               ChargingStationId   = null,
-                                   EVSE_Id?                          EVSEId              = null,
-                                   ChargingProduct                   ChargingProduct     = null,
+                                   RoamingNetwork_Id?                RoamingNetworkId            = null,
+                                   ChargingStationOperator_Id?       ChargingStationOperatorId   = null,
+                                   ChargingPool_Id?                  ChargingPoolId              = null,
+                                   ChargingStation_Id?               ChargingStationId           = null,
+                                   EVSE_Id?                          EVSEId                      = null,
+                                   ChargingProduct                   ChargingProduct             = null,
 
-                                   IEnumerable<Auth_Token>           AuthTokens          = null,
-                                   IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                                   IEnumerable<UInt32>               PINs                = null,
+                                   IEnumerable<Auth_Token>           AuthTokens                  = null,
+                                   IEnumerable<eMobilityAccount_Id>  eMAIds                      = null,
+                                   IEnumerable<UInt32>               PINs                        = null,
 
-                                   IEnumerable<ChargingReservation>  SubReservations     = null)
+                                   IEnumerable<ChargingReservation>  SubReservations             = null)
 
         {
 
-            this.Id            = ReservationId;
-            this.Timestamp                = Timestamp.ToUniversalTime();
-            this.StartTime                = StartTime.ToUniversalTime();
-            this.Duration                 = Duration;
-            this.EndTime                  = StartTime.ToUniversalTime() + Duration;
-            this.ConsumedReservationTime  = ConsumedReservationTime;
-            this.ReservationLevel         = ReservationLevel;
+            this.Id                         = Id;
+            this.Timestamp                  = Timestamp.ToUniversalTime();
+            this.StartTime                  = StartTime.ToUniversalTime();
+            this.Duration                   = Duration;
+            this.EndTime                    = StartTime.ToUniversalTime() + Duration;
+            this.ConsumedReservationTime    = ConsumedReservationTime;
+            this.ReservationLevel           = ReservationLevel;
 
-            this.ProviderId                = ProviderId;
-            this.StartAuthentication            = Identification;
+            this.ProviderId                 = ProviderId;
+            this.StartAuthentication        = StartAuthentication;
 
-            this.RoamingNetwork            = RoamingNetwork;
-            this.ChargingPoolId            = ChargingPoolId;
-            this.ChargingStationId         = ChargingStationId;
-            this.EVSEId                    = EVSEId;
-            this.ChargingProduct           = ChargingProduct;
+            this.RoamingNetworkId           = RoamingNetworkId;
+            this.ChargingStationOperatorId  = ChargingStationOperatorId;
+            this.ChargingPoolId             = ChargingPoolId;
+            this.ChargingStationId          = ChargingStationId;
+            this.EVSEId                     = EVSEId;
+            this.ChargingProduct            = ChargingProduct;
 
-            this._AuthTokens               = AuthTokens      != null ? new HashSet<Auth_Token>         (AuthTokens)      : new HashSet<Auth_Token>();
-            this._eMAIds                   = eMAIds          != null ? new HashSet<eMobilityAccount_Id>(eMAIds)          : new HashSet<eMobilityAccount_Id>();
-            this._PINs                     = PINs            != null ? new HashSet<UInt32>             (PINs)            : new HashSet<UInt32>();
+            this._AuthTokens                = AuthTokens      != null ? new HashSet<Auth_Token>         (AuthTokens)      : new HashSet<Auth_Token>();
+            this._eMAIds                    = eMAIds          != null ? new HashSet<eMobilityAccount_Id>(eMAIds)          : new HashSet<eMobilityAccount_Id>();
+            this._PINs                      = PINs            != null ? new HashSet<UInt32>             (PINs)            : new HashSet<UInt32>();
 
-            this._SubReservations          = SubReservations != null ? new HashSet<ChargingReservation>(SubReservations) : new HashSet<ChargingReservation>();
+            this._SubReservations           = SubReservations != null ? new HashSet<ChargingReservation>(SubReservations) : new HashSet<ChargingReservation>();
 
         }
 

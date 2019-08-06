@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region New   (NewChargingReservation)
+        #region New(NewChargingReservation)
 
         public void New(ChargingReservation NewChargingReservation)
         {
@@ -74,12 +74,29 @@ namespace org.GraphDefined.WWCP
             lock (InternalData)
             {
 
-                InternalData.Add(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
+                if (!InternalData.ContainsKey(NewChargingReservation.Id))
+                {
 
-                LogIt("new",
-                      NewChargingReservation.Id,
-                      "reservations",
-                      new JArray(NewChargingReservation.ToJSON()));
+                    InternalData.Add(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
+
+                    LogIt("new",
+                          NewChargingReservation.Id,
+                          "reservations",
+                          new JArray(NewChargingReservation.ToJSON()));
+
+                }
+
+                else
+                {
+
+                    InternalData[NewChargingReservation.Id].Add(NewChargingReservation);
+
+                    LogIt("update",
+                          NewChargingReservation.Id,
+                          "reservations",
+                          new JArray(InternalData[NewChargingReservation.Id].Select(reservation => reservation.ToJSON())));
+
+                }
 
             }
 
@@ -87,10 +104,47 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Update(Id, UpdateFunc)
+        #region NewOrUpdate(NewChargingReservation)
 
-        public ChargingReservationsStore Update(ChargingReservation_Id       Id,
-                                                Action<ChargingReservation>  UpdateFunc)
+        public void NewOrUpdate(ChargingReservation NewChargingReservation)
+        {
+
+            lock (InternalData)
+            {
+
+                if (!InternalData.ContainsKey(NewChargingReservation.Id))
+                {
+
+                    InternalData.Add(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
+
+                    LogIt("new",
+                          NewChargingReservation.Id,
+                          "reservations",
+                          new JArray(NewChargingReservation.ToJSON()));
+
+                }
+                else if (NewChargingReservation.ToJSON() != InternalData[NewChargingReservation.Id].Last().ToJSON())
+                {
+
+                    InternalData[NewChargingReservation.Id].UpdateLast(NewChargingReservation);
+
+                    LogIt("update",
+                          NewChargingReservation.Id,
+                          "reservations",
+                          new JArray(InternalData[NewChargingReservation.Id].Select(reservation => reservation.ToJSON())));
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region UpdateAll(Id, UpdateFunc)
+
+        public ChargingReservationsStore UpdateAll(ChargingReservation_Id       Id,
+                                                   Action<ChargingReservation>  UpdateFunc)
         {
 
             lock (InternalData)
@@ -101,6 +155,31 @@ namespace org.GraphDefined.WWCP
                     foreach (var reservation in reservationCollection)
                         UpdateFunc(reservation);
                 }
+
+                LogIt("update",
+                      Id,
+                      "reservations",
+                      new JArray(reservationCollection.Select(reservation => reservation.ToJSON())));
+
+            }
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region UpdateLatest(Id, UpdateFunc)
+
+        public ChargingReservationsStore UpdateLatest(ChargingReservation_Id       Id,
+                                                      Action<ChargingReservation>  UpdateFunc)
+        {
+
+            lock (InternalData)
+            {
+
+                if (InternalData.TryGetValue(Id, out ChargingReservationCollection reservationCollection))
+                    UpdateFunc(reservationCollection.Last());
 
                 LogIt("update",
                       Id,
@@ -236,6 +315,23 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        public Boolean TryGetLatest(ChargingReservation_Id   Id,
+                                    out ChargingReservation  LatestReservation)
+        {
+
+            if (InternalData.TryGetValue(Id, out ChargingReservationCollection ReservationCollection))
+            {
+                LatestReservation = ReservationCollection.LastOrDefault();
+                return true;
+            }
+
+            LatestReservation = null;
+            return false;
+
+        }
+
 
     }
 

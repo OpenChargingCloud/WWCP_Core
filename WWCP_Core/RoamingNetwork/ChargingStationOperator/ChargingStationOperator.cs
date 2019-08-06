@@ -4322,39 +4322,6 @@ namespace org.GraphDefined.WWCP
 
         #region Reservations...
 
-        #region Data
-
-        /// <summary>
-        /// All current charging reservations.
-        /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
-            => _ChargingPools.SelectMany(pool => pool.Reservations);
-
-        #region TryGetReservationById(ReservationId, out Reservation)
-
-        /// <summary>
-        /// Return the charging reservation specified by the given identification.
-        /// </summary>
-        /// <param name="ReservationId">The charging reservation identification.</param>
-        /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-        {
-
-            foreach (var pool in _ChargingPools)
-            {
-                if (pool.TryGetChargingReservationById(ReservationId, out Reservation))
-                    return true;
-            }
-
-            Reservation = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -4642,14 +4609,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CancelReservation(ReservationId, Reason, ProviderId = null, ...)
+        #region CancelReservation(ReservationId, Reason, ...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -4659,7 +4625,6 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId         = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
@@ -4696,7 +4661,6 @@ namespace org.GraphDefined.WWCP
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
-                                                   ProviderId,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -4724,7 +4688,6 @@ namespace org.GraphDefined.WWCP
                         result = await RemoteChargingStationOperator.
                                            CancelReservation(ReservationId,
                                                              Reason,
-                                                             ProviderId,
 
                                                              Timestamp,
                                                              CancellationToken,
@@ -4774,7 +4737,6 @@ namespace org.GraphDefined.WWCP
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
-                                                    ProviderId,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,

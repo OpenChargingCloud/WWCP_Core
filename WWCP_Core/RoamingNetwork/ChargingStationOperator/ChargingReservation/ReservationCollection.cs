@@ -99,6 +99,16 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public ChargingReservationCollection UpdateLast(ChargingReservation Reservation)
+        {
+
+            _Reservations.RemoveAt(_Reservations.Count - 1);
+            _Reservations.Add(Reservation);
+
+            return this;
+
+        }
+
         public IEnumerator<ChargingReservation> GetEnumerator()
             => _Reservations.GetEnumerator();
 

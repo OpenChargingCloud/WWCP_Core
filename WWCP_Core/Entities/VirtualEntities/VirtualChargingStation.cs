@@ -1293,14 +1293,13 @@ namespace org.GraphDefined.WWCP.Virtual
 
         #endregion
 
-        #region CancelReservation(ReservationId, Reason, ProviderId = null, ...)
+        #region CancelReservation(ReservationId, Reason, ...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1310,7 +1309,6 @@ namespace org.GraphDefined.WWCP.Virtual
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId         = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
@@ -1347,7 +1345,6 @@ namespace org.GraphDefined.WWCP.Virtual
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
-                                                   ProviderId,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -1375,7 +1372,6 @@ namespace org.GraphDefined.WWCP.Virtual
                         result = await GetEVSEById(canceledReservation.EVSEId.Value).
                                            CancelReservation(ReservationId,
                                                              Reason,
-                                                             ProviderId,
 
                                                              Timestamp,
                                                              CancellationToken,
@@ -1391,7 +1387,6 @@ namespace org.GraphDefined.WWCP.Virtual
 
                             result = await evse.CancelReservation(ReservationId,
                                                                   Reason,
-                                                                  ProviderId,
 
                                                                   Timestamp,
                                                                   CancellationToken,
@@ -1415,7 +1410,6 @@ namespace org.GraphDefined.WWCP.Virtual
                                 results.Add(await GetEVSEById(subReservation.EVSEId.Value).
                                                       CancelReservation(ReservationId,
                                                                         Reason,
-                                                                        ProviderId,
 
                                                                         Timestamp,
                                                                         CancellationToken,
@@ -1468,7 +1462,6 @@ namespace org.GraphDefined.WWCP.Virtual
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
-                                                    ProviderId,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,

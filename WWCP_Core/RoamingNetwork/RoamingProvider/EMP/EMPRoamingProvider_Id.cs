@@ -28,16 +28,18 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of a e-mobility roaming provider.
+    /// The unique identification of an e-mobility roaming provider.
     /// </summary>
-    public class EMPRoamingProvider_Id : IId,
-                                         IEquatable <EMPRoamingProvider_Id>,
-                                         IComparable<EMPRoamingProvider_Id>,
-                                         IComparable
+    public struct EMPRoamingProvider_Id : IId,
+                                          IEquatable <EMPRoamingProvider_Id>,
+                                          IComparable<EMPRoamingProvider_Id>,
+                                          IComparable
 
     {
 
         #region Data
+
+        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
 
         /// <summary>
         /// The internal identification.
@@ -62,6 +64,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new e-mobility roaming provider identification.
         /// based on the given string.
         /// </summary>
+        /// <param name="Text">The text representation of an e-mobility roaming provider identification.</param>
         private EMPRoamingProvider_Id(String Text)
         {
             InternalId = Text;
@@ -70,12 +73,20 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Zero
+
+        public static EMPRoamingProvider_Id Zero
+            => new EMPRoamingProvider_Id("0");
+
+        #endregion
+
+
+        #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a e-mobility roaming provider identification.
+        /// Parse the given string as an e-mobility roaming provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of a e-mobility roaming provider identification.</param>
+        /// <param name="Text">A text representation of an e-mobility roaming provider identification.</param>
         public static EMPRoamingProvider_Id Parse(String Text)
         {
 
@@ -85,11 +96,32 @@ namespace org.GraphDefined.WWCP
                 Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a e-mobility roaming provider identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(Text), "The given text representation of an e-mobility roaming provider identification must not be null or empty!");
 
             #endregion
 
-            return new EMPRoamingProvider_Id(Text);
+            if (TryParse(Text, out EMPRoamingProvider_Id EMPRoamingProviderId))
+                return EMPRoamingProviderId;
+
+            throw new ArgumentNullException(nameof(Text), "The given text representation of an e-mobility roaming provider identification is invalid!");
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given string as an e-mobility roaming provider identification.
+        /// </summary>
+        /// <param name="Text">A text representation of an e-mobility roaming provider identification.</param>
+        public static EMPRoamingProvider_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out EMPRoamingProvider_Id EMPRoamingProviderId))
+                return EMPRoamingProviderId;
+
+            return new EMPRoamingProvider_Id?();
 
         }
 
@@ -98,9 +130,9 @@ namespace org.GraphDefined.WWCP
         #region TryParse(Text, out EMPRoamingProviderId)
 
         /// <summary>
-        /// Parse the given string as a e-mobility roaming provider identification.
+        /// Try to parse the given string as an e-mobility roaming provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of a e-mobility roaming provider identification.</param>
+        /// <param name="Text">A text representation of an e-mobility roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId">The parsed e-mobility roaming provider identification.</param>
         public static Boolean TryParse(String Text, out EMPRoamingProvider_Id EMPRoamingProviderId)
         {
@@ -112,7 +144,7 @@ namespace org.GraphDefined.WWCP
 
             if (Text.IsNullOrEmpty())
             {
-                EMPRoamingProviderId = default(EMPRoamingProvider_Id);
+                EMPRoamingProviderId = default;
                 return false;
             }
 
@@ -120,21 +152,13 @@ namespace org.GraphDefined.WWCP
 
             try
             {
-
                 EMPRoamingProviderId = new EMPRoamingProvider_Id(Text);
-
                 return true;
-
             }
-
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            EMPRoamingProviderId = default(EMPRoamingProvider_Id);
+            EMPRoamingProviderId = default;
             return false;
 
         }
@@ -162,7 +186,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EMPRoamingProviderId1">A e-mobility roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An e-mobility roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another e-mobility roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EMPRoamingProvider_Id EMPRoamingProviderId1, EMPRoamingProvider_Id EMPRoamingProviderId2)
@@ -187,7 +211,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EMPRoamingProviderId1">A e-mobility roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An e-mobility roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another e-mobility roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EMPRoamingProvider_Id EMPRoamingProviderId1, EMPRoamingProvider_Id EMPRoamingProviderId2)
@@ -200,7 +224,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EMPRoamingProviderId1">A e-mobility roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An e-mobility roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another e-mobility roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EMPRoamingProvider_Id EMPRoamingProviderId1, EMPRoamingProvider_Id EMPRoamingProviderId2)
@@ -220,7 +244,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EMPRoamingProviderId1">A e-mobility roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An e-mobility roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another e-mobility roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EMPRoamingProvider_Id EMPRoamingProviderId1, EMPRoamingProvider_Id EMPRoamingProviderId2)
@@ -233,7 +257,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EMPRoamingProviderId1">A e-mobility roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An e-mobility roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another e-mobility roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EMPRoamingProvider_Id EMPRoamingProviderId1, EMPRoamingProvider_Id EMPRoamingProviderId2)
@@ -253,7 +277,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EMPRoamingProviderId1">A e-mobility roaming provider identification.</param>
+        /// <param name="EMPRoamingProviderId1">An e-mobility roaming provider identification.</param>
         /// <param name="EMPRoamingProviderId2">Another e-mobility roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EMPRoamingProvider_Id EMPRoamingProviderId1, EMPRoamingProvider_Id EMPRoamingProviderId2)
@@ -277,11 +301,11 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            if (!(Object is EMPRoamingProvider_Id))
-                throw new ArgumentException("The given object is not a e-mobility roaming provider identification!",
+            if (!(Object is EMPRoamingProvider_Id EMPRoamingProviderId))
+                throw new ArgumentException("The given object is not an e-mobility roaming provider identification!",
                                             nameof(Object));
 
-            return CompareTo((EMPRoamingProvider_Id) Object);
+            return CompareTo(EMPRoamingProviderId);
 
         }
 
@@ -299,13 +323,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EMPRoamingProviderId == null)
                 throw new ArgumentNullException(nameof(EMPRoamingProviderId),  "The given e-mobility roaming provider identification must not be null!");
 
-            // Compare the length of the EMPRoamingProviderIds
-            var _Result = this.Length.CompareTo(EMPRoamingProviderId.Length);
-
-            if (_Result == 0)
-                _Result = String.Compare(InternalId, EMPRoamingProviderId.InternalId, StringComparison.Ordinal);
-
-            return _Result;
+            return String.Compare(InternalId, EMPRoamingProviderId.InternalId, StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -328,10 +346,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            if (!(Object is EMPRoamingProvider_Id))
+            if (!(Object is EMPRoamingProvider_Id EMPRoamingProviderId))
                 return false;
 
-            return Equals((EMPRoamingProvider_Id) Object);
+            return Equals(EMPRoamingProviderId);
 
         }
 
@@ -342,7 +360,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two EMPRoamingProviderIds for equality.
         /// </summary>
-        /// <param name="EMPRoamingProviderId">A e-mobility roaming provider identification to compare with.</param>
+        /// <param name="EMPRoamingProviderId">An e-mobility roaming provider identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EMPRoamingProvider_Id EMPRoamingProviderId)
         {
@@ -350,7 +368,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EMPRoamingProviderId == null)
                 return false;
 
-            return InternalId.Equals(EMPRoamingProviderId.InternalId);
+            return InternalId.ToLower().Equals(EMPRoamingProviderId.InternalId.ToLower());
 
         }
 

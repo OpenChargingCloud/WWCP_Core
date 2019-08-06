@@ -30,14 +30,16 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of a charging station roaming provider.
     /// </summary>
-    public class CSORoamingProvider_Id : IId,
-                                         IEquatable <CSORoamingProvider_Id>,
-                                         IComparable<CSORoamingProvider_Id>,
-                                         IComparable
+    public struct CSORoamingProvider_Id : IId,
+                                          IEquatable <CSORoamingProvider_Id>,
+                                          IComparable<CSORoamingProvider_Id>,
+                                          IComparable
 
     {
 
         #region Data
+
+        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
 
         /// <summary>
         /// The internal identification.
@@ -49,7 +51,7 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The length of the charging station roaming provider identificator.
+        /// The length of the charging station operator roaming provider identificator.
         /// </summary>
         public UInt64 Length
             => (UInt64) InternalId.Length;
@@ -59,9 +61,10 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging station roaming provider identification.
+        /// Create a new charging station operator roaming provider identification.
         /// based on the given string.
         /// </summary>
+        /// <param name="Text">The text representation of a charging station operator roaming provider identification.</param>
         private CSORoamingProvider_Id(String Text)
         {
             InternalId = Text;
@@ -70,12 +73,20 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Zero
+
+        public static CSORoamingProvider_Id Zero
+            => new CSORoamingProvider_Id("0");
+
+        #endregion
+
+
+        #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a charging station roaming provider identification.
+        /// Parse the given string as a charging station operator roaming provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station roaming provider identification.</param>
+        /// <param name="Text">A text representation of a charging station operator roaming provider identification.</param>
         public static CSORoamingProvider_Id Parse(String Text)
         {
 
@@ -85,11 +96,32 @@ namespace org.GraphDefined.WWCP
                 Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station roaming provider identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station operator roaming provider identification must not be null or empty!");
 
             #endregion
 
-            return new CSORoamingProvider_Id(Text);
+            if (TryParse(Text, out CSORoamingProvider_Id CSORoamingProviderId))
+                return CSORoamingProviderId;
+
+            throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station operator roaming provider identification is invalid!");
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given string as a charging station operator roaming provider identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging station operator roaming provider identification.</param>
+        public static CSORoamingProvider_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out CSORoamingProvider_Id CSORoamingProviderId))
+                return CSORoamingProviderId;
+
+            return new CSORoamingProvider_Id?();
 
         }
 
@@ -98,10 +130,10 @@ namespace org.GraphDefined.WWCP
         #region TryParse(Text, out CSORoamingProviderId)
 
         /// <summary>
-        /// Parse the given string as a charging station roaming provider identification.
+        /// Try to parse the given string as a charging station operator roaming provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId">The parsed charging station roaming provider identification.</param>
+        /// <param name="Text">A text representation of a charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId">The parsed charging station operator roaming provider identification.</param>
         public static Boolean TryParse(String Text, out CSORoamingProvider_Id CSORoamingProviderId)
         {
 
@@ -112,7 +144,7 @@ namespace org.GraphDefined.WWCP
 
             if (Text.IsNullOrEmpty())
             {
-                CSORoamingProviderId = default(CSORoamingProvider_Id);
+                CSORoamingProviderId = default;
                 return false;
             }
 
@@ -120,21 +152,13 @@ namespace org.GraphDefined.WWCP
 
             try
             {
-
                 CSORoamingProviderId = new CSORoamingProvider_Id(Text);
-
                 return true;
-
             }
-
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            CSORoamingProviderId = default(CSORoamingProvider_Id);
+            CSORoamingProviderId = default;
             return false;
 
         }
@@ -144,7 +168,7 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this charging station roaming provider identification.
+        /// Clone this charging station operator roaming provider identification.
         /// </summary>
         public CSORoamingProvider_Id Clone
 
@@ -162,8 +186,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (CSORoamingProvider_Id CSORoamingProviderId1, CSORoamingProvider_Id CSORoamingProviderId2)
         {
@@ -187,8 +211,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (CSORoamingProvider_Id CSORoamingProviderId1, CSORoamingProvider_Id CSORoamingProviderId2)
             => !(CSORoamingProviderId1 == CSORoamingProviderId2);
@@ -200,8 +224,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (CSORoamingProvider_Id CSORoamingProviderId1, CSORoamingProvider_Id CSORoamingProviderId2)
         {
@@ -220,8 +244,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (CSORoamingProvider_Id CSORoamingProviderId1, CSORoamingProvider_Id CSORoamingProviderId2)
             => !(CSORoamingProviderId1 > CSORoamingProviderId2);
@@ -233,8 +257,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (CSORoamingProvider_Id CSORoamingProviderId1, CSORoamingProvider_Id CSORoamingProviderId2)
         {
@@ -253,8 +277,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">A charging station roaming provider identification.</param>
-        /// <param name="CSORoamingProviderId2">Another charging station roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (CSORoamingProvider_Id CSORoamingProviderId1, CSORoamingProvider_Id CSORoamingProviderId2)
             => !(CSORoamingProviderId1 < CSORoamingProviderId2);
@@ -277,11 +301,11 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            if (!(Object is CSORoamingProvider_Id))
-                throw new ArgumentException("The given object is not a charging station roaming provider identification!",
+            if (!(Object is CSORoamingProvider_Id CSORoamingProviderId))
+                throw new ArgumentException("The given object is not a charging station operator roaming provider identification!",
                                             nameof(Object));
 
-            return CompareTo((CSORoamingProvider_Id) Object);
+            return CompareTo(CSORoamingProviderId);
 
         }
 
@@ -297,15 +321,9 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) CSORoamingProviderId == null)
-                throw new ArgumentNullException(nameof(CSORoamingProviderId),  "The given charging station roaming provider identification must not be null!");
+                throw new ArgumentNullException(nameof(CSORoamingProviderId),  "The given charging station operator roaming provider identification must not be null!");
 
-            // Compare the length of the CSORoamingProviderIds
-            var _Result = this.Length.CompareTo(CSORoamingProviderId.Length);
-
-            if (_Result == 0)
-                _Result = String.Compare(InternalId, CSORoamingProviderId.InternalId, StringComparison.Ordinal);
-
-            return _Result;
+            return String.Compare(InternalId, CSORoamingProviderId.InternalId, StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -328,10 +346,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            if (!(Object is CSORoamingProvider_Id))
+            if (!(Object is CSORoamingProvider_Id CSORoamingProviderId))
                 return false;
 
-            return Equals((CSORoamingProvider_Id) Object);
+            return Equals(CSORoamingProviderId);
 
         }
 
@@ -342,7 +360,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two CSORoamingProviderIds for equality.
         /// </summary>
-        /// <param name="CSORoamingProviderId">A charging station roaming provider identification to compare with.</param>
+        /// <param name="CSORoamingProviderId">An charging station operator roaming provider identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(CSORoamingProvider_Id CSORoamingProviderId)
         {
@@ -350,7 +368,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) CSORoamingProviderId == null)
                 return false;
 
-            return InternalId.Equals(CSORoamingProviderId.InternalId);
+            return InternalId.ToLower().Equals(CSORoamingProviderId.InternalId.ToLower());
 
         }
 

@@ -2017,6 +2017,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerable<ICSORoamingProvider> ChargingStationOperatorRoamingProviders => _ChargingStationOperatorRoamingProviders.Values;
 
+        public Boolean TryGet(CSORoamingProvider_Id Id, out ICSORoamingProvider CSORoamingProvider)
+            => _ChargingStationOperatorRoamingProviders.TryGetValue(Id, out CSORoamingProvider);
+
         #endregion
 
         #region CreateNewRoamingProvider(OperatorRoamingService, Configurator = null)
@@ -2138,6 +2141,9 @@ namespace org.GraphDefined.WWCP
         /// Return all roaming providers registered within this roaming network.
         /// </summary>
         public IEnumerable<IEMPRoamingProvider> EMPRoamingProviders => _EMPRoamingProviders.Values;
+
+        public Boolean TryGet(EMPRoamingProvider_Id Id, out IEMPRoamingProvider EMPRoamingProvider)
+            => _EMPRoamingProviders.TryGetValue(Id, out EMPRoamingProvider);
 
         #endregion
 
@@ -3408,33 +3414,6 @@ namespace org.GraphDefined.WWCP
 
         #region Reservations...
 
-        //private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator> _ChargingReservations_AtChargingStationOperators;
-        //private readonly ConcurrentDictionary<ChargingReservation_Id, IEMPRoamingProvider>     _ChargingReservations_AtEMPRoamingProviders;
-
-        #region Data
-
-        //private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
-
-        /// <summary>
-        /// All current charging reservations.
-        /// </summary>
-        public IEnumerable<ChargingReservationCollection> Reservations
-            => ReservationsStore;
-
-        #region TryGetReservationById(ReservationId, out Reservation)
-
-        /// <summary>
-        /// Return the charging reservation specified by the given identification.
-        /// </summary>
-        /// <param name="ReservationId">The charging reservation identification.</param>
-        /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-            => _Reservations.TryGetValue(ReservationId, out Reservation);
-
-        #endregion
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -3587,7 +3566,13 @@ namespace org.GraphDefined.WWCP
                                                RequestTimeout);
 
                     if (result.Result == ReservationResultType.Success)
-                        _ChargingReservations_AtChargingStationOperators.TryAdd(result.Reservation.Id, _ChargingStationOperator);
+                    {
+                        if (result.Reservation != null)
+                        {
+                            result.Reservation.ChargingStationOperatorId = _ChargingStationOperator.Id;
+                            ReservationsStore.NewOrUpdate(result.Reservation);
+                        }
+                    }
 
                 }
 
@@ -3622,10 +3607,11 @@ namespace org.GraphDefined.WWCP
 
                         if (result.Result == ReservationResultType.Success)
                         {
-
                             if (result.Reservation != null)
-                                _ChargingReservations_AtEMPRoamingProviders.TryAdd(result.Reservation.Id, EMPRoamingService);
-
+                            {
+                                result.Reservation.EMPRoamingProviderId = EMPRoamingService.Id;
+                                ReservationsStore.NewOrUpdate(result.Reservation);
+                            }
                         }
 
                     }
@@ -3682,14 +3668,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CancelReservation(ReservationId, Reason, ProviderId = null, ...)
+        #region CancelReservation(ReservationId, Reason, ...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -3699,7 +3684,6 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId         = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
@@ -3721,7 +3705,7 @@ namespace org.GraphDefined.WWCP
 
 
             ChargingReservation     canceledReservation  = null;
-            CancelReservationResult result                = null;
+            CancelReservationResult result               = null;
 
             #endregion
 
@@ -3736,7 +3720,6 @@ namespace org.GraphDefined.WWCP
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
-                                                   ProviderId,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -3754,39 +3737,18 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                #region Check Charging Station Operator charging reservation lookup...
-
-                if (_ChargingReservations_AtChargingStationOperators.TryRemove(ReservationId, out ChargingStationOperator _ChargingStationOperator))
+                if (ReservationsStore.TryGetLatest(ReservationId, out ChargingReservation Reservation))
                 {
 
-                    result = await _ChargingStationOperator.CancelReservation(ReservationId,
-                                                                              Reason,
-                                                                              ProviderId,
+                    #region Check Charging Station Operator charging reservation lookup...
 
-                                                                              Timestamp,
-                                                                              CancellationToken,
-                                                                              EventTrackingId,
-                                                                              RequestTimeout);
-
-                }
-
-                #endregion
-
-                #region ...or check EMP roaming provider charging reservation lookup...
-
-                if (result        == null                                 ||
-                   (result        != null                                 &&
-                   (result.Result == CancelReservationResultTypes.UnknownEVSE ||
-                    result.Result == CancelReservationResultTypes.UnknownReservationId)))
-                {
-
-                    if (_ChargingReservations_AtEMPRoamingProviders.TryRemove(ReservationId, out IEMPRoamingProvider _IEMPRoamingProvider))
+                    if (Reservation.ChargingStationOperatorId.HasValue &&
+                        TryGetChargingStationOperatorById(Reservation.ChargingStationOperatorId.Value, out ChargingStationOperator _ChargingStationOperator))
                     {
 
-                        result = await _IEMPRoamingProvider.
+                        result = await _ChargingStationOperator.
                                            CancelReservation(ReservationId,
                                                              Reason,
-                                                             ProviderId,
 
                                                              Timestamp,
                                                              CancellationToken,
@@ -3795,64 +3757,95 @@ namespace org.GraphDefined.WWCP
 
                     }
 
-                }
+                    #endregion
 
-                #endregion
+                    #region ...or check EMP roaming provider charging reservation lookup...
 
-                #region ...or try to check every EMP roaming provider...
-
-                if (result        == null                                 ||
-                   (result        != null                                 &&
-                   (result.Result == CancelReservationResultTypes.UnknownEVSE ||
-                    result.Result == CancelReservationResultTypes.UnknownReservationId)))
-                {
-
-                    foreach (var EMPRoamingService in _EMPRoamingProviders.
-                                                          OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
-                                                          Select(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                    if (result == null ||
+                       (result != null &&
+                       (result.Result == CancelReservationResultTypes.UnknownEVSE ||
+                        result.Result == CancelReservationResultTypes.UnknownReservationId)))
                     {
 
-                        result = await EMPRoamingService.
-                                           CancelReservation(ReservationId,
-                                                             Reason,
-                                                             ProviderId,
 
-                                                             Timestamp,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             RequestTimeout);
+                        if (Reservation.EMPRoamingProviderId.HasValue &&
+                            TryGet(Reservation.EMPRoamingProviderId.Value, out IEMPRoamingProvider _IEMPRoamingProvider))
+                        {
+
+                            result = await _IEMPRoamingProvider.
+                                               CancelReservation(ReservationId,
+                                                                 Reason,
+
+                                                                 Timestamp,
+                                                                 CancellationToken,
+                                                                 EventTrackingId,
+                                                                 RequestTimeout);
+
+                        }
 
                     }
 
+                    #endregion
+
+                    #region ...or try to check every EMP roaming provider...
+
+                    if (result == null ||
+                       (result != null &&
+                       (result.Result == CancelReservationResultTypes.UnknownEVSE ||
+                        result.Result == CancelReservationResultTypes.UnknownReservationId)))
+                    {
+
+                        foreach (var EMPRoamingService in _EMPRoamingProviders.
+                                                              OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
+                                                              Select(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                        {
+
+                            result = await EMPRoamingService.
+                                               CancelReservation(ReservationId,
+                                                                 Reason,
+
+                                                                 Timestamp,
+                                                                 CancellationToken,
+                                                                 EventTrackingId,
+                                                                 RequestTimeout);
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region ...or fail!
+
+                    if (result == null)
+                    {
+
+                        result = CancelReservationResult.UnknownReservationId(ReservationId,
+                                                                              Reason);
+
+                        //SendReservationCanceled(DateTime.UtcNow,
+                        //                        this,
+                        //                           EventTrackingId,
+                        //                           Id,
+                        //                           ProviderId,
+                        //                           ReservationId,
+                        //                           null,
+                        //                           Reason,
+                        //                           result,
+                        //                           result.Runtime.HasValue
+                        //                               ? result.Runtime.Value
+                        //                               : TimeSpan.FromMilliseconds(5),
+                        //                           RequestTimeout);
+
+                    }
+
+                    #endregion
+
                 }
 
-                #endregion
-
-                #region ...or fail!
-
-                if (result == null)
-                {
-
+                else
                     result = CancelReservationResult.UnknownReservationId(ReservationId,
                                                                           Reason);
-
-                    //SendReservationCanceled(DateTime.UtcNow,
-                    //                        this,
-                    //                           EventTrackingId,
-                    //                           Id,
-                    //                           ProviderId,
-                    //                           ReservationId,
-                    //                           null,
-                    //                           Reason,
-                    //                           result,
-                    //                           result.Runtime.HasValue
-                    //                               ? result.Runtime.Value
-                    //                               : TimeSpan.FromMilliseconds(5),
-                    //                           RequestTimeout);
-
-                }
-
-                #endregion
 
             }
             catch (Exception e)
@@ -3874,7 +3867,6 @@ namespace org.GraphDefined.WWCP
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
-                                                    ProviderId,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,
