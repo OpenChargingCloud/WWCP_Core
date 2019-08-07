@@ -37,23 +37,23 @@ using org.GraphDefined.WWCP.Net;
 namespace org.GraphDefined.WWCP.Networking
 {
 
-    public static class WWCPTrackerExtentions
-    {
+    //public static class WWCPTrackerExtentions
+    //{
 
-        public static Tracker AttachTracker(this WWCP_HTTPAPI     HTTPAPI,
-                                            Tracker_Id            Id,
-                                            I18NString            Description  = null,
-                                            HTTPPath?              URIPrefix    = null)
-        {
+    //    public static Tracker AttachTracker(this WWCP_HTTPAPI     HTTPAPI,
+    //                                        Tracker_Id            Id,
+    //                                        I18NString            Description  = null,
+    //                                        HTTPPath?              URIPrefix    = null)
+    //    {
 
-            return new Tracker(Id,
-                               Description,
-                               HTTPAPI?.HTTPServer,
-                               URIPrefix ?? Tracker.DefaultURIPrefix);
+    //        return new Tracker(Id,
+    //                           Description,
+    //                           HTTPAPI?.HTTPServer,
+    //                           URIPrefix ?? Tracker.DefaultURIPrefix);
 
-        }
+    //    }
 
-    }
+    //}
 
 
     /// <summary>

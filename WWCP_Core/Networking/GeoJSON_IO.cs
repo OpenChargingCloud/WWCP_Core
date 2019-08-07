@@ -629,18 +629,18 @@ namespace org.GraphDefined.WWCP.Net.IO.GeoJSON
 
         #region Attach_GeoJSON_IO(this WWCPAPI, HTTPHostname = null, URIPrefix = "/")
 
-        /// <summary>
-        /// Attach GeoJSON I/O to the given WWCP HTTP API.
-        /// </summary>
-        /// <param name="WWCPAPI">A WWCP HTTP API.</param>
-        /// <param name="HTTPHostname">Limit this GeoJSON I/O handling to the given HTTP hostname.</param>
-        /// <param name="URIPrefix">A common URI prefix for all URIs within this API.</param>
-        public static void Attach_GeoJSON_IO(this WWCP_HTTPAPI  WWCPAPI,
-                                             HTTPHostname?      HTTPHostname  = null,
-                                             String             URIPrefix     = "/")
-        {
-           // throw new NotImplementedException();
-        }
+        ///// <summary>
+        ///// Attach GeoJSON I/O to the given WWCP HTTP API.
+        ///// </summary>
+        ///// <param name="WWCPAPI">A WWCP HTTP API.</param>
+        ///// <param name="HTTPHostname">Limit this GeoJSON I/O handling to the given HTTP hostname.</param>
+        ///// <param name="URIPrefix">A common URI prefix for all URIs within this API.</param>
+        //public static void Attach_GeoJSON_IO(this WWCP_HTTPAPI  WWCPAPI,
+        //                                     HTTPHostname?      HTTPHostname  = null,
+        //                                     String             URIPrefix     = "/")
+        //{
+        //   // throw new NotImplementedException();
+        //}
 
         #endregion
 

@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP.Virtual
     /// <summary>
     /// A virtual charging pool.
     /// </summary>
-    public class VirtualChargingPool : AEMobilityEntity<ChargingPool_Id>,
+    public class VirtualChargingPool : ACryptoEMobilityEntity<ChargingPool_Id>,
                                        IEquatable<VirtualChargingPool>, IComparable<VirtualChargingPool>, IComparable,
                                        IStatus<ChargingPoolStatusTypes>,
                                        IRemoteChargingPool
@@ -200,13 +200,6 @@ namespace org.GraphDefined.WWCP.Virtual
 
         #endregion
 
-        public String                  EllipticCurve            { get; }
-        public X9ECParameters          ECP                      { get; }
-        public ECDomainParameters      ECSpec                   { get; }
-        public FpCurve                 C                        { get; }
-        public ECPrivateKeyParameters  PrivateKey               { get; }
-        public PublicKeyCertificates   PublicKeyCertificates    { get; }
-
         #endregion
 
         #region Events
@@ -221,6 +214,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// Create a new virtual charging pool.
         /// </summary>
         public VirtualChargingPool(ChargingPool_Id               Id,
+                                   IRoamingNetwork               RoamingNetwork,
                                    I18NString                    Description              = null,
                                    ChargingPoolAdminStatusTypes  InitialAdminStatus       = ChargingPoolAdminStatusTypes.Operational,
                                    ChargingPoolStatusTypes       InitialStatus            = ChargingPoolStatusTypes.Available,
@@ -231,7 +225,11 @@ namespace org.GraphDefined.WWCP.Virtual
                                    UInt16                        MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
                                    UInt16                        MaxStatusListSize        = DefaultMaxStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   RoamingNetwork,
+                   EllipticCurve,
+                   PrivateKey,
+                   PublicKeyCertificates)
 
         {
 
@@ -250,13 +248,6 @@ namespace org.GraphDefined.WWCP.Virtual
             #endregion
 
             #region Setup crypto
-
-            this.EllipticCurve          = EllipticCurve ?? "P-256";
-            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
-            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
-            this.C                      = (FpCurve) ECSpec.Curve;
-            this.PrivateKey             = PrivateKey;
-            this.PublicKeyCertificates  = PublicKeyCertificates;
 
             if (PrivateKey == null && PublicKeyCertificates == null)
             {
@@ -944,7 +935,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         if (newReservations.Length > 0)
                         {
 
-                            newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
+                            newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                      Timestamp:               Timestamp.Value,
                                                                      StartTime:               ReservationStartTime ?? DateTime.UtcNow,
                                                                      Duration:                Duration  ?? MaxReservationDuration,
@@ -952,8 +943,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                      ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                      ReservationLevel:        ReservationLevel,
                                                                      ProviderId:              ProviderId,
-                                                                     Identification:          RemoteAuthentication,
-                                                                     RoamingNetwork:          null,
+                                                                     StartAuthentication:     RemoteAuthentication,
+                                                                     RoamingNetworkId:        RoamingNetwork.Id,
                                                                      ChargingPoolId:          Id,
                                                                      ChargingStationId:       null,
                                                                      EVSEId:                  null,

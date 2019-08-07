@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP.Virtual
     /// <summary>
     /// A virtual charging station.
     /// </summary>
-    public class VirtualChargingStation : AEMobilityEntity<ChargingStation_Id>,
+    public class VirtualChargingStation : ACryptoEMobilityEntity<ChargingStation_Id>,
                                           IEquatable<VirtualChargingStation>, IComparable<VirtualChargingStation>, IComparable,
                                           IStatus<ChargingStationStatusTypes>,
                                           IRemoteChargingStation
@@ -263,6 +263,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="MaxStatusListSize">The maximum size of the charging station status list.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the charging station admin status list.</param>
         public VirtualChargingStation(ChargingStation_Id               Id,
+                                      IRoamingNetwork                  RoamingNetwork,
                                       I18NString                       Description              = null,
                                       ChargingStationAdminStatusTypes  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
                                       ChargingStationStatusTypes       InitialStatus            = ChargingStationStatusTypes.Available,
@@ -273,7 +274,11 @@ namespace org.GraphDefined.WWCP.Virtual
                                       UInt16                           MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
                                       UInt16                           MaxStatusListSize        = DefaultMaxStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   RoamingNetwork,
+                   EllipticCurve,
+                   PrivateKey,
+                   PublicKeyCertificates)
 
         {
 
@@ -303,13 +308,6 @@ namespace org.GraphDefined.WWCP.Virtual
             #endregion
 
             #region Setup crypto
-
-            this.EllipticCurve          = EllipticCurve ?? "P-256";
-            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
-            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
-            this.C                      = (FpCurve) ECSpec.Curve;
-            this.PrivateKey             = PrivateKey;
-            this.PublicKeyCertificates  = PublicKeyCertificates;
 
             if (PrivateKey == null && PublicKeyCertificates == null)
             {

@@ -52,6 +52,8 @@ namespace org.GraphDefined.WWCP
                                                                            @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})([A-Za-z0-9])$ |" +
                                                                            @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})$ |" +
                                                                            @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})$",
+
+                                                                       //    @"^([A-Za-z]{2}[\*|-]?[A-Za-z0-9]{3})[\*|-]?([A-Za-z0-9]{6})[\*|-]?[\*|-]?[\d|X])$",   // PlugSurfing OIOI 4.x
                                                                            RegexOptions.IgnorePatternWhitespace);
 
         #endregion

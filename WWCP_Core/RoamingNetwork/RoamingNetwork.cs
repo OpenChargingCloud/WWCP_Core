@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
     /// This can e.g. be a differentation of service levels (premiun, basic,
     /// discount) or allow a simplified testing (production, qa, featureX, ...)
     /// </summary>
-    public class RoamingNetwork : ACryptoEMobilityEntity<RoamingNetwork_Id>,
+    public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id>,
                                   IRoamingNetwork
     {
 
@@ -277,22 +277,20 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStationOperatorRoamingProviders           = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
             this._EMPRoamingProviders                               = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
-            this._ChargingReservations_AtChargingStationOperators   = new ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator>();
-            this._ChargingReservations_AtEMPRoamingProviders        = new ConcurrentDictionary<ChargingReservation_Id, IEMPRoamingProvider>();
 
             this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
 
-            this.ReservationsStore                                   = new ChargingReservationsStore(this,
+            this.ReservationsStore                                  = new ChargingReservationsStore(this,
                                                                                                     ReservationLogFileNameCreator);
 
-            this.SessionsStore                                       = new ChargingSessionsStore    (this,
+            this.SessionsStore                                      = new ChargingSessionsStore    (this,
                                                                                                     SessionLogFileNameCreator,
-                                                                                                    _ChargeDetailRecordStore.Add);
+                                                                                                    DisableNetworkSync: true);
 
-            this._ChargeDetailRecordStore                           = new ChargeDetailRecordsStore (this,
+            this.ChargeDetailRecordsStore                           = new ChargeDetailRecordsStore (this,
                                                                                                     ChargeDetailRecordLogFileNameCreator);
 
 
@@ -3916,74 +3914,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-
-        #region ChargingReservations
-
-        /// <summary>
-        /// Return all current charging reservations.
-        /// </summary>
-        public IEnumerable<ChargingReservation> ChargingReservations
-
-            => _ChargingStationOperators.
-                    SelectMany(cso => cso.Reservations);
-
-        #endregion
-
-        #region TryGetReservationById(ReservationId, out Reservation)
-
-        /// <summary>
-        /// Return the charging reservation specified by its unique identification.
-        /// </summary>
-        /// <param name="ReservationId">The charging reservation identification.</param>
-        /// <param name="Reservation">The charging reservation identification.</param>
-        /// <returns>True when successful, false otherwise.</returns>
-        public Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-        {
-
-            //if (_ChargingReservations_AtChargingStationOperators.TryGetValue(ReservationId, out ChargingStationOperator _cso))
-            //    return _cso.TryGetReservationById(ReservationId, out Reservation);
-
-            Reservation = null;
-            return false;
-
-        }
-
-        #endregion
-
         #endregion
 
         #region RemoteStart/-Stop
-
-        #region ChargingSessions
-
-
-
-        /// <summary>
-        /// Return all current charging sessions identifications.
-        /// </summary>
-        public IEnumerable<ChargingSession_Id> ChargingSessionIds
-            => SessionsStore.SafeSelect(session => session.Id);
-
-        /// <summary>
-        /// Return all current charging sessions.
-        /// </summary>
-        public IEnumerable<ChargingSession> ChargingSessions
-            => SessionsStore;
-
-        #region TryGetChargingSessionById(SessionId, out ChargingSession)
-
-        ///// <summary>
-        ///// Return the charging session specified by the given identification.
-        ///// </summary>
-        ///// <param name="SessionId">The charging session identification.</param>
-        ///// <param name="ChargingSession">The charging session.</param>
-        //public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
-        //    => _ChargingSessions.TryGetValue(SessionId, out ChargingSession);
-
-        #endregion
-
-        #endregion
 
         #region Events
 
@@ -4042,7 +3975,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
 
         #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
@@ -4121,7 +4053,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (ChargingLocation.IsDefined)
+            if (ChargingLocation.IsDefined())
             {
 
                 #region Try to lookup the charging station operator given in the EVSE identification...

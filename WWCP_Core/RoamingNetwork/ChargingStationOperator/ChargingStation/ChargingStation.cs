@@ -2393,6 +2393,10 @@ namespace org.GraphDefined.WWCP
                          AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
                 {
 
+                    var EVSEId = ChargingLocation.EVSEId;
+
+                    //if ()
+
                     if (RemoteChargingStation != null)
                     {
 

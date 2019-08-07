@@ -52,15 +52,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The hosting WWCP roaming network.
         /// </summary>
-        RoamingNetwork         RoamingNetwork   { get; }
-
-        #endregion
-
-        #region Events
-
-        // Client methods (logging)
-
-
+        IRoamingNetwork        RoamingNetwork   { get; }
 
         #endregion
 

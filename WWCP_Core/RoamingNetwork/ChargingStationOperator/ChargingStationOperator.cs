@@ -4322,11 +4322,31 @@ namespace org.GraphDefined.WWCP
 
         #region Reservations...
 
+        public IEnumerable<ChargingReservation> Reservations
+            => RoamingNetwork.ReservationsStore.
+                   Where (reservation => reservation.Last().ChargingStationOperatorId == Id).
+                   Select(reservation => reservation.Last());
+
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id Id, out ChargingReservation ChargingReservation)
+        {
+
+            if (RoamingNetwork.ReservationsStore.TryGet(Id, out ChargingReservationCollection ReservationCollection))
+            {
+                ChargingReservation = ReservationCollection.Last();
+                return true;
+            }
+
+            ChargingReservation = null;
+            return false;
+
+        }
+
+
         #region Events
 
-        /// <summary>
-        /// An event fired whenever a charging location is being reserved.
-        /// </summary>
+            /// <summary>
+            /// An event fired whenever a charging location is being reserved.
+            /// </summary>
         public event OnReserveRequestDelegate             OnReserveRequest;
 
         /// <summary>

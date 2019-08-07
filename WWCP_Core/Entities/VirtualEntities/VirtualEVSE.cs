@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP.Virtual
     /// <summary>
     /// A virtual EVSE.
     /// </summary>
-    public class VirtualEVSE : AEMobilityEntity<EVSE_Id>,
+    public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id>,
                                IEquatable<VirtualEVSE>, IComparable<VirtualEVSE>, IComparable,
                                IEnumerable<SocketOutlet>,
                                IStatus<EVSEStatusTypes>,
@@ -508,6 +508,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
         /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
         internal VirtualEVSE(EVSE_Id                 Id,
+                             IRoamingNetwork         RoamingNetwork,
                              I18NString              Description              = null,
                              EVSEAdminStatusTypes    InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
                              EVSEStatusTypes         InitialStatus            = EVSEStatusTypes.Available,
@@ -519,7 +520,11 @@ namespace org.GraphDefined.WWCP.Virtual
                              UInt16                  MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
                              UInt16                  MaxStatusListSize        = DefaultMaxStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   RoamingNetwork,
+                   EllipticCurve,
+                   PrivateKey,
+                   PublicKeyCertificates)
 
         {
 
@@ -544,13 +549,6 @@ namespace org.GraphDefined.WWCP.Virtual
             #endregion
 
             #region Setup crypto
-
-            this.EllipticCurve          = EllipticCurve ?? "P-256";
-            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
-            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
-            this.C                      = (FpCurve) ECSpec.Curve;
-            this.PrivateKey             = PrivateKey;
-            this.PublicKeyCertificates  = PublicKeyCertificates;
 
             if (PrivateKey == null && PublicKeyCertificates == null)
             {
@@ -1072,6 +1070,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                               ReservationLevel,
                                                                               ProviderId,
                                                                               RemoteAuthentication,
+                                                                              RoamingNetwork.Id,
                                                                               null, //ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
                                                                               null, //ChargingStation.ChargingPool.Id,
                                                                               null, //ChargingStation.Id,
@@ -1105,7 +1104,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                 case EVSEStatusTypes.Reserved:
                                 case EVSEStatusTypes.Available:
 
-                                    newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
+                                    newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                              Timestamp:               Timestamp.Value,
                                                                              StartTime:               ReservationStartTime ?? DateTime.UtcNow,
                                                                              Duration:                Duration  ?? MaxReservationDuration,
@@ -1113,8 +1112,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                              ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                              ReservationLevel:        ReservationLevel,
                                                                              ProviderId:              ProviderId,
-                                                                             Identification:          RemoteAuthentication,
-                                                                             RoamingNetwork:          null,
+                                                                             StartAuthentication:     RemoteAuthentication,
+                                                                             RoamingNetworkId:        RoamingNetwork.Id,
                                                                              ChargingPoolId:          null,
                                                                              ChargingStationId:       null,
                                                                              EVSEId:                  Id,
