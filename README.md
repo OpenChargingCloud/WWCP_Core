@@ -8,9 +8,9 @@ and data structures.
 #### Related Projects
 
 Serveral project make use of this core library:
- - [WWCP OICP](https://github.com/OpenChargingCloud/WWCP_OICP) defines a mapping between WWCP and the [Open InterCharge Protocol](http://www.intercharge.eu). *Please note, that the intercharge protocol is not (yet) a free and open protocol and therefore this adapter is not available as free Open Source software. Nevertheless it is available as shared source for customers of [Hubject GmbH](http://www.hubject.com).*
+ - [WWCP OICP](https://github.com/OpenChargingCloud/WWCP_OICP) defines a mapping between WWCP and the [Open InterCharge Protocol](http://www.intercharge.eu) as defined by [Hubject GmbH](http://www.hubject.com).
  - [WWCP OCHP](https://github.com/OpenChargingCloud/WWCP_OCHP) defines a mapping between WWCP and the [Open Clearing House Protocol](http://www.ochp.eu).
- - [WWCP eMIP](https://github.com/OpenChargingCloud/WWCP_eMIP) defines a mapping between WWCP and the [eMobility Protocol Inter-Operation](https://www.gireve.com/wp-content/uploads/2017/02/Gireve_Tech_eMIP-V0.7.4_ProtocolDescription_1.0.2_en.pdf) defined by [Gireve](https://www.gireve.com).
+ - [WWCP eMIP](https://github.com/OpenChargingCloud/WWCP_eMIP) defines a mapping between WWCP and the [eMobility Protocol Inter-Operation](https://www.gireve.com/wp-content/uploads/2017/02/Gireve_Tech_eMIP-V0.7.4_ProtocolDescription_1.0.2_en.pdf) as defined by [Gireve](https://www.gireve.com).
  - [WWCP OCPI](https://github.com/OpenChargingCloud/WWCP_OCPI) defines a mapping between WWCP and the [Open Charge Point Interface](https://github.com/ocpi/ocpi).
  - [WWCP OCPP](https://github.com/OpenChargingCloud/WWCP_OCPP) defines a mapping between WWCP and the [Open Charge Point Protocol](http://www.openchargealliance.org).
 
