@@ -1378,17 +1378,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetChargingPoolbyId(ChargingPoolId)
+        #region GetChargingPoolById(ChargingPoolId)
 
-        public ChargingPool GetChargingPoolbyId(ChargingPool_Id ChargingPoolId)
+        public ChargingPool GetChargingPoolById(ChargingPool_Id ChargingPoolId)
 
             => _ChargingPools.GetById(ChargingPoolId);
 
         #endregion
 
-        #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
+        #region TryGetChargingPoolById(ChargingPoolId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolbyId(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
 
             => _ChargingPools.TryGet(ChargingPoolId, out ChargingPool);
 
@@ -1401,7 +1401,7 @@ namespace org.GraphDefined.WWCP
 
             ChargingPool _ChargingPool = null;
 
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+            if (TryGetChargingPoolById(ChargingPoolId, out _ChargingPool))
             {
 
                 if (ChargingPoolRemoval.SendVoting(DateTime.UtcNow, this, _ChargingPool))
@@ -1431,7 +1431,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
         {
 
-            if (TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool))
+            if (TryGetChargingPoolById(ChargingPoolId, out ChargingPool))
             {
 
                 if (ChargingPoolRemoval.SendVoting(DateTime.UtcNow, this, ChargingPool))
@@ -1466,7 +1466,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingPool _ChargingPool = null;
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+            if (TryGetChargingPoolById(ChargingPoolId, out _ChargingPool))
                 _ChargingPool.SetAdminStatus(NewStatus);
 
         }
@@ -1481,7 +1481,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingPool _ChargingPool  = null;
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+            if (TryGetChargingPoolById(ChargingPoolId, out _ChargingPool))
                 _ChargingPool.SetAdminStatus(NewStatus, Timestamp);
 
         }
@@ -1496,7 +1496,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingPool _ChargingPool  = null;
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+            if (TryGetChargingPoolById(ChargingPoolId, out _ChargingPool))
                 _ChargingPool.SetAdminStatus(StatusList, ChangeMethod);
 
             //if (SendUpstream)
@@ -1774,9 +1774,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetChargingStationbyId(ChargingStationId)
+        #region GetChargingStationById(ChargingStationId)
 
-        public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
+        public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
 
             => _ChargingPools.
                    SelectMany    (pool    => pool.ChargingStations).
@@ -1784,9 +1784,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation ChargingStation)
+        #region TryGetChargingStationById(ChargingStationId, out ChargingStation ChargingStation)
 
-        public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
         {
 
             ChargingStation = _ChargingPools.
@@ -1794,6 +1794,27 @@ namespace org.GraphDefined.WWCP
                                   FirstOrDefault(station => station.Id == ChargingStationId);
 
             return ChargingStation != null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingPoolByStationId(ChargingStationId, out Pool)
+
+        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out ChargingPool Pool)
+        {
+
+            foreach (var pool in _ChargingPools)
+            {
+                if (pool.TryGetChargingStationById(ChargingStationId, out ChargingStation station))
+                {
+                    Pool = pool;
+                    return true;
+                }
+            }
+
+            Pool = null;
+            return false;
 
         }
 
@@ -1807,7 +1828,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            if (TryGetChargingStationById(ChargingStationId, out _ChargingStation))
                 _ChargingStation.SetStatus(NewStatus);
 
         }
@@ -1821,7 +1842,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingStation _ChargingStation = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            if (TryGetChargingStationById(ChargingStationId, out _ChargingStation))
                 _ChargingStation.SetStatus(NewTimestampedStatus);
 
         }
@@ -1836,7 +1857,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            if (TryGetChargingStationById(ChargingStationId, out _ChargingStation))
                 _ChargingStation.SetAdminStatus(NewStatus);
 
         }
@@ -1850,7 +1871,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingStation _ChargingStation = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            if (TryGetChargingStationById(ChargingStationId, out _ChargingStation))
                 _ChargingStation.SetAdminStatus(NewTimestampedStatus);
 
         }
@@ -1865,7 +1886,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            if (TryGetChargingStationById(ChargingStationId, out _ChargingStation))
                 _ChargingStation.SetAdminStatus(NewStatus, Timestamp);
 
         }
@@ -1880,7 +1901,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            if (TryGetChargingStationById(ChargingStationId, out _ChargingStation))
                 _ChargingStation.SetAdminStatus(StatusList, ChangeMethod);
 
             //if (SendUpstream)
@@ -2672,9 +2693,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetEVSEbyId(EVSEId)
+        #region GetEVSEById(EVSEId)
 
-        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        public EVSE GetEVSEById(EVSE_Id EVSEId)
 
             => _ChargingPools.
                    SelectMany    (pool    => pool.   ChargingStations).
@@ -2683,9 +2704,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryGetEVSEbyId(EVSEId, out EVSE)
+        #region TryGetEVSEById(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
             EVSE = _ChargingPools.
@@ -2717,6 +2738,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region TryGetChargingPoolByEVSEId(EVSEId, out Pool)
+
+        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id EVSEId, out ChargingPool Pool)
+        {
+
+            foreach (var pool in _ChargingPools)
+            {
+                foreach (var station in pool.ChargingStations)
+                {
+                    if (station.TryGetEVSEById(EVSEId, out EVSE evse))
+                    {
+                        Pool = pool;
+                        return true;
+                    }
+                }
+            }
+
+            Pool = null;
+            return false;
+
+        }
+
+        #endregion
+
+
 
         #region ValidEVSEIds
 
@@ -2744,22 +2790,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region LocalEVSEIds
-
-        /// <summary>
-        /// A list of manual EVSE Ids which will not be touched automagically.
-        /// </summary>
-        public ReactiveSet<EVSE_Id> LocalEVSEIds { get; }
-
-        #endregion
-
 
         #region SetEVSEStatus(NewStatus)
 
         public void SetEVSEStatus(EVSEStatus  NewStatus)
         {
 
-            if (TryGetEVSEbyId(NewStatus.Id, out EVSE _EVSE))
+            if (TryGetEVSEById(NewStatus.Id, out EVSE _EVSE))
                 _EVSE.SetStatus(NewStatus.Status);
 
         }
@@ -2772,7 +2809,7 @@ namespace org.GraphDefined.WWCP
                                   EVSEStatusTypes  NewStatus)
         {
 
-            if (TryGetEVSEbyId(EVSEId, out EVSE _EVSE))
+            if (TryGetEVSEById(EVSEId, out EVSE _EVSE))
                 _EVSE.SetStatus(NewStatus);
 
         }
@@ -2786,7 +2823,7 @@ namespace org.GraphDefined.WWCP
         {
 
             EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEById(EVSEId, out _EVSE))
                 _EVSE.SetStatus(NewTimestampedStatus);
 
         }
@@ -2801,7 +2838,7 @@ namespace org.GraphDefined.WWCP
         {
 
             EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEById(EVSEId, out _EVSE))
                 _EVSE.SetStatus(NewStatus, Timestamp);
 
         }
@@ -2819,7 +2856,7 @@ namespace org.GraphDefined.WWCP
                 return;
 
             EVSE _EVSE  = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEById(EVSEId, out _EVSE))
                 _EVSE.SetStatus(StatusList, ChangeMethod);
 
         }
@@ -2941,7 +2978,7 @@ namespace org.GraphDefined.WWCP
         {
 
             EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEById(EVSEId, out _EVSE))
                 _EVSE.SetAdminStatus(NewAdminStatus);
 
         }
@@ -2955,7 +2992,7 @@ namespace org.GraphDefined.WWCP
         {
 
             EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEById(EVSEId, out _EVSE))
                 _EVSE.SetAdminStatus(NewTimestampedAdminStatus);
 
         }
@@ -2970,7 +3007,7 @@ namespace org.GraphDefined.WWCP
         {
 
             EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEById(EVSEId, out _EVSE))
                 _EVSE.SetAdminStatus(NewAdminStatus, Timestamp);
 
         }
@@ -2987,7 +3024,7 @@ namespace org.GraphDefined.WWCP
             if (InvalidEVSEIds.Contains(EVSEId))
                 return;
 
-            if (TryGetEVSEbyId(EVSEId, out EVSE _EVSE))
+            if (TryGetEVSEById(EVSEId, out EVSE _EVSE))
                 _EVSE.SetAdminStatus(AdminStatusList, ChangeMethod);
 
         }
@@ -4812,10 +4849,8 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly Dictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
-
         public IEnumerable<ChargingSession> ChargingSessions
-            => _ChargingSessions.Select(_ => _.Value);
+            => RoamingNetwork.SessionsStore.Where(session => session.ChargingStationOperatorId == Id);
 
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
@@ -4825,7 +4860,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
         public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
-            => _ChargingSessions.TryGetValue(SessionId, out ChargingSession);
+            => RoamingNetwork.SessionsStore.TryGet(SessionId, out ChargingSession);
 
         #endregion
 
@@ -4945,95 +4980,46 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var EVSEId = ChargingLocation.EVSEId.Value;
-
-                #region Try the remote Charging Station Operator...
-
-                if (RemoteChargingStationOperator != null &&
-                   !LocalEVSEIds.Contains(EVSEId))
+                if (AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.Operational ||
+                    AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
                 {
 
-                    result = await RemoteChargingStationOperator.
-                                       RemoteStart(ChargingLocation,
-                                                   ChargingProduct,
-                                                   ReservationId,
-                                                   SessionId,
-                                                   ProviderId,
-                                                   RemoteAuthentication,
+                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out ChargingPool Pool)) ||
+                        (ChargingLocation.ChargingStationId.HasValue && TryGetChargingPoolByStationId(ChargingLocation.ChargingStationId.Value, out Pool)) ||
+                        (ChargingLocation.ChargingPoolId.   HasValue && TryGetChargingPoolById       (ChargingLocation.ChargingPoolId.   Value, out Pool)))
 
-                                                   Timestamp,
-                                                   CancellationToken,
-                                                   EventTrackingId,
-                                                   RequestTimeout);
+                        result = await Pool.RemoteStart(ChargingProduct,
+                                                        ReservationId,
+                                                        SessionId,
+                                                        ProviderId,
+                                                        RemoteAuthentication,
 
+                                                        Timestamp,
+                                                        CancellationToken,
+                                                        EventTrackingId,
+                                                        RequestTimeout);
 
-                    if (result.Result == RemoteStartResultType.Success)
+                    else
+                        result = RemoteStartResult.UnknownLocation;
+
+                    #region In case of success...
+
+                    if (result != null &&
+                        result.Result == RemoteStartResultType.Success)
                     {
 
-                        result.Session.ChargingStationOperator        = this;
-                        result.Session.RemoteChargingStationOperator  = RemoteChargingStationOperator;
-
-                        //_ChargingSessions.TryAdd(result.Session.Id, result.Session);
-
-                        OnNewChargingSession?.Invoke(DateTime.UtcNow,
-                                                     this,
-                                                     result.Session);
+                        // The session can be delivered within the response
+                        // or via an explicit message afterwards!
+                        result.Session.ChargingStationOperator = this;
 
                     }
 
-                }
-
-                #endregion
-
-                #region ...else/or try local
-
-                if (RemoteChargingStationOperator == null ||
-                     result             == null ||
-                    (result             != null &&
-                    (result.Result      == RemoteStartResultType.UnknownLocation ||
-                     result.Result      == RemoteStartResultType.Error)))
-                {
-
-                    var _ChargingPool = _ChargingPools.SelectMany(pool => pool.EVSEs).
-                                                       Where     (evse => evse.Id == EVSEId).
-                                                       Select    (evse => evse.ChargingStation.ChargingPool).
-                                                       FirstOrDefault();
-
-                    if (_ChargingPool != null)
-                    {
-
-                        result = await _ChargingPool.RemoteStart(ChargingLocation,
-                                                                 ChargingProduct,
-                                                                 ReservationId,
-                                                                 SessionId,
-                                                                 ProviderId,
-                                                                 RemoteAuthentication,
-
-                                                                 Timestamp,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 RequestTimeout);
-
-
-                        if (result.Result == RemoteStartResultType.Success)
-                        {
-
-                            result.Session.ChargingStationOperator        = this;
-                            result.Session.RemoteChargingStationOperator  = null;
-                            result.Session.ChargingPool                   = _ChargingPool;
-
-                            //_ChargingSessions.TryAdd(result.Session.Id, result.Session);
-
-                        }
-
-                    }
+                    #endregion
 
                     else
                         result = RemoteStartResult.UnknownLocation;
 
                 }
-
-                #endregion
 
             }
             catch (Exception e)
@@ -5151,15 +5137,16 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                if (_ChargingSessions.TryGetValue(SessionId, out ChargingSession chargingSession))
+                if (AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.Operational ||
+                    AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
                 {
 
-                    #region Try remote Charging Station Operator...
+                    if (TryGetChargingSessionById(SessionId, out ChargingSession chargingSession) &&
+                       ((chargingSession.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (chargingSession.EVSEId.           Value, out ChargingPool chargingPool)) ||
+                        (chargingSession.ChargingStationId.HasValue && TryGetChargingPoolByStationId(chargingSession.ChargingStationId.Value, out chargingPool))              ||
+                        (chargingSession.ChargingPoolId.   HasValue && TryGetChargingPoolById       (chargingSession.ChargingPoolId.   Value, out chargingPool))))
 
-                    if (chargingSession.RemoteChargingStationOperator != null)
-                    {
-
-                        result = await chargingSession.RemoteChargingStationOperator.
+                        result = await chargingPool.
                                            RemoteStop(SessionId,
                                                       ReservationHandling,
                                                       ProviderId,
@@ -5170,52 +5157,34 @@ namespace org.GraphDefined.WWCP
                                                       EventTrackingId,
                                                       RequestTimeout);
 
-                    }
 
-                    #endregion
+                    if (result == null)
+                        result = RemoteStopResult.InvalidSessionId(SessionId);
 
-                    #region ...else/or try local
-
-                    if (chargingSession.RemoteChargingStationOperator == null ||
-                        (result             != null &&
-                        (result.Result      == RemoteStopResultType.InvalidSessionId ||
-                         result.Result      == RemoteStopResultType.Error)))
+                    if (result.Result == RemoteStopResultType.Success)
                     {
 
-                        if (chargingSession.ChargingPool != null)
+                        // The CDR could also be sent separately!
+                        if (result.ChargeDetailRecord != null)
                         {
-
-                            result = await chargingSession.ChargingPool.
-                                               RemoteStop(SessionId,
-                                                          ReservationHandling,
-                                                          ProviderId,
-                                                          RemoteAuthentication,
-
-                                                          Timestamp,
-                                                          CancellationToken,
-                                                          EventTrackingId,
-                                                          RequestTimeout);
-
+                            OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
+                                                            this,
+                                                            result.ChargeDetailRecord);
                         }
 
                     }
 
-                    #endregion
-
                 }
-
-                if (result == null)
-                    result = RemoteStopResult.InvalidSessionId(SessionId);
-
-                if (result.Result == RemoteStopResultType.Success)
+                else
                 {
 
-                    // The CDR could also be sent separately!
-                    if (result.ChargeDetailRecord != null)
+                    switch (AdminStatus.Value)
                     {
-                        OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
-                                                        this,
-                                                        result.ChargeDetailRecord);
+
+                        default:
+                            result = RemoteStopResult.OutOfService(SessionId);
+                            break;
+
                     }
 
                 }

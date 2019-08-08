@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP.Importer
                     ChargingStation _ChargingStationToMove = null;
 
                     // Do not fail if the charging station is not yet available/existing!
-                    if (_ForwardedToChargingStationOperator.TryGetChargingStationbyId(StationId, out _ChargingStationToMove))
+                    if (_ForwardedToChargingStationOperator.TryGetChargingStationById(StationId, out _ChargingStationToMove))
                     {
 
                         _ChargingStationToMove.ChargingPool.RemoveChargingStation(StationId);

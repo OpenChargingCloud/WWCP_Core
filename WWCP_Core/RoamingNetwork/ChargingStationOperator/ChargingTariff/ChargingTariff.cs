@@ -136,7 +136,7 @@ namespace org.GraphDefined.WWCP
 
                              foreach (var group in station.Operator.ChargingStationGroups.Where(group => group.Tariff != null))
                                  if (group.AllowedMemberIds.Contains(station.Id) ||
-                                     (group.AutoIncludeStations != null && group.AutoIncludeStations(station.Operator.GetChargingStationbyId(station.Id))))
+                                     (group.AutoIncludeStations != null && group.AutoIncludeStations(station.Operator.GetChargingStationById(station.Id))))
                                      foreach (var evse in station)
                                         results.Add(new String[] {
                                                         evse.Id.                            ToString(),
@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP
                              foreach (var evse in station)
                                  foreach (var group in evse.Operator.EVSEGroups.Where(group => group.Tariff != null))
                                      if (group.AllowedMemberIds.Contains(evse.Id) ||
-                                         (group.AutoIncludeEVSEs != null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEbyId(evse.Id))))
+                                         (group.AutoIncludeEVSEs != null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEById(evse.Id))))
                                          results.Add(new String[] {
                                                          evse.Id.                            ToString(),
                                                       //   station.Brand.Name.                 FirstText(),

@@ -2369,7 +2369,7 @@ namespace org.GraphDefined.WWCP
             ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator) &&
-                _ChargingStationOperator.TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+                _ChargingStationOperator.TryGetChargingPoolById(ChargingPoolId, out _ChargingPool))
                     return _ChargingPool;
 
             return null;
@@ -2386,7 +2386,7 @@ namespace org.GraphDefined.WWCP
             ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator))
-                return _ChargingStationOperator.TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool);
+                return _ChargingStationOperator.TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
 
             ChargingPool = null;
             return false;
@@ -2704,7 +2704,7 @@ namespace org.GraphDefined.WWCP
             ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator) &&
-                _ChargingStationOperator.TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                _ChargingStationOperator.TryGetChargingStationById(ChargingStationId, out _ChargingStation))
                     return _ChargingStation;
 
             return null;
@@ -2721,7 +2721,7 @@ namespace org.GraphDefined.WWCP
             ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
-                return _ChargingStationOperator.TryGetChargingStationbyId(ChargingStationId, out ChargingStation);
+                return _ChargingStationOperator.TryGetChargingStationById(ChargingStationId, out ChargingStation);
 
             ChargingStation = null;
             return false;
@@ -3075,7 +3075,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator) &&
-                _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out EVSE _EVSE))
+                _ChargingStationOperator.TryGetEVSEById(EVSEId, out EVSE _EVSE))
                     return _EVSE;
 
             return null;
@@ -3090,7 +3090,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
-                return _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out EVSE);
+                return _ChargingStationOperator.TryGetEVSEById(EVSEId, out EVSE);
 
             EVSE = null;
             return false;

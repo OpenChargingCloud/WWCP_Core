@@ -1295,13 +1295,12 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
-
         /// <summary>
         /// All current charging reservations.
         /// </summary>
         public IEnumerable<ChargingReservation> Reservations
-            => _Reservations.Select(_ => _.Value);
+            => RoamingNetwork.ReservationsStore.Where (reservationCollection => reservationCollection.EVSEId == Id).
+                                                Select(reservationCollection => reservationCollection.LastOrDefault());
 
         #region TryGetReservationById(ReservationId, out Reservation)
 
@@ -1311,7 +1310,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The charging reservation identification.</param>
         /// <param name="Reservation">The charging reservation.</param>
         public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-            => _Reservations.TryGetValue(ReservationId, out Reservation);
+        {
+
+            if (RoamingNetwork.ReservationsStore.TryGet(ReservationId, out ChargingReservationCollection ReservationCollection))
+            {
+                Reservation = ReservationCollection.LastOrDefault();
+                return true;
+            }
+
+            Reservation = null;
+            return false;
+
+        }
 
         #endregion
 
@@ -1759,19 +1769,16 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        public ChargingSession _ChargingSession;
-
         /// <summary>
         /// The current charging session, if available.
         /// </summary>
         [InternalUseOnly]
-        public ChargingSession ChargingSession
-            => _ChargingSession;
+        public ChargingSession ChargingSession { get; private set; }
 
 
         public IEnumerable<ChargingSession> ChargingSessions
-            => _ChargingSession != null
-                   ? new ChargingSession[] { _ChargingSession }
+            => ChargingSession != null
+                   ? new ChargingSession[] { ChargingSession }
                    : new ChargingSession[0];
 
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
@@ -1781,16 +1788,16 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
+        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession chargingSession)
         {
 
-            if (SessionId == _ChargingSession.Id)
+            if (SessionId == ChargingSession.Id)
             {
-                ChargingSession = _ChargingSession;
+                chargingSession = ChargingSession;
                 return true;
             }
 
-            ChargingSession = null;
+            chargingSession = null;
             return false;
 
         }
@@ -1959,6 +1966,8 @@ namespace org.GraphDefined.WWCP
                     AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
                 {
 
+                    #region Try RemoteEVSE...
+
                     if (RemoteEVSE != null)
                     {
 
@@ -1975,16 +1984,89 @@ namespace org.GraphDefined.WWCP
                                                        EventTrackingId,
                                                        RequestTimeout);
 
-                        if (result.Result == RemoteStartResultType.Success &&
-                            result.Session != null)
-                        {
-                            result.Session.EVSE = this;
-                        }
+                    }
+
+                    #endregion
+
+                    #region Try RemoteChargingStation
+
+                    else if (ChargingStation.RemoteChargingStation != null)
+                    {
+
+                        result = await ChargingStation.RemoteChargingStation.
+                                           RemoteStart(ChargingLocation,
+                                                       ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
+
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
 
                     }
 
+                    #endregion
+
+                    #region Try RemoteChargingPool
+
+                    else if (ChargingStation.ChargingPool.RemoteChargingPool != null)
+                    {
+
+                        result = await ChargingStation.ChargingPool.RemoteChargingPool.
+                                           RemoteStart(ChargingLocation,
+                                                       ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
+
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
+
+                    }
+
+                    #endregion
+
+                    #region Try RemoteChargingStationOperator
+
+                    else if (ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator != null)
+                    {
+
+                        result = await ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator.
+                                           RemoteStart(ChargingLocation,
+                                                       ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
+
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
+
+                    }
+
+                    #endregion
+
+                    #region ...or send 'OFFLINE'...
+
                     else
                         result = RemoteStartResult.Offline;
+
+                    #endregion
+
+
+                    if (result.Result == RemoteStartResultType.Success &&
+                        result.Session != null)
+                    {
+                        result.Session.EVSE = this;
+                    }
 
                 }
                 else
@@ -2116,42 +2198,127 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
+            try
             {
 
-                if (RemoteEVSE != null)
+                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
                 {
 
-                    result = await RemoteEVSE.
-                                       RemoteStop(SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  RemoteAuthentication,
+                    if (SessionId == ChargingSession?.Id)
+                    {
 
-                                                  Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  RequestTimeout);
+                        #region Try RemoteEVSE...
+
+                        if (RemoteEVSE != null)
+                        {
+
+                            result = await RemoteEVSE.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
+
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
+
+                        }
+
+                        #endregion
+
+                        #region Try RemoteChargingStation
+
+                        else if (ChargingStation.RemoteChargingStation != null)
+                        {
+
+                            result = await ChargingStation.RemoteChargingStation.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
+
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
+
+                        }
+
+                        #endregion
+
+                        #region Try RemoteChargingPool
+
+                        else if (ChargingStation.ChargingPool.RemoteChargingPool != null)
+                        {
+
+                            result = await ChargingStation.ChargingPool.RemoteChargingPool.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
+
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
+
+                        }
+
+                        #endregion
+
+                        #region Try RemoteChargingStationOperator
+
+                        else if (ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator != null)
+                        {
+
+                            result = await ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
+
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
+
+                        }
+
+                        #endregion
+
+                        #region ...or send 'OFFLINE'...
+
+                        else
+                            result = RemoteStopResult.Offline(SessionId);
+
+                        #endregion
+
+                    }
+                    else
+                        result = RemoteStopResult.InvalidSessionId(SessionId);
 
                 }
-
                 else
-                    result = RemoteStopResult.Offline(SessionId);
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = RemoteStopResult.OutOfService(SessionId);
+                            break;
+
+                    }
+
+                }
 
             }
-            else
+            catch (Exception e)
             {
-
-                switch (AdminStatus.Value)
-                {
-
-                    default:
-                        result = RemoteStopResult.OutOfService(SessionId);
-                        break;
-
-                }
-
+                result = RemoteStopResult.Error(SessionId,
+                                                e.Message);
             }
 
 

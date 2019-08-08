@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -38,6 +39,24 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         public ChargingReservation_Id  Id    { get; }
+
+        public EVSE_Id?             EVSEId
+            => _Reservations.LastOrDefault()?.EVSEId;
+
+        public ChargingStation_Id?  ChargingStationId
+            => _Reservations.LastOrDefault()?.ChargingStationId;
+
+        public ChargingPool_Id?     ChargingPoolId
+            => _Reservations.LastOrDefault()?.ChargingPoolId;
+
+        public ChargingStationOperator_Id?  ChargingStationOperatorId
+            => _Reservations.LastOrDefault()?.ChargingStationOperatorId;
+
+        public EMPRoamingProvider_Id? EMPRoamingProviderId
+            => _Reservations.LastOrDefault()?.EMPRoamingProviderId;
+
+        public CSORoamingProvider_Id? CSORoamingProviderId
+            => _Reservations.LastOrDefault()?.CSORoamingProviderId;
 
         #endregion
 
