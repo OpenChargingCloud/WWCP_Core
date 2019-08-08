@@ -19,8 +19,8 @@ Serveral project make use of this core library:
 
 The following project are compatible solutions:
 - [ChargySharp](https://github.com/OpenChargingCloud/ChargySharp) The C# reference implementation of the Chargy e-mobility transparency software.
-- [Chargy Desktop App](https://github.com/OpenChargingCloud/ChargyDesktopApp) An e-Mobility Transparency Application for Windows, Mac OS X and Linux (based on Electron).
-- [Chargy Mobile App](https://github.com/OpenChargingCloud/ChargyMobilepApp) An e-Mobility Transparency Application for iOS and Android (based on Apache Cordova).
+- [Chargy Desktop App](https://github.com/OpenChargingCloud/ChargyDesktopApp) An e-mobility transparency software for Windows, Mac OS X and Linux (based on the [Electron framework](https://electronjs.org/)).
+- [Chargy Mobile App](https://github.com/OpenChargingCloud/ChargyMobilepApp) An e-mobility transparency software for iOS and Android (based on [Apache Cordova](https://cordova.apache.org)).
 
 #### Requirements & Configuration
 
