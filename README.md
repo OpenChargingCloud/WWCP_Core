@@ -3,9 +3,9 @@
 The *World Wide Charging Protocol Suite* is a collection of protocols in order to
 connect market actors in the field of e-mobility solutions via scalable and secure
 Internet protocols. This repository defines the fundamental core concepts, entities
-and data structures and comes with a reference implementation of virtual EVSE, charging
-stations, charging pools, ... to enable continous integration testing within e-mobility
-roaming networks.
+and data structures and comes with a reference implementation of virtual EVSEs, charging
+stations, charging pools, CPOs, EMPs and more to enable continous integration tests
+within e-mobility roaming networks.
 
 #### Related Projects
 
