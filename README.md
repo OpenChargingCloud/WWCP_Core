@@ -17,6 +17,10 @@ Serveral project make use of this core library:
  - [WWCP OCPI](https://github.com/OpenChargingCloud/WWCP_OCPI) defines a mapping between WWCP and the [Open Charge Point Interface](https://github.com/ocpi/ocpi) and thus allows you to enable EMP and CPO roaming via direct connections betwewen those entities.
  - [WWCP OCPP](https://github.com/OpenChargingCloud/WWCP_OCPP) defines a mapping between WWCP and the [Open Charge Point Protocol](http://www.openchargealliance.org) and thus allows you to attach OCPP charging stations.
 
+The following project are compatible solutions:
+- [ChargySharp](https://github.com/OpenChargingCloud/ChargySharp) The C# reference implementation of the Chargy e-mobility transparency software.
+- [Chargy Desktop App](https://github.com/OpenChargingCloud/ChargyDesktopApp) An e-Mobility Transparency Application for Windows, Mac OS X and Linux (based on Electron).
+- [Chargy Mobile App](https://github.com/OpenChargingCloud/ChargyMobilepApp) An e-Mobility Transparency Application for iOS and Android (based on Apache Cordova).
 
 #### Requirements & Configuration
 
