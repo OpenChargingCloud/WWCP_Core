@@ -19,7 +19,7 @@ Serveral project make use of this core library:
 
 #### Requirements & Configuration
 
-1. You need .NET 4.6+
+1. You need .NET 4.7.1+
 
 
 #### Your contributions
