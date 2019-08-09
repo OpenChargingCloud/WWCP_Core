@@ -44,6 +44,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => false;
+
+        /// <summary>
+        /// The length of the tag identification.
+        /// </summary>
+        public UInt64 Length
+            => 0;
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>

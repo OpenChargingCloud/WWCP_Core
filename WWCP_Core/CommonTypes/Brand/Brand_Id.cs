@@ -47,27 +47,17 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region New
-
         /// <summary>
-        /// Returns a new brand identification.
+        /// Indicates whether this identification is null or empty.
         /// </summary>
-        public static Brand_Id New
-
-            => Parse(Guid.NewGuid().ToString());
-
-        #endregion
-
-        #region Length
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-
             => (UInt64) InternalId.Length;
-
-        #endregion
 
         #endregion
 
@@ -84,6 +74,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region New
+
+        /// <summary>
+        /// Returns a new brand identification.
+        /// </summary>
+        public static Brand_Id New
+            => Parse(Guid.NewGuid().ToString());
+
+        #endregion
 
         #region Parse(Text)
 

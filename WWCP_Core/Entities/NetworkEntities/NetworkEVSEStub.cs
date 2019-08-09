@@ -797,7 +797,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
+        public IEnumerable<ChargingReservation> ChargingReservations
             => _Reservations.Select(_ => _.Value);
 
         #region TryGetReservationById(ReservationId, out Reservation)

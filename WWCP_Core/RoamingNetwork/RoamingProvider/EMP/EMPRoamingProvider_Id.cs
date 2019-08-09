@@ -51,6 +51,12 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
+
+        /// <summary>
         /// The length of the e-mobility roaming provider identificator.
         /// </summary>
         public UInt64 Length

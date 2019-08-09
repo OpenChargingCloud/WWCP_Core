@@ -42,8 +42,7 @@ namespace org.GraphDefined.WWCP
     /// This can e.g. be a differentation of service levels (premiun, basic,
     /// discount) or allow a simplified testing (production, qa, featureX, ...)
     /// </summary>
-    public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id>,
-                                  IRoamingNetwork
+    public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id>, IRoamingNetwork, IRoamingNetwork1
     {
 
         #region Data
@@ -2362,7 +2361,7 @@ namespace org.GraphDefined.WWCP
 
         #region GetChargingPoolbyId(ChargingPoolId)
 
-        public ChargingPool GetChargingPoolbyId(ChargingPool_Id ChargingPoolId)
+        public ChargingPool GetChargingPoolById(ChargingPool_Id ChargingPoolId)
         {
 
             ChargingPool            _ChargingPool             = null;
@@ -2380,7 +2379,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolbyId(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
         {
 
             ChargingStationOperator _ChargingStationOperator  = null;
@@ -2697,7 +2696,7 @@ namespace org.GraphDefined.WWCP
 
         #region GetChargingStationbyId(ChargingStationId)
 
-        public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
+        public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
         {
 
             ChargingStation         _ChargingStation          = null;
@@ -2715,7 +2714,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation)
 
-        public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
         {
 
             ChargingStationOperator _ChargingStationOperator  = null;
@@ -3086,7 +3085,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetEVSEbyId(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
@@ -3412,6 +3411,28 @@ namespace org.GraphDefined.WWCP
 
         #region Reservations...
 
+        #region Data
+
+        public IEnumerable<ChargingReservation> ChargingReservations
+            => ReservationsStore.
+                   Select(reservation => reservation.Last());
+
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id Id, out ChargingReservation ChargingReservation)
+        {
+
+            if (ReservationsStore.TryGet(Id, out ChargingReservationCollection ReservationCollection))
+            {
+                ChargingReservation = ReservationCollection.Last();
+                return true;
+            }
+
+            ChargingReservation = null;
+            return false;
+
+        }
+
+        #endregion
+
         #region Events
 
         /// <summary>
@@ -3516,6 +3537,7 @@ namespace org.GraphDefined.WWCP
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
+                                         Id,
                                          ReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
@@ -3638,6 +3660,7 @@ namespace org.GraphDefined.WWCP
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
+                                          Id,
                                           ReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
@@ -3718,6 +3741,7 @@ namespace org.GraphDefined.WWCP
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
+                                                   Id,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -3865,6 +3889,7 @@ namespace org.GraphDefined.WWCP
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
+                                                    Id,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,
@@ -3918,6 +3943,21 @@ namespace org.GraphDefined.WWCP
 
         #region RemoteStart/-Stop
 
+        #region Data
+
+        public IEnumerable<ChargingSession> ChargingSessions
+            => SessionsStore;
+
+        /// <summary>
+        /// Return the charging session specified by the given identification.
+        /// </summary>
+        /// <param name="SessionId">The charging session identification.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
+            => SessionsStore.TryGet(SessionId, out ChargingSession);
+
+        #endregion
+
         #region Events
 
         /// <summary>
@@ -3966,11 +4006,11 @@ namespace org.GraphDefined.WWCP
         {
             add
             {
-                _ChargeDetailRecordStore.OnNewChargeDetailRecord += value;
+                ChargeDetailRecordsStore.OnNewChargeDetailRecord += value;
             }
             remove
             {
-                _ChargeDetailRecordStore.OnNewChargeDetailRecord -= value;
+                ChargeDetailRecordsStore.OnNewChargeDetailRecord -= value;
             }
         }
 
@@ -4000,7 +4040,7 @@ namespace org.GraphDefined.WWCP
                         ChargingSession_Id?       SessionId                  = null,
                         eMobilityProvider_Id?     ProviderId                 = null,
                         RemoteAuthentication      RemoteAuthentication       = null,
-                        ISendChargeDetailRecords  ISendChargeDetailRecords   = null,
+                 //       ISendChargeDetailRecords  ISendChargeDetailRecords   = null,
 
                         DateTime?                 Timestamp                  = null,
                         CancellationToken?        CancellationToken          = null,
@@ -4036,6 +4076,7 @@ namespace org.GraphDefined.WWCP
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             Id,
                                              ChargingLocation,
                                              ChargingProduct,
                                              ReservationId,
@@ -4081,8 +4122,8 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == RemoteStartResultType.Success)
-                        SessionsStore.Start(result.Session.SetChargingStationOperator(chargingStationOperator).
-                                                                   SetISendChargeDetailRecords(ISendChargeDetailRecords));
+                        SessionsStore.NewOrUpdate(result.Session, session => session.SetChargingStationOperator(chargingStationOperator));
+                                                                   //SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
                 }
 
@@ -4116,8 +4157,8 @@ namespace org.GraphDefined.WWCP
 
 
                         if (result.Result == RemoteStartResultType.Success)
-                            SessionsStore.Start(result.Session.SetEMPRoamingProvider      (empRoamingProvider).
-                                                                       SetISendChargeDetailRecords(ISendChargeDetailRecords));
+                            SessionsStore.NewOrUpdate(result.Session, session => session.SetEMPRoamingProvider(empRoamingProvider));
+                                                                    //   SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
                     }
 
@@ -4149,6 +4190,7 @@ namespace org.GraphDefined.WWCP
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
+                                              Id,
                                               ChargingLocation,
                                               ChargingProduct,
                                               ReservationId,
@@ -4228,6 +4270,7 @@ namespace org.GraphDefined.WWCP
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
+                                            Id,
                                             SessionId,
                                             ReservationHandling,
                                             ProviderId,
@@ -4360,6 +4403,7 @@ namespace org.GraphDefined.WWCP
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             Id,
                                              SessionId,
                                              ReservationHandling,
                                              ProviderId,
@@ -4400,7 +4444,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 //OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
-                SessionsStore.SendNewChargingSession(Timestamp, Sender, Session);
+                //SessionsStore.SendNewChargingSession(Timestamp, Sender, Session);
 
             }
 
@@ -4549,11 +4593,11 @@ namespace org.GraphDefined.WWCP
                                                  ProviderIdStart            = result.ProviderId,
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
-                                                 IdentificationStart        = LocalAuthentication,
+                                                 StartAuthentication        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
-                    SessionsStore.Start(NewChargingSession);
+                    SessionsStore.NewOrUpdate(NewChargingSession);
 
                 }
 
@@ -4727,12 +4771,12 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  EVSEId                     = EVSEId,
-                                                 IdentificationStart        = LocalAuthentication,
+                                                 StartAuthentication        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct,
                                                  //ISendChargeDetailRecords   = result.ISendChargeDetailRecords
                                              };
 
-                    SessionsStore.Start(NewChargingSession);
+                    SessionsStore.NewOrUpdate(NewChargingSession);
 
                 }
 
@@ -4901,11 +4945,11 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  ChargingStationId          = ChargingStationId,
-                                                 IdentificationStart        = LocalAuthentication,
+                                                 StartAuthentication        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
-                    SessionsStore.Start(NewChargingSession);
+                    SessionsStore.NewOrUpdate(NewChargingSession);
 
                 }
 
@@ -5073,11 +5117,11 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  ChargingPoolId             = ChargingPoolId,
-                                                 IdentificationStart        = LocalAuthentication,
+                                                 StartAuthentication        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
-                    SessionsStore.Start(NewChargingSession);
+                    SessionsStore.NewOrUpdate(NewChargingSession);
 
                 }
 
@@ -5466,10 +5510,8 @@ namespace org.GraphDefined.WWCP
 
 
             if (result.Result == AuthStopEVSEResultType.Authorized)
-                SessionsStore.Stop(OperatorId,
-                                           EVSEId,
-                                           LocalAuthentication,
-                                           SessionId);
+                SessionsStore.Remove(SessionId,
+                                     LocalAuthentication);
 
 
             #region Send OnAuthorizeEVSEStopResponse event
@@ -5978,7 +6020,7 @@ namespace org.GraphDefined.WWCP
                                                     Object           Sender,
                                                     ChargingSession  ChargingSession)
         {
-            SessionsStore.RegisterExternalChargingSession(Timestamp, Sender, ChargingSession);
+            //SessionsStore.RegisterExternalChargingSession(Timestamp, Sender, ChargingSession);
         }
 
         #endregion
@@ -5996,7 +6038,7 @@ namespace org.GraphDefined.WWCP
                                                   Object           Sender,
                                                   ChargingSession  ChargingSession)
         {
-            SessionsStore.RemoveExternalChargingSession(Timestamp, Sender, ChargingSession);
+            //SessionsStore.RemoveExternalChargingSession(Timestamp, Sender, ChargingSession);
         }
 
         #endregion
@@ -6197,7 +6239,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Store all CDRs...
 
-                _ChargeDetailRecordStore.Add(ChargeDetailRecords);
+                ChargeDetailRecordsStore.New(ChargeDetailRecords);
 
                 #endregion
 
@@ -6208,7 +6250,7 @@ namespace org.GraphDefined.WWCP
                     if (ChargeDetailRecord.EVSEId.HasValue)
                     {
 
-                        if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out EVSE _EVSE))
+                        if (TryGetEVSEById(ChargeDetailRecord.EVSEId.Value, out EVSE _EVSE))
                         {
 
                             if (_EVSE.ChargingSession    != null &&
@@ -6721,7 +6763,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var sendCDRResult in resultMap)
                         {
 
-                            SessionsStore.SendCDR(sendCDRResult);
+                            //SessionsStore.SendCDR(sendCDRResult);
 
                             //_ChargingSessions.TryRemove(sendCDRResult.ChargeDetailRecord.SessionId, out ChargingSession CS);
 

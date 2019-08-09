@@ -44,16 +44,16 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        public static JObject ToJSON(this RoamingNetwork  RoamingNetwork,
-                                     Boolean              Embedded                           = false,
-                                     InfoStatus           ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
-                                     InfoStatus           ExpandChargingPoolIds              = InfoStatus.ShowIdOnly,
-                                     InfoStatus           ExpandChargingStationIds           = InfoStatus.ShowIdOnly,
-                                     InfoStatus           ExpandEVSEIds                      = InfoStatus.ShowIdOnly,
-                                     InfoStatus           ExpandBrandIds                     = InfoStatus.ShowIdOnly,
-                                     InfoStatus           ExpandDataLicenses                 = InfoStatus.ShowIdOnly,
+        public static JObject ToJSON(this IRoamingNetwork  RoamingNetwork,
+                                     Boolean               Embedded                           = false,
+                                     InfoStatus            ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandChargingPoolIds              = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandChargingStationIds           = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandEVSEIds                      = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandBrandIds                     = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandDataLicenses                 = InfoStatus.ShowIdOnly,
 
-                                     InfoStatus           ExpandEMobilityProviderId          = InfoStatus.ShowIdOnly)
+                                     InfoStatus            ExpandEMobilityProviderId          = InfoStatus.ShowIdOnly)
 
 
             => RoamingNetwork == null
@@ -180,18 +180,18 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        public static JArray ToJSON(this IEnumerable<RoamingNetwork>  RoamingNetworks,
-                                    UInt64?                           Skip                               = null,
-                                    UInt64?                           Take                               = null,
-                                    Boolean                           Embedded                           = false,
-                                    InfoStatus                        ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandRoamingNetworkIds              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandChargingStationIds           = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandEVSEIds                      = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandBrandIds                     = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandDataLicenses                 = InfoStatus.ShowIdOnly,
+        public static JArray ToJSON(this IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                    UInt64?                            Skip                               = null,
+                                    UInt64?                            Take                               = null,
+                                    Boolean                            Embedded                           = false,
+                                    InfoStatus                         ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandRoamingNetworkIds              = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandChargingStationIds           = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandEVSEIds                      = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandBrandIds                     = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandDataLicenses                 = InfoStatus.ShowIdOnly,
 
-                                    InfoStatus                        ExpandEMobilityProviderId          = InfoStatus.ShowIdOnly)
+                                    InfoStatus                         ExpandEMobilityProviderId          = InfoStatus.ShowIdOnly)
 
 
         => RoamingNetworks == null || !RoamingNetworks.Any()
@@ -215,7 +215,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #region ToJSON(this RoamingNetworks, JPropertyKey)
 
-        public static JProperty ToJSON(this IEnumerable<RoamingNetwork> RoamingNetworks, String JPropertyKey)
+        public static JProperty ToJSON(this IEnumerable<IRoamingNetwork> RoamingNetworks, String JPropertyKey)
         {
 
             #region Initial checks

@@ -71,20 +71,38 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region New   (NewChargingSession)
+        #region NewOrUpdate(NewChargingSession, UpdateFunc = null)
 
-        public void New(ChargingSession NewChargingSession)
+        public void NewOrUpdate(ChargingSession          NewChargingSession,
+                                Action<ChargingSession>  UpdateFunc = null)
         {
 
             lock (InternalData)
             {
 
-                InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                if (!InternalData.ContainsKey(NewChargingSession.Id))
+                {
 
-                LogIt("new",
-                      NewChargingSession.Id,
-                      "chargingSession",
-                      NewChargingSession.ToJSON());
+                    InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                    UpdateFunc?.Invoke(NewChargingSession);
+
+                    LogIt("new",
+                          NewChargingSession.Id,
+                          "chargingSession",
+                          NewChargingSession.ToJSON());
+
+                }
+                else
+                {
+
+                    UpdateFunc?.Invoke(NewChargingSession);
+
+                    LogIt("update",
+                          NewChargingSession.Id,
+                          "chargingSession",
+                          NewChargingSession.ToJSON());
+
+                }
 
             }
 
@@ -92,7 +110,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Update(Id, UpdateFunc)
+        #region Update     (Id, UpdateFunc)
 
         public ChargingSessionsStore Update(ChargingSession_Id       Id,
                                             Action<ChargingSession>  UpdateFunc)
@@ -117,6 +135,34 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Remove(ChargingSessionId, Authentication)
+
+        public void Remove(ChargingSession_Id  ChargingSessionId,
+                           AAuthentication     Authentication)
+        {
+
+            lock (InternalData)
+            {
+
+                if (InternalData.TryGetValue(ChargingSessionId, out ChargingSession session))
+                {
+
+                    InternalData.Remove(session.Id);
+                    session.StopAuthentication = Authentication;
+
+                    LogIt("remove",
+                          session.Id,
+                          "chargingSession",
+                          session.ToJSON());
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
         #region Remove(ChargingSession)
 
         public void Remove(ChargingSession ChargingSession)
@@ -125,12 +171,18 @@ namespace org.GraphDefined.WWCP
             lock (InternalData)
             {
 
-                InternalData.Remove(ChargingSession.Id);
+                if (ChargingSession != null &&
+                    InternalData.ContainsKey(ChargingSession.Id))
+                {
 
-                LogIt("remove",
-                      ChargingSession.Id,
-                      "chargingSession",
-                      ChargingSession.ToJSON());
+                    InternalData.Remove(ChargingSession.Id);
+
+                    LogIt("remove",
+                          ChargingSession.Id,
+                          "chargingSession",
+                          ChargingSession.ToJSON());
+
+                }
 
             }
 

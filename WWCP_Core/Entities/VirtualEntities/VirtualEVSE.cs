@@ -490,13 +490,6 @@ namespace org.GraphDefined.WWCP.Virtual
 
         public TimeSpan                EnergyMeterInterval      { get; }
 
-        public String                  EllipticCurve            { get; }
-        public X9ECParameters          ECP                      { get; }
-        public ECDomainParameters      ECSpec                   { get; }
-        public FpCurve                 C                        { get; }
-        public ECPrivateKeyParameters  PrivateKey               { get; }
-        public PublicKeyCertificates   PublicKeyCertificates    { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -840,7 +833,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
+        public IEnumerable<ChargingReservation> ChargingReservations
             => _Reservations.Select(_ => _.Value);
 
         #region TryGetReservationById(ReservationId, out Reservation)
@@ -1018,6 +1011,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
+                                         RoamingNetwork.Id,
                                          ReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
@@ -1186,6 +1180,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
+                                          RoamingNetwork.Id,
                                           ReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
@@ -1266,6 +1261,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
+                                                   RoamingNetwork.Id,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -1358,6 +1354,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
+                                                    RoamingNetwork.Id,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,
@@ -1655,6 +1652,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              ChargingLocation,
                                              ChargingProduct,
                                              ReservationId,
@@ -1702,7 +1700,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                 EVSEId = Id,
                                 ChargingProduct = ChargingProduct,
                                 ProviderIdStart = ProviderId,
-                                IdentificationStart = RemoteAuthentication,
+                                StartAuthentication = RemoteAuthentication,
                             };
 
                             ChargingSession.AddEnergyMeterValue(new Timestamped<Single>(DateTime.UtcNow, 0));
@@ -1749,7 +1747,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                     EventTrackingId = EventTrackingId,
                                     Reservation = firstReservation,
                                     ProviderIdStart = ProviderId,
-                                    IdentificationStart = RemoteAuthentication,
+                                    StartAuthentication = RemoteAuthentication,
                                     EVSEId = Id,
                                     ChargingProduct = ChargingProduct
                                 };
@@ -1833,6 +1831,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
+                                              RoamingNetwork.Id,
                                               ChargingLocation,
                                               ChargingProduct,
                                               ReservationId,
@@ -1915,6 +1914,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
+                                            RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
                                             ProviderId,
@@ -1984,8 +1984,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                                     ProviderIdStop:            _ChargingSession.ProviderIdStop,
                                                                                   SessionTime:               _ChargingSession.SessionTime,
 
-                                                                                    IdentificationStart:       _ChargingSession.IdentificationStart,
-                                                                                    IdentificationStop:        _ChargingSession.IdentificationStop,
+                                                                                    IdentificationStart:       _ChargingSession.StartAuthentication,
+                                                                                    IdentificationStop:        _ChargingSession.StopAuthentication,
 
                                                                                   EnergyMeterId:             EnergyMeterId,
                                                                                   EnergyMeteringValues:      ChargingSession.EnergyMeteringValues
@@ -2103,6 +2103,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
                                              ProviderId,

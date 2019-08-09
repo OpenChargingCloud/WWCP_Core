@@ -114,12 +114,12 @@ namespace org.GraphDefined.WWCP
 
         #region RoamingNetwork
 
-        private RoamingNetwork _RoamingNetwork;
+        private IRoamingNetwork _RoamingNetwork;
 
         /// <summary>
         /// The roaming network serving this session.
         /// </summary>
-        public RoamingNetwork RoamingNetwork
+        public IRoamingNetwork RoamingNetwork
         {
 
             get
@@ -468,19 +468,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Identification
+        #region Authentication
 
         /// <summary>
         /// The identification used for starting this charging process.
         /// </summary>
         [Optional]
-        public AAuthentication                  IdentificationStart    { get; set; }
+        public AAuthentication                  StartAuthentication    { get; set; }
 
         /// <summary>
         /// The identification used for stopping this charging process.
         /// </summary>
         [Optional]
-        public AAuthentication                  IdentificationStop     { get; set; }
+        public AAuthentication                  StopAuthentication     { get; set; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.

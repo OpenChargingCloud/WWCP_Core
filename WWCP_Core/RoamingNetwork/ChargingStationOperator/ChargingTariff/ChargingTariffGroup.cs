@@ -77,7 +77,7 @@ namespace org.GraphDefined.WWCP
         /// The roaming network of this charging station.
         /// </summary>
         [InternalUseOnly]
-        public RoamingNetwork RoamingNetwork
+        public IRoamingNetwork RoamingNetwork
             => Operator?.RoamingNetwork;
 
         #endregion

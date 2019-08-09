@@ -90,6 +90,12 @@ namespace org.GraphDefined.WWCP
         public OperatorIdFormats  Format        { get; }
 
         /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => Suffix.IsNullOrEmpty();
+
+        /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length

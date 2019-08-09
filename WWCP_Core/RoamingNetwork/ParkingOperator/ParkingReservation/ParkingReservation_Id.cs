@@ -56,13 +56,18 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The suffix of the identification.
         /// </summary>
-        public String                      Suffix       { get; }
+        public String              Suffix       { get; }
+
+        /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => Suffix.IsNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-
             => OperatorId.Length + 2 + (UInt64) Suffix.Length;
 
         #endregion

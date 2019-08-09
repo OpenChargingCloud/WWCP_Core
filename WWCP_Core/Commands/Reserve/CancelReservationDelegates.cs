@@ -41,6 +41,7 @@ namespace org.GraphDefined.WWCP
                                                             DateTime                               RequestTimestamp,
                                                             Object                                 Sender,
                                                             EventTracking_Id                       EventTrackingId,
+                                                            RoamingNetwork_Id                      RoamingNetworkId,
                                                             ChargingReservation_Id                 ReservationId,
                                                             ChargingReservationCancellationReason  Reason,
                                                             TimeSpan?                              RequestTimeout);
@@ -92,6 +93,7 @@ namespace org.GraphDefined.WWCP
                                                              DateTime                               RequestTimestamp,
                                                              Object                                 Sender,
                                                              EventTracking_Id                       EventTrackingId,
+                                                             RoamingNetwork_Id                      RoamingNetworkId,
                                                              ChargingReservation_Id                 ReservationId,
                                                              ChargingReservation                    Reservation,
                                                              ChargingReservationCancellationReason  Reason,

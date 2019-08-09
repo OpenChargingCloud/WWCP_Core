@@ -74,6 +74,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                               newstation => {
 
                                                                   var virtualstation = new VirtualChargingPool(newstation.Id,
+                                                                                                               ChargingStationOperator.RoamingNetwork,
                                                                                                                Description,
                                                                                                                InitialAdminStatus,
                                                                                                                InitialStatus,
@@ -137,6 +138,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                       newstation => {
 
                                                           var virtualstation = new VirtualChargingStation(newstation.Id,
+                                                                                                          ChargingPool.RoamingNetwork,
                                                                                                           Description,
                                                                                                           InitialAdminStatus,
                                                                                                           InitialStatus,
@@ -201,6 +203,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                               newevse => {
 
                                                   var virtualevse = new VirtualEVSE(newevse.Id,
+                                                                                    ChargingStation.RoamingNetwork,
                                                                                     Description,
                                                                                     InitialAdminStatus,
                                                                                     InitialStatus,

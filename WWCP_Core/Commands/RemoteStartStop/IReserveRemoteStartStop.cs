@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Remote charging reservations.
         /// </summary>
-        IEnumerable<ChargingReservation> Reservations { get; }
+        IEnumerable<ChargingReservation> ChargingReservations { get; }
 
         Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation ChargingReservation);
 

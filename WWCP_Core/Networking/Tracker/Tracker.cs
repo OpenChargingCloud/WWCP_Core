@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP.Networking
     //    public static Tracker AttachTracker(this WWCP_HTTPAPI     HTTPAPI,
     //                                        Tracker_Id            Id,
     //                                        I18NString            Description  = null,
-    //                                        HTTPPath?              URIPrefix    = null)
+    //                                        HTTPPath?             URIPrefix    = null)
     //    {
 
     //        return new Tracker(Id,
@@ -110,22 +110,19 @@ namespace org.GraphDefined.WWCP.Networking
         public Tracker(Tracker_Id                                   Id,
                        I18NString                                   Description,
                        HTTPServer<RoamingNetworks, RoamingNetwork>  HTTPServer,
-                       HTTPPath?                                     URIPrefix = null)
+                       HTTPPath?                                    URIPrefix = null)
         {
 
             #region Initial checks
 
-            if (Id == null || Id.ToString().IsNullOrEmpty())
+            if (Id.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(Id),          "The given tracker client identification must not be null or empty!");
-
-            if (HTTPServer == null)
-                throw new ArgumentNullException(nameof(HTTPServer),  "The given HTTP server must not be null!");
 
             #endregion
 
             this.Id                     = Id;
             this.Description            = Description ?? I18NString.Empty;
-            this.HTTPServer             = HTTPServer;
+            this.HTTPServer             = HTTPServer  ?? throw new ArgumentNullException(nameof(HTTPServer),  "The given HTTP server must not be null!");
             this.URIPrefix              = URIPrefix   ?? DefaultURIPrefix;
             this._Logins                = new Dictionary<String, String>();
             this._LocalRoamingNetworks  = new ConcurrentDictionary<RoamingNetwork_Id, List<RoamingNetworkInfo>>();

@@ -933,7 +933,7 @@ namespace org.GraphDefined.WWCP
         /// The roaming network of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public RoamingNetwork           RoamingNetwork
+        public IRoamingNetwork           RoamingNetwork
             => ChargingStation?.ChargingPool?.Operator?.RoamingNetwork;
 
         #endregion
@@ -1011,9 +1011,10 @@ namespace org.GraphDefined.WWCP
                 this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason)                          => OnReservationCanceled.   Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
                 this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)                              => {
-                    _ChargingSession       = ChargingSession;
-                    _ChargingSession.EVSE  = this;
-                    OnNewChargingSession.Invoke(Timestamp, this, _ChargingSession);
+                    RoamingNetwork.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
+                    //_ChargingSession       = ChargingSession;
+                    //_ChargingSession.EVSE  = this;
+                    OnNewChargingSession.Invoke(Timestamp, this, ChargingSession);
                 };
 
                 this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)                           => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
@@ -1487,6 +1488,7 @@ namespace org.GraphDefined.WWCP
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
+                                         RoamingNetwork.Id,
                                          ReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
@@ -1586,6 +1588,7 @@ namespace org.GraphDefined.WWCP
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
+                                          RoamingNetwork.Id,
                                           ReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
@@ -1666,6 +1669,7 @@ namespace org.GraphDefined.WWCP
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
+                                                   RoamingNetwork.Id,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -1742,6 +1746,7 @@ namespace org.GraphDefined.WWCP
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
+                                                    RoamingNetwork.Id,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,
@@ -1942,6 +1947,7 @@ namespace org.GraphDefined.WWCP
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              ChargingLocation,
                                              ChargingProduct,
                                              ReservationId,
@@ -2102,6 +2108,7 @@ namespace org.GraphDefined.WWCP
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
+                                              RoamingNetwork.Id,
                                               ChargingLocation,
                                               ChargingProduct,
                                               ReservationId,
@@ -2183,6 +2190,7 @@ namespace org.GraphDefined.WWCP
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
+                                            RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
                                             ProviderId,
@@ -2333,6 +2341,7 @@ namespace org.GraphDefined.WWCP
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
                                              ProviderId,

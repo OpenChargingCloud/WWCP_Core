@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The attached roaming network.
         /// </summary>
-        RoamingNetwork         RoamingNetwork    { get; }
+        IRoamingNetwork        RoamingNetwork    { get; }
 
         #endregion
 

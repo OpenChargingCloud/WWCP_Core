@@ -891,7 +891,7 @@ namespace org.GraphDefined.WWCP.Importer
         private void ImporterRun(Object Status)
         {
 
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+          Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
             if (Monitor.TryEnter(ImporterRunLock))
             {

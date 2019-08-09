@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
@@ -271,8 +272,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
         /// 
-        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
-        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         /// <param name="DNSClient">The attached DNS service.</param>
         protected AWWCPCSOAdapter(CSORoamingProvider_Id       Id,
                                   I18NString                  Name,
@@ -291,14 +290,17 @@ namespace org.GraphDefined.WWCP
                                   Boolean                     DisableAuthentication            = false,
                                   Boolean                     DisableSendChargeDetailRecords   = false,
 
-                                  PgpPublicKeyRing            PublicKeyRing                    = null,
-                                  PgpSecretKeyRing            SecretKeyRing                    = null,
+                                  String                      EllipticCurve                    = "P-256",
+                                  ECPrivateKeyParameters      PrivateKey                       = null,
+                                  PublicKeyCertificates       PublicKeyCertificates            = null,
+
                                   DNSClient                   DNSClient                        = null)
 
             : base(Id,
                    RoamingNetwork,
-                   PublicKeyRing,
-                   SecretKeyRing)
+                   EllipticCurve,
+                   PrivateKey,
+                   PublicKeyCertificates)
 
         {
 

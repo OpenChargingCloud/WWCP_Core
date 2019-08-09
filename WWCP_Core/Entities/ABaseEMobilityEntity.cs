@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-using Org.BouncyCastle.Bcpg.OpenPgp;
+using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -39,15 +39,6 @@ namespace org.GraphDefined.WWCP
 
     {
 
-        #region Properties
-
-        /// <summary>
-        /// The parent roaming network.
-        /// </summary>
-        public IRoamingNetwork  RoamingNetwork   { get; }
-
-        #endregion
-
         #region Constructor(s)
 
         #region ABaseEMobilityEntity(Id,  RoamingNetwork, ...)
@@ -57,22 +48,19 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         /// <param name="RoamingNetwork">A WWCP roaming network.</param>
-        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
-        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
-        protected ABaseEMobilityEntity(TId               Id,
-                                       IRoamingNetwork   RoamingNetwork,
-                                       PgpPublicKeyRing  PublicKeyRing  = null,
-                                       PgpSecretKeyRing  SecretKeyRing  = null)
+        protected ABaseEMobilityEntity(TId                     Id,
+                                       IRoamingNetwork         RoamingNetwork,
+                                       String                  EllipticCurve          = "P-256",
+                                       ECPrivateKeyParameters  PrivateKey             = null,
+                                       PublicKeyCertificates   PublicKeyCertificates  = null)
 
             : base(Id,
-                   PublicKeyRing,
-                   SecretKeyRing)
+                   RoamingNetwork,
+                   EllipticCurve,
+                   PrivateKey,
+                   PublicKeyCertificates)
 
-        {
-
-            this.RoamingNetwork = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-        }
+        { }
 
         #endregion
 
@@ -83,22 +71,19 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
         /// <param name="RoamingNetwork">A WWCP roaming network.</param>
-        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
-        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
-        protected ABaseEMobilityEntity(IEnumerable<TId>  Ids,
-                                       IRoamingNetwork   RoamingNetwork,
-                                       PgpPublicKeyRing  PublicKeyRing  = null,
-                                       PgpSecretKeyRing  SecretKeyRing  = null)
+        protected ABaseEMobilityEntity(IEnumerable<TId>        Ids,
+                                       IRoamingNetwork         RoamingNetwork,
+                                       String                  EllipticCurve          = "P-256",
+                                       ECPrivateKeyParameters  PrivateKey             = null,
+                                       PublicKeyCertificates   PublicKeyCertificates  = null)
 
             : base(Ids,
-                   PublicKeyRing,
-                   SecretKeyRing)
+                   RoamingNetwork,
+                   EllipticCurve,
+                   PrivateKey,
+                   PublicKeyCertificates)
 
-        {
-
-            this.RoamingNetwork = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-        }
+        { }
 
         #endregion
 

@@ -79,6 +79,8 @@ namespace org.GraphDefined.WWCP.Networking
 
         #region Properties
 
+        public IRoamingNetwork RoamingNetwork { get; }
+
         /// <summary>
         /// The unique identification of this network charging station.
         /// </summary>
@@ -395,6 +397,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// A charging station.
         /// </summary>
         public ANetworkChargingStation(ChargingStation_Id               Id,
+                                       IRoamingNetwork                  RoamingNetwork,
                                        I18NString                       Description              = null,
                                        ChargingStationAdminStatusTypes  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
                                        ChargingStationStatusTypes       InitialStatus            = ChargingStationStatusTypes.Available,
@@ -409,6 +412,7 @@ namespace org.GraphDefined.WWCP.Networking
             #region Init data and properties
 
             this.Id                     = Id;
+            this.RoamingNetwork         = RoamingNetwork;
             this._EVSEs                 = new HashSet<IRemoteEVSE>();
 
             this._StatusSchedule        = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusListSize);
@@ -484,7 +488,8 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         /// <param name="ChargingStationId">A local charging station.</param>
         /// <param name="DNSClient">An optional DNS client used to resolve DNS names.</param>
-        public ANetworkChargingStation(ChargingStation_Id                   ChargingStationId,
+        public ANetworkChargingStation(ChargingStation_Id                   Id,
+                                       IRoamingNetwork                      RoamingNetwork,
                                        I18NString                           Description                  = null,
                                        ChargingStationAdminStatusTypes      InitialAdminStatus           = ChargingStationAdminStatusTypes.Operational,
                                        ChargingStationStatusTypes           InitialStatus                = ChargingStationStatusTypes.Available,
@@ -506,7 +511,8 @@ namespace org.GraphDefined.WWCP.Networking
                                        HTTPPath?                            URIPrefix                    = null,
                                        TimeSpan?                            RequestTimeout               = null)
 
-            : this(ChargingStationId,
+            : this(Id,
+                   RoamingNetwork,
                    Description,
                    InitialAdminStatus,
                    InitialStatus,
@@ -758,7 +764,7 @@ namespace org.GraphDefined.WWCP.Networking
 
         #region Data
 
-        private readonly HashSet<IRemoteEVSE> _EVSEs;
+        protected readonly HashSet<IRemoteEVSE> _EVSEs;
 
         /// <summary>
         /// All registered EVSEs.
@@ -1054,8 +1060,8 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
-            => _EVSEs.SelectMany(evse => evse.Reservations);
+        public IEnumerable<ChargingReservation> ChargingReservations
+            => _EVSEs.SelectMany(evse => evse.ChargingReservations);
 
         #region TryGetReservationById(ReservationId, out Reservation)
 

@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP.Networking
 
         #region Data
 
-        private readonly String _Id;
+        private readonly String InternalId;
 
         //ToDo: Replace with better randomness!
         private static readonly Random _Random = new Random(DateTime.Now.Millisecond);
@@ -54,10 +54,16 @@ namespace org.GraphDefined.WWCP.Networking
         #region Properties
 
         /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
+
+        /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) _Id.Length;
+            => (UInt64) InternalId.Length;
 
         #endregion
 
@@ -76,7 +82,7 @@ namespace org.GraphDefined.WWCP.Networking
 
             #endregion
 
-            this._Id = Text;
+            this.InternalId = Text;
 
         }
 
@@ -159,7 +165,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// Clone this Electric Vehicle Charging Station identification.
         /// </summary>
         public Tracker_Id Clone
-            => new Tracker_Id(_Id);
+            => new Tracker_Id(InternalId);
 
         #endregion
 
@@ -315,7 +321,7 @@ namespace org.GraphDefined.WWCP.Networking
             if ((Object) WWCPTrackerClientId == null)
                 throw new ArgumentNullException("The given WWCPTrackerClientId must not be null!");
 
-            return _Id.CompareTo(WWCPTrackerClientId._Id);
+            return InternalId.CompareTo(WWCPTrackerClientId.InternalId);
 
         }
 
@@ -362,7 +368,7 @@ namespace org.GraphDefined.WWCP.Networking
             if ((Object) WWCPTrackerClientId == null)
                 return false;
 
-            return _Id.Equals(WWCPTrackerClientId._Id);
+            return InternalId.Equals(WWCPTrackerClientId.InternalId);
 
         }
 
@@ -377,7 +383,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => _Id.GetHashCode();
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -387,7 +393,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => _Id;
+            => InternalId;
 
         #endregion
 

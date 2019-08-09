@@ -86,8 +86,8 @@ namespace org.GraphDefined.WWCP
     /// </summary>
     public class Brand : IId<Brand_Id>,
                          IEquatable<Brand>,
-                         IComparable<Brand>
-
+                         IComparable<Brand>,
+                         IComparable
     {
 
         #region Properties
@@ -113,6 +113,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         [Optional]
         public String      Homepage    { get; }
+
+        public ulong Length => Id.Length;
+
+        public bool IsNullOrEmpty => Id.IsNullOrEmpty;
 
         #endregion
 

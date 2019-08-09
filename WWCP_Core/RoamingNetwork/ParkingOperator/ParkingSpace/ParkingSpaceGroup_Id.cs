@@ -40,11 +40,39 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String _Id;
+        protected readonly String InternalId;
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Returns the length of the identification.
+        /// </summary>
+        public UInt64 Length
+            => (UInt64) InternalId.Length;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Generate a new Electric Vehicle parking space (EVPS Id)
+        /// based on the given string.
+        /// </summary>
+        private ParkingSpaceGroup_Id(String String)
+        {
+            InternalId = String.Trim();
+        }
+
+        #endregion
+
 
         #region New
 
@@ -60,37 +88,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-        #region Length
-
-        /// <summary>
-        /// Returns the length of the identification.
-        /// </summary>
-        public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Generate a new Electric Vehicle parking space (EVPS Id)
-        /// based on the given string.
-        /// </summary>
-        private ParkingSpaceGroup_Id(String String)
-        {
-            _Id = String.Trim();
-        }
-
-        #endregion
-
 
         #region Parse(Text)
 
@@ -137,7 +134,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return new ParkingSpaceGroup_Id(_Id);
+                return new ParkingSpaceGroup_Id(InternalId);
             }
         }
 
@@ -300,7 +297,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVPS_Id._Id);
+                _Result = InternalId.CompareTo(EVPS_Id.InternalId);
 
             return _Result;
 
@@ -349,7 +346,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVPS_Id == null)
                 return false;
 
-            return _Id.Equals(EVPS_Id._Id);
+            return InternalId.Equals(EVPS_Id.InternalId);
 
         }
 
@@ -365,7 +362,7 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _Id.GetHashCode();
+            return InternalId.GetHashCode();
         }
 
         #endregion
@@ -377,7 +374,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return _Id.ToString();
+            return InternalId.ToString();
         }
 
         #endregion

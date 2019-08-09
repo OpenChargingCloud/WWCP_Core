@@ -202,12 +202,6 @@ namespace org.GraphDefined.WWCP.Virtual
 
         #endregion
 
-        #region Events
-
-
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -372,6 +366,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             var Now              = DateTime.UtcNow;
             var _VirtualStation  = new VirtualChargingStation(ChargingStationId,
+                                                              RoamingNetwork,
                                                               Description,
                                                               InitialAdminStatus,
                                                               InitialStatus,
@@ -663,7 +658,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
+        public IEnumerable<ChargingReservation> ChargingReservations
             => _Reservations.Select(_ => _.Value);
 
         #region TryGetReservationById(ReservationId, out Reservation)
@@ -841,6 +836,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
+                                         RoamingNetwork.Id,
                                          ReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
@@ -1018,6 +1014,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
+                                          RoamingNetwork.Id,
                                           ReservationId,
                                           ChargingLocation,
                                           StartTime,
@@ -1098,6 +1095,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
+                                                   RoamingNetwork.Id,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -1119,7 +1117,7 @@ namespace org.GraphDefined.WWCP.Virtual
                     AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
                 {
 
-                    var _Reservation = Reservations.FirstOrDefault(reservation => reservation.Id == ReservationId);
+                    var _Reservation = ChargingReservations.FirstOrDefault(reservation => reservation.Id == ReservationId);
 
                     if (_Reservation != null &&
                         _Reservation.ChargingStationId.HasValue)
@@ -1191,6 +1189,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
+                                                    RoamingNetwork.Id,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,
@@ -1405,6 +1404,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              ChargingLocation,
                                              ChargingProduct,
                                              ReservationId,
@@ -1487,6 +1487,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
+                                              RoamingNetwork.Id,
                                               ChargingLocation,
                                               ChargingProduct,
                                               ReservationId,
@@ -1569,6 +1570,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
+                                            RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
                                             ProviderId,
@@ -1687,6 +1689,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
                                              ProviderId,

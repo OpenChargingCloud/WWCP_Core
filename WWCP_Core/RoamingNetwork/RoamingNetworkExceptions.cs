@@ -56,8 +56,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
-        public RoamingNetworkException(RoamingNetwork  RoamingNetwork,
-                                       String          Message)
+        public RoamingNetworkException(IRoamingNetwork  RoamingNetwork,
+                                       String           Message)
 
             : base(Message)
 
@@ -69,9 +69,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public RoamingNetworkException(RoamingNetwork  RoamingNetwork,
-                                       String          Message,
-                                       Exception       InnerException)
+        public RoamingNetworkException(IRoamingNetwork  RoamingNetwork,
+                                       String           Message,
+                                       Exception        InnerException)
 
             : base(Message, InnerException)
 

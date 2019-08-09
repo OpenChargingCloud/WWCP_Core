@@ -70,6 +70,12 @@ namespace org.GraphDefined.WWCP
             => ToFormat(Format);
 
         /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => OperatorId.IsNullOrEmpty();
+
+        /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length

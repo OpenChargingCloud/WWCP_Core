@@ -68,8 +68,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
-        public ChargingStationOperatorException(RoamingNetwork  RoamingNetwork,
-                                                String          Message)
+        public ChargingStationOperatorException(IRoamingNetwork  RoamingNetwork,
+                                                String           Message)
 
             : base(RoamingNetwork,
                    Message)
@@ -82,9 +82,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public ChargingStationOperatorException(RoamingNetwork  RoamingNetwork,
-                                                String          Message,
-                                                Exception       InnerException)
+        public ChargingStationOperatorException(IRoamingNetwork  RoamingNetwork,
+                                                String           Message,
+                                                Exception        InnerException)
 
             : base(RoamingNetwork,
                    Message,

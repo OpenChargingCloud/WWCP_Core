@@ -36,9 +36,9 @@ namespace org.GraphDefined.WWCP
         #region Events
 
         /// <summary>
-        /// An event fired whenever a new charging reservation was registered.
+        /// An event fired whenever a new charge detail record was registered.
         /// </summary>
-        public event OnNewReservationDelegate OnNewChargingReservation;
+        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
 
         #endregion
 
@@ -64,6 +64,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region New   (NewChargeDetailRecords)
+
+        public void New(IEnumerable<ChargeDetailRecord> NewChargeDetailRecords)
+        {
+            foreach (var chargeDetailRecord in NewChargeDetailRecords)
+                New(chargeDetailRecord);
+        }
+
+        #endregion
 
         #region New   (NewChargeDetailRecord)
 

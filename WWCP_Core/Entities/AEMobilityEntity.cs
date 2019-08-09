@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Id.Equals(default(TId)))
+            if (Id.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(Id),  "The given Id must not be null or empty!");
 
             #endregion
@@ -141,8 +141,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Ids == null)
-                throw new ArgumentNullException(nameof(Ids),  "The given Ids must not be null!");
+            if (!Ids.SafeAny())
+                throw new ArgumentNullException(nameof(Ids),  "The given enumeration of identifications must not be null!");
 
             #endregion
 

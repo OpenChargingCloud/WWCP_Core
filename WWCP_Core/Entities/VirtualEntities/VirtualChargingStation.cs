@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// </summary>
         public  static readonly TimeSpan  DefaultSelfCheckTimeSpan  = TimeSpan.FromSeconds(15);
 
-        private        readonly Object    ReservationExpiredLock;
+        private        readonly Object    ReservationExpiredLock = new Object();
         private        readonly Timer     ReservationExpiredTimer;
 
 
@@ -244,13 +244,6 @@ namespace org.GraphDefined.WWCP.Virtual
         /// </summary>
         public TimeSpan SelfCheckTimeSpan { get; }
 
-        public String                  EllipticCurve            { get; }
-        public X9ECParameters          ECP                      { get; }
-        public ECDomainParameters      ECSpec                   { get; }
-        public FpCurve                 C                        { get; }
-        public ECPrivateKeyParameters  PrivateKey               { get; }
-        public PublicKeyCertificates   PublicKeyCertificates    { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -303,6 +296,7 @@ namespace org.GraphDefined.WWCP.Virtual
             ReservationExpiredTimer    = new Timer(CheckIfReservationIsExpired, null, this.SelfCheckTimeSpan, this.SelfCheckTimeSpan);
 
 
+            this._Reservations         = new Dictionary<ChargingReservation_Id, ChargingReservation>();
             this._ChargingSessions     = new Dictionary<ChargingSession_Id, ChargingSession>();
 
             #endregion
@@ -684,6 +678,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             var Now             = DateTime.UtcNow;
             var newVirtualEVSE  = new VirtualEVSE(EVSEId,
+                                                  RoamingNetwork,
                                                   Description,
                                                   InitialAdminStatus,
                                                   InitialStatus,
@@ -893,7 +888,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
+        public IEnumerable<ChargingReservation> ChargingReservations
             => _Reservations.Select(_ => _.Value);
 
         #region TryGetReservationById(ReservationId, out Reservation)
@@ -1071,6 +1066,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
+                                         RoamingNetwork.Id,
                                          ReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
@@ -1178,7 +1174,7 @@ namespace org.GraphDefined.WWCP.Virtual
                             if (newReservations.Length > 0)
                             {
 
-                                newReservation = new ChargingReservation(ReservationId:           ReservationId ?? ChargingReservation_Id.Random(OperatorId),
+                                newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                          Timestamp:               Timestamp.Value,
                                                                          StartTime:               ReservationStartTime ?? DateTime.UtcNow,
                                                                          Duration:                Duration  ?? MaxReservationDuration,
@@ -1186,8 +1182,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                          ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                          ReservationLevel:        ReservationLevel,
                                                                          ProviderId:              ProviderId,
-                                                                         Identification:          RemoteAuthentication,
-                                                                         RoamingNetwork:          null,
+                                                                         StartAuthentication:     RemoteAuthentication,
+                                                                         RoamingNetworkId:        null,
                                                                          ChargingPoolId:          null,
                                                                          ChargingStationId:       Id,
                                                                          EVSEId:                  null,
@@ -1263,6 +1259,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
+                                          RoamingNetwork.Id,
                                           ReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
@@ -1343,6 +1340,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
+                                                   RoamingNetwork.Id,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -1460,6 +1458,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
+                                                    RoamingNetwork.Id,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,
@@ -1733,6 +1732,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              ChargingLocation,
                                              ChargingProduct,
                                              ReservationId,
@@ -1825,6 +1825,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
+                                              RoamingNetwork.Id,
                                               ChargingLocation,
                                               ChargingProduct,
                                               ReservationId,
@@ -1907,6 +1908,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
+                                            RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
                                             ProviderId,
@@ -2035,6 +2037,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
                                              ProviderId,

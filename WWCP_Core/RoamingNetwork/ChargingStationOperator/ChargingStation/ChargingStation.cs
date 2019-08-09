@@ -1413,7 +1413,7 @@ namespace org.GraphDefined.WWCP
         /// The roaming network of this charging station.
         /// </summary>
         [InternalUseOnly]
-        public RoamingNetwork RoamingNetwork
+        public IRoamingNetwork RoamingNetwork
             => Operator?.RoamingNetwork;
 
         #endregion
@@ -2362,6 +2362,7 @@ namespace org.GraphDefined.WWCP
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
+                                         RoamingNetwork.Id,
                                          ReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
@@ -2465,6 +2466,7 @@ namespace org.GraphDefined.WWCP
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
+                                          RoamingNetwork.Id,
                                           ReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
@@ -2545,6 +2547,7 @@ namespace org.GraphDefined.WWCP
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
+                                                   RoamingNetwork.Id,
                                                    ReservationId,
                                                    Reason,
                                                    RequestTimeout);
@@ -2621,6 +2624,7 @@ namespace org.GraphDefined.WWCP
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
+                                                    RoamingNetwork.Id,
                                                     ReservationId,
                                                     canceledReservation,
                                                     Reason,
@@ -2830,6 +2834,7 @@ namespace org.GraphDefined.WWCP
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              ChargingLocation,
                                              ChargingProduct,
                                              ReservationId,
@@ -2917,6 +2922,7 @@ namespace org.GraphDefined.WWCP
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
+                                              RoamingNetwork.Id,
                                               ChargingLocation,
                                               ChargingProduct,
                                               ReservationId,
@@ -2996,6 +3002,7 @@ namespace org.GraphDefined.WWCP
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
+                                            RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
                                             ProviderId,
@@ -3070,6 +3077,7 @@ namespace org.GraphDefined.WWCP
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
+                                             RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
                                              ProviderId,
