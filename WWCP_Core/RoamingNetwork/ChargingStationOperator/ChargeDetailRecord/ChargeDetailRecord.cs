@@ -240,13 +240,13 @@ namespace org.GraphDefined.WWCP
         #region Identification
 
         /// <summary>
-        /// The identification used for starting this charging process.
+        /// The authentication used for starting this charging process.
         /// </summary>
         [Optional]
         public AAuthentication                  IdentificationStart    { get; }
 
         /// <summary>
-        /// The identification used for stopping this charging process.
+        /// The authentication used for stopping this charging process.
         /// </summary>
         [Optional]
         public AAuthentication                  IdentificationStop     { get; }
@@ -374,8 +374,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProduct">The consumed charging product.</param>
         /// <param name="ChargingPrice">The charging price.</param>
         /// 
-        /// <param name="IdentificationStart">The identification used for starting this charging process.</param>
-        /// <param name="IdentificationStop">The identification used for stopping this charging process.</param>
+        /// <param name="AuthenticationStart">The authentication used for starting this charging process.</param>
+        /// <param name="AuthenticationStop">The authentication used for stopping this charging process.</param>
         /// <param name="ProviderIdStart">The identification of the e-mobility provider used for starting this charging process.</param>
         /// <param name="ProviderIdStop">The identification of the e-mobility provider used for stopping this charging process.</param>
         /// 
@@ -406,8 +406,8 @@ namespace org.GraphDefined.WWCP
                                   ChargingProduct                      ChargingProduct             = null,
                                   Decimal?                             ChargingPrice               = null,
 
-                                  AAuthentication                      IdentificationStart         = null,
-                                  AAuthentication                      IdentificationStop          = null,
+                                  AAuthentication                      AuthenticationStart         = null,
+                                  AAuthentication                      AuthenticationStop          = null,
                                   eMobilityProvider_Id?                ProviderIdStart             = null,
                                   eMobilityProvider_Id?                ProviderIdStop              = null,
 
@@ -445,8 +445,8 @@ namespace org.GraphDefined.WWCP
             this.ChargingProduct             = ChargingProduct;
             this.ChargingPrice               = ChargingPrice;
 
-            this.IdentificationStart         = IdentificationStart;
-            this.IdentificationStop          = IdentificationStop;
+            this.IdentificationStart         = AuthenticationStart;
+            this.IdentificationStop          = AuthenticationStop;
             this.ProviderIdStart             = ProviderIdStart;
             this.ProviderIdStop              = ProviderIdStop;
 

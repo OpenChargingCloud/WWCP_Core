@@ -4104,7 +4104,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                                                                  ? new ChargingProduct(ChargingProductId.Value)
                                                                                                                                  : null,
                                                                                                       SessionTime:           new StartEndDateTime(SessionStart, SessionEnd),
-                                                                                                      IdentificationStart:   AuthToken != null
+                                                                                                      AuthenticationStart:   AuthToken != null
                                                                                                                                  ? (AAuthentication) LocalAuthentication. FromAuthToken(AuthToken)
                                                                                                                                  : (AAuthentication) RemoteAuthentication.FromRemoteIdentification(eMAId.Value),
                                                                                                       //ChargingTime:        new StartEndDateTime(ChargingStart.Value, ChargingEnd.Value),

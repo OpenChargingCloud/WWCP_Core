@@ -471,13 +471,13 @@ namespace org.GraphDefined.WWCP
         #region Authentication
 
         /// <summary>
-        /// The identification used for starting this charging process.
+        /// The authentication used for starting this charging process.
         /// </summary>
         [Optional]
         public AAuthentication                  StartAuthentication    { get; set; }
 
         /// <summary>
-        /// The identification used for stopping this charging process.
+        /// The authentication used for stopping this charging process.
         /// </summary>
         [Optional]
         public AAuthentication                  StopAuthentication     { get; set; }

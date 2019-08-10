@@ -1984,8 +1984,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                                     ProviderIdStop:            _ChargingSession.ProviderIdStop,
                                                                                   SessionTime:               _ChargingSession.SessionTime,
 
-                                                                                    IdentificationStart:       _ChargingSession.StartAuthentication,
-                                                                                    IdentificationStop:        _ChargingSession.StopAuthentication,
+                                                                                    AuthenticationStart:       _ChargingSession.StartAuthentication,
+                                                                                    AuthenticationStop:        _ChargingSession.StopAuthentication,
 
                                                                                   EnergyMeterId:             EnergyMeterId,
                                                                                   EnergyMeteringValues:      ChargingSession.EnergyMeteringValues
