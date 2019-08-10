@@ -24,6 +24,7 @@ using System.Runtime.CompilerServices;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -336,6 +337,54 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region AddJSON(Key)
+
+        public JObject AddJSON(String Key)
+        {
+            lock (_UserDefined)
+            {
+
+                if (ContainsKey(Key))
+                    _UserDefined.Remove(Key);
+
+                var JSON = new JObject();
+                _UserDefined.Set(Key, JSON);
+                return JSON;
+
+            }
+        }
+
+        #endregion
+
+        #region SetJSON(GroupKey, Key, Value)
+
+        public JObject SetJSON(String GroupKey, String Key, Object Value)
+        {
+            lock (_UserDefined)
+            {
+
+                if (_UserDefined.TryGet(GroupKey, out Object JValue))
+                {
+
+                    if (JValue is JObject JSON)
+                    {
+                        JSON.Add(new JProperty(Key, Value));
+                        return JSON;
+                    }
+
+                    return null;
+
+                }
+
+                var JSON2 = new JObject();
+                _UserDefined.Set(GroupKey, JSON2);
+                JSON2.Add(new JProperty(Key, Value));
+                return JSON2;
+
+            }
+        }
+
+        #endregion
 
     }
 

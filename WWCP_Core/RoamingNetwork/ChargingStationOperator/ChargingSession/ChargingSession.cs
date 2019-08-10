@@ -114,6 +114,12 @@ namespace org.GraphDefined.WWCP
 
         #region RoamingNetwork
 
+        /// <summary>
+        /// The unqiue identification of the roaming network serving this session.
+        /// </summary>
+        public RoamingNetwork_Id? RoamingNetworkId { get; set; }
+
+
         private IRoamingNetwork _RoamingNetwork;
 
         /// <summary>
@@ -141,16 +147,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RoamingNetworkId
+        #region ChargingStationOperator
 
         /// <summary>
-        /// The unqiue identification of the roaming network serving this session.
+        /// The unqiue identification of the charging station operator serving this session.
         /// </summary>
-        public RoamingNetwork_Id RoamingNetworkId { get; set; }
+        public ChargingStationOperator_Id? ChargingStationOperatorId { get; set; }
 
-        #endregion
-
-        #region ChargingStationOperator
 
         private ChargingStationOperator _ChargingStationOperator;
 
@@ -173,11 +176,9 @@ namespace org.GraphDefined.WWCP
 
                 if (value != null)
                 {
-                    ChargingStationOperatorId          = value.Id;
-                    _RoamingNetwork     = value.RoamingNetwork;
-                    RoamingNetworkId    = value.RoamingNetwork.Id;
+                    ChargingStationOperatorId  = value.Id;
+                    RoamingNetwork             = value.RoamingNetwork;
                 }
-
 
             }
 
@@ -185,25 +186,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteChargingStationOperator
-
-        /// <summary>
-        /// The remote charging station operator serving this session.
-        /// </summary>
-        public IRemoteChargingStationOperator RemoteChargingStationOperator { get; internal set; }
-
-        #endregion
-
-        #region ChargingStationOperatorId
-
-        /// <summary>
-        /// The unqiue identification of the charging station operator serving this session.
-        /// </summary>
-        public ChargingStationOperator_Id?  ChargingStationOperatorId   { get; set; }
-
-        #endregion
-
         #region ChargingPool
+
+        /// <summary>
+        /// The unqiue identification of the charging pool serving this session.
+        /// </summary>
+        public ChargingPool_Id? ChargingPoolId { get; set; }
+
 
         private ChargingPool _ChargingPool;
 
@@ -225,11 +214,8 @@ namespace org.GraphDefined.WWCP
 
                 if (value != null)
                 {
-                    _ChargingPoolId     = value.Id;
-                    _ChargingStationOperator           = value.Operator;
-                    ChargingStationOperatorId          = value.Operator.Id;
-                    _RoamingNetwork     = value.Operator.RoamingNetwork;
-                    RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
+                    ChargingPoolId           = value.Id;
+                    ChargingStationOperator  = value.Operator;
                 }
 
             }
@@ -238,41 +224,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingPoolId
-
-        private ChargingPool_Id? _ChargingPoolId;
+        #region ChargingStation
 
         /// <summary>
-        /// The unqiue identification of the charging pool serving this session.
+        /// The unqiue identification of the charging station serving this session.
         /// </summary>
-        public ChargingPool_Id? ChargingPoolId
-        {
+        public ChargingStation_Id? ChargingStationId { get; set; }
 
-            get
-            {
-
-                if (_EVSE != null)
-                    return _EVSE.ChargingStation.ChargingPool.Id;
-
-                return _ChargingPoolId;
-
-            }
-
-            set
-            {
-
-                _ChargingPoolId = value;
-
-                if (_EVSE != null && _EVSE.ChargingStation.ChargingPool.Id != value)
-                    _EVSE = null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region ChargingStation
 
         private ChargingStation _ChargingStation;
 
@@ -294,13 +252,8 @@ namespace org.GraphDefined.WWCP
 
                 if (value != null)
                 {
-                    _ChargingStationId  = value.Id;
-                    _ChargingPool       = value.ChargingPool;
-                    _ChargingPoolId     = value.ChargingPool.Id;
-                    _ChargingStationOperator           = value.Operator;
-                    ChargingStationOperatorId          = value.Operator.Id;
-                    _RoamingNetwork     = value.Operator.RoamingNetwork;
-                    RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
+                    ChargingStationId  = value.Id;
+                    ChargingPool       = value.ChargingPool;
                 }
 
             }
@@ -309,36 +262,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationId
-
-        private ChargingStation_Id? _ChargingStationId;
+        #region EVSE
 
         /// <summary>
-        /// The unqiue identification of the charging station serving this session.
+        /// The unqiue identification of the EVSE serving this session.
         /// </summary>
-        public ChargingStation_Id? ChargingStationId
-        {
+        public EVSE_Id? EVSEId { get; set; }
 
-            get
-            {
-                return _ChargingStationId;
-            }
-
-            set
-            {
-
-                _ChargingStationId = value;
-
-                if (_ChargingStation != null && _ChargingStation.Id != value)
-                    _ChargingStation = null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region EVSE
 
         private EVSE _EVSE;
 
@@ -361,45 +291,9 @@ namespace org.GraphDefined.WWCP
 
                 if (value != null)
                 {
-                    _EVSEId             = value.Id;
-                    _ChargingStation    = value.ChargingStation;
-                    _ChargingStationId  = value.ChargingStation.Id;
-                    _ChargingPool       = value.ChargingStation.ChargingPool;
-                    _ChargingPoolId     = value.ChargingStation.ChargingPool.Id;
-                    _ChargingStationOperator           = value.Operator;
-                    ChargingStationOperatorId          = value.Operator.Id;
-                    _RoamingNetwork     = value.Operator.RoamingNetwork;
-                    RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
+                    EVSEId           = value.Id;
+                    ChargingStation  = value.ChargingStation;
                 }
-
-            }
-
-        }
-
-        #endregion
-
-        #region EVSEId
-
-        private EVSE_Id? _EVSEId;
-
-        /// <summary>
-        /// The unqiue identification of the EVSE serving this session.
-        /// </summary>
-        public EVSE_Id? EVSEId
-        {
-
-            get
-            {
-                return _EVSEId;
-            }
-
-            set
-            {
-
-                _EVSEId = value;
-
-                if (_EVSE != null && _EVSE.Id != value)
-                    _EVSE = null;
 
             }
 
@@ -468,19 +362,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Authentication
-
-        /// <summary>
-        /// The authentication used for starting this charging process.
-        /// </summary>
-        [Optional]
-        public AAuthentication                  StartAuthentication    { get; set; }
-
-        /// <summary>
-        /// The authentication used for stopping this charging process.
-        /// </summary>
-        [Optional]
-        public AAuthentication                  StopAuthentication     { get; set; }
+        #region Provider
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
@@ -493,6 +375,22 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         [Optional]
         public eMobilityProvider_Id?            ProviderIdStop         { get; set; }
+
+        #endregion
+
+        #region Authentication
+
+        /// <summary>
+        /// The authentication used for starting this charging process.
+        /// </summary>
+        [Optional]
+        public AAuthentication                  AuthenticationStart    { get; set; }
+
+        /// <summary>
+        /// The authentication used for stopping this charging process.
+        /// </summary>
+        [Optional]
+        public AAuthentication                  AuthenticationStop     { get; set; }
 
         #endregion
 
@@ -607,26 +505,81 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public ISendAuthorizeStartStop    AuthService               { get; set; }
+        #region EMPRoamingProvider
 
-        public IId                        AuthorizatorId            { get; set; }
-
-
-        public IEMPRoamingProvider        EMPRoamingProvider        { get; set; }
+        public EMPRoamingProvider_Id? EMPRoamingProviderId { get; set; }
 
 
-        public eMobilityProvider_Id       eMobilityProviderId       { get; set; }
+        private IEMPRoamingProvider _EMPRoamingProvider;
+
+        public IEMPRoamingProvider EMPRoamingProvider
+        {
+
+            get
+            {
+                return _EMPRoamingProvider;
+            }
+
+            set
+            {
+
+                _EMPRoamingProvider = value;
+
+                if (value != null)
+                    EMPRoamingProviderId = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSORoamingProvider
+
+        public CSORoamingProvider_Id?     CSORoamingProviderId          { get; set; }
 
 
-        public ICSORoamingProvider        CSORoamingProvider        { get; set; }
+        private ICSORoamingProvider _CSORoamingProvider;
+
+        public ICSORoamingProvider        CSORoamingProvider
+        {
+
+            get
+            {
+                return _CSORoamingProvider;
+            }
+
+            set
+            {
+
+                _CSORoamingProvider = value;
+
+                if (value != null)
+                    CSORoamingProviderId = value.Id;
+
+            }
+
+        }
+
+        #endregion
 
 
-        public ISendChargeDetailRecords   ISendChargeDetailRecords   { get; set; }
+
+        public ISendAuthorizeStartStop    AuthService                   { get; set; }
+
+        public IId                        AuthorizatorId                { get; set; }
+
+        public eMobilityProvider_Id       eMobilityProviderId           { get; set; }
 
 
-        public DateTime                   CDRSent                   { get; set; }
 
-        public Boolean                    RemoveMe                  { get; set; }
+
+        //public ISendChargeDetailRecords   ISendChargeDetailRecords      { get; set; }
+
+
+        public DateTime                   CDRSent                       { get; set; }
+
+        public Boolean                    RemoveMe                      { get; set; }
 
 
         private readonly HashSet<String> _Signatures;
@@ -689,29 +642,16 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public ChargingSession SetChargingStationOperator(ChargingStationOperator ChargingStationOperator)
-        {
-            this.ChargingStationOperator = ChargingStationOperator;
-            return this;
-        }
-
-        public ChargingSession SetEMPRoamingProvider(IEMPRoamingProvider EMPRoamingProvider)
-        {
-            this.EMPRoamingProvider = EMPRoamingProvider;
-            return this;
-        }
-
-        public ChargingSession SetISendChargeDetailRecords(ISendChargeDetailRecords ISendChargeDetailRecords)
-        {
-            this.ISendChargeDetailRecords = ISendChargeDetailRecords;
-            return this;
-        }
-
-
         public void AddEnergyMeterValue(Timestamped<Single> Value)
         {
             _EnergyMeterValues.Add(Value);
         }
+
+
+        //public ChargingSession AddUserData(String Key, Object Value)
+        //{
+        //    this._UserDefined
+        //}
 
 
 
@@ -735,69 +675,77 @@ namespace org.GraphDefined.WWCP
                    new JProperty("duration",                Duration.TotalSeconds),
 
 
+                   RoamingNetworkId.HasValue
+                       ? new JProperty("roamingNetworkId",           RoamingNetworkId.ToString())
+                       : null,
+
                    ChargingStationOperatorId.HasValue
-                       ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
+                       ? new JProperty("chargingStationOperatorId",  ChargingStationOperatorId.ToString())
                        : null,
+
                    ChargingPoolId.HasValue
-                       ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
+                       ? new JProperty("chargingPoolId",             ChargingPoolId.           ToString())
                        : null,
+
                    ChargingStationId.HasValue
-                       ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
+                       ? new JProperty("chargingStationId",          ChargingStationId.        ToString())
                        : null,
+
                    EVSEId.HasValue
-                       ? new JProperty("evseId",                      EVSEId.                   ToString())
+                       ? new JProperty("EVSEId",                     EVSEId.                   ToString())
                        : null,
+
+                   ChargingProduct != null
+                       ? new JProperty("chargingProduct",            ChargingProduct.          ToJSON())
+                       : null,
+
+
+                   ProviderIdStart != null
+                       ? new JProperty("providerIdStart",            ProviderIdStart.ToString())
+                       : null,
+
+                   ProviderIdStop != null
+                       ? new JProperty("providerIdStop",             ProviderIdStop.ToString())
+                       : null,
+
+                   AuthenticationStart.IsDefined()
+                       ? new JProperty("authenticationStart",        AuthenticationStart.ToJSON())
+                       : null,
+
+                   AuthenticationStop.IsDefined()
+                       ? new JProperty("authenticationStop",         AuthenticationStop.ToJSON())
+                       : null,
+
 
 
 
                    Reservation != null
 
-                       ? new JProperty("Reservation", new JObject(
-                                                          new JProperty("ReservationId",  Reservation.Id.ToString()),
-                                                          new JProperty("Start",          Reservation.StartTime.ToIso8601()),
-                                                          new JProperty("Duration",       Reservation.Duration.TotalSeconds)
+                       ? new JProperty("reservation", new JObject(
+                                                          new JProperty("reservationId",  Reservation.Id.ToString()),
+                                                          new JProperty("start",          Reservation.StartTime.ToIso8601()),
+                                                          new JProperty("duration",       Reservation.Duration.TotalSeconds)
                                                           )
                                                       )
 
                        : ReservationId != null
-                             ? new JProperty("ReservationId",    ReservationId.ToString())
+                             ? new JProperty("reservationId",            ReservationId.ToString())
                              : null,
 
-                   ChargingStationOperatorId.HasValue
-                       ? new JProperty("EVSEOperatorId",         ChargingStationOperatorId.ToString())
-                       : null,
 
-                   ChargingPoolId.HasValue
-                       ? new JProperty("ChargingPoolId",         ChargingPoolId.ToString())
-                       : null,
 
-                   ChargingStationId.HasValue
-                       ? new JProperty("ChargingStationId",      ChargingStationId.ToString())
-                       : null,
 
-                   EVSEId.HasValue
-                       ? new JProperty("EVSEId",                 EVSEId.ToString())
-                       : null,
-
-                   ChargingProduct != null
-                       ? new JProperty("ChargingProduct",        ChargingProduct.ToJSON())
-                       : null,
-
-                   ProviderIdStart != null
-                       ? new JProperty("ProviderId",             ProviderIdStart.ToString())
-                       : null,
 
                    EnergyMeterId.HasValue
-                       ? new JProperty("EnergyMeterId",          EnergyMeterId.ToString())
+                       ? new JProperty("energyMeterId",              EnergyMeterId.ToString())
                        : null,
 
                    EnergyMeteringValues.Any()
-                       ? new JProperty("EnergyMeterValues",      new JObject(
-                                                                     
+                       ? new JProperty("energyMeterValues",          new JObject(
                                                                          EnergyMeteringValues.
                                                                          Select(MeterValue => new JProperty(MeterValue.Timestamp.ToIso8601(),
                                                                                                             MeterValue.Value))
-                                                                 ))
+                                                                     ))
                        : null
 
             );

@@ -2928,8 +2928,10 @@ namespace org.GraphDefined.WWCP
 
                     if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.           Value, out ChargingStation Station)) ||
                         (ChargingLocation.ChargingStationId.HasValue && TryGetChargingStationById    (ChargingLocation.ChargingStationId.Value, out                 Station)))
+                    {
 
-                        result = await Station.RemoteStart(ChargingProduct,
+                        result = await Station.RemoteStart(ChargingLocation,
+                                                           ChargingProduct,
                                                            ReservationId,
                                                            SessionId,
                                                            ProviderId,
@@ -2940,23 +2942,25 @@ namespace org.GraphDefined.WWCP
                                                            EventTrackingId,
                                                            RequestTimeout);
 
-                    else
-                        result = RemoteStartResult.UnknownLocation;
 
-                    #region In case of success...
+                        #region In case of success...
 
-                    if (result != null &&
-                        result.Result == RemoteStartResultType.Success)
-                    {
+                        if (result != null &&
+                            result.Result == RemoteStartResultType.Success)
+                        {
 
-                        // The session can be delivered within the response
-                        // or via an explicit message afterwards!
-                        if (result.Session != null)
-                            result.Session.ChargingPool = this;
+                            // The session can be delivered within the response
+                            // or via an explicit message afterwards!
+                            if (result.Session != null)
+                                result.Session.ChargingPool = this;
+
+                        }
+
+                        #endregion
 
                     }
-
-                    #endregion
+                    else
+                        result = RemoteStartResult.UnknownLocation;
 
                 }
                 else

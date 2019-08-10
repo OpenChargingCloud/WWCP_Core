@@ -4032,7 +4032,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartResult>
+        public Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation          ChargingLocation,
                         ChargingProduct           ChargingProduct            = null,
@@ -4040,7 +4040,49 @@ namespace org.GraphDefined.WWCP
                         ChargingSession_Id?       SessionId                  = null,
                         eMobilityProvider_Id?     ProviderId                 = null,
                         RemoteAuthentication      RemoteAuthentication       = null,
-                 //       ISendChargeDetailRecords  ISendChargeDetailRecords   = null,
+
+                        DateTime?                 Timestamp                  = null,
+                        CancellationToken?        CancellationToken          = null,
+                        EventTracking_Id          EventTrackingId            = null,
+                        TimeSpan?                 RequestTimeout             = null)
+
+            => RemoteStart(null,
+                           ChargingLocation,
+                           ChargingProduct,
+                           ReservationId,
+                           SessionId,
+                           ProviderId,
+                           RemoteAuthentication,
+
+                           Timestamp,
+                           CancellationToken,
+                           EventTrackingId,
+                           RequestTimeout);
+
+
+        /// <summary>
+        /// Start a charging session at the given charging location.
+        /// </summary>
+        /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="ChargingProduct">The choosen charging product.</param>
+        /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<RemoteStartResult>
+
+            RemoteStart(ICSORoamingProvider       CSORoamingProvider,
+                        ChargingLocation          ChargingLocation,
+                        ChargingProduct           ChargingProduct            = null,
+                        ChargingReservation_Id?   ReservationId              = null,
+                        ChargingSession_Id?       SessionId                  = null,
+                        eMobilityProvider_Id?     ProviderId                 = null,
+                        RemoteAuthentication      RemoteAuthentication       = null,
 
                         DateTime?                 Timestamp                  = null,
                         CancellationToken?        CancellationToken          = null,
@@ -4094,89 +4136,119 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (ChargingLocation.IsDefined())
+            try
             {
 
-                #region Try to lookup the charging station operator given in the EVSE identification...
-
-                ChargingStationOperator chargingStationOperator;
-
-                if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out chargingStationOperator) ||
-                    TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out chargingStationOperator) ||
-                    TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out chargingStationOperator) ||
-                    TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out chargingStationOperator))
+                if (ChargingLocation.IsNull())
                 {
-
-                    //result = await chargingStationOperator.
-                    //                   RemoteStart(ChargingLocation,
-                    //                               ChargingProduct,
-                    //                               ReservationId,
-                    //                               SessionId,
-                    //                               ProviderId,
-                    //                               RemoteAuthentication,
-
-                    //                               Timestamp,
-                    //                               CancellationToken,
-                    //                               EventTrackingId,
-                    //                               RequestTimeout);
-
-
-                    if (result.Result == RemoteStartResultType.Success)
-                        SessionsStore.NewOrUpdate(result.Session, session => session.SetChargingStationOperator(chargingStationOperator));
-                                                                   //SetISendChargeDetailRecords(ISendChargeDetailRecords));
-
+                    result = RemoteStartResult.UnknownLocation;
                 }
 
-                #endregion
-
-                //ToDo: Add routing!
-                #region ...or try every EMP roaming provider...
-
-                if (result        == null ||
-                   (result        != null &&
-                   (result.Result == RemoteStartResultType.UnknownLocation)))
+                else if (AdminStatus.Value == RoamingNetworkAdminStatusTypes.Operational ||
+                         AdminStatus.Value == RoamingNetworkAdminStatusTypes.InternalUse)
                 {
 
-                    foreach (var empRoamingProvider in _EMPRoamingProviders.
-                                                            OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
-                                                            Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                    #region Try to lookup the charging station operator given in the EVSE identification...
+
+                    if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out ChargingStationOperator chargingStationOperator) ||
+                        TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out                         chargingStationOperator) ||
+                        TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out                         chargingStationOperator) ||
+                        TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out                         chargingStationOperator))
                     {
 
-                        //result = await _EMPRoamingProvider.
-                        //                   RemoteStart(ChargingLocation,
-                        //                               ChargingProduct,
-                        //                               ReservationId,
-                        //                               SessionId,
-                        //                               ProviderId,
-                        //                               RemoteAuthentication,
+                        result = await chargingStationOperator.
+                                           RemoteStart(ChargingLocation,
+                                                       ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
 
-                        //                               Timestamp,
-                        //                               CancellationToken,
-                        //                               EventTrackingId,
-                        //                               RequestTimeout);
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
 
 
                         if (result.Result == RemoteStartResultType.Success)
-                            SessionsStore.NewOrUpdate(result.Session, session => session.SetEMPRoamingProvider(empRoamingProvider));
-                                                                    //   SetISendChargeDetailRecords(ISendChargeDetailRecords));
+                        {
+
+                            if (CSORoamingProvider != null)
+                                SessionsStore.NewOrUpdate(result.Session,
+                                                          session => {
+                                                              session.CSORoamingProvider = CSORoamingProvider;
+                                                          });
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    //ToDo: Add routing!
+                    #region ...or try every EMP roaming provider...
+
+                    if (result        == null ||
+                       (result        != null &&
+                       (result.Result == RemoteStartResultType.UnknownLocation)))
+                    {
+
+                        foreach (var empRoamingProvider in _EMPRoamingProviders.
+                                                                OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
+                                                                Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                        {
+
+                            result = await empRoamingProvider.
+                                               RemoteStart(ChargingLocation,
+                                                           ChargingProduct,
+                                                           ReservationId,
+                                                           SessionId,
+                                                           ProviderId,
+                                                           RemoteAuthentication,
+
+                                                           Timestamp,
+                                                           CancellationToken,
+                                                           EventTrackingId,
+                                                           RequestTimeout);
+
+
+                            if (result.Result == RemoteStartResultType.Success)
+                                SessionsStore.NewOrUpdate(result.Session, session => { session.EMPRoamingProvider = empRoamingProvider; });
+                                                                        //   SetISendChargeDetailRecords(ISendChargeDetailRecords));
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region ...or fail!
+
+                    if (result == null)
+                        result = RemoteStartResult.UnknownOperator;
+
+                    #endregion
+
+                }
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            result = RemoteStartResult.OutOfService;
+                            break;
 
                     }
 
                 }
 
-                #endregion
-
-                #region ...or fail!
-
-                if (result == null)
-                    result = RemoteStartResult.UnknownOperator;
-
-                #endregion
-
             }
-
-            else
-                result = RemoteStartResult.UnknownLocation;
+            catch (Exception e)
+            {
+                result = RemoteStartResult.Error(e.Message);
+            }
 
 
             #region Send OnRemoteStartResponse event
@@ -4593,7 +4665,7 @@ namespace org.GraphDefined.WWCP
                                                  ProviderIdStart            = result.ProviderId,
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
-                                                 StartAuthentication        = LocalAuthentication,
+                                                 AuthenticationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
@@ -4771,7 +4843,7 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  EVSEId                     = EVSEId,
-                                                 StartAuthentication        = LocalAuthentication,
+                                                 AuthenticationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct,
                                                  //ISendChargeDetailRecords   = result.ISendChargeDetailRecords
                                              };
@@ -4945,7 +5017,7 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  ChargingStationId          = ChargingStationId,
-                                                 StartAuthentication        = LocalAuthentication,
+                                                 AuthenticationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 
@@ -5117,7 +5189,7 @@ namespace org.GraphDefined.WWCP
                                                  AuthService                = result.ISendAuthorizeStartStop,
                                                  ChargingStationOperatorId  = OperatorId,
                                                  ChargingPoolId             = ChargingPoolId,
-                                                 StartAuthentication        = LocalAuthentication,
+                                                 AuthenticationStart        = LocalAuthentication,
                                                  ChargingProduct            = ChargingProduct
                                              };
 

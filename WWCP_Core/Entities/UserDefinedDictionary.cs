@@ -215,6 +215,28 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Remove(Key)
+
+        public Object Remove(String Key)
+        {
+
+            lock (_Dictionary)
+            {
+
+                if (_Dictionary.TryGetValue(Key, out Object currentValue))
+                {
+                    _Dictionary.Remove(Key);
+                    return currentValue;
+                }
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
 
         #region GetEnumerator()
 

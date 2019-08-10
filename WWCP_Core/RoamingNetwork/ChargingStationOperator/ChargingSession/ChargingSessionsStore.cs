@@ -148,7 +148,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     InternalData.Remove(session.Id);
-                    session.StopAuthentication = Authentication;
+                    session.AuthenticationStop = Authentication;
 
                     LogIt("remove",
                           session.Id,

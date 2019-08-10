@@ -39,12 +39,17 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Operational             = 2,
 
+        /// <summary>
+        /// Private or internal use.
+        /// </summary>
+        InternalUse             = 3,
+
 
         /// <summary>
         /// The roaming network was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownRoamingNetwork   = 3
+        UnknownRoamingNetwork   = 4
 
     }
 

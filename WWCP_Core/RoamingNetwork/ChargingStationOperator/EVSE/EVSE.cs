@@ -735,9 +735,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public PgpPublicKeyRingBundle PublicKeys   { get; set; }
-
-
         #region AdminStatus
 
         /// <summary>

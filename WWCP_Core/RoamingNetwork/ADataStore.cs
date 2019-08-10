@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP
 
         protected void LogIt(String Command, IId Id, String PropertyKey, JObject JSONObject)
         {
-            LogIt(Command, Id, PropertyKey, JSONObject);
+            _LogIt(Command, Id, PropertyKey, JSONObject);
         }
 
         #endregion
@@ -138,14 +138,14 @@ namespace org.GraphDefined.WWCP
 
         protected void LogIt(String Command, IId Id, String PropertyKey, JArray JSONArray)
         {
-            LogIt(Command, Id, PropertyKey, JSONArray);
+            _LogIt(Command, Id, PropertyKey, JSONArray);
         }
 
         #endregion
 
         #region (private)   LogIt(Command, Id, PropertyKey, JSON)
 
-        private void LogIt(String Command, IId Id, String PropertyKey, Object JSON)
+        private void _LogIt(String Command, IId Id, String PropertyKey, Object JSON)
         {
 
             Command     = Command?.    Trim();

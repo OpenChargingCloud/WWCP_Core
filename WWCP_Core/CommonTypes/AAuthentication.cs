@@ -29,6 +29,27 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.WWCP
 {
 
+    public static class AAuthenticationExtentions
+    {
+
+        public static Boolean IsDefined(this AAuthentication Authentication)
+
+            => Authentication != null &&
+               (Authentication.AuthToken.                  HasValue ||
+                Authentication.QRCodeIdentification        != null  ||
+                Authentication.PlugAndChargeIdentification.HasValue ||
+                Authentication.RemoteIdentification.       HasValue ||
+                Authentication.PIN.                        HasValue ||
+                Authentication.PublicKey                   != null);
+
+
+        public static Boolean IsNull(this AAuthentication Authentication)
+            => !IsDefined(Authentication);
+
+    }
+
+
+
     /// <summary>
     /// Some sort of token for authentication.
     /// </summary>
@@ -73,17 +94,6 @@ namespace org.GraphDefined.WWCP
         /// An optional multilingual description.
         /// </summary>
         public I18NString            Description                    { get; }
-
-
-        public Boolean IsDefined
-
-            => AuthToken.                  HasValue ||
-               QRCodeIdentification        != null  ||
-               PlugAndChargeIdentification.HasValue ||
-               RemoteIdentification.       HasValue ||
-               PIN.                        HasValue ||
-               PublicKey                   != null;
-
 
         #endregion
 
