@@ -542,15 +542,14 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                      //Log.WriteLine("SetChargingPoolAdminStatus : " + RoamingNetwork.Id + " / " + ChargingPoolId + " => " + NewChargingPoolAdminStatus);
 
-                                                     WWCPAPI.HTTPServer.Get(Semantics.DebugLog).
-                                                         SubmitSubEvent("SetChargingPoolAdminStatusRequest",
-                                                                        new JObject(
-                                                                            new JProperty("Timestamp",       DateTime.UtcNow.ToIso8601()),
-                                                                            new JProperty("RoamingNetwork",  _RoamingNetwork.ToString()),
-                                                                            new JProperty("ChargingPoolId",  ChargingPoolId.ToString()),
-                                                                            new JProperty("NewStatus",       NewChargingPoolAdminStatus.ToString())
-                                                                        ).ToString().
-                                                                          Replace(Environment.NewLine, "")).Wait();
+                                                     WWCPAPI.HTTPServer.Get<JObject>(Semantics.DebugLog).
+                                                         SubmitEvent("SetChargingPoolAdminStatusRequest",
+                                                                     new JObject(
+                                                                         new JProperty("Timestamp",       DateTime.UtcNow.ToIso8601()),
+                                                                         new JProperty("RoamingNetwork",  _RoamingNetwork.ToString()),
+                                                                         new JProperty("ChargingPoolId",  ChargingPoolId.ToString()),
+                                                                         new JProperty("NewStatus",       NewChargingPoolAdminStatus.ToString())
+                                                                     )).Wait();
 
 
                                                      _RoamingNetwork.ChargingStationOperators.ForEach(evseoperator => {
@@ -715,15 +714,14 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                      try
                                                      {
 
-                                                         WWCPAPI.HTTPServer.Get(Semantics.DebugLog).
-                                                             SubmitSubEvent("SetChargingStationAdminStatusRequest",
-                                                                            new JObject(
-                                                                                new JProperty("Timestamp",          DateTime.UtcNow.ToIso8601()),
-                                                                                new JProperty("RoamingNetwork",     RoamingNetwork.ToString()),
-                                                                                new JProperty("ChargingStationId",  ChargingStationId.ToString()),
-                                                                                new JProperty("NewStatus",          NewChargingStationAdminStatus.ToString())
-                                                                            ).ToString().
-                                                                              Replace(Environment.NewLine, "")).Wait();
+                                                         WWCPAPI.HTTPServer.Get<JObject>(Semantics.DebugLog).
+                                                             SubmitEvent("SetChargingStationAdminStatusRequest",
+                                                                         new JObject(
+                                                                             new JProperty("Timestamp",          DateTime.UtcNow.ToIso8601()),
+                                                                             new JProperty("RoamingNetwork",     RoamingNetwork.ToString()),
+                                                                             new JProperty("ChargingStationId",  ChargingStationId.ToString()),
+                                                                             new JProperty("NewStatus",          NewChargingStationAdminStatus.ToString())
+                                                                         )).Wait();
 
 
                                                          RoamingNetwork.SetChargingStationAdminStatus(ChargingStationId,
