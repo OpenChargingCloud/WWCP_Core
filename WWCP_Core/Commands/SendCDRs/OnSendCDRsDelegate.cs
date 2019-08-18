@@ -30,21 +30,6 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Create a SendChargeDetailRecord request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<SendCDRsResult> OnChargeDetailRecordDelegate(DateTime                         Timestamp,
-                                                                      CancellationToken                CancellationToken,
-                                                                      EventTracking_Id                 EventTrackingId,
-                                                                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                                                      TimeSpan?                        RequestTimeout  = null);
-
-
-    /// <summary>
     /// An event fired whenever a charge detail record will be send.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the logging.</param>
@@ -65,6 +50,21 @@ namespace org.GraphDefined.WWCP
                                                   IEnumerable<ChargeDetailRecord>  DroppedChargeDetailRecords,
                                                   IEnumerable<ChargeDetailRecord>  ForwardedChargeDetailRecords,
                                                   TimeSpan?                        RequestTimeout);
+
+
+    /// <summary>
+    /// Create a SendChargeDetailRecord request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    public delegate Task<SendCDRsResult> OnChargeDetailRecordDelegate(DateTime                         Timestamp,
+                                                                      CancellationToken                CancellationToken,
+                                                                      EventTracking_Id                 EventTrackingId,
+                                                                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                                                      TimeSpan?                        RequestTimeout  = null);
 
 
     /// <summary>
