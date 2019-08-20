@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="URIPrefix">A common URI prefix for all URIs within this API.</param>
         public static void Attach_JSON_IO(this WWCP_HTTPAPI  WWCPAPI,
                                           HTTPHostname?      Hostname   = null,
-                                          HTTPPath?           URIPrefix  = null)
+                                          HTTPPath?          URIPrefix  = null)
         {
 
             // /AdminStatus
