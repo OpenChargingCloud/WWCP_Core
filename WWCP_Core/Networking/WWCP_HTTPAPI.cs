@@ -447,25 +447,25 @@ namespace org.GraphDefined.WWCP.Net
             HTTPServer.ResponseLog  += (HTTPProcessor, ServerTimestamp, Request, Response)                       => ResponseLog.WhenAll(HTTPProcessor, ServerTimestamp, Request, Response);
             HTTPServer.ErrorLog     += (HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException) => ErrorLog.   WhenAll(HTTPProcessor, ServerTimestamp, Request, Response, Error, LastException);
 
-            #region Register URI templates
+            #region Register URL templates
 
             var LogfilePrefix = "HTTPSSEs" + System.IO.Path.DirectorySeparatorChar;
 
             DebugLog     = HTTPServer.AddJSONEventSource(EventIdentification:      Semantics.DebugLog,
-                                                         URITemplate:              this.URIPrefix + "/" + Semantics.DebugLog.ToString(),
+                                                         URLTemplate:              this.URIPrefix + "/" + Semantics.DebugLog.ToString(),
                                                          MaxNumberOfCachedEvents:  1000,
                                                          RetryIntervall:           TimeSpan.FromSeconds(5),
                                                          EnableLogging:            true,
                                                          LogfilePrefix:            LogfilePrefix);
 
             ImporterLog  = HTTPServer.AddJSONEventSource(EventIdentification:      Semantics.ImporterLog,
-                                                         URITemplate:              this.URIPrefix + "/" + Semantics.ImporterLog.ToString(),
+                                                         URLTemplate:              this.URIPrefix + "/" + Semantics.ImporterLog.ToString(),
                                                          MaxNumberOfCachedEvents:  1000,
                                                          RetryIntervall:           TimeSpan.FromSeconds(5),
                                                          EnableLogging:            true,
                                                          LogfilePrefix:            LogfilePrefix);
 
-            RegisterURITemplates();
+            RegisterURLTemplates();
 
             #endregion
 
@@ -513,9 +513,9 @@ namespace org.GraphDefined.WWCP.Net
 
         #endregion
 
-        #region (private) RegisterURITemplates()
+        #region (private) RegisterURLTemplates()
 
-        private void RegisterURITemplates()
+        private void RegisterURLTemplates()
         {
 
         }
