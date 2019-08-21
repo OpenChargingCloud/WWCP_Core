@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH
+ * Copyright (c) 2014-2019 GraphDefined GmbH
  * This file is part of WWCP Tracker <https://github.com/OpenChargingCloud/WWCP_Tracker>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
