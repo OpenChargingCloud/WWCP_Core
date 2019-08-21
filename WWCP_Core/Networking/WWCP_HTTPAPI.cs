@@ -87,56 +87,35 @@ namespace org.GraphDefined.WWCP.Net
 
         #region Properties
 
-        #region HTTPServer
-
         /// <summary>
         /// The HTTP server of the API.
         /// </summary>
-        public HTTPServer<RoamingNetworks, RoamingNetwork> HTTPServer { get; }
-
-        #endregion
-
-        #region Hostname
+        public HTTPServer<RoamingNetworks, RoamingNetwork>  HTTPServer      { get; }
 
         /// <summary>
         /// The HTTP hostname for all URIs within this API.
         /// </summary>
-        public HTTPHostname Hostname { get; }
-
-        #endregion
-
-        #region URIPrefix
+        public HTTPHostname                                 Hostname        { get; }
 
         /// <summary>
         /// A common URI prefix for all URIs within this API.
         /// </summary>
-        public HTTPPath URIPrefix   { get; }
-
-        #endregion
-
-
-        #region HTTP Server Sent Events
+        public HTTPPath                                     URLPathPrefix   { get; }
 
         /// <summary>
         /// Send debug information via HTTP Server Sent Events.
         /// </summary>
-        public HTTPEventSource<JObject>  DebugLog       { get; }
+        public HTTPEventSource<JObject>                     DebugLog        { get; }
 
         /// <summary>
         /// Send importer information via HTTP Server Sent Events.
         /// </summary>
-        public HTTPEventSource<JObject>  ImporterLog    { get; }
-
-        #endregion
-
-        #region DNSClient
+        public HTTPEventSource<JObject>                     ImporterLog     { get; }
 
         /// <summary>
         /// The DNS resolver to use.
         /// </summary>
-        public DNSClient DNSClient { get; }
-
-        #endregion
+        public DNSClient                                    DNSClient       { get; }
 
         #endregion
 
@@ -436,7 +415,7 @@ namespace org.GraphDefined.WWCP.Net
 
             this.HTTPServer  = HTTPServer ?? throw new ArgumentNullException(nameof(HTTPServer), "The given HTTP server must not be null!");
             this.Hostname    = Hostname   ?? HTTPHostname.Any;
-            this.URIPrefix   = URIPrefix  ?? DefaultURIPrefix;
+            this.URLPathPrefix   = URIPrefix  ?? DefaultURIPrefix;
 
             this.DNSClient   = HTTPServer.DNSClient;
 
@@ -452,14 +431,14 @@ namespace org.GraphDefined.WWCP.Net
             var LogfilePrefix = "HTTPSSEs" + System.IO.Path.DirectorySeparatorChar;
 
             DebugLog     = HTTPServer.AddJSONEventSource(EventIdentification:      Semantics.DebugLog,
-                                                         URLTemplate:              this.URIPrefix + "/" + Semantics.DebugLog.ToString(),
+                                                         URLTemplate:              this.URLPathPrefix + "/" + Semantics.DebugLog.ToString(),
                                                          MaxNumberOfCachedEvents:  1000,
                                                          RetryIntervall:           TimeSpan.FromSeconds(5),
                                                          EnableLogging:            true,
                                                          LogfilePrefix:            LogfilePrefix);
 
             ImporterLog  = HTTPServer.AddJSONEventSource(EventIdentification:      Semantics.ImporterLog,
-                                                         URLTemplate:              this.URIPrefix + "/" + Semantics.ImporterLog.ToString(),
+                                                         URLTemplate:              this.URLPathPrefix + "/" + Semantics.ImporterLog.ToString(),
                                                          MaxNumberOfCachedEvents:  1000,
                                                          RetryIntervall:           TimeSpan.FromSeconds(5),
                                                          EnableLogging:            true,
