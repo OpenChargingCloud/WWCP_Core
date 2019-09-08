@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -30,97 +30,141 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A unique authentication token.
     /// </summary>
-    public class Auth_Token : IId,
-                              IEquatable<Auth_Token>,
-                              IComparable<Auth_Token>
+    public struct Auth_Token : IId,
+                               IEquatable<Auth_Token>,
+                               IComparable<Auth_Token>
     {
 
         #region Data
 
+        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
+
         /// <summary>
-        /// The internal value.
+        /// The internal identification.
         /// </summary>
-        protected readonly String _Value;
+        private readonly String InternalId;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// The length of the service session identificator.
         /// </summary>
         public UInt64 Length
-
-            => (UInt64)_Value.Length;
+            => (UInt64) InternalId.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new token based on the given string.
+        /// Create a new authentication token based on the given string.
         /// </summary>
-        /// <param name="Text">The value of the authentication token.</param>
-        private Auth_Token(String Text)
+        /// <param name="Text">The text representation of an authentication token.</param>
+        internal Auth_Token(String Text)
         {
-
-            #region Initial checks
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text),  "The given authentication token must not be null or empty!");
-
-            #endregion
-
-            _Value = Text.Trim();
-
+            InternalId = Text;
         }
 
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Random(Length = 20)
+
+        public static Auth_Token Random(Byte Length = 20)
+            => new Auth_Token(_Random.RandomString(Length));
+
+        #endregion
+
+
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as an authentication token.
         /// </summary>
         /// <param name="Text">A text representation of an authentication token.</param>
         public static Auth_Token Parse(String Text)
-
-            => new Auth_Token(Text);
-
-        #endregion
-
-        #region TryParse(Text, out Token)
-
-        /// <summary>
-        /// Parse the given string as an authentication token.
-        /// </summary>
-        /// <param name="Text">A text representation of an authentication token.</param>
-        /// <param name="Token">The parsed authentication token.</param>
-        public static Boolean TryParse(String Text, out Auth_Token Token)
         {
-            try
-            {
-                Token = new Auth_Token(Text);
-                return true;
-            }
-            catch (Exception)
-            {
-                Token = null;
-                return false;
-            }
+
+            #region Initial checks
+
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The given text representation of an authentication token must not be null or empty!");
+
+            #endregion
+
+            if (TryParse(Text, out Auth_Token AuthToken))
+                return AuthToken;
+
+            throw new ArgumentNullException(nameof(Text), "The given text representation of an authentication token is invalid!");
+
         }
 
         #endregion
 
-        #region Reverse()
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Reverse this authentication token.
+        /// Try to parse the given string as an authentication token.
         /// </summary>
-        public Auth_Token Reverse()
+        /// <param name="Text">A text representation of an authentication token.</param>
+        public static Auth_Token? TryParse(String Text)
+        {
 
-            => new Auth_Token(_Value.SubTokens(2).Reverse().Aggregate());
+            if (TryParse(Text, out Auth_Token AuthToken))
+                return AuthToken;
+
+            return new Auth_Token?();
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out AuthToken)
+
+        /// <summary>
+        /// Try to parse the given string as an authentication token.
+        /// </summary>
+        /// <param name="Text">A text representation of an authentication token.</param>
+        /// <param name="AuthToken">The parsed authentication token.</param>
+        public static Boolean TryParse(String Text, out Auth_Token AuthToken)
+        {
+
+            #region Initial checks
+
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+            {
+                AuthToken = default;
+                return false;
+            }
+
+            #endregion
+
+            try
+            {
+                AuthToken = new Auth_Token(Text);
+                return true;
+            }
+            catch (Exception)
+            { }
+
+            AuthToken = default;
+            return false;
+
+        }
 
         #endregion
 
@@ -131,123 +175,122 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Auth_Token Clone
 
-            => new Auth_Token(_Value);
+            => new Auth_Token(
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (TokenId1, TokenId2)
+        #region Operator == (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">An authentication token.</param>
-        /// <param name="TokenId2">Another authentication token.</param>
+        /// <param name="AuthToken1">An authentication token.</param>
+        /// <param name="AuthToken2">Another authentication token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Auth_Token TokenId1, Auth_Token TokenId2)
+        public static Boolean operator == (Auth_Token AuthToken1, Auth_Token AuthToken2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(TokenId1, TokenId2))
+            if (Object.ReferenceEquals(AuthToken1, AuthToken2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) TokenId1 == null) || ((Object) TokenId2 == null))
+            if (((Object) AuthToken1 == null) || ((Object) AuthToken2 == null))
                 return false;
 
-            return TokenId1.Equals(TokenId2);
+            return AuthToken1.Equals(AuthToken2);
 
         }
 
         #endregion
 
-        #region Operator != (TokenId1, TokenId2)
+        #region Operator != (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">An authentication token.</param>
-        /// <param name="TokenId2">Another authentication token.</param>
+        /// <param name="AuthToken1">An authentication token.</param>
+        /// <param name="AuthToken2">Another authentication token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Auth_Token TokenId1, Auth_Token TokenId2)
-
-            => !(TokenId1 == TokenId2);
+        public static Boolean operator != (Auth_Token AuthToken1, Auth_Token AuthToken2)
+            => !(AuthToken1 == AuthToken2);
 
         #endregion
 
-        #region Operator <  (TokenId1, TokenId2)
+        #region Operator <  (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">An authentication token.</param>
-        /// <param name="TokenId2">Another authentication token.</param>
+        /// <param name="AuthToken1">An authentication token.</param>
+        /// <param name="AuthToken2">Another authentication token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Auth_Token TokenId1, Auth_Token TokenId2)
+        public static Boolean operator < (Auth_Token AuthToken1, Auth_Token AuthToken2)
         {
 
-            if ((Object) TokenId1 == null)
-                throw new ArgumentNullException(nameof(TokenId1),  "The given authentication token must not be null!");
+            if ((Object) AuthToken1 == null)
+                throw new ArgumentNullException(nameof(AuthToken1), "The given AuthToken1 must not be null!");
 
-            return TokenId1.CompareTo(TokenId2) < 0;
+            return AuthToken1.CompareTo(AuthToken2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (TokenId1, TokenId2)
+        #region Operator <= (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">An authentication token.</param>
-        /// <param name="TokenId2">Another authentication token.</param>
+        /// <param name="AuthToken1">An authentication token.</param>
+        /// <param name="AuthToken2">Another authentication token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Auth_Token TokenId1, Auth_Token TokenId2)
-
-            => !(TokenId1 > TokenId2);
+        public static Boolean operator <= (Auth_Token AuthToken1, Auth_Token AuthToken2)
+            => !(AuthToken1 > AuthToken2);
 
         #endregion
 
-        #region Operator >  (TokenId1, TokenId2)
+        #region Operator >  (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">An authentication token.</param>
-        /// <param name="TokenId2">Another authentication token.</param>
+        /// <param name="AuthToken1">An authentication token.</param>
+        /// <param name="AuthToken2">Another authentication token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Auth_Token TokenId1, Auth_Token TokenId2)
+        public static Boolean operator > (Auth_Token AuthToken1, Auth_Token AuthToken2)
         {
 
-            if ((Object) TokenId1 == null)
-                throw new ArgumentNullException(nameof(TokenId1),  "The given authentication token must not be null!");
+            if ((Object) AuthToken1 == null)
+                throw new ArgumentNullException(nameof(AuthToken1), "The given AuthToken1 must not be null!");
 
-            return TokenId1.CompareTo(TokenId2) > 0;
+            return AuthToken1.CompareTo(AuthToken2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (TokenId1, TokenId2)
+        #region Operator >= (AuthToken1, AuthToken2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">An authentication token.</param>
-        /// <param name="TokenId2">Another authentication token.</param>
+        /// <param name="AuthToken1">An authentication token.</param>
+        /// <param name="AuthToken2">Another authentication token.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Auth_Token TokenId1, Auth_Token TokenId2)
-
-            => !(TokenId1 < TokenId2);
-
-        #endregion
+        public static Boolean operator >= (Auth_Token AuthToken1, Auth_Token AuthToken2)
+            => !(AuthToken1 < AuthToken2);
 
         #endregion
 
-        #region IComparable<Auth_Token> Members
+        #endregion
+
+        #region IComparable<AuthToken> Members
 
         #region CompareTo(Object)
 
@@ -258,33 +301,32 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
+            if (Object is null)
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an authentication token.
-            var Token = Object as Auth_Token;
-            if ((Object) Token == null)
-                throw new ArgumentException("The given object is not an authentication token!");
+            if (!(Object is Auth_Token AuthToken))
+                throw new ArgumentException("The given object is not an authentication token!",
+                                            nameof(Object));
 
-            return CompareTo(Token);
+            return CompareTo(AuthToken);
 
         }
 
         #endregion
 
-        #region CompareTo(Token)
+        #region CompareTo(AuthToken)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Token">An object to compare with.</param>
-        public Int32 CompareTo(Auth_Token Token)
+        /// <param name="AuthToken">An object to compare with.</param>
+        public Int32 CompareTo(Auth_Token AuthToken)
         {
 
-            if ((Object) Token == null)
-                throw new ArgumentNullException(nameof(Token),  "The given authentication token must not be null!");
+            if ((Object) AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken),  "The given authentication token must not be null!");
 
-            return String.Compare(_Value, Token._Value, StringComparison.Ordinal);
+            return String.Compare(InternalId, AuthToken.InternalId, StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -292,7 +334,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<Auth_Token> Members
+        #region IEquatable<AuthToken> Members
 
         #region Equals(Object)
 
@@ -307,31 +349,29 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an authentication token.
-            var Token = Object as Auth_Token;
-            if ((Object) Token == null)
+            if (!(Object is Auth_Token AuthToken))
                 return false;
 
-            return this.Equals(Token);
+            return Equals(AuthToken);
 
         }
 
         #endregion
 
-        #region Equals(Token)
+        #region Equals(AuthToken)
 
         /// <summary>
-        /// Compares two authentication tokens for equality.
+        /// Compares two AuthTokens for equality.
         /// </summary>
-        /// <param name="Token">An authentication token to compare with.</param>
+        /// <param name="AuthToken">An authentication token to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Auth_Token Token)
+        public Boolean Equals(Auth_Token AuthToken)
         {
 
-            if ((Object) Token == null)
+            if ((Object) AuthToken == null)
                 return false;
 
-            return _Value.Equals(Token._Value);
+            return InternalId.ToLower().Equals(AuthToken.InternalId.ToLower());
 
         }
 
@@ -346,8 +386,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-
-            => _Value.GetHashCode();
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -357,8 +396,7 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-
-            => _Value;
+            => InternalId;
 
         #endregion
 

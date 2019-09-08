@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -891,7 +891,7 @@ namespace org.GraphDefined.WWCP.Importer
         private void ImporterRun(Object Status)
         {
 
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+          Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
             if (Monitor.TryEnter(ImporterRunLock))
             {

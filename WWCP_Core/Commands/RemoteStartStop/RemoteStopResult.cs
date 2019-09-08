@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using System;
 
 #endregion
@@ -62,6 +63,12 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public String                   Message                  { get; }
 
+        /// <summary>
+        /// An optional additional information on this error,
+        /// e.g. the HTTP error response.
+        /// </summary>
+        public Object                   AdditionalInfo           { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -74,14 +81,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Result">The result of the remote stop request.</param>
         /// <param name="ErrorMessage">A optional error message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         private RemoteStopResult(ChargingSession_Id    SessionId,
                                  RemoteStopResultType  Result,
-                                 String                ErrorMessage = null)
+                                 String                ErrorMessage    = null,
+                                 Object                AdditionalInfo  = null)
         {
 
-            this.SessionId  = SessionId;
-            this.Result     = Result;
-            this.Message    = ErrorMessage;
+            this.SessionId       = SessionId;
+            this.Result          = Result;
+            this.Message         = ErrorMessage;
+            this.AdditionalInfo  = AdditionalInfo;
 
         }
 
@@ -165,7 +175,7 @@ namespace org.GraphDefined.WWCP
         #region (static) UnknownOperator(SessionId)
 
         /// <summary>
-        /// The  operator is unknown.
+        /// The charging station operator is unknown.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopResult UnknownOperator(ChargingSession_Id SessionId)
@@ -177,17 +187,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Unknown(SessionId)
+        #region (static) UnknownLocation(SessionId)
 
         /// <summary>
-        /// The  is unknown.
+        /// The charging location is unknown.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult Unknown(ChargingSession_Id SessionId)
+        public static RemoteStopResult UnknownLocation(ChargingSession_Id SessionId)
         {
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.UnknownOperator,
-                                        "The EVSE or charging station is unknown!");
+                                        RemoteStopResultType.UnknownLocation,
+                                        "The charging location is unknown!");
         }
 
         #endregion
@@ -326,19 +336,38 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Error(SessionId, Message = null)
+        #region (static) CommunicationError(SessionId, Message = null)
+
+        /// <summary>
+        /// The remote stop led to a communication error.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="Message">An optional error message.</param>
+        public static RemoteStopResult CommunicationError(ChargingSession_Id  SessionId,
+                                                          String              Message = null)
+
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultType.CommunicationError,
+                                    Message);
+
+        #endregion
+
+        #region (static) Error(SessionId, Message = null, AdditionalInfo = null)
 
         /// <summary>
         /// The remote stop led to an error.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Message">An optional error message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         public static RemoteStopResult Error(ChargingSession_Id  SessionId,
-                                             String              Message = null)
+                                             String              Message         = null,
+                                             Object              AdditionalInfo  = null)
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultType.Error,
-                                    Message);
+                                    Message,
+                                    AdditionalInfo);
 
         #endregion
 
@@ -373,6 +402,11 @@ namespace org.GraphDefined.WWCP
         /// The EVSE or charging station operator is unknown.
         /// </summary>
         UnknownOperator,
+
+        /// <summary>
+        /// The charging location is unknown.
+        /// </summary>
+        UnknownLocation,
 
         /// <summary>
         /// The charging session identification is unknown or invalid.

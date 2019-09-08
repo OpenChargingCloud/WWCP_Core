@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -23,6 +23,10 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using Org.BouncyCastle.Crypto.Parameters;
+using System;
+using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Math.EC;
 
 #endregion
 
@@ -41,15 +45,14 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        /// <summary>
-        /// The public key ring of this entity.
-        /// </summary>
-        public PgpPublicKeyRing  PublicKeyRing    { get; }
+        public IRoamingNetwork RoamingNetwork { get; }
 
-        /// <summary>
-        /// The secrect key ring of this entity.
-        /// </summary>
-        public PgpSecretKeyRing  SecretKeyRing    { get; }
+        public String                  EllipticCurve            { get; }
+        public X9ECParameters          ECP                      { get; }
+        public ECDomainParameters      ECSpec                   { get; }
+        public FpCurve                 C                        { get; }
+        public ECPrivateKeyParameters  PrivateKey               { get; protected set; }
+        public PublicKeyCertificates   PublicKeyCertificates    { get; protected set; }
 
         /// <summary>
         /// The cryptographical signature of this entity.
@@ -60,47 +63,57 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region ACryptoEMobilityEntity(Id, PublicKeyRing, SecretKeyRing)
+        #region ACryptoEMobilityEntity(Id, ...)
 
         /// <summary>
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
-        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
-        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
-        protected ACryptoEMobilityEntity(TId               Id,
-                                         PgpPublicKeyRing  PublicKeyRing  = null,
-                                         PgpSecretKeyRing  SecretKeyRing  = null)
+        protected ACryptoEMobilityEntity(TId                     Id,
+                                         IRoamingNetwork         RoamingNetwork,
+                                         String                  EllipticCurve          = "P-256",
+                                         ECPrivateKeyParameters  PrivateKey             = null,
+                                         PublicKeyCertificates   PublicKeyCertificates  = null)
 
             : base(Id)
 
         {
 
-            this.PublicKeyRing  = PublicKeyRing;
-            this.SecretKeyRing  = SecretKeyRing;
+            this.RoamingNetwork         = RoamingNetwork;
+            this.EllipticCurve          = EllipticCurve ?? "P-256";
+            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
+            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
+            this.C                      = (FpCurve) ECSpec.Curve;
+            this.PrivateKey             = PrivateKey;
+            this.PublicKeyCertificates  = PublicKeyCertificates;
 
         }
 
         #endregion
 
-        #region ACryptoEMobilityEntity(Ids, PublicKeyRing, SecretKeyRing)
+        #region ACryptoEMobilityEntity(Ids, ...)
 
         /// <summary>
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
-        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
-        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
-        protected ACryptoEMobilityEntity(IEnumerable<TId>  Ids,
-                                         PgpPublicKeyRing  PublicKeyRing  = null,
-                                         PgpSecretKeyRing  SecretKeyRing  = null)
+        protected ACryptoEMobilityEntity(IEnumerable<TId>        Ids,
+                                         IRoamingNetwork         RoamingNetwork,
+                                         String                  EllipticCurve          = "P-256",
+                                         ECPrivateKeyParameters  PrivateKey             = null,
+                                         PublicKeyCertificates   PublicKeyCertificates  = null)
 
             : base(Ids)
 
         {
 
-            this.PublicKeyRing  = PublicKeyRing;
-            this.SecretKeyRing  = SecretKeyRing;
+            this.RoamingNetwork         = RoamingNetwork;
+            this.EllipticCurve          = EllipticCurve ?? "P-256";
+            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
+            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
+            this.C                      = (FpCurve) ECSpec.Curve;
+            this.PrivateKey             = PrivateKey;
+            this.PublicKeyCertificates  = PublicKeyCertificates;
 
         }
 

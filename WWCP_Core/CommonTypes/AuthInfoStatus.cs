@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -33,39 +33,15 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Id
-
-        private readonly AuthIdentification _Id;
-
         /// <summary>
         /// The unique identification of an auth info.
         /// </summary>
-        public AuthIdentification Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
-
-        #endregion
-
-        #region Status
-
-        private readonly AuthInfoStatusType _Status;
+        public AAuthentication     Id        { get; }
 
         /// <summary>
         /// The current status of an auth info.
         /// </summary>
-        public AuthInfoStatusType Status
-        {
-            get
-            {
-                return _Status;
-            }
-        }
-
-        #endregion
+        public AuthInfoStatusType  Status    { get; }
 
         #endregion
 
@@ -76,20 +52,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthInfo">The unique identification of an auth info.</param>
         /// <param name="Status">The current status of an auth info.</param>
-        public AuthInfoStatus(AuthIdentification            AuthInfo,
+        public AuthInfoStatus(AAuthentication     AuthInfo,
                               AuthInfoStatusType  Status)
 
         {
 
-            #region Initial checks
-
-            if (AuthInfo == null)
-                throw new ArgumentNullException(nameof(AuthInfo), "The given unique identification of an auth info must not be null!");
-
-            #endregion
-
-            this._Id      = AuthInfo;
-            this._Status  = Status;
+            this.Id      = AuthInfo ?? throw new ArgumentNullException(nameof(AuthInfo), "The given unique identification of an auth info must not be null!");
+            this.Status  = Status;
 
         }
 
@@ -248,11 +217,11 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given AuthInfoStatus must not be null!");
 
             // Compare EVSE Ids
-            var _Result = _Id.CompareTo(AuthInfoStatus._Id);
+            var _Result = Id.CompareTo(AuthInfoStatus.Id);
 
             // If equal: Compare EVSE status
             if (_Result == 0)
-                _Result = _Status.CompareTo(AuthInfoStatus._Status);
+                _Result = Status.CompareTo(AuthInfoStatus.Status);
 
             return _Result;
 
@@ -301,8 +270,8 @@ namespace org.GraphDefined.WWCP
             if ((Object)AuthInfoStatus == null)
                 return false;
 
-            return _Id.Equals(AuthInfoStatus._Id) &&
-                   _Status.Equals(AuthInfoStatus._Status);
+            return Id.Equals(AuthInfoStatus.Id) &&
+                   Status.Equals(AuthInfoStatus.Status);
 
         }
 
@@ -320,7 +289,7 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Id.GetHashCode() * 17 ^ _Status.GetHashCode();
+                return Id.GetHashCode() * 17 ^ Status.GetHashCode();
             }
         }
 
@@ -335,7 +304,7 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            return String.Concat(_Id, " -> ", _Status.ToString());
+            return String.Concat(Id, " -> ", Status.ToString());
 
         }
 
