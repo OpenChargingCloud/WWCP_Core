@@ -410,6 +410,11 @@ namespace org.GraphDefined.WWCP
         Timeout,
 
         /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        CommunicationError,
+
+        /// <summary>
         /// The remote stop led to an error.
         /// </summary>
         Error
