@@ -94,7 +94,7 @@ namespace org.GraphDefined.WWCP
                                kW?                 MaxPower               = null,
                                kWh?                MinEnergy              = null,
                                kWh?                StopChargingAfterKWh   = null,
-                               Decima?             MaxB2BServiceCosts     = null)
+                               Decimal?            MaxB2BServiceCosts     = null)
         {
 
             this.Id                     = Id;

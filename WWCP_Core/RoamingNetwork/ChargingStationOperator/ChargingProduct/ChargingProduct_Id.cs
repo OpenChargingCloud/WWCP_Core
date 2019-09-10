@@ -47,15 +47,12 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-<<<<<<< HEAD:WWCP_Core/Entities/RoamingNetwork/ChargingStationOperator/ChargingProduct/ChargingProduct_Id.cs
-=======
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
->>>>>>> 148165dbc879658b23b9e9b0c1dd8a0462682d36:WWCP_Core/RoamingNetwork/ChargingStationOperator/ChargingProduct/ChargingProduct_Id.cs
         /// <summary>
         /// Returns the length of the identification.
         /// </summary>
@@ -78,32 +75,26 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-<<<<<<< HEAD:WWCP_Core/Entities/RoamingNetwork/ChargingStationOperator/ChargingProduct/ChargingProduct_Id.cs
         #region (static) Random(Length = 20)
-=======
-        #region New
->>>>>>> 148165dbc879658b23b9e9b0c1dd8a0462682d36:WWCP_Core/RoamingNetwork/ChargingStationOperator/ChargingProduct/ChargingProduct_Id.cs
 
         /// <summary>
         /// Returns a new charging product identification.
         /// </summary>
-<<<<<<< HEAD:WWCP_Core/Entities/RoamingNetwork/ChargingStationOperator/ChargingProduct/ChargingProduct_Id.cs
         public static ChargingProduct_Id Random(Byte Length = 20)
             => new ChargingProduct_Id(_Random.RandomString(Length));
 
         #endregion
 
 
-        #region (static) Parse   (Text)
-=======
+        #region (static) New
+
         public static ChargingProduct_Id New
 
             => ChargingProduct_Id.Parse(Guid.NewGuid().ToString());
 
         #endregion
 
-        #region Parse(Text)
->>>>>>> 148165dbc879658b23b9e9b0c1dd8a0462682d36:WWCP_Core/RoamingNetwork/ChargingStationOperator/ChargingProduct/ChargingProduct_Id.cs
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charging product identification.
