@@ -32,10 +32,11 @@ namespace org.GraphDefined.WWCP
     public struct ChargingProduct_Id : IId,
                                        IEquatable <ChargingProduct_Id>,
                                        IComparable<ChargingProduct_Id>
-
     {
 
         #region Data
+
+        private readonly static Random _Random = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// The internal identification.
@@ -46,27 +47,11 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region New
-
-        /// <summary>
-        /// Returns a new charging product identification.
-        /// </summary>
-        public static ChargingProduct_Id New
-
-            => ChargingProduct_Id.Parse(Guid.NewGuid().ToString());
-
-        #endregion
-
-        #region Length
-
         /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-
             => (UInt64) InternalId.Length;
-
-        #endregion
 
         #endregion
 
@@ -84,7 +69,18 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Random(Length = 20)
+
+        /// <summary>
+        /// Returns a new charging product identification.
+        /// </summary>
+        public static ChargingProduct_Id Random(Byte Length = 20)
+            => new ChargingProduct_Id(_Random.RandomString(Length));
+
+        #endregion
+
+
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charging product identification.
@@ -93,16 +89,26 @@ namespace org.GraphDefined.WWCP
         public static ChargingProduct_Id Parse(String Text)
         {
 
-            if (Text == null || Text.Trim().IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given charging product identification must not be null or empty!");
+            #region Initial checks
 
-            return new ChargingProduct_Id(Text);
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging product identification must not be null or empty!");
+
+            #endregion
+
+            if (TryParse(Text, out ChargingProduct_Id ChargingProductId))
+                return ChargingProductId;
+
+            throw new ArgumentNullException(nameof(Text), "The given text representation of a charging product identification is invalid!");
 
         }
 
         #endregion
 
-        #region TryParse(Text)
+        #region (static) TryParse(Text)
 
         /// <summary>
         /// Parse the given string as a charging product identification.
@@ -111,30 +117,16 @@ namespace org.GraphDefined.WWCP
         public static ChargingProduct_Id? TryParse(String Text)
         {
 
-            if (Text != null &&
-                Text.Trim().IsNotNullOrEmpty())
-            {
+            if (TryParse(Text, out ChargingProduct_Id ChargingProductId))
+                return ChargingProductId;
 
-                try
-                {
-
-                    return new ChargingProduct_Id(Text);
-
-                }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-                catch (Exception)
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
-                { }
-
-            }
-
-            return default(ChargingProduct_Id);
+            return new ChargingProduct_Id?();
 
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingProductId)
+        #region (static) TryParse(Text, out ChargingProductId)
 
         /// <summary>
         /// Parse the given string as a charging product identification.
@@ -144,26 +136,30 @@ namespace org.GraphDefined.WWCP
         public static Boolean TryParse(String Text, out ChargingProduct_Id ChargingProductId)
         {
 
-            if (Text != null &&
-                Text.Trim().IsNotNullOrEmpty())
+            #region Initial checks
+
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
             {
-
-                try
-                {
-
-                    ChargingProductId = new ChargingProduct_Id(Text);
-
-                    return true;
-
-                }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-                catch (Exception)
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
-                { }
-
+                ChargingProductId = default;
+                return false;
             }
 
-            ChargingProductId = default(ChargingProduct_Id);
+            #endregion
+
+             try
+             {
+                 ChargingProductId = new ChargingProduct_Id(Text);
+                 return true;
+             }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
+             catch (Exception)
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
+             { }
+
+            ChargingProductId = default;
             return false;
 
         }
@@ -303,14 +299,14 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            if (!(Object is ChargingProduct_Id))
+            if (!(Object is ChargingProduct_Id ChargingProductId))
                 throw new ArgumentException("The given object is not a charging product identification!",
                                             nameof(Object));
 
-            return CompareTo((ChargingProduct_Id) Object);
+            return CompareTo(ChargingProductId);
 
         }
 
@@ -328,13 +324,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingProductId == null)
                 throw new ArgumentNullException(nameof(ChargingProductId),  "The given charging product identification must not be null!");
 
-            // Compare the length of the ChargingProductIds
-            var _Result = this.Length.CompareTo(ChargingProductId.Length);
-
-            if (_Result == 0)
-                _Result = String.Compare(InternalId, ChargingProductId.InternalId, StringComparison.Ordinal);
-
-            return _Result;
+            return String.Compare(InternalId, ChargingProductId.InternalId, StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -357,10 +347,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            if (!(Object is ChargingProduct_Id))
+            if (!(Object is ChargingProduct_Id ChargingProductId))
                 return false;
 
-            return Equals((ChargingProduct_Id) Object);
+            return Equals(ChargingProductId);
 
         }
 
@@ -379,7 +369,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingProductId == null)
                 return false;
 
-            return InternalId.Equals(ChargingProductId.InternalId);
+            return InternalId.ToLower().Equals(ChargingProductId.InternalId.ToLower());
 
         }
 
