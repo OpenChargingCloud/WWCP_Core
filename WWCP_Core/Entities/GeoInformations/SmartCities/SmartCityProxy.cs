@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -482,40 +482,47 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.
         /// </summary>
-        public event OnReserveEVSERequestDelegate              OnReserveEVSE;
+        public event OnReserveRequestDelegate         OnReserveRequest;
 
         /// <summary>
         /// An event fired whenever an EVSE was reserved.
         /// </summary>
-        public event OnReserveEVSEResponseDelegate             OnEVSEReserved;
+        public event OnReserveResponseDelegate        OnReserveResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charging reservation was created.
+        /// </summary>
+        public event OnNewReservationDelegate             OnNewReservation;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was deleted.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
 
         #endregion
 
         #region OnRemote...Start / OnRemote...Started
 
         /// <summary>
-        /// An event fired whenever a remote start EVSE command was received.
+        /// An event fired whenever a remote start command was received.
         /// </summary>
-        public event OnRemoteStartEVSERequestDelegate               OnRemoteEVSEStart;
+        public event OnRemoteStartRequestDelegate   OnRemoteStartRequest;
 
         /// <summary>
-        /// An event fired whenever a remote start EVSE command completed.
+        /// An event fired whenever a remote start command completed.
         /// </summary>
-        public event OnRemoteStartEVSEResponseDelegate             OnRemoteEVSEStarted;
+        public event OnRemoteStartResponseDelegate  OnRemoteStartResponse;
 
-        #endregion
-
-        #region OnRemote...Stop / OnRemote...Stopped
 
         /// <summary>
-        /// An event fired whenever a remote stop EVSE command was received.
+        /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopEVSERequestDelegate                OnRemoteEVSEStop;
+        public event OnRemoteStopRequestDelegate    OnRemoteStopRequest;
 
         /// <summary>
-        /// An event fired whenever a remote stop EVSE command completed.
+        /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopEVSEResponseDelegate             OnRemoteEVSEStopped;
+        public event OnRemoteStopResponseDelegate   OnRemoteStopResponse;
 
         #endregion
 

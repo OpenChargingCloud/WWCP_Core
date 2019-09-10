@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -212,6 +212,28 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGet(String Key, out Object Value)
 
             => _Dictionary.TryGetValue(Key, out Value);
+
+        #endregion
+
+        #region Remove(Key)
+
+        public Object Remove(String Key)
+        {
+
+            lock (_Dictionary)
+            {
+
+                if (_Dictionary.TryGetValue(Key, out Object currentValue))
+                {
+                    _Dictionary.Remove(Key);
+                    return currentValue;
+                }
+
+                return null;
+
+            }
+
+        }
 
         #endregion
 

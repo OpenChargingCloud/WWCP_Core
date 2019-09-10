@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -24,6 +24,9 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Math.EC;
+using Org.BouncyCastle.Asn1.X9;
 
 #endregion
 
@@ -37,12 +40,14 @@ namespace org.GraphDefined.WWCP
     public interface ICryptoEntity : IEntity
     {
 
-        PgpSecretKeyRing  SecretKeyRing     { get; }
+        String                  EllipticCurve            { get; }
+        X9ECParameters          ECP                      { get; }
+        ECDomainParameters      ECSpec                   { get; }
+        FpCurve                 C                        { get; }
+        ECPrivateKeyParameters  PrivateKey               { get; }
+        PublicKeyCertificates   PublicKeyCertificates    { get; }
 
-        PgpPublicKeyRing  PublicKeyRing     { get; }
-
-        Signature         Signature         { get; }
-
+        Signature               Signature                { get; }
 
         Signature Sign();
 

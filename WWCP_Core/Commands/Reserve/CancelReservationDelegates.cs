@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP OICP <https://github.com/OpenChargingCloud/WWCP_OICP>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -20,7 +20,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -30,13 +29,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An event send whenever a reservation will be cancelled.
+    /// An event send whenever a reservation will be canceled.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -44,8 +41,7 @@ namespace org.GraphDefined.WWCP
                                                             DateTime                               RequestTimestamp,
                                                             Object                                 Sender,
                                                             EventTracking_Id                       EventTrackingId,
-                                                            RoamingNetwork_Id?                     RoamingNetworkId,
-                                                            eMobilityProvider_Id?                  ProviderId,
+                                                            RoamingNetwork_Id                      RoamingNetworkId,
                                                             ChargingReservation_Id                 ReservationId,
                                                             ChargingReservationCancellationReason  Reason,
                                                             TimeSpan?                              RequestTimeout);
@@ -59,54 +55,45 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
-    /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<CancelReservationResult> OnCancelReservationDelegate(DateTime                               Timestamp,
                                                                               CancellationToken                      CancellationToken,
                                                                               EventTracking_Id                       EventTrackingId,
                                                                               ChargingReservation_Id                 ReservationId,
                                                                               ChargingReservationCancellationReason  Reason,
-                                                                              eMobilityProvider_Id?                  ProviderId,
                                                                               TimeSpan?                              RequestTimeout);
 
 
-    ///// <summary>
-    ///// An event send whenever a reservation was deleted.
-    ///// </summary>
-    ///// <param name="Sender">The sender of this event.</param>
-    ///// <param name="Timestamp">The timestamp of the request.</param>
-    ///// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
-    ///// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    ///// <param name="Reservation">The charging reservation (if known).</param>
-    ///// <param name="Reason">The reason for the cancellation.</param>
-    //public delegate void OnReservationCancelledInternalDelegate(DateTime                               LogTimestamp,
-    //                                                            DateTime                               RequestTimestamp,
-    //                                                            Object                                 Sender,
-    //                                                            EventTracking_Id                       EventTrackingId,
-    //                                                            ChargingReservation_Id                 ReservationId,
-                                                                
-    //                                                            ChargingReservationCancellationReason  Reason);
+    /// <summary>
+    /// A delegate called whenever a charging reservation was created.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="Sender">The sender of the event.</param>
+    /// <param name="Reservation">The new charging reservation.</param>
+    /// <param name="Reason">The reason for the cancellation.</param>
+    public delegate void OnReservationCanceledDelegate(DateTime                               Timestamp,
+                                                       Object                                 Sender,
+                                                       ChargingReservation                    Reservation,
+                                                       ChargingReservationCancellationReason  Reason);
 
 
     /// <summary>
-    /// An event send whenever a reservation was cancelled.
+    /// An event send whenever a reservation was canceled.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
+    /// <param name="Reservation">The canceled charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
-    /// <param name="Result">The result of the reservation.</param>
+    /// <param name="Result">The result of the reservation cancellation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnCancelReservationResponseDelegate(DateTime                               LogTimestamp,
                                                              DateTime                               RequestTimestamp,
                                                              Object                                 Sender,
                                                              EventTracking_Id                       EventTrackingId,
-                                                             RoamingNetwork_Id?                     RoamingNetworkId,
-                                                             eMobilityProvider_Id?                  ProviderId,
+                                                             RoamingNetwork_Id                      RoamingNetworkId,
                                                              ChargingReservation_Id                 ReservationId,
                                                              ChargingReservation                    Reservation,
                                                              ChargingReservationCancellationReason  Reason,

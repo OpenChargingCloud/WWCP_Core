@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -41,6 +41,22 @@ namespace org.GraphDefined.WWCP
         /// The internal identification.
         /// </summary>
         private readonly Int32 InternalId;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => false;
+
+        /// <summary>
+        /// The length of the tag identification.
+        /// </summary>
+        public UInt64 Length
+            => 0;
 
         #endregion
 

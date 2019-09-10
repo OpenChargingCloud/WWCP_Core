@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -149,14 +149,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownEVSE
+        #region (static) UnknownLocation
 
         /// <summary>
-        /// The EVSE is unknown.
+        /// The charging location is unknown.
         /// </summary>
-        public static ReservationResult UnknownEVSE
+        public static ReservationResult UnknownLocation
 
-            => new ReservationResult(ReservationResultType.UnknownEVSE);
+            => new ReservationResult(ReservationResultType.UnknownLocation);
 
         #endregion
 
@@ -333,9 +333,9 @@ namespace org.GraphDefined.WWCP
         UnknownChargingStation,
 
         /// <summary>
-        /// The EVSE is unknown.
+        /// The charging location is unknown.
         /// </summary>
-        UnknownEVSE,
+        UnknownLocation,
 
 
         /// <summary>
