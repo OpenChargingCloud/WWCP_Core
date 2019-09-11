@@ -52,7 +52,7 @@ namespace org.GraphDefined.WWCP
                                          Boolean                          DisableNetworkSync    = false)
 
             : base(RoamingNetwork,
-                   LogFileNameCreator ?? (roamingNetworkId => String.Concat("ChargeDetailRecords", Path.DirectorySeparatorChar, "ChargingReservations-",
+                   LogFileNameCreator ?? (roamingNetworkId => String.Concat("ChargingReservations", Path.DirectorySeparatorChar, "ChargingReservations-",
                                                                             roamingNetworkId, "-",
                                                                             Environment.MachineName, "_",
                                                                             DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),

@@ -47,12 +47,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                    new JProperty("SessionId",            ChargeDetailRecord.SessionId.ToString()),
 
-                   ChargeDetailRecord.SessionTime.HasValue
-                       ? new JProperty("SessionStart",           ChargeDetailRecord.SessionTime.Value.StartTime.ToIso8601())
+                   ChargeDetailRecord.SessionTime != null
+                       ? new JProperty("SessionStart",           ChargeDetailRecord.SessionTime.StartTime.ToIso8601())
                        : null,
 
-                   ChargeDetailRecord.SessionTime.HasValue && ChargeDetailRecord.SessionTime.Value.EndTime.HasValue
-                       ? new JProperty("SessionEnd",             ChargeDetailRecord.SessionTime.Value.EndTime.Value.ToIso8601())
+                   ChargeDetailRecord.SessionTime != null && ChargeDetailRecord.SessionTime.EndTime.HasValue
+                       ? new JProperty("SessionEnd",             ChargeDetailRecord.SessionTime.EndTime.Value.ToIso8601())
                        : null,
 
                    ChargeDetailRecord.Reservation != null

@@ -1701,11 +1701,11 @@ namespace org.GraphDefined.WWCP.Net
 
                                                              new JProperty("sessionId",                        ChargeDetailRecord.SessionId.ToString()),
 
-                                                             ChargeDetailRecord.SessionTime.HasValue
-                                                                 ? new JProperty("sessionStart",               ChargeDetailRecord.SessionTime.Value.StartTime.             ToIso8601())
+                                                             ChargeDetailRecord.SessionTime != null
+                                                                 ? new JProperty("sessionStart",               ChargeDetailRecord.SessionTime.StartTime.                   ToIso8601())
                                                                  : null,
-                                                             ChargeDetailRecord.SessionTime.HasValue && ChargeDetailRecord.SessionTime.Value.EndTime.HasValue
-                                                                 ? new JProperty("sessionStop",                ChargeDetailRecord.SessionTime.Value.EndTime.Value.         ToIso8601())
+                                                             ChargeDetailRecord.SessionTime != null && ChargeDetailRecord.SessionTime.EndTime.HasValue
+                                                                 ? new JProperty("sessionStop",                ChargeDetailRecord.SessionTime.EndTime.Value.               ToIso8601())
                                                                  : null,
 
                                                              ChargeDetailRecord.ProviderIdStart.HasValue
@@ -1730,11 +1730,11 @@ namespace org.GraphDefined.WWCP.Net
                                                              ChargeDetailRecord.ReservationId.HasValue
                                                                  ? new JProperty("reservationId",              ChargeDetailRecord.ReservationId.                           ToString())
                                                                  : null,
-                                                             ChargeDetailRecord.ReservationTime.HasValue
-                                                                 ? new JProperty("reservationStart",           ChargeDetailRecord.ReservationTime.Value.StartTime.         ToString())
+                                                             ChargeDetailRecord.ReservationTime != null
+                                                                 ? new JProperty("reservationStart",           ChargeDetailRecord.ReservationTime.StartTime.               ToString())
                                                                  : null,
-                                                             ChargeDetailRecord.ReservationTime.HasValue && ChargeDetailRecord.ReservationTime.Value.EndTime.HasValue
-                                                                 ? new JProperty("reservationStop",            ChargeDetailRecord.ReservationTime.Value.EndTime.Value.     ToIso8601())
+                                                             ChargeDetailRecord.ReservationTime != null && ChargeDetailRecord.ReservationTime.EndTime.HasValue
+                                                                 ? new JProperty("reservationStop",            ChargeDetailRecord.ReservationTime.EndTime.Value.           ToIso8601())
                                                                  : null,
                                                              ChargeDetailRecord.Reservation             != null
                                                                  ? new JProperty("reservationLevel",           ChargeDetailRecord.Reservation.ReservationLevel.            ToString())
@@ -1771,11 +1771,11 @@ namespace org.GraphDefined.WWCP.Net
                                                              ChargeDetailRecord.ParkingSpaceId.HasValue
                                                                  ? new JProperty("parkingSpaceId",             ChargeDetailRecord.ParkingSpaceId.                      ToString())
                                                                  : null,
-                                                             ChargeDetailRecord.ParkingTime.HasValue
-                                                                 ? new JProperty("parkingTimeStart",           ChargeDetailRecord.ParkingTime.Value.StartTime.         ToIso8601())
+                                                             ChargeDetailRecord.ParkingTime != null
+                                                                 ? new JProperty("parkingTimeStart",           ChargeDetailRecord.ParkingTime.StartTime.               ToIso8601())
                                                                  : null,
-                                                             ChargeDetailRecord.ParkingTime.HasValue && ChargeDetailRecord.ParkingTime.Value.EndTime.HasValue
-                                                                 ? new JProperty("parkingTimeEnd",             ChargeDetailRecord.ParkingTime.Value.EndTime.Value.     ToString())
+                                                             ChargeDetailRecord.ParkingTime != null && ChargeDetailRecord.ParkingTime.EndTime.HasValue
+                                                                 ? new JProperty("parkingTimeEnd",             ChargeDetailRecord.ParkingTime.EndTime.Value.           ToString())
                                                                  : null,
                                                              ChargeDetailRecord.ParkingFee.HasValue
                                                                  ? new JProperty("parkingFee",                 ChargeDetailRecord.ParkingFee.                          ToString())

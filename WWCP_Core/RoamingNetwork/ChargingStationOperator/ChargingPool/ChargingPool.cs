@@ -3100,9 +3100,9 @@ namespace org.GraphDefined.WWCP
 
                     if (TryGetChargingSessionById(SessionId, out ChargingSession chargingSession) &&
                        ((chargingSession.EVSEId.           HasValue && TryGetChargingStationByEVSEId(chargingSession.EVSEId.           Value, out ChargingStation chargingStation)) ||
-                        (chargingSession.ChargingStationId.HasValue && TryGetChargingStationById    (chargingSession.ChargingStationId.Value, out chargingStation))))
+                        (chargingSession.ChargingStationId.HasValue && TryGetChargingStationById    (chargingSession.ChargingStationId.Value, out                 chargingStation))))
 
-                        result = await RemoteChargingPool.
+                        result = await chargingStation.
                                           RemoteStop(SessionId,
                                                      ReservationHandling,
                                                      ProviderId,

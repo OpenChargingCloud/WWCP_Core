@@ -412,7 +412,7 @@ namespace org.GraphDefined.WWCP
         /// Optional timestamps when the parking started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime? ParkingTime { get; set; }
+        public StartEndDateTime  ParkingTime { get; set; }
 
         #endregion
 
@@ -422,7 +422,7 @@ namespace org.GraphDefined.WWCP
         /// Optional timestamps when the charging session started and ended.
         /// </summary>
         [Mandatory]
-        public StartEndDateTime SessionTime { get; }
+        public StartEndDateTime SessionTime { get; set; }
 
         #endregion
 
@@ -439,7 +439,7 @@ namespace org.GraphDefined.WWCP
         /// Optional timestamps when the charging started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime? ChargingTime { get; set; }
+        public StartEndDateTime  ChargingTime { get; set; }
 
         #endregion
 
@@ -456,7 +456,7 @@ namespace org.GraphDefined.WWCP
 
         #region EnergyMeterValues
 
-        private readonly List<Timestamped<Single>> _EnergyMeterValues;
+        private readonly List<Timestamped<Decimal>> _EnergyMeterValues;
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
@@ -464,7 +464,7 @@ namespace org.GraphDefined.WWCP
         /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Single>> EnergyMeteringValues
+        public IEnumerable<Timestamped<Decimal>> EnergyMeteringValues
             => _EnergyMeterValues;
 
         #endregion
@@ -490,7 +490,7 @@ namespace org.GraphDefined.WWCP
         /// The current amount of energy consumed while charging in [kWh].
         /// </summary>
         [Mandatory]
-        public Double ConsumedEnergy
+        public Decimal ConsumedEnergy
         {
             get
             {
@@ -635,14 +635,14 @@ namespace org.GraphDefined.WWCP
         {
 
             this.SessionTime         = new StartEndDateTime(Timestamp ?? DateTime.UtcNow);
-            this._EnergyMeterValues  = new List<Timestamped<Single>>();
+            this._EnergyMeterValues  = new List<Timestamped<Decimal>>();
 
         }
 
         #endregion
 
 
-        public void AddEnergyMeterValue(Timestamped<Single> Value)
+        public void AddEnergyMeterValue(Timestamped<Decimal> Value)
         {
             _EnergyMeterValues.Add(Value);
         }

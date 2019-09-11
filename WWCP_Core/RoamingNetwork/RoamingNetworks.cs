@@ -128,8 +128,8 @@ namespace org.GraphDefined.WWCP
                                                       I18NString                                Name,
                                                       I18NString                                Description                                 = null,
                                                       Action<RoamingNetwork>                    Configurator                                = null,
-                                                      RoamingNetworkAdminStatusTypes             AdminStatus                                 = RoamingNetworkAdminStatusTypes.Operational,
-                                                      RoamingNetworkStatusTypes                  Status                                      = RoamingNetworkStatusTypes.Available,
+                                                      RoamingNetworkAdminStatusTypes            AdminStatus                                 = RoamingNetworkAdminStatusTypes.Operational,
+                                                      RoamingNetworkStatusTypes                 Status                                      = RoamingNetworkStatusTypes.Available,
                                                       UInt16                                    MaxAdminStatusListSize                      = RoamingNetwork.DefaultMaxAdminStatusListSize,
                                                       UInt16                                    MaxStatusListSize                           = RoamingNetwork.DefaultMaxStatusListSize,
                                                       ChargingStationSignatureDelegate          ChargingStationSignatureGenerator           = null,
@@ -161,6 +161,7 @@ namespace org.GraphDefined.WWCP
                                                      ChargingStationSignatureGenerator,
                                                      ChargingPoolSignatureGenerator,
                                                      ChargingStationOperatorSignatureGenerator,
+                                                     ReservationLogFileNameCreator,
                                                      SessionLogFileNameCreator,
                                                      ChargeDetailRecordLogFileNameCreator);
 

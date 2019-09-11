@@ -73,6 +73,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public kWh?                StopChargingAfterKWh    { get; }
 
+        public Decimal?            MaxB2BServiceCosts      { get; }
+
+        public Boolean?            IntermediateCDRs        { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -88,22 +92,25 @@ namespace org.GraphDefined.WWCP
         /// <param name="MinEnergy">The electric vehicle wants to charge at least this amount of energy [kWh].</param>
         /// <param name="StopChargingAfterKWh">Stop charging after this amount of charged energy [kWh].</param>
         public ChargingProduct(ChargingProduct_Id  Id,
-                               TimeSpan?           MinDuration            = null,
-                               TimeSpan?           StopChargingAfterTime  = null,
-                               kW?                 MinPower               = null,
-                               kW?                 MaxPower               = null,
-                               kWh?                MinEnergy              = null,
-                               kWh?                StopChargingAfterKWh   = null,
-                               Decimal?            MaxB2BServiceCosts     = null)
+                               TimeSpan?           MinDuration             = null,
+                               TimeSpan?           StopChargingAfterTime   = null,
+                               kW?                 MinPower                = null,
+                               kW?                 MaxPower                = null,
+                               kWh?                MinEnergy               = null,
+                               kWh?                StopChargingAfterKWh    = null,
+                               Decimal?            MaxB2BServiceCosts      = null,
+                               Boolean?            IntermediateCDRs        = null)
         {
 
-            this.Id                     = Id;
-            this.MinDuration            = MinDuration;
-            this.StopChargingAfterTime  = StopChargingAfterTime;
-            this.MinPower               = MinPower;
-            this.MaxPower               = MaxPower;
-            this.MinEnergy              = MinEnergy;
-            this.StopChargingAfterKWh   = StopChargingAfterKWh;
+            this.Id                      = Id;
+            this.MinDuration             = MinDuration;
+            this.StopChargingAfterTime   = StopChargingAfterTime;
+            this.MinPower                = MinPower;
+            this.MaxPower                = MaxPower;
+            this.MinEnergy               = MinEnergy;
+            this.StopChargingAfterKWh    = StopChargingAfterKWh;
+            this.MaxB2BServiceCosts      = MaxB2BServiceCosts;
+            this.IntermediateCDRs        = IntermediateCDRs;
 
         }
 

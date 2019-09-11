@@ -5148,8 +5148,8 @@ namespace org.GraphDefined.WWCP
 
                     if (TryGetChargingSessionById(SessionId, out ChargingSession chargingSession) &&
                        ((chargingSession.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (chargingSession.EVSEId.           Value, out ChargingPool chargingPool)) ||
-                        (chargingSession.ChargingStationId.HasValue && TryGetChargingPoolByStationId(chargingSession.ChargingStationId.Value, out chargingPool))              ||
-                        (chargingSession.ChargingPoolId.   HasValue && TryGetChargingPoolById       (chargingSession.ChargingPoolId.   Value, out chargingPool))))
+                        (chargingSession.ChargingStationId.HasValue && TryGetChargingPoolByStationId(chargingSession.ChargingStationId.Value, out              chargingPool)) ||
+                        (chargingSession.ChargingPoolId.   HasValue && TryGetChargingPoolById       (chargingSession.ChargingPoolId.   Value, out              chargingPool))))
 
                         result = await chargingPool.
                                            RemoteStop(SessionId,
@@ -5169,13 +5169,13 @@ namespace org.GraphDefined.WWCP
                     if (result.Result == RemoteStopResultType.Success)
                     {
 
-                        // The CDR could also be sent separately!
-                        if (result.ChargeDetailRecord != null)
-                        {
-                            OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
-                                                            this,
-                                                            result.ChargeDetailRecord);
-                        }
+                        //// The CDR could also be sent separately!
+                        //if (result.ChargeDetailRecord != null)
+                        //{
+                        //    OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
+                        //                                    this,
+                        //                                    result.ChargeDetailRecord);
+                        //}
 
                     }
 

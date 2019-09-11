@@ -4077,7 +4077,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                      if (!JSON.ParseMandatory("MeterValueStart",
                                                                               "Energy meter start value",
                                                                               WWCPAPI.HTTPServer.DefaultServerName,
-                                                                              out Single MeterValueStart,
+                                                                              out Decimal MeterValueStart,
                                                                               Request,
                                                                               out _HTTPResponse))
 
@@ -4086,7 +4086,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                      if (!JSON.ParseMandatory("MeterValueEnd",
                                                                               "Energy meter end value",
                                                                               WWCPAPI.HTTPServer.DefaultServerName,
-                                                                              out Single MeterValueEnd,
+                                                                              out Decimal MeterValueEnd,
                                                                               Request,
                                                                               out _HTTPResponse))
 
@@ -4108,9 +4108,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                                                                  ? (AAuthentication) LocalAuthentication. FromAuthToken(AuthToken)
                                                                                                                                  : (AAuthentication) RemoteAuthentication.FromRemoteIdentification(eMAId.Value),
                                                                                                       //ChargingTime:        new StartEndDateTime(ChargingStart.Value, ChargingEnd.Value),
-                                                                                                      EnergyMeteringValues:  new List<Timestamped<Single>>() {
-                                                                                                                                 new Timestamped<Single>(ChargingStart, MeterValueStart),
-                                                                                                                                 new Timestamped<Single>(ChargingEnd,   MeterValueEnd)
+                                                                                                      EnergyMeteringValues:  new List<Timestamped<Decimal>>() {
+                                                                                                                                 new Timestamped<Decimal>(ChargingStart, MeterValueStart),
+                                                                                                                                 new Timestamped<Decimal>(ChargingEnd,   MeterValueEnd)
                                                                                                                             });
 
                                                      var result = await RoamingNetwork.

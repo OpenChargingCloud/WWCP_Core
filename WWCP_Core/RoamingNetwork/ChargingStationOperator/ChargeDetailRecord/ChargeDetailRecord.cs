@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
     public class SignedMeteringValue {
 
         public DateTime            Timestamp        { get; }
-        public Double              MeterValue       { get; }
+        public Decimal             MeterValue       { get; }
         public EnergyMeter_Id      MeterId          { get; }
         public EVSE_Id             EVSEId           { get; }
         public AAuthentication     UserId           { get; }
@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP
 
 
         public SignedMeteringValue(DateTime            Timestamp,
-                                   Double              MeterValue,
+                                   Decimal             MeterValue,
                                    EnergyMeter_Id      MeterId,
                                    EVSE_Id             EVSEId,
                                    AAuthentication     UserId,
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP
         /// The timestamps when the charging session started and ended.
         /// </summary>
         [Mandatory]
-        public StartEndDateTime?   SessionTime   { get; }
+        public StartEndDateTime    SessionTime   { get; }
 
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace org.GraphDefined.WWCP
         /// Optional timestamps when the reservation started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime?        ReservationTime    { get; }
+        public StartEndDateTime         ReservationTime    { get; }
 
         #endregion
 
@@ -299,7 +299,7 @@ namespace org.GraphDefined.WWCP
         /// Optional timestamps when the parking started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime?  ParkingTime       { get; }
+        public StartEndDateTime   ParkingTime       { get; }
 
         /// <summary>
         /// The optional fee for parking.
@@ -321,28 +321,13 @@ namespace org.GraphDefined.WWCP
         /// An optional enumeration of intermediate energy meter values.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Single>>  EnergyMeteringValues   { get; }
-
-        /// <summary>
-        /// The optional sum of the consumed energy based on the meter values.
-        /// </summary>
-        [Optional]
-        public Single ConsumedEnergy
-        {
-            get
-            {
-
-                if (EnergyMeteringValues?.Any() != true)
-                    return 0;
-
-                return EnergyMeteringValues.Last().Value - EnergyMeteringValues.First().Value;
-
-            }
-        }
+        public IEnumerable<Timestamped<Decimal>>  EnergyMeteringValues   { get; }
 
         public IEnumerable<SignedMeteringValue>     SignedMeteringValues   { get; }
 
         #endregion
+
+        public Decimal? ConsumedEnergy { get; }
 
 
         public ECPublicKeyParameters PublicKey { get; }
@@ -389,10 +374,11 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="EnergyMeterId">An optional unique identification of the energy meter.</param>
         /// <param name="EnergyMeteringValues">An optional enumeration of intermediate energy metering values.</param>
+        /// <param name="ConsumedEnergy">The consumed energy, whenever it is more than the energy difference between the first and last energy meter value, e.g. caused by a tariff granularity of 1 kWh.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargeDetailRecord(ChargingSession_Id                   SessionId,
-                                  StartEndDateTime?                    SessionTime,
+                                  StartEndDateTime                     SessionTime,
                                   TimeSpan?                            Duration                    = null,
 
                                   EVSE                                 EVSE                        = null,
@@ -413,18 +399,20 @@ namespace org.GraphDefined.WWCP
 
                                   ChargingReservation                  Reservation                 = null,
                                   ChargingReservation_Id?              ReservationId               = null,
-                                  StartEndDateTime?                    ReservationTime             = null,
+                                  StartEndDateTime                     ReservationTime             = null,
 
                                   ParkingSpace_Id?                     ParkingSpaceId              = null,
-                                  StartEndDateTime?                    ParkingTime                 = null,
+                                  StartEndDateTime                     ParkingTime                 = null,
                                   Decimal?                             ParkingFee                  = null,
 
                                   EnergyMeter_Id?                      EnergyMeterId               = null,
-                                  IEnumerable<Timestamped<Single>>     EnergyMeteringValues        = null,
+                                  IEnumerable<Timestamped<Decimal>>    EnergyMeteringValues        = null,
                                   IEnumerable<SignedMeteringValue>     SignedMeteringValues        = null,
-                                  IEnumerable<String>                  Signatures                  = null,
+                                  Decimal?                             ConsumedEnergy              = null,
 
-                                  IReadOnlyDictionary<String, Object>  CustomData                  = null)
+                                  IReadOnlyDictionary<String, Object>  CustomData                  = null,
+
+                                  IEnumerable<String>                  Signatures                  = null)
 
             : base(CustomData)
 
@@ -459,17 +447,24 @@ namespace org.GraphDefined.WWCP
             this.ParkingFee                  = ParkingFee;
 
             this.EnergyMeterId               = EnergyMeterId;
-            this.EnergyMeteringValues        = EnergyMeteringValues ?? new Timestamped<Single>[0];
+            this.EnergyMeteringValues        = EnergyMeteringValues ?? new Timestamped<Decimal>[0];
             this.SignedMeteringValues        = SignedMeteringValues ?? new SignedMeteringValue[0];
-            this._Signatures                 = Signatures.SafeAny()  ? new HashSet<String>(Signatures) : new HashSet<String>();
 
             if (SignedMeteringValues.SafeAny() && !EnergyMeteringValues.SafeAny())
             {
 
-                this.EnergyMeteringValues = SignedMeteringValues.Select(svalue => new Timestamped<Single>(svalue.Timestamp,
-                                                                                                          (Single) svalue.MeterValue));
+                this.EnergyMeteringValues = SignedMeteringValues.Select(svalue => new Timestamped<Decimal>(svalue.Timestamp,
+                                                                                                           (Decimal) svalue.MeterValue));
 
             }
+
+            if (ConsumedEnergy == null && EnergyMeteringValues.SafeAny())
+            {
+                ConsumedEnergy = EnergyMeteringValues.Last().Value - EnergyMeteringValues.First().Value;
+            }
+
+
+            this._Signatures = Signatures.SafeAny() ? new HashSet<String>(Signatures) : new HashSet<String>();
 
         }
 
@@ -484,11 +479,11 @@ namespace org.GraphDefined.WWCP
                            new JProperty("@id",                               SessionId.ToString()),
                            new JProperty("@context",                          ""),
 
-                           SessionTime.HasValue
+                           SessionTime != null
                                ? new JProperty("sessionTime",           JSONObject.Create(
-                                     new JProperty("start",             SessionTime.Value.StartTime.ToIso8601()),
-                                     SessionTime.Value.EndTime.HasValue
-                                         ? new JProperty("end",         SessionTime.Value.EndTime.Value.ToIso8601())
+                                     new JProperty("start",             SessionTime.StartTime.ToIso8601()),
+                                     SessionTime.EndTime.HasValue
+                                         ? new JProperty("end",         SessionTime.EndTime.Value.ToIso8601())
                                          : null
                                  ))
                                : null,

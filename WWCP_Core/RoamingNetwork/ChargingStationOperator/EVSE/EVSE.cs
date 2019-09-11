@@ -1987,6 +1987,23 @@ namespace org.GraphDefined.WWCP
                                                        EventTrackingId,
                                                        RequestTimeout);
 
+                        #region In case of success...
+
+                        if (result?.Result == RemoteStartResultType.Success)
+                        {
+
+                            // The session can be delivered within the response
+                            // or via an explicit message afterwards!
+                            if (result.Session != null)
+                            {
+                                ChargingSession = result.Session;
+                                result.Session.EVSE = this;
+                            }
+
+                        }
+
+                        #endregion
+
                     }
 
                     #endregion
@@ -2228,6 +2245,15 @@ namespace org.GraphDefined.WWCP
                                                           CancellationToken,
                                                           EventTrackingId,
                                                           RequestTimeout);
+
+                            #region In case of success...
+
+                            if (result?.Result == RemoteStopResultType.Success)
+                            {
+                                ChargingSession = null;
+                            }
+
+                            #endregion
 
                         }
 

@@ -4492,6 +4492,11 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+
+            if (result.ChargeDetailRecord != null)
+                await SendChargeDetailRecord(result.ChargeDetailRecord);
+
+
             return result;
 
         }
@@ -6195,13 +6200,46 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region SendChargeDetailRecord (ChargeDetailRecord,  ...)
+
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="TransmissionType">Whether to send the charge detail record directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public Task<SendCDRsResult>
+
+            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+                                   TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+
+                                   DateTime?           Timestamp           = null,
+                                   CancellationToken?  CancellationToken   = null,
+                                   EventTracking_Id    EventTrackingId     = null,
+                                   TimeSpan?           RequestTimeout      = null)
+
+
+                => SendChargeDetailRecords(new ChargeDetailRecord[] { ChargeDetailRecord },
+                                           TransmissionType,
+
+                                           Timestamp,
+                                           CancellationToken,
+                                           EventTrackingId,
+                                           RequestTimeout);
+
+        #endregion
+
         #region SendChargeDetailRecords(ChargeDetailRecords, ...)
 
         /// <summary>
         /// Send a charge detail record.
         /// </summary>
         /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charge detail record directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
@@ -6408,6 +6446,15 @@ namespace org.GraphDefined.WWCP
                         if (chargingSession.AuthService != null && chargingSession.AuthService is ISendChargeDetailRecords sendCDR)
                         {
                             _ISendChargeDetailRecords[sendCDR].Add(cdr);
+                            ChargeDetailRecordsToProcess.Remove(cdr);
+                        }
+
+                        if (chargingSession.CSORoamingProvider == null && chargingSession.CSORoamingProviderId != null)
+                            chargingSession.CSORoamingProvider = _IRemoteSendChargeDetailRecord.FirstOrDefault(rm => rm.Id.ToString() == chargingSession.CSORoamingProviderId.ToString()) as ICSORoamingProvider;
+
+                        if (chargingSession.CSORoamingProvider != null && chargingSession.CSORoamingProvider is ICSORoamingProvider sendCDR2)
+                        {
+                            _ISendChargeDetailRecords[sendCDR2].Add(cdr);
                             ChargeDetailRecordsToProcess.Remove(cdr);
                         }
 
