@@ -4365,29 +4365,38 @@ namespace org.GraphDefined.WWCP
                 if (SessionsStore.TryGet(SessionId, out ChargingSession chargingSession))
                 {
 
-                    if (chargingSession.ChargingStationOperator != null)
-                        result = await chargingSession.ChargingStationOperator.
-                                           RemoteStop(SessionId,
-                                                      ReservationHandling,
-                                                      ProviderId,
-                                                      RemoteAuthentication,
+                    if (chargingSession.SessionTime.EndTime.HasValue)
+                        result = RemoteStopResult.AlreadyStopped(SessionId,
+                                                                 chargingSession.ReservationId);
 
-                                                      Timestamp,
-                                                      CancellationToken,
-                                                      EventTrackingId,
-                                                      RequestTimeout);
+                    else
+                    {
 
-                    if (result == null && chargingSession.EMPRoamingProvider != null)
-                        result = await chargingSession.EMPRoamingProvider.
-                                           RemoteStop(SessionId,
-                                                      ReservationHandling,
-                                                      ProviderId,
-                                                      RemoteAuthentication,
+                        if (chargingSession.ChargingStationOperator != null)
+                            result = await chargingSession.ChargingStationOperator.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
 
-                                                      Timestamp,
-                                                      CancellationToken,
-                                                      EventTrackingId,
-                                                      RequestTimeout);
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
+
+                        if (result == null && chargingSession.EMPRoamingProvider != null)
+                            result = await chargingSession.EMPRoamingProvider.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
+
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
+
+                    }
 
                 }
 

@@ -74,40 +74,40 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private        readonly  ISendData                                        _ISendData;
+        private readonly        ISendData                                                       _ISendData;
 
-        private        readonly  ISendStatus                                      _ISendStatus;
+        private readonly        ISendStatus                                                     _ISendStatus;
 
         /// <summary>
         /// The default service check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultFlushEVSEDataAndStatusEvery          = TimeSpan.FromSeconds(31);
+        public  readonly static TimeSpan                                                        DefaultFlushEVSEDataAndStatusEvery      = TimeSpan.FromSeconds(31);
 
         /// <summary>
         /// The default status check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultFlushEVSEFastStatusEvery           = TimeSpan.FromSeconds(3);
+        public  readonly static TimeSpan                                                        DefaultFlushEVSEFastStatusEvery         = TimeSpan.FromSeconds(3);
 
         /// <summary>
         /// The default CDR check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultFlushChargeDetailRecordsEvery              = TimeSpan.FromSeconds(15);
+        public  readonly static TimeSpan                                                        DefaultFlushChargeDetailRecordsEvery    = TimeSpan.FromSeconds(15);
 
 
-        protected              UInt64                                                           _FlushEVSEDataRunId               = 1;
-        protected              UInt64                                                           _StatusRunId                      = 1;
-        protected              UInt64                                                           _CDRRunId                         = 1;
+        protected              UInt64                                                           _FlushEVSEDataRunId                     = 1;
+        protected              UInt64                                                           _StatusRunId                            = 1;
+        protected              UInt64                                                           _CDRRunId                               = 1;
 
-        protected readonly     SemaphoreSlim                                                    DataAndStatusLock                 = new SemaphoreSlim(1, 1);
-        protected readonly     Object                                                           DataAndStatusLockOld              = new Object();
+        protected readonly     SemaphoreSlim                                                    DataAndStatusLock                       = new SemaphoreSlim(1, 1);
+        protected readonly     Object                                                           DataAndStatusLockOld                    = new Object();
 
-        protected readonly     SemaphoreSlim                                                    FlushEVSEDataAndStatusLock        = new SemaphoreSlim(1, 1);
+        protected readonly     SemaphoreSlim                                                    FlushEVSEDataAndStatusLock              = new SemaphoreSlim(1, 1);
         protected readonly     Timer                                                            FlushEVSEDataAndStatusTimer;
 
-        protected readonly     SemaphoreSlim                                                    FlushEVSEFastStatusLock           = new SemaphoreSlim(1, 1);
+        protected readonly     SemaphoreSlim                                                    FlushEVSEFastStatusLock                 = new SemaphoreSlim(1, 1);
         protected readonly     Timer                                                            FlushEVSEFastStatusTimer;
 
-        protected readonly     SemaphoreSlim                                                    FlushChargeDetailRecordsLock      = new SemaphoreSlim(1, 1);
+        protected readonly     SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new SemaphoreSlim(1, 1);
         protected readonly     Timer                                                            FlushChargeDetailRecordsTimer;
 
         protected readonly     Dictionary<EVSE,                    List<PropertyUpdateInfos>>   EVSEsUpdateLog;
@@ -115,11 +115,6 @@ namespace org.GraphDefined.WWCP
         protected readonly     Dictionary<ChargingPool,            List<PropertyUpdateInfos>>   ChargingPoolsUpdateLog;
         protected readonly     Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
         protected readonly     Dictionary<RoamingNetwork,          List<PropertyUpdateInfos>>   RoamingNetworksUpdateLog;
-
-
-        protected readonly     IncludeEVSEIdDelegate                                            _IncludeEVSEIds;
-        protected readonly     IncludeEVSEDelegate                                              _IncludeEVSEs;
-        //protected readonly     CustomEVSEIdMapperDelegate                                       CustomEVSEIdMapper;
 
         protected readonly     HashSet<EVSE>                                                    EVSEsToAddQueue;
         protected readonly     HashSet<EVSE>                                                    EVSEsToUpdateQueue;
@@ -137,61 +132,78 @@ namespace org.GraphDefined.WWCP
         /// The offical (multi-language) name of the charging station operator roaming provider.
         /// </summary>
         [Mandatory]
-        public I18NString  Name                              { get; }
+        public I18NString                  Name                              { get; }
 
         /// <summary>
         /// An optional (multi-language) description of the charging station operator roaming provider.
         /// </summary>
         [Optional]
-        public I18NString  Description                       { get; }
+        public I18NString                  Description                       { get; }
+
+
+        /// <summary>
+        /// Only include EVSE identificators matching the given delegate.
+        /// </summary>
+        public IncludeEVSEIdDelegate       IncludeEVSEIds                    { get; }
+
+        /// <summary>
+        /// Only include EVSEs matching the given delegate.
+        /// </summary>
+        public IncludeEVSEDelegate         IncludeEVSEs                      { get; }
+
+        ///// <summary>
+        ///// A delegate to customize the mapping of EVSE identifications.
+        ///// </summary>
+        //public CustomEVSEIdMapperDelegate  CustomEVSEIdMapper                { get; }
+
 
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean     DisablePushData                   { get; set; }
+        public Boolean                     DisablePushData                   { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean     DisablePushAdminStatus            { get; set; }
+        public Boolean                     DisablePushAdminStatus            { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean     DisablePushStatus                 { get; set; }
+        public Boolean                     DisablePushStatus                 { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean     DisableAuthentication             { get; set; }
+        public Boolean                     DisableAuthentication             { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean     DisableSendChargeDetailRecords    { get; set; }
+        public Boolean                     DisableSendChargeDetailRecords    { get; set; }
 
 
         /// <summary>
         /// The attached DNS service.
         /// </summary>
-        public DNSClient   DNSClient                         { get; }
+        public DNSClient                   DNSClient                         { get; }
 
 
         /// <summary>
         /// The EVSE data updates transmission intervall.
         /// </summary>
-        public TimeSpan FlushEVSEDataAndStatusEvery          { get; set; }
+        public TimeSpan                    FlushEVSEDataAndStatusEvery       { get; set; }
 
         /// <summary>
         /// The EVSE status updates transmission intervall.
         /// </summary>
-        public TimeSpan FlushEVSEFastStatusEvery             { get; set; }
+        public TimeSpan                    FlushEVSEFastStatusEvery          { get; set; }
 
         /// <summary>
         /// The charge detail record transmission intervall.
         /// </summary>
-        public TimeSpan FlushChargeDetailRecordsEvery        { get; set; }
+        public TimeSpan                    FlushChargeDetailRecordsEvery     { get; set; }
 
         #endregion
 
@@ -310,8 +322,8 @@ namespace org.GraphDefined.WWCP
             this._ISendData                                      = this as ISendData;
             this._ISendStatus                                    = this as ISendStatus;
 
-            this._IncludeEVSEIds                                 = IncludeEVSEIds ?? (evseid => true);
-            this._IncludeEVSEs                                   = IncludeEVSEs   ?? (evse   => true);
+            this.IncludeEVSEIds                                 = IncludeEVSEIds ?? (evseid => true);
+            this.IncludeEVSEs                                   = IncludeEVSEs   ?? (evse   => true);
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushStatus                               = DisablePushStatus;
@@ -409,8 +421,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                if (_IncludeEVSEs == null ||
-                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                if (IncludeEVSEs == null ||
+                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
                 {
 
                     EVSEsToAddQueue.Add(EVSE);
@@ -494,8 +506,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                if (_IncludeEVSEs == null ||
-                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                if (IncludeEVSEs == null ||
+                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
                 {
 
                     EVSEsToAddQueue.Add(EVSE);
@@ -581,8 +593,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var FilteredUpdates = AdminStatusUpdates.Where(adminstatusupdate => _IncludeEVSEs  (adminstatusupdate.EVSE) &&
-                                                                                    _IncludeEVSEIds(adminstatusupdate.EVSE.Id)).
+                var FilteredUpdates = AdminStatusUpdates.Where(adminstatusupdate => IncludeEVSEs  (adminstatusupdate.EVSE) &&
+                                                                                    IncludeEVSEIds(adminstatusupdate.EVSE.Id)).
                                                          ToArray();
 
                 if (FilteredUpdates.Length > 0)
@@ -682,8 +694,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var FilteredUpdates = StatusUpdates.Where(statusupdate => _IncludeEVSEs  (statusupdate.EVSE) &&
-                                                                          _IncludeEVSEIds(statusupdate.EVSE.Id)).
+                var FilteredUpdates = StatusUpdates.Where(statusupdate => IncludeEVSEs  (statusupdate.EVSE) &&
+                                                                          IncludeEVSEIds(statusupdate.EVSE.Id)).
                                                     ToArray();
 
                 if (FilteredUpdates.Length > 0)

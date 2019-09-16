@@ -323,6 +323,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) AlreadyStopped(SessionId, ReservationId = null, ReservationHandling = null)
+
+        /// <summary>
+        /// A previous remote stop was alredy successful.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
+        /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
+        public static RemoteStopResult AlreadyStopped(ChargingSession_Id       SessionId,
+                                                      ChargingReservation_Id?  ReservationId        = null,
+                                                      ReservationHandling?     ReservationHandling  = null)
+
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultType.AlreadyStopped,
+                                    ReservationId,
+                                    ReservationHandling);
+
+        #endregion
+
         #region (static) Timeout(SessionId)
 
         /// <summary>
@@ -437,6 +456,11 @@ namespace org.GraphDefined.WWCP
         /// The remote stop was successful.
         /// </summary>
         Success,
+
+        /// <summary>
+        /// A previous remote stop was alredy successful.
+        /// </summary>
+        AlreadyStopped,
 
         /// <summary>
         /// The remote stop ran into a timeout.

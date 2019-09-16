@@ -61,6 +61,7 @@
     <Compile Include="CommonTypes\RFIDUID5.cs" />
     <Compile Include="CommonTypes\ChargingLocation.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificates.cs" />
+    <Compile Include="Delegates.cs" />
     <Compile Include="Entities\NetworkEntities\ANetworkChargingStationOperator.cs" />
     <Compile Include="Networking\ExtentionMethods.cs" />
     <Compile Include="Networking\GeoJSON_IO.cs" />
