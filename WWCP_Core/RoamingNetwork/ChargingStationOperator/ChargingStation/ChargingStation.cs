@@ -165,39 +165,158 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Brand
+        #region Brands
 
-        private Brand _Brand;
+        #region BrandAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, Brand, Boolean> BrandAddition;
 
         /// <summary>
-        /// A (multi-language) brand name for this charging station.
+        /// Called whenever a brand will be or was added.
         /// </summary>
-        [Optional]
-        public Brand Brand
+        public IVotingSender<DateTime, ChargingStation, Brand, Boolean> OnBrandAddition
+
+            => BrandAddition;
+
+        #endregion
+
+        #region Brands
+
+        private readonly SpecialHashSet<ChargingStation, Brand_Id, Brand> _Brands;
+
+        /// <summary>
+        /// All brands registered within this charging station.
+        /// </summary>
+        public IEnumerable<Brand> Brands
+            => _Brands;
+
+        #endregion
+
+        public void Add(Brand Brand)
+        {
+            _Brands.TryAdd(Brand);
+        }
+
+        #region BrandIds
+
+        /// <summary>
+        /// All brand identifications registered within this charging station.
+        /// </summary>
+        public IEnumerable<Brand_Id> BrandIds
+            => _Brands.Select(brand => brand.Id);
+
+        #endregion
+
+        #region TryGetBrand(Id, out Brand)
+
+        /// <summary>
+        /// Try to return the brand of the given brand identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the brand.</param>
+        /// <param name="Brand">The brand.</param>
+        public Boolean TryGetBrand(Brand_Id Id, out Brand Brand)
+            => _Brands.TryGet(Id, out Brand);
+
+        #endregion
+
+
+        #region BrandRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, Brand, Boolean> BrandRemoval;
+
+        /// <summary>
+        /// Called whenever a brand will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, Brand, Boolean> OnBrandRemoval
+
+            => BrandRemoval;
+
+        #endregion
+
+        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station.
+        /// </summary>
+        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand_Id BrandId,
+                                 Action<ChargingStation, Brand> OnSuccess = null,
+                                 Action<ChargingStation, Brand_Id> OnError = null)
         {
 
-            get
-            {
-                return _Brand ?? ChargingPool?.Brand;
-            }
-
-            set
+            lock (_Brands)
             {
 
-                if (value != _Brand && value != ChargingPool?.Brand)
+                if (_Brands.TryGet(BrandId, out Brand Brand) &&
+                    BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(BrandId, out Brand _Brand))
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _Brand);
+                    OnSuccess?.Invoke(this, Brand);
 
-                    else
-                        SetProperty(ref _Brand, value);
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
+
+                    return _Brand;
 
                 }
+
+                OnError?.Invoke(this, BrandId);
+
+                return null;
 
             }
 
         }
+
+        #endregion
+
+        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station.
+        /// </summary>
+        /// <param name="Brand">The brand to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand Brand,
+                                 Action<ChargingStation, Brand> OnSuccess = null,
+                                 Action<ChargingStation, Brand> OnError = null)
+        {
+
+            lock (_Brands)
+            {
+
+                if (BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
+                {
+
+                    OnSuccess?.Invoke(this, _Brand);
+
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
+
+                    return _Brand;
+
+                }
+
+                OnError?.Invoke(this, Brand);
+
+                return Brand;
+
+            }
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -1504,12 +1623,13 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            InitialAdminStatus = InitialAdminStatus ?? new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
-            InitialStatus      = InitialStatus      ?? new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available);
+            InitialAdminStatus ??= new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
+            InitialStatus      ??= new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available);
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
             this._OpeningTimes               = OpeningTimes.Open24Hours;
+            this._Brands                     = new SpecialHashSet<ChargingStation, Brand_Id, Brand>(this);
 
             this._AdminStatusSchedule        = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
@@ -1755,15 +1875,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEIds
+        #region EVSEIds        (IncludeEVSEs = null)
 
         /// <summary>
         /// The unique identifications of all Electric Vehicle Supply Equipment (EVSEs)
         /// present within this charging station.
         /// </summary>
-        public IEnumerable<EVSE_Id> EVSEIds
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _EVSEs.Ids;
+            => IncludeEVSEs == null
+
+                   ? _EVSEs.
+                         Select(evse => evse.Id)
+
+                   : _EVSEs.
+                         Where (evse => IncludeEVSEs(evse)).
+                         Select(evse => evse.Id);
 
         #endregion
 
@@ -3175,7 +3303,8 @@ namespace org.GraphDefined.WWCP
 
             Name                 = OtherChargingStation.Name;
             Description          = OtherChargingStation.Description;
-            Brand                = OtherChargingStation.Brand;
+            _Brands.Clear();
+            _Brands.TryAdd(OtherChargingStation.Brands);
             Address              = OtherChargingStation.Address;
             OSM_NodeId           = OtherChargingStation.OSM_NodeId;
             GeoLocation          = OtherChargingStation.GeoLocation;

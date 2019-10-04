@@ -72,17 +72,16 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                              ? ChargingStationOperator.Description.ToJSON("description")
                              : null,
 
-                         ChargingStationOperator.DataSource.ToJSON("DataSource"),
+                         ChargingStationOperator.DataSource.ToJSON("dataSource"),
 
-                         ExpandDataLicenses.Switch(
-                             () => new JProperty("dataLicenseIds",  new JArray(ChargingStationOperator.DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                             () => new JProperty("dataLicenses",    ChargingStationOperator.DataLicenses.ToJSON())),
+                         ExpandDataLicenses != InfoStatus.Hidden
+                             ? ExpandDataLicenses.Switch(
+                                   () => new JProperty("dataLicenseIds",  new JArray(ChargingStationOperator.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                   () => new JProperty("dataLicenses",    ChargingStationOperator.DataLicenses.ToJSON()))
+                             : null,
 
-                         #region Embedded means it is served as a substructure of e.g. a charging station operator
-
-                         Embedded
-                             ? null
-                             : ExpandRoamingNetworkId.Switch(
+                         ExpandRoamingNetworkId != InfoStatus.Hidden
+                             ? ExpandRoamingNetworkId.Switch(
                                    () => new JProperty("roamingNetworkId",   ChargingStationOperator.RoamingNetwork.Id. ToString()),
                                    () => new JProperty("roamingNetwork",     ChargingStationOperator.RoamingNetwork.    ToJSON(Embedded:                          true,
                                                                                                                                ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
@@ -90,13 +89,10 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                                                                ExpandChargingStationIds:          InfoStatus.Hidden,
                                                                                                                                ExpandEVSEIds:                     InfoStatus.Hidden,
                                                                                                                                ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                               ExpandDataLicenses:                InfoStatus.Hidden))),
-
-                         #endregion
-
-                         ChargingStationOperator.Address != null
-                             ? ChargingStationOperator.Address.ToJSON("address")
+                                                                                                                               ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
+
+                         ChargingStationOperator.Address?.ToJSON("address"),
 
                          // API
                          // MainKeys
@@ -122,7 +118,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                              : null,
 
 
-                         ChargingStationOperator.ChargingPools.Any()
+                         ExpandChargingPoolIds != InfoStatus.Hidden && ChargingStationOperator.ChargingPools.Any()
                              ? ExpandChargingPoolIds.Switch(
 
                                    () => new JProperty("chargingPoolIds",
@@ -136,15 +132,16 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                           ToJSON (Embedded:                         true,
                                                                                                   ExpandRoamingNetworkId:           InfoStatus.Hidden,
                                                                                                   ExpandChargingStationOperatorId:  InfoStatus.Hidden,
-                                                                                                  ExpandChargingStationIds:         InfoStatus.Hidden,
-                                                                                                  ExpandEVSEIds:                    InfoStatus.Hidden,
-                                                                                                  ExpandBrandIds:                   InfoStatus.Hidden,
+                                                                                                  ExpandChargingStationIds:         InfoStatus.Expand,
+                                                                                                  ExpandEVSEIds:                    InfoStatus.Expand,
+                                                                                                  ExpandBrandIds:                   InfoStatus.ShowIdOnly,
                                                                                                   ExpandDataLicenses:               InfoStatus.Hidden))))
                              : null,
 
-                         ChargingStationOperator.ChargingPools.Any() && ExpandChargingPoolIds == InfoStatus.Expand
-                             ? null
-                             : ExpandChargingStationIds.Switch(
+
+                         ExpandChargingStationIds != InfoStatus.Hidden && ChargingStationOperator.ChargingStations.Any()
+                             ? ExpandChargingStationIds.Switch(
+
                                    () => new JProperty("chargingStationIds",
                                                        new JArray(ChargingStationOperator.ChargingStationIds().
                                                                                           OrderBy(stationid => stationid).
@@ -157,13 +154,15 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                                   ExpandRoamingNetworkId:           InfoStatus.Hidden,
                                                                                                   ExpandChargingStationOperatorId:  InfoStatus.Hidden,
                                                                                                   ExpandChargingPoolId:             InfoStatus.Hidden,
-                                                                                                  ExpandEVSEIds:                    InfoStatus.Hidden,
-                                                                                                  ExpandBrandIds:                   InfoStatus.Hidden,
-                                                                                                  ExpandDataLicenses:               InfoStatus.Hidden)))),
+                                                                                                  ExpandEVSEIds:                    InfoStatus.Expand,
+                                                                                                  ExpandBrandIds:                   InfoStatus.ShowIdOnly,
+                                                                                                  ExpandDataLicenses:               InfoStatus.Hidden))))
+                             : null,
 
-                         ChargingStationOperator.ChargingPools.Any() && (ExpandChargingPoolIds == InfoStatus.Expand || ExpandChargingStationIds == InfoStatus.Expand)
-                             ? null
-                             : ExpandEVSEIds.Switch(
+
+                         ExpandEVSEIds != InfoStatus.Hidden && ChargingStationOperator.EVSEs.Any()
+                             ? ExpandEVSEIds.Switch(
+
                                    () => new JProperty("EVSEIds",
                                                        new JArray(ChargingStationOperator.EVSEIds().
                                                                                           OrderBy(evseId => evseId).
@@ -177,11 +176,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                                   ExpandChargingStationOperatorId:  InfoStatus.Hidden,
                                                                                                   ExpandChargingPoolId:             InfoStatus.Hidden,
                                                                                                   ExpandChargingStationId:          InfoStatus.Hidden,
-                                                                                                  ExpandBrandIds:                   InfoStatus.Hidden,
-                                                                                                  ExpandDataLicenses:               InfoStatus.Hidden)))),
+                                                                                                  ExpandBrandIds:                   InfoStatus.ShowIdOnly,
+                                                                                                  ExpandDataLicenses:               InfoStatus.Hidden))))
+                             : null,
 
 
-                         ChargingStationOperator.Brands.Any()
+                         ExpandBrandIds != InfoStatus.Hidden && ChargingStationOperator.Brands.Any()
                              ? ExpandBrandIds.Switch(
 
                                    () => new JProperty("brandIds",

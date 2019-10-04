@@ -213,12 +213,10 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                T _Entity;
-
-                if (_MultiIdLookup.TryGetValue(Id, out _Entity))
+                if (_MultiIdLookup.TryGetValue(Id, out T _Entity))
                     return _Entity;
 
-                return default(T);
+                return default;
 
             }
 
@@ -237,7 +235,7 @@ namespace org.GraphDefined.WWCP
                 if (_MultiIdLookup.TryGetValue(Id, out Entity))
                     return true;
 
-                Entity = default(T);
+                Entity = default;
 
                 return false;
 
@@ -275,9 +273,7 @@ namespace org.GraphDefined.WWCP
         public T Remove(TId Id)
         {
 
-            T _Entity = default(T);
-
-            if (_Lookup.TryGetValue(Id, out _Entity))
+            if (_Lookup.TryGetValue(Id, out T _Entity))
             {
 
                 _Lookup.Remove(Id);
@@ -289,7 +285,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return default(T);
+            return default;
 
         }
 
@@ -306,6 +302,15 @@ namespace org.GraphDefined.WWCP
 
             }
 
+        }
+
+        #endregion
+
+        #region Clear()
+
+        public void Clear()
+        {
+            _Lookup.Clear();
         }
 
         #endregion
@@ -486,6 +491,116 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region TryAdd(Entities, ...)
+
+        public Boolean TryAdd(IEnumerable<T> Entities)
+        {
+
+            lock (Lock)
+            {
+
+                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                {
+
+                    foreach (var Entity in Entities)
+                    {
+                        _Lookup.Add(Entity.Id, Entity);
+                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                    }
+
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        public Boolean TryAdd(IEnumerable<T>          Entities,
+                              Action<IEnumerable<T>>  OnSuccess)
+        {
+
+            lock (Lock)
+            {
+
+                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                {
+
+                    foreach (var Entity in Entities)
+                    {
+                        _Lookup.Add(Entity.Id, Entity);
+                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                    }
+
+                    OnSuccess?.Invoke(Entities);
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        public Boolean TryAdd(IEnumerable<T>                    Entities,
+                              Action<DateTime, IEnumerable<T>>  OnSuccess)
+        {
+
+            lock (Lock)
+            {
+
+                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                {
+
+                    foreach (var Entity in Entities)
+                    {
+                        _Lookup.Add(Entity.Id, Entity);
+                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                    }
+
+                    OnSuccess?.Invoke(DateTime.UtcNow, Entities);
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        public Boolean TryAdd(IEnumerable<T>                           Entities,
+                              Action<DateTime, THost, IEnumerable<T>>  OnSuccess)
+        {
+
+            lock (Lock)
+            {
+
+                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                {
+
+                    foreach (var Entity in Entities)
+                    {
+                        _Lookup.Add(Entity.Id, Entity);
+                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                    }
+
+                    OnSuccess?.Invoke(DateTime.UtcNow, _Host, Entities);
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
         #region Get(Id)
 
         public T GetById(TId Id)
@@ -494,12 +609,10 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                T _Entity;
-
-                if (_Lookup.TryGetValue(Id, out _Entity))
+                if (_Lookup.TryGetValue(Id, out T _Entity))
                     return _Entity;
 
-                return default(T);
+                return default;
 
             }
 
@@ -518,7 +631,7 @@ namespace org.GraphDefined.WWCP
                 if (_Lookup.TryGetValue(Id, out Entity))
                     return true;
 
-                Entity = default(T);
+                Entity = default;
 
                 return false;
 
@@ -535,11 +648,8 @@ namespace org.GraphDefined.WWCP
 
             if (_Lookup.TryGetValue(Id, out Entity))
             {
-
                 _Lookup.Remove(Id);
-
                 return true;
-
             }
 
             return false;
@@ -553,31 +663,29 @@ namespace org.GraphDefined.WWCP
         public T Remove(TId Id)
         {
 
-            T _Entity = default(T);
-
-            if (_Lookup.TryGetValue(Id, out _Entity))
+            if (_Lookup.TryGetValue(Id, out T _Entity))
             {
-
                 _Lookup.Remove(Id);
-
                 return _Entity;
-
             }
 
-            return default(T);
+            return default;
 
         }
 
         public void Remove(T Entity)
         {
-
             if (_Lookup.TryGetValue(Entity.Id, out Entity))
-            {
-
                 _Lookup.Remove(Entity.Id);
+        }
 
-            }
+        #endregion
 
+        #region Clear()
+
+        public void Clear()
+        {
+            _Lookup.Clear();
         }
 
         #endregion

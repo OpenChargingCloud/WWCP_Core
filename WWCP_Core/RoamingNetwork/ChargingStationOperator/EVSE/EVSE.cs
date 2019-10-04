@@ -27,6 +27,7 @@ using Org.BouncyCastle.Bcpg.OpenPgp;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -117,39 +118,158 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Brand
+        #region Brands
 
-        private Brand _Brand;
+        #region BrandAddition
+
+        internal readonly IVotingNotificator<DateTime, EVSE, Brand, Boolean> BrandAddition;
 
         /// <summary>
-        /// A (multi-language) brand name for this EVSE.
+        /// Called whenever a brand will be or was added.
         /// </summary>
-        [Optional]
-        public Brand Brand
+        public IVotingSender<DateTime, EVSE, Brand, Boolean> OnBrandAddition
+
+            => BrandAddition;
+
+        #endregion
+
+        #region Brands
+
+        private readonly SpecialHashSet<EVSE, Brand_Id, Brand> _Brands;
+
+        /// <summary>
+        /// All brands registered within this charging station.
+        /// </summary>
+        public IEnumerable<Brand> Brands
+            => _Brands;
+
+        #endregion
+
+        public void Add(Brand Brand)
+        {
+            _Brands.TryAdd(Brand);
+        }
+
+        #region BrandIds
+
+        /// <summary>
+        /// All brand identifications registered within this charging station.
+        /// </summary>
+        public IEnumerable<Brand_Id> BrandIds
+            => _Brands.Select(brand => brand.Id);
+
+        #endregion
+
+        #region TryGetBrand(Id, out Brand)
+
+        /// <summary>
+        /// Try to return the brand of the given brand identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the brand.</param>
+        /// <param name="Brand">The brand.</param>
+        public Boolean TryGetBrand(Brand_Id Id, out Brand Brand)
+            => _Brands.TryGet(Id, out Brand);
+
+        #endregion
+
+
+        #region BrandRemoval
+
+        internal readonly IVotingNotificator<DateTime, EVSE, Brand, Boolean> BrandRemoval;
+
+        /// <summary>
+        /// Called whenever a brand will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, EVSE, Brand, Boolean> OnBrandRemoval
+
+            => BrandRemoval;
+
+        #endregion
+
+        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station.
+        /// </summary>
+        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand_Id                BrandId,
+                                 Action<EVSE, Brand>     OnSuccess  = null,
+                                 Action<EVSE, Brand_Id>  OnError    = null)
         {
 
-            get
-            {
-                return _Brand ?? ChargingStation?.Brand;
-            }
-
-            set
+            lock (_Brands)
             {
 
-                if (value != _Brand && value != ChargingStation?.Brand)
+                if (_Brands.TryGet(BrandId, out Brand Brand) &&
+                    BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(BrandId, out Brand _Brand))
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _Brand);
+                    OnSuccess?.Invoke(this, Brand);
 
-                    else
-                        SetProperty(ref _Brand, value);
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
+
+                    return _Brand;
 
                 }
+
+                OnError?.Invoke(this, BrandId);
+
+                return null;
 
             }
 
         }
+
+        #endregion
+
+        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station.
+        /// </summary>
+        /// <param name="Brand">The brand to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand                Brand,
+                                 Action<EVSE, Brand>  OnSuccess  = null,
+                                 Action<EVSE, Brand>  OnError    = null)
+        {
+
+            lock (_Brands)
+            {
+
+                if (BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
+                {
+
+                    OnSuccess?.Invoke(this, _Brand);
+
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
+
+                    return _Brand;
+
+                }
+
+                OnError?.Invoke(this, Brand);
+
+                return Brand;
+
+            }
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -973,6 +1093,7 @@ namespace org.GraphDefined.WWCP
 
             this._Description           = new I18NString();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
+            this._Brands                = new SpecialHashSet<EVSE, Brand_Id, Brand>(this);
 
             this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);

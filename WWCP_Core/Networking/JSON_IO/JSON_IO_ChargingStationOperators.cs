@@ -1365,7 +1365,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                          var pools  = ChargingStationOperator.
                                                                           ChargingPools.
-                                                                          Where(pool => pool.Brand == Brand).
+                                                                          Where(pool => pool.Brands.Contains(Brand)).
                                                                           ToArray();
 
                                                          if (pools.Length > 0)
@@ -1377,7 +1377,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                          var pools  = ChargingStationOperator.
                                                                           ChargingPools.
-                                                                          Where(pool => pool.Brand == Brand).
+                                                                          Where(pool => pool.Brands.Contains(Brand)).
                                                                           ToArray();
 
                                                          if (pools.Length > 0)
@@ -1399,7 +1399,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                          var stations  = ChargingStationOperator.
                                                                              ChargingStations.
-                                                                             Where(station => station.Brand == Brand).
+                                                                             Where(station => station.Brands.Contains(Brand)).
                                                                              ToArray();
 
                                                          if (stations.Length > 0)
@@ -1411,13 +1411,13 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                          var stations  = ChargingStationOperator.
                                                                              ChargingStations.
-                                                                             Where(station => station.Brand == Brand).
+                                                                             Where(station => station.Brands.Contains(Brand)).
                                                                              ToArray();
 
                                                          if (stations.Length > 0)
                                                              BrandJSON["chargingStations"]  = new JArray(ChargingStationOperator.
                                                                                                               ChargingStations.
-                                                                                                              Where (station => station.Brand == Brand).
+                                                                                                              Where (station => station.Brands.SafeAny(brand => brand == Brand)).
                                                                                                               Select(station => station.ToJSON(Embedded:                        true,
                                                                                                                                                ExpandRoamingNetworkId:          InfoStatus.Hidden,
                                                                                                                                                ExpandChargingStationOperatorId: InfoStatus.Hidden,
@@ -1436,7 +1436,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                          var evses  = ChargingStationOperator.
                                                                           EVSEs.
-                                                                          Where(evse => evse.Brand == Brand).
+                                                                          Where(evse => evse.Brands.Contains(Brand)).
                                                                           ToArray();
 
                                                          if (evses.Length > 0)
@@ -1448,13 +1448,13 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                          var evses  = ChargingStationOperator.
                                                                           EVSEs.
-                                                                          Where(evse => evse.Brand == Brand).
+                                                                          Where(evse => evse.Brands.Contains(Brand)).
                                                                           ToArray();
 
                                                          if (evses.Length > 0)
                                                              BrandJSON["EVSEs"]   = new JArray(ChargingStationOperator.
                                                                                                    EVSEs.
-                                                                                                   Where (evse => evse.Brand == Brand).
+                                                                                                   Where (evse => evse.Brands.Contains(Brand)).
                                                                                                    Select(evse => evse.ToJSON(Embedded:                        true,
                                                                                                                               ExpandRoamingNetworkId:          InfoStatus.Hidden,
                                                                                                                               ExpandChargingStationOperatorId: InfoStatus.Hidden,

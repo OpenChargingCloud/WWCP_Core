@@ -605,7 +605,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
-            => ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSE.Id));
+            => ChargingStations.Any(ChargingStation => ChargingStation.EVSEs.Contains(EVSE));
 
         #endregion
 
@@ -616,7 +616,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSEId(EVSE_Id EVSEId)
-            => ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
+            => ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds().Contains(EVSEId));
 
         #endregion
 
@@ -678,9 +678,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-
-
 
 
         #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)

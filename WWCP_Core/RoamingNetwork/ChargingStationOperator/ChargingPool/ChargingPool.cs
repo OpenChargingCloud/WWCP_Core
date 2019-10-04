@@ -192,42 +192,153 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Brand
+        #region Brands
 
-        private Brand _Brand;
+        #region BrandAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingPool, Brand, Boolean> BrandAddition;
 
         /// <summary>
-        /// A (multi-language) brand name for this charging pool.
+        /// Called whenever a brand will be or was added.
         /// </summary>
-        [Optional]
-        public Brand Brand
+        public IVotingSender<DateTime, ChargingPool, Brand, Boolean> OnBrandAddition
+
+            => BrandAddition;
+
+        #endregion
+
+        #region Brands
+
+        private readonly SpecialHashSet<ChargingPool, Brand_Id, Brand> _Brands;
+
+        /// <summary>
+        /// All brands registered within this charging station pool.
+        /// </summary>
+        public IEnumerable<Brand> Brands
+            => _Brands;
+
+        #endregion
+
+        #region BrandIds
+
+        /// <summary>
+        /// All brand identifications registered within this charging station pool.
+        /// </summary>
+        public IEnumerable<Brand_Id> BrandIds
+            => _Brands.Select(brand => brand.Id);
+
+        #endregion
+
+        #region TryGetBrand(Id, out Brand)
+
+        /// <summary>
+        /// Try to return the brand of the given brand identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the brand.</param>
+        /// <param name="Brand">The brand.</param>
+        public Boolean TryGetBrand(Brand_Id Id, out Brand Brand)
+            => _Brands.TryGet(Id, out Brand);
+
+        #endregion
+
+
+        #region BrandRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingPool, Brand, Boolean> BrandRemoval;
+
+        /// <summary>
+        /// Called whenever a brand will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingPool, Brand, Boolean> OnBrandRemoval
+
+            => BrandRemoval;
+
+        #endregion
+
+        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station pool.
+        /// </summary>
+        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand_Id BrandId,
+                                 Action<ChargingPool, Brand> OnSuccess = null,
+                                 Action<ChargingPool, Brand_Id> OnError = null)
         {
 
-            get
-            {
-                return _Brand;
-            }
-
-            set
+            lock (_Brands)
             {
 
-                if (_Brand != value)
+                if (_Brands.TryGet(BrandId, out Brand Brand) &&
+                    BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(BrandId, out Brand _Brand))
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _Brand);
+                    OnSuccess?.Invoke(this, Brand);
 
-                    else
-                        SetProperty(ref _Brand, value);
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
 
-                    // Delete inherited GeoLocations
-                    _ChargingStations.ForEach(station => station.Brand = null);
+                    return _Brand;
 
                 }
+
+                OnError?.Invoke(this, BrandId);
+
+                return null;
 
             }
 
         }
+
+        #endregion
+
+        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station pool.
+        /// </summary>
+        /// <param name="Brand">The brand to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand Brand,
+                                 Action<ChargingPool, Brand> OnSuccess = null,
+                                 Action<ChargingPool, Brand> OnError = null)
+        {
+
+            lock (_Brands)
+            {
+
+                if (BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
+                {
+
+                    OnSuccess?.Invoke(this, _Brand);
+
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
+
+                    return _Brand;
+
+                }
+
+                OnError?.Invoke(this, Brand);
+
+                return Brand;
+
+            }
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -1136,11 +1247,12 @@ namespace org.GraphDefined.WWCP
 
             this.Operator                    = Operator;
 
-            InitialAdminStatus               = InitialAdminStatus ?? new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
-            InitialStatus                    = InitialStatus      ?? new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
+            InitialAdminStatus               ??= new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
+            InitialStatus                    ??= new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
+            this._Brands                     = new SpecialHashSet<ChargingPool, Brand_Id, Brand>(this);
 
             this._AdminStatusSchedule        = new StatusSchedule<ChargingPoolAdminStatusTypes>(MaxPoolAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
@@ -1968,21 +2080,29 @@ namespace org.GraphDefined.WWCP
         public IEnumerable<EVSE> EVSEs
 
             => _ChargingStations.
-                       SelectMany(station => station.EVSEs);
+                   SelectMany(station => station.EVSEs);
 
         #endregion
 
-        #region EVSEIds
+        #region EVSEIds                (IncludeEVSEs = null)
 
         /// <summary>
         /// The unique identifications of all Electric Vehicle Supply Equipment
         /// (EVSEs) present within this charging pool.
         /// </summary>
-        public IEnumerable<EVSE_Id> EVSEIds
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStations.
-                       SelectMany(station => station.EVSEs).
-                       Select    (evse    => evse.Id);
+            => IncludeEVSEs == null
+
+                   ? _ChargingStations.
+                         SelectMany(station => station.EVSEs).
+                         Select    (evse    => evse.Id)
+
+                   : _ChargingStations.
+                         SelectMany(station => station.EVSEs).
+                         Where     (evse    => IncludeEVSEs(evse)).
+                         Select    (evse    => evse.Id);
 
         #endregion
 
@@ -2047,7 +2167,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
 
-            => _ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSE.Id));
+            => _ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds().Contains(EVSE.Id));
 
         #endregion
 
@@ -2059,7 +2179,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
 
-            => _ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
+            => _ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds().Contains(EVSEId));
 
         #endregion
 
@@ -3227,7 +3347,8 @@ namespace org.GraphDefined.WWCP
 
             Name                 = OtherChargingPool.Name;
             Description          = OtherChargingPool.Description;
-            Brand                = OtherChargingPool.Brand;
+            _Brands.Clear();
+            _Brands.TryAdd(OtherChargingPool.Brands);
             LocationLanguage     = OtherChargingPool.LocationLanguage;
             Address              = OtherChargingPool.Address;
             GeoLocation          = OtherChargingPool.GeoLocation;

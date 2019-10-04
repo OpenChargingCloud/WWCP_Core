@@ -376,7 +376,9 @@ namespace org.GraphDefined.WWCP.Net.IO.GeoJSON
                            new JProperty("lastChange",              ChargingStation.LastChange),
                            new JProperty("adminStatus",             ChargingStation.AdminStatus.  ToJSON()),
                            new JProperty("status",                  ChargingStation.Status.       ToJSON()),
-                           new JProperty("brand",                   ChargingStation.Brand != null ? ChargingStation.Brand.ToJSON(): new JObject()),
+                           ChargingStation.SafeAny()
+                               ? new JProperty("brand",             ChargingStation.Brands.ToJSON())
+                               : null,
                            new JProperty("address",                 ChargingStation.Address.      ToJSON()),
                            new JProperty("openingTimes",            ChargingStation.OpeningTimes. ToJSON()),
                            new JProperty("accessibility",           ChargingStation.Accessibility.ToString()),
@@ -465,10 +467,10 @@ namespace org.GraphDefined.WWCP.Net.IO.GeoJSON
                              ? EVSE.Description.ToJSON("description")
                              : null,
 
-                           EVSE.Brand != null
+                           EVSE.Brands.SafeAny()
                                ? ExpandBrandIds.Switch(
-                                     () => new JProperty("brandId",      EVSE.Brand.Id.ToString()),
-                                     () => new JProperty("brand",        EVSE.Brand.   ToJSON()))
+                                     () => new JProperty("brandId",      EVSE.Brands.Select(brand => brand.Id.ToString())),
+                                     () => new JProperty("brand",        EVSE.Brands.ToJSON()))
                                : null,
 
                            EVSE.DataSource.ToJSON("dataSource"),
