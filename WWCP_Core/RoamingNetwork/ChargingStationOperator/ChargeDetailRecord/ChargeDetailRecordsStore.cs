@@ -83,7 +83,11 @@ namespace org.GraphDefined.WWCP
             lock (InternalData)
             {
 
-                InternalData.Add(NewChargeDetailRecord.SessionId, new ChargeDetailRecordCollection(NewChargeDetailRecord));
+                if (!InternalData.ContainsKey(NewChargeDetailRecord.SessionId))
+                    InternalData.Add(NewChargeDetailRecord.SessionId, new ChargeDetailRecordCollection(NewChargeDetailRecord));
+
+                else
+                    InternalData[NewChargeDetailRecord.SessionId].Add(NewChargeDetailRecord);
 
                 LogIt("new",
                       NewChargeDetailRecord.SessionId,

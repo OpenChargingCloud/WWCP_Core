@@ -6510,14 +6510,27 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
+                            LocalAuthentication LL = null;
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (_cdr.IdentificationStart is LocalAuthentication)
+                                LL = _cdr.IdentificationStart as LocalAuthentication;
+
+                            else if (_cdr.IdentificationStart is RemoteAuthentication)
+                                LL = (_cdr.IdentificationStart as RemoteAuthentication).ToLocal;
+
+                            if (LL != null)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
-                                break;
+
+                                var authStartResult = await eMob.AuthorizeStart(LL);
+
+                                if (authStartResult.Result == AuthStartResultType.Authorized ||
+                                    authStartResult.Result == AuthStartResultType.Blocked)
+                                {
+                                    _ISendChargeDetailRecords[eMob].Add(_cdr);
+                                    ChargeDetailRecordsToProcess.Remove(_cdr);
+                                    break;
+                                }
+
                             }
 
                         }
