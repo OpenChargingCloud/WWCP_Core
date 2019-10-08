@@ -4639,6 +4639,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
+            //ToDo: Fail when RFID UID == "00000000000000"
+
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
                                                                               AuthorizeStart(LocalAuthentication,
@@ -4806,6 +4808,8 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+
+            //ToDo: Fail when RFID UID == "00000000000000"
 
             DebugX.LogT("RN AuthStart Request: " + LocalAuthentication);
             DebugX.LogT(_ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", "));
@@ -6350,6 +6354,8 @@ namespace org.GraphDefined.WWCP
 
             else
             {
+
+                //ToDo: Fail when RFID UID == "00000000000000"
 
                 var ChargeDetailRecordsToProcess  = ChargeDetailRecords.ToList();
                 var ExpectedChargeDetailRecords   = ChargeDetailRecords.ToList();
