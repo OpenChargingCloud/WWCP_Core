@@ -1907,8 +1907,10 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            InitialAdminStatus ??= new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
-            InitialStatus      ??= new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available);
+            this.ChargingPool                = ChargingPool;
+
+            InitialAdminStatus               = InitialAdminStatus != null ? InitialAdminStatus : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
+            InitialStatus                    = InitialStatus      != null ? InitialStatus      : new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available);
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
@@ -1921,7 +1923,6 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule             = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.Insert(InitialStatus.Value);
 
-            this.ChargingPool                = ChargingPool;
             this._EVSEs                      = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
 
             #endregion

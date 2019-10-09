@@ -1514,6 +1514,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
         /// <param name="Operator">The parent charging station operator.</param>
+        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
+        /// <param name="RemoteChargingPoolCreator">A delegate to attach a remote charging pool.</param>
+        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
+        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
@@ -1533,8 +1537,8 @@ namespace org.GraphDefined.WWCP
 
             this.Operator                    = Operator;
 
-            InitialAdminStatus               ??= new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
-            InitialStatus                    ??= new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
+            InitialAdminStatus               = InitialAdminStatus != null ? InitialAdminStatus : new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
+            InitialStatus                    = InitialStatus      != null ? InitialStatus      : new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
