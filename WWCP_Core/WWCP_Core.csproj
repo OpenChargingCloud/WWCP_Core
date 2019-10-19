@@ -63,22 +63,9 @@
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificates.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Entities\NetworkEntities\ANetworkChargingStationOperator.cs" />
-    <Compile Include="Networking\ExtentionMethods.cs" />
-    <Compile Include="Networking\GeoJSON_IO.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_ChargingSessions.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_ChargingStationOperators.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_eMobilityProviders.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_GridOperators.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_ParkingOperators.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_Reservations.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_RoamingNetworks.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_SmartCities.cs" />
-    <Compile Include="Networking\JSON_IO\JSON_IO_URITemplates.cs" />
-    <Compile Include="Networking\Tracker\RoamingNetworkInfo.cs" />
-    <Compile Include="Networking\Tracker\Tracker.cs" />
-    <Compile Include="Networking\Tracker\Tracker_Id.cs" />
-    <Compile Include="Networking\WWCPLogger.cs" />
-    <Compile Include="Networking\WWCP_HTTPAPI.cs" />
+    <Compile Include="Tracker\RoamingNetworkInfo.cs" />
+    <Compile Include="Tracker\Tracker.cs" />
+    <Compile Include="Tracker\Tracker_Id.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecordsStore.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecordCollection.cs" />
     <Compile Include="RoamingNetwork\ADataStore.cs" />
@@ -423,7 +410,6 @@
     <Compile Include="Commands\AuthorizeStartStop\AuthStopEVSEResult.cs" />
     <Compile Include="Commands\SendCDRs\SendCDRsResult.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
-    <Compile Include="Semantics.cs" />
     <Compile Include="Version.cs" />
     <Compile Include="Entities\VirtualEntities\ExtentionMethods.cs" />
     <Compile Include="Entities\VirtualEntities\VirtualChargingPool.cs" />
@@ -456,12 +442,6 @@
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
     <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
     <Folder Include="Responses\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Networking\HTTPRoot\humans.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Networking\HTTPRoot\robots.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
