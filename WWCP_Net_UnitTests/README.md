@@ -1,2 +1,0 @@
-WWCP Networking Unit Tests
-==========================
