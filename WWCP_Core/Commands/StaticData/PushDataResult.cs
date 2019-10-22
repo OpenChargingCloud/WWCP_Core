@@ -33,7 +33,6 @@ namespace org.GraphDefined.WWCP
     // PushChargingPoolData
     // ...
 
-
     public class PushSingleEVSEDataResult
     {
 
