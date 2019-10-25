@@ -35,8 +35,7 @@ namespace org.GraphDefined.WWCP
 
 
     public abstract class AWWCPCSOAdapter : ABaseEMobilityEntity<CSORoamingProvider_Id>
-                                         //   ICSORoamingProvider,
-                                         //   IComparable
+                                                      //            ICSORoamingProvider
     {
 
         #region (class) PropertyUpdateInfos
@@ -125,9 +124,9 @@ namespace org.GraphDefined.WWCP
         protected readonly     List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
         protected readonly     List<ChargeDetailRecord>                                         ChargeDetailRecordsQueue;
 
-        protected readonly     TimeSpan                                             MaxLockWaitingTime                  = TimeSpan.FromSeconds(120);
+        protected readonly     TimeSpan                                                         MaxLockWaitingTime                      = TimeSpan.FromSeconds(120);
 
-        public  static readonly  TimeSpan                                             DefaultRequestTimeout               = TimeSpan.FromSeconds(30);
+        public  static readonly  TimeSpan                                                       DefaultRequestTimeout                   = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -216,9 +215,9 @@ namespace org.GraphDefined.WWCP
 
         #region OnWWCPCPOAdapterException
 
-        public delegate Task OnWWCPCPOAdapterExceptionDelegate(DateTime         Timestamp,
-                                                               AWWCPCSOAdapter  Sender,
-                                                               Exception        Exception);
+        public delegate Task OnWWCPCPOAdapterExceptionDelegate(DateTime             Timestamp,
+                                                               AWWCPCSOAdapter      Sender,
+                                                               Exception            Exception);
 
         public event OnWWCPCPOAdapterExceptionDelegate OnWWCPCPOAdapterException;
 

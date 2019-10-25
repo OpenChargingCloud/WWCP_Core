@@ -28,6 +28,7 @@ using Org.BouncyCastle.Bcpg;
 using System.IO;
 using System.Text.RegularExpressions;
 using Org.BouncyCastle.Crypto.Parameters;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -133,7 +134,10 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        public static readonly Regex JSONWhitespaceRegEx = new Regex(@"(\s)+", RegexOptions.IgnorePatternWhitespace);
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/chargeDetailRecord";
 
         #endregion
 
@@ -471,19 +475,29 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ToJSON(Embedded = false, ...)
 
-        public JObject ToJSON()
+        /// <summary>
+        /// Return a JSON representation of the given charge detail record.
+        /// </summary>
+        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        public JObject ToJSON(Boolean                                           Embedded                             = false,
+                              CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null)
+        {
 
-            => JSONObject.Create(
+            var JSON = JSONObject.Create(
 
-                           new JProperty("@id",                               SessionId.ToString()),
-                           new JProperty("@context",                          ""),
+                           SessionId.ToJSON("@id"),
+
+                           !Embedded
+                               ? new JProperty("@context",                    JSONLDContext)
+                               : null,
 
                            SessionTime != null
-                               ? new JProperty("sessionTime",           JSONObject.Create(
-                                     new JProperty("start",             SessionTime.StartTime.ToIso8601()),
+                               ? new JProperty("sessionTime",                 JSONObject.Create(
+                                     new JProperty("start",                   SessionTime.StartTime.ToIso8601()),
                                      SessionTime.EndTime.HasValue
-                                         ? new JProperty("end",         SessionTime.EndTime.Value.ToIso8601())
+                                         ? new JProperty("end",               SessionTime.EndTime.Value.ToIso8601())
                                          : null
                                  ))
                                : null,
@@ -519,6 +533,15 @@ namespace org.GraphDefined.WWCP
                        //new JProperty("signature",      Signature)
                        );
 
+            return CustomChargeDetailRecordSerializer != null
+                       ? CustomChargeDetailRecordSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+        #region ToSignedJSON(SecretKey, Passphrase)
 
         public JObject ToSignedJSON(PgpSecretKey SecretKey, String Passphrase)
         {
@@ -529,9 +552,8 @@ namespace org.GraphDefined.WWCP
             SignatureGenerator.InitSign(PgpSignatureTypes.BinaryDocument,
                                         SecretKey.ExtractPrivateKey(Passphrase));
 
-            var JSON             = ToJSON();
-            var JSONText         = JSONWhitespaceRegEx.Replace(JSON.ToString().Replace(Environment.NewLine, " "), " ").Trim();
-            var JSONBlob         = JSON.ToUTF8Bytes();
+            var JSON             = ToJSON(false);
+            var JSONBlob         = JSON.ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes();
 
             SignatureGenerator.Update(JSONBlob, 0, JSONBlob.Length);
 
@@ -556,16 +578,7 @@ namespace org.GraphDefined.WWCP
 
         }
 
-
-
-
-
-
-
-
-
-
-
+        #endregion
 
 
         #region Operator overloading

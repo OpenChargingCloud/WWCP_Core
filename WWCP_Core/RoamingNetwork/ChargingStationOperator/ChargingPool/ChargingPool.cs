@@ -3626,8 +3626,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-
-        #region ToJSON(this ChargingPool,                      Embedded = false, ...)
+        #region ToJSON(Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation of the given charging pool.
