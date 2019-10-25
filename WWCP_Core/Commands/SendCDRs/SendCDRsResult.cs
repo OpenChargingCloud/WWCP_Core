@@ -307,7 +307,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<String>          Warnings                       { get; }
+        public IEnumerable<Warning>         Warnings                       { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -335,7 +335,7 @@ namespace org.GraphDefined.WWCP
                                 SendCDRsResultTypes         Result,
                                 IEnumerable<SendCDRResult>  ResultMap,
                                 String                      Description   = null,
-                                IEnumerable<String>         Warnings      = null,
+                                IEnumerable<Warning>        Warnings      = null,
                                 TimeSpan?                   Runtime       = null)
         {
 
@@ -344,11 +344,11 @@ namespace org.GraphDefined.WWCP
             this.Result                    = Result;
             this.ResultMap                 = ResultMap ?? new SendCDRResult[0];
             this.Description               = Description;
+
             this.Warnings                  = Warnings != null
-                                                 ? Warnings.Where     (warning => warning != null).
-                                                            SafeSelect(warning => warning.Trim()).
-                                                            Where     (warning => warning.IsNotNullOrEmpty())
-                                                 : new String[0];
+                                                  ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                                  : new Warning[0];
+
             this.Runtime                   = Runtime;
 
         }
@@ -372,7 +372,7 @@ namespace org.GraphDefined.WWCP
                                 SendCDRsResultTypes          Result,
                                 IEnumerable<SendCDRResult>   ResultMap     = null,
                                 String                       Description   = null,
-                                IEnumerable<String>          Warnings      = null,
+                                IEnumerable<Warning>         Warnings      = null,
                                 TimeSpan?                    Runtime       = null)
         {
 
@@ -381,11 +381,11 @@ namespace org.GraphDefined.WWCP
             this.Result                       = Result;
             this.ResultMap                    = ResultMap ?? new SendCDRResult[0];
             this.Description                  = Description;
+
             this.Warnings                     = Warnings != null
-                                                    ? Warnings.Where     (warning => warning != null).
-                                                               SafeSelect(warning => warning.Trim()).
-                                                               Where     (warning => warning.IsNotNullOrEmpty())
-                                                    : new String[0];
+                                                  ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                                  : new Warning[0];
+
             this.Runtime                      = Runtime;
 
         }
@@ -412,7 +412,7 @@ namespace org.GraphDefined.WWCP
                         ISendChargeDetailRecords         ISendChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ResultMap,
                         String                           Description   = null,
-                        IEnumerable<String>              Warnings      = null,
+                        IEnumerable<Warning>             Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
 
@@ -441,7 +441,7 @@ namespace org.GraphDefined.WWCP
                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ResultMap,
                         String                           Description   = null,
-                        IEnumerable<String>              Warnings      = null,
+                        IEnumerable<Warning>             Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
 
@@ -499,7 +499,7 @@ namespace org.GraphDefined.WWCP
                       ISendChargeDetailRecords         ISendChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
                       String                           Description   = null,
-                      IEnumerable<String>              Warnings      = null,
+                      IEnumerable<Warning>             Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
 
@@ -555,7 +555,7 @@ namespace org.GraphDefined.WWCP
                       IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
                       String                           Description   = null,
-                      IEnumerable<String>              Warnings      = null,
+                      IEnumerable<Warning>             Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
 
@@ -613,7 +613,7 @@ namespace org.GraphDefined.WWCP
                          ISendChargeDetailRecords         ISendChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  ResultMap,
                          String                           Description   = null,
-                         IEnumerable<String>              Warnings      = null,
+                         IEnumerable<Warning>             Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
 
@@ -669,7 +669,7 @@ namespace org.GraphDefined.WWCP
                          IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
                          String                           Description   = null,
-                         IEnumerable<String>              Warnings      = null,
+                         IEnumerable<Warning>             Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
 
@@ -700,7 +700,7 @@ namespace org.GraphDefined.WWCP
                      ISendChargeDetailRecords  ISendChargeDetailRecords,
                      ChargeDetailRecord        ChargeDetailRecord,
                      String                    Description   = null,
-                     IEnumerable<String>       Warnings      = null,
+                     IEnumerable<Warning>      Warnings      = null,
                      TimeSpan?                 Runtime       = null)
 
 
@@ -728,7 +728,7 @@ namespace org.GraphDefined.WWCP
                      ISendChargeDetailRecords         ISendChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                      String                           Description   = null,
-                     IEnumerable<String>              Warnings      = null,
+                     IEnumerable<Warning>             Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
 
@@ -757,7 +757,7 @@ namespace org.GraphDefined.WWCP
                      IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                      ChargeDetailRecord           ChargeDetailRecord,
                      String                       Description   = null,
-                     IEnumerable<String>          Warnings      = null,
+                     IEnumerable<Warning>         Warnings      = null,
                      TimeSpan?                    Runtime       = null)
 
 
@@ -785,7 +785,7 @@ namespace org.GraphDefined.WWCP
                      IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                      String                           Description   = null,
-                     IEnumerable<String>              Warnings      = null,
+                     IEnumerable<Warning>             Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
 
@@ -816,7 +816,7 @@ namespace org.GraphDefined.WWCP
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ResultMap,
                     String                           Description   = null,
-                    IEnumerable<String>              Warnings      = null,
+                    IEnumerable<Warning>             Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
@@ -847,7 +847,7 @@ namespace org.GraphDefined.WWCP
                     ISendChargeDetailRecords  ISendChargeDetailRecords,
                     ChargeDetailRecord        ChargeDetailRecord,
                     String                    Description   = null,
-                    IEnumerable<String>       Warnings      = null,
+                    IEnumerable<Warning>      Warnings      = null,
                     TimeSpan?                 Runtime       = null)
 
 
@@ -875,7 +875,7 @@ namespace org.GraphDefined.WWCP
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                     String                           Description   = null,
-                    IEnumerable<String>              Warnings      = null,
+                    IEnumerable<Warning>             Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
@@ -903,7 +903,7 @@ namespace org.GraphDefined.WWCP
                     IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                     ChargeDetailRecord           ChargeDetailRecord,
                     String                       Description   = null,
-                    IEnumerable<String>          Warnings      = null,
+                    IEnumerable<Warning>         Warnings      = null,
                     TimeSpan?                    Runtime       = null)
 
 
@@ -931,7 +931,7 @@ namespace org.GraphDefined.WWCP
                     IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                     String                           Description   = null,
-                    IEnumerable<String>              Warnings      = null,
+                    IEnumerable<Warning>             Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
@@ -962,7 +962,7 @@ namespace org.GraphDefined.WWCP
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   ChargeDetailRecord        ChargeDetailRecord,
                   String                    Description   = null,
-                  IEnumerable<String>       Warnings      = null,
+                  IEnumerable<Warning>      Warnings      = null,
                   TimeSpan?                 Runtime       = null)
 
 
@@ -990,7 +990,7 @@ namespace org.GraphDefined.WWCP
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                   String                           Description   = null,
-                  IEnumerable<String>              Warnings      = null,
+                  IEnumerable<Warning>             Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 
@@ -1019,7 +1019,7 @@ namespace org.GraphDefined.WWCP
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   ChargeDetailRecord           ChargeDetailRecord,
                   String                       Description   = null,
-                  IEnumerable<String>          Warnings      = null,
+                  IEnumerable<Warning>         Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
 
@@ -1047,7 +1047,7 @@ namespace org.GraphDefined.WWCP
                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                   String                           Description   = null,
-                  IEnumerable<String>              Warnings      = null,
+                  IEnumerable<Warning>             Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 
@@ -1078,7 +1078,7 @@ namespace org.GraphDefined.WWCP
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   ChargeDetailRecord        ChargeDetailRecord,
                   String                    Description   = null,
-                  IEnumerable<String>       Warnings      = null,
+                  IEnumerable<Warning>      Warnings      = null,
                   TimeSpan?                 Runtime       = null)
 
 
@@ -1106,7 +1106,7 @@ namespace org.GraphDefined.WWCP
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                   String                           Description   = null,
-                  IEnumerable<String>              Warnings      = null,
+                  IEnumerable<Warning>             Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 
@@ -1135,7 +1135,7 @@ namespace org.GraphDefined.WWCP
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   ChargeDetailRecord           ChargeDetailRecord,
                   String                       Description   = null,
-                  IEnumerable<String>          Warnings      = null,
+                  IEnumerable<Warning>         Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
 
@@ -1163,7 +1163,7 @@ namespace org.GraphDefined.WWCP
                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                   String                           Description   = null,
-                  IEnumerable<String>              Warnings      = null,
+                  IEnumerable<Warning>             Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 

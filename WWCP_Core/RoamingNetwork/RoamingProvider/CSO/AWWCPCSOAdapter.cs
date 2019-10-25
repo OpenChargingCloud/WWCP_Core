@@ -123,6 +123,11 @@ namespace org.GraphDefined.WWCP
         protected readonly     List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
         protected readonly     List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
         protected readonly     List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
+        protected readonly     List<ChargeDetailRecord>                                         ChargeDetailRecordsQueue;
+
+        protected readonly     TimeSpan                                             MaxLockWaitingTime                  = TimeSpan.FromSeconds(120);
+
+        public  static readonly  TimeSpan                                             DefaultRequestTimeout               = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -144,12 +149,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Only include EVSE identificators matching the given delegate.
         /// </summary>
-        public IncludeEVSEIdDelegate       IncludeEVSEIds                    { get; }
+        public IncludeEVSEIdDelegate       IncludeEVSEIds                    { get; set; }
 
         /// <summary>
         /// Only include EVSEs matching the given delegate.
         /// </summary>
-        public IncludeEVSEDelegate         IncludeEVSEs                      { get; }
+        public IncludeEVSEDelegate         IncludeEVSEs                      { get; set; }
 
         ///// <summary>
         ///// A delegate to customize the mapping of EVSE identifications.
@@ -351,6 +356,7 @@ namespace org.GraphDefined.WWCP
             this.EVSEAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
             this.EVSEStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
             this.EVSEStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
+            this.ChargeDetailRecordsQueue                        = new List<ChargeDetailRecord>();
 
         }
 
