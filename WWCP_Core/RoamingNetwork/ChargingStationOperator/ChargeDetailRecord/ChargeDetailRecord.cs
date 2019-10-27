@@ -241,19 +241,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Identification
+        #region Authentication
 
         /// <summary>
         /// The authentication used for starting this charging process.
         /// </summary>
         [Optional]
-        public AAuthentication                  IdentificationStart    { get; }
+        public AAuthentication                  AuthenticationStart    { get; }
 
         /// <summary>
         /// The authentication used for stopping this charging process.
         /// </summary>
         [Optional]
-        public AAuthentication                  IdentificationStop     { get; }
+        public AAuthentication                  AuthenticationStop     { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
@@ -437,8 +437,8 @@ namespace org.GraphDefined.WWCP
             this.ChargingProduct             = ChargingProduct;
             this.ChargingPrice               = ChargingPrice;
 
-            this.IdentificationStart         = AuthenticationStart;
-            this.IdentificationStop          = AuthenticationStop;
+            this.AuthenticationStart         = AuthenticationStart;
+            this.AuthenticationStop          = AuthenticationStop;
             this.ProviderIdStart             = ProviderIdStart;
             this.ProviderIdStop              = ProviderIdStop;
 

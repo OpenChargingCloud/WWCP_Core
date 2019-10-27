@@ -6514,7 +6514,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (start) AuthToken/RFID identification
 
-                    else if (_cdr.IdentificationStart?.AuthToken != null)
+                    else if (_cdr.AuthenticationStart?.AuthToken != null)
                     {
 
                         // Use a lookup...
@@ -6525,11 +6525,11 @@ namespace org.GraphDefined.WWCP
 
                             LocalAuthentication LL = null;
 
-                            if (_cdr.IdentificationStart is LocalAuthentication)
-                                LL = _cdr.IdentificationStart as LocalAuthentication;
+                            if (_cdr.AuthenticationStart is LocalAuthentication)
+                                LL = _cdr.AuthenticationStart as LocalAuthentication;
 
-                            else if (_cdr.IdentificationStart is RemoteAuthentication)
-                                LL = (_cdr.IdentificationStart as RemoteAuthentication).ToLocal;
+                            else if (_cdr.AuthenticationStart is RemoteAuthentication)
+                                LL = (_cdr.AuthenticationStart as RemoteAuthentication).ToLocal;
 
                             if (LL != null)
                             {
@@ -6554,7 +6554,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (stop)  AuthToken/RFID identification
 
-                    else if (_cdr.IdentificationStop?.AuthToken != null)
+                    else if (_cdr.AuthenticationStop?.AuthToken != null)
                     {
 
                         // Use a lookup...
@@ -6563,7 +6563,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6581,7 +6581,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (start) QR-Code identification
 
-                    else if (_cdr.IdentificationStart?.QRCodeIdentification != null)
+                    else if (_cdr.AuthenticationStart?.QRCodeIdentification != null)
                     {
 
                         // Use a lookup...
@@ -6590,7 +6590,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6608,7 +6608,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (stop)  QR-Code identification
 
-                    else if (_cdr.IdentificationStop?.QRCodeIdentification != null)
+                    else if (_cdr.AuthenticationStop?.QRCodeIdentification != null)
                     {
 
                         // Use a lookup...
@@ -6617,7 +6617,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6635,7 +6635,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (start) Plug'n'Charge identification
 
-                    else if (_cdr.IdentificationStart?.PlugAndChargeIdentification != null)
+                    else if (_cdr.AuthenticationStart?.PlugAndChargeIdentification != null)
                     {
 
                         // Use a lookup...
@@ -6644,7 +6644,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6662,7 +6662,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (stop)  Plug'n'Charge identification
 
-                    else if (_cdr.IdentificationStop?.PlugAndChargeIdentification != null)
+                    else if (_cdr.AuthenticationStop?.PlugAndChargeIdentification != null)
                     {
 
                         // Use a lookup...
@@ -6671,7 +6671,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6689,7 +6689,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (start) remote identification
 
-                    else if (_cdr.IdentificationStart?.RemoteIdentification != null)
+                    else if (_cdr.AuthenticationStart?.RemoteIdentification != null)
                     {
 
                         // Use a lookup...
@@ -6698,7 +6698,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6716,7 +6716,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (stop)  remote identification
 
-                    else if (_cdr.IdentificationStop?.RemoteIdentification != null)
+                    else if (_cdr.AuthenticationStop?.RemoteIdentification != null)
                     {
 
                         // Use a lookup...
@@ -6725,7 +6725,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6743,7 +6743,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (start) public key
 
-                    else if (_cdr.IdentificationStart?.PublicKey != null)
+                    else if (_cdr.AuthenticationStart?.PublicKey != null)
                     {
 
                         // Use a lookup...
@@ -6752,7 +6752,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStart as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
@@ -6770,7 +6770,7 @@ namespace org.GraphDefined.WWCP
 
                     #region We have a valid (stop)  public key
 
-                    else if (_cdr.IdentificationStop?.PublicKey != null)
+                    else if (_cdr.AuthenticationStop?.PublicKey != null)
                     {
 
                         // Use a lookup...
@@ -6779,7 +6779,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var eMob in _eMobilityProviders)
                         {
 
-                            var authStartResult = await eMob.AuthorizeStart(_cdr.IdentificationStop as LocalAuthentication);
+                            var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
                             if (authStartResult.Result == AuthStartResultType.Authorized ||
                                 authStartResult.Result == AuthStartResultType.Blocked)
