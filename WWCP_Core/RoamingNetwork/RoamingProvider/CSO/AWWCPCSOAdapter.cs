@@ -320,6 +320,13 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Initial checks
+
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Name), "The given roaming provider name must not be null or empty!");
+
+            #endregion
+
             this.Name                                            = Name;
             this.Description                                     = Description;
 
