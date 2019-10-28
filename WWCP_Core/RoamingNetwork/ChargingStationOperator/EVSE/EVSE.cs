@@ -330,7 +330,7 @@ namespace org.GraphDefined.WWCP
         public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
 
 
-        private readonly Double EPSILON = 0.01;
+        private readonly Decimal EPSILON = 0.01m;
 
         /// <summary>
         /// The default max size of the EVSE status history.
@@ -639,27 +639,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CurrentTypes
+        #region CurrentType
 
-        private CurrentTypes? _CurrentTypes;
+        private CurrentTypes? _CurrentType;
 
         /// <summary>
         /// The type of the current.
         /// </summary>
         [Mandatory]
-        public CurrentTypes? CurrentTypes
+        public CurrentTypes? CurrentType
         {
 
             get
             {
-                return _CurrentTypes;
+                return _CurrentType;
             }
 
             set
             {
 
-                if (_CurrentTypes != value)
-                    SetProperty(ref _CurrentTypes, value);
+                if (_CurrentType != value)
+                    SetProperty(ref _CurrentType, value);
 
             }
 
@@ -669,13 +669,13 @@ namespace org.GraphDefined.WWCP
 
         #region AverageVoltage
 
-        private Single? _AverageVoltage;
+        private Decimal? _AverageVoltage;
 
         /// <summary>
         /// The average voltage.
         /// </summary>
         [Mandatory]
-        public Single? AverageVoltage
+        public Decimal? AverageVoltage
         {
 
             get
@@ -709,13 +709,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCurrent
 
-        private Single? _MaxCurrent;
+        private Decimal? _MaxCurrent;
 
         /// <summary>
         /// The maximum current [Ampere].
         /// </summary>
         [Mandatory]
-        public Single? MaxCurrent
+        public Decimal? MaxCurrent
         {
 
             get
@@ -748,13 +748,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCurrentRealTime
 
-        private Timestamped<Single>? _MaxCurrentRealTime;
+        private Timestamped<Decimal>? _MaxCurrentRealTime;
 
         /// <summary>
         /// The real-time maximum current [Ampere].
         /// </summary>
         [Mandatory]
-        public Timestamped<Single>? MaxCurrentRealTime
+        public Timestamped<Decimal>? MaxCurrentRealTime
         {
 
             get
@@ -779,13 +779,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCurrentPrognoses
 
-        private IEnumerable<Timestamped<Single>> _MaxCurrentPrognoses;
+        private IEnumerable<Timestamped<Decimal>> _MaxCurrentPrognoses;
 
         /// <summary>
         /// Prognoses on future values of the maximum current [Ampere].
         /// </summary>
         [Mandatory]
-        public IEnumerable<Timestamped<Single>> MaxCurrentPrognoses
+        public IEnumerable<Timestamped<Decimal>> MaxCurrentPrognoses
         {
 
             get
@@ -811,13 +811,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxPower
 
-        private Single? _MaxPower;
+        private Decimal? _MaxPower;
 
         /// <summary>
         /// The maximum power [kWatt].
         /// </summary>
         [Optional]
-        public Single? MaxPower
+        public Decimal? MaxPower
         {
 
             get
@@ -850,13 +850,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxPowerRealTime
 
-        private Timestamped<Single>? _MaxPowerRealTime;
+        private Timestamped<Decimal>? _MaxPowerRealTime;
 
         /// <summary>
         /// The real-time maximum power [kWatt].
         /// </summary>
         [Mandatory]
-        public Timestamped<Single>? MaxPowerRealTime
+        public Timestamped<Decimal>? MaxPowerRealTime
         {
 
             get
@@ -881,13 +881,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxPowerPrognoses
 
-        private IEnumerable<Timestamped<Single>> _MaxPowerPrognoses;
+        private IEnumerable<Timestamped<Decimal>> _MaxPowerPrognoses;
 
         /// <summary>
         /// Prognoses on future values of the maximum power [kWatt].
         /// </summary>
         [Mandatory]
-        public IEnumerable<Timestamped<Single>> MaxPowerPrognoses
+        public IEnumerable<Timestamped<Decimal>> MaxPowerPrognoses
         {
 
             get
@@ -913,13 +913,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCapacity
 
-        private Single? _MaxCapacity;
+        private Decimal? _MaxCapacity;
 
         /// <summary>
         /// The maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public Single? MaxCapacity
+        public Decimal? MaxCapacity
         {
 
             get
@@ -952,13 +952,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCapacityRealTime
 
-        private Timestamped<Single>? _MaxCapacityRealTime;
+        private Timestamped<Decimal>? _MaxCapacityRealTime;
 
         /// <summary>
         /// The real-time maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public Timestamped<Single>? MaxCapacityRealTime
+        public Timestamped<Decimal>? MaxCapacityRealTime
         {
 
             get
@@ -983,13 +983,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCapacityPrognoses
 
-        private IEnumerable<Timestamped<Single>> _MaxCapacityPrognoses;
+        private IEnumerable<Timestamped<Decimal>> _MaxCapacityPrognoses;
 
         /// <summary>
         /// Prognoses on future values of the maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public IEnumerable<Timestamped<Single>> MaxCapacityPrognoses
+        public IEnumerable<Timestamped<Decimal>> MaxCapacityPrognoses
         {
 
             get
@@ -1439,7 +1439,7 @@ namespace org.GraphDefined.WWCP
 
             ChargingModes        = OtherEVSE.ChargingModes;
             AverageVoltage       = OtherEVSE.AverageVoltage;
-            CurrentTypes         = OtherEVSE.CurrentTypes;
+            CurrentType         = OtherEVSE.CurrentType;
             MaxCurrent           = OtherEVSE.MaxCurrent;
             MaxPower             = OtherEVSE.MaxPower;
             MaxCapacity          = OtherEVSE.MaxCapacity;
@@ -1479,11 +1479,11 @@ namespace org.GraphDefined.WWCP
         public void AddCurrentType(CurrentTypes CurrentType)
         {
 
-            if (!_CurrentTypes.HasValue)
-                _CurrentTypes = CurrentType;
+            if (!_CurrentType.HasValue)
+                _CurrentType = CurrentType;
 
             else
-                _CurrentTypes |= CurrentType;
+                _CurrentType |= CurrentType;
 
         }
 
@@ -2953,8 +2953,8 @@ namespace org.GraphDefined.WWCP
                              ? new JProperty("chargingModes",  new JArray(ChargingModes.Value.ToText()))
                              : null,
 
-                         CurrentTypes.HasValue  && CurrentTypes.Value  != WWCP.CurrentTypes.Unspecified
-                             ? new JProperty("currentTypes",   new JArray(CurrentTypes. Value.ToText()))
+                         CurrentType.HasValue  && CurrentType.Value  != WWCP.CurrentTypes.Unspecified
+                             ? new JProperty("currentTypes",   new JArray(CurrentType. Value.ToText()))
                              : null,
 
                          AverageVoltage.HasValue && AverageVoltage > 0     ? new JProperty("averageVoltage",  String.Format("{0:0.00}", AverageVoltage)) : null,
