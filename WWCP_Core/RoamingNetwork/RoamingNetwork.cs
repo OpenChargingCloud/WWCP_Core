@@ -4180,7 +4180,7 @@ namespace org.GraphDefined.WWCP
                         if (result.Result == RemoteStartResultType.Success)
                         {
 
-                            if (CSORoamingProvider != null)
+                           // if (CSORoamingProvider != null)
                                 SessionsStore.NewOrUpdate(result.Session,
                                                           session => {
                                                               session.CSORoamingProvider = CSORoamingProvider;

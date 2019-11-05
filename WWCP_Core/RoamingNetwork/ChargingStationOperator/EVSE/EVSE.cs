@@ -2957,10 +2957,10 @@ namespace org.GraphDefined.WWCP
                              ? new JProperty("currentTypes",   new JArray(CurrentType. Value.ToText()))
                              : null,
 
-                         AverageVoltage.HasValue && AverageVoltage > 0     ? new JProperty("averageVoltage",  String.Format("{0:0.00}", AverageVoltage)) : null,
-                         MaxCurrent.    HasValue && MaxCurrent     > 0     ? new JProperty("maxCurrent",      String.Format("{0:0.00}", MaxCurrent))     : null,
-                         MaxPower.      HasValue && MaxPower.     HasValue ? new JProperty("maxPower",        String.Format("{0:0.00}", MaxPower))       : null,
-                         MaxCapacity.   HasValue && MaxCapacity.  HasValue ? new JProperty("maxCapacity",     String.Format("{0:0.00}", MaxCapacity))    : null,
+                         AverageVoltage.HasValue && AverageVoltage > 0     ? new JProperty("averageVoltage",  Math.Round(AverageVoltage.Value, 2)) : null,
+                         MaxCurrent.    HasValue && MaxCurrent     > 0     ? new JProperty("maxCurrent",      Math.Round(MaxCurrent.    Value, 2)) : null,
+                         MaxPower.      HasValue && MaxPower.     HasValue ? new JProperty("maxPower",        Math.Round(MaxPower.      Value, 2)) : null,
+                         MaxCapacity.   HasValue && MaxCapacity.  HasValue ? new JProperty("maxCapacity",     Math.Round(MaxCapacity.   Value, 2)) : null,
 
                          SocketOutlets.Count > 0
                             ? new JProperty("socketOutlets",  new JArray(SocketOutlets.ToJSON()))
