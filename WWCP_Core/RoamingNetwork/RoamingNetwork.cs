@@ -6442,6 +6442,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
+
                 #region Group charge detail records by their targets...
 
                 var _ISendChargeDetailRecords = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
@@ -6450,7 +6451,6 @@ namespace org.GraphDefined.WWCP
                     _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
 
                 #endregion
-
 
                 #region Try to send the CDRs to their target based on their SessionId...
 
@@ -6801,13 +6801,13 @@ namespace org.GraphDefined.WWCP
 
                 #region Any CDRs left? => bad!
 
-                foreach (var unknownCDR in ChargeDetailRecordsToProcess)
+                foreach (var unknownCDR in ChargeDetailRecordsToProcess.ToArray())
                 {
 
                     resultMap.Add(new SendCDRResult(unknownCDR,
                                                     SendCDRResultTypes.UnknownSessionId));
 
-                    ChargeDetailRecordsToProcess.Clear();
+                    ChargeDetailRecordsToProcess.Remove(unknownCDR);
 
                 }
 
