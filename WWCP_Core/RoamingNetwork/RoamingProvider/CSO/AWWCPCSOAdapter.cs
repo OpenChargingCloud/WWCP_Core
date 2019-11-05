@@ -333,8 +333,8 @@ namespace org.GraphDefined.WWCP
             this._ISendData                                      = this as ISendData;
             this._ISendStatus                                    = this as ISendStatus;
 
-            this.IncludeEVSEIds                                 = IncludeEVSEIds ?? (evseid => true);
-            this.IncludeEVSEs                                   = IncludeEVSEs   ?? (evse   => true);
+            this.IncludeEVSEIds                                  = IncludeEVSEIds ?? (evseid => true);
+            this.IncludeEVSEs                                    = IncludeEVSEs   ?? (evse   => true);
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushStatus                               = DisablePushStatus;
