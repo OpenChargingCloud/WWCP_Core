@@ -378,6 +378,37 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) Timeout     (AuthorizatorId, ...)
+
+        /// <summary>
+        /// A timeout occured.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        /// <param name="ResultMap">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static PushEVSEDataResult
+
+            Timeout(IId                   AuthorizatorId,
+                    ISendData             ISendChargeDetailRecords,
+                    IEnumerable<EVSE>     ResultMap,
+                    String                Description   = null,
+                    IEnumerable<Warning>  Warnings      = null,
+                    TimeSpan?             Runtime       = null)
+
+
+                => new PushEVSEDataResult(AuthorizatorId,
+                                     //     ISendChargeDetailRecords,
+                                          PushDataResultTypes.Timeout,
+                                       //   ResultMap.SafeSelect(evse => new PushChargingStationDataResult(evse, PushDataResultTypes.Timeout)),
+                                       //   Description,
+                                       //   Warnings,
+                                          Runtime: Runtime);
+
+        #endregion
+
 
         #region Error
 
