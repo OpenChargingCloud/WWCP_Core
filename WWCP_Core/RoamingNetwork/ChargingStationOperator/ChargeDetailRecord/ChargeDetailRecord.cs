@@ -378,7 +378,7 @@ namespace org.GraphDefined.WWCP
 
             this.ConsumedEnergy              = ConsumedEnergy;
             if (this.ConsumedEnergy == null && this.EnergyMeteringValues.SafeAny())
-                this.ConsumedEnergy          = (this.EnergyMeteringValues.Last().Value - this.EnergyMeteringValues.First().Value) / 1000; // kWh
+                this.ConsumedEnergy          = this.EnergyMeteringValues.Last().Value - this.EnergyMeteringValues.First().Value; // kWh
 
             this._Signatures                 = Signatures.SafeAny() ? new HashSet<String>(Signatures) : new HashSet<String>();
 
