@@ -25,6 +25,13 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// A delegate for mapping operator identifications.
+    /// </summary>
+    /// <param name="OperatorId">An operator identification to be mapped.</param>
+    public delegate String  CustomOperatorIdMapperDelegate  (String              OperatorId);
+
+
+    /// <summary>
     /// A delegate for filtering EVSE identifications.
     /// </summary>
     /// <param name="EVSEId">An EVSE identification to include.</param>
