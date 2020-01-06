@@ -79,7 +79,6 @@
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffGroup.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffGroup_Id.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\PushChargingStationOperatorAdminStatusResult.cs" />
-    <Compile Include="RoamingNetwork\IRoamingNetwork1.cs" />
     <Compile Include="RoamingNetwork\PushRoamingNetworkAdminStatusResult.cs" />
     <Compile Include="Commands\AuthenticationData\IReceiveAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\ISendAuthenticationData.cs" />
