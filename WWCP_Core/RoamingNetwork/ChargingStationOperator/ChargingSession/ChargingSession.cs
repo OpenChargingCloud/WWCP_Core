@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2020 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -471,7 +471,7 @@ namespace org.GraphDefined.WWCP
 
         #region SignedMeteringValues
 
-        private readonly List<SignedMeteringValue> _SignedMeteringValues;
+        private readonly List<SignedMeteringValue<Decimal>> _SignedMeteringValues;
 
         /// <summary>
         /// An optional enumeration of signed intermediate energy meter values.
@@ -479,7 +479,7 @@ namespace org.GraphDefined.WWCP
         /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
-        public IEnumerable<SignedMeteringValue> SignedMeteringValues
+        public IEnumerable<SignedMeteringValue<Decimal>> SignedMeteringValues
             => _SignedMeteringValues;
 
         #endregion
@@ -611,7 +611,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Timestamp">The current timestamp.</param>
         /// <param name="ChargingSession">The unique charging session identification.</param>
         /// <param name="EnergyMeterValue">A timestamped energy meter value.</param>
-        public delegate void OnNewSignedEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, SignedMeteringValue EnergyMeterValue);
+        public delegate void OnNewSignedEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, SignedMeteringValue<Decimal> EnergyMeterValue);
 
         /// <summary>
         /// An event send whenever a new energy meter value was received.

@@ -35,94 +35,6 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 namespace org.GraphDefined.WWCP
 {
 
-    public class SignedMeteringValue {
-
-        public DateTime            Timestamp        { get; }
-        public Decimal             MeterValue       { get; }
-        public EnergyMeter_Id      MeterId          { get; }
-        public EVSE_Id             EVSEId           { get; }
-        public AAuthentication     UserId           { get; }
-        public PgpPublicKey        PublicKey        { get; }
-        public String              lastSignature    { get; }
-        public String              Signature        { get; private set; }
-
-
-        public SignedMeteringValue(DateTime            Timestamp,
-                                   Decimal             MeterValue,
-                                   EnergyMeter_Id      MeterId,
-                                   EVSE_Id             EVSEId,
-                                   AAuthentication     UserId,
-                                   PgpPublicKey        PublicKey,
-                                   String              lastSignature  = "",
-                                   String              Signature      = "")
-        {
-
-            this.Timestamp      = Timestamp;
-            this.MeterValue     = MeterValue;
-            this.MeterId        = MeterId;
-            this.EVSEId         = EVSEId;
-            this.UserId         = UserId;
-            this.PublicKey      = PublicKey;
-            this.lastSignature  = lastSignature != null ? lastSignature.Trim() : "";
-            this.Signature      = Signature     != null ? Signature.    Trim() : "";
-
-            if (UserId == null)
-                new ArgumentNullException(nameof(UserId), "A signed meter value must have some kind of user identification!");
-
-        }
-
-
-        public JObject ToJSON()
-
-            => JSONObject.Create(
-                           new JProperty("timestamp",      Timestamp.ToIso8601()),
-                           new JProperty("meterValue",     MeterValue),
-                           new JProperty("meterId",        MeterId.ToString()),
-                           new JProperty("evseId",         EVSEId. ToString()),
-                           new JProperty("userId",         UserId),
-                           new JProperty("publicKey",      PublicKey.Fingerprint.ToHexString()),
-                           new JProperty("lastSignature",  lastSignature),
-                           new JProperty("signature",      Signature)
-                       );
-
-
-        public SignedMeteringValue Sign(PgpSecretKey  SecretKey,
-                                        String        Passphrase)
-        {
-
-            var SignatureGenerator = new PgpSignatureGenerator(SecretKey.PublicKey.Algorithm,
-                                                               HashAlgorithms.Sha512);
-
-            SignatureGenerator.InitSign(PgpSignatureTypes.BinaryDocument,
-                                        SecretKey.ExtractPrivateKey(Passphrase));
-
-            var JSON             = ToJSON();
-            var JSONText         = JSON.ToString().Replace(Environment.NewLine, " ");
-            var JSONBlob         = JSON.ToUTF8Bytes();
-
-            SignatureGenerator.Update(JSONBlob, 0, JSONBlob.Length);
-
-            var _Signature       = SignatureGenerator.Generate();
-            var OutputStream     = new MemoryStream();
-            var SignatureStream  = new BcpgOutputStream(new ArmoredOutputStream(OutputStream));
-
-            _Signature.Encode(SignatureStream);
-
-            SignatureStream.Flush();
-            SignatureStream.Close();
-
-            OutputStream.Flush();
-            OutputStream.Close();
-
-            JSON["signature"] = this.Signature = OutputStream.ToArray().ToHexString();
-
-            return this;
-
-        }
-
-    }
-
-
     /// <summary>
     /// A charge detail record for a charging session.
     /// </summary>
@@ -319,19 +231,26 @@ namespace org.GraphDefined.WWCP
         /// An optional unique identification of the energy meter.
         /// </summary>
         [Optional]
-        public EnergyMeter_Id?                   EnergyMeterId          { get; }
+        public EnergyMeter_Id?                              EnergyMeterId           { get; }
 
         /// <summary>
-        /// An optional enumeration of intermediate energy meter values.
+        /// An optional enumeration of energy meter values.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Decimal>>  EnergyMeteringValues   { get; }
+        public IEnumerable<Timestamped<Decimal>>            EnergyMeteringValues    { get; }
 
-        public IEnumerable<SignedMeteringValue>     SignedMeteringValues   { get; }
+        /// <summary>
+        /// An optional enumeration of energy metering values with digital signatures per measurement.
+        /// </summary>
+        public IEnumerable<SignedMeteringValue<Decimal>>    SignedMeteringValues    { get; }
+
+        /// <summary>
+        /// The consumed energy in kWh.
+        /// </summary>
+        public Decimal?                                     ConsumedEnergy          { get; }
+
 
         #endregion
-
-        public Decimal? ConsumedEnergy { get; }
 
 
         public ECPublicKeyParameters PublicKey { get; }
@@ -381,42 +300,42 @@ namespace org.GraphDefined.WWCP
         /// <param name="ConsumedEnergy">The consumed energy, whenever it is more than the energy difference between the first and last energy meter value, e.g. caused by a tariff granularity of 1 kWh.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public ChargeDetailRecord(ChargingSession_Id                   SessionId,
-                                  StartEndDateTime                     SessionTime,
-                                  TimeSpan?                            Duration                    = null,
+        public ChargeDetailRecord(ChargingSession_Id                         SessionId,
+                                  StartEndDateTime                           SessionTime,
+                                  TimeSpan?                                  Duration                    = null,
 
-                                  EVSE                                 EVSE                        = null,
-                                  EVSE_Id?                             EVSEId                      = null,
-                                  ChargingStation                      ChargingStation             = null,
-                                  ChargingStation_Id?                  ChargingStationId           = null,
-                                  ChargingPool                         ChargingPool                = null,
-                                  ChargingPool_Id?                     ChargingPoolId              = null,
-                                  ChargingStationOperator              ChargingStationOperator     = null,
-                                  ChargingStationOperator_Id?          ChargingStationOperatorId   = null,
-                                  ChargingProduct                      ChargingProduct             = null,
-                                  Decimal?                             ChargingPrice               = null,
+                                  EVSE                                       EVSE                        = null,
+                                  EVSE_Id?                                   EVSEId                      = null,
+                                  ChargingStation                            ChargingStation             = null,
+                                  ChargingStation_Id?                        ChargingStationId           = null,
+                                  ChargingPool                               ChargingPool                = null,
+                                  ChargingPool_Id?                           ChargingPoolId              = null,
+                                  ChargingStationOperator                    ChargingStationOperator     = null,
+                                  ChargingStationOperator_Id?                ChargingStationOperatorId   = null,
+                                  ChargingProduct                            ChargingProduct             = null,
+                                  Decimal?                                   ChargingPrice               = null,
 
-                                  AAuthentication                      AuthenticationStart         = null,
-                                  AAuthentication                      AuthenticationStop          = null,
-                                  eMobilityProvider_Id?                ProviderIdStart             = null,
-                                  eMobilityProvider_Id?                ProviderIdStop              = null,
+                                  AAuthentication                            AuthenticationStart         = null,
+                                  AAuthentication                            AuthenticationStop          = null,
+                                  eMobilityProvider_Id?                      ProviderIdStart             = null,
+                                  eMobilityProvider_Id?                      ProviderIdStop              = null,
 
-                                  ChargingReservation                  Reservation                 = null,
-                                  ChargingReservation_Id?              ReservationId               = null,
-                                  StartEndDateTime                     ReservationTime             = null,
+                                  ChargingReservation                        Reservation                 = null,
+                                  ChargingReservation_Id?                    ReservationId               = null,
+                                  StartEndDateTime                           ReservationTime             = null,
 
-                                  ParkingSpace_Id?                     ParkingSpaceId              = null,
-                                  StartEndDateTime                     ParkingTime                 = null,
-                                  Decimal?                             ParkingFee                  = null,
+                                  ParkingSpace_Id?                           ParkingSpaceId              = null,
+                                  StartEndDateTime                           ParkingTime                 = null,
+                                  Decimal?                                   ParkingFee                  = null,
 
-                                  EnergyMeter_Id?                      EnergyMeterId               = null,
-                                  IEnumerable<Timestamped<Decimal>>    EnergyMeteringValues        = null,
-                                  IEnumerable<SignedMeteringValue>     SignedMeteringValues        = null,
-                                  Decimal?                             ConsumedEnergy              = null,
+                                  EnergyMeter_Id?                            EnergyMeterId               = null,
+                                  IEnumerable<Timestamped<Decimal>>          EnergyMeteringValues        = null,
+                                  IEnumerable<SignedMeteringValue<Decimal>>  SignedMeteringValues        = null,
+                                  Decimal?                                   ConsumedEnergy              = null,
 
-                                  IReadOnlyDictionary<String, Object>  CustomData                  = null,
+                                  IReadOnlyDictionary<String, Object>        CustomData                  = null,
 
-                                  IEnumerable<String>                  Signatures                  = null)
+                                  IEnumerable<String>                        Signatures                  = null)
 
             : base(CustomData)
 
@@ -451,24 +370,17 @@ namespace org.GraphDefined.WWCP
             this.ParkingFee                  = ParkingFee;
 
             this.EnergyMeterId               = EnergyMeterId;
-            this.EnergyMeteringValues        = EnergyMeteringValues ?? new Timestamped<Decimal>[0];
-            this.SignedMeteringValues        = SignedMeteringValues ?? new SignedMeteringValue[0];
-
+            this.EnergyMeteringValues        = EnergyMeteringValues != null ? EnergyMeteringValues.OrderBy(mv  => mv. Timestamp).ToArray() : new Timestamped<Decimal>[0];
+            this.SignedMeteringValues        = SignedMeteringValues != null ? SignedMeteringValues.OrderBy(smv => smv.Timestamp).ToArray() : new SignedMeteringValue<Decimal>[0];
             if (SignedMeteringValues.SafeAny() && !EnergyMeteringValues.SafeAny())
-            {
+                this.EnergyMeteringValues    = SignedMeteringValues.Select(svalue => new Timestamped<Decimal>(svalue.Timestamp,
+                                                                                                              svalue.MeterValue));
 
-                this.EnergyMeteringValues = SignedMeteringValues.Select(svalue => new Timestamped<Decimal>(svalue.Timestamp,
-                                                                                                           (Decimal) svalue.MeterValue));
+            this.ConsumedEnergy              = ConsumedEnergy;
+            if (this.ConsumedEnergy == null && this.EnergyMeteringValues.SafeAny())
+                this.ConsumedEnergy          = this.EnergyMeteringValues.Last().Value - this.EnergyMeteringValues.First().Value; // kWh
 
-            }
-
-            if (ConsumedEnergy == null && EnergyMeteringValues.SafeAny())
-            {
-                ConsumedEnergy = EnergyMeteringValues.Last().Value - EnergyMeteringValues.First().Value;
-            }
-
-
-            this._Signatures = Signatures.SafeAny() ? new HashSet<String>(Signatures) : new HashSet<String>();
+            this._Signatures                 = Signatures.SafeAny() ? new HashSet<String>(Signatures) : new HashSet<String>();
 
         }
 

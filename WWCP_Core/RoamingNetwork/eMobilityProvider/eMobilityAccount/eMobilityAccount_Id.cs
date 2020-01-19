@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2020 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -37,24 +37,29 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
+        private readonly String InternalId;
+
         /// <summary>
         /// The regular expression for parsing an electric mobility account identification.
         /// </summary>
-        public static readonly Regex eMobilityAccountId_RegEx  = new Regex(@"^([A-Za-z]{2}\*[A-Za-z0-9]{3})\*([A-Za-z0-9]{6})\*([0-9|X])$ |"  +   // OICP DIN STAR:  DE*BMW*0010LY*3
-                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{6})-([0-9|X])$ |"     +   // OICP DIN HYPEN: DE-BMW-0010LY-3
-                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{6})([0-9|X])$ |"        +   // OICP DIN:       DEBMW0010LY3
-
-                                                                           @"^([A-Za-z]{2}\*[A-Za-z0-9]{3})\*C([A-Za-z0-9]{9})$ |"            +   //                 FR*MSP*C0001000LY
-                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-C([A-Za-z0-9]{8})-([0-9|X])$ |"    +   // OICP ISO Hypen: DE-BMW-C001000LY-3
-                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})C([A-Za-z0-9]{8})([0-9|X])$ |"       +   // OICP ISO:       DEBMWC001000LY3
-
-                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})-([A-Za-z0-9])$ |" +   // OCHP:
-                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})([A-Za-z0-9])$ |" +
-                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})$ |" +
-                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})$",
-
-                                                                       //    @"^([A-Za-z]{2}[\*|-]?[A-Za-z0-9]{3})[\*|-]?([A-Za-z0-9]{6})[\*|-]?[\*|-]?[\d|X])$",   // PlugSurfing OIOI 4.x
+        public static readonly Regex eMobilityAccountId_RegEx  = new Regex(@"^([A-Za-z]{2}\-?[A-Za-z0-9]{3})\-?C([A-Za-z0-9]{8})\-?([\d|A-Za-z])$|" +         // ISO
+                                                                           @"^([A-Za-z]{2}[\*|\-]?[A-Za-z0-9]{3})[\*|\-]?([A-Za-z0-9]{6})[\*|\-]?([\d|X])$",  // DIN
                                                                            RegexOptions.IgnorePatternWhitespace);
+                                                                 //new Regex(@"^([A-Za-z]{2}\*[A-Za-z0-9]{3})\*([A-Za-z0-9]{6})\*([0-9|X])$ |"  +   // OICP DIN STAR:  DE*BMW*0010LY*3
+                                                                 //          @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{6})-([0-9|X])$ |"     +   // OICP DIN HYPEN: DE-BMW-0010LY-3
+                                                                 //          @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{6})([0-9|X])$ |"        +   // OICP DIN:       DEBMW0010LY3
+                                                                 //
+                                                                 //          @"^([A-Za-z]{2}\*[A-Za-z0-9]{3})\*C([A-Za-z0-9]{9})$ |"            +   //                 FR*MSP*C0001000LY
+                                                                 //          @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-C([A-Za-z0-9]{8})-([0-9|X])$ |"    +   // OICP ISO Hypen: DE-BMW-C001000LY-3
+                                                                 //          @"^([A-Za-z]{2}[A-Za-z0-9]{3})C([A-Za-z0-9]{8})([0-9|X])$ |"       +   // OICP ISO:       DEBMWC001000LY3
+                                                                 //
+                                                                 //          @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})-([A-Za-z0-9])$ |" +   // OCHP:
+                                                                 //          @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})([A-Za-z0-9])$ |" +
+                                                                 //          @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})$ |" +
+                                                                 //          @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})$",
+                                                                 //
+                                                                 //      //    @"^([A-Za-z]{2}[\*|-]?[A-Za-z0-9]{3})[\*|-]?([A-Za-z0-9]{6})[\*|-]?[\*|-]?[\d|X])$",   // PlugSurfing OIOI 4.x
+                                                                 //          RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -102,18 +107,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
         /// <param name="Suffix">The suffix of the electric mobility account identification.</param>
         /// <param name="CheckDigit">An optional check digit of the electric mobility account identification.</param>
-        private eMobilityAccount_Id(eMobilityProvider_Id  ProviderId,
+        private eMobilityAccount_Id(String                InternalId,
+                                    eMobilityProvider_Id  ProviderId,
                                     String                Suffix,
                                     Char?                 CheckDigit = null)
         {
 
-            #region Initial checks
-
-            if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix),  "The identification suffix must not be null or empty!");
-
-            #endregion
-
+            this.InternalId  = InternalId;
             this.ProviderId  = ProviderId;
             this.Suffix      = Suffix;
             this.CheckDigit  = CheckDigit;
@@ -123,91 +123,42 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as an electric mobility account identification.
+        /// Parse the given text representation of an electric vehicle contract identification.
         /// </summary>
-        /// <param name="Text">A text representation of an electric mobility account identification.</param>
+        /// <param name="Text">A text representation of an electric vehicle contract identification.</param>
         public static eMobilityAccount_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out eMobilityAccount_Id eMobilityAccountId))
+                return eMobilityAccountId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The text representation of the electric mobility account identification must not be null or empty!");
-
-            #endregion
-
-            var _MatchCollection = eMobilityAccountId_RegEx.Matches(Text);
-
-            if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal electric mobility account identification '" + Text + "'!");
-
-            eMobilityProvider_Id _ProviderId;
-
-            // OICP DIN STAR:  DE*BMW*0010LY*3
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value,  out _ProviderId))
-                return new eMobilityAccount_Id(_ProviderId,
-                                               _MatchCollection[0].Groups[2].Value,
-                                               _MatchCollection[0].Groups[3].Value[0]);
-
-            // OICP DIN HYPEN: DE-BMW-0010LY-3
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value,  out _ProviderId))
-                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN),
-                                               _MatchCollection[0].Groups[5].Value,
-                                               _MatchCollection[0].Groups[6].Value[0]);
-
-            // OICP DIN:       DEBMW0010LY3
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value,  out _ProviderId))
-                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN),
-                                               _MatchCollection[0].Groups[8].Value,
-                                               _MatchCollection[0].Groups[9].Value[0]);
-
-
-
-
-            //                 FR*MSP*C0001000LY
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
-                return new eMobilityAccount_Id(_ProviderId,
-                                               _MatchCollection[0].Groups[11].Value);
-
-            // OICP ISO Hypen: DE-BMW-C001000LY-3
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[12].Value, out _ProviderId))
-                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
-                                               _MatchCollection[0].Groups[13].Value,
-                                               _MatchCollection[0].Groups[14].Value[0]);
-
-            // OICP ISO:       DEBMWC001000LY3
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[15].Value, out _ProviderId))
-                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
-                                               _MatchCollection[0].Groups[16].Value,
-                                               _MatchCollection[0].Groups[17].Value[0]);
-
-
-            // OCHP
-
-            throw new ArgumentException("Illegal electric mobility account identification '" + Text + "'!");
+            throw new ArgumentException("Illegal electric vehicle contract identification '" + Text + "'!");
 
         }
 
         #endregion
 
-        #region Parse(ProviderId, Suffix)
+        #region (static) Parse   (ProviderId, Suffix)
 
         /// <summary>
-        /// Parse the given electric mobility account identification.
+        /// Parse the given electric vehicle contract identification.
         /// </summary>
         /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
-        /// <param name="Suffix">The suffix of the electric mobility account identification.</param>
+        /// <param name="Suffix">The suffix of the electric vehicle contract identification.</param>
         public static eMobilityAccount_Id Parse(eMobilityProvider_Id  ProviderId,
-                                                String                Suffix)
+                                    String       Suffix)
         {
 
             #region Initial checks
 
+            if (Suffix != null)
+                Suffix = Suffix.Trim();
+
             if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix), "The given electric mobility account identification suffix must not be null or empty!");
+                throw new ArgumentNullException(nameof(Suffix), "The given electric vehicle contract identification suffix must not be null or empty!");
 
             #endregion
 
@@ -236,17 +187,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text)
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Parse the given string as an electric mobility account identification.
+        /// Try to parse the given string as an electric vehicle contract identification.
         /// </summary>
-        /// <param name="Text">A text representation of an electric mobility account identification.</param>
+        /// <param name="Text">A text representation of an electric vehicle contract identification.</param>
         public static eMobilityAccount_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out eMobilityAccount_Id eMAId))
-                return eMAId;
+            if (TryParse(Text, out eMobilityAccount_Id eMobilityAccountId))
+                return eMobilityAccountId;
 
             return new eMobilityAccount_Id?();
 
@@ -254,21 +205,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text, out eMobilityAccountId)
+        #region (static) TryParse(Text, out eMobilityAccountId)
 
         /// <summary>
-        /// Parse the given string as an electric mobility account identification.
+        /// Try to parse the given string as an electric vehicle contract identification.
         /// </summary>
-        /// <param name="Text">A text representation of an electric mobility account identification.</param>
-        /// <param name="eMobilityAccountId">The parsed electric mobility account identification.</param>
+        /// <param name="Text">A text representation of an electric vehicle contract identification.</param>
+        /// <param name="eMobilityAccountId">The parsed electric vehicle contract identification.</param>
         public static Boolean TryParse(String Text, out eMobilityAccount_Id eMobilityAccountId)
         {
 
             #region Initial checks
 
+            if (Text != null)
+                Text = Text.Trim();
+
             if (Text.IsNullOrEmpty())
             {
-                eMobilityAccountId = default(eMobilityAccount_Id);
+                eMobilityAccountId = default;
                 return false;
             }
 
@@ -277,122 +231,330 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                eMobilityAccountId = default(eMobilityAccount_Id);
+                var matchCollection = eMobilityAccountId_RegEx.Matches(Text);
 
-                var _MatchCollection = eMobilityAccountId_RegEx.Matches(Text.Trim().ToUpper());
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
+                {
+                    eMobilityAccountId = default;
                     return false;
+                }
 
-                eMobilityProvider_Id _ProviderId;
 
-                #region OICP DIN STAR:  DE*BMW*0010LY*3
-
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _ProviderId))
+                // ISO: DE-GDF-C12022187-X, DEGDFC12022187X
+                if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out eMobilityProvider_Id providerId))
                 {
 
-                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
-                                                                 _MatchCollection[0].Groups[2].Value,
-                                                                 _MatchCollection[0].Groups[3].Value[0]);
+                    eMobilityAccountId = new eMobilityAccount_Id(Text,
+                                         providerId,
+                                         matchCollection[0].Groups[2].Value,
+                                         matchCollection[0].Groups[3].Value[0]);
 
                     return true;
 
                 }
 
-                #endregion
 
-                #region OICP DIN HYPEN: DE-BMW-0010LY-3
-
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value,  out _ProviderId))
+                // DIN: DE*GDF*0010LY*3, DE-GDF-0010LY-3, DEGDF0010LY3
+                if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[4].Value,  out providerId))
                 {
 
-                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN),
-                                                                 _MatchCollection[0].Groups[5].Value,
-                                                                 _MatchCollection[0].Groups[6].Value[0]);
+                    if (providerId.Format == ProviderIdFormats.ISO_HYPHEN)
+                        providerId = providerId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN);
+
+                    eMobilityAccountId = new eMobilityAccount_Id(Text,
+                                         providerId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN),
+                                         matchCollection[0].Groups[5].Value,
+                                         matchCollection[0].Groups[6].Value[0]);
 
                     return true;
 
                 }
-
-                #endregion
-
-                #region OICP DIN:       DEBMW0010LY3
-
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value,  out _ProviderId))
-                {
-
-                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN),
-                                                                 _MatchCollection[0].Groups[8].Value,
-                                                                 _MatchCollection[0].Groups[9].Value[0]);
-
-                    return true;
-
-                }
-
-                #endregion
-
-
-                #region                 FR*MSP*C0001000LY
-
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
-                {
-
-                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
-                                                                 _MatchCollection[0].Groups[11].Value);
-
-                    return true;
-
-                }
-
-                #endregion
-
-                #region OICP ISO Hypen: DE-BMW-C001000LY-3
-
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[12].Value, out _ProviderId))
-                {
-
-                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
-                                                                 _MatchCollection[0].Groups[13].Value,
-                                                                 _MatchCollection[0].Groups[14].Value[0]);
-
-                    return true;
-
-                }
-
-                #endregion
-
-                #region OICP ISO:       DEBMWC001000LY3
-
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[15].Value, out _ProviderId))
-                {
-
-                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
-                                                                 _MatchCollection[0].Groups[16].Value,
-                                                                 _MatchCollection[0].Groups[17].Value[0]);
-
-                    return true;
-
-                }
-
-                #endregion
-
-
-                // OCHP
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
-            { }
+            {
+                eMobilityAccountId = default;
+                return false;
+            }
 
-            eMobilityAccountId = default(eMobilityAccount_Id);
+            eMobilityAccountId = default;
             return false;
 
         }
 
         #endregion
+
+
+//        #region Parse(Text)
+
+//        /// <summary>
+//        /// Parse the given string as an electric mobility account identification.
+//        /// </summary>
+//        /// <param name="Text">A text representation of an electric mobility account identification.</param>
+//        public static eMobilityAccount_Id Parse(String Text)
+//        {
+
+//            #region Initial checks
+
+//            if (Text.IsNullOrEmpty())
+//                throw new ArgumentNullException(nameof(Text), "The text representation of the electric mobility account identification must not be null or empty!");
+
+//            #endregion
+
+//            var _MatchCollection = eMobilityAccountId_RegEx.Matches(Text);
+
+//            if (_MatchCollection.Count != 1)
+//                throw new ArgumentException("Illegal electric mobility account identification '" + Text + "'!");
+
+//            eMobilityProvider_Id _ProviderId;
+
+//            // OICP DIN STAR:  DE*BMW*0010LY*3
+//            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value,  out _ProviderId))
+//                return new eMobilityAccount_Id(_ProviderId,
+//                                               _MatchCollection[0].Groups[2].Value,
+//                                               _MatchCollection[0].Groups[3].Value[0]);
+
+//            // OICP DIN HYPEN: DE-BMW-0010LY-3
+//            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value,  out _ProviderId))
+//                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN),
+//                                               _MatchCollection[0].Groups[5].Value,
+//                                               _MatchCollection[0].Groups[6].Value[0]);
+
+//            // OICP DIN:       DEBMW0010LY3
+//            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value,  out _ProviderId))
+//                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN),
+//                                               _MatchCollection[0].Groups[8].Value,
+//                                               _MatchCollection[0].Groups[9].Value[0]);
+
+
+
+
+//            //                 FR*MSP*C0001000LY
+//            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
+//                return new eMobilityAccount_Id(_ProviderId,
+//                                               _MatchCollection[0].Groups[11].Value);
+
+//            // OICP ISO Hypen: DE-BMW-C001000LY-3
+//            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[12].Value, out _ProviderId))
+//                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
+//                                               _MatchCollection[0].Groups[13].Value,
+//                                               _MatchCollection[0].Groups[14].Value[0]);
+
+//            // OICP ISO:       DEBMWC001000LY3
+//            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[15].Value, out _ProviderId))
+//                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
+//                                               _MatchCollection[0].Groups[16].Value,
+//                                               _MatchCollection[0].Groups[17].Value[0]);
+
+
+//            // OCHP
+
+//            throw new ArgumentException("Illegal electric mobility account identification '" + Text + "'!");
+
+//        }
+
+//        #endregion
+
+//        #region Parse(ProviderId, Suffix)
+
+//        /// <summary>
+//        /// Parse the given electric mobility account identification.
+//        /// </summary>
+//        /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
+//        /// <param name="Suffix">The suffix of the electric mobility account identification.</param>
+//        public static eMobilityAccount_Id Parse(eMobilityProvider_Id  ProviderId,
+//                                                String                Suffix)
+//        {
+
+//            #region Initial checks
+
+//            if (Suffix.IsNullOrEmpty())
+//                throw new ArgumentNullException(nameof(Suffix), "The given electric mobility account identification suffix must not be null or empty!");
+
+//            #endregion
+
+//            switch (ProviderId.Format)
+//            {
+
+//                case ProviderIdFormats.DIN:
+//                    return Parse(ProviderId +       Suffix);
+
+//                case ProviderIdFormats.DIN_STAR:
+//                    return Parse(ProviderId + "*" + Suffix);
+
+//                case ProviderIdFormats.DIN_HYPHEN:
+//                    return Parse(ProviderId + "-" + Suffix);
+
+
+//                case ProviderIdFormats.ISO:
+//                    return Parse(ProviderId +       Suffix);
+
+//                default: // ISO_HYPHEN
+//                    return Parse(ProviderId + "-" + Suffix);
+
+//            }
+
+//        }
+
+//        #endregion
+
+//        #region TryParse(Text)
+
+//        /// <summary>
+//        /// Parse the given string as an electric mobility account identification.
+//        /// </summary>
+//        /// <param name="Text">A text representation of an electric mobility account identification.</param>
+//        public static eMobilityAccount_Id? TryParse(String Text)
+//        {
+
+//            if (TryParse(Text, out eMobilityAccount_Id eMAId))
+//                return eMAId;
+
+//            return new eMobilityAccount_Id?();
+
+//        }
+
+//        #endregion
+
+//        #region TryParse(Text, out eMobilityAccountId)
+
+//        /// <summary>
+//        /// Parse the given string as an electric mobility account identification.
+//        /// </summary>
+//        /// <param name="Text">A text representation of an electric mobility account identification.</param>
+//        /// <param name="eMobilityAccountId">The parsed electric mobility account identification.</param>
+//        public static Boolean TryParse(String Text, out eMobilityAccount_Id eMobilityAccountId)
+//        {
+
+//            #region Initial checks
+
+//            if (Text.IsNullOrEmpty())
+//            {
+//                eMobilityAccountId = default(eMobilityAccount_Id);
+//                return false;
+//            }
+
+//            #endregion
+
+//            try
+//            {
+
+//                eMobilityAccountId = default(eMobilityAccount_Id);
+
+//                var _MatchCollection = eMobilityAccountId_RegEx.Matches(Text.Trim().ToUpper());
+
+//                if (_MatchCollection.Count != 1)
+//                    return false;
+
+//                eMobilityProvider_Id _ProviderId;
+
+//                #region OICP DIN STAR:  DE*BMW*0010LY*3
+
+//                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _ProviderId))
+//                {
+
+//                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
+//                                                                 _MatchCollection[0].Groups[2].Value,
+//                                                                 _MatchCollection[0].Groups[3].Value[0]);
+
+//                    return true;
+
+//                }
+
+//                #endregion
+
+//                #region OICP DIN HYPEN: DE-BMW-0010LY-3
+
+//                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value,  out _ProviderId))
+//                {
+
+//                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN),
+//                                                                 _MatchCollection[0].Groups[5].Value,
+//                                                                 _MatchCollection[0].Groups[6].Value[0]);
+
+//                    return true;
+
+//                }
+
+//                #endregion
+
+//                #region OICP DIN:       DEBMW0010LY3
+
+//                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value,  out _ProviderId))
+//                {
+
+//                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN),
+//                                                                 _MatchCollection[0].Groups[8].Value,
+//                                                                 _MatchCollection[0].Groups[9].Value[0]);
+
+//                    return true;
+
+//                }
+
+//                #endregion
+
+
+//                #region                 FR*MSP*C0001000LY
+
+//                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
+//                {
+
+//                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
+//                                                                 _MatchCollection[0].Groups[11].Value);
+
+//                    return true;
+
+//                }
+
+//                #endregion
+
+//                #region OICP ISO Hypen: DE-BMW-C001000LY-3
+
+//                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[12].Value, out _ProviderId))
+//                {
+
+//                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
+//                                                                 _MatchCollection[0].Groups[13].Value,
+//                                                                 _MatchCollection[0].Groups[14].Value[0]);
+
+//                    return true;
+
+//                }
+
+//                #endregion
+
+//                #region OICP ISO:       DEBMWC001000LY3
+
+//                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[15].Value, out _ProviderId))
+//                {
+
+//                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
+//                                                                 _MatchCollection[0].Groups[16].Value,
+//                                                                 _MatchCollection[0].Groups[17].Value[0]);
+
+//                    return true;
+
+//                }
+
+//                #endregion
+
+
+//                // OCHP
+
+//            }
+//#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+//#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+//            catch (Exception)
+//#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+//#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+//            { }
+
+//            eMobilityAccountId = default(eMobilityAccount_Id);
+//            return false;
+
+//        }
+
+//        #endregion
 
         #region Clone
 
@@ -401,7 +563,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public eMobilityAccount_Id Clone
 
-            => new eMobilityAccount_Id(ProviderId.Clone,
+            => new eMobilityAccount_Id(new String(InternalId.ToCharArray()),
+                                       ProviderId.Clone,
                                        Suffix);
 
         #endregion
@@ -532,11 +695,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is a contract identification.
-            if (!(Object is eMobilityAccount_Id))
-                throw new ArgumentException("The given object is not a eMobilityAccountId!", nameof(Object));
+            if (!(Object is eMobilityAccount_Id eMobilityAccountId))
+                throw new ArgumentException("The given object is not a eMobilityAccountId!");
 
-            return CompareTo((eMobilityAccount_Id) Object);
+            return CompareTo(eMobilityAccountId);
 
         }
 
@@ -554,30 +716,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) eMobilityAccountId == null)
                 throw new ArgumentNullException(nameof(eMobilityAccountId),  "The given contract identification must not be null!");
 
-            // Compare the length of the contract identifications
-            var _Result = this.Length.CompareTo(eMobilityAccountId.Length);
-
-            // If equal: Compare charging operator identifications
-            if (_Result == 0)
-                _Result = ProviderId.CompareTo(eMobilityAccountId.ProviderId);
-
-            // If equal: Compare contract identification suffix
-            if (_Result == 0)
-                _Result = String.Compare(Suffix, eMobilityAccountId.Suffix, StringComparison.Ordinal);
-
-            // If equal: Compare contract check digit
-            if (_Result == 0)
-            {
-
-                if (!CheckDigit.HasValue && !eMobilityAccountId.CheckDigit.HasValue)
-                    _Result = 0;
-
-                if ( CheckDigit.HasValue &&  eMobilityAccountId.CheckDigit.HasValue)
-                    _Result = CheckDigit.Value.CompareTo(eMobilityAccountId.CheckDigit.Value);
-
-            }
-
-            return _Result;
+            return String.Compare(InternalId, eMobilityAccountId.InternalId, StringComparison.Ordinal);
 
         }
 
@@ -600,11 +739,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a contract identification.
-            if (!(Object is eMobilityAccount_Id))
+            if (!(Object is eMobilityAccount_Id eMobilityAccountId))
                 return false;
 
-            return this.Equals((eMobilityAccount_Id) Object);
+            return Equals(eMobilityAccountId);
 
         }
 
@@ -623,11 +761,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) eMobilityAccountId == null)
                 return false;
 
-            return ProviderId.Equals(eMobilityAccountId.ProviderId) &&
-                   Suffix.    Equals(eMobilityAccountId.Suffix)     &&
-
-                   ((!CheckDigit.HasValue && !eMobilityAccountId.CheckDigit.HasValue) ||
-                     (CheckDigit.HasValue &&  eMobilityAccountId.CheckDigit.HasValue && CheckDigit.Value.Equals(eMobilityAccountId.CheckDigit.Value)));
+            return InternalId.Equals(eMobilityAccountId.InternalId);
 
         }
 
@@ -642,19 +776,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ProviderId.GetHashCode() * 7 ^
-                       Suffix.    GetHashCode() * 5 ^
-
-                       (CheckDigit.HasValue
-                            ? CheckDigit.GetHashCode()
-                            : 0);
-
-            }
-        }
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -664,50 +786,7 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-
-            switch (ProviderId.Format)
-            {
-
-                case ProviderIdFormats.DIN:
-                    return String.Concat(ProviderId,
-                                         Suffix,
-                                         CheckDigit.HasValue
-                                             ? "" + CheckDigit
-                                             : "");
-
-                case ProviderIdFormats.DIN_STAR:
-                    return String.Concat(ProviderId, "*",
-                                         Suffix,
-                                         CheckDigit.HasValue
-                                             ? "*" + CheckDigit
-                                             : "");
-
-                case ProviderIdFormats.DIN_HYPHEN:
-                    return String.Concat(ProviderId, "-",
-                                         Suffix,
-                                         CheckDigit.HasValue
-                                             ? "-" + CheckDigit
-                                             : "");
-
-
-                case ProviderIdFormats.ISO:
-                    return String.Concat(ProviderId,
-                                         "C", Suffix,
-                                         CheckDigit.HasValue
-                                             ? "" + CheckDigit
-                                             : "");
-
-                default: // ISO_HYPHEN
-                    return String.Concat(ProviderId, "-",
-                                         "C", Suffix,
-                                         CheckDigit.HasValue
-                                             ? "-" + CheckDigit
-                                             : "");
-
-            }
-
-        }
+            => InternalId;
 
         #endregion
 

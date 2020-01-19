@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2020 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -23,6 +23,13 @@ using System;
 
 namespace org.GraphDefined.WWCP
 {
+
+    /// <summary>
+    /// A delegate for mapping operator identifications.
+    /// </summary>
+    /// <param name="OperatorId">An operator identification to be mapped.</param>
+    public delegate String  CustomOperatorIdMapperDelegate  (String              OperatorId);
+
 
     /// <summary>
     /// A delegate for filtering EVSE identifications.
