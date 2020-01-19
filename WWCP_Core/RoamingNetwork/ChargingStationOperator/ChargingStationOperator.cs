@@ -2707,6 +2707,9 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEs
 
+        /// <summary>
+        /// All EVSEs.
+        /// </summary>
         public IEnumerable<EVSE> EVSEs
 
             => _ChargingPools.
@@ -2726,13 +2729,13 @@ namespace org.GraphDefined.WWCP
             => IncludeEVSEs == null
 
                    ? _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Select    (station => station.Id)
+                         SelectMany(pool => pool.EVSEs).
+                         Select    (evse => evse.Id)
 
                    : _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Where     (station => IncludeEVSEs(station)).
-                         Select    (station => station.Id);
+                         SelectMany(pool => pool.EVSEs).
+                         Where     (evse => IncludeEVSEs(evse)).
+                         Select    (evse => evse.Id);
 
         #endregion
 
@@ -2747,19 +2750,19 @@ namespace org.GraphDefined.WWCP
             => IncludeEVSEs == null
 
                    ? _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Select    (station => new EVSEAdminStatus(station.Id,
-                                                                   station.AdminStatus))
+                         SelectMany(pool => pool.EVSEs).
+                         Select    (evse => new EVSEAdminStatus(evse.Id,
+                                                                evse.AdminStatus))
 
                    : _ChargingPools.
                          SelectMany(pool    => pool.EVSEs).
-                         Where     (station => IncludeEVSEs(station)).
-                         Select    (station => new EVSEAdminStatus(station.Id,
-                                                                   station.AdminStatus));
+                         Where     (evse => IncludeEVSEs(evse)).
+                         Select    (evse => new EVSEAdminStatus(evse.Id,
+                                                                evse.AdminStatus));
 
         #endregion
 
-        #region EVSEAdminStatusSchedule(IncludeEVSEs = null)
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null, HistorySize = null)
 
         /// <summary>
         /// Return an enumeration of all EVSE admin status.
@@ -2772,15 +2775,15 @@ namespace org.GraphDefined.WWCP
             => IncludeEVSEs == null
 
                    ? _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Select    (station => new EVSEAdminStatusSchedule(station.Id,
-                                                                           station.AdminStatusSchedule(HistorySize)))
+                         SelectMany(pool => pool.EVSEs).
+                         Select    (evse => new EVSEAdminStatusSchedule(evse.Id,
+                                                                        evse.AdminStatusSchedule(HistorySize)))
 
                    : _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Where     (station => IncludeEVSEs(station)).
-                         Select    (station => new EVSEAdminStatusSchedule(station.Id,
-                                                                           station.AdminStatusSchedule(HistorySize)));
+                         SelectMany(pool => pool.EVSEs).
+                         Where     (evse => IncludeEVSEs(evse)).
+                         Select    (evse => new EVSEAdminStatusSchedule(evse.Id,
+                                                                        evse.AdminStatusSchedule(HistorySize)));
 
         #endregion
 
@@ -2795,15 +2798,15 @@ namespace org.GraphDefined.WWCP
             => IncludeEVSEs == null
 
                    ? _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Select    (station => new EVSEStatus(station.Id,
-                                                              station.Status))
+                         SelectMany(pool => pool.EVSEs).
+                         Select    (evse => new EVSEStatus(evse.Id,
+                                                           evse.Status))
 
                    : _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Where     (station => IncludeEVSEs(station)).
-                         Select    (station => new EVSEStatus(station.Id,
-                                                              station.Status));
+                         SelectMany(pool => pool.EVSEs).
+                         Where     (evse => IncludeEVSEs(evse)).
+                         Select    (evse => new EVSEStatus(evse.Id,
+                                                           evse.Status));
 
         #endregion
 
@@ -2820,15 +2823,15 @@ namespace org.GraphDefined.WWCP
             => IncludeEVSEs == null
 
                    ? _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Select    (station => new EVSEStatusSchedule(station.Id,
-                                                                      station.StatusSchedule(HistorySize)))
+                         SelectMany(pool => pool.EVSEs).
+                         Select    (evse => new EVSEStatusSchedule(evse.Id,
+                                                                   evse.StatusSchedule(HistorySize)))
 
                    : _ChargingPools.
-                         SelectMany(pool    => pool.EVSEs).
-                         Where     (station => IncludeEVSEs(station)).
-                         Select    (station => new EVSEStatusSchedule(station.Id,
-                                                                      station.StatusSchedule(HistorySize)));
+                         SelectMany(pool => pool.EVSEs).
+                         Where     (evse => IncludeEVSEs(evse)).
+                         Select    (evse => new EVSEStatusSchedule(evse.Id,
+                                                                   evse.StatusSchedule(HistorySize)));
 
         #endregion
 
