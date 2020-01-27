@@ -4177,15 +4177,12 @@ namespace org.GraphDefined.WWCP
                                                        RequestTimeout);
 
 
-                        if (result.Result == RemoteStartResultType.Success)
+                        if (result.Result == RemoteStartResultTypes.Success)
                         {
-
-                           // if (CSORoamingProvider != null)
-                                SessionsStore.NewOrUpdate(result.Session,
-                                                          session => {
-                                                              session.CSORoamingProvider = CSORoamingProvider;
-                                                          });
-
+                            SessionsStore.RemoteStart(result.Session,
+                                                      session => {
+                                                          session.CSORoamingProvider = CSORoamingProvider;
+                                                      });
                         }
 
                     }
@@ -4197,7 +4194,7 @@ namespace org.GraphDefined.WWCP
 
                     if (result        == null ||
                        (result        != null &&
-                       (result.Result == RemoteStartResultType.UnknownLocation)))
+                       (result.Result == RemoteStartResultTypes.UnknownLocation)))
                     {
 
                         foreach (var empRoamingProvider in _EMPRoamingProviders.
@@ -4219,7 +4216,7 @@ namespace org.GraphDefined.WWCP
                                                            RequestTimeout);
 
 
-                            if (result.Result == RemoteStartResultType.Success)
+                            if (result.Result == RemoteStartResultTypes.Success)
                                 SessionsStore.NewOrUpdate(result.Session, session => { session.EMPRoamingProvider = empRoamingProvider; });
                                                                         //   SetISendChargeDetailRecords(ISendChargeDetailRecords));
 
@@ -4413,7 +4410,7 @@ namespace org.GraphDefined.WWCP
 
                 if (result        == null ||
                    (result        != null &&
-                   (result.Result == RemoteStopResultType.InvalidSessionId)))
+                   (result.Result == RemoteStopResultTypes.InvalidSessionId)))
                 {
 
                     foreach (var chargingStationOperator in _ChargingStationOperators)
@@ -4440,7 +4437,7 @@ namespace org.GraphDefined.WWCP
 
                 if (result        == null ||
                    (result        != null &&
-                   (result.Result == RemoteStopResultType.InvalidSessionId)))
+                   (result.Result == RemoteStopResultTypes.InvalidSessionId)))
                 {
 
                     foreach (var empRoamingProvider in _EMPRoamingProviders.
@@ -4471,6 +4468,11 @@ namespace org.GraphDefined.WWCP
                     result = RemoteStopResult.InvalidSessionId(SessionId);
 
                 #endregion
+
+                if (result.Result == RemoteStopResultTypes.Success)
+                {
+                    SessionsStore.RemoteStop(SessionId);
+                }
 
             }
             catch (Exception e)
@@ -4873,7 +4875,7 @@ namespace org.GraphDefined.WWCP
                                                  //ISendChargeDetailRecords   = result.ISendChargeDetailRecords
                                              };
 
-                    SessionsStore.NewOrUpdate(NewChargingSession);
+                    SessionsStore.AuthStart(NewChargingSession);
 
                 }
 
@@ -5607,8 +5609,8 @@ namespace org.GraphDefined.WWCP
 
 
             if (result.Result == AuthStopEVSEResultType.Authorized)
-                SessionsStore.Remove(SessionId,
-                                     LocalAuthentication);
+                SessionsStore.AuthStop(SessionId,
+                                       LocalAuthentication);
 
 
             #region Send OnAuthorizeEVSEStopResponse event
@@ -6905,49 +6907,8 @@ namespace org.GraphDefined.WWCP
                                               Runtime);
 
 
-                #region Store "SendCDR"-information within
+                ChargeDetailRecordsStore.Sent(result);
 
-                //var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
-
-                //if (success)
-                //{
-                    try
-                    {
-
-                        foreach (var sendCDRResult in resultMap)
-                        {
-
-                            //SessionsStore.SendCDR(sendCDRResult);
-
-                            //_ChargingSessions.TryRemove(sendCDRResult.ChargeDetailRecord.SessionId, out ChargingSession CS);
-
-                            //var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                            //                            "SendCDR,",
-                            //                            sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
-                            //                            sendCDRResult.ChargeDetailRecord.SessionId, ",",
-                            //                            sendCDRResult.ChargeDetailRecord.IdentificationStart, ",",
-                            //                            sendCDRResult.ChargeDetailRecord.IdentificationStop, ",",
-                            //                            sendCDRResult.Result, ",",
-                            //                            sendCDRResult.Warnings.AggregateWith("/"));
-
-                            //File.AppendAllText(SessionLogFileName,
-                            //                   LogLine + Environment.NewLine);
-
-                        }
-
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                //    finally
-                //    {
-                //        SessionLogSemaphore.Release();
-                //    }
-
-                //}
-
-                #endregion
 
             }
 

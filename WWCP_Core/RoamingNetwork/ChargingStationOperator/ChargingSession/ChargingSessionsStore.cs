@@ -135,16 +135,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Remove(ChargingSessionId, Authentication)
+        #region Remove(Id, Authentication)
 
-        public void Remove(ChargingSession_Id  ChargingSessionId,
+        public void Remove(ChargingSession_Id  Id,
                            AAuthentication     Authentication)
         {
 
             lock (InternalData)
             {
 
-                if (InternalData.TryGetValue(ChargingSessionId, out ChargingSession session))
+                if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
 
                     InternalData.Remove(session.Id);
@@ -189,6 +189,130 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        #region RemoteStart(NewChargingSession, UpdateFunc = null)
+
+        public Boolean RemoteStart(ChargingSession          NewChargingSession,
+                                   Action<ChargingSession>  UpdateFunc = null)
+        {
+
+            lock (InternalData)
+            {
+
+                if (!InternalData.ContainsKey(NewChargingSession.Id))
+                {
+
+                    InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                    UpdateFunc?.Invoke(NewChargingSession);
+
+                    LogIt("remoteStart",
+                          NewChargingSession.Id,
+                          "chargingSession",
+                          NewChargingSession.ToJSON());
+
+                    return true;
+
+                }
+
+                else
+                    return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region RemoteStop (Id)
+
+        public Boolean RemoteStop(ChargingSession_Id Id)
+        {
+
+            lock (InternalData)
+            {
+
+                if (InternalData.ContainsKey(Id))
+                {
+                    LogIt("stop", Id);
+                    return true;
+                }
+
+                else
+                    return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AuthStart(NewChargingSession, UpdateFunc = null)
+
+        public Boolean AuthStart(ChargingSession          NewChargingSession,
+                                 Action<ChargingSession>  UpdateFunc = null)
+        {
+
+            lock (InternalData)
+            {
+
+                if (!InternalData.ContainsKey(NewChargingSession.Id))
+                {
+
+                    InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                    UpdateFunc?.Invoke(NewChargingSession);
+
+                    LogIt("authStart",
+                          NewChargingSession.Id,
+                          "chargingSession",
+                          NewChargingSession.ToJSON());
+
+                    return true;
+
+                }
+
+                else
+                    return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AuthStop (Id, Authentication)
+
+        public Boolean AuthStop(ChargingSession_Id  Id,
+                                AAuthentication     Authentication)
+        {
+
+            lock (InternalData)
+            {
+
+                if (InternalData.TryGetValue(Id, out ChargingSession session))
+                {
+
+                    session.AuthenticationStop = Authentication;
+
+                    LogIt("authStop",
+                          session.Id,
+                          "chargingSession",
+                          session.ToJSON());
+
+                    return true;
+
+                }
+
+                else
+                    return false;
+
+            }
+
+        }
+
+        #endregion
+
+
 
 
 

@@ -125,11 +125,25 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region (protected) LogIt(Command, Id)
+
+        protected void LogIt(String Command, IId Id)
+        {
+            logIt(Command, Id);
+        }
+
+        #endregion
+
         #region (protected) LogIt(Command, Id, PropertyKey, JSONObject)
 
         protected void LogIt(String Command, IId Id, String PropertyKey, JObject JSONObject)
         {
-            _LogIt(Command, Id, PropertyKey, JSONObject);
+
+            if (PropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+
+            logIt(Command, Id, PropertyKey, JSONObject);
+
         }
 
         #endregion
@@ -138,31 +152,37 @@ namespace org.GraphDefined.WWCP
 
         protected void LogIt(String Command, IId Id, String PropertyKey, JArray JSONArray)
         {
-            _LogIt(Command, Id, PropertyKey, JSONArray);
+
+            if (PropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+
+            logIt(Command, Id, PropertyKey, JSONArray);
+
         }
 
         #endregion
 
-        #region (private)   LogIt(Command, Id, PropertyKey, JSON)
+        #region (private)   logIt(Command, Id, PropertyKey = null, JSON = null)
 
-        private void _LogIt(String Command, IId Id, String PropertyKey, Object JSON)
+        private void logIt(String Command, IId Id, String PropertyKey = null, Object JSON = null)
         {
 
             Command     = Command?.    Trim();
             PropertyKey = PropertyKey?.Trim();
 
             if (Command.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Command),      "The given command must not be null or empty!");
-
-            if (PropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(PropertyKey),  "The given property key must not be null or empty!");
-
+                throw new ArgumentNullException(nameof(Command), "The given command must not be null or empty!");
 
             var data = JSONObject.Create(
+
                            new JProperty("timestamp",  DateTime.UtcNow.ToIso8601()),
                            new JProperty("id",         Id.ToString()),
                            new JProperty("command",    Command),
-                           new JProperty(PropertyKey,  JSON)
+
+                           PropertyKey != null
+                               ? new JProperty(PropertyKey,  JSON)
+                               : null
+
                        ).ToString(Newtonsoft.Json.Formatting.None) +
                          Environment.NewLine;
 

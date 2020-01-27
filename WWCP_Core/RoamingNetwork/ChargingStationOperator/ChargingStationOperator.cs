@@ -5187,7 +5187,7 @@ namespace org.GraphDefined.WWCP
                         #region In case of success...
 
                         if (result != null &&
-                            result.Result == RemoteStartResultType.Success)
+                            result.Result == RemoteStartResultTypes.Success)
                         {
 
                             // The session can be delivered within the response
@@ -5346,7 +5346,7 @@ namespace org.GraphDefined.WWCP
                     if (result == null)
                         result = RemoteStopResult.InvalidSessionId(SessionId);
 
-                    if (result.Result == RemoteStopResultType.Success)
+                    if (result.Result == RemoteStopResultTypes.Success)
                     {
 
                         //// The CDR could also be sent separately!

@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of a remote stop operation.
         /// </summary>
-        public RemoteStopResultType     Result                   { get; }
+        public RemoteStopResultTypes     Result                   { get; }
 
         /// <summary>
         /// The charging session identification for an invalid remote stop operation.
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ErrorMessage">A optional error message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         private RemoteStopResult(ChargingSession_Id    SessionId,
-                                 RemoteStopResultType  Result,
+                                 RemoteStopResultTypes  Result,
                                  String                ErrorMessage    = null,
                                  Object                AdditionalInfo  = null)
         {
@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         private RemoteStopResult(ChargingSession_Id       SessionId,
-                                 RemoteStopResultType     Result,
+                                 RemoteStopResultTypes     Result,
                                  ChargingReservation_Id?  ReservationId,
                                  ReservationHandling?     ReservationHandling)
         {
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         private RemoteStopResult(ChargeDetailRecord       ChargeDetailRecord,
-                                 RemoteStopResultType     Result,
+                                 RemoteStopResultTypes     Result,
                                  ChargingReservation_Id?  ReservationId,
                                  ReservationHandling?     ReservationHandling)
         {
@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP
         {
 
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.Unspecified);
+                                        RemoteStopResultTypes.Unspecified);
 
         }
 
@@ -181,7 +181,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStopResult UnknownOperator(ChargingSession_Id SessionId)
         {
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.UnknownOperator,
+                                        RemoteStopResultTypes.UnknownOperator,
                                         "The EVSE or charging station operator is unknown!");
         }
 
@@ -196,7 +196,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStopResult UnknownLocation(ChargingSession_Id SessionId)
         {
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.UnknownLocation,
+                                        RemoteStopResultTypes.UnknownLocation,
                                         "The charging location is unknown!");
         }
 
@@ -212,7 +212,7 @@ namespace org.GraphDefined.WWCP
         {
 
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.InvalidSessionId,
+                                        RemoteStopResultTypes.InvalidSessionId,
                                         "The session identification is invalid!");
 
         }
@@ -228,7 +228,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStopResult InvalidCredentials(ChargingSession_Id SessionId)
         {
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.InvalidCredentials,
+                                        RemoteStopResultTypes.InvalidCredentials,
                                         "Unauthorized remote stop or invalid credentials!");
         }
 
@@ -244,7 +244,7 @@ namespace org.GraphDefined.WWCP
         {
 
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.InternalUse,
+                                        RemoteStopResultTypes.InternalUse,
                                         "Reserved for internal use!");
 
         }
@@ -261,7 +261,7 @@ namespace org.GraphDefined.WWCP
         {
 
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.OutOfService,
+                                        RemoteStopResultTypes.OutOfService,
                                         "The EVSE or charging station is out of service!");
 
         }
@@ -278,7 +278,7 @@ namespace org.GraphDefined.WWCP
         {
 
             return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.Offline,
+                                        RemoteStopResultTypes.Offline,
                                         "The EVSE or charging station is offline!");
 
         }
@@ -298,7 +298,7 @@ namespace org.GraphDefined.WWCP
                                                ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopResult(SessionId,
-                                    RemoteStopResultType.Success,
+                                    RemoteStopResultTypes.Success,
                                     ReservationId,
                                     ReservationHandling);
 
@@ -317,7 +317,7 @@ namespace org.GraphDefined.WWCP
                                                ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopResult(ChargeDetailRecord,
-                                    RemoteStopResultType.Success,
+                                    RemoteStopResultTypes.Success,
                                     ReservationId,
                                     ReservationHandling);
 
@@ -336,7 +336,7 @@ namespace org.GraphDefined.WWCP
                                                       ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopResult(SessionId,
-                                    RemoteStopResultType.AlreadyStopped,
+                                    RemoteStopResultTypes.AlreadyStopped,
                                     ReservationId,
                                     ReservationHandling);
 
@@ -351,7 +351,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStopResult Timeout(ChargingSession_Id SessionId)
 
             => new RemoteStopResult(SessionId,
-                                    RemoteStopResultType.Timeout);
+                                    RemoteStopResultTypes.Timeout);
 
         #endregion
 
@@ -366,7 +366,7 @@ namespace org.GraphDefined.WWCP
                                                           String              Message = null)
 
             => new RemoteStopResult(SessionId,
-                                    RemoteStopResultType.CommunicationError,
+                                    RemoteStopResultTypes.CommunicationError,
                                     Message);
 
         #endregion
@@ -384,7 +384,7 @@ namespace org.GraphDefined.WWCP
                                              Object              AdditionalInfo  = null)
 
             => new RemoteStopResult(SessionId,
-                                    RemoteStopResultType.Error,
+                                    RemoteStopResultTypes.Error,
                                     Message,
                                     AdditionalInfo);
 
@@ -409,7 +409,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The result types of a remote stop operation.
     /// </summary>
-    public enum RemoteStopResultType
+    public enum RemoteStopResultTypes
     {
 
         /// <summary>

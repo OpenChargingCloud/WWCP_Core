@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
+using System.Linq;
 
 #endregion
 
@@ -96,6 +97,70 @@ namespace org.GraphDefined.WWCP
 
             }
 
+        }
+
+        #endregion
+
+
+        #region Sent   (SendCDRResults)
+
+        public void Sent(IEnumerable<SendCDRResult> SendCDRResults)
+        {
+            foreach (var sendCDRResult in SendCDRResults)
+                Sent(sendCDRResult);
+        }
+
+        #endregion
+
+        #region Sent   (SendCDRResults)
+
+        public void Sent(SendCDRResult SendCDRResult)
+        {
+
+            lock (InternalData)
+            {
+
+                if (!InternalData.ContainsKey(SendCDRResult.ChargeDetailRecord.SessionId))
+                    InternalData.Add(SendCDRResult.ChargeDetailRecord.SessionId,
+                                     new ChargeDetailRecordCollection(SendCDRResult.ChargeDetailRecord));
+
+                LogIt("sent",
+                      SendCDRResult.ChargeDetailRecord.SessionId,
+                      "sendChargeDetailRecordResult",
+                      SendCDRResult.ToJSON());
+
+            }
+
+        }
+
+        #endregion
+
+        #region Sent   (SendCDRsResults)
+
+        public void Sent(SendCDRsResult SendCDRsResult)
+        {
+
+            lock (InternalData)
+            {
+
+                foreach (var cdrr in SendCDRsResult.ResultMap)
+                {
+                    if (!InternalData.ContainsKey(cdrr.ChargeDetailRecord.SessionId))
+                        InternalData.Add(cdrr.ChargeDetailRecord.SessionId,
+                                         new ChargeDetailRecordCollection(cdrr.ChargeDetailRecord));
+                }
+
+                LogIt("sent",
+                      SendCDRResult.ChargeDetailRecord.SessionId,
+                      "sendChargeDetailRecordResult",
+                      SendCDRResult.ToJSON());
+
+            }
+
+            if (SendCDRsResult.ResultMap.Count == 1)
+
+
+            throw new NotImplementedException();
         }
 
         #endregion
