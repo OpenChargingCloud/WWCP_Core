@@ -21,8 +21,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
 using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
@@ -139,9 +140,8 @@ namespace org.GraphDefined.WWCP
             this.Result              = Result;
             this.Description         = Description;
             this.Warnings            = Warnings != null
-                                           ? Warnings.Where     (warning => warning != null).
-                                                      //SafeSelect(warning => warning.Trim()).
-                                                      Where     (warning => warning.IsNeitherNullNorEmpty())
+                                           ? Warnings.Where(warning => warning != null).
+                                                      Where(warning => warning.IsNeitherNullNorEmpty())
                                            : new I18NString[0];
             this.Runtime             = Runtime;
 
@@ -215,8 +215,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        
-#region (static) Success (ChargeDetailRecord, ...)
+        #region (static) Success (ChargeDetailRecord, ...)
 
         /// <summary>
         /// The request completed successfully.
@@ -280,6 +279,7 @@ namespace org.GraphDefined.WWCP
                                      Runtime);
 
         #endregion
+
         #region (static) Error   (ChargeDetailRecord, ...)
 
         /// <summary>
