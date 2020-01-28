@@ -19,12 +19,12 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
-using System.Linq;
 
 #endregion
 
@@ -150,17 +150,15 @@ namespace org.GraphDefined.WWCP
                                          new ChargeDetailRecordCollection(cdrr.ChargeDetailRecord));
                 }
 
-                LogIt("sent",
-                      SendCDRResult.ChargeDetailRecord.SessionId,
-                      "sendChargeDetailRecordResult",
-                      SendCDRResult.ToJSON());
+                //LogIt("sent",
+                //      SendCDRResult.ChargeDetailRecord.SessionId,
+                //      "sendChargeDetailRecordResult",
+                //      SendCDRResult.ToJSON());
 
             }
 
-            if (SendCDRsResult.ResultMap.Count == 1)
+            //if (SendCDRsResult.ResultMap.Count == 1)
 
-
-            throw new NotImplementedException();
         }
 
         #endregion

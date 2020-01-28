@@ -6172,7 +6172,7 @@ namespace org.GraphDefined.WWCP
 
         #region OnFilterCDRRecords
 
-        public delegate IEnumerable<String> OnFilterCDRRecordsDelegate(IId AuthorizatorId, ChargeDetailRecord ChargeDetailRecord);
+        public delegate IEnumerable<I18NString> OnFilterCDRRecordsDelegate(IId AuthorizatorId, ChargeDetailRecord ChargeDetailRecord);
 
         /// <summary>
         /// An event fired whenever a CDR needs to be filtered.
@@ -6183,7 +6183,7 @@ namespace org.GraphDefined.WWCP
 
         #region OnCDRWasFiltered
 
-        public delegate Task OnCDRWasFilteredDelegate(ChargeDetailRecord ChargeDetailRecord, IEnumerable<String> Reason);
+        public delegate Task OnCDRWasFilteredDelegate(ChargeDetailRecord ChargeDetailRecord, IEnumerable<I18NString> Reason);
 
         /// <summary>
         /// An event fired whenever a CDR was filtered.
@@ -6838,7 +6838,7 @@ namespace org.GraphDefined.WWCP
                         {
                             resultMap.Add(new SendCDRResult(_cdr,
                                                             SendCDRResultTypes.Error,
-                                                            sendCDR.Key + " returned null!"));
+                                                            I18NString.Create(Languages.eng, sendCDR.Key + " returned null!")));
                         }
 
                     }
@@ -6865,7 +6865,7 @@ namespace org.GraphDefined.WWCP
                     {
                         resultMap.Add(new SendCDRResult(_cdr,
                                                         SendCDRResultTypes.Error,
-                                                        "Did not receive an result for this charge detail record!"));
+                                                        I18NString.Create(Languages.eng, "Did not receive an result for this charge detail record!")));
                     }
                 }
 
