@@ -393,6 +393,7 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of the given charge detail record.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
         public JObject ToJSON(Boolean                                           Embedded                             = false,
                               CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null)
         {

@@ -35,7 +35,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of a remote start operation.
         /// </summary>
-        public RemoteStartResultType  Result            { get; }
+        public RemoteStartResultTypes  Result            { get; }
 
         /// <summary>
         /// The charging session for the remote start operation.
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.Result   = RemoteStartResultType.Success;
+            this.Result   = RemoteStartResultTypes.Success;
             this.Session  = Session;
             this.Message  = null;
 
@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Result">The result of the remote start operation.</param>
         /// <param name="Message">An optional message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        private RemoteStartResult(RemoteStartResultType  Result,
+        private RemoteStartResult(RemoteStartResultTypes  Result,
                                   String                 Message         = null,
                                   Object                 AdditionalInfo  = null)
         {
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult Unspecified
 
-            => new RemoteStartResult(RemoteStartResultType.Unspecified);
+            => new RemoteStartResult(RemoteStartResultTypes.Unspecified);
 
         #endregion
 
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult UnknownOperator
 
-            => new RemoteStartResult(RemoteStartResultType.UnknownOperator);
+            => new RemoteStartResult(RemoteStartResultTypes.UnknownOperator);
 
         #endregion
 
@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult UnknownLocation
 
-            => new RemoteStartResult(RemoteStartResultType.UnknownLocation);
+            => new RemoteStartResult(RemoteStartResultTypes.UnknownLocation);
 
         #endregion
 
@@ -146,7 +146,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult InvalidSessionId
 
-            => new RemoteStartResult(RemoteStartResultType.InvalidSessionId);
+            => new RemoteStartResult(RemoteStartResultTypes.InvalidSessionId);
 
         #endregion
 
@@ -157,7 +157,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult InvalidCredentials
 
-            => new RemoteStartResult(RemoteStartResultType.InvalidCredentials);
+            => new RemoteStartResult(RemoteStartResultTypes.InvalidCredentials);
 
         #endregion
 
@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult AlreadyInUse
 
-            => new RemoteStartResult(RemoteStartResultType.AlreadyInUse);
+            => new RemoteStartResult(RemoteStartResultTypes.AlreadyInUse);
 
         #endregion
 
@@ -180,7 +180,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Message">An optional message.</param>
         public static RemoteStartResult Reserved(String Message = null)
 
-            => new RemoteStartResult(RemoteStartResultType.Reserved, Message);
+            => new RemoteStartResult(RemoteStartResultTypes.Reserved, Message);
 
         #endregion
 
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult InternalUse
 
-            => new RemoteStartResult(RemoteStartResultType.InternalUse);
+            => new RemoteStartResult(RemoteStartResultTypes.InternalUse);
 
         #endregion
 
@@ -202,7 +202,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult OutOfService
 
-            => new RemoteStartResult(RemoteStartResultType.OutOfService);
+            => new RemoteStartResult(RemoteStartResultTypes.OutOfService);
 
         #endregion
 
@@ -213,7 +213,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult Offline
 
-            => new RemoteStartResult(RemoteStartResultType.Offline);
+            => new RemoteStartResult(RemoteStartResultTypes.Offline);
 
         #endregion
 
@@ -225,7 +225,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult Success()
 
-            => new RemoteStartResult(RemoteStartResultType.Success);
+            => new RemoteStartResult(RemoteStartResultTypes.Success);
 
         #endregion
 
@@ -249,7 +249,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static RemoteStartResult Timeout
 
-            => new RemoteStartResult(RemoteStartResultType.Timeout);
+            => new RemoteStartResult(RemoteStartResultTypes.Timeout);
 
         #endregion
 
@@ -263,7 +263,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult CommunicationError(String  Message         = null,
                                                            Object  AdditionalInfo  = null)
 
-            => new RemoteStartResult(RemoteStartResultType.CommunicationError,
+            => new RemoteStartResult(RemoteStartResultTypes.CommunicationError,
                                      Message,
                                      AdditionalInfo);
 
@@ -279,7 +279,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult Error(String  Message         = null,
                                               Object  AdditionalInfo  = null)
 
-            => new RemoteStartResult(RemoteStartResultType.Error,
+            => new RemoteStartResult(RemoteStartResultTypes.Error,
                                      Message,
                                      AdditionalInfo);
 
@@ -302,7 +302,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The result types of a remote start operation at an EVSE.
     /// </summary>
-    public enum RemoteStartResultType
+    public enum RemoteStartResultTypes
     {
 
         /// <summary>
