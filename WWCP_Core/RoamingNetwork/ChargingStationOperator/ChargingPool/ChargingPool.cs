@@ -3356,7 +3356,7 @@ namespace org.GraphDefined.WWCP
                         #region In case of success...
 
                         if (result != null &&
-                            result.Result == RemoteStartResultType.Success)
+                            result.Result == RemoteStartResultTypes.Success)
                         {
 
                             // The session can be delivered within the response

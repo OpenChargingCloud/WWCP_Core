@@ -1958,12 +1958,12 @@ namespace org.GraphDefined.WWCP.Virtual
                                                           EventTrackingId,
                                                           RequestTimeout);
 
-                            if (result.Result == RemoteStopResultType.Success)
+                            if (result.Result == RemoteStopResultTypes.Success)
                                 break;
 
                         }
 
-                        if (result.Result != RemoteStopResultType.Success)
+                        if (result.Result != RemoteStopResultTypes.Success)
                             result = RemoteStopResult.InvalidSessionId(SessionId);
 
                     }

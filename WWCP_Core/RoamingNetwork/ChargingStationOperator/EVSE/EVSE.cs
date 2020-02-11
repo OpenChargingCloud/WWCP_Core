@@ -2392,7 +2392,7 @@ namespace org.GraphDefined.WWCP
 
                         #region In case of success...
 
-                        if (result?.Result == RemoteStartResultType.Success)
+                        if (result?.Result == RemoteStartResultTypes.Success)
                         {
 
                             // The session can be delivered within the response
@@ -2485,7 +2485,7 @@ namespace org.GraphDefined.WWCP
                     #endregion
 
 
-                    if (result.Result == RemoteStartResultType.Success &&
+                    if (result.Result == RemoteStartResultTypes.Success &&
                         result.Session != null)
                     {
                         result.Session.EVSE = this;
@@ -2651,7 +2651,7 @@ namespace org.GraphDefined.WWCP
 
                             #region In case of success...
 
-                            if (result?.Result == RemoteStopResultType.Success)
+                            if (result?.Result == RemoteStopResultTypes.Success)
                             {
                                 ChargingSession = null;
                             }

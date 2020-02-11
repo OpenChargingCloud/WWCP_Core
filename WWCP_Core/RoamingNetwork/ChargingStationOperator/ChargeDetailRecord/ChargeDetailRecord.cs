@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2019 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2020 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -393,6 +393,7 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of the given charge detail record.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
         public JObject ToJSON(Boolean                                           Embedded                             = false,
                               CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null)
         {
