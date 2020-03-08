@@ -69,10 +69,10 @@ namespace org.GraphDefined.WWCP
                    ? null
 
                    : new JArray(ChargingSessions.
-                                    Where     (session => session != null).
-                                    OrderBy   (session => session.Id).
+                                    Where         (session => session != null).
+                                    OrderBy       (session => session.Id).
                                     SkipTakeFilter(Skip, Take).
-                                    SafeSelect(evse => evse.ToJSON(Embedded)));
+                                    SafeSelect    (session => session.ToJSON(Embedded)));
 
         #endregion
 
@@ -437,11 +437,11 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingTime
 
-        /// <summary>
-        /// Optional timestamps when the charging started and ended.
-        /// </summary>
-        [Optional]
-        public StartEndDateTime  ChargingTime { get; set; }
+        ///// <summary>
+        ///// Optional timestamps when the charging started and ended.
+        ///// </summary>
+        //[Optional]
+        //public StartEndDateTime  ChargingTime { get; set; }
 
         #endregion
 
@@ -667,87 +667,94 @@ namespace org.GraphDefined.WWCP
                        ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/chargingSession")
                        : null,
 
-                   new JProperty("sessionTime",           JSONObject.Create(
-                         new JProperty("start",             SessionTime.StartTime.ToIso8601()),
-                         SessionTime.EndTime.HasValue
-                             ? new JProperty("end",         SessionTime.EndTime.Value.ToIso8601())
-                             : null
-                     )),
-
-                   new JProperty("duration",                Duration.TotalSeconds),
-
-
                    RoamingNetworkId.HasValue
-                       ? new JProperty("roamingNetworkId",           RoamingNetworkId.ToString())
+                       ? new JProperty("roamingNetworkId",            RoamingNetworkId.ToString())
                        : null,
-
-                   ChargingStationOperatorId.HasValue
-                       ? new JProperty("chargingStationOperatorId",  ChargingStationOperatorId.ToString())
-                       : null,
-
-                   ChargingPoolId.HasValue
-                       ? new JProperty("chargingPoolId",             ChargingPoolId.           ToString())
-                       : null,
-
-                   ChargingStationId.HasValue
-                       ? new JProperty("chargingStationId",          ChargingStationId.        ToString())
-                       : null,
-
-                   EVSEId.HasValue
-                       ? new JProperty("EVSEId",                     EVSEId.                   ToString())
-                       : null,
-
-                   ChargingProduct != null
-                       ? new JProperty("chargingProduct",            ChargingProduct.          ToJSON())
-                       : null,
-
-
-                   ProviderIdStart != null
-                       ? new JProperty("providerIdStart",            ProviderIdStart.ToString())
-                       : null,
-
-                   ProviderIdStop != null
-                       ? new JProperty("providerIdStop",             ProviderIdStop.ToString())
-                       : null,
-
-                   AuthenticationStart.IsDefined()
-                       ? new JProperty("authenticationStart",        AuthenticationStart.ToJSON())
-                       : null,
-
-                   AuthenticationStop.IsDefined()
-                       ? new JProperty("authenticationStop",         AuthenticationStop.ToJSON())
-                       : null,
-
-
 
 
                    Reservation != null
-
                        ? new JProperty("reservation", new JObject(
                                                           new JProperty("reservationId",  Reservation.Id.ToString()),
                                                           new JProperty("start",          Reservation.StartTime.ToIso8601()),
                                                           new JProperty("duration",       Reservation.Duration.TotalSeconds)
                                                           )
                                                       )
-
                        : ReservationId != null
-                             ? new JProperty("reservationId",            ReservationId.ToString())
+                             ? new JProperty("reservationId",         ReservationId.ToString())
                              : null,
 
 
+                   SessionTime != null
+                       ? new JProperty("start",                 JSONObject.Create(
 
+                             new JProperty("timestamp",               SessionTime.StartTime.ToIso8601()),
+
+                             ProviderIdStart != null
+                                 ? new JProperty("providerId",        ProviderIdStart.ToString())
+                                 : null,
+
+                             AuthenticationStart.IsDefined()
+                                 ? new JProperty("authentication",    AuthenticationStart.ToJSON())
+                                 : null
+
+                         ))
+                       : null,
+
+
+                   SessionTime != null
+                       ? new JProperty("duration",                    Duration.TotalSeconds)
+                       : null,
+
+
+                   SessionTime.EndTime.HasValue
+                       ? new JProperty("stop",                  JSONObject.Create(
+
+                             SessionTime.EndTime.HasValue
+                                 ? new JProperty("end",               SessionTime.EndTime.Value.ToIso8601())
+                                 : null,
+
+                             ProviderIdStop != null
+                                 ? new JProperty("providerId",        ProviderIdStop.ToString())
+                                 : null,
+
+                             AuthenticationStop.IsDefined()
+                                 ? new JProperty("authentication",    AuthenticationStop.ToJSON())
+                                 : null
+                         ))
+                       : null,
 
 
                    EnergyMeterId.HasValue
-                       ? new JProperty("energyMeterId",              EnergyMeterId.ToString())
+                       ? new JProperty("energyMeterId",               EnergyMeterId.ToString())
                        : null,
 
                    EnergyMeteringValues.Any()
-                       ? new JProperty("energyMeterValues",          new JObject(
-                                                                         EnergyMeteringValues.
-                                                                         Select(MeterValue => new JProperty(MeterValue.Timestamp.ToIso8601(),
-                                                                                                            MeterValue.Value))
-                                                                     ))
+                       ? new JProperty("energyMeterValues",           JSONObject.Create(
+                                                                          EnergyMeteringValues.
+                                                                          Select(meterValue => new JProperty(meterValue.Timestamp.ToIso8601(),
+                                                                                                             meterValue.Value))
+                                                                      ))
+                       : null,
+
+
+                   ChargingStationOperatorId.HasValue
+                       ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
+                       : null,
+
+                   ChargingPoolId.HasValue
+                       ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
+                       : null,
+
+                   ChargingStationId.HasValue
+                       ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
+                       : null,
+
+                   EVSEId.HasValue
+                       ? new JProperty("EVSEId",                      EVSEId.                   ToString())
+                       : null,
+
+                   ChargingProduct != null
+                       ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
                        : null
 
             );
