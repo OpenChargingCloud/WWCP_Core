@@ -134,10 +134,10 @@ namespace org.GraphDefined.WWCP
                                                       UInt16                                    MaxStatusListSize                           = RoamingNetwork.DefaultMaxStatusListSize,
                                                       ChargingStationSignatureDelegate          ChargingStationSignatureGenerator           = null,
                                                       ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator              = null,
-                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator   = null,
-                                                      Func<RoamingNetwork_Id, String>           ReservationLogFileNameCreator               = null,
-                                                      Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                   = null,
-                                                      Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator        = null)
+                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator   = null)
+                                                      //Func<RoamingNetwork_Id, String>           ReservationLogFileNameCreator               = null,
+                                                      //Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                   = null,
+                                                      //Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator        = null)
 
         {
 
@@ -160,10 +160,10 @@ namespace org.GraphDefined.WWCP
                                                      MaxStatusListSize,
                                                      ChargingStationSignatureGenerator,
                                                      ChargingPoolSignatureGenerator,
-                                                     ChargingStationOperatorSignatureGenerator,
-                                                     ReservationLogFileNameCreator,
-                                                     SessionLogFileNameCreator,
-                                                     ChargeDetailRecordLogFileNameCreator);
+                                                     ChargingStationOperatorSignatureGenerator);
+                                                     //ReservationLogFileNameCreator,
+                                                     //SessionLogFileNameCreator,
+                                                     //ChargeDetailRecordLogFileNameCreator);
 
             Configurator?.Invoke(_RoamingNetwork);
 

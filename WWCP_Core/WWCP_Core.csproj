@@ -63,12 +63,13 @@
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificates.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="Entities\NetworkEntities\ANetworkChargingStationOperator.cs" />
-    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\SignedMeteringValue.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\ChargeDetailRecord_Id.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\SignedMeteringValue.cs" />
     <Compile Include="Tracker\RoamingNetworkInfo.cs" />
     <Compile Include="Tracker\Tracker.cs" />
     <Compile Include="Tracker\Tracker_Id.cs" />
-    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecordsStore.cs" />
-    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecordCollection.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\ChargeDetailRecordsStore.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\ChargeDetailRecordCollection.cs" />
     <Compile Include="RoamingNetwork\ADataStore.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingReservation\ReservationCollection.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingReservation\ChargingReservationsStore.cs" />
@@ -307,7 +308,7 @@
     <Compile Include="RoamingNetwork\RoamingProvider\ARoamingProvider.cs" />
     <Compile Include="RoamingNetwork\RoamingProvider\CSO\AWWCPCSOAdapter.cs" />
     <Compile Include="CommonTypes\AAuthentication.cs" />
-    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecord.cs" />
+    <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\ChargeDetailRecord.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolAdminStatusReport.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolStatusReport.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolAdminStatusType.cs" />

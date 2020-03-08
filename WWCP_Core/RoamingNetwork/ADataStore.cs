@@ -54,14 +54,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The attached roaming network.
         /// </summary>
-        public IRoamingNetwork                  RoamingNetwork      { get; }
-
-        /// <summary>
-        /// The name of the logfile.
-        /// </summary>
-        public String                           LogfileName         { get; }
-
-        Boolean DisableLogfiles { get; }
+        public IRoamingNetwork                  RoamingNetwork          { get; }
 
 
         private readonly List<RoamingNetworkInfo> _RoamingNetworkInfos;
@@ -72,7 +65,41 @@ namespace org.GraphDefined.WWCP
         public IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos
             => _RoamingNetworkInfos;
 
-        Boolean DisableNetworkSync { get; }
+
+
+        /// <summary>
+        /// Whether to write data to the log file.
+        /// </summary>
+        public Boolean                          DisableLogfiles         { get; }
+
+        /// <summary>
+        /// The path to all log files.
+        /// </summary>
+        public String                           LogFilePath             { get; }
+
+        /// <summary>
+        /// A delegate for creating the log file.
+        /// </summary>
+        public Func<RoamingNetwork_Id, String>  LogfileNameCreator      { get; }
+
+        /// <summary>
+        /// Whether to reload log file data to restart.
+        /// </summary>
+        public Boolean                          ReloadDataOnStart       { get; }
+
+        /// <summary>
+        /// The log file search pattern for reloading old log files.
+        /// </summary>
+        public Func<RoamingNetwork_Id, String>  LogfileSearchPattern    { get; }
+
+
+
+
+        public Boolean                          DisableNetworkSync      { get; }
+
+
+
+
 
 
         public DNSClient DNSClient { get; }
@@ -82,32 +109,58 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         public ADataStore(IRoamingNetwork                  RoamingNetwork,
-                          Func<RoamingNetwork_Id, String>  LogFileNameCreator,
-                          Boolean                          DisableLogfiles       = false,
-                          IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
-                          Boolean                          DisableNetworkSync    = false,
-                          DNSClient                        DNSClient             = null)
+                          IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos    = null,
+
+                          Boolean                          DisableLogfiles        = false,
+                          String                           LogFilePath            = null,
+                          Func<RoamingNetwork_Id, String>  LogFileNameCreator     = null,
+                          Boolean                          ReloadDataOnStart      = true,
+                          Func<RoamingNetwork_Id, String>  LogfileSearchPattern   = null,
+                          Action<String, String, JObject>  LogFileParser          = null,
+
+                          Boolean                          DisableNetworkSync     = false,
+
+                          DNSClient                        DNSClient              = null)
+
         {
 
-            this.InternalData            = new Dictionary<TId, TData>();
+            this.InternalData                   = new Dictionary<TId, TData>();
 
-            this.RoamingNetwork          = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null or empty!");
+            this.RoamingNetwork                 = RoamingNetwork       ?? throw new ArgumentNullException(nameof(RoamingNetwork),          "The given roaming network must not be null or empty!");
 
-            if (LogFileNameCreator == null)
-                throw new ArgumentNullException(nameof(LogFileNameCreator), "The given LogFileNameCreator delegate must not be null or empty!");
+            this._RoamingNetworkInfos           = RoamingNetworkInfos != null
+                                                      ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
+                                                      : new List<RoamingNetworkInfo>();
 
-            this.LogfileName             = LogFileNameCreator(RoamingNetwork.Id);
 
-            this.DisableLogfiles         = DisableLogfiles;
+            this.DisableLogfiles                = DisableLogfiles;
+            this.ReloadDataOnStart              = ReloadDataOnStart;
 
-            this._RoamingNetworkInfos    = RoamingNetworkInfos != null
-                                               ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
-                                               : new List<RoamingNetworkInfo>();
+            if (!DisableLogfiles)
+            {
 
-            this.DisableNetworkSync      = DisableNetworkSync;
+                this.LogFilePath                = LogFilePath?.Trim();
+                if (this.LogFilePath.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(LogFilePath), "The given log file path must not be null or empty!");
 
-            this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv4DNSServers: true,
-                                                                      SearchForIPv6DNSServers: false);
+                this.LogfileNameCreator         = LogFileNameCreator   ?? throw new ArgumentNullException(nameof(LogFileNameCreator),    "The given log file name creator must not be null or empty!");
+
+                if (this.ReloadDataOnStart)
+                    this.LogfileSearchPattern   = LogfileSearchPattern ?? throw new ArgumentNullException(nameof(LogfileSearchPattern),  "The given log file search pattern must not be null or empty!");
+
+            }
+
+
+            this.DisableNetworkSync             = DisableNetworkSync;
+
+
+            this.DNSClient                      = DNSClient ?? new DNSClient(SearchForIPv4DNSServers: true,
+                                                                             SearchForIPv6DNSServers: false);
+
+            if (this.ReloadDataOnStart)
+                ReloadData(this.LogFilePath,
+                           LogfileSearchPattern(this.RoamingNetwork.Id),
+                           LogFileParser);
 
         }
 
@@ -190,7 +243,7 @@ namespace org.GraphDefined.WWCP
             {
                 lock (Lock)
                 {
-                    File.AppendAllText(LogfileName, data);
+                    File.AppendAllText(LogfileNameCreator(RoamingNetwork.Id), data);
                 }
             }
 
@@ -251,9 +304,13 @@ namespace org.GraphDefined.WWCP
 
         #region ReloadData(LogfileSearchPattern, ParserFunc)
 
-        protected void ReloadData(String                   LogfileSearchPattern,
-                                  Action<String, JObject>  ParserFunc)
+        protected void ReloadData(String                           Path,
+                                  String                           LogfileSearchPattern,
+                                  Action<String, String, JObject>  ParserFunc)
         {
+
+            if (Path?.Trim().IsNullOrEmpty() == true)
+                Path = Directory.GetCurrentDirectory();
 
             if (ParserFunc == null)
                 return;
@@ -263,10 +320,10 @@ namespace org.GraphDefined.WWCP
 
                 JObject JSON = null;
 
-                foreach (var filename in Directory.EnumerateFiles(Directory.GetCurrentDirectory(),
+                foreach (var filename in Directory.EnumerateFiles(Path,
                                                                   LogfileSearchPattern,
                                                                   SearchOption.TopDirectoryOnly).
-                                                   OrderBy   (filename => filename))
+                                                   OrderBy       (filename => filename))
                 {
 
                     try
@@ -281,7 +338,8 @@ namespace org.GraphDefined.WWCP
 
                                     JSON = JObject.Parse(line);
 
-                                    ParserFunc(JSON["command"].Value<String>(),
+                                    ParserFunc(filename,
+                                               JSON["command"].Value<String>(),
                                                JSON);
 
                                 }

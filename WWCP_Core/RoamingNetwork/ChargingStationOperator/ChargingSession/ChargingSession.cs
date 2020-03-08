@@ -105,7 +105,9 @@ namespace org.GraphDefined.WWCP
     /// with the EVSE Operator backend.
     /// </summary>
     public class ChargingSession : AEMobilityEntity<ChargingSession_Id>,
-                                   IEquatable<ChargingSession>, IComparable<ChargingSession>, IComparable
+                                   IEquatable<ChargingSession>,
+                                   IComparable<ChargingSession>,
+                                   IComparable
     {
 
         #region Properties

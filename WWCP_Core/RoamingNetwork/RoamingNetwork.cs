@@ -259,10 +259,7 @@ namespace org.GraphDefined.WWCP
                               UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
                               ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
                               ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
-                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
-                              Func<RoamingNetwork_Id, String>           ReservationLogFileNameCreator              = null,
-                              Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                  = null,
-                              Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator       = null)
+                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null)
 
             : base(Id)
 
@@ -290,14 +287,13 @@ namespace org.GraphDefined.WWCP
 
 
             this.ReservationsStore                                  = new ChargingReservationsStore(this,
-                                                                                                    ReservationLogFileNameCreator);
+                                                                                                    DisableNetworkSync: true);
 
             this.SessionsStore                                      = new ChargingSessionsStore    (this,
-                                                                                                    SessionLogFileNameCreator,
                                                                                                     DisableNetworkSync: true);
 
             this.ChargeDetailRecordsStore                           = new ChargeDetailRecordsStore (this,
-                                                                                                    ChargeDetailRecordLogFileNameCreator);
+                                                                                                    DisableNetworkSync: true);
 
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
@@ -339,8 +335,6 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this.OnPropertyChanged += UpdateData;
-
-            SessionsStore.ReloadData();
 
         }
 

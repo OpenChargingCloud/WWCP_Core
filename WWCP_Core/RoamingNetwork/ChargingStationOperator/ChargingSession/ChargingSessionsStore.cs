@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
@@ -51,20 +52,90 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         public ChargingSessionsStore(IRoamingNetwork                  RoamingNetwork,
-                                     Func<RoamingNetwork_Id, String>  LogFileNameCreator    = null,
-                                     Boolean                          DisableLogfiles       = false,
                                      IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
-                                     Boolean                          DisableNetworkSync    = false)
+                                     Boolean                          DisableLogfiles       = false,
+                                     Boolean                          ReloadDataOnStart     = true,
+
+                                     Boolean                          DisableNetworkSync    = false,
+                                     DNSClient                        DNSClient             = null)
 
             : base(RoamingNetwork,
-                   LogFileNameCreator ?? (roamingNetworkId => String.Concat("ChargingSessions", Path.DirectorySeparatorChar, "ChargingSessions-",
-                                                                            roamingNetworkId, "-",
-                                                                            Environment.MachineName, "_",
-                                                                            DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
-                                                                            ".log")),
-                   DisableLogfiles,
                    RoamingNetworkInfos,
-                   DisableNetworkSync)
+
+                   DisableLogfiles,
+                   "ChargingSessions" + Path.DirectorySeparatorChar,
+                   roamingNetworkId => String.Concat("ChargingSessions-",
+                                                     roamingNetworkId, "-",
+                                                     Environment.MachineName, "_",
+                                                     DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                     ".log"),
+                   ReloadDataOnStart,
+                   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "-" + Environment.MachineName + "_",
+                   (logfilename, command, json) => {
+
+                       switch (command.ToLower())
+                       {
+
+                           case "remoteStart":
+
+                               if (json["chargingSession"] is JObject newChargingSession)
+                               {
+
+
+
+                               }
+
+                               break;
+
+                           case "remoteStop":
+
+                               if (json["chargingSession"] is JObject updatedChargingSession)
+                               {
+
+
+
+                               }
+
+                               break;
+
+                           case "authStart":
+
+                               if (json["chargingSession"] is JObject removedChargingSession)
+                               {
+
+
+
+                               }
+
+                               break;
+
+                           case "authStop":
+
+                               if (json["chargingSession"] is JObject removedChargingSession2)
+                               {
+
+
+
+                               }
+
+                               break;
+
+                           case "sendCDR":
+
+                               if (json["chargingSession"] is JObject removedChargingSession3)
+                               {
+
+
+
+                               }
+
+                               break;
+
+                       }
+                   },
+
+                   DisableNetworkSync,
+                   DNSClient)
 
         { }
 
@@ -234,7 +305,7 @@ namespace org.GraphDefined.WWCP
 
                 if (InternalData.ContainsKey(Id))
                 {
-                    LogIt("stop", Id);
+                    LogIt("remoteStop", Id);
                     return true;
                 }
 
@@ -298,6 +369,36 @@ namespace org.GraphDefined.WWCP
                           session.Id,
                           "chargingSession",
                           session.ToJSON());
+
+                    return true;
+
+                }
+
+                else
+                    return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region SendCDR (Id)
+
+        public Boolean SendCDR(ChargingSession_Id  Id,
+                               ChargeDetailRecord  CDR)
+        {
+
+            lock (InternalData)
+            {
+
+                if (InternalData.TryGetValue(Id, out ChargingSession session))
+                {
+
+                    LogIt("sendCDR",
+                          session.Id,
+                          "chargeDetailRecord",
+                          CDR.ToJSON());
 
                     return true;
 
@@ -489,58 +590,6 @@ namespace org.GraphDefined.WWCP
 
         //#endregion
 
-
-
-        #region ReloadData()
-
-        public void ReloadData()
-        {
-
-            ReloadData("ChargingSessions-" + RoamingNetwork.Id,
-                       (command, json) =>
-                       {
-                           switch (command.ToLower())
-                           {
-
-                               case "new":
-
-                                   if (json["chargingSession"] is JObject newChargingSession)
-                                   {
-
-
-
-                                   }
-
-                                   break;
-
-                               case "update":
-
-                                   if (json["chargingSession"] is JObject updatedChargingSession)
-                                   {
-
-
-
-                                   }
-
-                                   break;
-
-                               case "remove":
-
-                                   if (json["chargingSession"] is JObject removedChargingSession)
-                                   {
-
-
-
-                                   }
-
-                                   break;
-
-                           }
-                       });
-
-        }
-
-        #endregion
 
     }
 

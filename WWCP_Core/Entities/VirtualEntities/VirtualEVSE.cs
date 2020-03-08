@@ -1975,7 +1975,8 @@ namespace org.GraphDefined.WWCP.Virtual
 
                                 ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Now, Consumption));
 
-                                var _ChargeDetailRecord  = new ChargeDetailRecord(SessionId:                 __ChargingSession.Id,
+                                var _ChargeDetailRecord  = new ChargeDetailRecord(Id:                        ChargeDetailRecord_Id.Parse(__ChargingSession.Id.ToString()),
+                                                                                  SessionId:                 __ChargingSession.Id,
                                                                                   Reservation:               __ChargingSession.Reservation,
                                                                                   EVSEId:                    __ChargingSession.EVSEId,
                                                                                   EVSE:                      __ChargingSession.EVSE,
@@ -1983,12 +1984,12 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                                   ChargingPool:              __ChargingSession.EVSE?.ChargingStation?.ChargingPool,
                                                                                   ChargingStationOperator:   __ChargingSession.EVSE?.Operator,
                                                                                   ChargingProduct:           __ChargingSession.ChargingProduct,
-                                                                                    ProviderIdStart:           __ChargingSession.ProviderIdStart,
-                                                                                    ProviderIdStop:            __ChargingSession.ProviderIdStop,
+                                                                                  ProviderIdStart:           __ChargingSession.ProviderIdStart,
+                                                                                  ProviderIdStop:            __ChargingSession.ProviderIdStop,
                                                                                   SessionTime:               __ChargingSession.SessionTime,
 
-                                                                                    AuthenticationStart:       __ChargingSession.AuthenticationStart,
-                                                                                    AuthenticationStop:        __ChargingSession.AuthenticationStop,
+                                                                                  AuthenticationStart:       __ChargingSession.AuthenticationStart,
+                                                                                  AuthenticationStop:        __ChargingSession.AuthenticationStop,
 
                                                                                   EnergyMeterId:             EnergyMeterId,
                                                                                   EnergyMeteringValues:      __ChargingSession.EnergyMeteringValues
