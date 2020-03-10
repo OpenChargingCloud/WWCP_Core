@@ -4047,18 +4047,18 @@ namespace org.GraphDefined.WWCP
                         EventTracking_Id          EventTrackingId            = null,
                         TimeSpan?                 RequestTimeout             = null)
 
-            => RemoteStart(null,
-                           ChargingLocation,
-                           ChargingProduct,
-                           ReservationId,
-                           SessionId,
-                           ProviderId,
-                           RemoteAuthentication,
+                => RemoteStart(null,
+                               ChargingLocation,
+                               ChargingProduct,
+                               ReservationId,
+                               SessionId,
+                               ProviderId,
+                               RemoteAuthentication,
 
-                           Timestamp,
-                           CancellationToken,
-                           EventTrackingId,
-                           RequestTimeout);
+                               Timestamp,
+                               CancellationToken,
+                               EventTrackingId,
+                               RequestTimeout);
 
 
         /// <summary>
@@ -4299,9 +4299,46 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopResult>
+        public Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
+                       ReservationHandling?   ReservationHandling    = null,
+                       eMobilityProvider_Id?  ProviderId             = null,
+                       RemoteAuthentication   RemoteAuthentication   = null,
+
+                       DateTime?              Timestamp              = null,
+                       CancellationToken?     CancellationToken      = null,
+                       EventTracking_Id       EventTrackingId        = null,
+                       TimeSpan?              RequestTimeout         = null)
+
+                => RemoteStop(null,
+                              SessionId,
+                              ReservationHandling,
+                              ProviderId,
+                              RemoteAuthentication,
+
+                              Timestamp,
+                              CancellationToken,
+                              EventTrackingId,
+                              RequestTimeout);
+
+
+        /// <summary>
+        /// Stop the given charging session.
+        /// </summary>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<RemoteStopResult>
+
+            RemoteStop(ICSORoamingProvider    CSORoamingProvider,
+                       ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        eMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication   RemoteAuthentication   = null,
@@ -4394,6 +4431,11 @@ namespace org.GraphDefined.WWCP
                                                           EventTrackingId,
                                                           RequestTimeout);
 
+                        if (result.Result == RemoteStopResultTypes.Success)
+                        {
+                            SessionsStore.RemoteStop(chargingSession.Id);
+                        }
+
                     }
 
                 }
@@ -4420,6 +4462,12 @@ namespace org.GraphDefined.WWCP
                                                       CancellationToken,
                                                       EventTrackingId,
                                                       RequestTimeout);
+
+                        if (result != null && result.Result != RemoteStopResultTypes.InvalidSessionId)
+                        {
+                            SessionsStore.RemoteStop(SessionId);
+                            break;
+                        }
 
                     }
 
@@ -4450,6 +4498,12 @@ namespace org.GraphDefined.WWCP
                                                       EventTrackingId,
                                                       RequestTimeout);
 
+                        if (result != null && result.Result != RemoteStopResultTypes.InvalidSessionId)
+                        {
+                            SessionsStore.RemoteStop(SessionId);
+                            break;
+                        }
+
                     }
 
                 }
@@ -4462,11 +4516,6 @@ namespace org.GraphDefined.WWCP
                     result = RemoteStopResult.InvalidSessionId(SessionId);
 
                 #endregion
-
-                if (result.Result == RemoteStopResultTypes.Success)
-                {
-                    SessionsStore.RemoteStop(SessionId);
-                }
 
             }
             catch (Exception e)

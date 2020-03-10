@@ -737,6 +737,14 @@ namespace org.GraphDefined.WWCP
                        : null,
 
 
+                   CSORoamingProviderId.HasValue
+                       ? new JProperty("CSORoamingProviderId",        CSORoamingProviderId.     ToString())
+                       : null,
+
+                   EMPRoamingProviderId.HasValue
+                       ? new JProperty("EMPRoamingProviderId",        EMPRoamingProviderId.     ToString())
+                       : null,
+
                    ChargingStationOperatorId.HasValue
                        ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
                        : null,

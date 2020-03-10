@@ -84,6 +84,8 @@ namespace org.GraphDefined.WWCP
 
                            var session = ChargingSession.Parse(chargingSession);
                            session.RoamingNetworkId           = chargingSession["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(chargingSession["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?();
+                           session.CSORoamingProviderId       = chargingSession["CSORoamingProviderId"]      != null ? CSORoamingProvider_Id.     Parse(chargingSession["CSORoamingProviderId"]?.     Value<String>()) : new CSORoamingProvider_Id?();
+                           session.EMPRoamingProviderId       = chargingSession["EMPRoamingProviderId"]      != null ? EMPRoamingProvider_Id.     Parse(chargingSession["EMPRoamingProviderId"]?.     Value<String>()) : new EMPRoamingProvider_Id?();
                            session.ChargingStationOperatorId  = chargingSession["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(chargingSession["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?();
                            session.ChargingPoolId             = chargingSession["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(chargingSession["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?();
                            session.ChargingStationId          = chargingSession["chargingStationId"]         != null ? ChargingStation_Id.        Parse(chargingSession["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?();
