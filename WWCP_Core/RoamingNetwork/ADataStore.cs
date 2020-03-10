@@ -37,6 +37,7 @@ namespace org.GraphDefined.WWCP
 {
 
     public abstract class ADataStore<TId, TData> : IEnumerable<TData>
+        where TData : IId<TId>
     {
 
         #region Data
@@ -108,19 +109,20 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public ADataStore(IRoamingNetwork                  RoamingNetwork,
-                          IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos    = null,
+        public ADataStore(IRoamingNetwork                       RoamingNetwork,
+                          IEnumerable<RoamingNetworkInfo>       RoamingNetworkInfos    = null,
 
-                          Boolean                          DisableLogfiles        = false,
-                          String                           LogFilePath            = null,
-                          Func<RoamingNetwork_Id, String>  LogFileNameCreator     = null,
-                          Boolean                          ReloadDataOnStart      = true,
-                          Func<RoamingNetwork_Id, String>  LogfileSearchPattern   = null,
-                          Action<String, String, JObject>  LogFileParser          = null,
+                          Boolean                               DisableLogfiles        = false,
+                          String                                LogFilePath            = null,
+                          Func<RoamingNetwork_Id, String>       LogFileNameCreator     = null,
+                          Boolean                               ReloadDataOnStart      = true,
+                          Func<RoamingNetwork_Id, String>       LogfileSearchPattern   = null,
+                          Func<String, String, JObject, TData>  LogFileParser          = null,
+                     //     Action<TData>                         AddFunc                = null,
 
-                          Boolean                          DisableNetworkSync     = false,
+                          Boolean                               DisableNetworkSync     = false,
 
-                          DNSClient                        DNSClient              = null)
+                          DNSClient                             DNSClient              = null)
 
         {
 
@@ -243,7 +245,7 @@ namespace org.GraphDefined.WWCP
             {
                 lock (Lock)
                 {
-                    File.AppendAllText(LogfileNameCreator(RoamingNetwork.Id), data);
+                    File.AppendAllText(LogFilePath + LogfileNameCreator(RoamingNetwork.Id), data);
                 }
             }
 
@@ -302,11 +304,11 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ReloadData(LogfileSearchPattern, ParserFunc)
+        #region ReloadData(LogfileSearchPattern, ParserFunc, AddFunc)
 
-        protected void ReloadData(String                           Path,
-                                  String                           LogfileSearchPattern,
-                                  Action<String, String, JObject>  ParserFunc)
+        protected void ReloadData(String                                Path,
+                                  String                                LogfileSearchPattern,
+                                  Func<String, String, JObject, TData>  ParserFunc)
         {
 
             if (Path?.Trim().IsNullOrEmpty() == true)
@@ -329,26 +331,29 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
+                        TData session = default;
+
                         File.ReadLines(filename).
-                        ForEachCounted((line, counter) => {
-                            if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith("#"))
-                            {
-                                try
+                            ForEachCounted((line, counter) => {
+                                if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith("#"))
                                 {
+                                    try
+                                    {
 
-                                    JSON = JObject.Parse(line);
+                                        JSON     = JObject.Parse(line);
+                                        session  = ParserFunc(filename,
+                                                              JSON["command"].Value<String>(),
+                                                              JSON);
 
-                                    ParserFunc(filename,
-                                               JSON["command"].Value<String>(),
-                                               JSON);
+                                        InternalData.Add(session.Id, session);
 
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log("Could not parse data in '" + filename + "' line "+ counter + ": " + e.Message);
+                                    }
                                 }
-                                catch (Exception e)
-                                {
-                                    DebugX.Log("Could not parse data in '" + filename + "' line "+ counter + ": " + e.Message);
-                                }
-                            }
-                        });
+                            });
 
                     }
                     catch (Exception e)

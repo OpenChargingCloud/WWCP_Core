@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
                                                      ".log"),
                    ReloadDataOnStart,
                    roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "-" + Environment.MachineName + "_",
-                   (logfilename, command, json) => { },
+                   (logfilename, command, json) => null,
 
                    DisableNetworkSync,
                    DNSClient)

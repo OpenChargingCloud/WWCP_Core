@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
 
             => ChargingSessions == null || !ChargingSessions.Any()
 
-                   ? null
+                   ? new JArray()
 
                    : new JArray(ChargingSessions.
                                     Where         (session => session != null).
@@ -664,7 +664,7 @@ namespace org.GraphDefined.WWCP
                    Id.ToJSON("@id"),
 
                    Embedded
-                       ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/chargingSession")
+                       ? new JProperty("@context",                    "https://open.charging.cloud/contexts/wwcp+json/chargingSession")
                        : null,
 
                    RoamingNetworkId.HasValue
@@ -758,6 +758,18 @@ namespace org.GraphDefined.WWCP
                        : null
 
             );
+
+
+        public static ChargingSession Parse(JObject JSON)
+        {
+
+            var session = new ChargingSession(
+                              ChargingSession_Id.Parse(JSON["@id"]?.Value<String>())
+                );
+
+            return session;
+
+        }
 
 
 

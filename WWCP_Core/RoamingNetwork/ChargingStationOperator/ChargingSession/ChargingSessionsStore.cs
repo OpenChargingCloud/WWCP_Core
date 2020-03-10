@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -37,6 +38,12 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         private readonly Action<ChargeDetailRecord> AddChargeDetailRecordAction;
+
+        public ChargingSession_Id Id => throw new NotImplementedException();
+
+        public ulong Length => throw new NotImplementedException();
+
+        public bool IsNullOrEmpty => throw new NotImplementedException();
 
         #endregion
 
@@ -59,83 +66,100 @@ namespace org.GraphDefined.WWCP
                                      Boolean                          DisableNetworkSync    = false,
                                      DNSClient                        DNSClient             = null)
 
-            : base(RoamingNetwork,
-                   RoamingNetworkInfos,
+            : base(RoamingNetwork:          RoamingNetwork,
+                   RoamingNetworkInfos:     RoamingNetworkInfos,
 
-                   DisableLogfiles,
-                   "ChargingSessions" + Path.DirectorySeparatorChar,
-                   roamingNetworkId => String.Concat("ChargingSessions-",
-                                                     roamingNetworkId, "-",
-                                                     Environment.MachineName, "_",
-                                                     DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
-                                                     ".log"),
-                   ReloadDataOnStart,
-                   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "-" + Environment.MachineName + "_",
-                   (logfilename, command, json) => {
+                   DisableLogfiles:         DisableLogfiles,
+                   LogFilePath:             "ChargingSessions" + Path.DirectorySeparatorChar,
+                   LogFileNameCreator:      roamingNetworkId => String.Concat("ChargingSessions-",
+                                                                    roamingNetworkId, "_",
+                                                                    DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                                    ".log"),
+                   ReloadDataOnStart:       ReloadDataOnStart,
+                   LogfileSearchPattern:    roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "_*.log",
+                   LogFileParser:           (logfilename, command, json) => {
 
-                       switch (command.ToLower())
+                       if (json["chargingSession"] is JObject chargingSession)
                        {
 
-                           case "remoteStart":
+                           var session = ChargingSession.Parse(chargingSession);
+                           session.RoamingNetworkId           = chargingSession["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(chargingSession["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?();
+                           session.ChargingStationOperatorId  = chargingSession["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(chargingSession["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?();
+                           session.ChargingPoolId             = chargingSession["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(chargingSession["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?();
+                           session.ChargingStationId          = chargingSession["chargingStationId"]         != null ? ChargingStation_Id.        Parse(chargingSession["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?();
+                           session.EVSEId                     = chargingSession["EVSEId"]                    != null ? EVSE_Id.                   Parse(chargingSession["EVSEId"]?.                   Value<String>()) : new EVSE_Id?();
 
-                               if (json["chargingSession"] is JObject newChargingSession)
-                               {
+                           if (chargingSession["energyMeterValues"] is JObject energyMeterValueObject)
+                           {
 
+                           }
 
+                           else if (chargingSession["energyMeterValues"] is JArray energyMeterValueArray)
+                           {
 
-                               }
-
-                               break;
-
-                           case "remoteStop":
-
-                               if (json["chargingSession"] is JObject updatedChargingSession)
-                               {
-
-
-
-                               }
-
-                               break;
-
-                           case "authStart":
-
-                               if (json["chargingSession"] is JObject removedChargingSession)
-                               {
+                           }
 
 
+                           switch (command)
+                           {
 
-                               }
+                               case "remoteStart":
+                                   if (chargingSession["start"] is JObject startObject)
+                                   {
+                                       if (startObject["timestamp"] != null)
+                                       {
+                                           session.SessionTime         = new StartEndDateTime(startObject["timestamp"].Value<DateTime>());
+                                           session.ProviderIdStart     = startObject["providerId"]     != null ? eMobilityProvider_Id.Parse(startObject["providerId"]?.Value<String>()) : new eMobilityProvider_Id?();
+                                           session.AuthenticationStart = startObject["authentication"] is JObject authentication ? RemoteAuthentication.Parse(authentication)           : null;
+                                       }
+                                   }
+                                   break;
 
-                               break;
-
-                           case "authStop":
-
-                               if (json["chargingSession"] is JObject removedChargingSession2)
-                               {
+                               case "remoteStop":
+                                   {
 
 
 
-                               }
+                                   }
+                                   break;
 
-                               break;
-
-                           case "sendCDR":
-
-                               if (json["chargingSession"] is JObject removedChargingSession3)
-                               {
+                               case "authStart":
+                                   {
 
 
 
-                               }
+                                   }
+                                   break;
 
-                               break;
+                               case "authStop":
+                                   {
+
+
+
+                                   }
+                                   break;
+
+                               case "sendCDR":
+                                   {
+
+
+
+                                   }
+                                   break;
+
+                           }
+
+
+                           return session;
 
                        }
+
+                       return null;
+
                    },
 
-                   DisableNetworkSync,
-                   DNSClient)
+                   DisableNetworkSync:      DisableNetworkSync,
+                   DNSClient:               DNSClient)
 
         { }
 
@@ -293,6 +317,35 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public Boolean RemoteStart2(ChargingSession          NewChargingSession,
+                                    Action<ChargingSession>  UpdateFunc = null)
+        {
+
+            lock (InternalData)
+            {
+
+                if (!InternalData.ContainsKey(NewChargingSession.Id))
+                {
+
+                    InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                    UpdateFunc?.Invoke(NewChargingSession);
+
+                    LogIt("remoteStart",
+                          NewChargingSession.Id,
+                          "chargingSession",
+                          NewChargingSession.ToJSON());
+
+                    return true;
+
+                }
+
+                else
+                    return false;
+
+            }
+
+        }
+
         #endregion
 
         #region RemoteStop (Id)
@@ -412,6 +465,17 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(ChargingSession_Id other)
+        {
+            throw new NotImplementedException();
+        }
 
 
 

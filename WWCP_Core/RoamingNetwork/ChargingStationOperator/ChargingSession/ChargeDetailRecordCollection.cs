@@ -35,13 +35,17 @@ using System.Collections;
 namespace org.GraphDefined.WWCP
 {
 
-    public class ChargeDetailRecordCollection : IEnumerable<ChargeDetailRecord>
+    public class ChargeDetailRecordCollection : IId<ChargingSession_Id>,
+                                                IEnumerable<ChargeDetailRecord>
     {
 
         private List<ChargeDetailRecord> _ChargeDetailRecords;
 
-        public ChargingSession_Id ChargingSessionId { get; }
+        public ChargingSession_Id Id { get; }
 
+        public ulong Length => throw new NotImplementedException();
+
+        public bool IsNullOrEmpty => throw new NotImplementedException();
 
         public ChargeDetailRecordCollection(ChargeDetailRecord ChargeDetailRecord)
             : this(ChargeDetailRecord.SessionId)
@@ -51,7 +55,7 @@ namespace org.GraphDefined.WWCP
 
         public ChargeDetailRecordCollection(ChargingSession_Id ChargingSessionId)
         {
-            this.ChargingSessionId     = ChargingSessionId;
+            this.Id                    = ChargingSessionId;
             this._ChargeDetailRecords  = new List<ChargeDetailRecord>();
         }
 
@@ -96,6 +100,18 @@ namespace org.GraphDefined.WWCP
 
         IEnumerator IEnumerable.GetEnumerator()
             => _ChargeDetailRecords.GetEnumerator();
+
+
+
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(ChargingSession_Id other)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 
