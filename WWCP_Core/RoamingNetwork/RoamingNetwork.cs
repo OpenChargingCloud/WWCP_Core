@@ -4462,7 +4462,10 @@ namespace org.GraphDefined.WWCP
 
                         if (result?.Result == RemoteStopResultTypes.Success)
                         {
-                            SessionsStore.RemoteStop(chargingSession.Id);
+                            SessionsStore.RemoteStop(chargingSession.Id,
+                                                     RemoteAuthentication,
+                                                     ProviderId,
+                                                     CSORoamingProvider);
                         }
 
                         #endregion
@@ -4489,7 +4492,10 @@ namespace org.GraphDefined.WWCP
 
                             if (result?.Result == RemoteStopResultTypes.Success)
                             {
-                                SessionsStore.RemoteStop(chargingSession.Id);
+                                SessionsStore.RemoteStop(chargingSession.Id,
+                                                         RemoteAuthentication,
+                                                         ProviderId,
+                                                         CSORoamingProvider);
                             }
 
                         }
@@ -4525,8 +4531,14 @@ namespace org.GraphDefined.WWCP
 
                         if (result != null && result.Result != RemoteStopResultTypes.InvalidSessionId)
                         {
-                            SessionsStore.RemoteStop(SessionId);
+
+                            SessionsStore.RemoteStop(SessionId,
+                                                     RemoteAuthentication,
+                                                     ProviderId,
+                                                     CSORoamingProvider);
+
                             break;
+
                         }
 
                     }
@@ -4560,8 +4572,14 @@ namespace org.GraphDefined.WWCP
 
                         if (result != null && result.Result != RemoteStopResultTypes.InvalidSessionId)
                         {
-                            SessionsStore.RemoteStop(SessionId);
+
+                            SessionsStore.RemoteStop(SessionId,
+                                                     RemoteAuthentication,
+                                                     ProviderId,
+                                                     CSORoamingProvider);
+
                             break;
+
                         }
 
                     }

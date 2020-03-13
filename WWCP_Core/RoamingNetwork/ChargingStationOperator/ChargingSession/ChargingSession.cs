@@ -802,7 +802,7 @@ namespace org.GraphDefined.WWCP
                        ? new JProperty("stop",                  JSONObject.Create(
 
                              SessionTime.EndTime.HasValue
-                                 ? new JProperty("end",               SessionTime.EndTime.Value.ToIso8601())
+                                 ? new JProperty("timestamp",             SessionTime.EndTime.Value.ToIso8601())
                                  : null,
 
                              EMPRoamingProviderIdStop.HasValue

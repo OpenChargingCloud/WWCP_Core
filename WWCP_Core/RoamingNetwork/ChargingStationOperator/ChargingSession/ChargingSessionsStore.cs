@@ -114,9 +114,14 @@ namespace org.GraphDefined.WWCP
 
                                            if (startTime != null)
                                            {
-                                               session.SessionTime         = new StartEndDateTime(startTime.Value);
-                                               session.ProviderIdStart     = remoteStartObject["providerId"]     != null ? eMobilityProvider_Id.Parse(remoteStartObject["providerId"]?.Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication.Parse(authenticationStart)                 : null;
+
+                                               session.SessionTime                = new StartEndDateTime(startTime.Value);
+
+                                               session.EMPRoamingProviderIdStart  = remoteStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                               session.CSORoamingProviderIdStart  = remoteStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                               session.ProviderIdStart            = remoteStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStartObject["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                                               session.AuthenticationStart        = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                        : null;
+
                                            }
 
                                        }
@@ -134,13 +139,17 @@ namespace org.GraphDefined.WWCP
                                            if (startTime != null && stopTime != null)
                                            {
 
-                                               session.SessionTime          = new StartEndDateTime(startTime.Value, stopTime.Value);
+                                               session.SessionTime                = new StartEndDateTime(startTime.Value, stopTime.Value);
 
-                                               session.ProviderIdStart      = remoteStartObject["providerId"]     != null ? eMobilityProvider_Id.Parse(remoteStartObject["providerId"]?.Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart  = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication.Parse(authenticationStart)       : null;
+                                               session.EMPRoamingProviderIdStart  = remoteStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                               session.CSORoamingProviderIdStart  = remoteStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                               session.ProviderIdStart            = remoteStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStartObject["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                                               session.AuthenticationStart        = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                        : null;
 
-                                               session.ProviderIdStop       = remoteStopObject ["providerId"]     != null ? eMobilityProvider_Id.Parse(remoteStopObject ["providerId"]?.Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStop   = remoteStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.Parse(authenticationStop)         : null;
+                                               session.EMPRoamingProviderIdStop   = remoteStopObject ["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStopObject ["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                               session.CSORoamingProviderIdStop   = remoteStopObject ["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStopObject ["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                               session.ProviderIdStop             = remoteStopObject ["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStopObject ["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                                               session.AuthenticationStop         = remoteStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                         : null;
 
                                            }
 
@@ -157,9 +166,14 @@ namespace org.GraphDefined.WWCP
 
                                            if (startTime != null)
                                            {
-                                               session.SessionTime          = new StartEndDateTime(startTime.Value);
-                                               session.ProviderIdStart      = authStartObject["providerId"] != null ? eMobilityProvider_Id.Parse(authStartObject["providerId"]?.Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart  = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.Parse(authenticationStart) : null;
+
+                                               session.SessionTime                = new StartEndDateTime(startTime.Value);
+
+                                               session.EMPRoamingProviderIdStart  = authStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                               session.CSORoamingProviderIdStart  = authStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                               session.ProviderIdStart            = authStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStartObject["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
+                                               session.AuthenticationStart        = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.  Parse(authenticationStart)                                      : null;
+
                                            }
 
                                        }
@@ -177,13 +191,17 @@ namespace org.GraphDefined.WWCP
                                            if (startTime != null && stopTime != null)
                                            {
 
-                                               session.SessionTime          = new StartEndDateTime(startTime.Value, stopTime.Value);
+                                               session.SessionTime                = new StartEndDateTime(startTime.Value, stopTime.Value);
 
-                                               session.ProviderIdStart      = authStartObject["providerId"]     != null ? eMobilityProvider_Id.Parse(authStartObject["providerId"]?.Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart  = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.Parse(authenticationStart)      : null;
+                                               session.EMPRoamingProviderIdStart  = authStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                               session.CSORoamingProviderIdStart  = authStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                               session.ProviderIdStart            = authStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStartObject["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
+                                               session.AuthenticationStart        = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.  Parse(authenticationStart)      : null;
 
-                                               session.ProviderIdStop       = authStopObject ["providerId"]     != null ? eMobilityProvider_Id.Parse(authStopObject["providerId"]?.Value<String>())  : new eMobilityProvider_Id?();
-                                               session.AuthenticationStop   = authStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.Parse(authenticationStop)       : null;
+                                               session.EMPRoamingProviderIdStop   = authStopObject ["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStopObject ["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                               session.CSORoamingProviderIdStop   = authStopObject ["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStopObject ["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                               session.ProviderIdStop             = authStopObject ["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStopObject ["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
+                                               session.AuthenticationStop         = authStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)       : null;
 
                                            }
 
@@ -400,18 +418,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop (Id)
+        #region RemoteStop (Id, Authentication, ProviderId = null, CSORoamingProvider = null)
 
-        public Boolean RemoteStop(ChargingSession_Id Id)
+        public Boolean RemoteStop(ChargingSession_Id     Id,
+                                  AAuthentication        Authentication,
+                                  eMobilityProvider_Id?  ProviderId           = null,
+                                  ICSORoamingProvider    CSORoamingProvider   = null)
         {
 
             lock (InternalData)
             {
 
-                if (InternalData.ContainsKey(Id))
+                if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
-                    LogIt("remoteStop", Id);
+
+                    session.SessionTime.EndTime     = DateTime.UtcNow;
+                    session.CSORoamingProviderStop  = CSORoamingProvider;
+                    session.ProviderIdStop          = ProviderId;
+                    session.AuthenticationStop      = Authentication;
+
+                    LogIt("remoteStop",
+                          session.Id,
+                          "chargingSession",
+                          session.ToJSON());
+
                     return true;
+
                 }
 
                 else
