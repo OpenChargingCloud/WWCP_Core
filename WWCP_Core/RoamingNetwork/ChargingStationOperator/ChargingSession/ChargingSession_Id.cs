@@ -85,15 +85,49 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charging session identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging session identification.</param>
         public static ChargingSession_Id Parse(String Text)
+        {
 
-            => new ChargingSession_Id(Text);
+            #region Initial checks
+
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging session identification must not be null or empty!");
+
+            #endregion
+
+            if (TryParse(Text, out ChargingSession_Id chargingSessionId))
+                return chargingSessionId;
+
+            throw new ArgumentException("Illegal text representation of a charging session identification: '" + Text + "'!", nameof(Text));
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parse the given string as a charging session identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging session identification.</param>
+        public static ChargingSession_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out ChargingSession_Id chargingSessionId))
+                return chargingSessionId;
+
+            return new ChargingSession_Id?();
+
+        }
 
         #endregion
 
@@ -110,15 +144,19 @@ namespace org.GraphDefined.WWCP
             {
 
                 ChargingSessionId = new ChargingSession_Id(Text);
-
                 return true;
+            }
 
-            }
+#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-            {
-                ChargingSessionId = default(ChargingSession_Id);
-                return false;
-            }
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            { }
+
+            ChargingSessionId = default;
+            return false;
+
         }
 
         #endregion

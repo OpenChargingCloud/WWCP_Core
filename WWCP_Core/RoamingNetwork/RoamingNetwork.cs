@@ -6696,8 +6696,12 @@ namespace org.GraphDefined.WWCP
 
                         if (chargingSession.CSORoamingProviderStart != null && chargingSession.CSORoamingProviderStart is ICSORoamingProvider sendCDR2)
                         {
+
                             _ISendChargeDetailRecords[sendCDR2].Add(cdr);
                             ChargeDetailRecordsToProcess.Remove(cdr);
+
+                            SessionsStore.CDRReceived(cdr.SessionId, cdr);
+
                         }
 
                     }

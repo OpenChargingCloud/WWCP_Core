@@ -110,9 +110,24 @@ namespace org.GraphDefined.WWCP
                                    IComparable
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/chargingSession";
+
+        #endregion
+
         #region Properties
 
         public EventTracking_Id EventTrackingId { get; set; }
+
+        public System_Id?  SystemIdStart    { get; set; }
+        public System_Id?  SystemIdStop     { get; set; }
+
+        public System_Id?  SystemIdCDR      { get; set; }
+
 
         #region RoamingNetwork
 
@@ -663,7 +678,18 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public DateTime                   CDRSent                       { get; set; }
+        public ChargeDetailRecord         CDR                           { get; set; }
+
+        public DateTime?                  CDRTimestamp                  { get; set; }
+
+        public DateTime?                  CDRForwarded                  { get; set; }
+
+        public String                     CDRResultCode                 { get; set; }
+
+        public String                     CDRResultDescription          { get; set; }
+
+
+
 
         public Boolean                    RemoveMe                      { get; set; }
 
@@ -748,8 +774,8 @@ namespace org.GraphDefined.WWCP
                    Id.ToJSON("@id"),
 
                    Embedded
-                       ? new JProperty("@context",                    "https://open.charging.cloud/contexts/wwcp+json/chargingSession")
-                       : null,
+                       ? null
+                       : new JProperty("@context",                    JSONLDContext),
 
                    RoamingNetworkId.HasValue
                        ? new JProperty("roamingNetworkId",            RoamingNetworkId.ToString())
@@ -769,9 +795,13 @@ namespace org.GraphDefined.WWCP
 
 
                    SessionTime != null
-                       ? new JProperty("start",                 JSONObject.Create(
+                       ? new JProperty("start", JSONObject.Create(
 
                              new JProperty("timestamp",               SessionTime.StartTime.ToIso8601()),
+
+                             SystemIdStart.HasValue
+                                 ? new JProperty("systemId",              SystemIdStart.            ToString())
+                                 : null,
 
                              EMPRoamingProviderIdStart.HasValue
                                  ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStart.ToString())
@@ -799,32 +829,65 @@ namespace org.GraphDefined.WWCP
 
 
                    SessionTime.EndTime.HasValue
-                       ? new JProperty("stop",                  JSONObject.Create(
+                       ? new JProperty("stop", JSONObject.Create(
 
                              SessionTime.EndTime.HasValue
                                  ? new JProperty("timestamp",             SessionTime.EndTime.Value.ToIso8601())
                                  : null,
 
+                             SystemIdStop.HasValue
+                                 ? new JProperty("systemId",              SystemIdStop.             ToString())
+                                 : null,
+
                              EMPRoamingProviderIdStop.HasValue
-                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop.ToString())
+                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop. ToString())
                                  : null,
 
                              CSORoamingProviderIdStop.HasValue
-                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop.ToString())
+                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop. ToString())
                                  : null,
 
                              ProviderIdStop != null
-                                 ? new JProperty("providerId",            ProviderIdStop.          ToString())
+                                 ? new JProperty("providerId",            ProviderIdStop.           ToString())
                                  : null,
 
                              AuthenticationStop.IsDefined()
-                                 ? new JProperty("authentication",        AuthenticationStop.      ToJSON())
+                                 ? new JProperty("authentication",        AuthenticationStop.       ToJSON())
                                  : null
+
                          ))
                        : null,
 
 
+                   CDRTimestamp.HasValue
+                       ? new JProperty("cdr", JSONObject.Create(
 
+                             CDRTimestamp.HasValue
+                                 ? new JProperty("timestamp",             CDRTimestamp.Value.       ToIso8601())
+                                 : null,
+
+                             SystemIdCDR.HasValue
+                                 ? new JProperty("systemId",              SystemIdCDR.              ToString())
+                                 : null,
+
+                             CDR != null
+                                 ? new JProperty("cdr",                   CDR.                      ToJSON(Embedded: true))
+                                 : null,
+
+                             CDRForwarded.HasValue
+                                 ? new JProperty("forwarded",             CDRForwarded.Value.       ToIso8601())
+                                 : null,
+
+                             CDRResultCode.IsNotNullOrEmpty()
+                                 ? new JProperty("resultCode",            CDRResultCode)
+                                 : null,
+
+                             CDRResultDescription.IsNotNullOrEmpty()
+                                 ? new JProperty("resultDescription",     CDRResultDescription)
+                                 : null
+
+                         ))
+                       : null,
 
 
                    ChargingStationOperatorId.HasValue

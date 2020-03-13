@@ -411,9 +411,9 @@ namespace org.GraphDefined.WWCP
 
                            SessionId.ToJSON("@id"),
 
-                           !Embedded
-                               ? new JProperty("@context",                    JSONLDContext)
-                               : null,
+                           Embedded
+                               ? null
+                               : new JProperty("@context",                    JSONLDContext),
 
                            SessionTime != null
                                ? new JProperty("sessionTime",                 JSONObject.Create(
