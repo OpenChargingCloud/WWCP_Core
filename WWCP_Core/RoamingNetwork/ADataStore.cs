@@ -320,7 +320,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                JObject JSON = null;
+                JObject JSON     = null;
+                String  command  = null;
 
                 foreach (var filename in Directory.EnumerateFiles(Path,
                                                                   LogfileSearchPattern,
@@ -341,11 +342,28 @@ namespace org.GraphDefined.WWCP
                                     {
 
                                         JSON     = JObject.Parse(line);
+                                        command  = JSON["command"].Value<String>();
                                         session  = ParserFunc(filename,
-                                                              JSON["command"].Value<String>(),
+                                                              command,
                                                               JSON);
 
-                                        InternalData.Add(session.Id, session);
+                                        switch (command)
+                                        {
+
+                                            case "authStart":
+                                            case "remoteStart":
+                                                InternalData.Add(session.Id, session);
+                                                break;
+
+                                            case "authStop":
+                                                InternalData[session.Id] = session;
+                                                break;
+
+                                            default:
+                                                DebugX.Log("Unknown command '" + command + "' in '" + filename + "' line " + counter + "!");
+                                                break;
+
+                                        }
 
                                     }
                                     catch (Exception e)

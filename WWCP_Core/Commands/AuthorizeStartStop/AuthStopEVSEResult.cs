@@ -257,6 +257,54 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) AlreadyStopped    (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The given charging session identification was already stopped.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopEVSEResult
+
+            AlreadyStopped(IId                      AuthorizatorId,
+                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                           ChargingSession_Id?      SessionId  = null,
+                           TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopEVSEResult(AuthorizatorId,
+                                          ISendAuthorizeStartStop,
+                                          AuthStopEVSEResultType.AlreadyStopped,
+                                          SessionId,
+                                          Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The given charging session identification is unknown or invalid.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopEVSEResult
+
+            AlreadyStopped(IId                         AuthorizatorId,
+                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                           ChargingSession_Id?         SessionId  = null,
+                           TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopEVSEResult(AuthorizatorId,
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopEVSEResultType.AlreadyStopped,
+                                          SessionId,
+                                          Runtime: Runtime);
+
+        #endregion
+
         #region (static) OutOfService        (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
@@ -683,6 +731,11 @@ namespace org.GraphDefined.WWCP
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
+
+        /// <summary>
+        /// The given charging session identification was already stopped.
+        /// </summary>
+        AlreadyStopped,
 
         /// <summary>
         /// The EVSE is out of service.

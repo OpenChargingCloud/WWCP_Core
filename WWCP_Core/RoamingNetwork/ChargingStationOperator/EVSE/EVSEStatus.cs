@@ -60,9 +60,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current timestamped status of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public EVSEStatus(EVSE_Id                              Id,
-                          Timestamped<EVSEStatusTypes>         Status,
-                          IReadOnlyDictionary<String, Object>  CustomData  = null)
+        public EVSEStatus(EVSE_Id                                    Id,
+                          Timestamped<EVSEStatusTypes>               Status,
+                          IEnumerable<KeyValuePair<String, Object>>  CustomData  = null)
 
             : base(CustomData)
 
@@ -84,10 +84,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public EVSEStatus(EVSE_Id                              Id,
-                          EVSEStatusTypes                      Status,
-                          DateTime                             Timestamp,
-                          IReadOnlyDictionary<String, Object>  CustomData  = null)
+        public EVSEStatus(EVSE_Id                                    Id,
+                          EVSEStatusTypes                            Status,
+                          DateTime                                   Timestamp,
+                          IEnumerable<KeyValuePair<String, Object>>  CustomData  = null)
 
             : this(Id,
                    new Timestamped<EVSEStatusTypes>(Timestamp, Status),

@@ -303,100 +303,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region Reservation
-
-        private ChargingReservation _Reservation;
-
-        /// <summary>
-        /// An optional charging reservation for this charging session.
-        /// </summary>
-        [Optional]
-        public ChargingReservation Reservation
-        {
-
-            get
-            {
-                return _Reservation;
-            }
-
-            set
-            {
-
-                _Reservation = value;
-
-                if (value != null)
-                    _ReservationId = value.Id;
-
-            }
-
-        }
-
-        #endregion
-
-        #region ReservationId
-
-        private ChargingReservation_Id? _ReservationId;
-
-        /// <summary>
-        /// An optional charging reservation for this charging session.
-        /// </summary>
-        [Optional]
-        public ChargingReservation_Id? ReservationId
-        {
-
-            get
-            {
-                return _ReservationId;
-            }
-
-            set
-            {
-
-                _ReservationId = value;
-
-                if (_Reservation != null && _Reservation.Id != value)
-                    _Reservation = null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region Provider
-
-        /// <summary>
-        /// The identification of the e-mobility provider used for starting this charging process.
-        /// </summary>
-        [Optional]
-        public eMobilityProvider_Id?            ProviderIdStart        { get; set; }
-
-        /// <summary>
-        /// The identification of the e-mobility provider used for stopping this charging process.
-        /// </summary>
-        [Optional]
-        public eMobilityProvider_Id?            ProviderIdStop         { get; set; }
-
-        #endregion
-
-        #region Authentication
-
-        /// <summary>
-        /// The authentication used for starting this charging process.
-        /// </summary>
-        [Optional]
-        public AAuthentication                  AuthenticationStart    { get; set; }
-
-        /// <summary>
-        /// The authentication used for stopping this charging process.
-        /// </summary>
-        [Optional]
-        public AAuthentication                  AuthenticationStop     { get; set; }
-
-        #endregion
-
-
         #region ChargingProduct
 
         /// <summary>
@@ -406,45 +312,6 @@ namespace org.GraphDefined.WWCP
         public ChargingProduct  ChargingProduct   { get; set; }
 
         #endregion
-
-
-        #region ParkingTime
-
-        /// <summary>
-        /// Optional timestamps when the parking started and ended.
-        /// </summary>
-        [Optional]
-        public StartEndDateTime  ParkingTime { get; set; }
-
-        #endregion
-
-        #region SessionTime
-
-        /// <summary>
-        /// Optional timestamps when the charging session started and ended.
-        /// </summary>
-        [Mandatory]
-        public StartEndDateTime SessionTime { get; set; }
-
-        #endregion
-
-        #region Duration
-
-        public TimeSpan Duration
-            => (SessionTime.EndTime ?? DateTime.UtcNow) - SessionTime.StartTime;
-
-        #endregion
-
-        #region ChargingTime
-
-        ///// <summary>
-        ///// Optional timestamps when the charging started and ended.
-        ///// </summary>
-        //[Optional]
-        //public StartEndDateTime  ChargingTime { get; set; }
-
-        #endregion
-
 
         #region EnergyMeterId
 
@@ -506,29 +373,58 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ParkingTime
 
-        #region EMPRoamingProvider
+        /// <summary>
+        /// Optional timestamps when the parking started and ended.
+        /// </summary>
+        [Optional]
+        public StartEndDateTime ParkingTime { get; set; }
 
-        public EMPRoamingProvider_Id? EMPRoamingProviderId { get; set; }
+        #endregion
+
+        #region SessionTime
+
+        /// <summary>
+        /// Optional timestamps when the charging session started and ended.
+        /// </summary>
+        [Mandatory]
+        public StartEndDateTime SessionTime { get; set; }
+
+        #endregion
+
+        #region Duration
+
+        public TimeSpan Duration
+            => (SessionTime.EndTime ?? DateTime.UtcNow) - SessionTime.StartTime;
+
+        #endregion
 
 
-        private IEMPRoamingProvider _EMPRoamingProvider;
 
-        public IEMPRoamingProvider EMPRoamingProvider
+        #region Reservation
+
+        private ChargingReservation _Reservation;
+
+        /// <summary>
+        /// An optional charging reservation for this charging session.
+        /// </summary>
+        [Optional]
+        public ChargingReservation Reservation
         {
 
             get
             {
-                return _EMPRoamingProvider;
+                return _Reservation;
             }
 
             set
             {
 
-                _EMPRoamingProvider = value;
+                _Reservation = value;
 
                 if (value != null)
-                    EMPRoamingProviderId = value.Id;
+                    _ReservationId = value.Id;
 
             }
 
@@ -536,28 +432,29 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CSORoamingProvider
+        #region ReservationId
 
-        public CSORoamingProvider_Id?     CSORoamingProviderId          { get; set; }
+        private ChargingReservation_Id? _ReservationId;
 
-
-        private ICSORoamingProvider _CSORoamingProvider;
-
-        public ICSORoamingProvider        CSORoamingProvider
+        /// <summary>
+        /// An optional charging reservation for this charging session.
+        /// </summary>
+        [Optional]
+        public ChargingReservation_Id? ReservationId
         {
 
             get
             {
-                return _CSORoamingProvider;
+                return _ReservationId;
             }
 
             set
             {
 
-                _CSORoamingProvider = value;
+                _ReservationId = value;
 
-                if (value != null)
-                    CSORoamingProviderId = value.Id;
+                if (_Reservation != null && _Reservation.Id != value)
+                    _Reservation = null;
 
             }
 
@@ -566,17 +463,204 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ProviderStart
 
-        public ISendAuthorizeStartStop    AuthService                   { get; set; }
+        /// <summary>
+        /// The identification of the e-mobility provider used for starting this charging process.
+        /// </summary>
+        [Optional]
+        public eMobilityProvider_Id?            ProviderIdStart        { get; set; }
 
-        public IId                        AuthorizatorId                { get; set; }
+        private eMobilityProvider _ProviderStart;
 
-        public eMobilityProvider_Id       eMobilityProviderId           { get; set; }
+        public eMobilityProvider ProviderStart
+        {
+
+            get
+            {
+                return _ProviderStart;
+            }
+
+            set
+            {
+
+                _ProviderStart = value;
+
+                if (value != null)
+                    ProviderIdStart = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
+        #region ProviderStop
+
+        /// <summary>
+        /// The identification of the e-mobility provider used for stopping this charging process.
+        /// </summary>
+        [Optional]
+        public eMobilityProvider_Id?            ProviderIdStop         { get; set; }
+
+        private eMobilityProvider _ProviderStop;
+
+        public eMobilityProvider ProviderStop
+        {
+
+            get
+            {
+                return _ProviderStop;
+            }
+
+            set
+            {
+
+                _ProviderStop = value;
+
+                if (value != null)
+                    ProviderIdStop = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AuthenticationStart/-Stop
+
+        /// <summary>
+        /// The authentication used for starting this charging process.
+        /// </summary>
+        [Optional]
+        public AAuthentication                  AuthenticationStart    { get; set; }
+
+        /// <summary>
+        /// The authentication used for stopping this charging process.
+        /// </summary>
+        [Optional]
+        public AAuthentication                  AuthenticationStop     { get; set; }
+
+        #endregion
 
 
+        #region EMPRoamingProviderStart
+
+        public EMPRoamingProvider_Id? EMPRoamingProviderIdStart { get; set; }
 
 
-        //public ISendChargeDetailRecords   ISendChargeDetailRecords      { get; set; }
+        private IEMPRoamingProvider _EMPRoamingProviderStart;
+
+        public IEMPRoamingProvider EMPRoamingProviderStart
+        {
+
+            get
+            {
+                return _EMPRoamingProviderStart;
+            }
+
+            set
+            {
+
+                _EMPRoamingProviderStart = value;
+
+                if (value != null)
+                    EMPRoamingProviderIdStart = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
+        #region EMPRoamingProviderStop
+
+        public EMPRoamingProvider_Id? EMPRoamingProviderIdStop { get; set; }
+
+
+        private IEMPRoamingProvider _EMPRoamingProviderStop;
+
+        public IEMPRoamingProvider EMPRoamingProviderStop
+        {
+
+            get
+            {
+                return _EMPRoamingProviderStop;
+            }
+
+            set
+            {
+
+                _EMPRoamingProviderStop = value;
+
+                if (value != null)
+                    EMPRoamingProviderIdStop = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region CSORoamingProviderStart
+
+        public CSORoamingProvider_Id?     CSORoamingProviderIdStart          { get; set; }
+
+
+        private ICSORoamingProvider _CSORoamingProviderStart;
+
+        public ICSORoamingProvider        CSORoamingProviderStart
+        {
+
+            get
+            {
+                return _CSORoamingProviderStart;
+            }
+
+            set
+            {
+
+                _CSORoamingProviderStart = value;
+
+                if (value != null)
+                    CSORoamingProviderIdStart = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSORoamingProviderStop
+
+        public CSORoamingProvider_Id?     CSORoamingProviderIdStop          { get; set; }
+
+
+        private ICSORoamingProvider _CSORoamingProviderStop;
+
+        public ICSORoamingProvider        CSORoamingProviderStop
+        {
+
+            get
+            {
+                return _CSORoamingProviderStop;
+            }
+
+            set
+            {
+
+                _CSORoamingProviderStop = value;
+
+                if (value != null)
+                    CSORoamingProviderIdStop = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
 
 
         public DateTime                   CDRSent                       { get; set; }
@@ -689,12 +773,20 @@ namespace org.GraphDefined.WWCP
 
                              new JProperty("timestamp",               SessionTime.StartTime.ToIso8601()),
 
+                             EMPRoamingProviderIdStart.HasValue
+                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStart.ToString())
+                                 : null,
+
+                             CSORoamingProviderIdStart.HasValue
+                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStart.ToString())
+                                 : null,
+
                              ProviderIdStart != null
-                                 ? new JProperty("providerId",        ProviderIdStart.ToString())
+                                 ? new JProperty("providerId",            ProviderIdStart.          ToString())
                                  : null,
 
                              AuthenticationStart.IsDefined()
-                                 ? new JProperty("authentication",    AuthenticationStart.ToJSON())
+                                 ? new JProperty("authentication",        AuthenticationStart.      ToJSON())
                                  : null
 
                          ))
@@ -713,37 +805,27 @@ namespace org.GraphDefined.WWCP
                                  ? new JProperty("end",               SessionTime.EndTime.Value.ToIso8601())
                                  : null,
 
+                             EMPRoamingProviderIdStop.HasValue
+                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop.ToString())
+                                 : null,
+
+                             CSORoamingProviderIdStop.HasValue
+                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop.ToString())
+                                 : null,
+
                              ProviderIdStop != null
-                                 ? new JProperty("providerId",        ProviderIdStop.ToString())
+                                 ? new JProperty("providerId",            ProviderIdStop.          ToString())
                                  : null,
 
                              AuthenticationStop.IsDefined()
-                                 ? new JProperty("authentication",    AuthenticationStop.ToJSON())
+                                 ? new JProperty("authentication",        AuthenticationStop.      ToJSON())
                                  : null
                          ))
                        : null,
 
 
-                   EnergyMeterId.HasValue
-                       ? new JProperty("energyMeterId",               EnergyMeterId.ToString())
-                       : null,
-
-                   EnergyMeteringValues.Any()
-                       ? new JProperty("energyMeterValues",           JSONObject.Create(
-                                                                          EnergyMeteringValues.
-                                                                          Select(meterValue => new JProperty(meterValue.Timestamp.ToIso8601(),
-                                                                                                             meterValue.Value))
-                                                                      ))
-                       : null,
 
 
-                   CSORoamingProviderId.HasValue
-                       ? new JProperty("CSORoamingProviderId",        CSORoamingProviderId.     ToString())
-                       : null,
-
-                   EMPRoamingProviderId.HasValue
-                       ? new JProperty("EMPRoamingProviderId",        EMPRoamingProviderId.     ToString())
-                       : null,
 
                    ChargingStationOperatorId.HasValue
                        ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
@@ -763,6 +845,20 @@ namespace org.GraphDefined.WWCP
 
                    ChargingProduct != null
                        ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
+                       : null,
+
+                   EnergyMeterId.HasValue
+                       ? new JProperty("energyMeterId",               EnergyMeterId.            ToString())
+                       : null,
+
+                   EnergyMeteringValues.Any()
+                       ? new JProperty("energyMeterValues",           JSONArray.Create(
+                                                                          EnergyMeteringValues.
+                                                                          Select(meterValue => JSONObject.Create(
+                                                                                                   new JProperty("timestamp", meterValue.Timestamp.ToIso8601()),
+                                                                                                   new JProperty("value",     meterValue.Value)
+                                                                                               ))
+                                                                      ))
                        : null
 
             );
