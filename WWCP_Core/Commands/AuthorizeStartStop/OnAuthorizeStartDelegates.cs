@@ -19,9 +19,9 @@
 
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections.Generic;
 
 #endregion
 
@@ -48,6 +48,8 @@ namespace org.GraphDefined.WWCP
                                                           String                        SenderId,
                                                           EventTracking_Id              EventTrackingId,
                                                           RoamingNetwork_Id             RoamingNetworkId,
+                                                          EMPRoamingProvider_Id?        EMPRoamingProviderId,
+                                                          CSORoamingProvider_Id?        CSORoamingProviderId,
                                                           ChargingStationOperator_Id?   OperatorId,
                                                           LocalAuthentication           LocalAuthentication,
                                                           ChargingProduct               ChargingProduct,
@@ -75,6 +77,8 @@ namespace org.GraphDefined.WWCP
                                                           String                        SenderId,
                                                           EventTracking_Id              EventTrackingId,
                                                           RoamingNetwork_Id             RoamingNetworkId,
+                                                          EMPRoamingProvider_Id?        EMPRoamingProviderId,
+                                                          CSORoamingProvider_Id?        CSORoamingProviderId,
                                                           ChargingStationOperator_Id?   OperatorId,
                                                           LocalAuthentication           LocalAuthentication,
                                                           ChargingProduct               ChargingProduct,
@@ -107,6 +111,8 @@ namespace org.GraphDefined.WWCP
                                                               String                                 SenderId,
                                                               EventTracking_Id                       EventTrackingId,
                                                               RoamingNetwork_Id                      RoamingNetworkId,
+                                                              EMPRoamingProvider_Id?                 EMPRoamingProviderId,
+                                                              CSORoamingProvider_Id?                 CSORoamingProviderId,
                                                               ChargingStationOperator_Id?            OperatorId,
                                                               LocalAuthentication                    LocalAuthentication,
                                                               EVSE_Id                                EVSEId,
@@ -138,6 +144,8 @@ namespace org.GraphDefined.WWCP
                                                               String                                 SenderId,
                                                               EventTracking_Id                       EventTrackingId,
                                                               RoamingNetwork_Id                      RoamingNetworkId,
+                                                              EMPRoamingProvider_Id?                 EMPRoamingProviderId,
+                                                              CSORoamingProvider_Id?                 CSORoamingProviderId,
                                                               ChargingStationOperator_Id?            OperatorId,
                                                               LocalAuthentication                    LocalAuthentication,
                                                               EVSE_Id                                EVSEId,
@@ -171,6 +179,8 @@ namespace org.GraphDefined.WWCP
                                                                          String                        SenderId,
                                                                          EventTracking_Id              EventTrackingId,
                                                                          RoamingNetwork_Id             RoamingNetworkId,
+                                                                         EMPRoamingProvider_Id?        EMPRoamingProviderId,
+                                                                         CSORoamingProvider_Id?        CSORoamingProviderId,
                                                                          ChargingStationOperator_Id?   OperatorId,
                                                                          LocalAuthentication           LocalAuthentication,
                                                                          ChargingStation_Id            ChargingStationId,
@@ -200,6 +210,8 @@ namespace org.GraphDefined.WWCP
                                                                          String                           SenderId,
                                                                          EventTracking_Id                 EventTrackingId,
                                                                          RoamingNetwork_Id                RoamingNetworkId,
+                                                                         EMPRoamingProvider_Id?           EMPRoamingProviderId,
+                                                                         CSORoamingProvider_Id?           CSORoamingProviderId,
                                                                          ChargingStationOperator_Id?      OperatorId,
                                                                          LocalAuthentication              LocalAuthentication,
                                                                          ChargingStation_Id               ChargingStationId,
@@ -232,6 +244,8 @@ namespace org.GraphDefined.WWCP
                                                                       String                        SenderId,
                                                                       EventTracking_Id              EventTrackingId,
                                                                       RoamingNetwork_Id             RoamingNetworkId,
+                                                                      EMPRoamingProvider_Id?        EMPRoamingProviderId,
+                                                                      CSORoamingProvider_Id?        CSORoamingProviderId,
                                                                       ChargingStationOperator_Id?   OperatorId,
                                                                       LocalAuthentication           LocalAuthentication,
                                                                       ChargingPool_Id               ChargingPoolId,
@@ -261,6 +275,8 @@ namespace org.GraphDefined.WWCP
                                                                       String                        SenderId,
                                                                       EventTracking_Id              EventTrackingId,
                                                                       RoamingNetwork_Id             RoamingNetworkId,
+                                                                      EMPRoamingProvider_Id?        EMPRoamingProviderId,
+                                                                      CSORoamingProvider_Id?        CSORoamingProviderId,
                                                                       ChargingStationOperator_Id?   OperatorId,
                                                                       LocalAuthentication           LocalAuthentication,
                                                                       ChargingPool_Id               ChargingPoolId,
