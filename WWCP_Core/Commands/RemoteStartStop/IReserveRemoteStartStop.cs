@@ -18,13 +18,11 @@
 #region Usings
 
 using System;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Threading;
 
 #endregion
 
