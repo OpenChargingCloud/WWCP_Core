@@ -52,6 +52,8 @@ namespace org.GraphDefined.WWCP
                                                       ChargingProduct           ChargingProduct,
                                                       ChargingReservation_Id?   ReservationId,
                                                       ChargingSession_Id?       SessionId,
+                                                      EMPRoamingProvider_Id?    EMPRoamingProviderId,
+                                                      CSORoamingProvider_Id?    CSORoamingProviderId,
                                                       eMobilityProvider_Id?     ProviderId,
                                                       RemoteAuthentication      RemoteAuthentication,
                                                       TimeSpan?                 RequestTimeout);
@@ -76,6 +78,8 @@ namespace org.GraphDefined.WWCP
                                                                   ChargingProduct           ChargingProduct,
                                                                   ChargingReservation_Id?   ReservationId,
                                                                   ChargingSession_Id?       SessionId,
+                                                                  EMPRoamingProvider_Id?    EMPRoamingProviderId,
+                                                                  CSORoamingProvider_Id?    CSORoamingProviderId,
                                                                   eMobilityProvider_Id?     ProviderId,
                                                                   RemoteAuthentication      RemoteAuthentication,
                                                                   TimeSpan?                 RequestTimeout  = null);
@@ -107,6 +111,8 @@ namespace org.GraphDefined.WWCP
                                                        ChargingProduct           ChargingProduct,
                                                        ChargingReservation_Id?   ReservationId,
                                                        ChargingSession_Id?       SessionId,
+                                                       EMPRoamingProvider_Id?    EMPRoamingProviderId,
+                                                       CSORoamingProvider_Id?    CSORoamingProviderId,
                                                        eMobilityProvider_Id?     ProviderId,
                                                        RemoteAuthentication      RemoteAuthentication,
                                                        TimeSpan?                 RequestTimeout,

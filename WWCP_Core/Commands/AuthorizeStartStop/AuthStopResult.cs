@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of a authorize stop operation.
+    /// The result of a authorize stop operation at an EVSE.
     /// </summary>
     public class AuthStopResult : AAuthStopResult<AuthStopResultType>
     {
@@ -209,6 +209,54 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) UnknownLocation     (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The given charging location is unknown.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult
+
+            UnknownLocation(IId                      AuthorizatorId,
+                            ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                            ChargingSession_Id?      SessionId   = null,
+                            TimeSpan?                Runtime     = null)
+
+
+                => new AuthStopResult(AuthorizatorId,
+                                      ISendAuthorizeStartStop,
+                                      AuthStopResultType.UnknownLocation,
+                                      SessionId,
+                                      Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The given charging location is unknown.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult
+
+            UnknownLocation(IId                         AuthorizatorId,
+                            IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                            ChargingSession_Id?         SessionId   = null,
+                            TimeSpan?                   Runtime     = null)
+
+
+                => new AuthStopResult(AuthorizatorId,
+                                      IReceiveAuthorizeStartStop,
+                                      AuthStopResultType.UnknownLocation,
+                                      SessionId,
+                                      Runtime: Runtime);
+
+        #endregion
+
         #region (static) InvalidSessionId    (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
@@ -227,10 +275,10 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultType.InvalidSessionId,
-                                      SessionId,
-                                      Runtime: Runtime);
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.InvalidSessionId,
+                                          SessionId,
+                                          Runtime: Runtime);
 
 
 
@@ -250,10 +298,58 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.InvalidSessionId,
-                                      SessionId,
-                                      Runtime: Runtime);
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.InvalidSessionId,
+                                          SessionId,
+                                          Runtime: Runtime);
+
+        #endregion
+
+        #region (static) AlreadyStopped      (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The given charging session identification was already stopped.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult
+
+            AlreadyStopped(IId                      AuthorizatorId,
+                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                           ChargingSession_Id?      SessionId  = null,
+                           TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopResult(AuthorizatorId,
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.AlreadyStopped,
+                                          SessionId,
+                                          Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The given charging session identification is unknown or invalid.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult
+
+            AlreadyStopped(IId                         AuthorizatorId,
+                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                           ChargingSession_Id?         SessionId  = null,
+                           TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopResult(AuthorizatorId,
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.AlreadyStopped,
+                                          SessionId,
+                                          Runtime: Runtime);
 
         #endregion
 
@@ -275,11 +371,11 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultType.OutOfService,
-                                      SessionId,
-                                      Description: "Out-of-service!",
-                                      Runtime:     Runtime);
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.OutOfService,
+                                          SessionId,
+                                          Description: "Out-of-service!",
+                                          Runtime:     Runtime);
 
 
 
@@ -299,11 +395,11 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.OutOfService,
-                                      SessionId,
-                                      Description: "Out-of-service!",
-                                      Runtime:     Runtime);
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.OutOfService,
+                                          SessionId,
+                                          Description: "Out-of-service!",
+                                          Runtime:     Runtime);
 
         #endregion
 
@@ -331,13 +427,13 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultType.Authorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description,
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.Authorized,
+                                          SessionId,
+                                          ProviderId,
+                                          Description,
+                                          AdditionalInfo,
+                                          Runtime: Runtime);
 
 
 
@@ -363,13 +459,13 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.Authorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description,
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.Authorized,
+                                          SessionId,
+                                          ProviderId,
+                                          Description,
+                                          AdditionalInfo,
+                                          Runtime: Runtime);
 
         #endregion
 
@@ -397,13 +493,13 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultType.NotAuthorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description,
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.NotAuthorized,
+                                          SessionId,
+                                          ProviderId,
+                                          Description,
+                                          AdditionalInfo,
+                                          Runtime: Runtime);
 
 
 
@@ -429,13 +525,13 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.NotAuthorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description,
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.NotAuthorized,
+                                          SessionId,
+                                          ProviderId,
+                                          Description,
+                                          AdditionalInfo,
+                                          Runtime: Runtime);
 
         #endregion
 
@@ -462,7 +558,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                Runtime          = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
+            => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
                                       AuthStopResultType.Blocked,
                                       SessionId,
@@ -494,7 +590,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                   Runtime          = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
+            => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultType.Blocked,
                                       SessionId,
@@ -523,10 +619,10 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultType.CommunicationTimeout,
-                                      SessionId,
-                                      Runtime: Runtime);
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.CommunicationTimeout,
+                                          SessionId,
+                                          Runtime: Runtime);
 
 
 
@@ -546,10 +642,10 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.CommunicationTimeout,
-                                      SessionId,
-                                      Runtime: Runtime);
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.CommunicationTimeout,
+                                          SessionId,
+                                          Runtime: Runtime);
 
         #endregion
 
@@ -571,10 +667,10 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultType.StopChargingTimeout,
-                                      SessionId,
-                                      Runtime: Runtime);
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.StopChargingTimeout,
+                                          SessionId,
+                                          Runtime: Runtime);
 
 
 
@@ -594,10 +690,10 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.StopChargingTimeout,
-                                      SessionId,
-                                      Runtime: Runtime);
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.StopChargingTimeout,
+                                          SessionId,
+                                          Runtime: Runtime);
 
         #endregion
 
@@ -621,11 +717,11 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultType.Error,
-                                      SessionId,
-                                      Description: ErrorMessage,
-                                      Runtime:     Runtime);
+                                          ISendAuthorizeStartStop,
+                                          AuthStopResultType.Error,
+                                          SessionId,
+                                          Description: ErrorMessage,
+                                          Runtime:     Runtime);
 
 
 
@@ -647,11 +743,11 @@ namespace org.GraphDefined.WWCP
 
 
                 => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.Error,
-                                      SessionId,
-                                      Description: ErrorMessage,
-                                      Runtime:     Runtime);
+                                          IReceiveAuthorizeStartStop,
+                                          AuthStopResultType.Error,
+                                          SessionId,
+                                          Description: ErrorMessage,
+                                          Runtime:     Runtime);
 
         #endregion
 
@@ -659,7 +755,7 @@ namespace org.GraphDefined.WWCP
     }
 
     /// <summary>
-    /// The result of a authorize stop operation.
+    /// The result of a authorize stop operation at an EVSE.
     /// </summary>
     public enum AuthStopResultType
     {
@@ -675,12 +771,22 @@ namespace org.GraphDefined.WWCP
         AdminDown,
 
         /// <summary>
+        /// The given charging location is unknown.
+        /// </summary>
+        UnknownLocation,
+
+        /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
 
         /// <summary>
-        /// The EVSE or charging station is out of service.
+        /// The given charging session identification was already stopped.
+        /// </summary>
+        AlreadyStopped,
+
+        /// <summary>
+        /// The charging location is out of service.
         /// </summary>
         OutOfService,
 
@@ -700,12 +806,12 @@ namespace org.GraphDefined.WWCP
         Blocked,
 
         /// <summary>
-        /// The authorize stop ran into a timeout between evse operator backend and charging station.
+        /// The authorize stop ran into a timeout between evse operator backend and charging location.
         /// </summary>
         CommunicationTimeout,
 
         /// <summary>
-        /// The authorize stop ran into a timeout between charging station and ev.
+        /// The authorize stop ran into a timeout between charging location and ev.
         /// </summary>
         StopChargingTimeout,
 

@@ -85,14 +85,8 @@
     <Compile Include="Commands\AuthenticationData\ISendAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\OnPushAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\PushAuthenticationDataResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingPoolResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AAuthStartResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingPoolResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AAuthStopResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAAuthStartResult.cs" />
     <Compile Include="Commands\StaticData\IPullData.cs" />
     <Compile Include="Commands\StaticData\ISendData.cs" />
@@ -104,8 +98,7 @@
     <Compile Include="Commands\Status\IReceiveStatus.cs" />
     <Compile Include="Commands\Status\IRemotePushStatusExtentions.cs" />
     <Compile Include="Commands\Status\ISendStatus.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartStopDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStartDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStopDelegates.cs" />
     <Compile Include="Commands\Reserve\ReserveDelegates.cs" />
@@ -407,8 +400,8 @@
     <Compile Include="RoamingNetwork\RoamingProvider\EMP\AEMPRoamingProvider.cs" />
     <Compile Include="RoamingNetwork\RoamingProvider\CSO\CSORoamingProvider_Id.cs" />
     <Compile Include="Commands\AuthorizeStartStop\TokenAuthorizationResultType.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStartEVSEResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStopEVSEResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
     <Compile Include="Commands\SendCDRs\SendCDRsResult.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="Version.cs" />
