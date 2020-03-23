@@ -287,13 +287,14 @@ namespace org.GraphDefined.WWCP
 
 
             this.ReservationsStore                                  = new ChargingReservationsStore(this,
-                                                                                                    DisableNetworkSync: true);
+                                                                                                    DisableNetworkSync:  true);
 
             this.SessionsStore                                      = new ChargingSessionsStore    (this,
-                                                                                                    DisableNetworkSync: true);
+                                                                                                    TCPPort:             IPPort.Parse(4000),
+                                                                                                    DisableNetworkSync:  true);
 
             this.ChargeDetailRecordsStore                           = new ChargeDetailRecordsStore (this,
-                                                                                                    DisableNetworkSync: true);
+                                                                                                    DisableNetworkSync:  true);
 
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);

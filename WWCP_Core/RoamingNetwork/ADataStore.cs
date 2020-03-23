@@ -28,6 +28,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
@@ -36,17 +37,30 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// An generic data store.
+    /// </summary>
+    /// <typeparam name="TId">The type of the identificators.</typeparam>
+    /// <typeparam name="TData">The type of the stored data.</typeparam>
     public abstract class ADataStore<TId, TData> : IEnumerable<TData>
         where TData : IId<TId>
     {
 
         #region Data
 
-        protected        readonly  Dictionary<TId, TData>  InternalData;
+        /// <summary>
+        /// The internal data store.
+        /// </summary>
+        protected      readonly  Dictionary<TId, TData>                                   InternalData;
 
-        private          readonly  Object                  Lock  = new Object();
+        private        readonly  Action<String, String, JObject, Dictionary<TId, TData>>  CommandProcessor;
 
-        private   static readonly  Char                    RS    = (Char) 30;
+        private        readonly  Object                                                   Lock  = new Object();
+
+        private static readonly  Char                                                     RS    = (Char) 30;
+
+
+        private TCPServer Server;
 
         #endregion
 
@@ -56,16 +70,6 @@ namespace org.GraphDefined.WWCP
         /// The attached roaming network.
         /// </summary>
         public IRoamingNetwork                  RoamingNetwork          { get; }
-
-
-        private readonly List<RoamingNetworkInfo> _RoamingNetworkInfos;
-
-        /// <summary>
-        /// Roaming network informations.
-        /// </summary>
-        public IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos
-            => _RoamingNetworkInfos;
-
 
 
         /// <summary>
@@ -94,75 +98,149 @@ namespace org.GraphDefined.WWCP
         public Func<RoamingNetwork_Id, String>  LogfileSearchPattern    { get; }
 
 
-
-
+        /// <summary>
+        /// Whether to disable network synchronization.
+        /// </summary>
         public Boolean                          DisableNetworkSync      { get; }
 
+        private readonly List<RoamingNetworkInfo> _RoamingNetworkInfos;
+
+        /// <summary>
+        /// Roaming network informations.
+        /// </summary>
+        public IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos
+            => _RoamingNetworkInfos;
 
 
-
-
-
-        public DNSClient DNSClient { get; }
+        /// <summary>
+        /// The DNS client defines which DNS servers to use.
+        /// </summary>
+        public DNSClient                        DNSClient               { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        public ADataStore(IRoamingNetwork                       RoamingNetwork,
-                          IEnumerable<RoamingNetworkInfo>       RoamingNetworkInfos    = null,
+        /// <summary>
+        /// Create a generic data store.
+        /// </summary>
+        /// <param name="RoamingNetwork"></param>
+        /// 
+        /// <param name="CommandProcessor"></param>
+        /// 
+        /// <param name="DisableLogfiles"></param>
+        /// <param name="LogFilePathCreator"></param>
+        /// <param name="LogFileNameCreator"></param>
+        /// <param name="ReloadDataOnStart"></param>
+        /// <param name="LogfileSearchPattern"></param>
+        /// 
+        /// <param name="TCPPort"></param>
+        /// <param name="RoamingNetworkInfos"></param>
+        /// <param name="DisableNetworkSync"></param>
+        /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
+        public ADataStore(IRoamingNetwork                                          RoamingNetwork,
 
-                          Boolean                               DisableLogfiles        = false,
-                          String                                LogFilePath            = null,
-                          Func<RoamingNetwork_Id, String>       LogFileNameCreator     = null,
-                          Boolean                               ReloadDataOnStart      = true,
-                          Func<RoamingNetwork_Id, String>       LogfileSearchPattern   = null,
-                          Func<String, String, JObject, TData>  LogFileParser          = null,
-                     //     Action<TData>                         AddFunc                = null,
+                          Action<String, String, JObject, Dictionary<TId, TData>>  CommandProcessor       = null,
 
-                          Boolean                               DisableNetworkSync     = false,
+                          Boolean                                                  DisableLogfiles        = false,
+                          Func<RoamingNetwork_Id, String>                          LogFilePathCreator     = null,
+                          Func<RoamingNetwork_Id, String>                          LogFileNameCreator     = null,
+                          Boolean                                                  ReloadDataOnStart      = true,
+                          Func<RoamingNetwork_Id, String>                          LogfileSearchPattern   = null,
 
-                          DNSClient                             DNSClient              = null)
+                          IPPort?                                                  TCPPort                = null,
+                          IEnumerable<RoamingNetworkInfo>                          RoamingNetworkInfos    = null,
+                          Boolean                                                  DisableNetworkSync     = false,
+                          DNSClient                                                DNSClient              = null)
 
         {
 
-            this.InternalData                   = new Dictionary<TId, TData>();
+            this.InternalData                  = new Dictionary<TId, TData>();
 
-            this.RoamingNetwork                 = RoamingNetwork       ?? throw new ArgumentNullException(nameof(RoamingNetwork),          "The given roaming network must not be null or empty!");
+            this.RoamingNetwork                = RoamingNetwork       ?? throw new ArgumentNullException(nameof(RoamingNetwork),        "The given roaming network must not be null or empty!");
 
-            this._RoamingNetworkInfos           = RoamingNetworkInfos != null
-                                                      ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
-                                                      : new List<RoamingNetworkInfo>();
+            this._RoamingNetworkInfos          = RoamingNetworkInfos != null
+                                                     ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
+                                                     : new List<RoamingNetworkInfo>();
 
+            this.CommandProcessor              = CommandProcessor     ?? throw new ArgumentNullException(nameof(CommandProcessor),      "The given command processor must not be null or empty!");
 
-            this.DisableLogfiles                = DisableLogfiles;
-            this.ReloadDataOnStart              = ReloadDataOnStart;
+            this.DisableLogfiles               = DisableLogfiles;
+            this.ReloadDataOnStart             = ReloadDataOnStart;
 
             if (!DisableLogfiles)
             {
 
-                this.LogFilePath                = LogFilePath?.Trim();
+                this.LogFilePath               = LogFilePathCreator(this.RoamingNetwork.Id)?.Trim();
                 if (this.LogFilePath.IsNullOrEmpty())
                     throw new ArgumentNullException(nameof(LogFilePath), "The given log file path must not be null or empty!");
 
-                this.LogfileNameCreator         = LogFileNameCreator   ?? throw new ArgumentNullException(nameof(LogFileNameCreator),    "The given log file name creator must not be null or empty!");
+                this.LogfileNameCreator        = LogFileNameCreator   ?? throw new ArgumentNullException(nameof(LogFileNameCreator),    "The given log file name creator must not be null or empty!");
 
                 if (this.ReloadDataOnStart)
-                    this.LogfileSearchPattern   = LogfileSearchPattern ?? throw new ArgumentNullException(nameof(LogfileSearchPattern),  "The given log file search pattern must not be null or empty!");
+                    this.LogfileSearchPattern  = LogfileSearchPattern ?? throw new ArgumentNullException(nameof(LogfileSearchPattern),  "The given log file search pattern must not be null or empty!");
 
             }
 
+            this.DisableNetworkSync            = DisableNetworkSync;
+            this.DNSClient                     = DNSClient ?? new DNSClient(SearchForIPv4DNSServers: true,
+                                                                            SearchForIPv6DNSServers: false);
 
-            this.DisableNetworkSync             = DisableNetworkSync;
+            if (TCPPort.HasValue)
+            {
 
+                this.Server = new TCPServer(Port:               TCPPort.Value,
+                                            ConnectionTimeout:  TimeSpan.FromSeconds(20),
+                                            Autostart:          true);
 
-            this.DNSClient                      = DNSClient ?? new DNSClient(SearchForIPv4DNSServers: true,
-                                                                             SearchForIPv6DNSServers: false);
+                this.Server.OnNotification += (connection) => {
+
+                    try
+                    {
+
+                        var LastDataReceivedAt = DateTime.UtcNow;
+
+                        do
+                        {
+
+                            try
+                            {
+
+                                var data = connection.ReadLine(MaxInitialWaitingTime: TimeSpan.FromSeconds(10),
+                                                               __ReadTimeout:         TimeSpan.FromSeconds(20));
+                                if (data.IsNotNullOrEmpty())
+                                {
+
+                                    Console.WriteLine("Received '" + data + "' from '" + connection.RemoteSocket.ToString() + "'!");
+
+                                    LastDataReceivedAt = DateTime.UtcNow;
+
+                                    ReceiveData(connection.RemoteSocket.ToString(),
+                                                JObject.Parse(data));
+
+                                }
+
+                            }
+                            catch (Exception e)
+                            {
+                            }
+
+                        } while (!connection.IsClosed && DateTime.UtcNow - LastDataReceivedAt < TimeSpan.FromSeconds(10));
+
+                    }
+                    catch (Exception)
+                    { }
+
+                    connection.Close();
+                    Console.WriteLine("Connection '" + connection.RemoteSocket.ToString() + "' closed!");
+
+                };
+
+            }
 
             if (this.ReloadDataOnStart)
-                ReloadData(this.LogFilePath,
-                           LogfileSearchPattern(this.RoamingNetwork.Id),
-                           LogFileParser);
+                LoadLogFiles(this.LogFilePath,
+                             LogfileSearchPattern(this.RoamingNetwork.Id));
 
         }
 
@@ -184,7 +262,7 @@ namespace org.GraphDefined.WWCP
 
         protected void LogIt(String Command, IId Id)
         {
-            logIt(Command, Id);
+            LogIt(Command, Id);
         }
 
         #endregion
@@ -197,7 +275,7 @@ namespace org.GraphDefined.WWCP
             if (PropertyKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
 
-            logIt(Command, Id, PropertyKey, JSONObject);
+            LogIt(Command, Id, PropertyKey, (object)JSONObject);
 
         }
 
@@ -211,18 +289,20 @@ namespace org.GraphDefined.WWCP
             if (PropertyKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
 
-            logIt(Command, Id, PropertyKey, JSONArray);
+            LogIt(Command, Id, PropertyKey, (object)JSONArray);
 
         }
 
         #endregion
 
-        #region (private)   logIt(Command, Id, PropertyKey = null, JSON = null)
+        #region (private)   LogIt(Command, Id, PropertyKey = null, JSON = null)
 
-        private void logIt(String Command, IId Id, String PropertyKey = null, Object JSON = null)
+        private void LogIt(String Command, IId Id, String PropertyKey = null, Object JSON = null)
         {
 
-            Command     = Command?.    Trim();
+            #region Prepare data
+
+            Command = Command?.    Trim();
             PropertyKey = PropertyKey?.Trim();
 
             if (Command.IsNullOrEmpty())
@@ -241,6 +321,10 @@ namespace org.GraphDefined.WWCP
                        ).ToString(Newtonsoft.Json.Formatting.None) +
                          Environment.NewLine;
 
+            #endregion
+
+            #region Write to log file
+
             if (!DisableLogfiles)
             {
                 lock (Lock)
@@ -249,7 +333,11 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
-            if (!DisableNetworkSync)
+            #endregion
+
+            #region Write to other network servers
+
+            if (!DisableNetworkSync && _RoamingNetworkInfos.SafeAny())
             {
                 lock (Lock)
                 {
@@ -299,23 +387,36 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
+            #endregion
+
         }
 
         #endregion
 
 
-        #region ReloadData(LogfileSearchPattern, ParserFunc, AddFunc)
+        #region ReceiveData(RemoteHost, JSON, Parser)
 
-        protected void ReloadData(String                                Path,
-                                  String                                LogfileSearchPattern,
-                                  Func<String, String, JObject, TData>  ParserFunc)
+        protected void ReceiveData(String   RemoteHost,
+                                   JObject  JSON)
+        {
+
+            CommandProcessor(RemoteHost,
+                             JSON["command"]?.Value<String>(),
+                             JSON,
+                             InternalData);
+
+        }
+
+        #endregion
+
+        #region LoadLogFiles(Path, LogfileSearchPattern)
+
+        protected void LoadLogFiles(String  Path,
+                                    String  LogfileSearchPattern)
         {
 
             if (Path?.Trim().IsNullOrEmpty() == true)
                 Path = Directory.GetCurrentDirectory();
-
-            if (ParserFunc == null)
-                return;
 
             try
             {
@@ -332,8 +433,6 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        TData session = default;
-
                         File.ReadLines(filename).
                             ForEachCounted((line, counter) => {
                                 if (line.IsNeitherNullNorEmpty() && !line.StartsWith("//") && !line.StartsWith("#"))
@@ -342,25 +441,20 @@ namespace org.GraphDefined.WWCP
                                     {
 
                                         JSON     = JObject.Parse(line);
-                                        command  = JSON["command"].Value<String>();
-                                        session  = ParserFunc(filename,
-                                                              command,
-                                                              JSON);
+                                        command  = JSON["command"]?.Value<String>();
 
                                         switch (command)
                                         {
 
-                                            case "authStart":
-                                            case "remoteStart":
-                                                InternalData.Add(session.Id, session);
-                                                break;
-
-                                            case "authStop":
-                                                InternalData[session.Id] = session;
+                                            case "clear":
+                                                InternalData.Clear();
                                                 break;
 
                                             default:
-                                                DebugX.Log("Unknown command '" + command + "' in '" + filename + "' line " + counter + "!");
+                                                CommandProcessor(filename,
+                                                                 command,
+                                                                 JSON,
+                                                                 InternalData);
                                                 break;
 
                                         }

@@ -248,13 +248,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional enumeration of energy metering values with digital signatures per measurement.
         /// </summary>
+        [Optional]
         public IEnumerable<SignedMeteringValue<Decimal>>    SignedMeteringValues    { get; }
 
         /// <summary>
         /// The consumed energy in kWh.
         /// </summary>
         public Decimal?                                     ConsumedEnergy          { get; }
-
 
         #endregion
 
@@ -428,6 +428,19 @@ namespace org.GraphDefined.WWCP
                                ? new JProperty("duration",                    Duration.Value.TotalSeconds)
                                : null,
 
+
+                           //new JProperty("meterId",                           MeterId.ToString()),
+
+                           EnergyMeteringValues.SafeAny()
+                               ? new JProperty("meterValues", JSONArray.Create(
+                                       EnergyMeteringValues.Select(meterValue => JSONObject.Create(
+                                           new JProperty("timestamp",  meterValue.Timestamp.ToIso8601()),
+                                           new JProperty("value",      meterValue.Value)
+                                       ))
+                                   ))
+                               : null,
+
+
                            ChargingStationOperatorId.HasValue
                                ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
                                : null,
@@ -446,8 +459,6 @@ namespace org.GraphDefined.WWCP
                                ? new JProperty("chargingProduct",             ChargingProduct.ToJSON())
                                : null
 
-                       //new JProperty("meterValue",     MeterValue),
-                       //new JProperty("meterId",        MeterId.ToString()),
 
                        //new JProperty("userId",         UserId),
                        //new JProperty("publicKey",      PublicKey.KeyId),

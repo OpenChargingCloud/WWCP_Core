@@ -24,14 +24,18 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// A charging session data store.
+    /// </summary>
     public class ChargingSessionsStore : ADataStore<ChargingSession_Id, ChargingSession>
     {
 
@@ -58,26 +62,31 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
+        /// <summary>
+        /// Create a new charging session data store.
+        /// </summary>
+        /// <param name="RoamingNetwork"></param>
+        /// 
+        /// <param name="DisableLogfiles"></param>
+        /// <param name="ReloadDataOnStart"></param>
+        /// 
+        /// <param name="TCPPort"></param>
+        /// <param name="RoamingNetworkInfos"></param>
+        /// <param name="DisableNetworkSync"></param>
+        /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
         public ChargingSessionsStore(IRoamingNetwork                  RoamingNetwork,
-                                     IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
+
                                      Boolean                          DisableLogfiles       = false,
                                      Boolean                          ReloadDataOnStart     = true,
 
+                                     IPPort?                          TCPPort               = null,
+                                     IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
                                      Boolean                          DisableNetworkSync    = false,
                                      DNSClient                        DNSClient             = null)
 
-            : base(RoamingNetwork:          RoamingNetwork,
-                   RoamingNetworkInfos:     RoamingNetworkInfos,
+            : base(RoamingNetwork:         RoamingNetwork,
 
-                   DisableLogfiles:         DisableLogfiles,
-                   LogFilePath:             "ChargingSessions" + Path.DirectorySeparatorChar,
-                   LogFileNameCreator:      roamingNetworkId => String.Concat("ChargingSessions-",
-                                                                              roamingNetworkId, "_",
-                                                                              DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
-                                                                              ".log"),
-                   ReloadDataOnStart:       ReloadDataOnStart,
-                   LogfileSearchPattern:    roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "_*.log",
-                   LogFileParser:           (logfilename, command, json) => {
+                   CommandProcessor:       (logfilename, command, json, InternalData) => {
 
                        if (json["chargingSession"] is JObject chargingSession)
                        {
@@ -105,8 +114,14 @@ namespace org.GraphDefined.WWCP
                            switch (command)
                            {
 
+                               #region "remoteStart"
+
                                case "remoteStart":
                                    {
+
+                                       if (!InternalData.ContainsKey(session.Id))
+                                           InternalData.Add(session.Id, session);
+
                                        if (chargingSession["start"] is JObject remoteStartObject)
                                        {
 
@@ -129,10 +144,18 @@ namespace org.GraphDefined.WWCP
                                    }
                                    break;
 
+                               #endregion
+
+                               #region "remoteStop"
+
                                case "remoteStop":
                                    {
-                                       if (chargingSession["start"] is JObject remoteStartObject && chargingSession["stop"] is JObject remoteStopObject)
+                                       if (InternalData.ContainsKey(session.Id)                  &&
+                                           chargingSession["start"] is JObject remoteStartObject &&
+                                           chargingSession["stop" ] is JObject remoteStopObject)
                                        {
+
+                                           InternalData[session.Id] = session;
 
                                            var startTime = remoteStartObject["timestamp"]?.Value<DateTime>();
                                            var stopTime  = remoteStopObject ["timestamp"]?.Value<DateTime>();
@@ -160,8 +183,16 @@ namespace org.GraphDefined.WWCP
                                    }
                                    break;
 
+                               #endregion
+
+                               #region "authStart"
+
                                case "authStart":
                                    {
+
+                                       if (!InternalData.ContainsKey(session.Id))
+                                           InternalData.Add(session.Id, session);
+
                                        if (chargingSession["start"] is JObject authStartObject)
                                        {
 
@@ -184,10 +215,18 @@ namespace org.GraphDefined.WWCP
                                    }
                                    break;
 
+                               #endregion
+
+                               #region "authStop"
+
                                case "authStop":
                                    {
-                                       if (chargingSession["start"] is JObject authStartObject && chargingSession["stop"] is JObject authStopObject)
+                                       if (InternalData.ContainsKey(session.Id)                &&
+                                           chargingSession["start"] is JObject authStartObject &&
+                                           chargingSession["stop" ] is JObject authStopObject)
                                        {
+
+                                           InternalData[session.Id] = session;
 
                                            var startTime = authStartObject["timestamp"]?.Value<DateTime>();
                                            var stopTime  = authStopObject ["timestamp"]?.Value<DateTime>();
@@ -215,10 +254,17 @@ namespace org.GraphDefined.WWCP
                                    }
                                    break;
 
+                               #endregion
+
+                               #region "CDRReceived"
+
                                case "CDRReceived":
                                    {
-                                       if (chargingSession["cdr"] is JObject cdrObject)
+                                       if (InternalData.ContainsKey(session.Id) &&
+                                           chargingSession["cdr"] is JObject cdrObject)
                                        {
+
+                                           InternalData[session.Id] = session;
 
                                            var cdrTime = cdrObject["timestamp"]?.Value<DateTime>();
 
@@ -235,18 +281,27 @@ namespace org.GraphDefined.WWCP
                                    }
                                    break;
 
-                           }
+                               #endregion
 
-                           return session;
+                           }
 
                        }
 
-                       return null;
-
                    },
 
-                   DisableNetworkSync:      DisableNetworkSync,
-                   DNSClient:               DNSClient)
+                   DisableLogfiles:        DisableLogfiles,
+                   LogFilePathCreator:     roamingNetworkId => "ChargingSessions" + Path.DirectorySeparatorChar,
+                   LogFileNameCreator:     roamingNetworkId => String.Concat("ChargingSessions-",
+                                                                             roamingNetworkId, "_",
+                                                                             DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                                             ".log"),
+                   ReloadDataOnStart:      ReloadDataOnStart,
+                   LogfileSearchPattern:   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "_*.log",
+
+                   TCPPort:                TCPPort,
+                   RoamingNetworkInfos:    RoamingNetworkInfos,
+                   DisableNetworkSync:     DisableNetworkSync,
+                   DNSClient:              DNSClient)
 
         { }
 
@@ -405,35 +460,6 @@ namespace org.GraphDefined.WWCP
 
         }
 
-        //public Boolean RemoteStart2(ChargingSession          NewChargingSession,
-        //                            Action<ChargingSession>  UpdateFunc = null)
-        //{
-
-        //    lock (InternalData)
-        //    {
-
-        //        if (!InternalData.ContainsKey(NewChargingSession.Id))
-        //        {
-
-        //            InternalData.Add(NewChargingSession.Id, NewChargingSession);
-        //            UpdateFunc?.Invoke(NewChargingSession);
-
-        //            LogIt("remoteStart",
-        //                  NewChargingSession.Id,
-        //                  "chargingSession",
-        //                  NewChargingSession.ToJSON());
-
-        //            return true;
-
-        //        }
-
-        //        else
-        //            return false;
-
-        //    }
-
-        //}
-
         #endregion
 
         #region RemoteStop (Id, Authentication, ProviderId = null, CSORoamingProvider = null)
@@ -558,6 +584,13 @@ namespace org.GraphDefined.WWCP
                 if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
 
+                    // Most charging session will be stopped by just unplugging the socket!
+                    if (!session.SessionTime.EndTime.HasValue)
+                    {
+                        session.SessionTime.EndTime  = DateTime.UtcNow;
+                        session.SystemIdStop         = System_Id.Parse(Environment.MachineName);
+                    }
+
                     session.CDRTimestamp  = DateTime.UtcNow;
                     session.SystemIdCDR   = System_Id.Parse(Environment.MachineName);
                     session.CDR           = CDR;
@@ -590,9 +623,6 @@ namespace org.GraphDefined.WWCP
         {
             throw new NotImplementedException();
         }
-
-
-
 
 
         //#region SendCDR(SendCDRResult)

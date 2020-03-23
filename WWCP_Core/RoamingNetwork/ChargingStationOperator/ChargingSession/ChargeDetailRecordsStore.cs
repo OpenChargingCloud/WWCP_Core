@@ -19,12 +19,12 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
@@ -51,14 +51,16 @@ namespace org.GraphDefined.WWCP
                                         Boolean                          DisableLogfiles       = false,
                                         Boolean                          ReloadDataOnStart     = true,
 
+                                        IPPort?                          TCPPort               = null,
                                         Boolean                          DisableNetworkSync    = false,
                                         DNSClient                        DNSClient             = null)
 
             : base(RoamingNetwork,
-                   RoamingNetworkInfos,
+
+                   (a, b, c, d) => { },
 
                    DisableLogfiles,
-                   "ChargeDetailRecords" + Path.DirectorySeparatorChar,
+                   roamingNetworkId => "ChargeDetailRecords" + Path.DirectorySeparatorChar,
                    roamingNetworkId => String.Concat("ChargeDetailRecords-",
                                                      roamingNetworkId, "-",
                                                      Environment.MachineName, "_",
@@ -66,8 +68,10 @@ namespace org.GraphDefined.WWCP
                                                      ".log"),
                    ReloadDataOnStart,
                    roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "-" + Environment.MachineName + "_",
-                   (logfilename, command, json) => null,
 
+
+                   TCPPort,
+                   RoamingNetworkInfos,
                    DisableNetworkSync,
                    DNSClient)
 
