@@ -51,13 +51,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The internal data store.
         /// </summary>
-        protected      readonly  Dictionary<TId, TData>                                   InternalData;
+        protected      readonly  Dictionary<TId, TData>                                                     InternalData;
 
-        private        readonly  Action<String, String, JObject, Dictionary<TId, TData>>  CommandProcessor;
+        private        readonly  Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>  CommandProcessor;
 
-        private        readonly  Object                                                   Lock  = new Object();
+        private        readonly  Object                                                                     Lock  = new Object();
 
-        private static readonly  Char                                                     RS    = (Char) 30;
+        private static readonly  Char                                                                       RS    = (Char) 30;
 
 
         private TCPServer Server;
@@ -103,6 +103,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean                          DisableNetworkSync      { get; }
 
+
+        public Node_Id                          NodeId                  { get; }
+
         private readonly List<RoamingNetworkInfo> _RoamingNetworkInfos;
 
         /// <summary>
@@ -110,6 +113,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos
             => _RoamingNetworkInfos;
+
+
+        public RoamingNetworkInfo RoamingNetworkInfo
+            => RoamingNetworkInfos.SafeWhere(roamingNetworkInfo => roamingNetworkInfo.NodeId == NodeId).FirstOrDefault();
 
 
         /// <summary>
@@ -124,36 +131,24 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a generic data store.
         /// </summary>
-        /// <param name="RoamingNetwork"></param>
-        /// 
-        /// <param name="CommandProcessor"></param>
-        /// 
-        /// <param name="DisableLogfiles"></param>
-        /// <param name="LogFilePathCreator"></param>
-        /// <param name="LogFileNameCreator"></param>
-        /// <param name="ReloadDataOnStart"></param>
-        /// <param name="LogfileSearchPattern"></param>
-        /// 
-        /// <param name="TCPPort"></param>
-        /// <param name="RoamingNetworkInfos"></param>
-        /// <param name="DisableNetworkSync"></param>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ADataStore(IRoamingNetwork                                          RoamingNetwork,
+        public ADataStore(IRoamingNetwork                                                            RoamingNetwork,
 
-                          Action<String, String, JObject, Dictionary<TId, TData>>  CommandProcessor       = null,
+                          Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>  CommandProcessor       = null,
 
-                          Boolean                                                  DisableLogfiles        = false,
-                          Func<RoamingNetwork_Id, String>                          LogFilePathCreator     = null,
-                          Func<RoamingNetwork_Id, String>                          LogFileNameCreator     = null,
-                          Boolean                                                  ReloadDataOnStart      = true,
-                          Func<RoamingNetwork_Id, String>                          LogfileSearchPattern   = null,
+                          Boolean                                                                    DisableLogfiles        = false,
+                          Func<RoamingNetwork_Id, String>                                            LogFilePathCreator     = null,
+                          Func<RoamingNetwork_Id, String>                                            LogFileNameCreator     = null,
+                          Boolean                                                                    ReloadDataOnStart      = true,
+                          Func<RoamingNetwork_Id, String>                                            LogfileSearchPattern   = null,
 
-                          IPPort?                                                  TCPPort                = null,
-                          IEnumerable<RoamingNetworkInfo>                          RoamingNetworkInfos    = null,
-                          Boolean                                                  DisableNetworkSync     = false,
-                          DNSClient                                                DNSClient              = null)
+                          IEnumerable<RoamingNetworkInfo>                                            RoamingNetworkInfos    = null,
+                          Boolean                                                                    DisableNetworkSync     = false,
+                          DNSClient                                                                  DNSClient              = null)
 
         {
+
+            this.NodeId                        = Node_Id.Parse(Environment.MachineName);
 
             this.InternalData                  = new Dictionary<TId, TData>();
 
@@ -186,10 +181,10 @@ namespace org.GraphDefined.WWCP
             this.DNSClient                     = DNSClient ?? new DNSClient(SearchForIPv4DNSServers: true,
                                                                             SearchForIPv6DNSServers: false);
 
-            if (TCPPort.HasValue)
+            if (RoamingNetworkInfo != null)
             {
 
-                this.Server = new TCPServer(Port:               TCPPort.Value,
+                this.Server = new TCPServer(Port:               RoamingNetworkInfo.port,
                                             ConnectionTimeout:  TimeSpan.FromSeconds(20),
                                             Autostart:          true);
 
@@ -206,8 +201,8 @@ namespace org.GraphDefined.WWCP
                             try
                             {
 
-                                var data = connection.ReadLine(MaxInitialWaitingTime: TimeSpan.FromSeconds(10),
-                                                               __ReadTimeout:         TimeSpan.FromSeconds(20));
+                                var data = connection.ReadLine(MaxInitialWaitingTime:  TimeSpan.FromSeconds(5),
+                                                               __ReadTimeout:          TimeSpan.FromSeconds(10));
                                 if (data.IsNotNullOrEmpty())
                                 {
 
@@ -215,15 +210,45 @@ namespace org.GraphDefined.WWCP
 
                                     LastDataReceivedAt = DateTime.UtcNow;
 
-                                    ReceiveData(connection.RemoteSocket.ToString(),
-                                                JObject.Parse(data));
+                                    if (data == "BYE!")
+                                        connection.Close();
+
+                                    else
+                                    {
+
+                                        try
+                                        {
+
+                                            var JSON     = JObject.Parse(data);
+                                            var command  = JSON["command"]?.Value<String>();
+
+                                            if (command.IsNotNullOrEmpty())
+                                            {
+
+                                                if (CommandProcessor(null,
+                                                                     connection.RemoteSocket,
+                                                                     command,
+                                                                     JSON,
+                                                                     InternalData))
+                                                {
+                                                    LogToDisc(data);
+                                                }
+
+                                                connection.WriteLineToResponseStream("ack");
+
+                                            }
+
+                                        }
+                                        catch (Exception)
+                                        { }
+
+                                    }
 
                                 }
 
                             }
-                            catch (Exception e)
-                            {
-                            }
+                            catch (Exception)
+                            { }
 
                         } while (!connection.IsClosed && DateTime.UtcNow - LastDataReceivedAt < TimeSpan.FromSeconds(10));
 
@@ -231,7 +256,15 @@ namespace org.GraphDefined.WWCP
                     catch (Exception)
                     { }
 
-                    connection.Close();
+                    try
+                    {
+
+                        if (!connection.IsClosed)
+                            connection.Close();
+
+                    } catch (Exception)
+                    { }
+
                     Console.WriteLine("Connection '" + connection.RemoteSocket.ToString() + "' closed!");
 
                 };
@@ -239,7 +272,7 @@ namespace org.GraphDefined.WWCP
             }
 
             if (this.ReloadDataOnStart)
-                LoadLogFiles(this.LogFilePath,
+                LoadLogFiles(LogFilePath,
                              LogfileSearchPattern(this.RoamingNetwork.Id));
 
         }
@@ -302,8 +335,8 @@ namespace org.GraphDefined.WWCP
 
             #region Prepare data
 
-            Command = Command?.    Trim();
-            PropertyKey = PropertyKey?.Trim();
+            Command      = Command?.    Trim();
+            PropertyKey  = PropertyKey?.Trim();
 
             if (Command.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Command), "The given command must not be null or empty!");
@@ -315,69 +348,105 @@ namespace org.GraphDefined.WWCP
                            new JProperty("command",    Command),
 
                            PropertyKey != null
-                               ? new JProperty(PropertyKey,  JSON)
+                               ? new JProperty(PropertyKey, JSON)
                                : null
 
-                       ).ToString(Newtonsoft.Json.Formatting.None) +
-                         Environment.NewLine;
+                       ).ToString(Newtonsoft.Json.Formatting.None);
 
             #endregion
 
-            #region Write to log file
+            LogToDisc(data);
+            LogToNetwork(data);
 
-            if (!DisableLogfiles)
+        }
+
+        #endregion
+
+
+        #region (private)   LogToDisc(data)
+
+        private void LogToDisc(String data)
+        {
+            if (!DisableLogfiles && data?.Trim().IsNotNullOrEmpty() == true)
             {
                 lock (Lock)
                 {
-                    File.AppendAllText(LogFilePath + LogfileNameCreator(RoamingNetwork.Id), data);
+                    File.AppendAllText(LogFilePath + LogfileNameCreator(RoamingNetwork.Id), data.Trim() + Environment.NewLine);
                 }
             }
+        }
 
-            #endregion
+        #endregion
 
-            #region Write to other network servers
+        #region LogToNetwork(data)
 
-            if (!DisableNetworkSync && _RoamingNetworkInfos.SafeAny())
+        private void LogToNetwork(String data)
+        {
+
+            if (!DisableNetworkSync && _RoamingNetworkInfos.SafeAny() && data?.Trim().IsNotNullOrEmpty() == true)
             {
                 lock (Lock)
                 {
-                    foreach (var networkInfo in RoamingNetworkInfos)
+                    foreach (var networkInfo in RoamingNetworkInfos)//.Where(networkInfo => networkInfo.NodeId != NodeId))
                     {
 
-                        var client = new TCPClient(RemoteHost:         networkInfo.hostname,
+                        TCPClient client = null;
+
+                        if (networkInfo.IPAddress != null)
+                            client = new TCPClient(IPAddress:          networkInfo.IPAddress,
+                                                   RemotePort:         networkInfo.port,
+                                                   UseTLS:             TLSUsage.NoTLS,
+                                                   ConnectionTimeout:  TimeSpan.FromSeconds(5));
+
+                        else if (networkInfo.hostname.IsNotNullOrEmpty())
+                            client = new TCPClient(RemoteHost:         networkInfo.hostname,
                                                    RemotePort:         networkInfo.port,
                                                    UseTLS:             TLSUsage.NoTLS,
                                                    ConnectionTimeout:  TimeSpan.FromSeconds(5),
                                                    DNSClient:          DNSClient);
 
-                        client.Connect();
-
-                        if (client.TCPStream != null) 
+                        if (client != null)
                         {
 
-                            if (client.TCPStream.CanWrite)
-                                client.TCPStream.Write(data.ToUTF8Bytes());
+                            client.Connect();
 
-                            if (client.TCPStream.CanRead)
+                            if (client.TCPStream != null) 
                             {
 
-                                client.TCPStream.ReadTimeout = 5000; // msec
-
-                                var message            = new StringBuilder();
-                                var buffer             = new Byte[4096];
-                                var numberOfBytesRead  = 0;
-
-                                do
+                                try
                                 {
 
-                                    numberOfBytesRead = client.TCPStream.Read(buffer, 0, buffer.Length);
+                                    if (client.TCPStream.CanWrite)
+                                        client.TCPStream.Write((data.Trim() + Environment.NewLine).ToUTF8Bytes());
 
-                                    message.Append(Encoding.UTF8.GetString(buffer, 0, numberOfBytesRead));
+                                    //if (client.TCPStream.CanRead)
+                                    //{
 
-                                    if (message.ToString() == "ack")
-                                        break;
+                                    //    client.TCPStream.ReadTimeout = 5000; // msec
 
-                                } while (client.TCPStream.DataAvailable);
+                                    //    var message = new StringBuilder();
+                                    //    var buffer = new Byte[4096];
+                                    //    var numberOfBytesRead = 0;
+
+                                    //    do
+                                    //    {
+
+                                    //        numberOfBytesRead = client.TCPStream.Read(buffer, 0, buffer.Length);
+
+                                    //        message.Append(Encoding.UTF8.GetString(buffer, 0, numberOfBytesRead));
+
+                                    //        if (message.ToString() == "ack")
+                                    //            break;
+
+                                    //    } while (client.TCPStream.DataAvailable);
+
+                                    //}
+
+                                }
+                                catch (Exception e)
+                                {
+
+                                }
 
                             }
 
@@ -387,27 +456,11 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
-            #endregion
-
         }
 
         #endregion
 
 
-        #region ReceiveData(RemoteHost, JSON, Parser)
-
-        protected void ReceiveData(String   RemoteHost,
-                                   JObject  JSON)
-        {
-
-            CommandProcessor(RemoteHost,
-                             JSON["command"]?.Value<String>(),
-                             JSON,
-                             InternalData);
-
-        }
-
-        #endregion
 
         #region LoadLogFiles(Path, LogfileSearchPattern)
 
@@ -452,6 +505,7 @@ namespace org.GraphDefined.WWCP
 
                                             default:
                                                 CommandProcessor(filename,
+                                                                 null,
                                                                  command,
                                                                  JSON,
                                                                  InternalData);

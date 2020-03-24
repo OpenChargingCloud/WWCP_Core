@@ -24,6 +24,8 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.WWCP.Networking;
 
 #endregion
 
@@ -132,12 +134,13 @@ namespace org.GraphDefined.WWCP
                                                       RoamingNetworkStatusTypes                 Status                                      = RoamingNetworkStatusTypes.Available,
                                                       UInt16                                    MaxAdminStatusListSize                      = RoamingNetwork.DefaultMaxAdminStatusListSize,
                                                       UInt16                                    MaxStatusListSize                           = RoamingNetwork.DefaultMaxStatusListSize,
+
                                                       ChargingStationSignatureDelegate          ChargingStationSignatureGenerator           = null,
                                                       ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator              = null,
-                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator   = null)
-                                                      //Func<RoamingNetwork_Id, String>           ReservationLogFileNameCreator               = null,
-                                                      //Func<RoamingNetwork_Id, String>           SessionLogFileNameCreator                   = null,
-                                                      //Func<RoamingNetwork_Id, String>           ChargeDetailRecordLogFileNameCreator        = null)
+                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator   = null,
+
+                                                      IEnumerable<RoamingNetworkInfo>           RoamingNetworkInfos                         = null,
+                                                      Boolean                                   DisableNetworkSync                          = false)
 
         {
 
@@ -158,12 +161,13 @@ namespace org.GraphDefined.WWCP
                                                      Status,
                                                      MaxAdminStatusListSize,
                                                      MaxStatusListSize,
+
                                                      ChargingStationSignatureGenerator,
                                                      ChargingPoolSignatureGenerator,
-                                                     ChargingStationOperatorSignatureGenerator);
-                                                     //ReservationLogFileNameCreator,
-                                                     //SessionLogFileNameCreator,
-                                                     //ChargeDetailRecordLogFileNameCreator);
+                                                     ChargingStationOperatorSignatureGenerator,
+
+                                                     RoamingNetworkInfos,
+                                                     DisableNetworkSync);
 
             Configurator?.Invoke(_RoamingNetwork);
 

@@ -67,6 +67,7 @@
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\SignedMeteringValue.cs" />
     <Compile Include="Tracker\RoamingNetworkInfo.cs" />
     <Compile Include="Tracker\Tracker.cs" />
+    <Compile Include="Tracker\Node_Id.cs" />
     <Compile Include="Tracker\Tracker_Id.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\ChargeDetailRecordsStore.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\ChargingSession\ChargeDetailRecordCollection.cs" />

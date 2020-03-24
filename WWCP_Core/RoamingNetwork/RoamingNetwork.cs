@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
 using org.GraphDefined.WWCP.Net.IO.JSON;
+using org.GraphDefined.WWCP.Networking;
 
 #endregion
 
@@ -257,9 +258,13 @@ namespace org.GraphDefined.WWCP
                               RoamingNetworkStatusTypes                 Status                                     = RoamingNetworkStatusTypes.Available,
                               UInt16                                    MaxAdminStatusListSize                     = DefaultMaxAdminStatusListSize,
                               UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
+
                               ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
                               ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
-                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null)
+                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
+
+                              IEnumerable<RoamingNetworkInfo>           RoamingNetworkInfos                        = null,
+                              Boolean                                   DisableNetworkSync                         = false)
 
             : base(Id)
 
@@ -287,14 +292,14 @@ namespace org.GraphDefined.WWCP
 
 
             this.ReservationsStore                                  = new ChargingReservationsStore(this,
-                                                                                                    DisableNetworkSync:  true);
+                                                                                                    DisableNetworkSync:   true);
 
             this.SessionsStore                                      = new ChargingSessionsStore    (this,
-                                                                                                    TCPPort:             IPPort.Parse(4000),
-                                                                                                    DisableNetworkSync:  true);
+                                                                                                    RoamingNetworkInfos:  RoamingNetworkInfos,
+                                                                                                    DisableNetworkSync:   DisableNetworkSync);
 
             this.ChargeDetailRecordsStore                           = new ChargeDetailRecordsStore (this,
-                                                                                                    DisableNetworkSync:  true);
+                                                                                                    DisableNetworkSync:   true);
 
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);

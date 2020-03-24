@@ -65,10 +65,12 @@ namespace org.GraphDefined.WWCP.Networking
 
         public static RoamingNetworkInfo Create(this RoamingNetwork   RoamingNetwork,
                                                 Tracker_Id            TrackerId,
+                                                Node_Id               NodeId,
                                                 DateTime              ExpiredAfter,
 
                                                 Byte                  priority,
                                                 Byte                  weight,
+                                                IIPAddress            IPAddress,
                                                 String                hostname,
                                                 IPPort                port,
                                                 TransportTypes        transport,
@@ -79,11 +81,14 @@ namespace org.GraphDefined.WWCP.Networking
         {
 
             return new RoamingNetworkInfo(TrackerId,
+                                          NodeId,
                                           "",
                                           ExpiredAfter,
                                           RoamingNetwork.Id,
+
                                           priority,
                                           weight,
+                                          IPAddress,
                                           hostname,
                                           port,
                                           transport,
@@ -105,7 +110,10 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// The identification of a remote tracker which sent this information.
         /// </summary>
-        public Tracker_Id TrackerId           { get; }
+        public Tracker_Id           TrackerId           { get; }
+
+
+        public Node_Id              NodeId              { get; }
 
         /// <summary>
         /// An URI for the roaming network.
@@ -141,6 +149,8 @@ namespace org.GraphDefined.WWCP.Networking
 
         public Byte                 weight              { get; }
 
+        public IIPAddress           IPAddress           { get; }
+
         public String               hostname            { get; }
 
         public IPPort               port                { get; }
@@ -162,12 +172,14 @@ namespace org.GraphDefined.WWCP.Networking
         #region RoamingNetworkInfo(..., RoamingNetworkId, ...)
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
+                                  Node_Id               NodeId,
                                   String                IncomingURI,
                                   DateTime              ExpiredAfter,
 
                                   RoamingNetwork_Id     RoamingNetworkId,
                                   Byte                  priority,
                                   Byte                  weight,
+                                  IIPAddress            IPAddress,
                                   String                hostname,
                                   IPPort                port,
                                   TransportTypes        transport,
@@ -178,6 +190,7 @@ namespace org.GraphDefined.WWCP.Networking
         {
 
             this.TrackerId         = TrackerId;
+            this.NodeId            = NodeId;
             this.IncomingURI       = IncomingURI;
             this.ExpiredAfter      = ExpiredAfter;
 
@@ -186,6 +199,7 @@ namespace org.GraphDefined.WWCP.Networking
             this.priority          = priority;
             this.weight            = weight;
             this.hostname          = hostname;
+            this.IPAddress         = IPAddress;
             this.port              = port;
             this.transport         = transport;
             this.uriPrefix         = uriPrefix;
@@ -202,12 +216,14 @@ namespace org.GraphDefined.WWCP.Networking
         #region RoamingNetworkInfo(..., RoamingNetwork, ...)
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
+                                  Node_Id               NodeId,
                                   String                IncomingURI,
                                   DateTime              ExpiredAfter,
 
                                   RoamingNetwork        RoamingNetwork,
                                   Byte                  priority,
                                   Byte                  weight,
+                                  IIPAddress            IPAddress,
                                   String                hostname,
                                   IPPort                port,
                                   TransportTypes        transport,
@@ -217,12 +233,14 @@ namespace org.GraphDefined.WWCP.Networking
                                   IEnumerable<String>   PublicKeys)
 
             : this(TrackerId,
+                   NodeId,
                    IncomingURI,
                    ExpiredAfter,
 
                    RoamingNetwork.Id,
                    priority,
                    weight,
+                   IPAddress,
                    hostname,
                    port,
                    transport,

@@ -79,14 +79,13 @@ namespace org.GraphDefined.WWCP
                                      Boolean                          DisableLogfiles       = false,
                                      Boolean                          ReloadDataOnStart     = true,
 
-                                     IPPort?                          TCPPort               = null,
                                      IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
                                      Boolean                          DisableNetworkSync    = false,
                                      DNSClient                        DNSClient             = null)
 
             : base(RoamingNetwork:         RoamingNetwork,
 
-                   CommandProcessor:       (logfilename, command, json, InternalData) => {
+                   CommandProcessor:       (logfilename, remoteSocket, command, json, InternalData) => {
 
                        if (json["chargingSession"] is JObject chargingSession)
                        {
@@ -109,7 +108,6 @@ namespace org.GraphDefined.WWCP
                            {
 
                            }
-
 
                            switch (command)
                            {
@@ -142,7 +140,7 @@ namespace org.GraphDefined.WWCP
 
                                        }
                                    }
-                                   break;
+                                   return true;
 
                                #endregion
 
@@ -181,7 +179,7 @@ namespace org.GraphDefined.WWCP
 
                                        }
                                    }
-                                   break;
+                                   return true;
 
                                #endregion
 
@@ -213,7 +211,7 @@ namespace org.GraphDefined.WWCP
 
                                        }
                                    }
-                                   break;
+                                   return true;
 
                                #endregion
 
@@ -252,7 +250,7 @@ namespace org.GraphDefined.WWCP
 
                                        }
                                    }
-                                   break;
+                                   return true;
 
                                #endregion
 
@@ -279,13 +277,15 @@ namespace org.GraphDefined.WWCP
 
                                        }
                                    }
-                                   break;
+                                   return true;
 
                                #endregion
 
                            }
 
                        }
+
+                       return false;
 
                    },
 
@@ -298,7 +298,6 @@ namespace org.GraphDefined.WWCP
                    ReloadDataOnStart:      ReloadDataOnStart,
                    LogfileSearchPattern:   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "_*.log",
 
-                   TCPPort:                TCPPort,
                    RoamingNetworkInfos:    RoamingNetworkInfos,
                    DisableNetworkSync:     DisableNetworkSync,
                    DNSClient:              DNSClient)
