@@ -2488,7 +2488,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
                 await OnEVSEDataChangedLocal(Timestamp,
-                                             EventTrackingId,
+                                             EventTrackingId ?? EventTracking_Id.New,
                                              EVSE,
                                              PropertyName,
                                              OldValue,
@@ -2508,9 +2508,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                                  EventTracking_Id                  EventTrackingId,
-                                                  EVSE                              EVSE,
+        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  EVSE                               EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
@@ -2518,7 +2518,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId,
+                                                    EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
                                                     OldStatus,
                                                     NewStatus);
@@ -2537,9 +2537,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
-                                             EventTracking_Id             EventTrackingId,
-                                             EVSE                         EVSE,
+        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
+                                             EventTracking_Id              EventTrackingId,
+                                             EVSE                          EVSE,
                                              Timestamped<EVSEStatusTypes>  OldStatus,
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
@@ -2547,7 +2547,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
                 await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId,
+                                               EventTrackingId ?? EventTracking_Id.New,
                                                EVSE,
                                                OldStatus,
                                                NewStatus);

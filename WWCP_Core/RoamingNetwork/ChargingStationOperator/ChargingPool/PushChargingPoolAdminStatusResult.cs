@@ -111,7 +111,7 @@ namespace org.GraphDefined.WWCP
                                                        : new ChargingPoolAdminStatusUpdate[0];
 
             this.Warnings                        = Warnings != null
-                                                       ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                                       ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
                                                        : new Warning[0];
 
             this.Runtime                         = Runtime;

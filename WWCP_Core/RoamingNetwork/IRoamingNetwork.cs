@@ -349,7 +349,6 @@ namespace org.GraphDefined.WWCP
 
         ChargingReservationsStore  ReservationsStore           { get; }
         ChargingSessionsStore      SessionsStore               { get; }
-        ChargeDetailRecordsStore   ChargeDetailRecordsStore    { get; }
 
 
         IEnumerable<ChargingStationOperator> ChargingStationOperators { get; }

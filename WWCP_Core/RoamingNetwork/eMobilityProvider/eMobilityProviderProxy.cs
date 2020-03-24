@@ -487,6 +487,8 @@ namespace org.GraphDefined.WWCP
 
         //#endregion
 
+        public Func<ChargeDetailRecord, ChargeDetailRecordFilters> ChargeDetailRecordFilter { get; set; }
+
         #endregion
 
         #region Links
@@ -556,6 +558,12 @@ namespace org.GraphDefined.WWCP
         public event OnAuthorizeStopResponseDelegate  OnAuthorizeStopResponse;
 
         #endregion
+
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was sent.
+        /// </summary>
+        public event OnSendCDRsResponseDelegate OnSendCDRsResponse;
 
         #endregion
 

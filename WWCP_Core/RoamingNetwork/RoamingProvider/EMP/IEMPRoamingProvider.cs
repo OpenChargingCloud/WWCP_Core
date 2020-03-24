@@ -112,12 +112,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event sent whenever a 'charge detail record' was received.
         /// </summary>
-        event OnSendCDRRequestDelegate   OnChargeDetailRecordRequest;
+        event OnSendCDRsRequestDelegate   OnChargeDetailRecordRequest;
 
         /// <summary>
         /// An event sent whenever a response to a 'charge detail record' was sent.
         /// </summary>
-        event OnSendCDRResponseDelegate  OnChargeDetailRecordResponse;
+        event OnSendCDRsResponseDelegate  OnChargeDetailRecordResponse;
 
         #endregion
 

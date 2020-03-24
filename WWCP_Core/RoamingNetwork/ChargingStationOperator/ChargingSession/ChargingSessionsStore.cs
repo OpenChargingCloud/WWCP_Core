@@ -56,7 +56,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a new charging session was registered.
         /// </summary>
-        public event OnNewChargingSessionDelegate OnNewChargingSession;
+        public event OnNewChargingSessionDelegate           OnNewChargingSession;
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was registered.
+        /// </summary>
+        public event OnNewChargeDetailRecordDelegate        OnNewChargeDetailRecord;
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was sent.
+        /// </summary>
+        public event OnNewChargeDetailRecordResultDelegate  OnNewChargeDetailRecordResult;
 
         #endregion
 
@@ -70,7 +80,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="DisableLogfiles"></param>
         /// <param name="ReloadDataOnStart"></param>
         /// 
-        /// <param name="TCPPort"></param>
         /// <param name="RoamingNetworkInfos"></param>
         /// <param name="DisableNetworkSync"></param>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
@@ -98,6 +107,12 @@ namespace org.GraphDefined.WWCP
                            session.ChargingPoolId             = chargingSession["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(chargingSession["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?();
                            session.ChargingStationId          = chargingSession["chargingStationId"]         != null ? ChargingStation_Id.        Parse(chargingSession["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?();
                            session.EVSEId                     = chargingSession["EVSEId"]                    != null ? EVSE_Id.                   Parse(chargingSession["EVSEId"]?.                   Value<String>()) : new EVSE_Id?();
+
+                           if (session.Id.ToString() == "7f0d7978-ab29-462c-908f-b31aa9c9326e")
+                           {
+
+                           }
+
 
                            if (chargingSession["energyMeterValues"] is JObject energyMeterValueObject)
                            {
@@ -135,6 +150,12 @@ namespace org.GraphDefined.WWCP
                                                session.CSORoamingProviderIdStart  = remoteStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
                                                session.ProviderIdStart            = remoteStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStartObject["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
                                                session.AuthenticationStart        = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                        : null;
+
+                                               if (session.EVSEId.HasValue && session.EVSE == null)
+                                                   session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+
+                                               if (session.EVSE != null)
+                                                   session.EVSE.ChargingSession = session;
 
                                            }
 
@@ -177,6 +198,12 @@ namespace org.GraphDefined.WWCP
 
                                            }
 
+                                           if (session.EVSEId.HasValue && session.EVSE == null)
+                                               session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+
+                                           if (session.EVSE != null)
+                                               session.EVSE.ChargingSession = null;
+
                                        }
                                    }
                                    return true;
@@ -208,6 +235,12 @@ namespace org.GraphDefined.WWCP
                                                session.AuthenticationStart        = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.  Parse(authenticationStart)                                      : null;
 
                                            }
+
+                                           if (session.EVSEId.HasValue && session.EVSE == null)
+                                               session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+
+                                           if (session.EVSE != null)
+                                               session.EVSE.ChargingSession = session;
 
                                        }
                                    }
@@ -248,6 +281,12 @@ namespace org.GraphDefined.WWCP
 
                                            }
 
+                                           if (session.EVSEId.HasValue && session.EVSE == null)
+                                               session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+
+                                           if (session.EVSE != null)
+                                               session.EVSE.ChargingSession = null;
+
                                        }
                                    }
                                    return true;
@@ -268,12 +307,16 @@ namespace org.GraphDefined.WWCP
 
                                            if (cdrTime != null)
                                            {
-                                               session.CDRTimestamp          = cdrTime;
+                                               session.CDRReceived          = cdrTime;
                                                session.SystemIdCDR           = cdrObject["systemId"] != null ? System_Id.Parse(cdrObject["systemId"]?.Value<String>()) : new System_Id?();
                                                session.CDRForwarded          = cdrObject["forwarded"]?.        Value<DateTime>();
-                                               session.CDRResultCode         = cdrObject["resultCode"]?.       Value<String>();
-                                               session.CDRResultDescription  = cdrObject["resultDescription"]?.Value<String>();
                                            }
+
+                                           if (session.EVSEId.HasValue && session.EVSE == null)
+                                               session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+
+                                           if (session.EVSE != null)
+                                               session.EVSE.ChargingSession = null;
 
                                        }
                                    }
@@ -448,6 +491,10 @@ namespace org.GraphDefined.WWCP
                           "chargingSession",
                           NewChargingSession.ToJSON());
 
+                    OnNewChargingSession?.Invoke(DateTime.UtcNow,
+                                                 RoamingNetwork,
+                                                 NewChargingSession);
+
                     return true;
 
                 }
@@ -520,6 +567,10 @@ namespace org.GraphDefined.WWCP
                           "chargingSession",
                           NewChargingSession.ToJSON());
 
+                    OnNewChargingSession?.Invoke(DateTime.UtcNow,
+                                                 RoamingNetwork,
+                                                 NewChargingSession);
+
                     return true;
 
                 }
@@ -571,10 +622,10 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CDRReceived(Id, CDR)
+        #region CDRReceived(Id, NewChargeDetailRecord)
 
         public Boolean CDRReceived(ChargingSession_Id  Id,
-                                   ChargeDetailRecord  CDR)
+                                   ChargeDetailRecord  NewChargeDetailRecord)
         {
 
             lock (InternalData)
@@ -590,14 +641,55 @@ namespace org.GraphDefined.WWCP
                         session.SystemIdStop         = System_Id.Parse(Environment.MachineName);
                     }
 
-                    session.CDRTimestamp  = DateTime.UtcNow;
-                    session.SystemIdCDR   = System_Id.Parse(Environment.MachineName);
-                    session.CDR           = CDR;
+                    session.CDRReceived  = DateTime.UtcNow;
+                    session.SystemIdCDR  = System_Id.Parse(Environment.MachineName);
+                    session.CDR          = NewChargeDetailRecord;
 
                     LogIt("CDRReceived",
                           session.Id,
                           "chargingSession",
                           session.ToJSON());
+
+                    OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
+                                                    RoamingNetwork,
+                                                    NewChargeDetailRecord);
+
+                    return true;
+
+                }
+
+                else
+                    return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region CDRForwarded(Id, SendCDRResult)
+
+        public Boolean CDRForwarded(ChargingSession_Id  Id,
+                                    SendCDRResult       CDRResult)
+        {
+
+            lock (InternalData)
+            {
+
+                if (InternalData.TryGetValue(Id, out ChargingSession session))
+                {
+
+                    session.CDRForwarded  = DateTime.UtcNow;
+                    session.CDRResult     = CDRResult;
+
+                    LogIt("CDRForwarded",
+                          session.Id,
+                          "chargingSession",
+                          session.ToJSON());
+
+                    OnNewChargeDetailRecordResult?.Invoke(DateTime.UtcNow,
+                                                          RoamingNetwork,
+                                                          CDRResult);
 
                     return true;
 

@@ -29,6 +29,12 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
+    public enum ChargeDetailRecordFilters
+    {
+        drop,
+        forward
+    }
+
     /// <summary>
     /// The interface for sending charge detail records.
     /// </summary>
@@ -46,6 +52,12 @@ namespace org.GraphDefined.WWCP
         Boolean           DisableSendChargeDetailRecords   { get; set; }
 
 
+        Func<ChargeDetailRecord, ChargeDetailRecordFilters> ChargeDetailRecordFilter { get; set; }
+
+        /// <summary>
+        /// An event fired whenever a charge detail record had been sent upstream.
+        /// </summary>
+        event OnSendCDRsResponseDelegate  OnSendCDRsResponse;
         // Events?
 
 

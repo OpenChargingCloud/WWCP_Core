@@ -217,7 +217,6 @@ namespace org.GraphDefined.WWCP
 
         public ChargingReservationsStore  ReservationsStore           { get; }
         public ChargingSessionsStore      SessionsStore               { get; }
-        public ChargeDetailRecordsStore   ChargeDetailRecordsStore    { get; }
 
         /// <summary>
         /// A delegate to sign a charging station.
@@ -233,6 +232,9 @@ namespace org.GraphDefined.WWCP
         /// A delegate to sign a charging station operator.
         /// </summary>
         public ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator    { get; }
+
+
+        public Func<ChargeDetailRecord, ChargeDetailRecordFilters> ChargeDetailRecordFilter { get; set; }
 
         #endregion
 
@@ -290,17 +292,13 @@ namespace org.GraphDefined.WWCP
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
-
             this.ReservationsStore                                  = new ChargingReservationsStore(this,
                                                                                                     DisableNetworkSync:   true);
 
             this.SessionsStore                                      = new ChargingSessionsStore    (this,
+                                                                                                    ReloadDataOnStart:    false,
                                                                                                     RoamingNetworkInfos:  RoamingNetworkInfos,
                                                                                                     DisableNetworkSync:   DisableNetworkSync);
-
-            this.ChargeDetailRecordsStore                           = new ChargeDetailRecordsStore (this,
-                                                                                                    DisableNetworkSync:   true);
-
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
@@ -2591,7 +2589,7 @@ namespace org.GraphDefined.WWCP
             var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
             if (OnChargingPoolDataChangedLocal != null)
                 await OnChargingPoolDataChangedLocal(Timestamp,
-                                                     EventTrackingId,
+                                                     EventTrackingId ?? EventTracking_Id.New,
                                                      ChargingPool,
                                                      PropertyName,
                                                      OldValue,
@@ -2621,7 +2619,7 @@ namespace org.GraphDefined.WWCP
             var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
             if (OnChargingPoolAdminStatusChangedLocal != null)
                 await OnChargingPoolAdminStatusChangedLocal(Timestamp,
-                                                            EventTrackingId,
+                                                            EventTrackingId ?? EventTracking_Id.New,
                                                             ChargingPool,
                                                             OldStatus,
                                                             NewStatus);
@@ -2650,7 +2648,7 @@ namespace org.GraphDefined.WWCP
             var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
             if (OnChargingPoolStatusChangedLocal != null)
                 await OnChargingPoolStatusChangedLocal(Timestamp,
-                                                       EventTrackingId,
+                                                       EventTrackingId ?? EventTracking_Id.New,
                                                        ChargingPool,
                                                        OldStatus,
                                                        NewStatus);
@@ -2969,7 +2967,7 @@ namespace org.GraphDefined.WWCP
             var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
             if (OnChargingStationDataChangedLocal != null)
                 await OnChargingStationDataChangedLocal(Timestamp,
-                                                        EventTrackingId,
+                                                        EventTrackingId ?? EventTracking_Id.New,
                                                         ChargingStation,
                                                         PropertyName,
                                                         OldValue,
@@ -2999,7 +2997,7 @@ namespace org.GraphDefined.WWCP
             var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
             if (OnChargingStationAdminStatusChangedLocal != null)
                 await OnChargingStationAdminStatusChangedLocal(Timestamp,
-                                                               EventTrackingId,
+                                                               EventTrackingId ?? EventTracking_Id.New,
                                                                ChargingStation,
                                                                OldStatus,
                                                                NewStatus);
@@ -3028,7 +3026,7 @@ namespace org.GraphDefined.WWCP
             var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
             if (OnChargingStationStatusChangedLocal != null)
                 await OnChargingStationStatusChangedLocal(Timestamp,
-                                                          EventTrackingId,
+                                                          EventTrackingId ?? EventTracking_Id.New,
                                                           ChargingStation,
                                                           OldStatus,
                                                           NewStatus);
@@ -3409,7 +3407,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
                 await OnEVSEDataChangedLocal(Timestamp,
-                                             EventTrackingId,
+                                             EventTrackingId ?? EventTracking_Id.New,
                                              EVSE,
                                              PropertyName,
                                              OldValue,
@@ -3447,7 +3445,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId,
+                                                    EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
                                                     OldStatus,
                                                     NewStatus);
@@ -3484,7 +3482,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
                 await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId,
+                                               EventTrackingId ?? EventTracking_Id.New,
                                                EVSE,
                                                OldStatus,
                                                NewStatus);
@@ -4095,11 +4093,26 @@ namespace org.GraphDefined.WWCP
         {
             add
             {
-                ChargeDetailRecordsStore.OnNewChargeDetailRecord += value;
+                SessionsStore.OnNewChargeDetailRecord += value;
             }
             remove
             {
-                ChargeDetailRecordsStore.OnNewChargeDetailRecord -= value;
+                SessionsStore.OnNewChargeDetailRecord -= value;
+            }
+        }
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was sent.
+        /// </summary>
+        public event OnNewChargeDetailRecordResultDelegate OnNewChargeDetailRecordResult
+        {
+            add
+            {
+                SessionsStore.OnNewChargeDetailRecordResult += value;
+            }
+            remove
+            {
+                SessionsStore.OnNewChargeDetailRecordResult -= value;
             }
         }
 
@@ -4510,14 +4523,14 @@ namespace org.GraphDefined.WWCP
                         if (chargingSession.ChargingStationOperator != null)
                             result = await chargingSession.ChargingStationOperator.
                                                 RemoteStop(chargingSession.Id,
-                                                            ReservationHandling,
-                                                            ProviderId,
-                                                            RemoteAuthentication,
+                                                           ReservationHandling,
+                                                           ProviderId,
+                                                           RemoteAuthentication,
 
-                                                            Timestamp,
-                                                            CancellationToken,
-                                                            EventTrackingId,
-                                                            RequestTimeout);
+                                                           Timestamp,
+                                                           CancellationToken,
+                                                           EventTrackingId,
+                                                           RequestTimeout);
 
 
                         if (result?.Result == RemoteStopResultTypes.Success)
@@ -5281,27 +5294,17 @@ namespace org.GraphDefined.WWCP
 
         #region Charge Detail Records
 
-        #region ChargeDetailRecords
-
-        /// <summary>
-        /// Return all current charge detail records.
-        /// </summary>
-        public IEnumerable<IEnumerable<ChargeDetailRecord>> ChargeDetailRecords
-            => ChargeDetailRecordsStore;
-
-        #endregion
-
         #region OnSendCDRRequest/-Response
 
         /// <summary>
         /// An event fired whenever a charge detail record will be send upstream.
         /// </summary>
-        public event OnSendCDRRequestDelegate   OnSendCDRsRequest;
+        public event OnSendCDRsRequestDelegate   OnSendCDRsRequest;
 
         /// <summary>
         /// An event fired whenever a charge detail record had been sent upstream.
         /// </summary>
-        public event OnSendCDRResponseDelegate  OnSendCDRsResponse;
+        public event OnSendCDRsResponseDelegate  OnSendCDRsResponse;
 
         #endregion
 
@@ -5447,7 +5450,6 @@ namespace org.GraphDefined.WWCP
                                           Id.ToString(),
                                           EventTrackingId,
                                           Id,
-                                          new ChargeDetailRecord[0],
                                           ChargeDetailRecords,
                                           RequestTimeout);
 
@@ -5506,12 +5508,6 @@ namespace org.GraphDefined.WWCP
 
                 //ToDo: Merge given cdr information with local information!
 
-                #region Store all CDRs...
-
-                ChargeDetailRecordsStore.New(ChargeDetailRecords);
-
-                #endregion
-
                 #region Delete cached session information
 
                 foreach (var ChargeDetailRecord in ChargeDetailRecordsToProcess)
@@ -5556,7 +5552,7 @@ namespace org.GraphDefined.WWCP
 
                             resultMap.Add(new SendCDRResult(ChargeDetailRecord,
                                                             SendCDRResultTypes.Filtered,
-                                                            FilterResult));
+                                                            FilterResult.SafeSelect(filterResult => Warning.Create(filterResult))));
 
                             try
                             {
@@ -5975,9 +5971,8 @@ namespace org.GraphDefined.WWCP
 
                         foreach (var _cdr in sendCDR.Value)
                         {
-                            resultMap.Add(new SendCDRResult(_cdr,
-                                                            SendCDRResultTypes.Error,
-                                                            I18NString.Create(Languages.eng, sendCDR.Key + " returned null!")));
+                            resultMap.Add(SendCDRResult.Error(_cdr,
+                                                              Warning.Create(I18NString.Create(Languages.eng, sendCDR.Key + " returned null!"))));
                         }
 
                     }
@@ -6002,9 +5997,8 @@ namespace org.GraphDefined.WWCP
                 {
                     foreach (var _cdr in ExpectedChargeDetailRecords)
                     {
-                        resultMap.Add(new SendCDRResult(_cdr,
-                                                        SendCDRResultTypes.Error,
-                                                        I18NString.Create(Languages.eng, "Did not receive an result for this charge detail record!")));
+                        resultMap.Add(SendCDRResult.Error(_cdr,
+                                                          Warning.Create(I18NString.Create(Languages.eng, "Did not receive an result for this charge detail record!"))));
                     }
                 }
 
@@ -6045,10 +6039,6 @@ namespace org.GraphDefined.WWCP
                                               null,
                                               Runtime);
 
-
-                ChargeDetailRecordsStore.Sent(result);
-
-
             }
 
 
@@ -6063,7 +6053,6 @@ namespace org.GraphDefined.WWCP
                                            Id.ToString(),
                                            EventTrackingId,
                                            Id,
-                                           new ChargeDetailRecord[0],
                                            ChargeDetailRecords,
                                            RequestTimeout,
                                            result,

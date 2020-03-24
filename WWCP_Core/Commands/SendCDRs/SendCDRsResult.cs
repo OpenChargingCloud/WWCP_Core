@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using System.Collections;
 
 #endregion
 
@@ -51,27 +52,27 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A charge detail record.
         /// </summary>
-        public ChargeDetailRecord       ChargeDetailRecord    { get; }
+        public ChargeDetailRecord    ChargeDetailRecord    { get; }
 
         /// <summary>
         /// The result of the SendCDR request.
         /// </summary>
-        public SendCDRResultTypes       Result                { get; }
+        public SendCDRResultTypes    Result                { get; }
 
         /// <summary>
         /// An optional multi-language description of the result.
         /// </summary>
-        public I18NString               Description           { get; }
+        public I18NString            Description           { get; }
 
         /// <summary>
         /// Optional warnings or additional information.
         /// </summary>
-        public IEnumerable<I18NString>  Warnings              { get; }
+        public IEnumerable<Warning> Warnings              { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                Runtime               { get; }
+        public TimeSpan?             Runtime               { get; }
 
         #endregion
 
@@ -82,67 +83,22 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Result">The result of the SendCDR request.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public SendCDRResult(ChargeDetailRecord   ChargeDetailRecord,
-                             SendCDRResultTypes   Result,
-                             I18NString           Description   = null,
-                             TimeSpan?            Runtime       = null)
-
-            : this(ChargeDetailRecord,
-                   Result,
-                   Array.Empty<I18NString>(),
-                   Description,
-                   Runtime)
-
-        { }
-
-        ///// <summary>
-        ///// Create a new SendCDR result.
-        ///// </summary>
-        ///// <param name="ChargeDetailRecord">A charge detail record.</param>
-        ///// <param name="Result">The result of the SendCDR request.</param>
-        ///// <param name="Warning">Optional warnings or additional information.</param>
-        ///// <param name="Description">An optional multi-language description of the result.</param>
-        ///// <param name="Runtime">The runtime of the request.</param>
-        //public SendCDRResult(ChargeDetailRecord   ChargeDetailRecord,
-        //                     SendCDRResultTypes   Result,
-        //                     String               Warning,
-        //                     String               Description   = null,
-        //                     TimeSpan?            Runtime       = null)
-
-        //    : this(ChargeDetailRecord,
-        //           Result,
-        //           Warning.IsNeitherNullNorEmpty()
-        //               ? new String[] { Warning }
-        //               : null,
-        //           Description,
-        //           Runtime)
-
-        //{ }
-
-        /// <summary>
-        /// Create a new SendCDR result.
-        /// </summary>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Result">The result of the SendCDR request.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public SendCDRResult(ChargeDetailRecord       ChargeDetailRecord,
-                             SendCDRResultTypes       Result,
-                             IEnumerable<I18NString>  Warnings,
-                             I18NString               Description   = null,
-                             TimeSpan?                Runtime       = null)
+        public SendCDRResult(ChargeDetailRecord    ChargeDetailRecord,
+                             SendCDRResultTypes    Result,
+                             IEnumerable<Warning> Warnings      = null,
+                             I18NString            Description   = null,
+                             TimeSpan?             Runtime       = null)
         {
 
             this.ChargeDetailRecord  = ChargeDetailRecord;
             this.Result              = Result;
             this.Description         = Description;
             this.Warnings            = Warnings != null
-                                           ? Warnings.Where(warning => warning != null).
-                                                      Where(warning => warning.IsNeitherNullNorEmpty())
-                                           : new I18NString[0];
+                                           ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                           : new Warning[0];
             this.Runtime             = Runtime;
 
         }
@@ -167,6 +123,7 @@ namespace org.GraphDefined.WWCP
 
                 => new SendCDRResult(ChargeDetailRecord,
                                      SendCDRResultTypes.Enqueued,
+                                     new Warning[0],
                                      Description,
                                      Runtime);
 
@@ -180,14 +137,14 @@ namespace org.GraphDefined.WWCP
         public static SendCDRResult
 
             Enqueued(ChargeDetailRecord  ChargeDetailRecord,
-                     I18NString          Warning,
+                     Warning             Warning,
                      I18NString          Description   = null,
                      TimeSpan?           Runtime       = null)
 
 
                 => new SendCDRResult(ChargeDetailRecord,
                                      SendCDRResultTypes.Enqueued,
-                                     new I18NString[] { Warning },
+                                     new Warning[] { Warning },
                                      Description,
                                      Runtime);
 
@@ -201,10 +158,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Enqueued(ChargeDetailRecord       ChargeDetailRecord,
-                     IEnumerable<I18NString>  Warnings,
-                     I18NString               Description   = null,
-                     TimeSpan?                Runtime       = null)
+            Enqueued(ChargeDetailRecord    ChargeDetailRecord,
+                     IEnumerable<Warning> Warnings,
+                     I18NString            Description   = null,
+                     TimeSpan?             Runtime       = null)
 
 
                 => new SendCDRResult(ChargeDetailRecord,
@@ -232,6 +189,7 @@ namespace org.GraphDefined.WWCP
 
                 => new SendCDRResult(ChargeDetailRecord,
                                      SendCDRResultTypes.Success,
+                                     new Warning[0],
                                      Description,
                                      Runtime);
 
@@ -245,14 +203,14 @@ namespace org.GraphDefined.WWCP
         public static SendCDRResult
 
             Success(ChargeDetailRecord  ChargeDetailRecord,
-                    I18NString          Warning,
+                    Warning             Warning,
                     I18NString          Description   = null,
                     TimeSpan?           Runtime       = null)
 
 
                 => new SendCDRResult(ChargeDetailRecord,
                                      SendCDRResultTypes.Success,
-                                     new I18NString[] { Warning },
+                                     new Warning[] { Warning },
                                      Description,
                                      Runtime);
 
@@ -266,10 +224,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Success(ChargeDetailRecord       ChargeDetailRecord,
-                    IEnumerable<I18NString>  Warnings,
-                    I18NString               Description   = null,
-                    TimeSpan?                Runtime       = null)
+            Success(ChargeDetailRecord    ChargeDetailRecord,
+                    IEnumerable<Warning> Warnings,
+                    I18NString            Description   = null,
+                    TimeSpan?             Runtime       = null)
 
 
                 => new SendCDRResult(ChargeDetailRecord,
@@ -283,7 +241,7 @@ namespace org.GraphDefined.WWCP
         #region (static) Error   (ChargeDetailRecord, ...)
 
         /// <summary>
-        /// The request completed successfully.
+        /// The request failed.
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
@@ -297,11 +255,12 @@ namespace org.GraphDefined.WWCP
 
                 => new SendCDRResult(ChargeDetailRecord,
                                      SendCDRResultTypes.Error,
+                                     new Warning[0],
                                      Description,
                                      Runtime);
 
         /// <summary>
-        /// The request completed successfully.
+        /// The request failed.
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Warning">Optional warnings or additional information.</param>
@@ -309,21 +268,21 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Error(ChargeDetailRecord  ChargeDetailRecord,
-                  I18NString          Warning,
-                  I18NString          Description   = null,
-                  TimeSpan?           Runtime       = null)
+            Error(ChargeDetailRecord    ChargeDetailRecord,
+                  Warning               Warning,
+                  I18NString            Description   = null,
+                  TimeSpan?             Runtime       = null)
 
 
                 => new SendCDRResult(ChargeDetailRecord,
                                      SendCDRResultTypes.Error,
-                                     new I18NString[] { Warning },
+                                     new Warning[] { Warning },
                                      Description,
                                      Runtime);
 
 
         /// <summary>
-        /// The request completed successfully.
+        /// The request failed.
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
@@ -331,10 +290,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
-            Error(ChargeDetailRecord       ChargeDetailRecord,
-                  IEnumerable<I18NString>  Warnings,
-                  I18NString               Description   = null,
-                  TimeSpan?                Runtime       = null)
+            Error(ChargeDetailRecord    ChargeDetailRecord,
+                  IEnumerable<Warning> Warnings,
+                  I18NString            Description   = null,
+                  TimeSpan?             Runtime       = null)
 
 
                 => new SendCDRResult(ChargeDetailRecord,
@@ -344,6 +303,140 @@ namespace org.GraphDefined.WWCP
                                      Runtime);
 
         #endregion
+
+        #region (static) Filtered(ChargeDetailRecord, ...)
+
+        /// <summary>
+        /// The request failed.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            Filtered(ChargeDetailRecord   ChargeDetailRecord,
+                     I18NString           Description   = null,
+                     TimeSpan?            Runtime       = null)
+
+
+                => new SendCDRResult(ChargeDetailRecord,
+                                     SendCDRResultTypes.Filtered,
+                                     new Warning[0],
+                                     Description,
+                                     Runtime);
+
+        /// <summary>
+        /// The request failed.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="Warning">Optional warnings or additional information.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            Filtered(ChargeDetailRecord    ChargeDetailRecord,
+                     Warning               Warning,
+                     I18NString            Description   = null,
+                     TimeSpan?             Runtime       = null)
+
+
+                => new SendCDRResult(ChargeDetailRecord,
+                                     SendCDRResultTypes.Filtered,
+                                     new Warning[] { Warning },
+                                     Description,
+                                     Runtime);
+
+
+        /// <summary>
+        /// The request failed.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            Filtered(ChargeDetailRecord    ChargeDetailRecord,
+                     IEnumerable<Warning> Warnings,
+                     I18NString            Description   = null,
+                     TimeSpan?             Runtime       = null)
+
+
+                => new SendCDRResult(ChargeDetailRecord,
+                                     SendCDRResultTypes.Filtered,
+                                     Warnings,
+                                     Description,
+                                     Runtime);
+
+        #endregion
+
+
+        #region (static) CouldNotConvertCDRFormat   (ChargeDetailRecord, ...)
+
+        /// <summary>
+        /// The request failed.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            CouldNotConvertCDRFormat(ChargeDetailRecord   ChargeDetailRecord,
+                                     I18NString           Description   = null,
+                                     TimeSpan?            Runtime       = null)
+
+
+                => new SendCDRResult(ChargeDetailRecord,
+                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
+                                     new Warning[0],
+                                     Description,
+                                     Runtime);
+
+        /// <summary>
+        /// The request failed.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="Warning">Optional warnings or additional information.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            CouldNotConvertCDRFormat(ChargeDetailRecord    ChargeDetailRecord,
+                                     Warning               Warning,
+                                     I18NString            Description   = null,
+                                     TimeSpan?             Runtime       = null)
+
+
+                => new SendCDRResult(ChargeDetailRecord,
+                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
+                                     new Warning[] { Warning },
+                                     Description,
+                                     Runtime);
+
+
+        /// <summary>
+        /// The request failed.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRResult
+
+            CouldNotConvertCDRFormat(ChargeDetailRecord    ChargeDetailRecord,
+                                     IEnumerable<Warning> Warnings,
+                                     I18NString            Description   = null,
+                                     TimeSpan?             Runtime       = null)
+
+
+                => new SendCDRResult(ChargeDetailRecord,
+                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
+                                     Warnings,
+                                     Description,
+                                     Runtime);
+
+        #endregion
+
 
 
         #region ToJSON(Embedded = false, ...)
@@ -379,7 +472,7 @@ namespace org.GraphDefined.WWCP
                                       : null,
 
                                   Warnings.SafeAny()
-                                      ? new JProperty("warnings",      new JArray(Warnings))
+                                      ? new JProperty("warnings",      new JArray(Warnings.Select(waring => waring.ToJSON())))
                                       : null
 
                               );
@@ -405,7 +498,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The result of sending charge detail records.
     /// </summary>
-    public class SendCDRsResult
+    public class SendCDRsResult : IEnumerable<SendCDRResult>
     {
 
         #region Properties
@@ -443,7 +536,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Optional warnings or additional information.
         /// </summary>
-        public IEnumerable<Warning>         Warnings                       { get; }
+        public IEnumerable<Warning> Warnings                       { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -469,9 +562,9 @@ namespace org.GraphDefined.WWCP
         internal SendCDRsResult(IId                         AuthorizatorId,
                                 ISendChargeDetailRecords    ISendChargeDetailRecords,
                                 SendCDRsResultTypes         Result,
-                                IEnumerable<SendCDRResult>  ResultMap,
+                                IEnumerable<SendCDRResult> ResultMap,
                                 String                      Description   = null,
-                                IEnumerable<Warning>        Warnings      = null,
+                                IEnumerable<Warning> Warnings      = null,
                                 TimeSpan?                   Runtime       = null)
         {
 
@@ -482,8 +575,8 @@ namespace org.GraphDefined.WWCP
             this.Description               = Description;
 
             this.Warnings                  = Warnings != null
-                                                  ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
-                                                  : new Warning[0];
+                                                 ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                 : new Warning[0];
 
             this.Runtime                   = Runtime;
 
@@ -506,9 +599,9 @@ namespace org.GraphDefined.WWCP
         internal SendCDRsResult(IId                          AuthorizatorId,
                                 IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                                 SendCDRsResultTypes          Result,
-                                IEnumerable<SendCDRResult>   ResultMap     = null,
+                                IEnumerable<SendCDRResult> ResultMap     = null,
                                 String                       Description   = null,
-                                IEnumerable<Warning>         Warnings      = null,
+                                IEnumerable<Warning> Warnings      = null,
                                 TimeSpan?                    Runtime       = null)
         {
 
@@ -519,7 +612,7 @@ namespace org.GraphDefined.WWCP
             this.Description                  = Description;
 
             this.Warnings                     = Warnings != null
-                                                  ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                                  ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
                                                   : new Warning[0];
 
             this.Runtime                      = Runtime;
@@ -546,9 +639,9 @@ namespace org.GraphDefined.WWCP
 
             NoOperation(IId                              AuthorizatorId,
                         ISendChargeDetailRecords         ISendChargeDetailRecords,
-                        IEnumerable<ChargeDetailRecord>  ResultMap,
+                        IEnumerable<ChargeDetailRecord> ResultMap,
                         String                           Description   = null,
-                        IEnumerable<Warning>             Warnings      = null,
+                        IEnumerable<Warning> Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
 
@@ -575,9 +668,9 @@ namespace org.GraphDefined.WWCP
 
             NoOperation(IId                              AuthorizatorId,
                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                        IEnumerable<ChargeDetailRecord>  ResultMap,
+                        IEnumerable<ChargeDetailRecord> ResultMap,
                         String                           Description   = null,
-                        IEnumerable<Warning>             Warnings      = null,
+                        IEnumerable<Warning> Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
 
@@ -633,9 +726,9 @@ namespace org.GraphDefined.WWCP
 
             AdminDown(IId                              AuthorizatorId,
                       ISendChargeDetailRecords         ISendChargeDetailRecords,
-                      IEnumerable<ChargeDetailRecord>  ResultMap,
+                      IEnumerable<ChargeDetailRecord> ResultMap,
                       String                           Description   = null,
-                      IEnumerable<Warning>             Warnings      = null,
+                      IEnumerable<Warning> Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
 
@@ -689,9 +782,9 @@ namespace org.GraphDefined.WWCP
 
             AdminDown(IId                              AuthorizatorId,
                       IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                      IEnumerable<ChargeDetailRecord>  ResultMap,
+                      IEnumerable<ChargeDetailRecord> ResultMap,
                       String                           Description   = null,
-                      IEnumerable<Warning>             Warnings      = null,
+                      IEnumerable<Warning> Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
 
@@ -747,9 +840,9 @@ namespace org.GraphDefined.WWCP
 
             OutOfService(IId                              AuthorizatorId,
                          ISendChargeDetailRecords         ISendChargeDetailRecords,
-                         IEnumerable<ChargeDetailRecord>  ResultMap,
+                         IEnumerable<ChargeDetailRecord> ResultMap,
                          String                           Description   = null,
-                         IEnumerable<Warning>             Warnings      = null,
+                         IEnumerable<Warning> Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
 
@@ -803,9 +896,9 @@ namespace org.GraphDefined.WWCP
 
             OutOfService(IId                              AuthorizatorId,
                          IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                         IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
+                         IEnumerable<ChargeDetailRecord> RejectedChargeDetailRecords,
                          String                           Description   = null,
-                         IEnumerable<Warning>             Warnings      = null,
+                         IEnumerable<Warning> Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
 
@@ -836,7 +929,7 @@ namespace org.GraphDefined.WWCP
                      ISendChargeDetailRecords  ISendChargeDetailRecords,
                      ChargeDetailRecord        ChargeDetailRecord,
                      String                    Description   = null,
-                     IEnumerable<Warning>      Warnings      = null,
+                     IEnumerable<Warning> Warnings      = null,
                      TimeSpan?                 Runtime       = null)
 
 
@@ -862,9 +955,9 @@ namespace org.GraphDefined.WWCP
 
             Enqueued(IId                              AuthorizatorId,
                      ISendChargeDetailRecords         ISendChargeDetailRecords,
-                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                     IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
                      String                           Description   = null,
-                     IEnumerable<Warning>             Warnings      = null,
+                     IEnumerable<Warning> Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
 
@@ -893,7 +986,7 @@ namespace org.GraphDefined.WWCP
                      IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                      ChargeDetailRecord           ChargeDetailRecord,
                      String                       Description   = null,
-                     IEnumerable<Warning>         Warnings      = null,
+                     IEnumerable<Warning> Warnings      = null,
                      TimeSpan?                    Runtime       = null)
 
 
@@ -919,9 +1012,9 @@ namespace org.GraphDefined.WWCP
 
             Enqueued(IId                              AuthorizatorId,
                      IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                     IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
                      String                           Description   = null,
-                     IEnumerable<Warning>             Warnings      = null,
+                     IEnumerable<Warning> Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
 
@@ -950,9 +1043,9 @@ namespace org.GraphDefined.WWCP
 
             Timeout(IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
-                    IEnumerable<ChargeDetailRecord>  ResultMap,
+                    IEnumerable<ChargeDetailRecord> ResultMap,
                     String                           Description   = null,
-                    IEnumerable<Warning>             Warnings      = null,
+                    IEnumerable<Warning> Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
@@ -983,7 +1076,7 @@ namespace org.GraphDefined.WWCP
                     ISendChargeDetailRecords  ISendChargeDetailRecords,
                     ChargeDetailRecord        ChargeDetailRecord,
                     String                    Description   = null,
-                    IEnumerable<Warning>      Warnings      = null,
+                    IEnumerable<Warning> Warnings      = null,
                     TimeSpan?                 Runtime       = null)
 
 
@@ -1009,9 +1102,9 @@ namespace org.GraphDefined.WWCP
 
             Success(IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
-                    IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                    IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
                     String                           Description   = null,
-                    IEnumerable<Warning>             Warnings      = null,
+                    IEnumerable<Warning> Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
@@ -1039,7 +1132,7 @@ namespace org.GraphDefined.WWCP
                     IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                     ChargeDetailRecord           ChargeDetailRecord,
                     String                       Description   = null,
-                    IEnumerable<Warning>         Warnings      = null,
+                    IEnumerable<Warning> Warnings      = null,
                     TimeSpan?                    Runtime       = null)
 
 
@@ -1065,9 +1158,9 @@ namespace org.GraphDefined.WWCP
 
             Success(IId                              AuthorizatorId,
                     IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                    IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                    IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
                     String                           Description   = null,
-                    IEnumerable<Warning>             Warnings      = null,
+                    IEnumerable<Warning> Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
@@ -1098,7 +1191,7 @@ namespace org.GraphDefined.WWCP
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   ChargeDetailRecord        ChargeDetailRecord,
                   String                    Description   = null,
-                  IEnumerable<Warning>      Warnings      = null,
+                  IEnumerable<Warning> Warnings      = null,
                   TimeSpan?                 Runtime       = null)
 
 
@@ -1124,9 +1217,9 @@ namespace org.GraphDefined.WWCP
 
             Error(IId                              AuthorizatorId,
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
-                  IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                  IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
                   String                           Description   = null,
-                  IEnumerable<Warning>             Warnings      = null,
+                  IEnumerable<Warning> Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 
@@ -1136,6 +1229,32 @@ namespace org.GraphDefined.WWCP
                                       ChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Error)),
                                       Description,
                                       Warnings,
+                                      Runtime);
+
+
+        /// <summary>
+        /// The request completed unsuccessfully.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            Error(IId                              AuthorizatorId,
+                  ISendChargeDetailRecords         ISendChargeDetailRecords,
+                  IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
+                  Warning                          Warning,
+                  TimeSpan?                        Runtime       = null)
+
+
+                => new SendCDRsResult(AuthorizatorId,
+                                      ISendChargeDetailRecords,
+                                      SendCDRsResultTypes.Success,
+                                      ChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Error)),
+                                      String.Empty,
+                                      new Warning[] { Warning },
                                       Runtime);
 
 
@@ -1155,7 +1274,7 @@ namespace org.GraphDefined.WWCP
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   ChargeDetailRecord           ChargeDetailRecord,
                   String                       Description   = null,
-                  IEnumerable<Warning>         Warnings      = null,
+                  IEnumerable<Warning> Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
 
@@ -1181,9 +1300,9 @@ namespace org.GraphDefined.WWCP
 
             Error(IId                              AuthorizatorId,
                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                  IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                  IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
                   String                           Description   = null,
-                  IEnumerable<Warning>             Warnings      = null,
+                  IEnumerable<Warning> Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 
@@ -1204,24 +1323,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="ChargeDetailRecord">A charge detail records.</param>
+        /// <param name="Result">A charge detail record result.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Mixed(IId                       AuthorizatorId,
-                  ISendChargeDetailRecords  ISendChargeDetailRecords,
-                  ChargeDetailRecord        ChargeDetailRecord,
-                  String                    Description   = null,
-                  IEnumerable<Warning>      Warnings      = null,
-                  TimeSpan?                 Runtime       = null)
+            Mixed(IId                         AuthorizatorId,
+                  ISendChargeDetailRecords    ISendChargeDetailRecords,
+                  SendCDRResult               Result,
+                  String                      Description   = null,
+                  IEnumerable<Warning> Warnings      = null,
+                  TimeSpan?                   Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      new SendCDRResult[] { new SendCDRResult(ChargeDetailRecord, SendCDRResultTypes.Mixed) },
+                                      SendCDRsResultTypes.Mixed,
+                                      new SendCDRResult[] { Result },
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -1232,24 +1351,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="ResultMap">An enumeration of charge detail record results.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Mixed(IId                              AuthorizatorId,
-                  ISendChargeDetailRecords         ISendChargeDetailRecords,
-                  IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                  String                           Description   = null,
-                  IEnumerable<Warning>             Warnings      = null,
-                  TimeSpan?                        Runtime       = null)
+            Mixed(IId                         AuthorizatorId,
+                  ISendChargeDetailRecords    ISendChargeDetailRecords,
+                  IEnumerable<SendCDRResult> ResultMap,
+                  String                      Description   = null,
+                  IEnumerable<Warning> Warnings      = null,
+                  TimeSpan?                   Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      ChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Mixed)),
+                                      SendCDRsResultTypes.Mixed,
+                                      ResultMap,
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -1261,7 +1380,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="ChargeDetailRecord">A charge detail records.</param>
+        /// <param name="Result">A charge detail record result.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -1269,16 +1388,16 @@ namespace org.GraphDefined.WWCP
 
             Mixed(IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                  ChargeDetailRecord           ChargeDetailRecord,
+                  SendCDRResult                Result,
                   String                       Description   = null,
-                  IEnumerable<Warning>         Warnings      = null,
+                  IEnumerable<Warning> Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      new SendCDRResult[] { new SendCDRResult(ChargeDetailRecord, SendCDRResultTypes.Mixed) },
+                                      SendCDRsResultTypes.Mixed,
+                                      new SendCDRResult[] { Result },
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -1289,29 +1408,37 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="ResultMap">An enumeration of charge detail record results.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Mixed(IId                              AuthorizatorId,
-                  IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                  IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                  String                           Description   = null,
-                  IEnumerable<Warning>             Warnings      = null,
-                  TimeSpan?                        Runtime       = null)
+            Mixed(IId                          AuthorizatorId,
+                  IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
+                  IEnumerable<SendCDRResult> ResultMap,
+                  String                       Description   = null,
+                  IEnumerable<Warning> Warnings      = null,
+                  TimeSpan?                    Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      ChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Mixed)),
+                                      SendCDRsResultTypes.Mixed,
+                                      ResultMap,
                                       Description,
                                       Warnings,
                                       Runtime);
 
         #endregion
+
+
+
+        public IEnumerator<SendCDRResult> GetEnumerator()
+            => ResultMap.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => ResultMap.GetEnumerator();
 
 
         #region (override) ToString()
@@ -1320,7 +1447,7 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => Result + " via " + AuthorizatorId;
+                => Result + " via " + AuthorizatorId;
 
         #endregion
 
@@ -1395,7 +1522,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The operation led to an error.
         /// </summary>
-        Error
+        Error,
+
+
+        /// <summary>
+        /// Mixed results.
+        /// </summary>
+        Mixed
 
     }
 
@@ -1463,10 +1596,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Timeout,
 
-        /// <summary>
-        /// Mixed results.
-        /// </summary>
-        Mixed,
 
 
         /// <summary>

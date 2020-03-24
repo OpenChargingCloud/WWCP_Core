@@ -588,10 +588,14 @@ namespace org.GraphDefined.WWCP
                     {
 
                         if (_DataLicenses == null)
-                            SetProperty(ref _DataLicenses, value);
+                            SetProperty(ref _DataLicenses,
+                                        value,
+                                        EventTracking_Id.New);
 
                         else
-                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+                            SetProperty(ref _DataLicenses,
+                                        _DataLicenses.Set(value),
+                                        EventTracking_Id.New);
 
                     }
 
@@ -629,7 +633,9 @@ namespace org.GraphDefined.WWCP
                     if (_ChargingModes == null)
                         _ChargingModes = value;
 
-                    SetProperty(ref _ChargingModes, value);
+                    SetProperty(ref _ChargingModes,
+                                value,
+                                EventTracking_Id.New);
 
                 }
 
@@ -659,7 +665,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_CurrentType != value)
-                    SetProperty(ref _CurrentType, value);
+                    SetProperty(ref _CurrentType,
+                                value,
+                                EventTracking_Id.New);
 
             }
 
@@ -693,7 +701,9 @@ namespace org.GraphDefined.WWCP
                         _AverageVoltage = value;
 
                     else if (Math.Abs(_AverageVoltage.Value - value.Value) > EPSILON)
-                        SetProperty(ref _AverageVoltage, value);
+                        SetProperty(ref _AverageVoltage,
+                                    value,
+                                    EventTracking_Id.New);
 
                 }
 
@@ -730,10 +740,14 @@ namespace org.GraphDefined.WWCP
                 {
 
                     if (!_MaxCurrent.HasValue)
-                        SetProperty(ref _MaxCurrent, value);
+                        SetProperty(ref _MaxCurrent,
+                                    value,
+                                    EventTracking_Id.New);
 
                     else if (Math.Abs(_MaxCurrent.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxCurrent, value);
+                        SetProperty(ref _MaxCurrent,
+                                    value,
+                                    EventTracking_Id.New);
 
                 }
 
@@ -766,7 +780,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value != null)
-                    SetProperty(ref _MaxCurrentRealTime, value);
+                    SetProperty(ref _MaxCurrentRealTime,
+                                value,
+                                EventTracking_Id.New);
 
                 else
                     DeleteProperty(ref _MaxCurrentRealTime);
@@ -797,7 +813,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value != null)
-                    SetProperty(ref _MaxCurrentPrognoses, value);
+                    SetProperty(ref _MaxCurrentPrognoses,
+                                value,
+                                EventTracking_Id.New);
 
                 else
                     DeleteProperty(ref _MaxCurrentPrognoses);
@@ -835,7 +853,9 @@ namespace org.GraphDefined.WWCP
                         _MaxPower = value;
 
                     else if (Math.Abs(_MaxPower.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxPower, value);
+                        SetProperty(ref _MaxPower,
+                                    value,
+                                    EventTracking_Id.New);
 
                 }
 
@@ -868,7 +888,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value != null)
-                    SetProperty(ref _MaxPowerRealTime, value);
+                    SetProperty(ref _MaxPowerRealTime,
+                                value,
+                                EventTracking_Id.New);
 
                 else
                     DeleteProperty(ref _MaxPowerRealTime);
@@ -899,7 +921,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value != null)
-                    SetProperty(ref _MaxPowerPrognoses, value);
+                    SetProperty(ref _MaxPowerPrognoses,
+                                value,
+                                EventTracking_Id.New);
 
                 else
                     DeleteProperty(ref _MaxPowerPrognoses);
@@ -937,7 +961,9 @@ namespace org.GraphDefined.WWCP
                         _MaxCapacity = value;
 
                     else if (Math.Abs(_MaxCapacity.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxCapacity, value);
+                        SetProperty(ref _MaxCapacity,
+                                    value,
+                                    EventTracking_Id.New);
 
                 }
 
@@ -970,7 +996,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value != null)
-                    SetProperty(ref _MaxCapacityRealTime, value);
+                    SetProperty(ref _MaxCapacityRealTime,
+                                value,
+                                EventTracking_Id.New);
 
                 else
                     DeleteProperty(ref _MaxCapacityRealTime);
@@ -1001,7 +1029,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value != null)
-                    SetProperty(ref _MaxCapacityPrognoses, value);
+                    SetProperty(ref _MaxCapacityPrognoses,
+                                value,
+                                EventTracking_Id.New);
 
                 else
                     DeleteProperty(ref _MaxCapacityPrognoses);
@@ -1125,7 +1155,9 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value != null)
-                    SetProperty(ref _MaxReservationDuration, value);
+                    SetProperty(ref _MaxReservationDuration,
+                                value,
+                                EventTracking_Id.New);
 
                 else
                     DeleteProperty(ref _MaxReservationDuration);
@@ -1439,7 +1471,7 @@ namespace org.GraphDefined.WWCP
 
             ChargingModes        = OtherEVSE.ChargingModes;
             AverageVoltage       = OtherEVSE.AverageVoltage;
-            CurrentType         = OtherEVSE.CurrentType;
+            CurrentType          = OtherEVSE.CurrentType;
             MaxCurrent           = OtherEVSE.MaxCurrent;
             MaxPower             = OtherEVSE.MaxPower;
             MaxCapacity          = OtherEVSE.MaxCapacity;
@@ -1626,7 +1658,7 @@ namespace org.GraphDefined.WWCP
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal != null)
                 await OnDataChangedLocal(Timestamp,
-                                         EventTrackingId,
+                                         EventTrackingId ?? EventTracking_Id.New,
                                          Sender as EVSE,
                                          PropertyName,
                                          OldValue,
@@ -1654,7 +1686,7 @@ namespace org.GraphDefined.WWCP
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
             if (OnAdminStatusChangedLocal != null)
                 await OnAdminStatusChangedLocal(Timestamp,
-                                                EventTrackingId,
+                                                EventTrackingId ?? EventTracking_Id.New,
                                                 this,
                                                 OldStatus,
                                                 NewStatus);
@@ -1681,7 +1713,7 @@ namespace org.GraphDefined.WWCP
             var OnStatusChangedLocal = OnStatusChanged;
             if (OnStatusChangedLocal != null)
                 await OnStatusChangedLocal(Timestamp,
-                                           EventTrackingId,
+                                           EventTrackingId ?? EventTracking_Id.New,
                                            this,
                                            OldStatus,
                                            NewStatus);
@@ -2178,7 +2210,7 @@ namespace org.GraphDefined.WWCP
         /// The current charging session, if available.
         /// </summary>
         [InternalUseOnly]
-        public ChargingSession ChargingSession { get; private set; }
+        public ChargingSession ChargingSession { get; internal set; }
 
 
         public IEnumerable<ChargingSession> ChargingSessions
@@ -2490,7 +2522,8 @@ namespace org.GraphDefined.WWCP
                     if (result.Result == RemoteStartResultTypes.Success &&
                         result.Session != null)
                     {
-                        result.Session.EVSE = this;
+                        ChargingSession      = result.Session;
+                        result.Session.EVSE  = this;
                     }
 
                 }
@@ -2655,15 +2688,6 @@ namespace org.GraphDefined.WWCP
                                                           EventTrackingId,
                                                           RequestTimeout);
 
-                            #region In case of success...
-
-                            if (result?.Result == RemoteStopResultTypes.Success)
-                            {
-                                ChargingSession = null;
-                            }
-
-                            #endregion
-
                         }
 
                         #endregion
@@ -2732,6 +2756,16 @@ namespace org.GraphDefined.WWCP
 
                         else
                             result = RemoteStopResult.Offline(SessionId);
+
+                        #endregion
+
+
+                        #region In case of success...
+
+                        if (result?.Result == RemoteStopResultTypes.Success)
+                        {
+                            ChargingSession = null;
+                        }
 
                         #endregion
 
@@ -2861,7 +2895,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ToJSON(this EVSE,                      Embedded = false, ...)
+        #region ToJSON(this EVSE, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation of the given EVSE.
@@ -2987,8 +3021,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-
 
 
         #region Operator overloading
@@ -3210,7 +3242,6 @@ namespace org.GraphDefined.WWCP
             => Id.ToString();
 
         #endregion
-
 
     }
 

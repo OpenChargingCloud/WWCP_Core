@@ -680,15 +680,11 @@ namespace org.GraphDefined.WWCP
 
         public ChargeDetailRecord         CDR                           { get; set; }
 
-        public DateTime?                  CDRTimestamp                  { get; set; }
+        public DateTime?                  CDRReceived                  { get; set; }
 
         public DateTime?                  CDRForwarded                  { get; set; }
 
-        public String                     CDRResultCode                 { get; set; }
-
-        public String                     CDRResultDescription          { get; set; }
-
-
+        public SendCDRResult              CDRResult                     { get; set; }
 
 
         public Boolean                    RemoveMe                      { get; set; }
@@ -859,31 +855,28 @@ namespace org.GraphDefined.WWCP
                        : null,
 
 
-                   CDRTimestamp.HasValue
+                   CDRReceived.HasValue
                        ? new JProperty("cdr", JSONObject.Create(
 
-                             CDRTimestamp.HasValue
-                                 ? new JProperty("timestamp",             CDRTimestamp.Value.       ToIso8601())
+                             CDRReceived.HasValue
+                                 ? new JProperty("timestamp",             CDRReceived.Value. ToIso8601())
                                  : null,
 
                              SystemIdCDR.HasValue
-                                 ? new JProperty("systemId",              SystemIdCDR.              ToString())
+                                 ? new JProperty("systemId",              SystemIdCDR.       ToString())
                                  : null,
 
                              CDR != null
-                                 ? new JProperty("cdr",                   CDR.                      ToJSON(Embedded: true))
+                                 ? new JProperty("cdr",                   CDR.               ToJSON(Embedded: true))
                                  : null,
+
 
                              CDRForwarded.HasValue
-                                 ? new JProperty("forwarded",             CDRForwarded.Value.       ToIso8601())
+                                 ? new JProperty("forwarded",             CDRForwarded.Value.ToIso8601())
                                  : null,
 
-                             CDRResultCode.IsNotNullOrEmpty()
-                                 ? new JProperty("resultCode",            CDRResultCode)
-                                 : null,
-
-                             CDRResultDescription.IsNotNullOrEmpty()
-                                 ? new JProperty("resultDescription",     CDRResultDescription)
+                             CDRResult != null
+                                 ? new JProperty("result",                CDRResult.         ToJSON())
                                  : null
 
                          ))

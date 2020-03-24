@@ -3276,7 +3276,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
                 await OnEVSEDataChangedLocal(Timestamp,
-                                             EventTrackingId,
+                                             EventTrackingId ?? EventTracking_Id.New,
                                              EVSE,
                                              PropertyName,
                                              OldValue,
@@ -3306,7 +3306,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId,
+                                                    EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
                                                     OldStatus,
                                                     NewStatus);
@@ -3335,7 +3335,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
                 await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId,
+                                               EventTrackingId ?? EventTracking_Id.New,
                                                EVSE,
                                                OldStatus,
                                                NewStatus);

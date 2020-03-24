@@ -38,18 +38,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="SenderId">The sender identification of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="DroppedChargeDetailRecords">An enumeration of dropped charge detail records.</param>
-    /// <param name="ForwardedChargeDetailRecords">An enumeration of forwarded charge detail records.</param>
+    /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnSendCDRRequestDelegate(DateTime                         LogTimestamp,
-                                                  DateTime                         RequestTimestamp,
-                                                  Object                           Sender,
-                                                  String                           SenderId,
-                                                  EventTracking_Id                 EventTrackingId,
-                                                  RoamingNetwork_Id                RoamingNetworkId,
-                                                  IEnumerable<ChargeDetailRecord>  DroppedChargeDetailRecords,
-                                                  IEnumerable<ChargeDetailRecord>  ForwardedChargeDetailRecords,
-                                                  TimeSpan?                        RequestTimeout);
+    public delegate Task OnSendCDRsRequestDelegate(DateTime                         LogTimestamp,
+                                                   DateTime                         RequestTimestamp,
+                                                   Object                           Sender,
+                                                   String                           SenderId,
+                                                   EventTracking_Id                 EventTrackingId,
+                                                   RoamingNetwork_Id                RoamingNetworkId,
+                                                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                                   TimeSpan?                        RequestTimeout);
 
 
     /// <summary>
@@ -76,21 +74,19 @@ namespace org.GraphDefined.WWCP
     /// <param name="SenderId">The sender identification of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="DroppedChargeDetailRecords">An enumeration of dropped charge detail records.</param>
-    /// <param name="ForwardedChargeDetailRecords">An enumeration of forwarded charge detail records.</param>
+    /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnSendCDRResponseDelegate(DateTime                         LogTimestamp,
-                                                   DateTime                         RequestTimestamp,
-                                                   Object                           Sender,
-                                                   String                           SenderId,
-                                                   EventTracking_Id                 EventTrackingId,
-                                                   RoamingNetwork_Id                RoamingNetworkId,
-                                                   IEnumerable<ChargeDetailRecord>  DroppedChargeDetailRecords,
-                                                   IEnumerable<ChargeDetailRecord>  ForwardedChargeDetailRecords,
-                                                   TimeSpan?                        RequestTimeout,
-                                                   SendCDRsResult                   Result,
-                                                   TimeSpan                         Runtime);
+    public delegate Task OnSendCDRsResponseDelegate(DateTime                         LogTimestamp,
+                                                    DateTime                         RequestTimestamp,
+                                                    Object                           Sender,
+                                                    String                           SenderId,
+                                                    EventTracking_Id                 EventTrackingId,
+                                                    RoamingNetwork_Id                RoamingNetworkId,
+                                                    IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                                    TimeSpan?                        RequestTimeout,
+                                                    SendCDRsResult                   Result,
+                                                    TimeSpan                         Runtime);
 
 }

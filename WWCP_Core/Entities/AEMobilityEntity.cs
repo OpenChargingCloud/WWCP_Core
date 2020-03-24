@@ -218,7 +218,10 @@ namespace org.GraphDefined.WWCP
                 var OldValue       = FieldToChange;
                     FieldToChange  = NewValue;
 
-                PropertyChanged(PropertyName, OldValue, NewValue, EventTrackingId);
+                PropertyChanged(PropertyName,
+                                OldValue,
+                                NewValue,
+                                EventTrackingId ?? EventTracking_Id.New);
 
             }
 
