@@ -387,7 +387,7 @@ namespace org.GraphDefined.WWCP
             {
                 lock (Lock)
                 {
-                    foreach (var networkInfo in RoamingNetworkInfos)//.Where(networkInfo => networkInfo.NodeId != NodeId))
+                    foreach (var networkInfo in RoamingNetworkInfos.Where(networkInfo => networkInfo.NodeId != NodeId))
                     {
 
                         TCPClient client = null;
