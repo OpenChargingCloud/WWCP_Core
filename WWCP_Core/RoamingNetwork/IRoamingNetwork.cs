@@ -349,7 +349,6 @@ namespace org.GraphDefined.WWCP
 
         ChargingReservationsStore  ReservationsStore           { get; }
         ChargingSessionsStore      SessionsStore               { get; }
-        ChargeDetailRecordsStore   ChargeDetailRecordsStore    { get; }
 
 
         IEnumerable<ChargingStationOperator> ChargingStationOperators { get; }
@@ -385,7 +384,7 @@ namespace org.GraphDefined.WWCP
         IEnumerable<EVSE> EVSEs { get; }
         bool ContainsEVSE(EVSE EVSE);
         bool ContainsEVSE(EVSE_Id EVSEId);
-        EVSE GetEVSEbyId(EVSE_Id EVSEId);
+        EVSE GetEVSEById(EVSE_Id EVSEId);
         bool TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE);
         IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null);
         IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null);

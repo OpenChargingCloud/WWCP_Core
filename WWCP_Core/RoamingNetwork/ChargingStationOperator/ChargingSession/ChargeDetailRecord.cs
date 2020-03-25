@@ -38,8 +38,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A charge detail record for a charging session.
     /// </summary>
-    public class ChargeDetailRecord : ACustomData,
-                                      IEquatable <ChargeDetailRecord>,
+    public class ChargeDetailRecord : AEMobilityEntity<ChargeDetailRecord_Id>,
+                                      IEquatable<ChargeDetailRecord>,
                                       IComparable<ChargeDetailRecord>,
                                       IComparable
     {
@@ -55,19 +55,25 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        /// <summary>
+        /// The unique charging session identification.
+        /// </summary>
+        [Mandatory]
+        public ChargeDetailRecord_Id    Id              { get; }
+
         #region Session
 
         /// <summary>
         /// The unique charging session identification.
         /// </summary>
         [Mandatory]
-        public ChargingSession_Id  SessionId     { get; }
+        public ChargingSession_Id       SessionId       { get; }
 
         /// <summary>
         /// The timestamps when the charging session started and ended.
         /// </summary>
         [Mandatory]
-        public StartEndDateTime    SessionTime   { get; }
+        public StartEndDateTime         SessionTime     { get; }
 
 
         /// <summary>
@@ -76,7 +82,7 @@ namespace org.GraphDefined.WWCP
         /// caused by a tariff granularity of 15 minutes.
         /// </summary>
         [Optional]
-        public TimeSpan?           Duration      { get; }
+        public TimeSpan?                Duration        { get; }
 
         #endregion
 
@@ -242,13 +248,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional enumeration of energy metering values with digital signatures per measurement.
         /// </summary>
+        [Optional]
         public IEnumerable<SignedMeteringValue<Decimal>>    SignedMeteringValues    { get; }
 
         /// <summary>
         /// The consumed energy in kWh.
         /// </summary>
         public Decimal?                                     ConsumedEnergy          { get; }
-
 
         #endregion
 
@@ -267,6 +273,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a charge detail record for the given charging session (identification).
         /// </summary>
+        /// <param name="Id">The unique charge detail record identification.</param>
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="SessionTime">The timestamps when the charging session started and ended.</param>
         /// <param name="Duration">The duration of the charging session, whenever it is more than the time span between its start- and endtime, e.g. caused by a tariff granularity of 15 minutes.</param>
@@ -300,7 +307,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="ConsumedEnergy">The consumed energy, whenever it is more than the energy difference between the first and last energy meter value, e.g. caused by a tariff granularity of 1 kWh.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public ChargeDetailRecord(ChargingSession_Id                         SessionId,
+        public ChargeDetailRecord(ChargeDetailRecord_Id                      Id,
+                                  ChargingSession_Id                         SessionId,
                                   StartEndDateTime                           SessionTime,
                                   TimeSpan?                                  Duration                    = null,
 
@@ -337,7 +345,8 @@ namespace org.GraphDefined.WWCP
 
                                   IEnumerable<String>                        Signatures                  = null)
 
-            : base(CustomData)
+            : base(Id,
+                   CustomData)
 
         {
 
@@ -402,9 +411,9 @@ namespace org.GraphDefined.WWCP
 
                            SessionId.ToJSON("@id"),
 
-                           !Embedded
-                               ? new JProperty("@context",                    JSONLDContext)
-                               : null,
+                           Embedded
+                               ? null
+                               : new JProperty("@context",                    JSONLDContext),
 
                            SessionTime != null
                                ? new JProperty("sessionTime",                 JSONObject.Create(
@@ -418,6 +427,19 @@ namespace org.GraphDefined.WWCP
                            Duration.HasValue
                                ? new JProperty("duration",                    Duration.Value.TotalSeconds)
                                : null,
+
+
+                           //new JProperty("meterId",                           MeterId.ToString()),
+
+                           EnergyMeteringValues.SafeAny()
+                               ? new JProperty("meterValues", JSONArray.Create(
+                                       EnergyMeteringValues.Select(meterValue => JSONObject.Create(
+                                           new JProperty("timestamp",  meterValue.Timestamp.ToIso8601()),
+                                           new JProperty("value",      meterValue.Value)
+                                       ))
+                                   ))
+                               : null,
+
 
                            ChargingStationOperatorId.HasValue
                                ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
@@ -437,8 +459,6 @@ namespace org.GraphDefined.WWCP
                                ? new JProperty("chargingProduct",             ChargingProduct.ToJSON())
                                : null
 
-                       //new JProperty("meterValue",     MeterValue),
-                       //new JProperty("meterId",        MeterId.ToString()),
 
                        //new JProperty("userId",         UserId),
                        //new JProperty("publicKey",      PublicKey.KeyId),

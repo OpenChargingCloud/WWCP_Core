@@ -42,61 +42,13 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region eMAId
+        public eMobilityAccount_Id  eMAId           { get; }
 
-        private readonly eMobilityAccount_Id _eMAId;
+        public String               PIN             { get; }
 
-        public eMobilityAccount_Id eMAId
-        {
-            get
-            {
-                return _eMAId;
-            }
-        }
+        public PINCrypto            Function        { get; }
 
-        #endregion
-
-        #region PIN
-
-        private readonly String _PIN;
-
-        public String PIN
-        {
-            get
-            {
-                return _PIN;
-            }
-        }
-
-        #endregion
-
-        #region Function
-
-        private readonly PINCrypto _Function;
-
-        public PINCrypto Function
-        {
-            get
-            {
-                return _Function;
-            }
-        }
-
-        #endregion
-
-        #region Salt
-
-        private readonly String _Salt;
-
-        public String Salt
-        {
-            get
-            {
-                return _Salt;
-            }
-        }
-
-        #endregion
+        public String               Salt            { get; }
 
         #endregion
 
@@ -105,12 +57,12 @@ namespace org.GraphDefined.WWCP
         #region eMAIdWithPIN(eMAId, PIN)
 
         public eMAIdWithPIN2(eMobilityAccount_Id  eMAId,
-                            String  PIN)
+                             String               PIN)
         {
 
-            this._eMAId     = eMAId;
-            this._PIN       = PIN;
-            this._Function  = PINCrypto.none;
+            this.eMAId     = eMAId;
+            this.PIN       = PIN;
+            this.Function  = PINCrypto.none;
 
         }
 
@@ -118,16 +70,16 @@ namespace org.GraphDefined.WWCP
 
         #region eMAIdWithPIN(eMAId, PIN, Function, Salt = "")
 
-        public eMAIdWithPIN2(eMobilityAccount_Id     eMAId,
-                            String     PIN,
-                            PINCrypto  Function,
-                            String     Salt = "")
+        public eMAIdWithPIN2(eMobilityAccount_Id  eMAId,
+                             String               PIN,
+                             PINCrypto            Function,
+                             String               Salt = "")
         {
 
-            this._eMAId     = eMAId;
-            this._PIN       = PIN;
-            this._Function  = Function;
-            this._Salt      = Salt;
+            this.eMAId     = eMAId;
+            this.PIN       = PIN;
+            this.Function  = Function;
+            this.Salt      = Salt;
 
         }
 
@@ -288,11 +240,11 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given eMAIdWithPIN2 must not be null!");
 
             // Compare EVSE Ids
-            var _Result = _eMAId.CompareTo(eMAIdWithPIN2._eMAId);
+            var _Result = eMAId.CompareTo(eMAIdWithPIN2.eMAId);
 
             // If equal: Compare EVSE status
             if (_Result == 0)
-                _Result = _PIN.CompareTo(eMAIdWithPIN2._PIN);
+                _Result = PIN.CompareTo(eMAIdWithPIN2.PIN);
 
             return _Result;
 
@@ -341,8 +293,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) eMAIdWithPIN2 == null)
                 return false;
 
-            return _eMAId.Equals(eMAIdWithPIN2._eMAId) &&
-                   _PIN.  Equals(eMAIdWithPIN2._PIN);
+            return eMAId.Equals(eMAIdWithPIN2.eMAId) &&
+                   PIN.  Equals(eMAIdWithPIN2.PIN);
 
         }
 
@@ -360,7 +312,7 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _eMAId.GetHashCode() * 17 ^ _PIN.GetHashCode();
+                return eMAId.GetHashCode() * 17 ^ PIN.GetHashCode();
             }
         }
 
@@ -373,7 +325,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_eMAId.ToString(), " -", _Function != PINCrypto.none ? _Function.ToString(): "", "-> ", _PIN );
+            return String.Concat(eMAId.ToString(), " -", Function != PINCrypto.none ? Function.ToString(): "", "-> ", PIN );
         }
 
         #endregion

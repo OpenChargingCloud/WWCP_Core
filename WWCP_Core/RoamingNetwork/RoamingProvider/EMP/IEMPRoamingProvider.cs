@@ -79,31 +79,31 @@ namespace org.GraphDefined.WWCP
 
         // Server methods
 
-        #region OnAuthorizeEVSEStartRequest/-Response
+        #region OnAuthorizeStartRequest/-Response
 
         /// <summary>
         /// An event sent whenever an 'authorize EVSE start' request was received.
         /// </summary>
-        event OnAuthorizeEVSEStartRequestDelegate   OnAuthorizeEVSEStartRequest;
+        event OnAuthorizeStartRequestDelegate   OnAuthorizeStartRequest;
 
         /// <summary>
         /// An event sent whenever a response to an 'authorize EVSE start' request was sent.
         /// </summary>
-        event OnAuthorizeEVSEStartResponseDelegate  OnAuthorizeEVSEStartResponse;
+        event OnAuthorizeStartResponseDelegate  OnAuthorizeStartResponse;
 
         #endregion
 
-        #region OnAuthorizeEVSEStopRequest/-Response
+        #region OnAuthorizeStopRequest/-Response
 
         /// <summary>
         /// An event sent whenever an 'authorize EVSE stop' request was received.
         /// </summary>
-        event OnAuthorizeEVSEStopRequestDelegate   OnAuthorizeEVSEStopRequest;
+        event OnAuthorizeStopRequestDelegate   OnAuthorizeStopRequest;
 
         /// <summary>
         /// An event sent whenever a response to an 'authorize EVSE stop' request was sent.
         /// </summary>
-        event OnAuthorizeEVSEStopResponseDelegate  OnAuthorizeEVSEStopResponse;
+        event OnAuthorizeStopResponseDelegate  OnAuthorizeStopResponse;
 
         #endregion
 
@@ -112,12 +112,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event sent whenever a 'charge detail record' was received.
         /// </summary>
-        event OnSendCDRRequestDelegate   OnChargeDetailRecordRequest;
+        event OnSendCDRsRequestDelegate   OnChargeDetailRecordRequest;
 
         /// <summary>
         /// An event sent whenever a response to a 'charge detail record' was sent.
         /// </summary>
-        event OnSendCDRResponseDelegate  OnChargeDetailRecordResponse;
+        event OnSendCDRsResponseDelegate  OnChargeDetailRecordResponse;
 
         #endregion
 

@@ -94,4 +94,12 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargeDetailRecord">The new charge detail record.</param>
     public delegate void OnNewChargeDetailRecordDelegate(DateTime Timestamp, Object Sender, ChargeDetailRecord ChargeDetailRecord);
 
+    /// <summary>
+    /// A delegate called whenever a charge detail record was sent.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="Sender">The sender of the event.</param>
+    /// <param name="CDRResult">The new charge detail record sent result.</param>
+    public delegate void OnNewChargeDetailRecordResultDelegate(DateTime Timestamp, Object Sender, SendCDRResult CDRResult);
+
 }

@@ -3279,7 +3279,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
                 await OnEVSEDataChangedLocal(Timestamp,
-                                             EventTrackingId,
+                                             EventTrackingId ?? EventTracking_Id.New,
                                              EVSE,
                                              PropertyName,
                                              OldValue,
@@ -3309,7 +3309,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId,
+                                                    EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
                                                     OldStatus,
                                                     NewStatus);
@@ -3338,7 +3338,7 @@ namespace org.GraphDefined.WWCP
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
                 await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId,
+                                               EventTrackingId ?? EventTracking_Id.New,
                                                EVSE,
                                                OldStatus,
                                                NewStatus);
@@ -5149,6 +5149,8 @@ namespace org.GraphDefined.WWCP
                                              ChargingProduct,
                                              ReservationId,
                                              SessionId,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout);
@@ -5203,7 +5205,7 @@ namespace org.GraphDefined.WWCP
 
                     }
                     else
-                        result = RemoteStartResult.UnknownLocation;
+                        result = RemoteStartResult.UnknownLocation();
 
                 }
 
@@ -5230,6 +5232,8 @@ namespace org.GraphDefined.WWCP
                                               ChargingProduct,
                                               ReservationId,
                                               SessionId,
+                                              null,
+                                              null,
                                               ProviderId,
                                               RemoteAuthentication,
                                               RequestTimeout,
@@ -5309,6 +5313,8 @@ namespace org.GraphDefined.WWCP
                                             RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
+                                            null,
+                                            null,
                                             ProviderId,
                                             RemoteAuthentication,
                                             RequestTimeout);
@@ -5400,6 +5406,8 @@ namespace org.GraphDefined.WWCP
                                              RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout,

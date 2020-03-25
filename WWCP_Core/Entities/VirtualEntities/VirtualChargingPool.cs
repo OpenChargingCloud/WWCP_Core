@@ -1409,6 +1409,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                              ChargingProduct,
                                              ReservationId,
                                              SessionId,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout);
@@ -1428,7 +1430,7 @@ namespace org.GraphDefined.WWCP.Virtual
                 if (ChargingLocation.ChargingPoolId.HasValue &&
                     ChargingLocation.ChargingPoolId.Value != Id)
                 {
-                    result = RemoteStartResult.UnknownLocation;
+                    result = RemoteStartResult.UnknownLocation();
                 }
 
                 else if (AdminStatus.Value == ChargingPoolAdminStatusTypes.Operational ||
@@ -1436,10 +1438,10 @@ namespace org.GraphDefined.WWCP.Virtual
                 {
 
                     if (!ChargingLocation.EVSEId.HasValue)
-                        result = RemoteStartResult.UnknownLocation;
+                        result = RemoteStartResult.UnknownLocation();
 
                     else if (!TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.Value, out IRemoteChargingStation remoteStation))
-                        result = RemoteStartResult.UnknownLocation;
+                        result = RemoteStartResult.UnknownLocation();
 
                     else
                         result = await remoteStation.
@@ -1462,7 +1464,7 @@ namespace org.GraphDefined.WWCP.Virtual
                     {
 
                         default:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                     }
@@ -1492,6 +1494,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                               ChargingProduct,
                                               ReservationId,
                                               SessionId,
+                                              null,
+                                              null,
                                               ProviderId,
                                               RemoteAuthentication,
                                               RequestTimeout,
@@ -1573,6 +1577,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                             RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
+                                            null,
+                                            null,
                                             ProviderId,
                                             RemoteAuthentication,
                                             RequestTimeout);
@@ -1692,6 +1698,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                              RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout,

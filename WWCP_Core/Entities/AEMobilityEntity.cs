@@ -61,6 +61,12 @@ namespace org.GraphDefined.WWCP
 
         private List<TId>        _Ids;
 
+
+        public ulong Length => 0;
+
+        public bool IsNullOrEmpty => false;
+
+
         /// <summary>
         /// The global unique identification of this entity.
         /// </summary>
@@ -212,7 +218,10 @@ namespace org.GraphDefined.WWCP
                 var OldValue       = FieldToChange;
                     FieldToChange  = NewValue;
 
-                PropertyChanged(PropertyName, OldValue, NewValue, EventTrackingId);
+                PropertyChanged(PropertyName,
+                                OldValue,
+                                NewValue,
+                                EventTrackingId ?? EventTracking_Id.New);
 
             }
 
@@ -385,6 +394,31 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+
+        public int CompareTo(object obj)
+        {
+
+            if (obj is ChargingSession_Id chargingSessionId)
+                return CompareTo(chargingSessionId);
+
+            return -1;
+
+        }
+
+        public int CompareTo(TId obj)
+        {
+
+            if (obj is ChargingSession_Id chargingSessionId)
+                return CompareTo(chargingSessionId);
+
+            return -1;
+
+        }
+
+        public int CompareTo(ChargingSession_Id other)
+            => Id.CompareTo(other);
 
     }
 

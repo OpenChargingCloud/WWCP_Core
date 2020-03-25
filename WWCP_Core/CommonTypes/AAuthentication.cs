@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP
                        ? new JProperty("authToken",                     AuthToken.                      ToString())
                        : null,
 
-                   QRCodeIdentification         != null
+                   QRCodeIdentification != null
                        ? new JProperty("QRCodeIdentification",          QRCodeIdentification.           ToString())
                        : null,
 
@@ -145,8 +145,12 @@ namespace org.GraphDefined.WWCP
                        ? new JProperty("PIN",                           PIN.                            ToString())
                        : null,
 
-                   PublicKey                    != null
+                   PublicKey != null
                        ? new JProperty("publicKey",                     PublicKey.                      ToString())
+                       : null,
+
+                   Description.IsNeitherNullNorEmpty()
+                       ? new JProperty("description",                   Description.                    ToString())
                        : null
 
                );
@@ -564,7 +568,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromPIN       (PIN,        Description = null)
+        #region (static) FromPIN                        (PIN,                         Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given PIN.
@@ -609,6 +613,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        public static LocalAuthentication Parse(JObject JSON)
+
+            => new LocalAuthentication(
+                   JSON["authToken"]                   != null ? Auth_Token.         Parse(JSON["authToken"]?.                  Value<String>()) : new Auth_Token?(),
+                   null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                   JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
+                   JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),
+                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<UInt32>()  : new UInt32?(),
+                   null, //JSON["remoteIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
+                   JSON["description"]                 != null ? I18NString.         Parse(JSON["description"] as JObject)                       : I18NString.Empty
+                );
 
 
         public RemoteAuthentication ToRemote
@@ -790,6 +806,19 @@ namespace org.GraphDefined.WWCP
                                         Description: Description);
 
         #endregion
+
+
+        public static RemoteAuthentication Parse(JObject JSON)
+
+            => new RemoteAuthentication(
+                   JSON["authToken"]                   != null ? Auth_Token.         Parse(JSON["authToken"]?.                  Value<String>()) : new Auth_Token?(),
+                   null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                   JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
+                   JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),
+                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<UInt32>()  : new UInt32?(),
+                   null, //JSON["remoteIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
+                   JSON["description"]                 != null ? I18NString.         Parse(JSON["description"] as JObject)                       : I18NString.Empty
+                );
 
 
         public LocalAuthentication ToLocal

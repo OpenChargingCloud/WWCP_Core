@@ -25,6 +25,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
@@ -46,20 +48,30 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         public ChargingReservationsStore(IRoamingNetwork                  RoamingNetwork,
-                                         Func<RoamingNetwork_Id, String>  LogFileNameCreator    = null,
-                                         Boolean                          DisableLogfiles       = false,
                                          IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
-                                         Boolean                          DisableNetworkSync    = false)
+                                         Boolean                          DisableLogfiles       = false,
+                                         Boolean                          ReloadDataOnStart     = true,
+
+                                         Boolean                          DisableNetworkSync    = false,
+                                         DNSClient                        DNSClient             = null)
 
             : base(RoamingNetwork,
-                   LogFileNameCreator ?? (roamingNetworkId => String.Concat("ChargingReservations", Path.DirectorySeparatorChar, "ChargingReservations-",
-                                                                            roamingNetworkId, "-",
-                                                                            Environment.MachineName, "_",
-                                                                            DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
-                                                                            ".log")),
+
+                   (a, b, c, d, e) => false,
+
                    DisableLogfiles,
+                   roamingNetworkId => "ChargingReservations" + Path.DirectorySeparatorChar,
+                   roamingNetworkId => String.Concat("ChargingReservations-",
+                                                     roamingNetworkId, "-",
+                                                     Environment.MachineName, "_",
+                                                     DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                     ".log"),
+                   ReloadDataOnStart,
+                   roamingNetworkId => "ChargingReservations-" + roamingNetworkId + "-" + Environment.MachineName + "_",
+
                    RoamingNetworkInfos,
-                   DisableNetworkSync)
+                   DisableNetworkSync,
+                   DNSClient)
 
         { }
 
@@ -235,84 +247,84 @@ namespace org.GraphDefined.WWCP
 
         #region ReloadData()
 
-        public void ReloadData()
-        {
+        //public void ReloadData()
+        //{
 
-            base.ReloadData("ChargingReservations-" + RoamingNetwork.Id.ToString(),
-                            (command, json) => {
+        //    base.ReloadData("ChargingReservations-" + RoamingNetwork.Id.ToString(),
+        //                    (command, json) => {
 
-                switch (command.ToLower())
-                {
+        //        switch (command.ToLower())
+        //        {
 
-                    case "new":
+        //            case "new":
 
-                        if (json["reservations"] is JArray reservations)
-                        {
-
-
-
-                        }
-
-                        //// 0: Timestamp
-                        //// 1: "Start"
-                        //// 2: OperatorId
-                        //// 3: EVSEId
-                        //// 4: ChargingProduct
-                        //// 5: AuthIdentification?.AuthToken
-                        //// 6: eMA Id
-                        //// 7: result.AuthorizatorId
-                        //// 8: result.ProviderId
-                        //// 9: result.ReservationId
-
-                        //var NewChargingReservation = new ChargingReservation(ChargingReservation_Id.Parse(elements[9]),
-                        //                                             elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow)
-                        //{
-                        //    AuthorizatorId = elements[7] != "" ? CSORoamingProvider_Id.Parse(elements[7]) : null,
-                        //    //AuthService          = result.ISendAuthorizeStartStop,
-                        //    ChargingStationOperatorId = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
-                        //    EVSE = RoamingNetwork.GetEVSEbyId(EVSE_Id.Parse(elements[3])),
-                        //    EVSEId = EVSE_Id.Parse(elements[3]),
-                        //    IdentificationStart = elements[5] != "" ? (AAuthentication)LocalAuthentication.FromAuthToken(Auth_Token.Parse(elements[5]))
-                        //                                                  : elements[6] != "" ? (AAuthentication)RemoteAuthentication.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
-                        //                                                  : null,
-                        //    ChargingProduct = elements[4] != "" ? ChargingProduct.Parse(elements[4]) : null
-                        //};
-
-                        //if (_ChargingReservations.ContainsKey(NewChargingReservation.Id))
-                        //    _ChargingReservations.Remove(NewChargingReservation.Id);
-
-                        //_ChargingReservations.Add(NewChargingReservation.Id, NewChargingReservation);
-
-                        break;
+        //                if (json["reservations"] is JArray reservations)
+        //                {
 
 
-                    case "update":
 
-                        // 0: Timestamp
-                        // 1: "Stop"
-                        // 2: EVSEId
-                        // 3: ReservationId
-                        // 4: RFID UID
-                        // 5: eMAId
+        //                }
 
-                        break;
+        //                //// 0: Timestamp
+        //                //// 1: "Start"
+        //                //// 2: OperatorId
+        //                //// 3: EVSEId
+        //                //// 4: ChargingProduct
+        //                //// 5: AuthIdentification?.AuthToken
+        //                //// 6: eMA Id
+        //                //// 7: result.AuthorizatorId
+        //                //// 8: result.ProviderId
+        //                //// 9: result.ReservationId
+
+        //                //var NewChargingReservation = new ChargingReservation(ChargingReservation_Id.Parse(elements[9]),
+        //                //                                             elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow)
+        //                //{
+        //                //    AuthorizatorId = elements[7] != "" ? CSORoamingProvider_Id.Parse(elements[7]) : null,
+        //                //    //AuthService          = result.ISendAuthorizeStartStop,
+        //                //    ChargingStationOperatorId = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
+        //                //    EVSE = RoamingNetwork.GetEVSEbyId(EVSE_Id.Parse(elements[3])),
+        //                //    EVSEId = EVSE_Id.Parse(elements[3]),
+        //                //    IdentificationStart = elements[5] != "" ? (AAuthentication)LocalAuthentication.FromAuthToken(Auth_Token.Parse(elements[5]))
+        //                //                                                  : elements[6] != "" ? (AAuthentication)RemoteAuthentication.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
+        //                //                                                  : null,
+        //                //    ChargingProduct = elements[4] != "" ? ChargingProduct.Parse(elements[4]) : null
+        //                //};
+
+        //                //if (_ChargingReservations.ContainsKey(NewChargingReservation.Id))
+        //                //    _ChargingReservations.Remove(NewChargingReservation.Id);
+
+        //                //_ChargingReservations.Add(NewChargingReservation.Id, NewChargingReservation);
+
+        //                break;
 
 
-                    case "stop":
+        //            case "update":
 
-                        // 0: Timestamp
-                        // 1: "Stop"
-                        // 2: EVSEId
-                        // 3: ReservationId
-                        // 4: RFID UID
-                        // 5: eMAId
+        //                // 0: Timestamp
+        //                // 1: "Stop"
+        //                // 2: EVSEId
+        //                // 3: ReservationId
+        //                // 4: RFID UID
+        //                // 5: eMAId
 
-                        break;
+        //                break;
 
 
-                }
-            });
-        }
+        //            case "stop":
+
+        //                // 0: Timestamp
+        //                // 1: "Stop"
+        //                // 2: EVSEId
+        //                // 3: ReservationId
+        //                // 4: RFID UID
+        //                // 5: eMAId
+
+        //                break;
+
+
+        //        }
+        //    });
+        //}
 
         #endregion
 

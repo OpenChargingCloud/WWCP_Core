@@ -21,13 +21,15 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public class ChargingReservationCollection : IEnumerable<ChargingReservation>
+    public class ChargingReservationCollection : IId<ChargingReservation_Id>,
+                                                 IEnumerable<ChargingReservation>
     {
 
         #region Data
@@ -57,6 +59,10 @@ namespace org.GraphDefined.WWCP
 
         public CSORoamingProvider_Id? CSORoamingProviderId
             => _Reservations.LastOrDefault()?.CSORoamingProviderId;
+
+        public ulong Length => throw new NotImplementedException();
+
+        public bool IsNullOrEmpty => throw new NotImplementedException();
 
         #endregion
 
@@ -133,6 +139,16 @@ namespace org.GraphDefined.WWCP
 
         IEnumerator IEnumerable.GetEnumerator()
             => _Reservations.GetEnumerator();
+
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(ChargingReservation_Id other)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 

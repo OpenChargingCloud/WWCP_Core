@@ -28,14 +28,14 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of an authorize start operation.
+    /// The result of a authorize start operation at an EVSE.
     /// </summary>
     public class AuthStartResult : AAuthStartResult<AuthStartResultType>
     {
 
         #region Constructor(s)
 
-        #region (private) AuthStartChargingStationResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
+        #region (private) AuthStartResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
 
         /// <summary>
         /// Create a new authorize start result.
@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (private) AuthStartChargingStationResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
+        #region (private) AuthStartResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
 
         /// <summary>
         /// Create a new authorize start result.
@@ -187,8 +187,8 @@ namespace org.GraphDefined.WWCP
 
             Unspecified(IId                      AuthorizatorId,
                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                        ChargingSession_Id?      SessionId  = null,
-                        TimeSpan?                Runtime    = null)
+                        ChargingSession_Id?      SessionId   = null,
+                        TimeSpan?                Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -210,8 +210,8 @@ namespace org.GraphDefined.WWCP
 
             Unspecified(IId                         AuthorizatorId,
                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                        ChargingSession_Id?         SessionId  = null,
-                        TimeSpan?                   Runtime    = null)
+                        ChargingSession_Id?         SessionId   = null,
+                        TimeSpan?                   Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -235,8 +235,8 @@ namespace org.GraphDefined.WWCP
 
             AdminDown(IId                      AuthorizatorId,
                       ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                      ChargingSession_Id?      SessionId  = null,
-                      TimeSpan?                Runtime    = null)
+                      ChargingSession_Id?      SessionId   = null,
+                      TimeSpan?                Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -259,8 +259,8 @@ namespace org.GraphDefined.WWCP
 
             AdminDown(IId                         AuthorizatorId,
                       IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                      ChargingSession_Id?         SessionId  = null,
-                      TimeSpan?                   Runtime    = null)
+                      ChargingSession_Id?         SessionId   = null,
+                      TimeSpan?                   Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -269,6 +269,54 @@ namespace org.GraphDefined.WWCP
                                        SessionId,
                                        Description: "The authentication service was disabled by the administrator!",
                                        Runtime:     Runtime);
+
+        #endregion
+
+        #region (static) UnknownLocation     (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The given charging location is unknown.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            UnknownLocation(IId                      AuthorizatorId,
+                            ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                            ChargingSession_Id?      SessionId   = null,
+                            TimeSpan?                Runtime     = null)
+
+
+                => new AuthStartResult(AuthorizatorId,
+                                       ISendAuthorizeStartStop,
+                                       AuthStartResultType.UnknownLocation,
+                                       SessionId,
+                                       Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The given charging location is unknown.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            UnknownLocation(IId                         AuthorizatorId,
+                            IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                            ChargingSession_Id?         SessionId   = null,
+                            TimeSpan?                   Runtime     = null)
+
+
+                => new AuthStartResult(AuthorizatorId,
+                                       IReceiveAuthorizeStartStop,
+                                       AuthStartResultType.UnknownLocation,
+                                       SessionId,
+                                       Runtime: Runtime);
 
         #endregion
 
@@ -285,8 +333,8 @@ namespace org.GraphDefined.WWCP
 
             InvalidSessionId(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                             ChargingSession_Id?      SessionId  = null,
-                             TimeSpan?                Runtime    = null)
+                             ChargingSession_Id?      SessionId   = null,
+                             TimeSpan?                Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -308,8 +356,8 @@ namespace org.GraphDefined.WWCP
 
             InvalidSessionId(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                             ChargingSession_Id?         SessionId  = null,
-                             TimeSpan?                   Runtime    = null)
+                             ChargingSession_Id?         SessionId   = null,
+                             TimeSpan?                   Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -323,7 +371,7 @@ namespace org.GraphDefined.WWCP
         #region (static) Reserved            (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
-        /// The EVSE is reserved.
+        /// The EVSE is already reserved.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
@@ -333,8 +381,8 @@ namespace org.GraphDefined.WWCP
 
             Reserved(IId                      AuthorizatorId,
                      ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                     ChargingSession_Id?      SessionId  = null,
-                     TimeSpan?                Runtime    = null)
+                     ChargingSession_Id?      SessionId   = null,
+                     TimeSpan?                Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -346,7 +394,7 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The EVSE is reserved.
+        /// The EVSE is already reserved.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
@@ -356,8 +404,8 @@ namespace org.GraphDefined.WWCP
 
             Reserved(IId                         AuthorizatorId,
                      IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                     ChargingSession_Id?         SessionId  = null,
-                     TimeSpan?                   Runtime    = null)
+                     ChargingSession_Id?         SessionId   = null,
+                     TimeSpan?                   Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -381,8 +429,8 @@ namespace org.GraphDefined.WWCP
 
             OutOfService(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                         ChargingSession_Id?      SessionId  = null,
-                         TimeSpan?                Runtime    = null)
+                         ChargingSession_Id?      SessionId   = null,
+                         TimeSpan?                Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -405,8 +453,8 @@ namespace org.GraphDefined.WWCP
 
             OutOfService(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                         ChargingSession_Id?         SessionId  = null,
-                         TimeSpan?                   Runtime    = null)
+                         ChargingSession_Id?         SessionId   = null,
+                         TimeSpan?                   Runtime     = null)
 
 
                 => new AuthStartResult(AuthorizatorId,
@@ -853,17 +901,22 @@ namespace org.GraphDefined.WWCP
         AdminDown,
 
         /// <summary>
+        /// The given charging location is unknown.
+        /// </summary>
+        UnknownLocation,
+
+        /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
 
         /// <summary>
-        /// The EVSE or charging station is reserved.
+        /// The charging location is already reserved.
         /// </summary>
         Reserved,
 
         /// <summary>
-        /// The EVSE or charging station or charging station is out of service.
+        /// The charging location is out of service.
         /// </summary>
         OutOfService,
 
@@ -883,12 +936,12 @@ namespace org.GraphDefined.WWCP
         Blocked,
 
         /// <summary>
-        /// The authorize start ran into a timeout between evse operator backend and the charging station.
+        /// The authorize start ran into a timeout between evse operator backend and the charging location.
         /// </summary>
         CommunicationTimeout,
 
         /// <summary>
-        /// The authorize start ran into a timeout between the charging station and the EV.
+        /// The authorize start ran into a timeout between the charging location and the EV.
         /// </summary>
         StartChargingTimeout,
 

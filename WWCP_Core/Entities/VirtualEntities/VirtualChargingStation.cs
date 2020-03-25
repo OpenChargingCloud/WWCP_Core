@@ -1737,6 +1737,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                              ChargingProduct,
                                              ReservationId,
                                              SessionId,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout);
@@ -1756,7 +1758,7 @@ namespace org.GraphDefined.WWCP.Virtual
                 if (ChargingLocation.ChargingStationId.HasValue &&
                     ChargingLocation.ChargingStationId.Value != Id)
                 {
-                    result = RemoteStartResult.UnknownLocation;
+                    result = RemoteStartResult.UnknownLocation();
                 }
 
                 else if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
@@ -1768,16 +1770,16 @@ namespace org.GraphDefined.WWCP.Virtual
                     if (UseWhiteLists &&
                        !WhiteLists["default"].Contains(RemoteAuthentication.ToLocal))
                     {
-                        result = RemoteStartResult.InvalidCredentials;
+                        result = RemoteStartResult.InvalidCredentials();
                     }
 
                     #endregion
 
                     else if (!ChargingLocation.EVSEId.HasValue)
-                        result = RemoteStartResult.UnknownLocation;
+                        result = RemoteStartResult.UnknownLocation();
 
                     else if (!TryGetEVSEById(ChargingLocation.EVSEId.Value, out IRemoteEVSE remoteEVSE))
-                        result = RemoteStartResult.UnknownLocation;
+                        result = RemoteStartResult.UnknownLocation();
 
                     else
                         result = await remoteEVSE.
@@ -1800,7 +1802,7 @@ namespace org.GraphDefined.WWCP.Virtual
                     {
 
                         default:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                     }
@@ -1830,6 +1832,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                               ChargingProduct,
                                               ReservationId,
                                               SessionId,
+                                              null,
+                                              null,
                                               ProviderId,
                                               RemoteAuthentication,
                                               RequestTimeout,
@@ -1911,6 +1915,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                             RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
+                                            null,
+                                            null,
                                             ProviderId,
                                             RemoteAuthentication,
                                             RequestTimeout);
@@ -2040,6 +2046,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                              RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout,

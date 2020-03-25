@@ -19,12 +19,13 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
@@ -46,20 +47,31 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         public ChargeDetailRecordsStore(IRoamingNetwork                  RoamingNetwork,
-                                        Func<RoamingNetwork_Id, String>  LogFileNameCreator    = null,
-                                        Boolean                          DisableLogfiles       = false,
                                         IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
-                                        Boolean                          DisableNetworkSync    = false)
+                                        Boolean                          DisableLogfiles       = false,
+                                        Boolean                          ReloadDataOnStart     = true,
+
+                                        Boolean                          DisableNetworkSync    = false,
+                                        DNSClient                        DNSClient             = null)
 
             : base(RoamingNetwork,
-                   LogFileNameCreator ?? (roamingNetworkId => String.Concat("ChargeDetailRecords", Path.DirectorySeparatorChar, "ChargeDetailRecords-",
-                                                                            roamingNetworkId, "-",
-                                                                            Environment.MachineName, "_",
-                                                                            DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
-                                                                            ".log")),
+
+                   (a, b, c, d, e) => false,
+
                    DisableLogfiles,
+                   roamingNetworkId => "ChargeDetailRecords" + Path.DirectorySeparatorChar,
+                   roamingNetworkId => String.Concat("ChargeDetailRecords-",
+                                                     roamingNetworkId, "-",
+                                                     Environment.MachineName, "_",
+                                                     DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                     ".log"),
+                   ReloadDataOnStart,
+                   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "-" + Environment.MachineName + "_",
+
+
                    RoamingNetworkInfos,
-                   DisableNetworkSync)
+                   DisableNetworkSync,
+                   DNSClient)
 
         { }
 
@@ -167,30 +179,30 @@ namespace org.GraphDefined.WWCP
 
         #region ReloadData()
 
-        public void ReloadData()
-        {
+        //public void ReloadData()
+        //{
 
-            ReloadData("ChargeDetailRecords-" + RoamingNetwork.Id,
-                       (command, json) =>
-            {
-                switch (command.ToLower())
-                {
+        //    ReloadData("ChargeDetailRecords-" + RoamingNetwork.Id,
+        //               (command, json) =>
+        //    {
+        //        switch (command.ToLower())
+        //        {
 
-                    case "new":
+        //            case "new":
 
-                        if (json["chargeDetailRecords"] is JArray reservations)
-                        {
+        //                if (json["chargeDetailRecords"] is JArray reservations)
+        //                {
 
 
 
-                        }
+        //                }
 
-                        break;
+        //                break;
 
-                }
-            });
+        //        }
+        //    });
 
-        }
+        //}
 
         #endregion
 

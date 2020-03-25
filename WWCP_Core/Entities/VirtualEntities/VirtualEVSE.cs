@@ -1654,6 +1654,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                              ChargingProduct,
                                              ReservationId,
                                              SessionId,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout);
@@ -1673,7 +1675,7 @@ namespace org.GraphDefined.WWCP.Virtual
                 if (ChargingLocation.EVSEId.HasValue &&
                     ChargingLocation.EVSEId.Value != Id)
                 {
-                    result = RemoteStartResult.UnknownLocation;
+                    result = RemoteStartResult.UnknownLocation();
                 }
 
                 else if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
@@ -1730,7 +1732,7 @@ namespace org.GraphDefined.WWCP.Virtual
                             else if (RemoteAuthentication?.RemoteIdentification.HasValue == true &&
                                 !firstReservation.eMAIds.Contains(RemoteAuthentication.RemoteIdentification.Value))
                             {
-                                result = RemoteStartResult.InvalidCredentials;
+                                result = RemoteStartResult.InvalidCredentials();
                             }
 
                             else
@@ -1769,7 +1771,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         #region Charging
 
                         case EVSEStatusTypes.Charging:
-                            result = RemoteStartResult.AlreadyInUse;
+                            result = RemoteStartResult.AlreadyInUse();
                             break;
 
                         #endregion
@@ -1777,7 +1779,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         #region OutOfService
 
                         case EVSEStatusTypes.OutOfService:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                         #endregion
@@ -1785,7 +1787,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         #region Offline
 
                         case EVSEStatusTypes.Offline:
-                            result = RemoteStartResult.Offline;
+                            result = RemoteStartResult.Offline();
                             break;
 
                         #endregion
@@ -1805,7 +1807,7 @@ namespace org.GraphDefined.WWCP.Virtual
                     {
 
                         default:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                     }
@@ -1835,6 +1837,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                               ChargingProduct,
                                               ReservationId,
                                               SessionId,
+                                              null,
+                                              null,
                                               ProviderId,
                                               RemoteAuthentication,
                                               RequestTimeout,
@@ -1916,6 +1920,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                             RoamingNetwork.Id,
                                             SessionId,
                                             ReservationHandling,
+                                            null,
+                                            null,
                                             ProviderId,
                                             RemoteAuthentication,
                                             RequestTimeout);
@@ -1975,7 +1981,8 @@ namespace org.GraphDefined.WWCP.Virtual
 
                                 ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Now, Consumption));
 
-                                var _ChargeDetailRecord  = new ChargeDetailRecord(SessionId:                 __ChargingSession.Id,
+                                var _ChargeDetailRecord  = new ChargeDetailRecord(Id:                        ChargeDetailRecord_Id.Parse(__ChargingSession.Id.ToString()),
+                                                                                  SessionId:                 __ChargingSession.Id,
                                                                                   Reservation:               __ChargingSession.Reservation,
                                                                                   EVSEId:                    __ChargingSession.EVSEId,
                                                                                   EVSE:                      __ChargingSession.EVSE,
@@ -1983,12 +1990,12 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                                   ChargingPool:              __ChargingSession.EVSE?.ChargingStation?.ChargingPool,
                                                                                   ChargingStationOperator:   __ChargingSession.EVSE?.Operator,
                                                                                   ChargingProduct:           __ChargingSession.ChargingProduct,
-                                                                                    ProviderIdStart:           __ChargingSession.ProviderIdStart,
-                                                                                    ProviderIdStop:            __ChargingSession.ProviderIdStop,
+                                                                                  ProviderIdStart:           __ChargingSession.ProviderIdStart,
+                                                                                  ProviderIdStop:            __ChargingSession.ProviderIdStop,
                                                                                   SessionTime:               __ChargingSession.SessionTime,
 
-                                                                                    AuthenticationStart:       __ChargingSession.AuthenticationStart,
-                                                                                    AuthenticationStop:        __ChargingSession.AuthenticationStop,
+                                                                                  AuthenticationStart:       __ChargingSession.AuthenticationStart,
+                                                                                  AuthenticationStop:        __ChargingSession.AuthenticationStop,
 
                                                                                   EnergyMeterId:             EnergyMeterId,
                                                                                   EnergyMeteringValues:      __ChargingSession.EnergyMeteringValues
@@ -2109,6 +2116,8 @@ namespace org.GraphDefined.WWCP.Virtual
                                              RoamingNetwork.Id,
                                              SessionId,
                                              ReservationHandling,
+                                             null,
+                                             null,
                                              ProviderId,
                                              RemoteAuthentication,
                                              RequestTimeout,

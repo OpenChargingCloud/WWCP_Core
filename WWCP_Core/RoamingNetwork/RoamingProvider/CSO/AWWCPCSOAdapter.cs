@@ -73,60 +73,60 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly        ISendData                                                       _ISendData;
+        //private readonly        ISendData                                                        _ISendData;
 
-        private readonly        ISendStatus                                                     _ISendStatus;
+        //private readonly        ISendStatus                                                      _ISendStatus;
 
         /// <summary>
         /// The default service check intervall.
         /// </summary>
-        public  readonly static TimeSpan                                                        DefaultFlushEVSEDataAndStatusEvery      = TimeSpan.FromSeconds(31);
+        public  readonly static TimeSpan                                                         DefaultFlushEVSEDataAndStatusEvery      = TimeSpan.FromSeconds(31);
 
         /// <summary>
         /// The default status check intervall.
         /// </summary>
-        public  readonly static TimeSpan                                                        DefaultFlushEVSEFastStatusEvery         = TimeSpan.FromSeconds(3);
+        public  readonly static TimeSpan                                                         DefaultFlushEVSEFastStatusEvery         = TimeSpan.FromSeconds(3);
 
         /// <summary>
         /// The default CDR check intervall.
         /// </summary>
-        public  readonly static TimeSpan                                                        DefaultFlushChargeDetailRecordsEvery    = TimeSpan.FromSeconds(15);
+        public  readonly static TimeSpan                                                         DefaultFlushChargeDetailRecordsEvery    = TimeSpan.FromSeconds(15);
 
 
-        protected              UInt64                                                           _FlushEVSEDataRunId                     = 1;
-        protected              UInt64                                                           _StatusRunId                            = 1;
-        protected              UInt64                                                           _CDRRunId                               = 1;
+        protected               UInt64                                                           _FlushEVSEDataRunId                     = 1;
+        protected               UInt64                                                           _StatusRunId                            = 1;
+        protected               UInt64                                                           _CDRRunId                               = 1;
 
-        protected readonly     SemaphoreSlim                                                    DataAndStatusLock                       = new SemaphoreSlim(1, 1);
-        protected readonly     Object                                                           DataAndStatusLockOld                    = new Object();
+        protected readonly      SemaphoreSlim                                                    DataAndStatusLock                       = new SemaphoreSlim(1, 1);
+        protected readonly      Object                                                           DataAndStatusLockOld                    = new Object();
 
-        protected readonly     SemaphoreSlim                                                    FlushEVSEDataAndStatusLock              = new SemaphoreSlim(1, 1);
-        protected readonly     Timer                                                            FlushEVSEDataAndStatusTimer;
+        protected readonly      SemaphoreSlim                                                    FlushEVSEDataAndStatusLock              = new SemaphoreSlim(1, 1);
+        protected readonly      Timer                                                            FlushEVSEDataAndStatusTimer;
 
-        protected readonly     SemaphoreSlim                                                    FlushEVSEFastStatusLock                 = new SemaphoreSlim(1, 1);
-        protected readonly     Timer                                                            FlushEVSEFastStatusTimer;
+        protected readonly      SemaphoreSlim                                                    FlushEVSEFastStatusLock                 = new SemaphoreSlim(1, 1);
+        protected readonly      Timer                                                            FlushEVSEFastStatusTimer;
 
-        protected readonly     SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new SemaphoreSlim(1, 1);
-        protected readonly     Timer                                                            FlushChargeDetailRecordsTimer;
+        protected readonly      SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new SemaphoreSlim(1, 1);
+        protected readonly      Timer                                                            FlushChargeDetailRecordsTimer;
 
-        protected readonly     Dictionary<EVSE,                    List<PropertyUpdateInfos>>   EVSEsUpdateLog;
-        protected readonly     Dictionary<ChargingStation,         List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
-        protected readonly     Dictionary<ChargingPool,            List<PropertyUpdateInfos>>   ChargingPoolsUpdateLog;
-        protected readonly     Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
-        protected readonly     Dictionary<RoamingNetwork,          List<PropertyUpdateInfos>>   RoamingNetworksUpdateLog;
+        protected readonly      Dictionary<EVSE,                    List<PropertyUpdateInfos>>   EVSEsUpdateLog;
+        protected readonly      Dictionary<ChargingStation,         List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
+        protected readonly      Dictionary<ChargingPool,            List<PropertyUpdateInfos>>   ChargingPoolsUpdateLog;
+        protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
+        protected readonly      Dictionary<RoamingNetwork,          List<PropertyUpdateInfos>>   RoamingNetworksUpdateLog;
 
-        protected readonly     HashSet<EVSE>                                                    EVSEsToAddQueue;
-        protected readonly     HashSet<EVSE>                                                    EVSEsToUpdateQueue;
-        protected readonly     HashSet<EVSE>                                                    EVSEsToRemoveQueue;
-        protected readonly     List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesFastQueue;
-        protected readonly     List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
-        protected readonly     List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
-        protected readonly     List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
-        protected readonly     List<TChargeDetailRecords>                                      ChargeDetailRecordsQueue;
+        protected readonly      HashSet<EVSE>                                                    EVSEsToAddQueue;
+        protected readonly      HashSet<EVSE>                                                    EVSEsToUpdateQueue;
+        protected readonly      HashSet<EVSE>                                                    EVSEsToRemoveQueue;
+        protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesFastQueue;
+        protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
+        protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
+        protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
+        protected readonly      List<TChargeDetailRecords>                                       ChargeDetailRecordsQueue;
 
-        protected readonly     TimeSpan                                                         MaxLockWaitingTime                      = TimeSpan.FromSeconds(120);
+        protected readonly      TimeSpan                                                         MaxLockWaitingTime                      = TimeSpan.FromSeconds(120);
 
-        public  static readonly  TimeSpan                                                       DefaultRequestTimeout                   = TimeSpan.FromSeconds(30);
+        public static readonly  TimeSpan                                                         DefaultRequestTimeout                   = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -330,8 +330,8 @@ namespace org.GraphDefined.WWCP
             this.Name                                            = Name;
             this.Description                                     = Description;
 
-            this._ISendData                                      = this as ISendData;
-            this._ISendStatus                                    = this as ISendStatus;
+            //this._ISendData                                      = this as ISendData;
+            //this._ISendStatus                                    = this as ISendStatus;
 
             this.IncludeEVSEIds                                  = IncludeEVSEIds ?? (evseid => true);
             this.IncludeEVSEs                                    = IncludeEVSEs   ?? (evse   => true);

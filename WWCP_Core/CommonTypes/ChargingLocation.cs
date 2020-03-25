@@ -64,6 +64,10 @@ namespace org.GraphDefined.WWCP
 
         public ChargingStationOperator_Id?  ChargingStationOperatorId    { get; private set; }
 
+        // EVSEGroupId
+        // ChargingStationGroupId
+        // ChargingPoolGroupId
+
         #endregion
 
         #region Constructor(s)
@@ -84,17 +88,86 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region FromEVSEId                   (EVSEId)
+
         public static ChargingLocation FromEVSEId(EVSE_Id EVSEId)
+
             => new ChargingLocation(EVSEId: EVSEId);
 
+        public static ChargingLocation FromEVSEId(EVSE_Id? EVSEId)
+
+            => EVSEId.HasValue
+                   ? new ChargingLocation(EVSEId: EVSEId)
+                   : null;
+
+        public static ChargingLocation ParseEVSEId(String Text)
+        {
+
+            if (EVSE_Id.TryParse(Text, out EVSE_Id evseId))
+                return new ChargingLocation(EVSEId: evseId);
+
+            return null;
+
+        }
+
+        public static Boolean TryParseEVSEId(String Text, out ChargingLocation ChargingLocation)
+        {
+
+            if (EVSE_Id.TryParse(Text, out EVSE_Id evseId))
+            {
+                ChargingLocation = new ChargingLocation(EVSEId: evseId);
+                return true;
+            }
+
+            ChargingLocation = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region FromChargingStationId        (ChargingStationId)
+
         public static ChargingLocation FromChargingStationId(ChargingStation_Id ChargingStationId)
+
             => new ChargingLocation(ChargingStationId: ChargingStationId);
 
+        public static ChargingLocation FromChargingStationId(ChargingStation_Id? ChargingStationId)
+
+            => ChargingStationId.HasValue
+                   ? new ChargingLocation(ChargingStationId: ChargingStationId)
+                   : null;
+
+        #endregion
+
+        #region FromChargingPoolId           (ChargingPoolId)
+
         public static ChargingLocation FromChargingPoolId(ChargingPool_Id ChargingPoolId)
+
             => new ChargingLocation(ChargingPoolId: ChargingPoolId);
 
+        public static ChargingLocation FromChargingPoolId(ChargingPool_Id? ChargingPoolId)
+
+            => ChargingPoolId.HasValue
+                   ? new ChargingLocation(ChargingPoolId: ChargingPoolId)
+                   : null;
+
+        #endregion
+
+        #region FromChargingStationOperatorId(ChargingStationOperatorId)
+
         public static ChargingLocation FromChargingStationOperatorId(ChargingStationOperator_Id ChargingStationOperatorId)
+
             => new ChargingLocation(ChargingStationOperatorId: ChargingStationOperatorId);
+
+        public static ChargingLocation FromChargingStationOperatorId(ChargingStationOperator_Id? ChargingStationOperatorId)
+
+            => ChargingStationOperatorId.HasValue
+                   ? new ChargingLocation(ChargingStationOperatorId: ChargingStationOperatorId)
+                   : null;
+
+        #endregion
+
 
 
         public ChargingLocation SetChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)

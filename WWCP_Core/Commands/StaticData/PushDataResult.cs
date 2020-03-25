@@ -72,7 +72,7 @@ namespace org.GraphDefined.WWCP
             this.ChargingStation  = ChargingStation;
             this.Result           = Result;
             this.Warnings         = Warnings != null
-                                        ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                        ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
                                         : new Warning[0];
 
         }
@@ -163,7 +163,7 @@ namespace org.GraphDefined.WWCP
                                       : new EVSE[0];
 
             this.Warnings       = Warnings != null
-                                      ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                      ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
                                       : new Warning[0];
 
             this.Runtime        = Runtime;
@@ -539,7 +539,7 @@ namespace org.GraphDefined.WWCP
                                       : null;
 
             this.Warnings       = Warnings != null
-                                      ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                      ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
                                       : new Warning[0];
 
             this.Runtime        = Runtime;
@@ -579,7 +579,7 @@ namespace org.GraphDefined.WWCP
                                       : null;
 
             this.Warnings       = Warnings != null
-                                      ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                      ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
                                       : new Warning[0];
 
             this.Runtime        = Runtime;
