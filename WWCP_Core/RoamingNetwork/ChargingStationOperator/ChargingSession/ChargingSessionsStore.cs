@@ -135,21 +135,21 @@ namespace org.GraphDefined.WWCP
                                        if (!InternalData.ContainsKey(session.Id))
                                            InternalData.Add(session.Id, session);
 
-                                       if (chargingSession["start"] is JObject remoteStartObject)
-                                       {
+                                       //if (chargingSession["start"] is JObject remoteStartObject)
+                                       //{
 
-                                           var startTime = remoteStartObject["timestamp"]?.Value<DateTime>();
+                                       //    var startTime = remoteStartObject["timestamp"]?.Value<DateTime>();
 
-                                           if (startTime != null)
-                                           {
+                                       //    if (startTime != null)
+                                       //    {
 
-                                               session.SessionTime                = new StartEndDateTime(startTime.Value);
+                                       //        session.SessionTime                = new StartEndDateTime(startTime.Value);
 
-                                               session.SystemIdStart              = remoteStartObject["systemId"]             != null                  ? System_Id.            Parse(remoteStartObject["systemId"]?.            Value<String>()) : new System_Id?();
-                                               session.EMPRoamingProviderIdStart  = remoteStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                                               session.CSORoamingProviderIdStart  = remoteStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                                               session.ProviderIdStart            = remoteStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStartObject["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart        = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                        : null;
+                                       //        session.SystemIdStart              = remoteStartObject["systemId"]             != null                  ? System_Id.            Parse(remoteStartObject["systemId"]?.            Value<String>()) : new System_Id?();
+                                       //        session.EMPRoamingProviderIdStart  = remoteStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                       //        session.CSORoamingProviderIdStart  = remoteStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                       //        session.ProviderIdStart            = remoteStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStartObject["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                                       //        session.AuthenticationStart        = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                        : null;
 
                                                if (session.EVSEId.HasValue && session.EVSE == null)
                                                    session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -157,9 +157,9 @@ namespace org.GraphDefined.WWCP
                                                if (session.EVSE != null)
                                                    session.EVSE.ChargingSession = session;
 
-                                           }
+                                       //    }
 
-                                       }
+                                       //}
                                    }
                                    return true;
 
@@ -169,42 +169,51 @@ namespace org.GraphDefined.WWCP
 
                                case "remoteStop":
                                    {
-                                       if (InternalData.ContainsKey(session.Id)                  &&
-                                           chargingSession["start"] is JObject remoteStartObject &&
-                                           chargingSession["stop" ] is JObject remoteStopObject)
-                                       {
 
+                                       if (!InternalData.ContainsKey(session.Id))
+                                           InternalData.Add(session.Id, session);
+                                       else
                                            InternalData[session.Id] = session;
 
-                                           var startTime = remoteStartObject["timestamp"]?.Value<DateTime>();
-                                           var stopTime  = remoteStopObject ["timestamp"]?.Value<DateTime>();
+                                       //if (chargingSession["start"] is JObject remoteStartObject &&
+                                       //    chargingSession["stop" ] is JObject remoteStopObject)
+                                       //{
 
-                                           if (startTime != null && stopTime != null)
-                                           {
+                                       //    if (!InternalData.TryGetValue(session.Id, out ChargingSession existingSession))
+                                       //    {
+                                       //        existingSession = session;
+                                       //        InternalData.Add(existingSession.Id, existingSession);
+                                       //    }
 
-                                               session.SessionTime                = new StartEndDateTime(startTime.Value, stopTime);
+                                       //    var startTime = remoteStartObject["timestamp"]?.Value<DateTime>();
+                                       //    var stopTime  = remoteStopObject ["timestamp"]?.Value<DateTime>();
 
-                                               session.SystemIdStart              = remoteStartObject["systemId"]             != null                  ? System_Id.            Parse(remoteStartObject["systemId"]?.            Value<String>()) : new System_Id?();
-                                               session.EMPRoamingProviderIdStart  = remoteStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                                               session.CSORoamingProviderIdStart  = remoteStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                                               session.ProviderIdStart            = remoteStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStartObject["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart        = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                        : null;
+                                       //    if (startTime != null && stopTime != null)
+                                       //    {
 
-                                               session.SystemIdStop               = remoteStopObject ["systemId"]             != null                  ? System_Id.            Parse(remoteStopObject ["systemId"]?.            Value<String>()) : new System_Id?();
-                                               session.EMPRoamingProviderIdStop   = remoteStopObject ["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStopObject ["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                                               session.CSORoamingProviderIdStop   = remoteStopObject ["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStopObject ["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                                               session.ProviderIdStop             = remoteStopObject ["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStopObject ["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
-                                               session.AuthenticationStop         = remoteStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                         : null;
+                                       //        existingSession.SessionTime                = new StartEndDateTime(startTime.Value, stopTime);
 
-                                           }
+                                       //        existingSession.SystemIdStart              = remoteStartObject["systemId"]             != null                  ? System_Id.            Parse(remoteStartObject["systemId"]?.            Value<String>()) : new System_Id?();
+                                       //        existingSession.EMPRoamingProviderIdStart  = remoteStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                       //        existingSession.CSORoamingProviderIdStart  = remoteStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                       //        existingSession.ProviderIdStart            = remoteStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStartObject["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                                       //        existingSession.AuthenticationStart        = remoteStartObject["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                        : null;
 
-                                           if (session.EVSEId.HasValue && session.EVSE == null)
-                                               session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+                                       //        existingSession.SystemIdStop               = remoteStopObject ["systemId"]             != null                  ? System_Id.            Parse(remoteStopObject ["systemId"]?.            Value<String>()) : new System_Id?();
+                                       //        existingSession.EMPRoamingProviderIdStop   = remoteStopObject ["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(remoteStopObject ["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                       //        existingSession.CSORoamingProviderIdStop   = remoteStopObject ["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(remoteStopObject ["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                       //        existingSession.ProviderIdStop             = remoteStopObject ["providerId"]           != null                  ? eMobilityProvider_Id. Parse(remoteStopObject ["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                                       //        existingSession.AuthenticationStop         = remoteStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                         : null;
 
-                                           if (session.EVSE != null)
-                                               session.EVSE.ChargingSession = null;
+                                       //    }
 
-                                       }
+                                       if (session.EVSEId.HasValue && session.EVSE == null)
+                                           session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+
+                                       if (session.EVSE != null)
+                                           session.EVSE.ChargingSession = null;
+
+                                   //    }
                                    }
                                    return true;
 
@@ -218,23 +227,23 @@ namespace org.GraphDefined.WWCP
                                        if (!InternalData.ContainsKey(session.Id))
                                            InternalData.Add(session.Id, session);
 
-                                       if (chargingSession["start"] is JObject authStartObject)
-                                       {
+                                       //if (chargingSession["start"] is JObject authStartObject)
+                                       //{
 
-                                           var startTime = authStartObject["timestamp"]?.Value<DateTime>();
+                                       //    var startTime = authStartObject["timestamp"]?.Value<DateTime>();
 
-                                           if (startTime != null)
-                                           {
+                                       //    if (startTime != null)
+                                       //    {
 
-                                               session.SessionTime                = new StartEndDateTime(startTime.Value);
+                                       //        session.SessionTime                = new StartEndDateTime(startTime.Value);
 
-                                               session.SystemIdStart              = authStartObject["systemId"]             != null                  ? System_Id.            Parse(authStartObject["systemId"]?.            Value<String>()) : new System_Id?();
-                                               session.EMPRoamingProviderIdStart  = authStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                                               session.CSORoamingProviderIdStart  = authStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                                               session.ProviderIdStart            = authStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStartObject["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart        = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.  Parse(authenticationStart)                                      : null;
+                                       //        session.SystemIdStart              = authStartObject["systemId"]             != null                  ? System_Id.            Parse(authStartObject["systemId"]?.            Value<String>()) : new System_Id?();
+                                       //        session.EMPRoamingProviderIdStart  = authStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                       //        session.CSORoamingProviderIdStart  = authStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                       //        session.ProviderIdStart            = authStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStartObject["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
+                                       //        session.AuthenticationStart        = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.  Parse(authenticationStart)                                      : null;
 
-                                           }
+                                       //    }
 
                                            if (session.EVSEId.HasValue && session.EVSE == null)
                                                session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -242,7 +251,7 @@ namespace org.GraphDefined.WWCP
                                            if (session.EVSE != null)
                                                session.EVSE.ChargingSession = session;
 
-                                       }
+                                       //}
                                    }
                                    return true;
 
@@ -252,34 +261,43 @@ namespace org.GraphDefined.WWCP
 
                                case "authStop":
                                    {
-                                       if (InternalData.ContainsKey(session.Id)                &&
-                                           chargingSession["start"] is JObject authStartObject &&
-                                           chargingSession["stop" ] is JObject authStopObject)
-                                       {
 
+                                       if (!InternalData.ContainsKey(session.Id))
+                                           InternalData.Add(session.Id, session);
+                                       else
                                            InternalData[session.Id] = session;
 
-                                           var startTime = authStartObject["timestamp"]?.Value<DateTime>();
-                                           var stopTime  = authStopObject ["timestamp"]?.Value<DateTime>();
+                                       //if (chargingSession["start"] is JObject authStartObject &&
+                                       //    chargingSession["stop" ] is JObject authStopObject)
+                                       //{
 
-                                           if (startTime != null && stopTime != null)
-                                           {
+                                       //    if (!InternalData.TryGetValue(session.Id, out ChargingSession existingSession))
+                                       //    {
+                                       //        existingSession = session;
+                                       //        InternalData.Add(existingSession.Id, existingSession);
+                                       //    }
 
-                                               session.SessionTime                = new StartEndDateTime(startTime.Value, stopTime);
+                                       //    var startTime = authStartObject["timestamp"]?.Value<DateTime>();
+                                       //    var stopTime  = authStopObject ["timestamp"]?.Value<DateTime>();
 
-                                               session.SystemIdStart              = authStartObject["systemId"]             != null                  ? System_Id.            Parse(authStartObject["systemId"]?.            Value<String>()) : new System_Id?();
-                                               session.EMPRoamingProviderIdStart  = authStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                                               session.CSORoamingProviderIdStart  = authStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                                               session.ProviderIdStart            = authStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStartObject["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStart        = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.  Parse(authenticationStart)                                      : null;
+                                       //    if (startTime != null && stopTime != null)
+                                       //    {
 
-                                               session.SystemIdStop               = authStopObject ["systemId"]             != null                  ? System_Id.            Parse(authStopObject ["systemId"]?.            Value<String>()) : new System_Id?();
-                                               session.EMPRoamingProviderIdStop   = authStopObject ["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStopObject ["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
-                                               session.CSORoamingProviderIdStop   = authStopObject ["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStopObject ["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                                               session.ProviderIdStop             = authStopObject ["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStopObject ["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
-                                               session.AuthenticationStop         = authStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                       : null;
+                                       //        existingSession.SessionTime                = new StartEndDateTime(startTime.Value, stopTime);
 
-                                           }
+                                       //        existingSession.SystemIdStart              = authStartObject["systemId"]             != null                  ? System_Id.            Parse(authStartObject["systemId"]?.            Value<String>()) : new System_Id?();
+                                       //        existingSession.EMPRoamingProviderIdStart  = authStartObject["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStartObject["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                       //        existingSession.CSORoamingProviderIdStart  = authStartObject["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStartObject["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                       //        existingSession.ProviderIdStart            = authStartObject["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStartObject["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
+                                       //        existingSession.AuthenticationStart        = authStartObject["authentication"] is JObject authenticationStart ? LocalAuthentication.  Parse(authenticationStart)                                      : null;
+
+                                       //        existingSession.SystemIdStop               = authStopObject ["systemId"]             != null                  ? System_Id.            Parse(authStopObject ["systemId"]?.            Value<String>()) : new System_Id?();
+                                       //        existingSession.EMPRoamingProviderIdStop   = authStopObject ["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(authStopObject ["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                                       //        existingSession.CSORoamingProviderIdStop   = authStopObject ["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(authStopObject ["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
+                                       //        existingSession.ProviderIdStop             = authStopObject ["providerId"]           != null                  ? eMobilityProvider_Id. Parse(authStopObject ["providerId"]?.          Value<String>()) : new eMobilityProvider_Id?();
+                                       //        existingSession.AuthenticationStop         = authStopObject ["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                       : null;
+
+                                       //    }
 
                                            if (session.EVSEId.HasValue && session.EVSE == null)
                                                session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -287,7 +305,7 @@ namespace org.GraphDefined.WWCP
                                            if (session.EVSE != null)
                                                session.EVSE.ChargingSession = null;
 
-                                       }
+                                       //}
                                    }
                                    return true;
 
@@ -297,28 +315,38 @@ namespace org.GraphDefined.WWCP
 
                                case "CDRReceived":
                                    {
-                                       if (InternalData.ContainsKey(session.Id) &&
-                                           chargingSession["cdr"] is JObject cdrObject)
-                                       {
 
+                                       if (!InternalData.ContainsKey(session.Id))
+                                           InternalData.Add(session.Id, session);
+                                       else
                                            InternalData[session.Id] = session;
 
-                                           var cdrTime = cdrObject["timestamp"]?.Value<DateTime>();
 
-                                           if (cdrTime != null)
-                                           {
-                                               session.CDRReceived          = cdrTime;
-                                               session.SystemIdCDR           = cdrObject["systemId"] != null ? System_Id.Parse(cdrObject["systemId"]?.Value<String>()) : new System_Id?();
-                                               session.CDRForwarded          = cdrObject["forwarded"]?.        Value<DateTime>();
-                                           }
+                                       //if (chargingSession["cdr"] is JObject cdrObject)
+                                       //{
 
-                                           if (session.EVSEId.HasValue && session.EVSE == null)
-                                               session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+                                       //    if (!InternalData.TryGetValue(session.Id, out ChargingSession existingSession))
+                                       //    {
+                                       //        existingSession = session;
+                                       //        InternalData.Add(existingSession.Id, existingSession);
+                                       //    }
 
-                                           if (session.EVSE != null)
-                                               session.EVSE.ChargingSession = null;
+                                           //var cdrTime = cdrObject["timestamp"]?.Value<DateTime>();
 
-                                       }
+                                           //if (cdrTime != null)
+                                           //{
+                                           //    existingSession.CDRReceived   = cdrTime;
+                                           //    existingSession.SystemIdCDR   = cdrObject["systemId"] != null ? System_Id.Parse(cdrObject["systemId"]?.Value<String>()) : new System_Id?();
+                                           //    existingSession.CDRForwarded  = cdrObject["forwarded"]?.Value<DateTime>();
+                                           //}
+
+                                       if (session.EVSEId.HasValue && session.EVSE == null)
+                                           session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
+
+                                       if (session.EVSE != null)
+                                           session.EVSE.ChargingSession = null;
+
+                                  //     }
                                    }
                                    return true;
 

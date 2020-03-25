@@ -2514,7 +2514,7 @@ namespace org.GraphDefined.WWCP
                     #region ...or send 'OFFLINE'...
 
                     else
-                        result = RemoteStartResult.Offline;
+                        result = RemoteStartResult.Offline();
 
                     #endregion
 
@@ -2534,7 +2534,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         default:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                     }

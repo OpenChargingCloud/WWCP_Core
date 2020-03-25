@@ -4245,7 +4245,7 @@ namespace org.GraphDefined.WWCP
 
                 if (ChargingLocation.IsNull())
                 {
-                    result = RemoteStartResult.UnknownLocation;
+                    result = RemoteStartResult.UnknownLocation();
                 }
 
                 else if (AdminStatus.Value == RoamingNetworkAdminStatusTypes.Operational ||
@@ -4326,7 +4326,7 @@ namespace org.GraphDefined.WWCP
                     #region ...or fail!
 
                     if (result == null)
-                        result = RemoteStartResult.UnknownOperator;
+                        result = RemoteStartResult.UnknownOperator();
 
                     #endregion
 
@@ -4338,7 +4338,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         default:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                     }

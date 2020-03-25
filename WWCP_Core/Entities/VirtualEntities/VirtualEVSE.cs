@@ -1675,7 +1675,7 @@ namespace org.GraphDefined.WWCP.Virtual
                 if (ChargingLocation.EVSEId.HasValue &&
                     ChargingLocation.EVSEId.Value != Id)
                 {
-                    result = RemoteStartResult.UnknownLocation;
+                    result = RemoteStartResult.UnknownLocation();
                 }
 
                 else if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
@@ -1732,7 +1732,7 @@ namespace org.GraphDefined.WWCP.Virtual
                             else if (RemoteAuthentication?.RemoteIdentification.HasValue == true &&
                                 !firstReservation.eMAIds.Contains(RemoteAuthentication.RemoteIdentification.Value))
                             {
-                                result = RemoteStartResult.InvalidCredentials;
+                                result = RemoteStartResult.InvalidCredentials();
                             }
 
                             else
@@ -1771,7 +1771,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         #region Charging
 
                         case EVSEStatusTypes.Charging:
-                            result = RemoteStartResult.AlreadyInUse;
+                            result = RemoteStartResult.AlreadyInUse();
                             break;
 
                         #endregion
@@ -1779,7 +1779,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         #region OutOfService
 
                         case EVSEStatusTypes.OutOfService:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                         #endregion
@@ -1787,7 +1787,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         #region Offline
 
                         case EVSEStatusTypes.Offline:
-                            result = RemoteStartResult.Offline;
+                            result = RemoteStartResult.Offline();
                             break;
 
                         #endregion
@@ -1807,7 +1807,7 @@ namespace org.GraphDefined.WWCP.Virtual
                     {
 
                         default:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                     }

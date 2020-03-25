@@ -190,116 +190,122 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownOperator(SessionId)
+        #region (static) UnknownOperator(SessionId, Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult UnknownOperator(ChargingSession_Id SessionId)
-        {
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.UnknownOperator,
-                                        "The EVSE or charging station operator is unknown!");
-        }
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult UnknownOperator(ChargingSession_Id  SessionId,
+                                                       TimeSpan?           Runtime = null)
+
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.UnknownOperator,
+                                    "The EVSE or charging station operator is unknown!",
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownLocation(SessionId)
+        #region (static) UnknownLocation(SessionId, Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult UnknownLocation(ChargingSession_Id SessionId)
-        {
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.UnknownLocation,
-                                        "The charging location is unknown!");
-        }
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult UnknownLocation(ChargingSession_Id  SessionId,
+                                                        TimeSpan?          Runtime = null)
+
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.UnknownLocation,
+                                    "The charging location is unknown!",
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidSessionId(SessionId)
+        #region (static) InvalidSessionId(SessionId, Runtime = null)
 
         /// <summary>
         /// The charging session identification is unknown or invalid.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult InvalidSessionId(ChargingSession_Id SessionId)
-        {
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult InvalidSessionId(ChargingSession_Id  SessionId,
+                                                        TimeSpan?           Runtime  = null)
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.InvalidSessionId,
-                                        "The session identification is invalid!");
-
-        }
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.InvalidSessionId,
+                                    "The session identification is invalid!",
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidCredentials(SessionId)
+        #region (static) InvalidCredentials(SessionId, Runtime = null)
 
         /// <summary>
         /// Unauthorized remote stop or invalid credentials.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult InvalidCredentials(ChargingSession_Id SessionId)
-        {
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.InvalidCredentials,
-                                        "Unauthorized remote stop or invalid credentials!");
-        }
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult InvalidCredentials(ChargingSession_Id  SessionId,
+                                                          TimeSpan?           Runtime  = null)
+
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.InvalidCredentials,
+                                    "Unauthorized remote stop or invalid credentials!",
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) InternalUse(SessionId)
+        #region (static) InternalUse(SessionId, Runtime = null)
 
         /// <summary>
         /// Reserved for internal use!
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult InternalUse(ChargingSession_Id SessionId)
-        {
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult InternalUse(ChargingSession_Id  SessionId,
+                                                   TimeSpan?           Runtime  = null)
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.InternalUse,
-                                        "Reserved for internal use!");
-
-        }
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.InternalUse,
+                                    "Reserved for internal use!",
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService(SessionId)
+        #region (static) OutOfService(SessionId, Runtime = null)
 
         /// <summary>
         /// The  is out of service.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult OutOfService(ChargingSession_Id SessionId)
-        {
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult OutOfService(ChargingSession_Id  SessionId,
+                                                    TimeSpan?           Runtime  = null)
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.OutOfService,
-                                        "The EVSE or charging station is out of service!");
-
-        }
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.OutOfService,
+                                    "The EVSE or charging station is out of service!",
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) Offline(SessionId)
+        #region (static) Offline(SessionId, Runtime = null)
 
         /// <summary>
         /// The  is offline.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult Offline(ChargingSession_Id SessionId)
-        {
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult Offline(ChargingSession_Id  SessionId,
+                                               TimeSpan?           Runtime  = null)
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultTypes.Offline,
-                                        "The EVSE or charging station is offline!");
-
-        }
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.Offline,
+                                    "The EVSE or charging station is offline!",
+                                    Runtime: Runtime);
 
         #endregion
 
@@ -381,32 +387,38 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Timeout(SessionId)
+        #region (static) Timeout(SessionId, Runtime = null)
 
         /// <summary>
         /// The remote stop ran into a timeout.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopResult Timeout(ChargingSession_Id SessionId)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult Timeout(ChargingSession_Id  SessionId,
+                                               TimeSpan?           Runtime  = null)
 
             => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.Timeout);
+                                    RemoteStopResultTypes.Timeout,
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) CommunicationError(SessionId, Message = null)
+        #region (static) CommunicationError(SessionId, Message = null, Runtime = null)
 
         /// <summary>
         /// The remote stop led to a communication error.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Message">An optional error message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult CommunicationError(ChargingSession_Id  SessionId,
-                                                          String              Message = null)
+                                                          String              Message  = null,
+                                                          TimeSpan?           Runtime  = null)
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.CommunicationError,
-                                    Message);
+                                    Message,
+                                    Runtime: Runtime);
 
         #endregion
 

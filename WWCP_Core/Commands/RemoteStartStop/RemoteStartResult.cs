@@ -40,68 +40,50 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging session for the remote start operation.
         /// </summary>
-        public ChargingSession        Session           { get; }
+        public ChargingSession         Session           { get; }
 
         /// <summary>
         /// An optional (error) message.
         /// </summary>
-        public String                 Message           { get; }
+        public String                  Message           { get; }
 
         /// <summary>
         /// An optional additional information on this error,
         /// e.g. the HTTP error response.
         /// </summary>
-        public Object                 AdditionalInfo    { get; }
+        public Object                  AdditionalInfo    { get; }
+
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        public TimeSpan?               Runtime           { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region (private) RemoteStartResult(Session)
-
-        /// <summary>
-        /// Create a new successful remote start result.
-        /// </summary>
-        /// <param name="Session">The charging session.</param>
-        private RemoteStartResult(ChargingSession Session)
-        {
-
-            #region Initial checks
-
-            if (Session == null)
-                throw new ArgumentNullException(nameof(Session),  "The given charging session must not be null!");
-
-            #endregion
-
-            this.Result   = RemoteStartResultTypes.Success;
-            this.Session  = Session;
-            this.Message  = null;
-
-        }
-
-        #endregion
-
-        #region (private) RemoteStartResult(Result, Message = null, AdditionalInfo = null)
-
         /// <summary>
         /// Create a new remote start result.
         /// </summary>
         /// <param name="Result">The result of the remote start operation.</param>
+        /// <param name="Session">The charging session.</param>
         /// <param name="Message">An optional message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         private RemoteStartResult(RemoteStartResultTypes  Result,
-                                  String                 Message         = null,
-                                  Object                 AdditionalInfo  = null)
+                                  ChargingSession         Session          = null,
+                                  String                  Message          = null,
+                                  Object                  AdditionalInfo   = null,
+                                  TimeSpan?               Runtime          = null)
         {
 
             this.Result          = Result;
-            this.Session         = null;
+            this.Session         = Session;
             this.Message         = Message;
             this.AdditionalInfo  = AdditionalInfo;
+            this.Runtime         = Runtime;
 
         }
-
-        #endregion
 
         #endregion
 
@@ -117,171 +99,194 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownOperator
+        #region (static) UnknownOperator(Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
-        public static RemoteStartResult UnknownOperator
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult UnknownOperator(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.UnknownOperator);
+            => new RemoteStartResult(RemoteStartResultTypes.UnknownOperator,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownLocation
+        #region (static) UnknownLocation(Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
         /// </summary>
-        public static RemoteStartResult UnknownLocation
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult UnknownLocation(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.UnknownLocation);
+            => new RemoteStartResult(RemoteStartResultTypes.UnknownLocation,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidSessionId
+        #region (static) InvalidSessionId(Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
-        public static RemoteStartResult InvalidSessionId
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult InvalidSessionId(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.InvalidSessionId);
+            => new RemoteStartResult(RemoteStartResultTypes.InvalidSessionId,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidCredentials
+        #region (static) InvalidCredentials(Runtime = null)
 
         /// <summary>
         /// Unauthorized remote start or invalid credentials.
         /// </summary>
-        public static RemoteStartResult InvalidCredentials
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult InvalidCredentials(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.InvalidCredentials);
+            => new RemoteStartResult(RemoteStartResultTypes.InvalidCredentials,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) AlreadyInUse
+        #region (static) AlreadyInUse(Runtime = null)
 
         /// <summary>
         /// The EVSE is already in use.
         /// </summary>
-        public static RemoteStartResult AlreadyInUse
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult AlreadyInUse(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.AlreadyInUse);
+            => new RemoteStartResult(RemoteStartResultTypes.AlreadyInUse,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Reserved(Message)
+        #region (static) Reserved(Message, Runtime = null)
 
         /// <summary>
         /// The EVSE is reserved.
         /// </summary>
         /// <param name="Message">An optional message.</param>
-        public static RemoteStartResult Reserved(String Message = null)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Reserved(String     Message   = null,
+                                                 TimeSpan?  Runtime   = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Reserved, Message);
+            => new RemoteStartResult(RemoteStartResultTypes.Reserved,
+                                     null,
+                                     Message,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) InternalUse
+        #region (static) InternalUse(Runtime = null)
 
         /// <summary>
         /// The EVSE is reserved for internal use.
         /// </summary>
-        public static RemoteStartResult InternalUse
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult InternalUse(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.InternalUse);
+            => new RemoteStartResult(RemoteStartResultTypes.InternalUse,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService
+        #region (static) OutOfService(Runtime = null)
 
         /// <summary>
         /// The EVSE is out-of-service.
         /// </summary>
-        public static RemoteStartResult OutOfService
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult OutOfService(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.OutOfService);
+            => new RemoteStartResult(RemoteStartResultTypes.OutOfService,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Offline
+        #region (static) Offline(Runtime = null)
 
         /// <summary>
         /// The EVSE is offline.
         /// </summary>
-        public static RemoteStartResult Offline
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Offline(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Offline);
-
-        #endregion
-
-        #region (static) Success()
-
-        /// <summary>
-        /// The remote start was successful.
-        /// The charging session will be send separately.
-        /// </summary>
-        public static RemoteStartResult Success()
-
-            => new RemoteStartResult(RemoteStartResultTypes.Success);
+            => new RemoteStartResult(RemoteStartResultTypes.Offline,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Success(Session)
+        #region (static) Success(Session, Runtime = null)
 
         /// <summary>
         /// The remote start was successful and a charging session
         /// will be embedded within the response.
         /// </summary>
         /// <param name="Session">The charging session.</param>
-        public static RemoteStartResult Success(ChargingSession Session)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Success(ChargingSession  Session,
+                                                TimeSpan?        Runtime  = null)
 
-            => new RemoteStartResult(Session);
+            => new RemoteStartResult(RemoteStartResultTypes.Success,
+                                     Session,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Timeout
+        #region (static) Timeout(Runtime = null)
 
         /// <summary>
         /// The remote start request ran into a timeout.
         /// </summary>
-        public static RemoteStartResult Timeout
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Timeout(TimeSpan? Runtime = null)
 
-            => new RemoteStartResult(RemoteStartResultTypes.Timeout);
+            => new RemoteStartResult(RemoteStartResultTypes.Timeout,
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) CommunicationError(Message = "", AdditionalInfo = null)
+        #region (static) CommunicationError(Message = "", AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// A communication error occured.
         /// </summary>
         /// <param name="Message">An optional (error-)message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        public static RemoteStartResult CommunicationError(String  Message         = null,
-                                                           Object  AdditionalInfo  = null)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult CommunicationError(String     Message          = null,
+                                                           Object     AdditionalInfo   = null,
+                                                           TimeSpan?  Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.CommunicationError,
+                                     null,
                                      Message,
-                                     AdditionalInfo);
+                                     AdditionalInfo,
+                                     Runtime);
 
         #endregion
 
-        #region (static) Error(Message = null, AdditionalInfo = null)
+        #region (static) Error(Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start request led to an error.
         /// </summary>
         /// <param name="Message">An optional (error-)message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        public static RemoteStartResult Error(String  Message         = null,
-                                              Object  AdditionalInfo  = null)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Error(String     Message          = null,
+                                              Object     AdditionalInfo   = null,
+                                              TimeSpan?  Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Error,
+                                     null,
                                      Message,
-                                     AdditionalInfo);
+                                     AdditionalInfo,
+                                     Runtime);
 
         #endregion
 

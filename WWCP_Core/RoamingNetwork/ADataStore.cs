@@ -171,9 +171,10 @@ namespace org.GraphDefined.WWCP
                     throw new ArgumentNullException(nameof(LogFilePath), "The given log file path must not be null or empty!");
 
                 this.LogfileNameCreator        = LogFileNameCreator   ?? throw new ArgumentNullException(nameof(LogFileNameCreator),    "The given log file name creator must not be null or empty!");
+                this.LogfileSearchPattern      = LogfileSearchPattern;
 
-                if (this.ReloadDataOnStart)
-                    this.LogfileSearchPattern  = LogfileSearchPattern ?? throw new ArgumentNullException(nameof(LogfileSearchPattern),  "The given log file search pattern must not be null or empty!");
+                if (this.ReloadDataOnStart && this.LogfileSearchPattern == null)
+                    throw new ArgumentNullException(nameof(LogfileSearchPattern), "The given log file search pattern must not be null or empty!");
 
             }
 
@@ -289,6 +290,13 @@ namespace org.GraphDefined.WWCP
             => InternalData.TryGetValue(Id, out Data);
 
         #endregion
+
+
+        public void LoadLogfiles()
+        {
+            LoadLogFiles(LogFilePath,
+                         LogfileSearchPattern(this.RoamingNetwork.Id));
+        }
 
 
         #region (protected) LogIt(Command, Id)

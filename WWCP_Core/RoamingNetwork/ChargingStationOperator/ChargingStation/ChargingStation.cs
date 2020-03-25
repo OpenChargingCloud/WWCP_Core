@@ -3306,7 +3306,7 @@ namespace org.GraphDefined.WWCP
 
                     }
                     else
-                        result = RemoteStartResult.UnknownLocation;
+                        result = RemoteStartResult.UnknownLocation();
 
                 }
                 else
@@ -3316,7 +3316,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         default:
-                            result = RemoteStartResult.OutOfService;
+                            result = RemoteStartResult.OutOfService();
                             break;
 
                     }
