@@ -4629,7 +4629,7 @@ namespace org.GraphDefined.WWCP
 
                     foreach (var empRoamingProvider in _EMPRoamingProviders.
                                                            OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
-                                                           Select(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                                                           Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
                     {
 
                         result = await empRoamingProvider.
