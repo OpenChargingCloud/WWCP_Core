@@ -285,10 +285,10 @@ namespace org.GraphDefined.WWCP
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
 
-            this._ChargingStationOperatorRoamingProviders           = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
-            this._EMPRoamingProviders                               = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
+            this._ChargingStationOperatorRoamingProviders           = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
+            this._EMPRoamingProviders                               = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
 
-            this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
+            this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, ICSORoamingProvider>();
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
@@ -316,11 +316,11 @@ namespace org.GraphDefined.WWCP
 
             // RoamingNetwork events
 
-            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
 
-            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean>(() => new VetoVote(), true);
 
             // cso events
             this.ChargingPoolAddition        = new VotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
@@ -2024,7 +2024,7 @@ namespace org.GraphDefined.WWCP
 
         #region Charging Station Operator Roaming Providers...
 
-        private readonly ConcurrentDictionary<UInt32, IEMPRoamingProvider>  _eMobilityRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, ICSORoamingProvider>  _eMobilityRoamingServices;
         //private readonly ConcurrentDictionary<UInt32, ISendData>            _PushEVSEDataToOperatorRoamingServices;
         //private readonly ConcurrentDictionary<UInt32, ISendAdminStatus>     _PushEVSEAdminStatusToOperatorRoamingServices;
         //private readonly ConcurrentDictionary<UInt32, ISendStatus>          _PushEVSEStatusToOperatorRoamingServices;
@@ -2032,20 +2032,20 @@ namespace org.GraphDefined.WWCP
         #region ChargingStationOperatorRoamingProviders
 
         //private readonly ConcurrentDictionary<UInt32,             IChargingStationOperatorRoamingProvider>  _ChargingStationOperatorRoamingProviderPriorities;
-        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>  _ChargingStationOperatorRoamingProviders;
+        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>  _ChargingStationOperatorRoamingProviders;
 
         /// <summary>
         /// Return all Charging Station Operator roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<ICSORoamingProvider> ChargingStationOperatorRoamingProviders => _ChargingStationOperatorRoamingProviders.Values;
+        public IEnumerable<IEMPRoamingProvider> ChargingStationOperatorRoamingProviders => _ChargingStationOperatorRoamingProviders.Values;
 
-        public Boolean TryGet(CSORoamingProvider_Id Id, out ICSORoamingProvider CSORoamingProvider)
+        public Boolean TryGetCSORoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider CSORoamingProvider)
             => _ChargingStationOperatorRoamingProviders.TryGetValue(Id, out CSORoamingProvider);
 
-        public ICSORoamingProvider Get(CSORoamingProvider_Id Id)
+        public IEMPRoamingProvider GetCSORoamingProviderById(EMPRoamingProvider_Id Id)
         {
 
-            if (_ChargingStationOperatorRoamingProviders.TryGetValue(Id, out ICSORoamingProvider csoRoamingProvider))
+            if (_ChargingStationOperatorRoamingProviders.TryGetValue(Id, out IEMPRoamingProvider csoRoamingProvider))
                 return csoRoamingProvider;
 
             return null;
@@ -2061,8 +2061,8 @@ namespace org.GraphDefined.WWCP
         /// unique electric vehicle roaming provider identification.
         /// </summary>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider          _CPORoamingProvider,
-                                                            Action<ICSORoamingProvider>  Configurator  = null)
+        public IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider          _CPORoamingProvider,
+                                                            Action<IEMPRoamingProvider>  Configurator  = null)
         {
 
             #region Initial checks
@@ -2141,23 +2141,23 @@ namespace org.GraphDefined.WWCP
 
         #region CPORoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> CPORoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> CPORoamingProviderAddition;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnCPORoamingProviderAddition => CPORoamingProviderAddition;
+        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnCPORoamingProviderAddition => CPORoamingProviderAddition;
 
         #endregion
 
         #region CPORoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> CPORoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> CPORoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnCPORoamingProviderRemoval => CPORoamingProviderRemoval;
+        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnCPORoamingProviderRemoval => CPORoamingProviderRemoval;
 
         #endregion
 
@@ -2167,20 +2167,20 @@ namespace org.GraphDefined.WWCP
 
         #region EMPRoamingProviders
 
-        private readonly ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider> _EMPRoamingProviders;
+        private readonly ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider> _EMPRoamingProviders;
 
         /// <summary>
         /// Return all roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<IEMPRoamingProvider> EMPRoamingProviders => _EMPRoamingProviders.Values;
+        public IEnumerable<ICSORoamingProvider> EMPRoamingProviders => _EMPRoamingProviders.Values;
 
-        public Boolean TryGet(EMPRoamingProvider_Id Id, out IEMPRoamingProvider EMPRoamingProvider)
+        public Boolean TryGetEMPRoamingProviderById(CSORoamingProvider_Id Id, out ICSORoamingProvider EMPRoamingProvider)
             => _EMPRoamingProviders.TryGetValue(Id, out EMPRoamingProvider);
 
-        public IEMPRoamingProvider Get(EMPRoamingProvider_Id Id)
+        public ICSORoamingProvider GetEMPRoamingProviderById(CSORoamingProvider_Id Id)
         {
 
-            if (_EMPRoamingProviders.TryGetValue(Id, out IEMPRoamingProvider empRoamingProvider))
+            if (_EMPRoamingProviders.TryGetValue(Id, out ICSORoamingProvider empRoamingProvider))
                 return empRoamingProvider;
 
             return null;
@@ -2197,8 +2197,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityRoamingService">A e-mobility roaming service.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider          eMobilityRoamingService,
-                                                            Action<IEMPRoamingProvider>  Configurator = null)
+        public ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider          eMobilityRoamingService,
+                                                            Action<ICSORoamingProvider>  Configurator = null)
         {
 
             #region Initial checks
@@ -2249,7 +2249,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
         /// <param name="Priority">The priority of the service.</param>
-        public Boolean SetRoamingProviderPriority(IEMPRoamingProvider  eMobilityRoamingService,
+        public Boolean SetRoamingProviderPriority(ICSORoamingProvider  eMobilityRoamingService,
                                                   UInt32              Priority)
 
             => _eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
@@ -2258,23 +2258,23 @@ namespace org.GraphDefined.WWCP
 
         #region EMPRoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> EMPRoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> EMPRoamingProviderAddition;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnEMPRoamingProviderAddition => EMPRoamingProviderAddition;
+        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnEMPRoamingProviderAddition => EMPRoamingProviderAddition;
 
         #endregion
 
         #region EMPRoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean> EMPRoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, ICSORoamingProvider, Boolean> EMPRoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, IEMPRoamingProvider, Boolean> OnEMPRoamingProviderRemoval => EMPRoamingProviderRemoval;
+        public IVotingSender<RoamingNetwork, ICSORoamingProvider, Boolean> OnEMPRoamingProviderRemoval => EMPRoamingProviderRemoval;
 
         #endregion
 
@@ -2308,7 +2308,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
 
 
         #region ChargingPools...
@@ -3878,7 +3877,7 @@ namespace org.GraphDefined.WWCP
 
 
                         if (Reservation.EMPRoamingProviderId.HasValue &&
-                            TryGet(Reservation.EMPRoamingProviderId.Value, out IEMPRoamingProvider _IEMPRoamingProvider))
+                            TryGetEMPRoamingProviderById(Reservation.EMPRoamingProviderId.Value, out ICSORoamingProvider _IEMPRoamingProvider))
                         {
 
                             result = await _IEMPRoamingProvider.
@@ -4178,7 +4177,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartResult>
 
-            RemoteStart(ICSORoamingProvider      CSORoamingProvider,
+            RemoteStart(IEMPRoamingProvider      CSORoamingProvider,
                         ChargingLocation         ChargingLocation,
                         ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
@@ -4277,8 +4276,9 @@ namespace org.GraphDefined.WWCP
                         if (result.Result == RemoteStartResultTypes.Success)
                         {
                             SessionsStore.RemoteStart(result.Session,
+                                                      result,
                                                       session => {
-                                                          session.CSORoamingProviderStart = CSORoamingProvider;
+                                                          session.EMPRoamingProviderStart = CSORoamingProvider;
                                                       });
                         }
 
@@ -4314,8 +4314,16 @@ namespace org.GraphDefined.WWCP
 
 
                             if (result.Result == RemoteStartResultTypes.Success)
-                                SessionsStore.NewOrUpdate(result.Session, session => { session.EMPRoamingProviderStart = empRoamingProvider; });
-                                                                        //   SetISendChargeDetailRecords(ISendChargeDetailRecords));
+                            {
+
+                                SessionsStore.RemoteStart(result.Session,
+                                                          result,
+                                                          session => {
+                                                              session.EMPRoamingProviderStart = CSORoamingProvider;
+                                                              session.CSORoamingProviderStart = empRoamingProvider;
+                                                          });
+
+                            }
 
                         }
 
@@ -4442,7 +4450,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStopResult>
 
-            RemoteStop(ICSORoamingProvider    CSORoamingProvider,
+            RemoteStop(IEMPRoamingProvider    CSORoamingProvider,
                        ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        eMobilityProvider_Id?  ProviderId             = null,
@@ -4532,27 +4540,18 @@ namespace org.GraphDefined.WWCP
                                                            EventTrackingId,
                                                            RequestTimeout);
 
-
-                        if (result?.Result == RemoteStopResultTypes.Success)
-                        {
-                            SessionsStore.RemoteStop(chargingSession.Id,
-                                                     RemoteAuthentication,
-                                                     ProviderId,
-                                                     CSORoamingProvider);
-                        }
-
                         #endregion
 
-                        #region ...or when an EMP roaming provider was found
+                        #region ...or when a charging station roaming provider was found
 
                         if (result == null)
                         {
 
-                            if (chargingSession.EMPRoamingProviderStart == null & chargingSession.EMPRoamingProviderIdStart.HasValue)
-                                chargingSession.EMPRoamingProviderStart = Get(chargingSession.EMPRoamingProviderIdStart.Value);
+                            if (chargingSession.CSORoamingProviderStart == null & chargingSession.CSORoamingProviderIdStart.HasValue)
+                                chargingSession.CSORoamingProviderStart = GetEMPRoamingProviderById(chargingSession.CSORoamingProviderIdStart.Value);
 
-                            if (chargingSession.EMPRoamingProviderStart != null)
-                                result = await chargingSession.EMPRoamingProviderStart.
+                            if (chargingSession.CSORoamingProviderStart != null)
+                                result = await chargingSession.CSORoamingProviderStart.
                                                     RemoteStop(chargingSession.Id,
                                                                ReservationHandling,
                                                                ProviderId,
@@ -4565,10 +4564,7 @@ namespace org.GraphDefined.WWCP
 
                             if (result?.Result == RemoteStopResultTypes.Success)
                             {
-                                SessionsStore.RemoteStop(chargingSession.Id,
-                                                         RemoteAuthentication,
-                                                         ProviderId,
-                                                         CSORoamingProvider);
+                                chargingSession.CSORoamingProviderStop = chargingSession.CSORoamingProviderStart;
                             }
 
                         }
@@ -4603,16 +4599,7 @@ namespace org.GraphDefined.WWCP
                                                       RequestTimeout);
 
                         if (result != null && result.Result != RemoteStopResultTypes.InvalidSessionId)
-                        {
-
-                            SessionsStore.RemoteStop(SessionId,
-                                                     RemoteAuthentication,
-                                                     ProviderId,
-                                                     CSORoamingProvider);
-
                             break;
-
-                        }
 
                     }
 
@@ -4644,16 +4631,7 @@ namespace org.GraphDefined.WWCP
                                                       RequestTimeout);
 
                         if (result != null && result.Result != RemoteStopResultTypes.InvalidSessionId)
-                        {
-
-                            SessionsStore.RemoteStop(SessionId,
-                                                     RemoteAuthentication,
-                                                     ProviderId,
-                                                     CSORoamingProvider);
-
                             break;
-
-                        }
 
                     }
 
@@ -4675,6 +4653,14 @@ namespace org.GraphDefined.WWCP
                                                 e.Message,
                                                 Runtime: DateTime.UtcNow - StartTime);
             }
+
+
+
+            SessionsStore.RemoteStop(SessionId,
+                                     RemoteAuthentication,
+                                     ProviderId,
+                                     CSORoamingProvider,
+                                     result);
 
 
             #region Send OnRemoteStopResponse event
@@ -4946,7 +4932,7 @@ namespace org.GraphDefined.WWCP
 
                 var NewChargingSession = new ChargingSession(result.SessionId.Value) {
                                              RoamingNetworkId           = Id,
-                                             CSORoamingProviderStart    = result.ISendAuthorizeStartStop as ICSORoamingProvider,
+                                             EMPRoamingProviderStart    = result.ISendAuthorizeStartStop as IEMPRoamingProvider,
                                              ProviderIdStart            = result.ProviderId,
                                              ChargingStationOperatorId  = OperatorId,
                                              EVSEId                     = ChargingLocation?.EVSEId,
@@ -5134,13 +5120,13 @@ namespace org.GraphDefined.WWCP
                         if (result == null)
                         {
 
-                            if (chargingSession.CSORoamingProviderStart == null && chargingSession.CSORoamingProviderIdStart.HasValue)
-                                chargingSession.CSORoamingProviderStart = Get(chargingSession.CSORoamingProviderIdStart.Value);
+                            if (chargingSession.EMPRoamingProviderStart == null && chargingSession.EMPRoamingProviderIdStart.HasValue)
+                                chargingSession.EMPRoamingProviderStart = GetCSORoamingProviderById(chargingSession.EMPRoamingProviderIdStart.Value);
 
-                            if (chargingSession.CSORoamingProviderStart != null)
+                            if (chargingSession.EMPRoamingProviderStart != null)
                             {
 
-                                result  = await chargingSession.CSORoamingProviderStart.AuthorizeStop(SessionId,
+                                result  = await chargingSession.EMPRoamingProviderStart.AuthorizeStop(SessionId,
                                                                                                       LocalAuthentication,
                                                                                                       ChargingLocation,
                                                                                                       OperatorId,
@@ -5154,7 +5140,7 @@ namespace org.GraphDefined.WWCP
                                     SessionsStore.AuthStop(SessionId,
                                                            LocalAuthentication,
                                                            result.ProviderId.Value,
-                                                           result.ISendAuthorizeStartStop as ICSORoamingProvider);
+                                                           result.ISendAuthorizeStartStop as IEMPRoamingProvider);
 
                             }
 
@@ -5604,10 +5590,10 @@ namespace org.GraphDefined.WWCP
                         //    ChargeDetailRecordsToProcess.Remove(cdr);
                         //}
 
-                        if (chargingSession.CSORoamingProviderStart == null && chargingSession.CSORoamingProviderIdStart != null)
-                            chargingSession.CSORoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(rm => rm.Id.ToString() == chargingSession.CSORoamingProviderIdStart.ToString()) as ICSORoamingProvider;
+                        if (chargingSession.EMPRoamingProviderStart == null && chargingSession.EMPRoamingProviderIdStart != null)
+                            chargingSession.EMPRoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(rm => rm.Id.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
 
-                        if (chargingSession.CSORoamingProviderStart != null && chargingSession.CSORoamingProviderStart is ICSORoamingProvider sendCDR2)
+                        if (chargingSession.EMPRoamingProviderStart != null && chargingSession.EMPRoamingProviderStart is IEMPRoamingProvider sendCDR2)
                         {
 
                             _ISendChargeDetailRecords[sendCDR2].Add(cdr);

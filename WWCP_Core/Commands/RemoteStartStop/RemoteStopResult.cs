@@ -17,8 +17,11 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using System;
+
+using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -36,7 +39,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of a remote stop operation.
         /// </summary>
-        public RemoteStopResultTypes     Result                   { get; }
+        public RemoteStopResultTypes    Result                   { get; }
 
         /// <summary>
         /// The charging session identification for an invalid remote stop operation.
@@ -44,9 +47,14 @@ namespace org.GraphDefined.WWCP
         public ChargingSession_Id       SessionId                { get; }
 
         /// <summary>
-        /// The charge detail record for a successfully stopped charging process.
+        /// A optional description of the authorize stop result.
         /// </summary>
-        public ChargeDetailRecord       ChargeDetailRecord       { get; }
+        public I18NString               Description              { get; }
+
+        /// <summary>
+        /// An optional additional message.
+        /// </summary>
+        public String                   AdditionalInfo           { get; }
 
         /// <summary>
         /// The charging reservation identification.
@@ -59,14 +67,9 @@ namespace org.GraphDefined.WWCP
         public ReservationHandling      ReservationHandling      { get; }
 
         /// <summary>
-        /// A optional description of the authorize stop result.
+        /// The charge detail record for a successfully stopped charging process.
         /// </summary>
-        public String                   Description              { get; }
-
-        /// <summary>
-        /// An optional additional message.
-        /// </summary>
-        public String                   AdditionalInfo           { get; }
+        public ChargeDetailRecord       ChargeDetailRecord       { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -77,35 +80,6 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region RemoteStopResult(SessionId, Result, Description = null, AdditionalInfo = null, Runtime = null)
-
-        /// <summary>
-        /// Create a new remote stop result.
-        /// </summary>
-        /// <param name="SessionId">The unique charging session identification.</param>
-        /// <param name="Result">The result of the remote stop request.</param>
-        /// <param name="Description">A optional description of the remote stop result.</param>
-        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        private RemoteStopResult(ChargingSession_Id     SessionId,
-                                 RemoteStopResultTypes  Result,
-                                 String                 Description      = null,
-                                 String                 AdditionalInfo   = null,
-                                 TimeSpan?              Runtime          = null)
-        {
-
-            this.SessionId       = SessionId;
-            this.Result          = Result;
-            this.Description     = Description;
-            this.AdditionalInfo  = AdditionalInfo;
-            this.Runtime         = Runtime;
-
-        }
-
-        #endregion
-
-        #region RemoteStopResult(SessionId, Result, ReservationId, ReservationHandling)
-
         /// <summary>
         /// Create a new remote stop result.
         /// </summary>
@@ -115,14 +89,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         /// <param name="Description">A optional description of the remote stop result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record for a successfully stopped charging process.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private RemoteStopResult(ChargingSession_Id       SessionId,
                                  RemoteStopResultTypes    Result,
-                                 ChargingReservation_Id?  ReservationId,
-                                 ReservationHandling?     ReservationHandling,
-                                 String                   Description      = null,
-                                 String                   AdditionalInfo   = null,
-                                 TimeSpan?                Runtime          = null)
+                                 I18NString               Description          = null,
+                                 String                   AdditionalInfo       = null,
+                                 ChargingReservation_Id?  ReservationId        = null,
+                                 ReservationHandling?     ReservationHandling  = null,
+                                 ChargeDetailRecord       ChargeDetailRecord   = null,
+                                 TimeSpan?                Runtime              = null)
         {
 
             this.SessionId            = SessionId;
@@ -131,50 +107,15 @@ namespace org.GraphDefined.WWCP
             this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
             this.Description          = Description;
             this.AdditionalInfo       = AdditionalInfo;
+            this.ChargeDetailRecord   = ChargeDetailRecord;
             this.Runtime              = Runtime;
 
         }
 
         #endregion
 
-        #region RemoteStopResult(ChargeDetailRecord, Result, ReservationId, ReservationHandling)
 
-        /// <summary>
-        /// Create a new remote stop result.
-        /// </summary>
-        /// <param name="ChargeDetailRecord">The charge detail record for a successfully stopped charging process.</param>
-        /// <param name="Result">The result of the remote stop request.</param>
-        /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
-        /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        /// <param name="Description">A optional description of the remote stop result.</param>
-        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        private RemoteStopResult(ChargeDetailRecord       ChargeDetailRecord,
-                                 RemoteStopResultTypes    Result,
-                                 ChargingReservation_Id?  ReservationId,
-                                 ReservationHandling?     ReservationHandling,
-                                 String                   Description      = null,
-                                 String                   AdditionalInfo   = null,
-                                 TimeSpan?                Runtime          = null)
-        {
-
-            this.ChargeDetailRecord   = ChargeDetailRecord  ?? throw new ArgumentNullException(nameof(ChargeDetailRecord), "The given charge detail record must not be null!");
-            this.SessionId            = ChargeDetailRecord.SessionId;
-            this.Result               = Result;
-            this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
-            this.Description          = Description;
-            this.AdditionalInfo       = AdditionalInfo;
-            this.Runtime              = Runtime;
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region (static) Unspecified(SessionId)
+        #region (static) Unspecified       (SessionId)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
@@ -190,7 +131,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownOperator(SessionId, Runtime = null)
+        #region (static) UnknownOperator   (SessionId, Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
@@ -202,12 +143,12 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.UnknownOperator,
-                                    "The EVSE or charging station operator is unknown!",
+                                    I18NString.Create(Languages.eng, "The EVSE or charging station operator is unknown!"),
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownLocation(SessionId, Runtime = null)
+        #region (static) UnknownLocation   (SessionId, Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
@@ -219,12 +160,12 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.UnknownLocation,
-                                    "The charging location is unknown!",
+                                    I18NString.Create(Languages.eng, "The charging location is unknown!"),
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidSessionId(SessionId, Runtime = null)
+        #region (static) InvalidSessionId  (SessionId, Runtime = null)
 
         /// <summary>
         /// The charging session identification is unknown or invalid.
@@ -236,7 +177,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.InvalidSessionId,
-                                    "The session identification is invalid!",
+                                    I18NString.Create(Languages.eng, "The session identification is unknown or invalid!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -253,12 +194,12 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.InvalidCredentials,
-                                    "Unauthorized remote stop or invalid credentials!",
+                                    I18NString.Create(Languages.eng, "Unauthorized remote stop or invalid credentials!"),
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) InternalUse(SessionId, Runtime = null)
+        #region (static) InternalUse       (SessionId, Runtime = null)
 
         /// <summary>
         /// Reserved for internal use!
@@ -270,12 +211,12 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.InternalUse,
-                                    "Reserved for internal use!",
+                                    I18NString.Create(Languages.eng, "Reserved for internal use!"),
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService(SessionId, Runtime = null)
+        #region (static) OutOfService      (SessionId, Runtime = null)
 
         /// <summary>
         /// The  is out of service.
@@ -287,12 +228,12 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.OutOfService,
-                                    "The EVSE or charging station is out of service!",
+                                    I18NString.Create(Languages.eng, "The EVSE or charging station is out of service!"),
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Offline(SessionId, Runtime = null)
+        #region (static) Offline           (SessionId, Runtime = null)
 
         /// <summary>
         /// The  is offline.
@@ -304,125 +245,126 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Offline,
-                                    "The EVSE or charging station is offline!",
+                                    I18NString.Create(Languages.eng, "The EVSE or charging station is offline!"),
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Success(SessionId,          ReservationId = null, ReservationHandling = null, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) AlreadyStopped    (SessionId, ..., Runtime = null)
+
+        /// <summary>
+        /// A previous remote stop was alredy successful.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult AlreadyStopped(ChargingSession_Id  SessionId,
+                                                      String              AdditionalInfo   = null,
+                                                      TimeSpan?           Runtime          = null)
+
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.AlreadyStopped,
+                                    I18NString.Create(Languages.eng, "The charging process was already stopped!"),
+                                    AdditionalInfo,
+                                    Runtime: Runtime);
+
+        #endregion
+
+        #region (static) Success           (SessionId, ..., ChargeDetailRecord, Runtime = null)
 
         /// <summary>
         /// The remote stop was successful.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
-        /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        /// <param name="Description">A optional description of the remote stop result.</param>
-        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStopResult Success(ChargingSession_Id       SessionId,
-                                               ChargingReservation_Id?  ReservationId         = null,
-                                               ReservationHandling?     ReservationHandling   = null,
-                                               String                   Description           = null,
-                                               String                   AdditionalInfo        = null,
-                                               TimeSpan?                Runtime               = null)
-
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.Success,
-                                    ReservationId,
-                                    ReservationHandling,
-                                    Description,
-                                    AdditionalInfo,
-                                    Runtime);
-
-        #endregion
-
-        #region (static) Success(ChargeDetailRecord, ReservationId = null, ReservationHandling = null, Description = null, AdditionalInfo = null, Runtime = null)
-
-        /// <summary>
-        /// The remote stop was successful.
-        /// </summary>
         /// <param name="ChargeDetailRecord">The charge detail record for a successfully stopped charging process.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         /// <param name="Description">A optional description of the remote stop result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStopResult Success(ChargeDetailRecord       ChargeDetailRecord,
+        public static RemoteStopResult Success(ChargingSession_Id       SessionId,
+                                               I18NString               Description           = null,
+                                               String                   AdditionalInfo        = null,
                                                ChargingReservation_Id?  ReservationId         = null,
                                                ReservationHandling?     ReservationHandling   = null,
-                                               String                   Description           = null,
-                                               String                   AdditionalInfo        = null,
+                                               ChargeDetailRecord       ChargeDetailRecord    = null,
                                                TimeSpan?                Runtime               = null)
 
-            => new RemoteStopResult(ChargeDetailRecord,
+            => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Success,
-                                    ReservationId,
-                                    ReservationHandling,
                                     Description,
                                     AdditionalInfo,
+                                    ReservationId,
+                                    ReservationHandling,
+                                    ChargeDetailRecord,
                                     Runtime);
 
         #endregion
 
-        #region (static) AlreadyStopped(SessionId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) AsyncOperation    (SessionId, Description = null, ..., Runtime = null)
 
         /// <summary>
-        /// A previous remote stop was alredy successful.
+        /// An async remote stop was sent successfully.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Description">A optional description of the remote stop result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStopResult AlreadyStopped(ChargingSession_Id  SessionId,
-                                                      String              Description      = null,
+        public static RemoteStopResult AsyncOperation(ChargingSession_Id  SessionId,
+                                                      I18NString          Description      = null,
                                                       String              AdditionalInfo   = null,
                                                       TimeSpan?           Runtime          = null)
 
             => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.AlreadyStopped,
-                                    Description,
+                                    RemoteStopResultTypes.AsyncOperation,
+                                    Description ?? I18NString.Create(Languages.eng, "An async remote stop was sent successfully!"),
                                     AdditionalInfo,
-                                    Runtime);
+                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) Timeout(SessionId, Runtime = null)
+        #region (static) Timeout           (SessionId, Description = null,                        Runtime = null)
 
         /// <summary>
         /// The remote stop ran into a timeout.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="Description">An optional error message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Timeout(ChargingSession_Id  SessionId,
-                                               TimeSpan?           Runtime  = null)
+                                               I18NString          Description   = null,
+                                               TimeSpan?           Runtime       = null)
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Timeout,
+                                    Description ?? I18NString.Create(Languages.eng, "A timeout occured!"),
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) CommunicationError(SessionId, Message = null, Runtime = null)
+        #region (static) CommunicationError(SessionId, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote stop led to a communication error.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        /// <param name="Message">An optional error message.</param>
+        /// <param name="Description">An optional error message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult CommunicationError(ChargingSession_Id  SessionId,
-                                                          String              Message  = null,
-                                                          TimeSpan?           Runtime  = null)
+                                                          I18NString          Description      = null,
+                                                          String              AdditionalInfo   = null,
+                                                          TimeSpan?           Runtime          = null)
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.CommunicationError,
-                                    Message,
+                                    Description ?? I18NString.Create(Languages.eng, "A communication error occured!"),
+                                    AdditionalInfo,
                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Error(SessionId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Error             (SessionId, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote stop led to an error.
@@ -432,18 +374,86 @@ namespace org.GraphDefined.WWCP
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult Error(ChargingSession_Id  SessionId,
-                                             String              Description      = null,
+                                             I18NString          Description      = null,
                                              String              AdditionalInfo   = null,
                                              TimeSpan?           Runtime          = null)
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Error,
-                                    Description,
+                                    Description ?? I18NString.Create(Languages.eng, "An error occured!"),
                                     AdditionalInfo,
-                                    Runtime);
+                                    Runtime: Runtime);
+
+
+        /// <summary>
+        /// The remote stop led to an error.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="Description">A optional description of the remote stop result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStopResult Error(ChargingSession_Id  SessionId,
+                                             String              Description,
+                                             String              AdditionalInfo   = null,
+                                             TimeSpan?           Runtime          = null)
+
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultTypes.Error,
+                                    Description?.Trim().IsNotNullOrEmpty() == false
+                                         ? I18NString.Create(Languages.eng, Description)
+                                         : I18NString.Create(Languages.eng, "An error occured!"),
+                                    AdditionalInfo,
+                                    Runtime: Runtime);
 
         #endregion
 
+
+        #region ToJSON(ResponseMapper = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="ResponseMapper">An optional response mapper delegate.</param>
+        public JObject ToJSON(Func<JObject, JObject> ResponseMapper = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                new JProperty("result",                     Result.             ToString()),
+
+                new JProperty("sessionId",                  SessionId.          ToString()),
+
+                Description.IsNeitherNullNorEmpty()
+                    ? new JProperty("description",          Description.        ToJSON())
+                    : null,
+
+                AdditionalInfo.IsNotNullOrEmpty()
+                    ? new JProperty("additionalInfo",       AdditionalInfo)
+                    : null,
+
+                ReservationId.HasValue
+                    ? new JProperty("reservationId",        ReservationId.      ToString())
+                    : null,
+
+                new JProperty("reservationHandling",        ReservationHandling.ToString()),
+
+                ChargeDetailRecord != null
+                    ? new JProperty("chargeDetailRecord",   ReservationId.      ToString())
+                    : null,
+
+                Runtime.HasValue
+                    ? new JProperty("runtime",              Math.Round(Runtime.Value.TotalMilliseconds, 0))
+                    : null
+
+            );
+
+            return ResponseMapper != null
+                       ? ResponseMapper(JSON)
+                       : JSON;
+
+        }
+
+        #endregion
 
         #region (override) ToString()
 
@@ -451,9 +461,9 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return Result.ToString();
-        }
+
+            => Result.ToString() +
+               (Description.IsNeitherNullNorEmpty() ? ": " + Description.FirstText() : "");
 
         #endregion
 
@@ -507,14 +517,19 @@ namespace org.GraphDefined.WWCP
         Offline,
 
         /// <summary>
+        /// A previous remote stop was alredy successful.
+        /// </summary>
+        AlreadyStopped,
+
+        /// <summary>
         /// The remote stop was successful.
         /// </summary>
         Success,
 
         /// <summary>
-        /// A previous remote stop was alredy successful.
+        /// An async remote stop was sent successfully.
         /// </summary>
-        AlreadyStopped,
+        AsyncOperation,
 
         /// <summary>
         /// The remote stop ran into a timeout.

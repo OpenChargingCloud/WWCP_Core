@@ -54,10 +54,10 @@ namespace org.GraphDefined.WWCP
         public ChargingStationOperator_Id?  ChargingStationOperatorId
             => _Reservations.LastOrDefault()?.ChargingStationOperatorId;
 
-        public EMPRoamingProvider_Id? EMPRoamingProviderId
+        public CSORoamingProvider_Id? EMPRoamingProviderId
             => _Reservations.LastOrDefault()?.EMPRoamingProviderId;
 
-        public CSORoamingProvider_Id? CSORoamingProviderId
+        public EMPRoamingProvider_Id? CSORoamingProviderId
             => _Reservations.LastOrDefault()?.CSORoamingProviderId;
 
         public ulong Length => throw new NotImplementedException();

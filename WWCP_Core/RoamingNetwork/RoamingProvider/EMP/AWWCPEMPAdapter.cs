@@ -34,8 +34,8 @@ namespace org.GraphDefined.WWCP
 {
 
 
-    public abstract class AWWCPCSOAdapter<TChargeDetailRecords> : ABaseEMobilityEntity<CSORoamingProvider_Id>
-                                                      //            ICSORoamingProvider
+    public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ABaseEMobilityEntity<EMPRoamingProvider_Id>
+                                                      //            IEMPRoamingProvider
     {
 
         #region (class) PropertyUpdateInfos
@@ -216,7 +216,7 @@ namespace org.GraphDefined.WWCP
         #region OnWWCPCPOAdapterException
 
         public delegate Task OnWWCPCPOAdapterExceptionDelegate(DateTime             Timestamp,
-                                                               AWWCPCSOAdapter<TChargeDetailRecords>      Sender,
+                                                               AWWCPEMPAdapter<TChargeDetailRecords>      Sender,
                                                                Exception            Exception);
 
         public event OnWWCPCPOAdapterExceptionDelegate OnWWCPCPOAdapterException;
@@ -226,11 +226,11 @@ namespace org.GraphDefined.WWCP
 
         #region FlushEVSEDataAndStatusQueues
 
-        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesStartedDelegate FlushEVSEDataAndStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesFinishedDelegate FlushEVSEDataAndStatusQueuesFinishedEvent;
 
@@ -238,11 +238,11 @@ namespace org.GraphDefined.WWCP
 
         #region FlushEVSEFastStatusQueues
 
-        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesStartedDelegate FlushEVSEFastStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesFinishedDelegate FlushEVSEFastStatusQueuesFinishedEvent;
 
@@ -250,11 +250,11 @@ namespace org.GraphDefined.WWCP
 
         #region FlushChargeDetailRecordsQueues
 
-        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesStartedDelegate FlushChargeDetailRecordsQueuesStartedEvent;
 
-        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPCSOAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPEMPAdapter<TChargeDetailRecords> Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesFinishedDelegate FlushChargeDetailRecordsQueuesFinishedEvent;
 
@@ -289,7 +289,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
         /// 
         /// <param name="DNSClient">The attached DNS service.</param>
-        protected AWWCPCSOAdapter(CSORoamingProvider_Id       Id,
+        protected AWWCPEMPAdapter(EMPRoamingProvider_Id       Id,
                                   I18NString                  Name,
                                   I18NString                  Description,
                                   RoamingNetwork              RoamingNetwork,

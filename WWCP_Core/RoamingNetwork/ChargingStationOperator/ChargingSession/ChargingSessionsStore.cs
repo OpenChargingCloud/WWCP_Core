@@ -101,8 +101,8 @@ namespace org.GraphDefined.WWCP
 
                            var session = ChargingSession.Parse(chargingSession);
                            session.RoamingNetworkId           = chargingSession["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(chargingSession["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?();
-                           session.CSORoamingProviderIdStart  = chargingSession["CSORoamingProviderId"]      != null ? CSORoamingProvider_Id.     Parse(chargingSession["CSORoamingProviderId"]?.     Value<String>()) : new CSORoamingProvider_Id?();
-                           session.EMPRoamingProviderIdStart  = chargingSession["EMPRoamingProviderId"]      != null ? EMPRoamingProvider_Id.     Parse(chargingSession["EMPRoamingProviderId"]?.     Value<String>()) : new EMPRoamingProvider_Id?();
+                           session.EMPRoamingProviderIdStart  = chargingSession["CSORoamingProviderId"]      != null ? EMPRoamingProvider_Id.     Parse(chargingSession["CSORoamingProviderId"]?.     Value<String>()) : new EMPRoamingProvider_Id?();
+                           session.CSORoamingProviderIdStart  = chargingSession["EMPRoamingProviderId"]      != null ? CSORoamingProvider_Id.     Parse(chargingSession["EMPRoamingProviderId"]?.     Value<String>()) : new CSORoamingProvider_Id?();
                            session.ChargingStationOperatorId  = chargingSession["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(chargingSession["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?();
                            session.ChargingPoolId             = chargingSession["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(chargingSession["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?();
                            session.ChargingStationId          = chargingSession["chargingStationId"]         != null ? ChargingStation_Id.        Parse(chargingSession["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?();
@@ -498,9 +498,10 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region RemoteStart(NewChargingSession, UpdateFunc = null)
+        #region RemoteStart(NewChargingSession, Result, UpdateFunc = null)
 
         public Boolean RemoteStart(ChargingSession          NewChargingSession,
+                                   RemoteStartResult        Result,
                                    Action<ChargingSession>  UpdateFunc = null)
         {
 
@@ -540,8 +541,9 @@ namespace org.GraphDefined.WWCP
 
         public Boolean RemoteStop(ChargingSession_Id     Id,
                                   AAuthentication        Authentication,
-                                  eMobilityProvider_Id?  ProviderId           = null,
-                                  ICSORoamingProvider    CSORoamingProvider   = null)
+                                  eMobilityProvider_Id?  ProviderId,
+                                  IEMPRoamingProvider    CSORoamingProvider,
+                                  RemoteStopResult       Result)
         {
 
             lock (InternalData)
@@ -552,9 +554,11 @@ namespace org.GraphDefined.WWCP
 
                     session.SessionTime.EndTime     = DateTime.UtcNow;
                     session.SystemIdStop            = System_Id.Parse(Environment.MachineName);
-                    session.CSORoamingProviderStop  = CSORoamingProvider;
+                    session.EMPRoamingProviderStop  = CSORoamingProvider;
                     session.ProviderIdStop          = ProviderId;
                     session.AuthenticationStop      = Authentication;
+                    session.CDR                     = Result.ChargeDetailRecord;
+                    session.RuntimeStop             = Result.Runtime;
 
                     LogIt("remoteStop",
                           session.Id,
@@ -617,7 +621,7 @@ namespace org.GraphDefined.WWCP
         public Boolean AuthStop(ChargingSession_Id    Id,
                                 AAuthentication       Authentication,
                                 eMobilityProvider_Id  ProviderId,
-                                ICSORoamingProvider   CSORoamingProvider  = null)
+                                IEMPRoamingProvider   CSORoamingProvider  = null)
         {
 
             lock (InternalData)
@@ -628,7 +632,7 @@ namespace org.GraphDefined.WWCP
 
                     session.SessionTime.EndTime     = DateTime.UtcNow;
                     session.SystemIdStop            = System_Id.Parse(Environment.MachineName);
-                    session.CSORoamingProviderStop  = CSORoamingProvider;
+                    session.EMPRoamingProviderStop  = CSORoamingProvider;
                     session.ProviderIdStop          = ProviderId;
                     session.AuthenticationStop      = Authentication;
 

@@ -659,6 +659,12 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
 
+        /// <summary>
+        /// The roaming provider of this charging station operator.
+        /// </summary>
+        [Optional]
+        public ICSORoamingProvider             EMPRoamingProvider               { get; }
+
         #endregion
 
         #region Events

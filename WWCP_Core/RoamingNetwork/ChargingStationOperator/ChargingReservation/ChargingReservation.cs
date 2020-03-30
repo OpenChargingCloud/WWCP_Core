@@ -82,9 +82,9 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public eMobilityProvider_Id?     ProviderId                 { get; }
 
-        public EMPRoamingProvider_Id?    EMPRoamingProviderId       { get; internal set; }
+        public CSORoamingProvider_Id?    EMPRoamingProviderId       { get; internal set; }
 
-        public CSORoamingProvider_Id?    CSORoamingProviderId       { get; internal set; }
+        public EMPRoamingProvider_Id?    CSORoamingProviderId       { get; internal set; }
 
         [Optional]
         public AAuthentication           StartAuthentication        { get; internal set; }

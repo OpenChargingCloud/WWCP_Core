@@ -1719,10 +1719,10 @@ namespace org.GraphDefined.WWCP.Virtual
                             #region Not matching reservation identifications...
 
                             if (firstReservation != null && !ReservationId.HasValue)
-                                result = RemoteStartResult.Reserved("Missing reservation identification!");
+                                result = RemoteStartResult.Reserved(I18NString.Create(Languages.eng, "Missing reservation identification!"));
 
                             else if (firstReservation != null && ReservationId.HasValue && firstReservation.Id != ReservationId.Value)
-                                result = RemoteStartResult.Reserved("Invalid reservation identification!");
+                                result = RemoteStartResult.Reserved(I18NString.Create(Languages.eng, "Invalid reservation identification!"));
 
                             #endregion
 
@@ -2038,9 +2038,12 @@ namespace org.GraphDefined.WWCP.Virtual
                                 //                                this,
                                 //                                _ChargeDetailRecord);
 
-                                result = RemoteStopResult.Success(_ChargeDetailRecord,
+                                result = RemoteStopResult.Success(SessionId,
+                                                                  null,
+                                                                  null,
                                                                   __ChargingSession.Reservation?.Id,
-                                                                  ReservationHandling);
+                                                                  ReservationHandling,
+                                                                  _ChargeDetailRecord);
 
                             }
 

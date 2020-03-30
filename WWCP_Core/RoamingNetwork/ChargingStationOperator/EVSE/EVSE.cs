@@ -2406,7 +2406,7 @@ namespace org.GraphDefined.WWCP
                     AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
                 {
 
-                    #region Try RemoteEVSE...
+                    #region Try Remote EVSE
 
                     if (RemoteEVSE != null)
                     {
@@ -2445,7 +2445,7 @@ namespace org.GraphDefined.WWCP
 
                     #endregion
 
-                    #region Try RemoteChargingStation
+                    #region Try Remote Charging Station
 
                     else if (ChargingStation.RemoteChargingStation != null)
                     {
@@ -2467,7 +2467,7 @@ namespace org.GraphDefined.WWCP
 
                     #endregion
 
-                    #region Try RemoteChargingPool
+                    #region Try Remote Charging Pool
 
                     else if (ChargingStation.ChargingPool.RemoteChargingPool != null)
                     {
@@ -2489,7 +2489,7 @@ namespace org.GraphDefined.WWCP
 
                     #endregion
 
-                    #region Try RemoteChargingStationOperator
+                    #region Try Remote Charging Station Operator
 
                     else if (ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator != null)
                     {
@@ -2510,6 +2510,29 @@ namespace org.GraphDefined.WWCP
                     }
 
                     #endregion
+
+                    #region Try EMP Roaming Provider
+
+                    else if (ChargingStation.ChargingPool.Operator.EMPRoamingProvider != null)
+                    {
+
+                        result = await ChargingStation.ChargingPool.Operator.EMPRoamingProvider.
+                                           RemoteStart(ChargingLocation,
+                                                       ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
+
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
+
+                    }
+
+                    #endregion
+
 
                     #region ...or send 'OFFLINE'...
 
@@ -2672,7 +2695,7 @@ namespace org.GraphDefined.WWCP
                     if (SessionId == ChargingSession?.Id)
                     {
 
-                        #region Try RemoteEVSE...
+                        #region Try Remote EVSE
 
                         if (RemoteEVSE != null)
                         {
@@ -2692,7 +2715,7 @@ namespace org.GraphDefined.WWCP
 
                         #endregion
 
-                        #region Try RemoteChargingStation
+                        #region Try Remote Charging Station
 
                         else if (ChargingStation.RemoteChargingStation != null)
                         {
@@ -2712,7 +2735,7 @@ namespace org.GraphDefined.WWCP
 
                         #endregion
 
-                        #region Try RemoteChargingPool
+                        #region Try Remote Charging Pool
 
                         else if (ChargingStation.ChargingPool.RemoteChargingPool != null)
                         {
@@ -2732,7 +2755,7 @@ namespace org.GraphDefined.WWCP
 
                         #endregion
 
-                        #region Try RemoteChargingStationOperator
+                        #region Try Remote Charging Station Operator
 
                         else if (ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator != null)
                         {
@@ -2751,6 +2774,27 @@ namespace org.GraphDefined.WWCP
                         }
 
                         #endregion
+
+                        #region Try EMP Roaming Provider
+
+                        else if (ChargingStation.ChargingPool.Operator.EMPRoamingProvider != null)
+                        {
+
+                            result = await ChargingStation.ChargingPool.Operator.EMPRoamingProvider.
+                                               RemoteStop(SessionId,
+                                                          ReservationHandling,
+                                                          ProviderId,
+                                                          RemoteAuthentication,
+
+                                                          Timestamp,
+                                                          CancellationToken,
+                                                          EventTrackingId,
+                                                          RequestTimeout);
+
+                        }
+
+                        #endregion
+
 
                         #region ...or send 'OFFLINE'...
 

@@ -19,6 +19,10 @@
 
 using System;
 
+using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -43,15 +47,15 @@ namespace org.GraphDefined.WWCP
         public ChargingSession         Session           { get; }
 
         /// <summary>
-        /// An optional (error) message.
+        /// A optional description of the remote start result.
         /// </summary>
-        public String                  Message           { get; }
+        public I18NString              Description       { get; }
 
         /// <summary>
         /// An optional additional information on this error,
         /// e.g. the HTTP error response.
         /// </summary>
-        public Object                  AdditionalInfo    { get; }
+        public String                  AdditionalInfo    { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -66,20 +70,20 @@ namespace org.GraphDefined.WWCP
         /// Create a new remote start result.
         /// </summary>
         /// <param name="Result">The result of the remote start operation.</param>
-        /// <param name="Session">The charging session.</param>
-        /// <param name="Message">An optional message.</param>
+        /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private RemoteStartResult(RemoteStartResultTypes  Result,
+                                  I18NString              Description      = null,
+                                  String                  AdditionalInfo   = null,
                                   ChargingSession         Session          = null,
-                                  String                  Message          = null,
-                                  Object                  AdditionalInfo   = null,
                                   TimeSpan?               Runtime          = null)
         {
 
             this.Result          = Result;
             this.Session         = Session;
-            this.Message         = Message;
+            this.Description     = Description;
             this.AdditionalInfo  = AdditionalInfo;
             this.Runtime         = Runtime;
 
@@ -99,7 +103,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownOperator(Runtime = null)
+        #region (static) UnknownOperator   (Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
@@ -108,11 +112,12 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult UnknownOperator(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.UnknownOperator,
+                                     I18NString.Create(Languages.eng, "The EVSE or charging station operator is unknown!"), 
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownLocation(Runtime = null)
+        #region (static) UnknownLocation   (Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
@@ -121,11 +126,12 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult UnknownLocation(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.UnknownLocation,
+                                     I18NString.Create(Languages.eng, "The charging location is unknown!"), 
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidSessionId(Runtime = null)
+        #region (static) InvalidSessionId  (Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
@@ -134,6 +140,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult InvalidSessionId(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InvalidSessionId,
+                                     I18NString.Create(Languages.eng, "The session identification is unknown or invalid!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -147,11 +154,12 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult InvalidCredentials(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InvalidCredentials,
+                                     I18NString.Create(Languages.eng, "Unauthorized remote start or invalid credentials!"),
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) AlreadyInUse(Runtime = null)
+        #region (static) AlreadyInUse      (Runtime = null)
 
         /// <summary>
         /// The EVSE is already in use.
@@ -160,28 +168,12 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult AlreadyInUse(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.AlreadyInUse,
+                                     I18NString.Create(Languages.eng, "The EVSE is already in use!"),
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) Reserved(Message, Runtime = null)
-
-        /// <summary>
-        /// The EVSE is reserved.
-        /// </summary>
-        /// <param name="Message">An optional message.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult Reserved(String     Message   = null,
-                                                 TimeSpan?  Runtime   = null)
-
-            => new RemoteStartResult(RemoteStartResultTypes.Reserved,
-                                     null,
-                                     Message,
-                                     Runtime: Runtime);
-
-        #endregion
-
-        #region (static) InternalUse(Runtime = null)
+        #region (static) InternalUse       (Runtime = null)
 
         /// <summary>
         /// The EVSE is reserved for internal use.
@@ -190,11 +182,12 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult InternalUse(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InternalUse,
+                                     I18NString.Create(Languages.eng, "Reserved for internal use!"), 
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService(Runtime = null)
+        #region (static) OutOfService      (Runtime = null)
 
         /// <summary>
         /// The EVSE is out-of-service.
@@ -203,11 +196,12 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult OutOfService(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.OutOfService,
+                                     I18NString.Create(Languages.eng, "The EVSE or charging station is out of service!"),
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) Offline(Runtime = null)
+        #region (static) Offline           (Runtime = null)
 
         /// <summary>
         /// The EVSE is offline.
@@ -216,11 +210,31 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult Offline(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Offline,
+                                     I18NString.Create(Languages.eng, "The EVSE or charging station is offline!"),
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) Success(Session, Runtime = null)
+        #region (static) Reserved          (         Description = null, AdditionalInfo = null, Runtime = null)
+
+        /// <summary>
+        /// The EVSE or charging station is reserved.
+        /// </summary>
+        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Reserved(I18NString  Description      = null,
+                                                 String      AdditionalInfo   = null,
+                                                 TimeSpan?   Runtime          = null)
+
+            => new RemoteStartResult(RemoteStartResultTypes.Reserved,
+                                     Description ?? I18NString.Create(Languages.eng, "The EVSE or charging station is reserved!"),
+                                     AdditionalInfo,
+                                     Runtime: Runtime);
+
+        #endregion
+
+        #region (static) Success           (Session,                                            Runtime = null)
 
         /// <summary>
         /// The remote start was successful and a charging session
@@ -232,64 +246,144 @@ namespace org.GraphDefined.WWCP
                                                 TimeSpan?        Runtime  = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Success,
+                                     Session: Session,
+                                     Runtime: Runtime);
+
+        #endregion
+
+        #region (static) AsyncOperation    (Session, Description = null, AdditionalInfo = null, Runtime = null)
+
+        /// <summary>
+        /// The remote start was successful.
+        /// </summary>
+        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Session">The charging session.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult AsyncOperation(ChargingSession  Session,
+                                                       I18NString       Description      = null,
+                                                       String           AdditionalInfo   = null,
+                                                       TimeSpan?        Runtime          = null)
+
+            => new RemoteStartResult(RemoteStartResultTypes.AsyncOperation,
+                                     Description ?? I18NString.Create(Languages.eng, "An async remote start was sent successfully!"),
+                                     AdditionalInfo,
                                      Session,
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) Timeout(Runtime = null)
+        #region (static) Timeout           (         Description = null,                        Runtime = null)
 
         /// <summary>
         /// The remote start request ran into a timeout.
         /// </summary>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult Timeout(TimeSpan? Runtime = null)
+        /// <param name="Description">An optional error message.</param>
+        public static RemoteStartResult Timeout(I18NString  Description   = null,
+                                                TimeSpan?   Runtime       = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Timeout,
+                                     Description ?? I18NString.Create(Languages.eng, "A timeout occured!"),
                                      Runtime: Runtime);
 
         #endregion
 
-        #region (static) CommunicationError(Message = "", AdditionalInfo = null, Runtime = null)
+        #region (static) CommunicationError(         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// A communication error occured.
         /// </summary>
-        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult CommunicationError(String     Message          = null,
-                                                           Object     AdditionalInfo   = null,
-                                                           TimeSpan?  Runtime          = null)
+        public static RemoteStartResult CommunicationError(I18NString  Description      = null,
+                                                           String      AdditionalInfo   = null,
+                                                           TimeSpan?   Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.CommunicationError,
-                                     null,
-                                     Message,
+                                     Description ?? I18NString.Create(Languages.eng, "A communication error occured!"),
                                      AdditionalInfo,
-                                     Runtime);
+                                     Runtime: Runtime);
 
         #endregion
 
-        #region (static) Error(Message = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Error             (         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start request led to an error.
         /// </summary>
-        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="Description">A optional description of the remote start result.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static RemoteStartResult Error(String     Message          = null,
-                                              Object     AdditionalInfo   = null,
+        public static RemoteStartResult Error(I18NString  Description      = null,
+                                              String      AdditionalInfo   = null,
+                                              TimeSpan?   Runtime          = null)
+
+            => new RemoteStartResult(RemoteStartResultTypes.Error,
+                                     Description ?? I18NString.Create(Languages.eng, "An error occured!"),
+                                     AdditionalInfo,
+                                     Runtime: Runtime);
+
+
+        /// <summary>
+        /// The remote start request led to an error.
+        /// </summary>
+        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult Error(String     Description,
+                                              String     AdditionalInfo   = null,
                                               TimeSpan?  Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Error,
-                                     null,
-                                     Message,
+                                     Description?.Trim().IsNotNullOrEmpty() == false
+                                         ? I18NString.Create(Languages.eng, Description)
+                                         : I18NString.Create(Languages.eng, "An error occured!"),
                                      AdditionalInfo,
-                                     Runtime);
+                                     Runtime: Runtime);
 
         #endregion
 
+
+        #region ToJSON(ResponseMapper = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="ResponseMapper">An optional response mapper delegate.</param>
+        public JObject ToJSON(Func<JObject, JObject> ResponseMapper = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                new JProperty("result",                 Result.     ToString()),
+
+                Session != null
+                    ? new JProperty("session",          Session.    ToString())
+                    : null,
+
+                Description.IsNeitherNullNorEmpty()
+                    ? new JProperty("description",      Description.ToJSON())
+                    : null,
+
+                AdditionalInfo.IsNotNullOrEmpty()
+                    ? new JProperty("additionalInfo",   AdditionalInfo)
+                    : null,
+
+                Runtime.HasValue
+                    ? new JProperty("runtime",          Math.Round(Runtime.Value.TotalMilliseconds, 0))
+                    : null
+
+            );
+
+            return ResponseMapper != null
+                       ? ResponseMapper(JSON)
+                       : JSON;
+
+        }
+
+        #endregion
 
         #region (override) ToString()
 
@@ -297,7 +391,9 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => Result.ToString();
+
+            => Result.ToString() +
+               (Description.IsNeitherNullNorEmpty() ? ": " + Description.FirstText() : "");
 
         #endregion
 
@@ -343,11 +439,6 @@ namespace org.GraphDefined.WWCP
         AlreadyInUse,
 
         /// <summary>
-        /// The EVSE is reserved.
-        /// </summary>
-        Reserved,
-
-        /// <summary>
         /// The EVSE is reserved for internal use.
         /// </summary>
         InternalUse,
@@ -363,10 +454,19 @@ namespace org.GraphDefined.WWCP
         Offline,
 
         /// <summary>
+        /// The EVSE or charging station is reserved.
+        /// </summary>
+        Reserved,
+
+        /// <summary>
         /// The remote start was successful.
         /// </summary>
         Success,
 
+        /// <summary>
+        /// An async remote start was sent successfully.
+        /// </summary>
+        AsyncOperation,
 
         /// <summary>
         /// The remote start request ran into a timeout.

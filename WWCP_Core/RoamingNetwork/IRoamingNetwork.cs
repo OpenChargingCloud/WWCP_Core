@@ -351,6 +351,13 @@ namespace org.GraphDefined.WWCP
         ChargingSessionsStore      SessionsStore               { get; }
 
 
+        Boolean TryGetCSORoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider CSORoamingProvider);
+        IEMPRoamingProvider GetCSORoamingProviderById(EMPRoamingProvider_Id Id);
+
+        Boolean TryGetEMPRoamingProviderById(CSORoamingProvider_Id Id, out ICSORoamingProvider EMPRoamingProvider);
+        ICSORoamingProvider GetEMPRoamingProviderById(CSORoamingProvider_Id Id);
+
+
         IEnumerable<ChargingStationOperator> ChargingStationOperators { get; }
         IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds { get; }
         bool ContainsChargingStationOperator(ChargingStationOperator ChargingStationOperator);
@@ -404,12 +411,12 @@ namespace org.GraphDefined.WWCP
         IEnumerable<eMobilityProvider_Id> eMobilityProviderIds { get; }
         IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus { get; }
         IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus { get; }
-        IEnumerable<IEMPRoamingProvider> EMPRoamingProviders { get; }
+        IEnumerable<ICSORoamingProvider> EMPRoamingProviders { get; }
         eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id ProviderId, I18NString Name = null, I18NString Description = null, eMobilityProviderPriority Priority = null, Action<eMobilityProvider> Configurator = null, RemoteEMobilityProviderCreatorDelegate RemoteEMobilityProviderCreator = null, eMobilityProviderAdminStatusTypes AdminStatus = eMobilityProviderAdminStatusTypes.Operational, eMobilityProviderStatusTypes Status = eMobilityProviderStatusTypes.Available, Action<eMobilityProvider> OnSuccess = null, Action<RoamingNetwork, eMobilityProvider_Id> OnError = null);
 
 
-        ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider _CPORoamingProvider, Action<ICSORoamingProvider> Configurator = null);
-        IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider eMobilityRoamingService, Action<IEMPRoamingProvider> Configurator = null);
+        IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider _CPORoamingProvider, Action<IEMPRoamingProvider> Configurator = null);
+        ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider eMobilityRoamingService, Action<ICSORoamingProvider> Configurator = null);
 
 
 
@@ -434,7 +441,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStartResult>
 
-            RemoteStart(ICSORoamingProvider       ICSORoamingProvider,
+            RemoteStart(IEMPRoamingProvider       ICSORoamingProvider,
                         ChargingLocation          ChargingLocation,
                         ChargingProduct           ChargingProduct            = null,
                         ChargingReservation_Id?   ReservationId              = null,

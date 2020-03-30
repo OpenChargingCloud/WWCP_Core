@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -350,6 +352,41 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ToJSON(ResponseMapper = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="ResponseMapper">An optional response mapper delegate.</param>
+        public JObject ToJSON(Func<JObject, JObject> ResponseMapper = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("result",                  Result.        ToString()),
+
+                           SessionId.HasValue
+                               ? new JProperty("sessionId",         SessionId.     ToString())
+                               : null,
+                           ProviderId.HasValue
+                               ? new JProperty("providerId",        ProviderId.    ToString())
+                               : null,
+                           new JProperty("authorizatorId",          AuthorizatorId.ToString()),
+
+                           Description.IsNotNullOrEmpty()
+                               ? new JProperty("description",       Description)
+                               : null
+
+                       );
+
+            return ResponseMapper != null
+                       ? ResponseMapper(JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
         #region (override) ToString()
 
         /// <summary>
@@ -360,7 +397,6 @@ namespace org.GraphDefined.WWCP
             => Result + (ProviderId != null ? ", " + ProviderId : "");
 
         #endregion
-
 
     }
 

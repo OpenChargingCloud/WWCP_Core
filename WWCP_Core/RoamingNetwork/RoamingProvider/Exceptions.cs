@@ -35,7 +35,7 @@ namespace org.GraphDefined.WWCP
     {
 
         public CSORoamingProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
-                                               CSORoamingProvider_Id  RoamingProviderId)
+                                               EMPRoamingProvider_Id  RoamingProviderId)
 
             : base(RoamingNetwork,
                    "The given charging station roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
@@ -55,7 +55,7 @@ namespace org.GraphDefined.WWCP
     {
 
         public EMPRoamingProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
-                                               EMPRoamingProvider_Id  RoamingProviderId)
+                                               CSORoamingProvider_Id  RoamingProviderId)
 
             : base(RoamingNetwork,
                    "The given e-mobility roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
