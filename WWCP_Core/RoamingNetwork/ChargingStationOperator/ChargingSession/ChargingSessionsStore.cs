@@ -101,11 +101,6 @@ namespace org.GraphDefined.WWCP
 
                            var session = ChargingSession.Parse(chargingSession, RoamingNetwork);
 
-                           if (session.Id.ToString() == "7f0d7978-ab29-462c-908f-b31aa9c9326e")
-                           {
-
-                           }
-
                            switch (command)
                            {
 
