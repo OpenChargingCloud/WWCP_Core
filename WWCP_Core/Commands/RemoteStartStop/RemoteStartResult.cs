@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownOperator   (Runtime = null)
+        #region (static) UnknownOperator    (Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownLocation   (Runtime = null)
+        #region (static) UnknownLocation    (Runtime = null)
 
         /// <summary>
         /// The charging location is unknown.
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) InvalidSessionId  (Runtime = null)
+        #region (static) InvalidSessionId   (Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
@@ -145,7 +145,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) InvalidCredentials(Runtime = null)
+        #region (static) InvalidCredentials (Runtime = null)
 
         /// <summary>
         /// Unauthorized remote start or invalid credentials.
@@ -159,7 +159,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) AlreadyInUse      (Runtime = null)
+        #region (static) NoEVConnectedToEVSE(Runtime = null)
+
+        /// <summary>
+        /// No electric vehicle connected to EVSE.
+        /// </summary>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult NoEVConnectedToEVSE(TimeSpan? Runtime = null)
+
+            => new RemoteStartResult(RemoteStartResultTypes.NoEVConnectedToEVSE,
+                                     I18NString.Create(Languages.eng, "No electric vehicle connected to EVSE!"),
+                                     Runtime: Runtime);
+
+        #endregion
+
+        #region (static) AlreadyInUse       (Runtime = null)
 
         /// <summary>
         /// The EVSE is already in use.
@@ -173,7 +187,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) InternalUse       (Runtime = null)
+        #region (static) InternalUse        (Runtime = null)
 
         /// <summary>
         /// The EVSE is reserved for internal use.
@@ -187,7 +201,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) OutOfService      (Runtime = null)
+        #region (static) OutOfService       (Runtime = null)
 
         /// <summary>
         /// The EVSE is out-of-service.
@@ -201,7 +215,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Offline           (Runtime = null)
+        #region (static) Offline            (Runtime = null)
 
         /// <summary>
         /// The EVSE is offline.
@@ -215,7 +229,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Reserved          (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Reserved           (         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The EVSE or charging station is reserved.
@@ -234,7 +248,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Success           (Session,                                            Runtime = null)
+        #region (static) Success            (Session,                                            Runtime = null)
 
         /// <summary>
         /// The remote start was successful and a charging session
@@ -251,7 +265,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) AsyncOperation    (Session, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) AsyncOperation     (Session, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start was successful.
@@ -273,7 +287,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Timeout           (         Description = null,                        Runtime = null)
+        #region (static) Timeout            (         Description = null,                        Runtime = null)
 
         /// <summary>
         /// The remote start request ran into a timeout.
@@ -289,7 +303,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) CommunicationError(         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) CommunicationError (         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// A communication error occured.
@@ -308,7 +322,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Error             (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Error              (         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start request led to an error.
@@ -432,6 +446,11 @@ namespace org.GraphDefined.WWCP
         /// Unauthorized remote start or invalid credentials.
         /// </summary>
         InvalidCredentials,
+
+        /// <summary>
+        /// No electric vehicle connected to EVSE.
+        /// </summary>
+        NoEVConnectedToEVSE,
 
         /// <summary>
         /// The EVSE is already in use.
