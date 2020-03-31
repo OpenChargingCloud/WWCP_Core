@@ -99,27 +99,16 @@ namespace org.GraphDefined.WWCP
                        if (json["chargingSession"] is JObject chargingSession)
                        {
 
-                           var session = ChargingSession.Parse(chargingSession);
-                           session.RoamingNetworkId           = chargingSession["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(chargingSession["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?();
-                           session.EMPRoamingProviderIdStart  = chargingSession["CSORoamingProviderId"]      != null ? EMPRoamingProvider_Id.     Parse(chargingSession["CSORoamingProviderId"]?.     Value<String>()) : new EMPRoamingProvider_Id?();
-                           session.CSORoamingProviderIdStart  = chargingSession["EMPRoamingProviderId"]      != null ? CSORoamingProvider_Id.     Parse(chargingSession["EMPRoamingProviderId"]?.     Value<String>()) : new CSORoamingProvider_Id?();
-                           session.ChargingStationOperatorId  = chargingSession["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(chargingSession["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?();
-                           session.ChargingPoolId             = chargingSession["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(chargingSession["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?();
-                           session.ChargingStationId          = chargingSession["chargingStationId"]         != null ? ChargingStation_Id.        Parse(chargingSession["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?();
-                           session.EVSEId                     = chargingSession["EVSEId"]                    != null ? EVSE_Id.                   Parse(chargingSession["EVSEId"]?.                   Value<String>()) : new EVSE_Id?();
+                           var session = ChargingSession.Parse(chargingSession, RoamingNetwork);
+                           //session.RoamingNetworkId           = chargingSession["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(chargingSession["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?();
+                           //session.EMPRoamingProviderIdStart  = chargingSession["CSORoamingProviderId"]      != null ? EMPRoamingProvider_Id.     Parse(chargingSession["CSORoamingProviderId"]?.     Value<String>()) : new EMPRoamingProvider_Id?();
+                           //session.CSORoamingProviderIdStart  = chargingSession["EMPRoamingProviderId"]      != null ? CSORoamingProvider_Id.     Parse(chargingSession["EMPRoamingProviderId"]?.     Value<String>()) : new CSORoamingProvider_Id?();
+                           //session.ChargingStationOperatorId  = chargingSession["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(chargingSession["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?();
+                           //session.ChargingPoolId             = chargingSession["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(chargingSession["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?();
+                           //session.ChargingStationId          = chargingSession["chargingStationId"]         != null ? ChargingStation_Id.        Parse(chargingSession["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?();
+                           //session.EVSEId                     = chargingSession["EVSEId"]                    != null ? EVSE_Id.                   Parse(chargingSession["EVSEId"]?.                   Value<String>()) : new EVSE_Id?();
 
                            if (session.Id.ToString() == "7f0d7978-ab29-462c-908f-b31aa9c9326e")
-                           {
-
-                           }
-
-
-                           if (chargingSession["energyMeterValues"] is JObject energyMeterValueObject)
-                           {
-
-                           }
-
-                           else if (chargingSession["energyMeterValues"] is JArray energyMeterValueArray)
                            {
 
                            }

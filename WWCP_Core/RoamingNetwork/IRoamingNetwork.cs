@@ -351,11 +351,14 @@ namespace org.GraphDefined.WWCP
         ChargingSessionsStore      SessionsStore               { get; }
 
 
-        Boolean TryGetCSORoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider CSORoamingProvider);
-        IEMPRoamingProvider GetCSORoamingProviderById(EMPRoamingProvider_Id Id);
+        Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider EMPRoamingProvider);
+        IEMPRoamingProvider GetEMPRoamingProviderById(EMPRoamingProvider_Id Id);
 
-        Boolean TryGetEMPRoamingProviderById(CSORoamingProvider_Id Id, out ICSORoamingProvider EMPRoamingProvider);
-        ICSORoamingProvider GetEMPRoamingProviderById(CSORoamingProvider_Id Id);
+        IEnumerable<IEMPRoamingProvider> EMPRoamingProviders { get; }
+
+
+        Boolean TryGetCSORoamingProviderById(CSORoamingProvider_Id Id, out ICSORoamingProvider CSORoamingProvider);
+        ICSORoamingProvider GetCSORoamingProviderById(CSORoamingProvider_Id Id);
 
 
         IEnumerable<ChargingStationOperator> ChargingStationOperators { get; }
@@ -411,7 +414,7 @@ namespace org.GraphDefined.WWCP
         IEnumerable<eMobilityProvider_Id> eMobilityProviderIds { get; }
         IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus { get; }
         IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus { get; }
-        IEnumerable<ICSORoamingProvider> EMPRoamingProviders { get; }
+
         eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id ProviderId, I18NString Name = null, I18NString Description = null, eMobilityProviderPriority Priority = null, Action<eMobilityProvider> Configurator = null, RemoteEMobilityProviderCreatorDelegate RemoteEMobilityProviderCreator = null, eMobilityProviderAdminStatusTypes AdminStatus = eMobilityProviderAdminStatusTypes.Operational, eMobilityProviderStatusTypes Status = eMobilityProviderStatusTypes.Available, Action<eMobilityProvider> OnSuccess = null, Action<RoamingNetwork, eMobilityProvider_Id> OnError = null);
 
 

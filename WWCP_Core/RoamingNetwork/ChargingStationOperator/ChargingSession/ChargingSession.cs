@@ -181,9 +181,13 @@ namespace org.GraphDefined.WWCP
 
             set
             {
+
                 _ChargingStationOperatorId = value;
                 _ChargingStationOperator   = value.HasValue ? RoamingNetwork?.GetChargingStationOperatorById(value.Value) : null;
-                _RoamingNetwork            = _ChargingStationOperator?.RoamingNetwork;
+
+                if (_RoamingNetwork == null)
+                    _RoamingNetwork        = _ChargingStationOperator?.RoamingNetwork;
+
             }
 
         }
@@ -204,9 +208,13 @@ namespace org.GraphDefined.WWCP
 
             set
             {
+
                 _ChargingStationOperator    = value;
                 _ChargingStationOperatorId  = value?.Id;
-                RoamingNetwork              = value?.RoamingNetwork;
+
+                if (_RoamingNetwork == null)
+                    RoamingNetwork          = value?.RoamingNetwork;
+
             }
 
         }
@@ -602,7 +610,7 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                _ProviderStop    = value;
+                _ProviderStop   = value;
                 _ProviderIdStop = value?.Id;
 
             }
@@ -643,7 +651,7 @@ namespace org.GraphDefined.WWCP
             set
             {
                 _CSORoamingProviderIdStart = value;
-                _CSORoamingProviderStart   = value.HasValue ? RoamingNetwork?.GetEMPRoamingProviderById(value.Value) : null;
+                _CSORoamingProviderStart   = value.HasValue ? RoamingNetwork?.GetCSORoamingProviderById(value.Value) : null;
             }
 
         }
@@ -670,8 +678,23 @@ namespace org.GraphDefined.WWCP
 
         #region CSORoamingProviderStop
 
-        public CSORoamingProvider_Id? CSORoamingProviderIdStop { get; set; }
+        private CSORoamingProvider_Id? _CSORoamingProviderIdStop;
 
+        public CSORoamingProvider_Id? CSORoamingProviderIdStop
+        {
+
+            get
+            {
+                return _CSORoamingProviderIdStop;
+            }
+
+            set
+            {
+                _CSORoamingProviderIdStop = value;
+                _CSORoamingProviderStop   = value.HasValue ? RoamingNetwork?.GetCSORoamingProviderById(value.Value) : null;
+            }
+
+        }
 
         private ICSORoamingProvider _CSORoamingProviderStop;
 
@@ -696,12 +719,27 @@ namespace org.GraphDefined.WWCP
 
         #region EMPRoamingProviderStart
 
-        public EMPRoamingProvider_Id?     EMPRoamingProviderIdStart          { get; set; }
+        private EMPRoamingProvider_Id? _EMPRoamingProviderIdStart;
 
+        public EMPRoamingProvider_Id? EMPRoamingProviderIdStart
+        {
+
+            get
+            {
+                return _EMPRoamingProviderIdStart;
+            }
+
+            set
+            {
+                _EMPRoamingProviderIdStart = value;
+                _EMPRoamingProviderStart   = value.HasValue ? RoamingNetwork?.GetEMPRoamingProviderById(value.Value) : null;
+            }
+
+        }
 
         private IEMPRoamingProvider _EMPRoamingProviderStart;
 
-        public IEMPRoamingProvider        EMPRoamingProviderStart
+        public IEMPRoamingProvider EMPRoamingProviderStart
         {
 
             get
@@ -721,12 +759,27 @@ namespace org.GraphDefined.WWCP
 
         #region EMPRoamingProviderStop
 
-        public EMPRoamingProvider_Id?     EMPRoamingProviderIdStop          { get; set; }
+        private EMPRoamingProvider_Id? _EMPRoamingProviderIdStop;
 
+        public EMPRoamingProvider_Id? EMPRoamingProviderIdStop
+        {
+
+            get
+            {
+                return _EMPRoamingProviderIdStop;
+            }
+
+            set
+            {
+                _EMPRoamingProviderIdStop = value;
+                _EMPRoamingProviderStop   = value.HasValue ? RoamingNetwork?.GetEMPRoamingProviderById(value.Value) : null;
+            }
+
+        }
 
         private IEMPRoamingProvider _EMPRoamingProviderStop;
 
-        public IEMPRoamingProvider        EMPRoamingProviderStop
+        public IEMPRoamingProvider EMPRoamingProviderStop
         {
 
             get
@@ -879,11 +932,11 @@ namespace org.GraphDefined.WWCP
                                  : null,
 
                              CSORoamingProviderIdStart.HasValue
-                                 ? new JProperty("EMPRoamingProviderId",  CSORoamingProviderIdStart.ToString())
+                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStart.ToString())
                                  : null,
 
                              EMPRoamingProviderIdStart.HasValue
-                                 ? new JProperty("CSORoamingProviderId",  EMPRoamingProviderIdStart.ToString())
+                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStart.ToString())
                                  : null,
 
                              ProviderIdStart != null
@@ -915,11 +968,11 @@ namespace org.GraphDefined.WWCP
                                  : null,
 
                              CSORoamingProviderIdStop.HasValue
-                                 ? new JProperty("EMPRoamingProviderId",  CSORoamingProviderIdStop. ToString())
+                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop. ToString())
                                  : null,
 
                              EMPRoamingProviderIdStop.HasValue
-                                 ? new JProperty("CSORoamingProviderId",  EMPRoamingProviderIdStop. ToString())
+                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop. ToString())
                                  : null,
 
                              ProviderIdStop != null
@@ -999,7 +1052,10 @@ namespace org.GraphDefined.WWCP
             );
 
 
-        public static ChargingSession Parse(JObject JSON)
+        public static ChargingSession Parse(String Text, IRoamingNetwork RoamingNetwork)
+            => Parse(JObject.Parse(Text), RoamingNetwork);
+
+        public static ChargingSession Parse(JObject JSON, IRoamingNetwork RoamingNetwork)
         {
 
             // {
@@ -1050,9 +1106,8 @@ namespace org.GraphDefined.WWCP
 
             var session = new ChargingSession(ChargingSession_Id.Parse(JSON["@id"]?.Value<String>())) {
 
-                RoamingNetworkId           = JSON["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(JSON["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?(),
-                EMPRoamingProviderIdStart  = JSON["CSORoamingProviderId"]      != null ? EMPRoamingProvider_Id.     Parse(JSON["CSORoamingProviderId"]?.     Value<String>()) : new EMPRoamingProvider_Id?(),
-                CSORoamingProviderIdStart  = JSON["EMPRoamingProviderId"]      != null ? CSORoamingProvider_Id.     Parse(JSON["EMPRoamingProviderId"]?.     Value<String>()) : new CSORoamingProvider_Id?(),
+                RoamingNetwork             = RoamingNetwork,
+                //RoamingNetworkId           = JSON["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(JSON["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?(),
                 ChargingStationOperatorId  = JSON["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(JSON["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?(),
                 ChargingPoolId             = JSON["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(JSON["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?(),
                 ChargingStationId          = JSON["chargingStationId"]         != null ? ChargingStation_Id.        Parse(JSON["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?(),
@@ -1072,8 +1127,8 @@ namespace org.GraphDefined.WWCP
                     session.SessionTime                = new StartEndDateTime(startTime.Value);
 
                     session.SystemIdStart              = sessionStartJSON["systemId"]             != null                  ? System_Id.            Parse(sessionStartJSON["systemId"]?.            Value<String>()) : new System_Id?();
-                    session.CSORoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStartJSON["EMPRoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                    session.EMPRoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStartJSON["CSORoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                    session.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStartJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                    session.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStartJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
                     session.ProviderIdStart            = sessionStartJSON["providerId"]           != null                  ? eMobilityProvider_Id. Parse(sessionStartJSON["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
                     session.AuthenticationStart        = sessionStartJSON["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                       : null;
 
@@ -1090,8 +1145,8 @@ namespace org.GraphDefined.WWCP
                         session.SessionTime                = new StartEndDateTime(startTime.Value, stopTime);
 
                         session.SystemIdStop               = sessionStopJSON["systemId"]             != null                  ? System_Id.            Parse(sessionStopJSON["systemId"]?.            Value<String>()) : new System_Id?();
-                        session.CSORoamingProviderIdStop   = sessionStopJSON["EMPRoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStopJSON["EMPRoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                        session.EMPRoamingProviderIdStop   = sessionStopJSON["CSORoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStopJSON["CSORoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                        session.EMPRoamingProviderIdStop   = sessionStopJSON["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStopJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
+                        session.CSORoamingProviderIdStop   = sessionStopJSON["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStopJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
                         session.ProviderIdStop             = sessionStopJSON["providerId"]           != null                  ? eMobilityProvider_Id. Parse(sessionStopJSON["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
                         session.AuthenticationStop         = sessionStopJSON["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                       : null;
 
