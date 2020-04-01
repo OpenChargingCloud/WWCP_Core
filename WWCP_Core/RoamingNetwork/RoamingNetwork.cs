@@ -234,7 +234,10 @@ namespace org.GraphDefined.WWCP
         public ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator    { get; }
 
 
-        public Func<ChargeDetailRecord, ChargeDetailRecordFilters> ChargeDetailRecordFilter { get; set; }
+        /// <summary>
+        /// A delegate for filtering charge detail records.
+        /// </summary>
+        public ChargeDetailRecordFilterDelegate          ChargeDetailRecordFilter                     { get; }
 
         #endregion
 

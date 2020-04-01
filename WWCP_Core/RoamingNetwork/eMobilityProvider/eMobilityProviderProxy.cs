@@ -487,7 +487,10 @@ namespace org.GraphDefined.WWCP
 
         //#endregion
 
-        public Func<ChargeDetailRecord, ChargeDetailRecordFilters> ChargeDetailRecordFilter { get; set; }
+        /// <summary>
+        /// A delegate for filtering charge detail records.
+        /// </summary>
+        public ChargeDetailRecordFilterDelegate  ChargeDetailRecordFilter    { get; }
 
         #endregion
 
@@ -582,8 +585,8 @@ namespace org.GraphDefined.WWCP
                                    I18NString                              Name                             = null,
                                    I18NString                              Description                      = null,
                                    eMobilityProviderPriority               Priority                         = null,
-                                   eMobilityProviderAdminStatusTypes        AdminStatus                      = eMobilityProviderAdminStatusTypes.Operational,
-                                   eMobilityProviderStatusTypes             Status                           = eMobilityProviderStatusTypes.Available,
+                                   eMobilityProviderAdminStatusTypes       AdminStatus                      = eMobilityProviderAdminStatusTypes.Operational,
+                                   eMobilityProviderStatusTypes            Status                           = eMobilityProviderStatusTypes.Available,
                                    UInt16                                  MaxAdminStatusListSize           = DefaultMaxAdminStatusListSize,
                                    UInt16                                  MaxStatusListSize                = DefaultMaxStatusListSize)
 
@@ -613,6 +616,8 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule              = new StatusSchedule<eMobilityProviderStatusTypes>();
             this._StatusSchedule.Insert(Status);
 
+            this.ChargeDetailRecordFilter     = ChargeDetailRecordFilter ?? (cdr => ChargeDetailRecordFilters.forward);
+
             #endregion
 
             Configurator?.Invoke(this);
@@ -622,7 +627,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
 
 
         #region eMobilityStations

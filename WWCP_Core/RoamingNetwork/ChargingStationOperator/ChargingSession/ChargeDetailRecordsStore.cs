@@ -139,7 +139,7 @@ namespace org.GraphDefined.WWCP
                 LogIt("sent",
                       SendCDRResult.ChargeDetailRecord.SessionId,
                       "sendChargeDetailRecordResult",
-                      SendCDRResult.ToJSON());
+                      SendCDRResult.ToJSON(Embedded: true));
 
             }
 

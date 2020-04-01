@@ -36,6 +36,13 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering charge detail records.
+    /// </summary>
+    /// <param name="ChargeDetailRecord">A charge detail record to filter.</param>
+    public delegate ChargeDetailRecordFilters ChargeDetailRecordFilterDelegate(ChargeDetailRecord ChargeDetailRecord);
+
+
+    /// <summary>
     /// A charge detail record for a charging session.
     /// </summary>
     public class ChargeDetailRecord : AEMobilityEntity<ChargeDetailRecord_Id>,

@@ -136,56 +136,81 @@ namespace org.GraphDefined.WWCP
         /// The offical (multi-language) name of the charging station operator roaming provider.
         /// </summary>
         [Mandatory]
-        public I18NString                  Name                              { get; }
+        public I18NString                         Name                              { get; }
 
         /// <summary>
         /// An optional (multi-language) description of the charging station operator roaming provider.
         /// </summary>
         [Optional]
-        public I18NString                  Description                       { get; }
+        public I18NString                         Description                       { get; }
 
 
         /// <summary>
-        /// Only include EVSE identificators matching the given delegate.
+        /// Only include EVSE identifications matching the given delegate.
         /// </summary>
-        public IncludeEVSEIdDelegate       IncludeEVSEIds                    { get; set; }
+        public IncludeEVSEIdDelegate              IncludeEVSEIds                    { get; }
 
         /// <summary>
         /// Only include EVSEs matching the given delegate.
         /// </summary>
-        public IncludeEVSEDelegate         IncludeEVSEs                      { get; set; }
+        public IncludeEVSEDelegate                IncludeEVSEs                      { get; }
+
+        /// <summary>
+        /// Only include charging station identifications matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationIdDelegate   IncludeChargingStationIds         { get; }
+
+        /// <summary>
+        /// Only include charging stations matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationDelegate     IncludeChargingStations           { get; }
+
+        /// <summary>
+        /// Only include charging pool identifications matching the given delegate.
+        /// </summary>
+        public IncludeChargingPoolIdDelegate      IncludeChargingPoolIds            { get; }
+
+        /// <summary>
+        /// Only include charging pools matching the given delegate.
+        /// </summary>
+        public IncludeChargingPoolDelegate        IncludeChargingPools              { get; }
 
         ///// <summary>
         ///// A delegate to customize the mapping of EVSE identifications.
         ///// </summary>
-        //public CustomEVSEIdMapperDelegate  CustomEVSEIdMapper                { get; }
+        //public CustomEVSEIdMapperDelegate        CustomEVSEIdMapper                { get; }
+
+        /// <summary>
+        /// A delegate for filtering charge detail records.
+        /// </summary>
+        public ChargeDetailRecordFilterDelegate   ChargeDetailRecordFilter          { get; }
 
 
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                     DisablePushData                   { get; set; }
+        public Boolean                            DisablePushData                   { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                     DisablePushAdminStatus            { get; set; }
+        public Boolean                            DisablePushAdminStatus            { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                     DisablePushStatus                 { get; set; }
+        public Boolean                            DisablePushStatus                 { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                     DisableAuthentication             { get; set; }
+        public Boolean                            DisableAuthentication             { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                     DisableSendChargeDetailRecords    { get; set; }
+        public Boolean                           DisableSendChargeDetailRecords     { get; set; }
 
 
         /// <summary>
@@ -276,8 +301,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional (multi-language) description of the charging station operator roaming provider.</param>
         /// <param name="RoamingNetwork">A WWCP roaming network.</param>
         /// 
-        /// <param name="IncludeEVSEIds">Only include the EVSE matching the given delegate.</param>
-        /// <param name="IncludeEVSEs">Only include the EVSEs matching the given delegate.</param>
+        /// <param name="IncludeEVSEIds">Only include EVSE identifications matching the given delegate.</param>
+        /// <param name="IncludeEVSEs">Only include EVSEs matching the given delegate.</param>
+        /// <param name="IncludeChargingStationIds">Only include charging station identifications matching the given delegate.</param>
+        /// <param name="IncludeChargingStations">Only include charging stations matching the given delegate.</param>
+        /// <param name="IncludeChargingPoolIds">Only include charging pool identifications matching the given delegate.</param>
+        /// <param name="IncludeChargingPools">Only include charging pools matching the given delegate.</param>
+        /// <param name="ChargeDetailRecordFilter">A delegate for filtering charge detail records.</param>
         /// 
         /// <param name="FlushEVSEDataAndStatusEvery">The service check intervall.</param>
         /// <param name="FlushEVSEFastStatusEvery">The status check intervall.</param>
@@ -289,28 +319,33 @@ namespace org.GraphDefined.WWCP
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
         /// 
         /// <param name="DNSClient">The attached DNS service.</param>
-        protected AWWCPEMPAdapter(EMPRoamingProvider_Id       Id,
-                                  I18NString                  Name,
-                                  I18NString                  Description,
-                                  RoamingNetwork              RoamingNetwork,
+        protected AWWCPEMPAdapter(EMPRoamingProvider_Id              Id,
+                                  I18NString                         Name,
+                                  I18NString                         Description,
+                                  RoamingNetwork                     RoamingNetwork,
 
-                                  IncludeEVSEIdDelegate       IncludeEVSEIds                   = null,
-                                  IncludeEVSEDelegate         IncludeEVSEs                     = null,
+                                  IncludeEVSEIdDelegate              IncludeEVSEIds                   = null,
+                                  IncludeEVSEDelegate                IncludeEVSEs                     = null,
+                                  IncludeChargingStationIdDelegate   IncludeChargingStationIds        = null,
+                                  IncludeChargingStationDelegate     IncludeChargingStations          = null,
+                                  IncludeChargingPoolIdDelegate      IncludeChargingPoolIds           = null,
+                                  IncludeChargingPoolDelegate        IncludeChargingPools             = null,
+                                  ChargeDetailRecordFilterDelegate   ChargeDetailRecordFilter         = null,
 
-                                  TimeSpan?                   FlushEVSEDataAndStatusEvery      = null,
-                                  TimeSpan?                   FlushEVSEFastStatusEvery         = null,
-                                  TimeSpan?                   FlushChargeDetailRecordsEvery    = null,
+                                  TimeSpan?                          FlushEVSEDataAndStatusEvery      = null,
+                                  TimeSpan?                          FlushEVSEFastStatusEvery         = null,
+                                  TimeSpan?                          FlushChargeDetailRecordsEvery    = null,
 
-                                  Boolean                     DisablePushData                  = false,
-                                  Boolean                     DisablePushStatus                = false,
-                                  Boolean                     DisableAuthentication            = false,
-                                  Boolean                     DisableSendChargeDetailRecords   = false,
+                                  Boolean                            DisablePushData                  = false,
+                                  Boolean                            DisablePushStatus                = false,
+                                  Boolean                            DisableAuthentication            = false,
+                                  Boolean                            DisableSendChargeDetailRecords   = false,
 
-                                  String                      EllipticCurve                    = "P-256",
-                                  ECPrivateKeyParameters      PrivateKey                       = null,
-                                  PublicKeyCertificates       PublicKeyCertificates            = null,
+                                  String                             EllipticCurve                    = "P-256",
+                                  ECPrivateKeyParameters             PrivateKey                       = null,
+                                  PublicKeyCertificates              PublicKeyCertificates            = null,
 
-                                  DNSClient                   DNSClient                        = null)
+                                  DNSClient                          DNSClient                        = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -333,8 +368,13 @@ namespace org.GraphDefined.WWCP
             //this._ISendData                                      = this as ISendData;
             //this._ISendStatus                                    = this as ISendStatus;
 
-            this.IncludeEVSEIds                                  = IncludeEVSEIds ?? (evseid => true);
-            this.IncludeEVSEs                                    = IncludeEVSEs   ?? (evse   => true);
+            this.IncludeEVSEIds                                  = IncludeEVSEIds                ?? (evseid             => true);
+            this.IncludeEVSEs                                    = IncludeEVSEs                  ?? (evse               => true);
+            this.IncludeChargingStationIds                       = IncludeChargingStationIds     ?? (chargingStationId  => true);
+            this.IncludeChargingStations                         = IncludeChargingStations       ?? (chargingStation    => true);
+            this.IncludeChargingPoolIds                          = IncludeChargingPoolIds        ?? (chargingPoolId     => true);
+            this.IncludeChargingPools                            = IncludeChargingPools          ?? (chargingPool       => true);
+            this.ChargeDetailRecordFilter                        = ChargeDetailRecordFilter      ?? (chargeDetailRecord => ChargeDetailRecordFilters.forward);
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushStatus                               = DisablePushStatus;
