@@ -101,6 +101,11 @@ namespace org.GraphDefined.WWCP
 
                            var session = ChargingSession.Parse(chargingSession, RoamingNetwork);
 
+                           if (session.Id.ToString() == "f62520b6-9840-4601-b0b8-52e3023a6492")
+                           {
+
+                           }
+
                            switch (command)
                            {
 
@@ -199,6 +204,21 @@ namespace org.GraphDefined.WWCP
 
                                        if (session.EVSE != null)
                                            session.EVSE.ChargingSession = null;
+
+                                   }
+                                   return true;
+
+                               #endregion
+
+                               #region "CDRForwarded"
+
+                               case "CDRForwarded":
+                                   {
+
+                                       if (!InternalData.ContainsKey(session.Id))
+                                           InternalData.Add(session.Id, session);
+                                       else
+                                           InternalData[session.Id] = session;
 
                                    }
                                    return true;
@@ -564,8 +584,7 @@ namespace org.GraphDefined.WWCP
                 if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
 
-                    session.CDRForwarded  = DateTime.UtcNow;
-                    session.CDRResult     = CDRResult;
+                    session.CDRResult = CDRResult;
 
                     LogIt("CDRForwarded",
                           session.Id,

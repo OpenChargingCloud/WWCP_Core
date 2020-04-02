@@ -2978,7 +2978,10 @@ namespace org.GraphDefined.WWCP
                                                                              EventTrackingId,
                                                                              RequestTimeout);
 
-            return SendCDRsResult.OutOfService(Id, this, ChargeDetailRecords);
+            return SendCDRsResult.OutOfService(DateTime.UtcNow,
+                                               Id,
+                                               this,
+                                               ChargeDetailRecords);
 
         }
 

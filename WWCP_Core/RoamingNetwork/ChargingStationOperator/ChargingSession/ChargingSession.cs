@@ -804,8 +804,6 @@ namespace org.GraphDefined.WWCP
 
         public DateTime?                  CDRReceived                   { get; set; }
 
-        public DateTime?                  CDRForwarded                  { get; set; }
-
         public SendCDRResult              CDRResult                     { get; set; }
 
 
@@ -994,7 +992,7 @@ namespace org.GraphDefined.WWCP
 
 
                            CDRReceived.HasValue
-                               ? new JProperty("cdr", JSONObject.Create(
+                               ? new JProperty("CDRReceived", JSONObject.Create(
 
                                      CDRReceived.HasValue
                                          ? new JProperty("timestamp",             CDRReceived.Value. ToIso8601())
@@ -1007,11 +1005,6 @@ namespace org.GraphDefined.WWCP
                                      CDR != null
                                          ? new JProperty("cdr",                   CDR.               ToJSON(Embedded:                           true,
                                                                                                             CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer))
-                                         : null,
-
-
-                                     CDRForwarded.HasValue
-                                         ? new JProperty("forwarded",             CDRForwarded.Value.ToIso8601())
                                          : null,
 
                                      CDRResult != null
@@ -1170,16 +1163,21 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-                if (JSON["cdr"] is JObject sessionCDRJSON)
+                if (JSON["CDRReceived"] is JObject sessionCDRReceivedJSON)
                 {
 
-                    var cdrTime = sessionCDRJSON["timestamp"]?.Value<DateTime>();
+                    var cdrReceivedTime = sessionCDRReceivedJSON["timestamp"]?.Value<DateTime>();
 
-                    if (cdrTime != null)
+                    if (cdrReceivedTime != null)
                     {
-                        session.CDRReceived   = cdrTime;
-                        session.SystemIdCDR   = sessionCDRJSON["systemId"] != null ? System_Id.Parse(sessionCDRJSON["systemId"]?.Value<String>()) : new System_Id?();
-                        session.CDRForwarded  = sessionCDRJSON["forwarded"]?.Value<DateTime>();
+                        session.CDRReceived   = cdrReceivedTime;
+                        session.SystemIdCDR   = sessionCDRReceivedJSON["systemId"] != null ? System_Id.Parse(sessionCDRReceivedJSON["systemId"]?.Value<String>()) : new System_Id?();
+                    }
+
+                    if (sessionCDRReceivedJSON["CDRResult"] is JObject CDRResultJSON)
+                    {
+                        if (SendCDRResult.TryParse(CDRResultJSON, out SendCDRResult sendCDRResult, out String ErrorResponse))
+                            session.CDRResult     = sendCDRResult;
                     }
 
                 }

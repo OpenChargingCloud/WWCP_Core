@@ -5468,7 +5468,8 @@ namespace org.GraphDefined.WWCP
 
                 Endtime  = DateTime.UtcNow;
                 Runtime  = Endtime - StartTime;
-                result   = SendCDRsResult.AdminDown(Id,
+                result   = SendCDRsResult.AdminDown(DateTime.UtcNow,
+                                                    Id,
                                                     this as ISendChargeDetailRecords,
                                                     ChargeDetailRecords,
                                                     Runtime: Runtime);
@@ -5484,7 +5485,8 @@ namespace org.GraphDefined.WWCP
 
                 Endtime  = DateTime.UtcNow;
                 Runtime  = Endtime - StartTime;
-                result   = SendCDRsResult.NoOperation(Id,
+                result   = SendCDRsResult.NoOperation(DateTime.UtcNow,
+                                                      Id,
                                                       this as ISendChargeDetailRecords,
                                                       ChargeDetailRecords,
                                                       Runtime: Runtime);
@@ -5545,9 +5547,9 @@ namespace org.GraphDefined.WWCP
                         if (FilterResult.IsNeitherNullNorEmpty())
                         {
 
-                            resultMap.Add(new SendCDRResult(ChargeDetailRecord,
-                                                            SendCDRResultTypes.Filtered,
-                                                            FilterResult.SafeSelect(filterResult => Warning.Create(filterResult))));
+                            resultMap.Add(SendCDRResult.Filtered(DateTime.UtcNow,
+                                                                 ChargeDetailRecord,
+                                                                 FilterResult.SafeSelect(filterResult => Warning.Create(filterResult))));
 
                             try
                             {
@@ -5936,8 +5938,8 @@ namespace org.GraphDefined.WWCP
                 foreach (var unknownCDR in ChargeDetailRecordsToProcess.ToArray())
                 {
 
-                    resultMap.Add(new SendCDRResult(unknownCDR,
-                                                    SendCDRResultTypes.UnknownSessionId));
+                    resultMap.Add(SendCDRResult.UnknownSessionId(DateTime.UtcNow,
+                                                                 unknownCDR));
 
                     ChargeDetailRecordsToProcess.Remove(unknownCDR);
 
@@ -5966,7 +5968,8 @@ namespace org.GraphDefined.WWCP
 
                         foreach (var _cdr in sendCDR.Value)
                         {
-                            resultMap.Add(SendCDRResult.Error(_cdr,
+                            resultMap.Add(SendCDRResult.Error(DateTime.UtcNow,
+                                                              _cdr,
                                                               Warning.Create(I18NString.Create(Languages.eng, sendCDR.Key + " returned null!"))));
                         }
 
@@ -5992,7 +5995,8 @@ namespace org.GraphDefined.WWCP
                 {
                     foreach (var _cdr in ExpectedChargeDetailRecords)
                     {
-                        resultMap.Add(SendCDRResult.Error(_cdr,
+                        resultMap.Add(SendCDRResult.Error(DateTime.UtcNow,
+                                                          _cdr,
                                                           Warning.Create(I18NString.Create(Languages.eng, "Did not receive an result for this charge detail record!"))));
                     }
                 }
@@ -6026,7 +6030,8 @@ namespace org.GraphDefined.WWCP
 
                 Endtime  = DateTime.UtcNow;
                 Runtime  = Endtime - StartTime;
-                result   = new SendCDRsResult(Id,
+                result   = new SendCDRsResult(DateTime.UtcNow,
+                                              Id,
                                               this as IReceiveChargeDetailRecords,
                                               GlobalResults[0].Covert(),
                                               resultMap,
