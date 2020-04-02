@@ -23,6 +23,7 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -895,161 +896,176 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public JObject ToJSON(Boolean Embedded = false)
+        public JObject ToJSON(Boolean                                           Embedded                             = false,
+                              CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
+                              CustomJSONSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null,
+                              CustomJSONSerializerDelegate<ChargingSession>     CustomChargingSessionSerializer      = null)
 
-            => JSONObject.Create(
+        {
 
-                   Id.ToJSON("@id"),
+            var JSON = JSONObject.Create(
 
-                   Embedded
-                       ? null
-                       : new JProperty("@context",                    JSONLDContext),
+                           Id.ToJSON("@id"),
 
-                   RoamingNetworkId.HasValue
-                       ? new JProperty("roamingNetworkId",            RoamingNetworkId.ToString())
-                       : null,
+                           Embedded
+                               ? null
+                               : new JProperty("@context",                    JSONLDContext),
 
-
-                   Reservation != null
-                       ? new JProperty("reservation", new JObject(
-                                                          new JProperty("reservationId",  Reservation.Id.ToString()),
-                                                          new JProperty("start",          Reservation.StartTime.ToIso8601()),
-                                                          new JProperty("duration",       Reservation.Duration.TotalSeconds)
-                                                          )
-                                                      )
-                       : ReservationId != null
-                             ? new JProperty("reservationId",         ReservationId.ToString())
-                             : null,
+                           RoamingNetworkId.HasValue
+                               ? new JProperty("roamingNetworkId",            RoamingNetworkId.ToString())
+                               : null,
 
 
-                   SessionTime != null
-                       ? new JProperty("start", JSONObject.Create(
-
-                             new JProperty("timestamp",               SessionTime.StartTime.ToIso8601()),
-
-                             SystemIdStart.HasValue
-                                 ? new JProperty("systemId",              SystemIdStart.            ToString())
-                                 : null,
-
-                             CSORoamingProviderIdStart.HasValue
-                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStart.ToString())
-                                 : null,
-
-                             EMPRoamingProviderIdStart.HasValue
-                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStart.ToString())
-                                 : null,
-
-                             ProviderIdStart != null
-                                 ? new JProperty("providerId",            ProviderIdStart.          ToString())
-                                 : null,
-
-                             AuthenticationStart.IsDefined()
-                                 ? new JProperty("authentication",        AuthenticationStart.      ToJSON())
-                                 : null
-
-                         ))
-                       : null,
+                           Reservation != null
+                               ? new JProperty("reservation", new JObject(
+                                                                  new JProperty("reservationId",  Reservation.Id.ToString()),
+                                                                  new JProperty("start",          Reservation.StartTime.ToIso8601()),
+                                                                  new JProperty("duration",       Reservation.Duration.TotalSeconds)
+                                                                  )
+                                                              )
+                               : ReservationId != null
+                                     ? new JProperty("reservationId",         ReservationId.ToString())
+                                     : null,
 
 
-                   SessionTime != null
-                       ? new JProperty("duration",                    Duration.TotalSeconds)
-                       : null,
+                           SessionTime != null
+                               ? new JProperty("start", JSONObject.Create(
+
+                                     new JProperty("timestamp",               SessionTime.StartTime.ToIso8601()),
+
+                                     SystemIdStart.HasValue
+                                         ? new JProperty("systemId",              SystemIdStart.            ToString())
+                                         : null,
+
+                                     CSORoamingProviderIdStart.HasValue
+                                         ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStart.ToString())
+                                         : null,
+
+                                     EMPRoamingProviderIdStart.HasValue
+                                         ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStart.ToString())
+                                         : null,
+
+                                     ProviderIdStart != null
+                                         ? new JProperty("providerId",            ProviderIdStart.          ToString())
+                                         : null,
+
+                                     AuthenticationStart.IsDefined()
+                                         ? new JProperty("authentication",        AuthenticationStart.      ToJSON())
+                                         : null
+
+                                 ))
+                               : null,
 
 
-                   SessionTime.EndTime.HasValue
-                       ? new JProperty("stop", JSONObject.Create(
-
-                             SessionTime.EndTime.HasValue
-                                 ? new JProperty("timestamp",             SessionTime.EndTime.Value.ToIso8601())
-                                 : null,
-
-                             SystemIdStop.HasValue
-                                 ? new JProperty("systemId",              SystemIdStop.             ToString())
-                                 : null,
-
-                             CSORoamingProviderIdStop.HasValue
-                                 ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop. ToString())
-                                 : null,
-
-                             EMPRoamingProviderIdStop.HasValue
-                                 ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop. ToString())
-                                 : null,
-
-                             ProviderIdStop != null
-                                 ? new JProperty("providerId",            ProviderIdStop.           ToString())
-                                 : null,
-
-                             AuthenticationStop.IsDefined()
-                                 ? new JProperty("authentication",        AuthenticationStop.       ToJSON())
-                                 : null
-
-                         ))
-                       : null,
+                           SessionTime != null
+                               ? new JProperty("duration",                    Duration.TotalSeconds)
+                               : null,
 
 
-                   CDRReceived.HasValue
-                       ? new JProperty("cdr", JSONObject.Create(
+                           SessionTime.EndTime.HasValue
+                               ? new JProperty("stop", JSONObject.Create(
 
-                             CDRReceived.HasValue
-                                 ? new JProperty("timestamp",             CDRReceived.Value. ToIso8601())
-                                 : null,
+                                     SessionTime.EndTime.HasValue
+                                         ? new JProperty("timestamp",             SessionTime.EndTime.Value.ToIso8601())
+                                         : null,
 
-                             SystemIdCDR.HasValue
-                                 ? new JProperty("systemId",              SystemIdCDR.       ToString())
-                                 : null,
+                                     SystemIdStop.HasValue
+                                         ? new JProperty("systemId",              SystemIdStop.             ToString())
+                                         : null,
 
-                             CDR != null
-                                 ? new JProperty("cdr",                   CDR.               ToJSON(Embedded: true))
-                                 : null,
+                                     CSORoamingProviderIdStop.HasValue
+                                         ? new JProperty("CSORoamingProviderId",  CSORoamingProviderIdStop. ToString())
+                                         : null,
+
+                                     EMPRoamingProviderIdStop.HasValue
+                                         ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStop. ToString())
+                                         : null,
+
+                                     ProviderIdStop != null
+                                         ? new JProperty("providerId",            ProviderIdStop.           ToString())
+                                         : null,
+
+                                     AuthenticationStop.IsDefined()
+                                         ? new JProperty("authentication",        AuthenticationStop.       ToJSON())
+                                         : null
+
+                                 ))
+                               : null,
 
 
-                             CDRForwarded.HasValue
-                                 ? new JProperty("forwarded",             CDRForwarded.Value.ToIso8601())
-                                 : null,
+                           CDRReceived.HasValue
+                               ? new JProperty("cdr", JSONObject.Create(
 
-                             CDRResult != null
-                                 ? new JProperty("result",                CDRResult.         ToJSON())
-                                 : null
+                                     CDRReceived.HasValue
+                                         ? new JProperty("timestamp",             CDRReceived.Value. ToIso8601())
+                                         : null,
 
-                         ))
-                       : null,
+                                     SystemIdCDR.HasValue
+                                         ? new JProperty("systemId",              SystemIdCDR.       ToString())
+                                         : null,
+
+                                     CDR != null
+                                         ? new JProperty("cdr",                   CDR.               ToJSON(Embedded:                           true,
+                                                                                                            CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer))
+                                         : null,
 
 
-                   ChargingStationOperatorId.HasValue
-                       ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
-                       : null,
+                                     CDRForwarded.HasValue
+                                         ? new JProperty("forwarded",             CDRForwarded.Value.ToIso8601())
+                                         : null,
 
-                   ChargingPoolId.HasValue
-                       ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
-                       : null,
+                                     CDRResult != null
+                                         ? new JProperty("result",                CDRResult.         ToJSON(Embedded:                           true,
+                                                                                                            IncludeCDR:                         false,
+                                                                                                            CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer,
+                                                                                                            CustomSendCDRResultSerializer:      CustomSendCDRResultSerializer))
+                                         : null
 
-                   ChargingStationId.HasValue
-                       ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
-                       : null,
+                                 ))
+                               : null,
 
-                   EVSEId.HasValue
-                       ? new JProperty("EVSEId",                      EVSEId.                   ToString())
-                       : null,
 
-                   ChargingProduct != null
-                       ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
-                       : null,
+                           ChargingStationOperatorId.HasValue
+                               ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
+                               : null,
 
-                   EnergyMeterId.HasValue
-                       ? new JProperty("energyMeterId",               EnergyMeterId.            ToString())
-                       : null,
+                           ChargingPoolId.HasValue
+                               ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
+                               : null,
 
-                   EnergyMeteringValues.Any()
-                       ? new JProperty("energyMeterValues",           JSONArray.Create(
-                                                                          EnergyMeteringValues.
-                                                                          Select(meterValue => JSONObject.Create(
-                                                                                                   new JProperty("timestamp", meterValue.Timestamp.ToIso8601()),
-                                                                                                   new JProperty("value",     meterValue.Value)
-                                                                                               ))
-                                                                      ))
-                       : null
+                           ChargingStationId.HasValue
+                               ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
+                               : null,
 
-            );
+                           EVSEId.HasValue
+                               ? new JProperty("EVSEId",                      EVSEId.                   ToString())
+                               : null,
+
+                           ChargingProduct != null
+                               ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
+                               : null,
+
+                           EnergyMeterId.HasValue
+                               ? new JProperty("energyMeterId",               EnergyMeterId.            ToString())
+                               : null,
+
+                           EnergyMeteringValues.Any()
+                               ? new JProperty("energyMeterValues",           JSONArray.Create(
+                                                                                  EnergyMeteringValues.
+                                                                                  Select(meterValue => JSONObject.Create(
+                                                                                                           new JProperty("timestamp", meterValue.Timestamp.ToIso8601()),
+                                                                                                           new JProperty("value",     meterValue.Value)
+                                                                                                       ))
+                                                                              ))
+                               : null
+
+                );
+
+            return CustomChargingSessionSerializer != null
+                       ? CustomChargingSessionSerializer(this, JSON)
+                       : JSON;
+
+        }
 
 
         public static ChargingSession Parse(String Text, IRoamingNetwork RoamingNetwork)

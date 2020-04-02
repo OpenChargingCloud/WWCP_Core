@@ -439,43 +439,47 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region ToJSON(Embedded = false, ...)
+        #region ToJSON(Embedded = false, IncludeCDR = true, ...)
 
         /// <summary>
         /// Return a JSON representation of the given charge detail record.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="IncludeCDR">Whether to include the embedded charge detail record.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
         /// <param name="CustomSendCDRResultSerializer">A custom send charge detail record result serializer.</param>
         public JObject ToJSON(Boolean                                           Embedded                             = false,
+                              Boolean                                           IncludeCDR                           = true,
                               CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
                               CustomJSONSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null)
         {
 
-            var JSON = ChargeDetailRecord?.ToJSON(Embedded:                            true,
-                                                  CustomChargeDetailRecordSerializer:  CustomChargeDetailRecordSerializer) ?? new JObject();
+            var JSON = JSONObject.Create(
 
-            JSON["delivery"] = JSONObject.Create(
+                           !Embedded
+                               ? new JProperty("@context",            JSONLDContext)
+                               : null,
 
-                                  !Embedded
-                                      ? new JProperty("@context",      JSONLDContext)
-                                      : null,
+                           new JProperty("result",                    Result.ToString()),
 
-                                  new JProperty("result",              Result.ToString()),
+                           Description.IsNeitherNullNorEmpty()
+                               ? new JProperty("description",         Description)
+                               : null,
 
-                                  Description.IsNeitherNullNorEmpty()
-                                      ? new JProperty("description",   Description)
-                                      : null,
+                           Runtime.HasValue
+                               ? new JProperty("runtime",             Runtime.Value.TotalMilliseconds)
+                               : null,
 
-                                  Runtime.HasValue
-                                      ? new JProperty("runtime",       Runtime.Value.TotalMilliseconds)
-                                      : null,
+                           Warnings.SafeAny()
+                               ? new JProperty("warnings",            new JArray(Warnings.Select(waring => waring.ToJSON())))
+                               : null,
 
-                                  Warnings.SafeAny()
-                                      ? new JProperty("warnings",      new JArray(Warnings.Select(waring => waring.ToJSON())))
-                                      : null
+                           IncludeCDR && ChargeDetailRecord != null
+                               ? new JProperty("chargeDetailRecord",  ChargeDetailRecord.ToJSON(Embedded:                           true,
+                                                                                                CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer))
+                               : null
 
-                              );
+                       );
 
             return CustomSendCDRResultSerializer != null
                        ? CustomSendCDRResultSerializer(this, JSON)
