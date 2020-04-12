@@ -320,6 +320,54 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InvalidToken        (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The given token is unknown or invalid.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            InvalidToken(IId                      AuthorizatorId,
+                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                         ChargingSession_Id?      SessionId   = null,
+                         TimeSpan?                Runtime     = null)
+
+
+                => new AuthStartResult(AuthorizatorId,
+                                       ISendAuthorizeStartStop,
+                                       AuthStartResultType.InvalidToken,
+                                       SessionId,
+                                       Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The given token is unknown or invalid.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            InvalidToken(IId                         AuthorizatorId,
+                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                         ChargingSession_Id?         SessionId   = null,
+                         TimeSpan?                   Runtime     = null)
+
+
+                => new AuthStartResult(AuthorizatorId,
+                                       IReceiveAuthorizeStartStop,
+                                       AuthStartResultType.InvalidToken,
+                                       SessionId,
+                                       Runtime: Runtime);
+
+        #endregion
+
         #region (static) InvalidSessionId    (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
@@ -904,6 +952,11 @@ namespace org.GraphDefined.WWCP
         /// The given charging location is unknown.
         /// </summary>
         UnknownLocation,
+
+        /// <summary>
+        /// The given token is unknown or invalid.
+        /// </summary>
+        InvalidToken,
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.

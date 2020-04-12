@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A optional description of the authorize stop result.
         /// </summary>
-        public String                       Description                   { get; }
+        public I18NString                   Description                   { get; }
 
         /// <summary>
         /// An optional additional message.
@@ -103,23 +103,16 @@ namespace org.GraphDefined.WWCP
                                   T                        Result,
                                   ChargingSession_Id?      SessionId        = null,
                                   eMobilityProvider_Id?    ProviderId       = null,
-                                  String                   Description      = null,
+                                  I18NString               Description      = null,
                                   String                   AdditionalInfo   = null,
                                   TimeSpan?                Runtime          = null)
         {
 
-            #region Initial checks
-
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
-
-            #endregion
-
-            this.AuthorizatorId  = AuthorizatorId;
+            this.AuthorizatorId  = AuthorizatorId ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
             this.Result          = Result;
             this.SessionId       = SessionId;
-            this.ProviderId      = ProviderId ?? new eMobilityProvider_Id?();
-            this.Description     = Description;
+            this.ProviderId      = ProviderId     ?? new eMobilityProvider_Id?();
+            this.Description     = Description    ?? I18NString.Empty;
             this.AdditionalInfo  = AdditionalInfo;
             this.Runtime         = Runtime;
 
@@ -146,7 +139,7 @@ namespace org.GraphDefined.WWCP
                                   T                        Result,
                                   ChargingSession_Id?      SessionId        = null,
                                   eMobilityProvider_Id?    ProviderId       = null,
-                                  String                   Description      = null,
+                                  I18NString               Description      = null,
                                   String                   AdditionalInfo   = null,
                                   TimeSpan?                Runtime          = null)
 
@@ -185,7 +178,7 @@ namespace org.GraphDefined.WWCP
                                   T                           Result,
                                   ChargingSession_Id?         SessionId        = null,
                                   eMobilityProvider_Id?       ProviderId       = null,
-                                  String                      Description      = null,
+                                  I18NString                  Description      = null,
                                   String                      AdditionalInfo   = null,
                                   TimeSpan?                   Runtime          = null)
 
@@ -228,8 +221,8 @@ namespace org.GraphDefined.WWCP
                                ? new JProperty("providerId",    ProviderId.    ToString())
                                : null,
                            new JProperty("authorizatorId",      AuthorizatorId.ToString()),
-                           Description.IsNotNullOrEmpty()
-                               ? new JProperty("description",   Description)
+                           Description.IsNeitherNullNorEmpty()
+                               ? new JProperty("description",   Description.   ToJSON())
                                : null
 
                        );

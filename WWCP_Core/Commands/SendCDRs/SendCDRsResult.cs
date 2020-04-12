@@ -25,1111 +25,69 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// A SendCDR result.
-    /// </summary>
-    public class SendCDRResult
+    public static class SendCDRResultTypesExtentions
     {
 
-        #region Data
-
-        /// <summary>
-        /// The JSON-LD context of the object.
-        /// </summary>
-        public const String JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/sendCDRResult";
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// The timestamp of the charge detail record result.
-        /// </summary>
-        public DateTime              Timestamp             { get; }
-
-        /// <summary>
-        /// A charge detail record.
-        /// </summary>
-        public ChargeDetailRecord    ChargeDetailRecord    { get; }
-
-        /// <summary>
-        /// The result of the SendCDR request.
-        /// </summary>
-        public SendCDRResultTypes    Result                { get; }
-
-        /// <summary>
-        /// An optional multi-language description of the result.
-        /// </summary>
-        public I18NString            Description           { get; }
-
-        /// <summary>
-        /// Optional warnings or additional information.
-        /// </summary>
-        public IEnumerable<Warning>  Warnings              { get; }
-
-        /// <summary>
-        /// The runtime of the request.
-        /// </summary>
-        public TimeSpan?             Runtime               { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new SendCDR result.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Result">The result of the SendCDR request.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        private SendCDRResult(DateTime              Timestamp,
-                              ChargeDetailRecord    ChargeDetailRecord,
-                              SendCDRResultTypes    Result,
-                              I18NString            Description   = null,
-                              IEnumerable<Warning>  Warnings      = null,
-                              TimeSpan?             Runtime       = null)
+        public static SendCDRsResultTypes Covert(this SendCDRResultTypes result)
         {
 
-            this.Timestamp           = Timestamp;
-            this.ChargeDetailRecord  = ChargeDetailRecord;
-            this.Result              = Result;
-            this.Description         = Description;
-            this.Warnings            = Warnings != null
-                                           ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                           : new Warning[0];
-            this.Runtime             = Runtime;
-
-        }
-
-        #endregion
-
-
-        #region (static) NoOperation             (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            NoOperation(DateTime            Timestamp,
-                        ChargeDetailRecord  ChargeDetailRecord,
-                        I18NString          Description   = null,
-                        TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.NoOperation,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            NoOperation(DateTime            Timestamp,
-                        ChargeDetailRecord  ChargeDetailRecord,
-                        Warning             Warning,
-                        I18NString          Description   = null,
-                        TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.NoOperation,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            NoOperation(DateTime              Timestamp,
-                        ChargeDetailRecord    ChargeDetailRecord,
-                        IEnumerable<Warning>  Warnings,
-                        I18NString            Description   = null,
-                        TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.NoOperation,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) AdminDown               (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            AdminDown(DateTime            Timestamp,
-                      ChargeDetailRecord  ChargeDetailRecord,
-                      I18NString          Description   = null,
-                      TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.AdminDown,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            AdminDown(DateTime            Timestamp,
-                      ChargeDetailRecord  ChargeDetailRecord,
-                      Warning             Warning,
-                      I18NString          Description   = null,
-                      TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.AdminDown,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            AdminDown(DateTime              Timestamp,
-                      ChargeDetailRecord    ChargeDetailRecord,
-                      IEnumerable<Warning>  Warnings,
-                      I18NString            Description   = null,
-                      TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.AdminDown,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) OutOfService            (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            OutOfService(DateTime            Timestamp,
-                         ChargeDetailRecord  ChargeDetailRecord,
-                         I18NString          Description   = null,
-                         TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.OutOfService,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            OutOfService(DateTime            Timestamp,
-                         ChargeDetailRecord  ChargeDetailRecord,
-                         Warning             Warning,
-                         I18NString          Description   = null,
-                         TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.OutOfService,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            OutOfService(DateTime              Timestamp,
-                         ChargeDetailRecord    ChargeDetailRecord,
-                         IEnumerable<Warning>  Warnings,
-                         I18NString            Description   = null,
-                         TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.OutOfService,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) Filtered                (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Filtered(DateTime            Timestamp,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     I18NString          Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Filtered,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Filtered(DateTime            Timestamp,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     Warning             Warning,
-                     I18NString          Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Filtered,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Filtered(DateTime              Timestamp,
-                     ChargeDetailRecord    ChargeDetailRecord,
-                     IEnumerable<Warning>  Warnings,
-                     I18NString            Description   = null,
-                     TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Filtered,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) InvalidSessionId        (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            InvalidSessionId(DateTime            Timestamp,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             I18NString          Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.InvalidSessionId,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            InvalidSessionId(DateTime            Timestamp,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             Warning             Warning,
-                             I18NString          Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.InvalidSessionId,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            InvalidSessionId(DateTime              Timestamp,
-                             ChargeDetailRecord    ChargeDetailRecord,
-                             IEnumerable<Warning>  Warnings,
-                             I18NString            Description   = null,
-                             TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.InvalidSessionId,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) UnknownSessionId        (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            UnknownSessionId(DateTime            Timestamp,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             I18NString          Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.UnknownSessionId,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            UnknownSessionId(DateTime            Timestamp,
-                             ChargeDetailRecord  ChargeDetailRecord,
-                             Warning             Warning,
-                             I18NString          Description   = null,
-                             TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.UnknownSessionId,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            UnknownSessionId(DateTime              Timestamp,
-                             ChargeDetailRecord    ChargeDetailRecord,
-                             IEnumerable<Warning>  Warnings,
-                             I18NString            Description   = null,
-                             TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.UnknownSessionId,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) CouldNotConvertCDRFormat(Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            CouldNotConvertCDRFormat(DateTime            Timestamp,
-                                     ChargeDetailRecord  ChargeDetailRecord,
-                                     I18NString          Description   = null,
-                                     TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            CouldNotConvertCDRFormat(DateTime            Timestamp,
-                                     ChargeDetailRecord  ChargeDetailRecord,
-                                     Warning             Warning,
-                                     I18NString          Description   = null,
-                                     TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            CouldNotConvertCDRFormat(DateTime              Timestamp,
-                                     ChargeDetailRecord    ChargeDetailRecord,
-                                     IEnumerable<Warning>  Warnings,
-                                     I18NString            Description   = null,
-                                     TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) Enqueued                (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Enqueued(DateTime            Timestamp,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     I18NString          Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Enqueued,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Enqueued(DateTime            Timestamp,
-                     ChargeDetailRecord  ChargeDetailRecord,
-                     Warning             Warning,
-                     I18NString          Description   = null,
-                     TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Enqueued,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Enqueued(DateTime              Timestamp,
-                     ChargeDetailRecord    ChargeDetailRecord,
-                     IEnumerable<Warning>  Warnings,
-                     I18NString            Description   = null,
-                     TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Enqueued,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) Timeout                 (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Timeout(DateTime            Timestamp,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    I18NString          Description   = null,
-                    TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Timeout,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Timeout(DateTime            Timestamp,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    Warning             Warning,
-                    I18NString          Description   = null,
-                    TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Timeout,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Timeout(DateTime              Timestamp,
-                    ChargeDetailRecord    ChargeDetailRecord,
-                    IEnumerable<Warning>  Warnings,
-                    I18NString            Description   = null,
-                    TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Timeout,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) Success                 (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Success(DateTime            Timestamp,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    I18NString          Description   = null,
-                    TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Success,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Success(DateTime            Timestamp,
-                    ChargeDetailRecord  ChargeDetailRecord,
-                    Warning             Warning,
-                    I18NString          Description   = null,
-                    TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Success,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request completed successfully.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Success(DateTime              Timestamp,
-                    ChargeDetailRecord    ChargeDetailRecord,
-                    IEnumerable<Warning>  Warnings,
-                    I18NString            Description   = null,
-                    TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Success,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-        #region (static) Error                   (Timestamp, ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Error(DateTime            Timestamp,
-                  ChargeDetailRecord  ChargeDetailRecord,
-                  I18NString          Description   = null,
-                  TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Error,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warning">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Error(DateTime            Timestamp,
-                  ChargeDetailRecord  ChargeDetailRecord,
-                  Warning             Warning,
-                  I18NString          Description   = null,
-                  TimeSpan?           Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Error,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
-
-
-        /// <summary>
-        /// The request failed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="Warnings">Optional warnings or additional information.</param>
-        /// <param name="Description">An optional multi-language description of the result.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRResult
-
-            Error(DateTime              Timestamp,
-                  ChargeDetailRecord    ChargeDetailRecord,
-                  IEnumerable<Warning>  Warnings,
-                  I18NString            Description   = null,
-                  TimeSpan?             Runtime       = null)
-
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Error,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
-
-        #endregion
-
-
-        #region ToJSON(Embedded = false, IncludeCDR = true, ...)
-
-        /// <summary>
-        /// Return a JSON representation of the given charge detail record.
-        /// </summary>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        /// <param name="IncludeCDR">Whether to include the embedded charge detail record.</param>
-        /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
-        /// <param name="CustomSendCDRResultSerializer">A custom send charge detail record result serializer.</param>
-        public JObject ToJSON(Boolean                                           Embedded                             = false,
-                              Boolean                                           IncludeCDR                           = true,
-                              CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
-                              CustomJSONSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null)
-        {
-
-            var JSON = JSONObject.Create(
-
-                           !Embedded
-                               ? new JProperty("@context",            JSONLDContext)
-                               : null,
-
-                           new JProperty("timestamp",                 Timestamp.ToIso8601()),
-
-                           new JProperty("result",                    Result.ToString()),
-
-                           Description.IsNeitherNullNorEmpty()
-                               ? new JProperty("description",         Description)
-                               : null,
-
-                           Warnings.SafeAny()
-                               ? new JProperty("warnings",            new JArray(Warnings.Select(waring => waring.ToJSON())))
-                               : null,
-
-                           Runtime.HasValue
-                               ? new JProperty("runtime",             Runtime.Value.TotalMilliseconds)
-                               : null,
-
-                           IncludeCDR && ChargeDetailRecord != null
-                               ? new JProperty("chargeDetailRecord",  ChargeDetailRecord.ToJSON(Embedded:                           true,
-                                                                                                CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer))
-                               : null
-
-                       );
-
-            return CustomSendCDRResultSerializer != null
-                       ? CustomSendCDRResultSerializer(this, JSON)
-                       : JSON;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSONObject, ..., out SendCDRResult, out ErrorResponse, VerifyContext = false)
-
-        public static Boolean TryParse(JObject            JSONObject,
-                                       out SendCDRResult  SendCDRResult,
-                                       out String         ErrorResponse,
-                                       Boolean            VerifyContext = false)
-        {
-
-            try
+            switch (result)
             {
 
-                SendCDRResult = null;
+                case SendCDRResultTypes.NoOperation:
+                    return SendCDRsResultTypes.NoOperation;
 
-                if (JSONObject?.HasValues != true)
-                {
-                    ErrorResponse = "The given JSON object must not be null or empty!";
-                    return false;
-                }
+                case SendCDRResultTypes.AdminDown:
+                    return SendCDRsResultTypes.AdminDown;
 
+                case SendCDRResultTypes.OutOfService:
+                    return SendCDRsResultTypes.OutOfService;
 
-                #region Parse Context        [mandatory]
+                case SendCDRResultTypes.Filtered:
+                    return SendCDRsResultTypes.Filtered;
 
-                if (VerifyContext)
-                {
+                case SendCDRResultTypes.InvalidSessionId:
+                    return SendCDRsResultTypes.InvalidSessionId;
 
-                    if (!JSONObject.ParseMandatory("@context",
-                                                   "JSON-LD context",
-                                                   out String Context,
-                                                   out ErrorResponse))
-                    {
-                        ErrorResponse = @"The JSON-LD ""@context"" information is missing!";
-                        return false;
-                    }
+                case SendCDRResultTypes.UnknownSessionId:
+                    return SendCDRsResultTypes.UnknownSessionId;
 
-                    if (Context != JSONLDContext)
-                    {
-                        ErrorResponse = @"The given JSON-LD ""@context"" information '" + Context + "' is not supported!";
-                        return false;
-                    }
+                case SendCDRResultTypes.UnknownLocation:
+                    return SendCDRsResultTypes.UnknownLocation;
 
-                }
-
-                #endregion
-
-                #region Parse Timestamp      [mandatory]
-
-                if (!JSONObject.ParseMandatory("timestamp",
-                                               "timestamp",
-                                               out DateTime Timestamp,
-                                               out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Parse Result         [mandatory]
-
-                if (!JSONObject.ParseMandatoryEnum("result",
-                                                   "result",
-                                                   out SendCDRResultTypes Result,
-                                                   out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Parse Description    [optional]
-
-                if (JSONObject.ParseOptional("description",
-                                             "description",
-                                             out I18NString Description,
-                                             out ErrorResponse))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
+                case SendCDRResultTypes.CouldNotConvertCDRFormat:
+                    return SendCDRsResultTypes.CouldNotConvertCDRFormat;
 
 
-                #region Parse Runtime        [optional]
+                case SendCDRResultTypes.Enqueued:
+                    return SendCDRsResultTypes.Enqueued;
 
-                if (JSONObject.ParseOptionalStruct("runtime",
-                                                   "runtime",
-                                                   TimeSpan.TryParse,
-                                                   out TimeSpan? Runtime,
-                                                   out ErrorResponse))
-                {
+                case SendCDRResultTypes.Success:
+                    return SendCDRsResultTypes.Success;
 
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
+                case SendCDRResultTypes.Timeout:
+                    return SendCDRsResultTypes.Timeout;
 
 
 
-                SendCDRResult = new SendCDRResult(Timestamp,
-                                                  null,
-                                                  Result,
-                                                  Description,
-                                                  null,
-                                                  Runtime);
+                case SendCDRResultTypes.Error:
+                    return SendCDRsResultTypes.Error;
 
-                ErrorResponse = null;
-                return true;
+                default:
+                    return SendCDRsResultTypes.Unspecified;
 
-            }
-            catch (Exception e)
-            {
-                ErrorResponse  = e.Message;
-                SendCDRResult  = null;
-                return false;
             }
 
         }
-
-        #endregion
-
-
-        #region (override) ToString()
-
-        /// <summary>
-        /// Return a text representation of this object.
-        /// </summary>
-        public override String ToString()
-
-            => String.Concat("Result: ", Result.ToString(),
-                             Warnings.SafeAny() ? " with " + Warnings.Count() + " warnings!" : "");
-
-        #endregion
 
     }
+
 
 
     /// <summary>
@@ -1173,7 +131,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional description of the send charge detail records result.
         /// </summary>
-        public String                       Description                    { get; }
+        public I18NString                   Description                    { get; }
 
         /// <summary>
         /// Optional warnings or additional information.
@@ -1207,7 +165,7 @@ namespace org.GraphDefined.WWCP
                                 ISendChargeDetailRecords    ISendChargeDetailRecords,
                                 SendCDRsResultTypes         Result,
                                 IEnumerable<SendCDRResult>  ResultMap,
-                                String                      Description   = null,
+                                I18NString                  Description   = null,
                                 IEnumerable<Warning>        Warnings      = null,
                                 TimeSpan?                   Runtime       = null)
         {
@@ -1216,8 +174,8 @@ namespace org.GraphDefined.WWCP
             this.AuthorizatorId            = AuthorizatorId;
             this.ISendChargeDetailRecords  = ISendChargeDetailRecords;
             this.Result                    = Result;
-            this.ResultMap                 = ResultMap ?? new SendCDRResult[0];
-            this.Description               = Description;
+            this.ResultMap                 = ResultMap   ?? new SendCDRResult[0];
+            this.Description               = Description ?? I18NString.Empty;
 
             this.Warnings                  = Warnings != null
                                                  ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
@@ -1247,7 +205,7 @@ namespace org.GraphDefined.WWCP
                                 IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                                 SendCDRsResultTypes          Result,
                                 IEnumerable<SendCDRResult>   ResultMap     = null,
-                                String                       Description   = null,
+                                I18NString                   Description   = null,
                                 IEnumerable<Warning>         Warnings      = null,
                                 TimeSpan?                    Runtime       = null)
         {
@@ -1256,8 +214,8 @@ namespace org.GraphDefined.WWCP
             this.AuthorizatorId               = AuthorizatorId;
             this.IReceiveChargeDetailRecords  = IReceiveChargeDetailRecords;
             this.Result                       = Result;
-            this.ResultMap                    = ResultMap ?? new SendCDRResult[0];
-            this.Description                  = Description;
+            this.ResultMap                    = ResultMap   ?? new SendCDRResult[0];
+            this.Description                  = Description ?? I18NString.Empty;
 
             this.Warnings                     = Warnings != null
                                                   ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
@@ -1290,7 +248,7 @@ namespace org.GraphDefined.WWCP
                         IId                              AuthorizatorId,
                         ISendChargeDetailRecords         ISendChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ResultMap,
-                        String                           Description   = null,
+                        I18NString                       Description   = null,
                         IEnumerable<Warning>             Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
@@ -1322,7 +280,7 @@ namespace org.GraphDefined.WWCP
                         IId                              AuthorizatorId,
                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ResultMap,
-                        String                           Description   = null,
+                        I18NString                       Description   = null,
                         IEnumerable<Warning>             Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
@@ -1356,7 +314,7 @@ namespace org.GraphDefined.WWCP
                       IId                              AuthorizatorId,
                       ISendChargeDetailRecords         ISendChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
-                      String                           Description   = null,
+                      I18NString                       Description   = null,
                       IEnumerable<Warning>             Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
@@ -1386,7 +344,7 @@ namespace org.GraphDefined.WWCP
                       IId                              AuthorizatorId,
                       IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
-                      String                           Description   = null,
+                      I18NString                       Description   = null,
                       IEnumerable<Warning>             Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
@@ -1420,7 +378,7 @@ namespace org.GraphDefined.WWCP
                          IId                              AuthorizatorId,
                          ISendChargeDetailRecords         ISendChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  ResultMap,
-                         String                           Description   = null,
+                         I18NString                       Description   = null,
                          IEnumerable<Warning>             Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
@@ -1451,7 +409,7 @@ namespace org.GraphDefined.WWCP
                          IId                              AuthorizatorId,
                          IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
-                         String                           Description   = null,
+                         I18NString                       Description   = null,
                          IEnumerable<Warning>             Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
@@ -1485,7 +443,7 @@ namespace org.GraphDefined.WWCP
                      IId                       AuthorizatorId,
                      ISendChargeDetailRecords  ISendChargeDetailRecords,
                      ChargeDetailRecord        ChargeDetailRecord,
-                     String                    Description   = null,
+                     I18NString                Description   = null,
                      IEnumerable<Warning>      Warnings      = null,
                      TimeSpan?                 Runtime       = null)
 
@@ -1516,7 +474,7 @@ namespace org.GraphDefined.WWCP
                      IId                              AuthorizatorId,
                      ISendChargeDetailRecords         ISendChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                     String                           Description   = null,
+                     I18NString                       Description   = null,
                      IEnumerable<Warning>             Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
@@ -1548,7 +506,7 @@ namespace org.GraphDefined.WWCP
                      IId                          AuthorizatorId,
                      IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                      ChargeDetailRecord           ChargeDetailRecord,
-                     String                       Description   = null,
+                     I18NString                   Description   = null,
                      IEnumerable<Warning>         Warnings      = null,
                      TimeSpan?                    Runtime       = null)
 
@@ -1579,7 +537,7 @@ namespace org.GraphDefined.WWCP
                      IId                              AuthorizatorId,
                      IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                     String                           Description   = null,
+                     I18NString                       Description   = null,
                      IEnumerable<Warning>             Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
@@ -1613,7 +571,7 @@ namespace org.GraphDefined.WWCP
                     IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ResultMap,
-                    String                           Description   = null,
+                    I18NString                       Description   = null,
                     IEnumerable<Warning>             Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
@@ -1647,7 +605,7 @@ namespace org.GraphDefined.WWCP
                     IId                       AuthorizatorId,
                     ISendChargeDetailRecords  ISendChargeDetailRecords,
                     ChargeDetailRecord        ChargeDetailRecord,
-                    String                    Description   = null,
+                    I18NString                Description   = null,
                     IEnumerable<Warning>      Warnings      = null,
                     TimeSpan?                 Runtime       = null)
 
@@ -1678,7 +636,7 @@ namespace org.GraphDefined.WWCP
                     IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                    String                           Description   = null,
+                    I18NString                       Description   = null,
                     IEnumerable<Warning>             Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
@@ -1709,7 +667,7 @@ namespace org.GraphDefined.WWCP
                     IId                          AuthorizatorId,
                     IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                     ChargeDetailRecord           ChargeDetailRecord,
-                    String                       Description   = null,
+                    I18NString                   Description   = null,
                     IEnumerable<Warning>         Warnings      = null,
                     TimeSpan?                    Runtime       = null)
 
@@ -1740,7 +698,7 @@ namespace org.GraphDefined.WWCP
                     IId                              AuthorizatorId,
                     IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                    String                           Description   = null,
+                    I18NString                       Description   = null,
                     IEnumerable<Warning>             Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
@@ -1774,7 +732,7 @@ namespace org.GraphDefined.WWCP
                   IId                       AuthorizatorId,
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   ChargeDetailRecord        ChargeDetailRecord,
-                  String                    Description   = null,
+                  I18NString                Description   = null,
                   IEnumerable<Warning>      Warnings      = null,
                   TimeSpan?                 Runtime       = null)
 
@@ -1805,7 +763,7 @@ namespace org.GraphDefined.WWCP
                   IId                              AuthorizatorId,
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                  String                           Description   = null,
+                  I18NString                       Description   = null,
                   IEnumerable<Warning>             Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
@@ -1844,7 +802,7 @@ namespace org.GraphDefined.WWCP
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Success,
                                       ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
-                                      String.Empty,
+                                      I18NString.Empty,
                                       new Warning[] { Warning },
                                       Runtime);
 
@@ -1866,7 +824,7 @@ namespace org.GraphDefined.WWCP
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   ChargeDetailRecord           ChargeDetailRecord,
-                  String                       Description   = null,
+                  I18NString                   Description   = null,
                   IEnumerable<Warning>         Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
@@ -1897,7 +855,7 @@ namespace org.GraphDefined.WWCP
                   IId                              AuthorizatorId,
                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                  String                           Description   = null,
+                  I18NString                       Description   = null,
                   IEnumerable<Warning>             Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
@@ -1906,6 +864,40 @@ namespace org.GraphDefined.WWCP
                                       AuthorizatorId,
                                       IReceiveChargeDetailRecords,
                                       SendCDRsResultTypes.Success,
+                                      ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                                      Description,
+                                      Warnings,
+                                      Runtime);
+
+        #endregion
+
+        #region InvalidToken
+
+        /// <summary>
+        /// The given token is unknown or invalid.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Optional warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            InvalidToken(DateTime                         Timestamp,
+                         IId                              AuthorizatorId,
+                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                         IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                         I18NString                       Description   = null,
+                         IEnumerable<Warning>             Warnings      = null,
+                         TimeSpan?                        Runtime       = null)
+
+
+                => new SendCDRsResult(Timestamp,
+                                      AuthorizatorId,
+                                      IReceiveChargeDetailRecords,
+                                      SendCDRsResultTypes.InvalidToken,
                                       ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
                                       Description,
                                       Warnings,
@@ -1931,7 +923,7 @@ namespace org.GraphDefined.WWCP
                   IId                       AuthorizatorId,
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   SendCDRResult             Result,
-                  String                    Description   = null,
+                  I18NString                Description   = null,
                   IEnumerable<Warning>      Warnings      = null,
                   TimeSpan?                 Runtime       = null)
 
@@ -1962,7 +954,7 @@ namespace org.GraphDefined.WWCP
                   IId                         AuthorizatorId,
                   ISendChargeDetailRecords    ISendChargeDetailRecords,
                   IEnumerable<SendCDRResult>  ResultMap,
-                  String                      Description   = null,
+                  I18NString                  Description   = null,
                   IEnumerable<Warning>        Warnings      = null,
                   TimeSpan?                   Runtime       = null)
 
@@ -1994,7 +986,7 @@ namespace org.GraphDefined.WWCP
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   SendCDRResult                Result,
-                  String                       Description   = null,
+                  I18NString                   Description   = null,
                   IEnumerable<Warning>         Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
@@ -2025,7 +1017,7 @@ namespace org.GraphDefined.WWCP
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   IEnumerable<SendCDRResult>   ResultMap,
-                  String                       Description   = null,
+                  I18NString                   Description   = null,
                   IEnumerable<Warning>         Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
@@ -2062,79 +1054,6 @@ namespace org.GraphDefined.WWCP
 
     }
 
-
-    public enum SendCDRResultTypes
-    {
-
-        /// <summary>
-        /// The result is unknown and/or should be ignored.
-        /// </summary>
-        Unspecified,
-
-        /// <summary>
-        /// No operation e.g. because no charge detail record passed the charge detail records filter.
-        /// </summary>
-        NoOperation,
-
-        /// <summary>
-        /// The service was disabled by an administrator.
-        /// </summary>
-        AdminDown,
-
-        /// <summary>
-        /// The service is out of service.
-        /// </summary>
-        OutOfService,
-
-        /// <summary>
-        /// The charge detail record had been filtered.
-        /// </summary>
-        Filtered,
-
-        /// <summary>
-        /// The charging session identification is invalid.
-        /// </summary>
-        InvalidSessionId,
-
-        /// <summary>
-        /// The charging session identification is unknown.
-        /// </summary>
-        UnknownSessionId,
-
-        /// <summary>
-        /// The EVSE identification is unknown.
-        /// </summary>
-        UnknownEVSE,
-
-        /// <summary>
-        /// A data format error occured.
-        /// </summary>
-        CouldNotConvertCDRFormat,
-
-
-        /// <summary>
-        /// The charge detail record had been enqueued for later transmission.
-        /// </summary>
-        Enqueued,
-
-        /// <summary>
-        /// Everything ok.
-        /// </summary>
-        Success,
-
-        /// <summary>
-        /// A timeout occured.
-        /// </summary>
-        Timeout,
-
-
-
-        /// <summary>
-        /// The operation led to an error.
-        /// </summary>
-        Error
-
-    }
 
     public enum SendCDRsResultTypes
     {
@@ -2175,9 +1094,14 @@ namespace org.GraphDefined.WWCP
         UnknownSessionId,
 
         /// <summary>
-        /// The EVSE identification is unknown.
+        /// The charging location is unknown.
         /// </summary>
-        UnknownEVSE,
+        UnknownLocation,
+
+        /// <summary>
+        /// The given token is unknown or invalid.
+        /// </summary>
+        InvalidToken,
 
         /// <summary>
         /// A data format error occured.
@@ -2211,64 +1135,6 @@ namespace org.GraphDefined.WWCP
         /// Mixed results.
         /// </summary>
         Mixed
-
-    }
-
-
-    public static class SendCDRResultTypesExtentions
-    {
-
-        public static SendCDRsResultTypes Covert(this SendCDRResultTypes result)
-        {
-
-            switch (result)
-            {
-
-                case SendCDRResultTypes.NoOperation:
-                    return SendCDRsResultTypes.NoOperation;
-
-                case SendCDRResultTypes.AdminDown:
-                    return SendCDRsResultTypes.AdminDown;
-
-                case SendCDRResultTypes.OutOfService:
-                    return SendCDRsResultTypes.OutOfService;
-
-                case SendCDRResultTypes.Filtered:
-                    return SendCDRsResultTypes.Filtered;
-
-                case SendCDRResultTypes.InvalidSessionId:
-                    return SendCDRsResultTypes.InvalidSessionId;
-
-                case SendCDRResultTypes.UnknownSessionId:
-                    return SendCDRsResultTypes.UnknownSessionId;
-
-                case SendCDRResultTypes.UnknownEVSE:
-                    return SendCDRsResultTypes.UnknownEVSE;
-
-                case SendCDRResultTypes.CouldNotConvertCDRFormat:
-                    return SendCDRsResultTypes.CouldNotConvertCDRFormat;
-
-
-                case SendCDRResultTypes.Enqueued:
-                    return SendCDRsResultTypes.Enqueued;
-
-                case SendCDRResultTypes.Success:
-                    return SendCDRsResultTypes.Success;
-
-                case SendCDRResultTypes.Timeout:
-                    return SendCDRsResultTypes.Timeout;
-
-
-
-                case SendCDRResultTypes.Error:
-                    return SendCDRsResultTypes.Error;
-
-                default:
-                    return SendCDRsResultTypes.Unspecified;
-
-            }
-
-        }
 
     }
 

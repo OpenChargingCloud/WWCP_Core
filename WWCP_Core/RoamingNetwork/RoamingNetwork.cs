@@ -4282,13 +4282,16 @@ namespace org.GraphDefined.WWCP
                                                        RequestTimeout);
 
 
-                        if (result.Result == RemoteStartResultTypes.Success)
+                        if (result.Result == RemoteStartResultTypes.Success ||
+                            result.Result == RemoteStartResultTypes.AsyncOperation)
                         {
+
                             SessionsStore.RemoteStart(result.Session,
                                                       result,
                                                       session => {
                                                           session.EMPRoamingProviderStart = EMPRoamingProvider;
                                                       });
+
                         }
 
                     }
@@ -5188,8 +5191,8 @@ namespace org.GraphDefined.WWCP
                                                  runtime => AuthStopResult.NotAuthorized(Id,
                                                                                              this,
                                                                                              SessionId,
-                                                                                             Description:  "No authorization service returned a positiv result!",
-                                                                                             Runtime:      runtime)).
+                                                                                             Description: I18NString.Create(Languages.eng, "No authorization service returned a positiv result!"),
+                                                                                             Runtime:     runtime)).
 
                                        ConfigureAwait(false);
 
@@ -5200,11 +5203,13 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
+
                 result = AuthStopResult.Error(SessionId,
-                                                  this,
-                                                  SessionId,
-                                                  e.Message,
-                                                  DateTime.UtcNow - StartTime);
+                                              this,
+                                              SessionId,
+                                              I18NString.Create(Languages.eng, e.Message),
+                                              DateTime.UtcNow - StartTime);
+
             }
 
 
@@ -6035,7 +6040,7 @@ namespace org.GraphDefined.WWCP
                                               this as IReceiveChargeDetailRecords,
                                               GlobalResults[0].Covert(),
                                               resultMap,
-                                              "",
+                                              I18NString.Empty,
                                               null,
                                               Runtime);
 

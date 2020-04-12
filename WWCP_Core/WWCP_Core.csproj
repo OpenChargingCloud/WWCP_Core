@@ -53,6 +53,7 @@
     <Compile Include="Commands\AdminStatus\IReceiveAdminStatus.cs" />
     <Compile Include="Commands\AdminStatus\ISendAdminStatus.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartResult.cs" />
+    <Compile Include="Commands\SendCDRs\SendCDRResult.cs" />
     <Compile Include="CommonTypes\Crypto\CertificateSignature.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyLifetime.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificate.cs" />
