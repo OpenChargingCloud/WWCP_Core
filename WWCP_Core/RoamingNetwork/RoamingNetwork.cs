@@ -4325,7 +4325,8 @@ namespace org.GraphDefined.WWCP
                                                            RequestTimeout);
 
 
-                            if (result.Result == RemoteStartResultTypes.Success)
+                            if (result.Result == RemoteStartResultTypes.Success ||
+                                result.Result == RemoteStartResultTypes.AsyncOperation)
                             {
 
                                 SessionsStore.RemoteStart(result.Session,
