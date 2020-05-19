@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        IId ISendAuthorizeStartStop.AuthId => Id;
+        IId IAuthorizeStartStop.AuthId => Id;
 
         IId ISendChargeDetailRecords.Id
             => Id;
@@ -4894,15 +4894,15 @@ namespace org.GraphDefined.WWCP
                                                                                                             EventTrackingId,
                                                                                                             RequestTimeout),
 
-                                             VerifyResult:  result2                   => result2.Result == AuthStartResultType.Authorized ||
-                                                                                         result2.Result == AuthStartResultType.Blocked,
+                                             VerifyResult:  result2                   => result2.Result == AuthStartResultTypes.Authorized ||
+                                                                                         result2.Result == AuthStartResultTypes.Blocked,
 
                                              Timeout:       RequestTimeout ?? this.RequestTimeout,
 
                                              DefaultResult: runtime                   => AuthStartResult.NotAuthorized(Id,
                                                                                                                            this,
                                                                                                                            SessionId,
-                                                                                                                           Description:  "No authorization service returned a positiv result!",
+                                                                                                                           Description:  I18NString.Create(Languages.eng, "No authorization service returned a positiv result!"),
                                                                                                                            Runtime:      runtime));
 
 
@@ -4913,27 +4913,27 @@ namespace org.GraphDefined.WWCP
 
             #region If Authorized...
 
-            if (result.Result == AuthStartResultType.Authorized)
+            if (result.Result == AuthStartResultTypes.Authorized)
             {
 
                 if (!result.SessionId.HasValue)
                     result = AuthStartResult.Authorized(result.AuthorizatorId,
-                                                            result.ISendAuthorizeStartStop,
-                                                            ChargingSession_Id.New,
-                                                            result.ContractId,
-                                                            result.PrintedNumber,
-                                                            result.ExpiryDate,
-                                                            result.MaxkW,
-                                                            result.MaxkWh,
-                                                            result.MaxDuration,
-                                                            result.ChargingTariffs,
-                                                            result.ListOfAuthStopTokens,
-                                                            result.ListOfAuthStopPINs,
-                                                            result.ProviderId,
-                                                            result.Description,
-                                                            result.AdditionalInfo,
-                                                            result.NumberOfRetries,
-                                                            result.Runtime);
+                                                        result.ISendAuthorizeStartStop,
+                                                        ChargingSession_Id.New,
+                                                        result.ContractId,
+                                                        result.PrintedNumber,
+                                                        result.ExpiryDate,
+                                                        result.MaxkW,
+                                                        result.MaxkWh,
+                                                        result.MaxDuration,
+                                                        result.ChargingTariffs,
+                                                        result.ListOfAuthStopTokens,
+                                                        result.ListOfAuthStopPINs,
+                                                        result.ProviderId,
+                                                        result.Description,
+                                                        result.AdditionalInfo,
+                                                        result.NumberOfRetries,
+                                                        result.Runtime);
 
 
                 // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -5094,9 +5094,9 @@ namespace org.GraphDefined.WWCP
                     //ToDo: Add a --useForce Option to overwrite!
                     if (chargingSession.SessionTime.EndTime.HasValue)
                         result = AuthStopResult.AlreadyStopped(SessionId,
-                                                                   this,
-                                                                   SessionId,
-                                                                   DateTime.UtcNow - StartTime);
+                                                               this,
+                                                               SessionId,
+                                                               Runtime: DateTime.UtcNow - StartTime);
 
                     else
                     {
@@ -5119,7 +5119,7 @@ namespace org.GraphDefined.WWCP
                                                                                         EventTrackingId,
                                                                                         RequestTimeout);
 
-                            if (result?.Result == AuthStopResultType.Authorized)
+                            if (result?.Result == AuthStopResultTypes.Authorized)
                                 SessionsStore.AuthStop(SessionId,
                                                         LocalAuthentication,
                                                         result.ProviderId.Value);
@@ -5149,7 +5149,7 @@ namespace org.GraphDefined.WWCP
                                                                                                       EventTrackingId,
                                                                                                       RequestTimeout);
 
-                                if (result?.Result == AuthStopResultType.Authorized)
+                                if (result?.Result == AuthStopResultTypes.Authorized)
                                     SessionsStore.AuthStop(SessionId,
                                                            LocalAuthentication,
                                                            result.ProviderId.Value,
@@ -5184,8 +5184,8 @@ namespace org.GraphDefined.WWCP
                                                                                                 EventTrackingId,
                                                                                                 RequestTimeout),
 
-                                                 result2 => result2.Result == AuthStopResultType.Authorized ||
-                                                            result2.Result == AuthStopResultType.Blocked,
+                                                 result2 => result2.Result == AuthStopResultTypes.Authorized ||
+                                                            result2.Result == AuthStopResultTypes.Blocked,
 
                                                  RequestTimeout ?? this.RequestTimeout,
 
@@ -5676,8 +5676,8 @@ namespace org.GraphDefined.WWCP
 
                                 var authStartResult = await eMob.AuthorizeStart(LL);
 
-                                if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                    authStartResult.Result == AuthStartResultType.Blocked)
+                                if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                    authStartResult.Result == AuthStartResultTypes.Blocked)
                                 {
                                     _ISendChargeDetailRecords[eMob].Add(_cdr);
                                     ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5705,8 +5705,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5732,8 +5732,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5759,8 +5759,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5786,8 +5786,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5813,8 +5813,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5840,8 +5840,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5867,8 +5867,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5894,8 +5894,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStart as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);
@@ -5921,8 +5921,8 @@ namespace org.GraphDefined.WWCP
 
                             var authStartResult = await eMob.AuthorizeStart(_cdr.AuthenticationStop as LocalAuthentication);
 
-                            if (authStartResult.Result == AuthStartResultType.Authorized ||
-                                authStartResult.Result == AuthStartResultType.Blocked)
+                            if (authStartResult.Result == AuthStartResultTypes.Authorized ||
+                                authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
                                 _ISendChargeDetailRecords[eMob].Add(_cdr);
                                 ChargeDetailRecordsToProcess.Remove(_cdr);

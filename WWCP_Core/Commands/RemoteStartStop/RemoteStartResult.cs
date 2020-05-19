@@ -229,7 +229,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Reserved           (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Reserved                         (         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The EVSE or charging station is reserved.
@@ -248,7 +248,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Success            (Session,                                            Runtime = null)
+        #region (static) Success                          (Session,                                            Runtime = null)
 
         /// <summary>
         /// The remote start was successful and a charging session
@@ -265,7 +265,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) AsyncOperation     (Session, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) AsyncOperation                   (Session, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start was successful.
@@ -287,7 +287,29 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Timeout            (         Description = null,                        Runtime = null)
+        #region (static) SuccessPlugInCableToStartCharging(Session, Description = null, AdditionalInfo = null, Runtime = null)
+
+        /// <summary>
+        /// The remote start was successful. Please plug in the cable to start charging!
+        /// </summary>
+        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Session">The charging session.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult SuccessPlugInCableToStartCharging(ChargingSession  Session,
+                                                                          I18NString       Description      = null,
+                                                                          String           AdditionalInfo   = null,
+                                                                          TimeSpan?        Runtime          = null)
+
+            => new RemoteStartResult(RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
+                                     Description ?? I18NString.Create(Languages.eng, "The remote start was successful. Please plug in the cable to start charging!"),
+                                     AdditionalInfo,
+                                     Session,
+                                     Runtime: Runtime);
+
+        #endregion
+
+        #region (static) Timeout                          (         Description = null,                        Runtime = null)
 
         /// <summary>
         /// The remote start request ran into a timeout.
@@ -303,7 +325,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) CommunicationError (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) CommunicationError               (         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// A communication error occured.
@@ -322,7 +344,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Error              (         Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Error                            (         Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote start request led to an error.
@@ -486,6 +508,11 @@ namespace org.GraphDefined.WWCP
         /// An async remote start was sent successfully.
         /// </summary>
         AsyncOperation,
+
+        /// <summary>
+        /// The remote start was successful. Please plug in the cable to start charging!
+        /// </summary>
+        SuccessPlugInCableToStartCharging,
 
         /// <summary>
         /// The remote start request ran into a timeout.

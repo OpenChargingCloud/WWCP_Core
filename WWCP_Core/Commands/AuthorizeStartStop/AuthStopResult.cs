@@ -19,6 +19,8 @@
 
 using System;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,40 +29,130 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of a authorize stop operation at an EVSE.
+    /// The result of an authorize stop request.
     /// </summary>
-    public class AuthStopResult : AAuthStopResult<AuthStopResultType>
+    public class AuthStopResult
     {
 
+        #region Properties
+
+        /// <summary>
+        /// The identification of the authorizing entity.
+        /// </summary>
+        public IId                          AuthorizatorId                { get; }
+
+        /// <summary>
+        /// The entity asking for an authorization.
+        /// </summary>
+        public ISendAuthorizeStartStop      ISendAuthorizeStartStop       { get; }
+
+        /// <summary>
+        /// The entity giving an authorization.
+        /// </summary>
+        public IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop    { get; }
+
+        /// <summary>
+        /// The result of the authorize stop request.
+        /// </summary>
+        public AuthStopResultTypes          Result                        { get; }
+
+        /// <summary>
+        /// The optional charging session identification.
+        /// </summary>
+        public ChargingSession_Id?          SessionId                     { get; }
+
+        /// <summary>
+        /// The unique identification of the e-mobility provider.
+        /// </summary>
+        public eMobilityProvider_Id?        ProviderId                    { get; }
+
+        /// <summary>
+        /// A optional description of the authorize stop result.
+        /// </summary>
+        public I18NString                   Description                   { get; }
+
+        /// <summary>
+        /// An optional additional message.
+        /// </summary>
+        public I18NString                   AdditionalInfo                { get; }
+
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        public TimeSpan?                    Runtime                       { get; }
+
+        #endregion
+
         #region Constructor(s)
+
+        #region (private) AuthStopResult(AuthorizatorId,                             Result, ...)
+
+        /// <summary>
+        /// Create a new abstract authorize stop result.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
+        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// 
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        private AuthStopResult(IId                          AuthorizatorId,
+                               AuthStopResultTypes          Result,
+                               ISendAuthorizeStartStop      ISendAuthorizeStartStop      = null,
+                               IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop   = null,
+
+                               ChargingSession_Id?          SessionId                    = null,
+                               eMobilityProvider_Id?        ProviderId                   = null,
+                               I18NString                   Description                  = null,
+                               I18NString                   AdditionalInfo               = null,
+                               TimeSpan?                    Runtime                      = null)
+        {
+
+            this.AuthorizatorId              = AuthorizatorId ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+            this.ISendAuthorizeStartStop     = ISendAuthorizeStartStop;
+            this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
+            this.Result                      = Result;
+            this.SessionId                   = SessionId;
+            this.ProviderId                  = ProviderId     ?? new eMobilityProvider_Id?();
+            this.Description                 = Description    ?? I18NString.Empty;
+            this.AdditionalInfo              = AdditionalInfo;
+            this.Runtime                     = Runtime;
+
+        }
+
+        #endregion
 
         #region (private) AuthStopResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
 
         /// <summary>
-        /// Create a new authorize stop result.
+        /// Create a new abstract authorize stop result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
-        /// <param name="Result">The authorize stop result type.</param>
-        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private AuthStopResult(IId                      AuthorizatorId,
-                               ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                               AuthStopResultType       Result,
-                               ChargingSession_Id?      SessionId        = null,
+        protected AuthStopResult(IId                      AuthorizatorId,
+                                 ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                 AuthStopResultTypes      Result,
+                                 ChargingSession_Id?      SessionId        = null,
+                                 eMobilityProvider_Id?    ProviderId       = null,
+                                 I18NString               Description      = null,
+                                 I18NString               AdditionalInfo   = null,
+                                 TimeSpan?                Runtime          = null)
 
-                               eMobilityProvider_Id?    ProviderId       = null,
-                               I18NString               Description      = null,
-                               String                   AdditionalInfo   = null,
-                               TimeSpan?                Runtime          = null)
-
-            : base(AuthorizatorId,
-                   ISendAuthorizeStartStop,
+            : this(AuthorizatorId,
                    Result,
+                   ISendAuthorizeStartStop,
+                   null,
                    SessionId,
                    ProviderId,
                    Description,
@@ -74,30 +166,30 @@ namespace org.GraphDefined.WWCP
         #region (private) AuthStopResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
 
         /// <summary>
-        /// Create a new authorize stop result.
+        /// Create a new abstract authorize stop result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
-        /// <param name="Result">The authorize stop result type.</param>
-        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
         /// 
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private AuthStopResult(IId                         AuthorizatorId,
-                               IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                               AuthStopResultType          Result,
-                               ChargingSession_Id?         SessionId        = null,
+        protected AuthStopResult(IId                         AuthorizatorId,
+                                 IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                                 AuthStopResultTypes         Result,
+                                 ChargingSession_Id?         SessionId        = null,
+                                 eMobilityProvider_Id?       ProviderId       = null,
+                                 I18NString                  Description      = null,
+                                 I18NString                  AdditionalInfo   = null,
+                                 TimeSpan?                   Runtime          = null)
 
-                               eMobilityProvider_Id?       ProviderId       = null,
-                               I18NString                  Description      = null,
-                               String                      AdditionalInfo   = null,
-                               TimeSpan?                   Runtime          = null)
-
-            : base(AuthorizatorId,
-                   IReceiveAuthorizeStartStop,
+            : this(AuthorizatorId,
                    Result,
+                   null,
+                   IReceiveAuthorizeStartStop,
                    SessionId,
                    ProviderId,
                    Description,
@@ -119,20 +211,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             Unspecified(IId                      AuthorizatorId,
                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                        ChargingSession_Id?      SessionId  = null,
-                        TimeSpan?                Runtime    = null)
+                        ChargingSession_Id?      SessionId     = null,
+                        I18NString               Description   = null,
+                        TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.Unspecified,
+                                      AuthStopResultTypes.Unspecified,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description,
+                                      Runtime:      Runtime);
 
 
 
@@ -142,20 +237,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             Unspecified(IId                         AuthorizatorId,
                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                        ChargingSession_Id?         SessionId  = null,
-                        TimeSpan?                   Runtime    = null)
+                        ChargingSession_Id?         SessionId     = null,
+                        I18NString                  Description   = null,
+                        TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.Unspecified,
+                                      AuthStopResultTypes.Unspecified,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description,
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -167,21 +265,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             AdminDown(IId                      AuthorizatorId,
                       ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                      ChargingSession_Id?      SessionId  = null,
-                      TimeSpan?                Runtime    = null)
+                      ChargingSession_Id?      SessionId     = null,
+                      I18NString               Description   = null,
+                      TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.AdminDown,
+                                      AuthStopResultTypes.AdminDown,
                                       SessionId,
-                                      Description: I18NString.Create(Languages.eng, "The authentication service was disabled by the administrator!"),
-                                      Runtime:     Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "The authentication service was disabled by the administrator!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -191,21 +291,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             AdminDown(IId                         AuthorizatorId,
                       IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                      ChargingSession_Id?         SessionId  = null,
-                      TimeSpan?                   Runtime    = null)
+                      ChargingSession_Id?         SessionId     = null,
+                      I18NString                  Description   = null,
+                      TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.AdminDown,
+                                      AuthStopResultTypes.AdminDown,
                                       SessionId,
-                                      Description: I18NString.Create(Languages.eng, "The authentication service was disabled by the administrator!"),
-                                      Runtime:     Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "The authentication service was disabled by the administrator!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -217,20 +319,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             UnknownLocation(IId                      AuthorizatorId,
                             ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                            ChargingSession_Id?      SessionId   = null,
-                            TimeSpan?                Runtime     = null)
+                            ChargingSession_Id?      SessionId     = null,
+                            I18NString               Description   = null,
+                            TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.UnknownLocation,
+                                      AuthStopResultTypes.UnknownLocation,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Unknown location!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -240,20 +345,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             UnknownLocation(IId                         AuthorizatorId,
                             IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                            ChargingSession_Id?         SessionId   = null,
-                            TimeSpan?                   Runtime     = null)
+                            ChargingSession_Id?         SessionId     = null,
+                            I18NString                  Description   = null,
+                            TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.UnknownLocation,
+                                      AuthStopResultTypes.UnknownLocation,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Unknown location!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -265,21 +373,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             InvalidToken(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                         ChargingSession_Id?      SessionId   = null,
-                         TimeSpan?                Runtime     = null)
+                         ChargingSession_Id?      SessionId     = null,
+                         I18NString               Description   = null,
+                         TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.InvalidToken,
+                                      AuthStopResultTypes.InvalidToken,
                                       SessionId,
-                                      Description: I18NString.Create(Languages.eng, "Invalid token (RFID UID)!"),
-                                      Runtime:     Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid token!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -289,20 +399,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             InvalidToken(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                         ChargingSession_Id?         SessionId   = null,
-                         TimeSpan?                   Runtime     = null)
+                         ChargingSession_Id?         SessionId     = null,
+                         I18NString                  Description   = null,
+                         TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.InvalidToken,
+                                      AuthStopResultTypes.InvalidToken,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid token!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -314,20 +427,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             InvalidSessionId(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                             ChargingSession_Id?      SessionId  = null,
-                             TimeSpan?                Runtime    = null)
+                             ChargingSession_Id?      SessionId     = null,
+                             I18NString               Description   = null,
+                             TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.InvalidSessionId,
+                                      AuthStopResultTypes.InvalidSessionId,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid session identification!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -337,20 +453,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             InvalidSessionId(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                             ChargingSession_Id?         SessionId  = null,
-                             TimeSpan?                   Runtime    = null)
+                             ChargingSession_Id?         SessionId     = null,
+                             I18NString                  Description   = null,
+                             TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.InvalidSessionId,
+                                      AuthStopResultTypes.InvalidSessionId,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid session identification!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -362,20 +481,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             AlreadyStopped(IId                      AuthorizatorId,
                            ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                           ChargingSession_Id?      SessionId  = null,
-                           TimeSpan?                Runtime    = null)
+                           ChargingSession_Id?      SessionId     = null,
+                           I18NString               Description   = null,
+                           TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.AlreadyStopped,
+                                      AuthStopResultTypes.AlreadyStopped,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Already stopped!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -385,20 +507,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             AlreadyStopped(IId                         AuthorizatorId,
                            IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                           ChargingSession_Id?         SessionId  = null,
-                           TimeSpan?                   Runtime    = null)
+                           ChargingSession_Id?         SessionId     = null,
+                           I18NString                  Description   = null,
+                           TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.AlreadyStopped,
+                                      AuthStopResultTypes.AlreadyStopped,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Already stopped!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -410,21 +535,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             OutOfService(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                         ChargingSession_Id?      SessionId  = null,
-                         TimeSpan?                Runtime    = null)
+                         ChargingSession_Id?      SessionId     = null,
+                         I18NString               Description   = null,
+                         TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.OutOfService,
+                                      AuthStopResultTypes.OutOfService,
                                       SessionId,
-                                      Description: I18NString.Create(Languages.eng, "Out-of-service!"),
-                                      Runtime:     Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Out of service!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -434,21 +561,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             OutOfService(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                         ChargingSession_Id?         SessionId  = null,
-                         TimeSpan?                   Runtime    = null)
+                         ChargingSession_Id?         SessionId     = null,
+                         I18NString                  Description   = null,
+                         TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.OutOfService,
+                                      AuthStopResultTypes.OutOfService,
                                       SessionId,
-                                      Description: I18NString.Create(Languages.eng, "Out-of-service!"),
-                                      Runtime:     Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Out of service!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -471,16 +600,16 @@ namespace org.GraphDefined.WWCP
                        ChargingSession_Id?      SessionId        = null,
                        eMobilityProvider_Id?    ProviderId       = null,
                        I18NString               Description      = null,
-                       String                   AdditionalInfo   = null,
+                       I18NString               AdditionalInfo   = null,
                        TimeSpan?                Runtime          = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.Authorized,
+                                      AuthStopResultTypes.Authorized,
                                       SessionId,
                                       ProviderId,
-                                      Description ?? I18NString.Create(Languages.eng, "Success"),
+                                      Description ?? I18NString.Create(Languages.eng, "Success!"),
                                       AdditionalInfo,
                                       Runtime: Runtime);
 
@@ -503,16 +632,16 @@ namespace org.GraphDefined.WWCP
                        ChargingSession_Id?         SessionId        = null,
                        eMobilityProvider_Id?       ProviderId       = null,
                        I18NString                  Description      = null,
-                       String                      AdditionalInfo   = null,
+                       I18NString                  AdditionalInfo   = null,
                        TimeSpan?                   Runtime          = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.Authorized,
+                                      AuthStopResultTypes.Authorized,
                                       SessionId,
                                       ProviderId,
-                                      Description ?? I18NString.Create(Languages.eng, "Success"),
+                                      Description ?? I18NString.Create(Languages.eng, "Success!"),
                                       AdditionalInfo,
                                       Runtime: Runtime);
 
@@ -537,13 +666,13 @@ namespace org.GraphDefined.WWCP
                           ChargingSession_Id?      SessionId        = null,
                           eMobilityProvider_Id?    ProviderId       = null,
                           I18NString               Description      = null,
-                          String                   AdditionalInfo   = null,
+                          I18NString               AdditionalInfo   = null,
                           TimeSpan?                Runtime          = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.NotAuthorized,
+                                      AuthStopResultTypes.NotAuthorized,
                                       SessionId,
                                       ProviderId,
                                       Description ?? I18NString.Create(Languages.eng, "Not Authorized"),
@@ -569,13 +698,13 @@ namespace org.GraphDefined.WWCP
                           ChargingSession_Id?         SessionId        = null,
                           eMobilityProvider_Id?       ProviderId       = null,
                           I18NString                  Description      = null,
-                          String                      AdditionalInfo   = null,
+                          I18NString                  AdditionalInfo   = null,
                           TimeSpan?                   Runtime          = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.NotAuthorized,
+                                      AuthStopResultTypes.NotAuthorized,
                                       SessionId,
                                       ProviderId,
                                       Description ?? I18NString.Create(Languages.eng, "Not Authorized"),
@@ -603,16 +732,16 @@ namespace org.GraphDefined.WWCP
                     ChargingSession_Id?      SessionId        = null,
                     eMobilityProvider_Id?    ProviderId       = null,
                     I18NString               Description      = null,
-                    String                   AdditionalInfo   = null,
+                    I18NString               AdditionalInfo   = null,
                     TimeSpan?                Runtime          = null)
 
 
             => new AuthStopResult(AuthorizatorId,
                                   ISendAuthorizeStartStop,
-                                  AuthStopResultType.Blocked,
+                                  AuthStopResultTypes.Blocked,
                                   SessionId,
                                   ProviderId,
-                                  Description,
+                                  Description ?? I18NString.Create(Languages.eng, "Blocked!"),
                                   AdditionalInfo,
                                   Runtime: Runtime);
 
@@ -635,16 +764,16 @@ namespace org.GraphDefined.WWCP
                     ChargingSession_Id?         SessionId        = null,
                     eMobilityProvider_Id?       ProviderId       = null,
                     I18NString                  Description      = null,
-                    String                      AdditionalInfo   = null,
+                    I18NString                  AdditionalInfo   = null,
                     TimeSpan?                   Runtime          = null)
 
 
             => new AuthStopResult(AuthorizatorId,
                                   IReceiveAuthorizeStartStop,
-                                  AuthStopResultType.Blocked,
+                                  AuthStopResultTypes.Blocked,
                                   SessionId,
                                   ProviderId,
-                                  Description,
+                                  Description ?? I18NString.Create(Languages.eng, "Blocked!"),
                                   AdditionalInfo,
                                   Runtime: Runtime);
 
@@ -658,20 +787,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             CommunicationTimeout(IId                      AuthorizatorId,
                                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                                 ChargingSession_Id?      SessionId  = null,
-                                 TimeSpan?                Runtime    = null)
+                                 ChargingSession_Id?      SessionId     = null,
+                                 I18NString               Description   = null,
+                                 TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.CommunicationTimeout,
+                                      AuthStopResultTypes.CommunicationTimeout,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Communication timeout!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -681,20 +813,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             CommunicationTimeout(IId                         AuthorizatorId,
                                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                                 ChargingSession_Id?         SessionId  = null,
-                                 TimeSpan?                   Runtime    = null)
+                                 ChargingSession_Id?         SessionId     = null,
+                                 I18NString                  Description   = null,
+                                 TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.CommunicationTimeout,
+                                      AuthStopResultTypes.CommunicationTimeout,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Communication timeout!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
@@ -706,20 +841,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
-            StartChargingTimeout(IId                      AuthorizatorId,
-                                 ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                                 ChargingSession_Id?      SessionId  = null,
-                                 TimeSpan?                Runtime    = null)
+            StopChargingTimeout(IId                      AuthorizatorId,
+                                ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                ChargingSession_Id?      SessionId     = null,
+                                I18NString               Description   = null,
+                                TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.StopChargingTimeout,
+                                      AuthStopResultTypes.StopChargingTimeout,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Stop charging timeout!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -729,24 +867,27 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
-            StartChargingTimeout(IId                         AuthorizatorId,
-                                 IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                                 ChargingSession_Id?         SessionId  = null,
-                                 TimeSpan?                   Runtime    = null)
+            StopChargingTimeout(IId                         AuthorizatorId,
+                                IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                                ChargingSession_Id?         SessionId     = null,
+                                I18NString                  Description   = null,
+                                TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.StopChargingTimeout,
+                                      AuthStopResultTypes.StopChargingTimeout,
                                       SessionId,
-                                      Runtime: Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Stop charging timeout!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
-        #region (static) Error               (AuthorizatorId, SessionId = null, ErrorMessage = null, Runtime = null)
+        #region (static) Error               (AuthorizatorId, SessionId = null, Description = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop operation led to an error.
@@ -754,23 +895,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
-        /// <param name="ErrorMessage">An error message.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             Error(IId                      AuthorizatorId,
                   ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                   ChargingSession_Id?      SessionId     = null,
-                  I18NString               ErrorMessage  = null,
+                  I18NString               Description   = null,
                   TimeSpan?                Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       ISendAuthorizeStartStop,
-                                      AuthStopResultType.Error,
+                                      AuthStopResultTypes.Error,
                                       SessionId,
-                                      Description: ErrorMessage,
-                                      Runtime:     Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Error!"),
+                                      Runtime:      Runtime);
 
 
 
@@ -780,33 +921,95 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
-        /// <param name="ErrorMessage">An error message.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult
 
             Error(IId                         AuthorizatorId,
                   IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                   ChargingSession_Id?         SessionId     = null,
-                  I18NString                  ErrorMessage  = null,
+                  I18NString                  Description   = null,
                   TimeSpan?                   Runtime       = null)
 
 
                 => new AuthStopResult(AuthorizatorId,
                                       IReceiveAuthorizeStartStop,
-                                      AuthStopResultType.Error,
+                                      AuthStopResultTypes.Error,
                                       SessionId,
-                                      Description: ErrorMessage,
-                                      Runtime:     Runtime);
+                                      Description:  Description ?? I18NString.Create(Languages.eng, "Error!"),
+                                      Runtime:      Runtime);
 
         #endregion
 
 
+        #region ToJSON(ResponseMapper = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="ResponseMapper">An optional response mapper delegate.</param>
+        public JObject ToJSON(Func<JObject, JObject> ResponseMapper = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("result",                Result.        ToString()),
+
+                           SessionId.HasValue
+                               ? new JProperty("sessionId",       SessionId.     ToString())
+                               : null,
+
+                           ProviderId.HasValue
+                               ? new JProperty("providerId",      ProviderId.    ToString())
+                               : null,
+
+                                 new JProperty("authorizatorId",  AuthorizatorId.ToString()),
+
+                           Description.IsNeitherNullNorEmpty()
+                               ? new JProperty("description",     Description.   ToJSON())
+                               : null,
+
+                           AdditionalInfo.IsNeitherNullNorEmpty()
+                               ? new JProperty("additionalInfo",  AdditionalInfo.ToJSON())
+                               : null,
+
+                           Runtime.HasValue
+                               ? new JProperty("runtime",         Runtime.Value.TotalMilliseconds)
+                               : null
+
+                       );
+
+            return ResponseMapper != null
+                       ? ResponseMapper(JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+
+            if (ProviderId != null)
+                return String.Concat(Result.ToString(), ", ", ProviderId);
+
+            return String.Concat(Result.ToString());
+
+        }
+
+        #endregion
+
     }
 
     /// <summary>
-    /// The result of a authorize stop operation at an EVSE.
+    /// The result of an authorize stop request.
     /// </summary>
-    public enum AuthStopResultType
+    public enum AuthStopResultTypes
     {
 
         /// <summary>

@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        IId ISendAuthorizeStartStop.AuthId
+        IId IAuthorizeStartStop.AuthId
             => Id;
 
         IId ISendChargeDetailRecords.Id
@@ -2759,9 +2759,9 @@ namespace org.GraphDefined.WWCP
 
             else
                 result = AuthStartResult.OutOfService(Id,
-                                                          this,
-                                                          SessionId,
-                                                          TimeSpan.FromSeconds(0));
+                                                      this,
+                                                      SessionId,
+                                                      Runtime: TimeSpan.Zero);
 
             var Endtime  = DateTime.UtcNow;
             var Runtime  = Endtime - StartTime;
@@ -2902,9 +2902,9 @@ namespace org.GraphDefined.WWCP
 
             else
                 result = AuthStopResult.OutOfService(Id,
-                                                         this,
-                                                         SessionId,
-                                                         TimeSpan.FromSeconds(0));
+                                                     this,
+                                                     SessionId,
+                                                     Runtime: TimeSpan.Zero);
 
             var Endtime  = DateTime.UtcNow;
             var Runtime  = Endtime - StartTime;

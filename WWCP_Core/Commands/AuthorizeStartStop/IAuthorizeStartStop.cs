@@ -17,10 +17,11 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -32,6 +33,97 @@ namespace org.GraphDefined.WWCP
     /// </summary>
     public interface IAuthorizeStartStop
     {
+
+        IId AuthId { get; }
+
+
+        #region AuthorizeStart
+
+        /// <summary>
+        /// Create an authorize start request at the given charging location.
+        /// </summary>
+        /// <param name="LocalAuthentication">An user identification.</param>
+        /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStartResult>
+
+            AuthorizeStart(LocalAuthentication          LocalAuthentication,
+                           ChargingLocation             ChargingLocation    = null,
+                           ChargingProduct              ChargingProduct     = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
+
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
+
+        #endregion
+
+        #region AuthorizeStop
+
+        /// <summary>
+        /// Create an authorize stop request at the given EVSE.
+        /// </summary>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="LocalAuthentication">An user identification.</param>
+        /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStopResult>
+
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          LocalAuthentication          LocalAuthentication,
+                          ChargingLocation             ChargingLocation    = null,
+                          ChargingStationOperator_Id?  OperatorId          = null,
+
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
+
+        #endregion
+
+
+        #region OnAuthorizeStartRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging.
+        /// </summary>
+        event OnAuthorizeStartRequestDelegate   OnAuthorizeStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging.
+        /// </summary>
+        event OnAuthorizeStartResponseDelegate  OnAuthorizeStartResponse;
+
+        #endregion
+
+        #region OnAuthorizeStopRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process.
+        /// </summary>
+        event OnAuthorizeStopRequestDelegate   OnAuthorizeStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process.
+        /// </summary>
+        event OnAuthorizeStopResponseDelegate  OnAuthorizeStopResponse;
+
+        #endregion
+
 
         //#region AuthorizeStart
 
@@ -193,102 +285,13 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The interface for sending AuthStart/-Stop requests.
     /// </summary>
-    public interface ISendAuthorizeStartStop
+    public interface ISendAuthorizeStartStop : IAuthorizeStartStop
     {
-
-        IId AuthId { get; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
         Boolean  DisableAuthentication   { get; set; }
-
-
-        #region OnAuthorizeStartRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified for charging.
-        /// </summary>
-        event OnAuthorizeStartRequestDelegate   OnAuthorizeStartRequest;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified for charging.
-        /// </summary>
-        event OnAuthorizeStartResponseDelegate  OnAuthorizeStartResponse;
-
-        #endregion
-
-        #region OnAuthorizeStopRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified to stop a charging process.
-        /// </summary>
-        event OnAuthorizeStopRequestDelegate   OnAuthorizeStopRequest;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified to stop a charging process.
-        /// </summary>
-        event OnAuthorizeStopResponseDelegate  OnAuthorizeStopResponse;
-
-        #endregion
-
-        #region AuthorizeStart
-
-        /// <summary>
-        /// Create an authorize start request at the given EVSE.
-        /// </summary>
-        /// <param name="LocalAuthentication">An user identification.</param>
-        /// <param name="ChargingLocation">The charging location.</param>
-        /// <param name="ChargingProduct">An optional charging product.</param>
-        /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="OperatorId">An optional charging station operator identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<AuthStartResult>
-
-            AuthorizeStart(LocalAuthentication          LocalAuthentication,
-                           ChargingLocation             ChargingLocation    = null,
-                           ChargingProduct              ChargingProduct     = null,
-                           ChargingSession_Id?          SessionId           = null,
-                           ChargingStationOperator_Id?  OperatorId          = null,
-
-                           DateTime?                    Timestamp           = null,
-                           CancellationToken?           CancellationToken   = null,
-                           EventTracking_Id             EventTrackingId     = null,
-                           TimeSpan?                    RequestTimeout      = null);
-
-        #endregion
-
-        #region AuthorizeStop
-
-        /// <summary>
-        /// Create an authorize stop request at the given EVSE.
-        /// </summary>
-        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="LocalAuthentication">An user identification.</param>
-        /// <param name="ChargingLocation">The charging location.</param>
-        /// <param name="OperatorId">An optional charging station operator identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<AuthStopResult>
-
-            AuthorizeStop(ChargingSession_Id           SessionId,
-                          LocalAuthentication          LocalAuthentication,
-                          ChargingLocation             ChargingLocation    = null,
-                          ChargingStationOperator_Id?  OperatorId          = null,
-
-                          DateTime?                    Timestamp           = null,
-                          CancellationToken?           CancellationToken   = null,
-                          EventTracking_Id             EventTrackingId     = null,
-                          TimeSpan?                    RequestTimeout      = null);
-
-        #endregion
 
     }
 
@@ -297,97 +300,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The interface for receiving AuthStart/-Stop requests.
     /// </summary>
-    public interface IReceiveAuthorizeStartStop
+    public interface IReceiveAuthorizeStartStop : IAuthorizeStartStop
     {
 
-        IId AuthId { get; }
-
-
-        #region OnAuthorizeStartRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified for charging.
-        /// </summary>
-        event OnAuthorizeStartRequestDelegate   OnAuthorizeStartRequest;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified for charging.
-        /// </summary>
-        event OnAuthorizeStartResponseDelegate  OnAuthorizeStartResponse;
-
-        #endregion
-
-        #region OnAuthorizeStopRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified to stop a charging process.
-        /// </summary>
-        event OnAuthorizeStopRequestDelegate   OnAuthorizeStopRequest;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified to stop a charging process.
-        /// </summary>
-        event OnAuthorizeStopResponseDelegate  OnAuthorizeStopResponse;
-
-        #endregion
-
-        #region AuthorizeStart
-
-        /// <summary>
-        /// Create an authorize start request at the given charging location.
-        /// </summary>
-        /// <param name="LocalAuthentication">An user identification.</param>
-        /// <param name="ChargingLocation">The charging location.</param>
-        /// <param name="ChargingProduct">An optional charging product.</param>
-        /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="OperatorId">An optional charging station operator identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<AuthStartResult>
-
-            AuthorizeStart(LocalAuthentication          LocalAuthentication,
-                           ChargingLocation             ChargingLocation    = null,
-                           ChargingProduct              ChargingProduct     = null,
-                           ChargingSession_Id?          SessionId           = null,
-                           ChargingStationOperator_Id?  OperatorId          = null,
-
-                           DateTime?                    Timestamp           = null,
-                           CancellationToken?           CancellationToken   = null,
-                           EventTracking_Id             EventTrackingId     = null,
-                           TimeSpan?                    RequestTimeout      = null);
-
-        #endregion
-
-        #region AuthorizeStop
-
-        /// <summary>
-        /// Create an authorize stop request at the given EVSE.
-        /// </summary>
-        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="LocalAuthentication">An user identification.</param>
-        /// <param name="ChargingLocation">The charging location.</param>
-        /// <param name="OperatorId">An optional charging station operator identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<AuthStopResult>
-
-            AuthorizeStop(ChargingSession_Id           SessionId,
-                          LocalAuthentication          LocalAuthentication,
-                          ChargingLocation             ChargingLocation    = null,
-                          ChargingStationOperator_Id?  OperatorId          = null,
-
-                          DateTime?                    Timestamp           = null,
-                          CancellationToken?           CancellationToken   = null,
-                          EventTracking_Id             EventTrackingId     = null,
-                          TimeSpan?                    RequestTimeout      = null);
-
-        #endregion
 
     }
 

@@ -90,64 +90,7 @@ namespace org.GraphDefined.WWCP
                                                           ChargingSession_Id?                    SessionId,
                                                           IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
                                                           TimeSpan?                              RequestTimeout,
-                                                          AuthStartResult                    Result,
+                                                          AuthStartResult                        Result,
                                                           TimeSpan                               Runtime);
-
-
-
-    /// <summary>
-    /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="ChargingLocation">The charging location.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="LocalAuthentication">An user identification.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnAuthorizeStopRequestDelegate(DateTime                      LogTimestamp,
-                                                        DateTime                      RequestTimestamp,
-                                                        Object                        Sender,
-                                                        String                        SenderId,
-                                                        EventTracking_Id              EventTrackingId,
-                                                        RoamingNetwork_Id             RoamingNetworkId,
-                                                        CSORoamingProvider_Id?        EMPRoamingProviderId,
-                                                        EMPRoamingProvider_Id?        CSORoamingProviderId,
-                                                        ChargingStationOperator_Id?   OperatorId,
-                                                        ChargingLocation              ChargingLocation,
-                                                        ChargingSession_Id?           SessionId,
-                                                        LocalAuthentication           LocalAuthentication,
-                                                        TimeSpan?                     RequestTimeout);
-
-    /// <summary>
-    /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An Charging Station Operator identification.</param>
-    /// <param name="ChargingLocation">The charging location.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="LocalAuthentication">An user identification.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    /// <param name="Result">The authorize stop result.</param>
-    public delegate Task OnAuthorizeStopResponseDelegate(DateTime                      LogTimestamp,
-                                                         DateTime                      RequestTimestamp,
-                                                         Object                        Sender,
-                                                         String                        SenderId,
-                                                         EventTracking_Id              EventTrackingId,
-                                                         RoamingNetwork_Id             RoamingNetworkId,
-                                                         CSORoamingProvider_Id?        EMPRoamingProviderId,
-                                                         EMPRoamingProvider_Id?        CSORoamingProviderId,
-                                                         ChargingStationOperator_Id?   OperatorId,
-                                                         ChargingLocation              ChargingLocation,
-                                                         ChargingSession_Id?           SessionId,
-                                                         LocalAuthentication           LocalAuthentication,
-                                                         TimeSpan?                     RequestTimeout,
-                                                         AuthStopResult            Result,
-                                                         TimeSpan                      Runtime);
 
 }
