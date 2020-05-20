@@ -5345,6 +5345,7 @@ namespace org.GraphDefined.WWCP
                        ((chargingSession.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (chargingSession.EVSEId.           Value, out ChargingPool chargingPool)) ||
                         (chargingSession.ChargingStationId.HasValue && TryGetChargingPoolByStationId(chargingSession.ChargingStationId.Value, out              chargingPool)) ||
                         (chargingSession.ChargingPoolId.   HasValue && TryGetChargingPoolById       (chargingSession.ChargingPoolId.   Value, out              chargingPool))))
+                    {
 
                         result = await chargingPool.
                                            RemoteStop(SessionId,
@@ -5357,9 +5358,13 @@ namespace org.GraphDefined.WWCP
                                                       EventTrackingId,
                                                       RequestTimeout);
 
+                    }
 
                     if (result == null)
+                    {
+                        DebugX.Log("Invalid charging session at charging station operator '" + Id + "': " + SessionId);
                         result = RemoteStopResult.InvalidSessionId(SessionId);
+                    }
 
                     if (result.Result == RemoteStopResultTypes.Success)
                     {

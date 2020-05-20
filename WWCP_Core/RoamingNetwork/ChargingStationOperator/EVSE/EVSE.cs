@@ -2815,7 +2815,10 @@ namespace org.GraphDefined.WWCP
 
                     }
                     else
+                    {
+                        DebugX.Log("Invalid charging session at EVSE '" + Id + "': " + SessionId + " != " + ChargingSession?.Id);
                         result = RemoteStopResult.InvalidSessionId(SessionId);
+                    }
 
                 }
                 else
