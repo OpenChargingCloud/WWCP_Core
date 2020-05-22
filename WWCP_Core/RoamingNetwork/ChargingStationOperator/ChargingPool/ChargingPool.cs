@@ -64,9 +64,9 @@ namespace org.GraphDefined.WWCP
                                     InfoStatus                                     ExpandEVSEIds                     = InfoStatus.Hidden,
                                     InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                                     InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJSONSerializerDelegate<ChargingPool>     CustomChargingPoolSerializer      = null,
-                                    CustomJSONSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                                    CustomJSONSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
+                                    CustomJObjectSerializerDelegate<ChargingPool>     CustomChargingPoolSerializer      = null,
+                                    CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
+                                    CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
 
 
             => ChargingPools == null || !ChargingPools.Any()
@@ -3647,9 +3647,9 @@ namespace org.GraphDefined.WWCP
                               InfoStatus                                     ExpandEVSEIds                     = InfoStatus.Hidden,
                               InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                               InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJSONSerializerDelegate<ChargingPool>     CustomChargingPoolSerializer      = null,
-                              CustomJSONSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                              CustomJSONSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
+                              CustomJObjectSerializerDelegate<ChargingPool>     CustomChargingPoolSerializer      = null,
+                              CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
+                              CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
         {
 
             var JSON = JSONObject.Create(

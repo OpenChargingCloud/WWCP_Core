@@ -64,8 +64,8 @@ namespace org.GraphDefined.WWCP
                                     InfoStatus                                     ExpandEVSEIds                     = InfoStatus.Expand,
                                     InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                                     InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJSONSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                                    CustomJSONSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
+                                    CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
+                                    CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
 
 
             => ChargingStations != null && ChargingStations.Any()
@@ -3598,8 +3598,8 @@ namespace org.GraphDefined.WWCP
                               InfoStatus                                     ExpandEVSEIds                     = InfoStatus.Expand,
                               InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                               InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJSONSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                              CustomJSONSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
+                              CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
+                              CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
         {
 
             var JSON = JSONObject.Create(

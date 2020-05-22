@@ -411,7 +411,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
         public JObject ToJSON(Boolean                                           Embedded                             = false,
-                              CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null)
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null)
         {
 
             var JSON = JSONObject.Create(

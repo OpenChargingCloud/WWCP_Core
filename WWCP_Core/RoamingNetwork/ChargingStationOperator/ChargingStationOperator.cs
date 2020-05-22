@@ -64,10 +64,10 @@ namespace org.GraphDefined.WWCP
                                     InfoStatus                                             ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
                                     InfoStatus                                             ExpandBrandIds                            = InfoStatus.ShowIdOnly,
                                     InfoStatus                                             ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
-                                    CustomJSONSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                                    CustomJSONSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                                    CustomJSONSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                                    CustomJSONSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
+                                    CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
+                                    CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
+                                    CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
+                                    CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
 
 
             => ChargingStationOperators == null || !ChargingStationOperators.Any()
@@ -5489,10 +5489,10 @@ namespace org.GraphDefined.WWCP
                               InfoStatus                                             ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
                               InfoStatus                                             ExpandBrandIds                            = InfoStatus.ShowIdOnly,
                               InfoStatus                                             ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
-                              CustomJSONSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                              CustomJSONSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                              CustomJSONSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                              CustomJSONSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
+                              CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
+                              CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
+                              CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
         {
 
             var JSON = JSONObject.Create(

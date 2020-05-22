@@ -62,11 +62,11 @@ namespace org.GraphDefined.WWCP
 
                                     InfoStatus                                             ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
 
-                                    CustomJSONSerializerDelegate<RoamingNetwork>           CustomRoamingNetworkSerializer            = null,
-                                    CustomJSONSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                                    CustomJSONSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                                    CustomJSONSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                                    CustomJSONSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
+                                    CustomJObjectSerializerDelegate<RoamingNetwork>           CustomRoamingNetworkSerializer            = null,
+                                    CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
+                                    CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
+                                    CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
+                                    CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
 
 
         => RoamingNetworks == null || !RoamingNetworks.Any()
@@ -468,11 +468,11 @@ namespace org.GraphDefined.WWCP
                        InfoStatus                                             ExpandBrandIds                            = InfoStatus.ShowIdOnly,
                        InfoStatus                                             ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
                        InfoStatus                                             ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
-                       CustomJSONSerializerDelegate<RoamingNetwork>           CustomRoamingNetworkSerializer            = null,
-                       CustomJSONSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                       CustomJSONSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                       CustomJSONSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                       CustomJSONSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null);
+                       CustomJObjectSerializerDelegate<RoamingNetwork>           CustomRoamingNetworkSerializer            = null,
+                       CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
+                       CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
+                       CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
+                       CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null);
 
 
     }

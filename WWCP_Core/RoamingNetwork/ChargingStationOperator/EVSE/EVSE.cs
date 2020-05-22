@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
                                     InfoStatus                          ExpandChargingStationId           = InfoStatus.ShowIdOnly,
                                     InfoStatus                          ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                                     InfoStatus                          ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJSONSerializerDelegate<EVSE>  CustomEVSESerializer              = null)
+                                    CustomJObjectSerializerDelegate<EVSE>  CustomEVSESerializer              = null)
 
 
             => EVSEs == null || !EVSEs.Any()
@@ -2952,7 +2952,7 @@ namespace org.GraphDefined.WWCP
                               InfoStatus                          ExpandChargingStationId           = InfoStatus.ShowIdOnly,
                               InfoStatus                          ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                               InfoStatus                          ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJSONSerializerDelegate<EVSE>  CustomEVSESerializer              = null)
+                              CustomJObjectSerializerDelegate<EVSE>  CustomEVSESerializer              = null)
 
         {
 

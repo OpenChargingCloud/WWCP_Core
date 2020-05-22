@@ -950,8 +950,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="CustomSendCDRResultSerializer">A custom send charge detail record result serializer.</param>
         public JObject ToJSON(Boolean                                           Embedded                             = false,
                               Boolean                                           IncludeCDR                           = true,
-                              CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
-                              CustomJSONSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null)
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
+                              CustomJObjectSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null)
         {
 
             var JSON = JSONObject.Create(

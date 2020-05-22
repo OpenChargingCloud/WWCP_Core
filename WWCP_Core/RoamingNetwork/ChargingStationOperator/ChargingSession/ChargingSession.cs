@@ -895,9 +895,9 @@ namespace org.GraphDefined.WWCP
 
 
         public JObject ToJSON(Boolean                                           Embedded                             = false,
-                              CustomJSONSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
-                              CustomJSONSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null,
-                              CustomJSONSerializerDelegate<ChargingSession>     CustomChargingSessionSerializer      = null)
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
+                              CustomJObjectSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null,
+                              CustomJObjectSerializerDelegate<ChargingSession>     CustomChargingSessionSerializer      = null)
 
         {
 
