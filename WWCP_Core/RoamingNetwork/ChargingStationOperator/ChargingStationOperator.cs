@@ -2768,28 +2768,34 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAdminStatusSchedule(IncludeEVSEs = null, HistorySize = null)
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
 
         /// <summary>
         /// Return an enumeration of all EVSE admin status.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        /// <param name="TimestampFilter">An optional admin status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate  IncludeEVSEs   = null,
-                                                                            UInt64?              HistorySize    = null)
+        public IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate                  IncludeEVSEs      = null,
+                                                                            Func<DateTime,             Boolean>  TimestampFilter   = null,
+                                                                            Func<EVSEAdminStatusTypes, Boolean>  StatusFilter      = null,
+                                                                            UInt64?                              HistorySize       = null)
+{
 
-            => IncludeEVSEs == null
+            if (IncludeEVSEs == null)
+                IncludeEVSEs = evse => true;
 
-                   ? _ChargingPools.
-                         SelectMany(pool => pool.EVSEs).
-                         Select    (evse => new EVSEAdminStatusSchedule(evse.Id,
-                                                                        evse.AdminStatusSchedule(HistorySize)))
+            return _ChargingPools.
+                         SelectMany(pool           => pool.EVSEs).
+                         Where     (evse           => IncludeEVSEs(evse)).
+                         Select    (evse           => new EVSEAdminStatusSchedule(evse.Id,
+                                                                                  evse.AdminStatusSchedule(TimestampFilter,
+                                                                                                           StatusFilter,
+                                                                                                           HistorySize))).
+                         Where     (statusSchedule => statusSchedule.StatusSchedule.Count() > 0);
 
-                   : _ChargingPools.
-                         SelectMany(pool => pool.EVSEs).
-                         Where     (evse => IncludeEVSEs(evse)).
-                         Select    (evse => new EVSEAdminStatusSchedule(evse.Id,
-                                                                        evse.AdminStatusSchedule(HistorySize)));
+        }
 
         #endregion
 
@@ -2816,28 +2822,34 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEStatusSchedule     (IncludeEVSEs = null)
+        #region EVSEStatusSchedule     (IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
 
         /// <summary>
         /// Return an enumeration of all EVSE status.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
         /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<EVSEStatusSchedule> EVSEStatusSchedule(IncludeEVSEDelegate  IncludeEVSEs   = null,
-                                                                  UInt64?              HistorySize    = null)
+        public IEnumerable<EVSEStatusSchedule> EVSEStatusSchedule(IncludeEVSEDelegate             IncludeEVSEs      = null,
+                                                                  Func<DateTime,        Boolean>  TimestampFilter   = null,
+                                                                  Func<EVSEStatusTypes, Boolean>  StatusFilter      = null,
+                                                                  UInt64?                         HistorySize       = null)
+        {
 
-            => IncludeEVSEs == null
+            if (IncludeEVSEs == null)
+                IncludeEVSEs = evse => true;
 
-                   ? _ChargingPools.
-                         SelectMany(pool => pool.EVSEs).
-                         Select    (evse => new EVSEStatusSchedule(evse.Id,
-                                                                   evse.StatusSchedule(HistorySize)))
+            return _ChargingPools.
+                         SelectMany(pool           => pool.EVSEs).
+                         Where     (evse           => IncludeEVSEs(evse)).
+                         Select    (evse           => new EVSEStatusSchedule(evse.Id,
+                                                                             evse.StatusSchedule(TimestampFilter,
+                                                                                                 StatusFilter,
+                                                                                                 HistorySize))).
+                         Where     (statusSchedule => statusSchedule.StatusSchedule.Count() > 0);
 
-                   : _ChargingPools.
-                         SelectMany(pool => pool.EVSEs).
-                         Where     (evse => IncludeEVSEs(evse)).
-                         Select    (evse => new EVSEStatusSchedule(evse.Id,
-                                                                   evse.StatusSchedule(HistorySize)));
+        }
 
         #endregion
 

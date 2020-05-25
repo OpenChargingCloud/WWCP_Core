@@ -150,12 +150,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ToJSON(this EVSEAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
+        #region ToJSON(this EVSEAdminStatusSchedules, Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<EVSEAdminStatusSchedule>  EVSEAdminStatusSchedules,
-                                     UInt64?                                    Skip         = null,
-                                     UInt64?                                    Take         = null,
-                                     UInt64?                                    HistorySize  = 1)
+                                     UInt64?                                    Skip  = null,
+                                     UInt64?                                    Take  = null)
         {
 
             #region Initial checks
@@ -190,17 +189,11 @@ namespace org.GraphDefined.WWCP
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
                                                                    kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
+                                                                                 // Filter multiple status having the exact same ISO 8601 timestamp!
+                                                                                 GroupBy(status => status.Timestamp.ToIso8601()).
+                                                                                 Select (group => new JProperty(group.First().Timestamp.ToIso8601(),
+                                                                                                                group.Select(status => status.Value.ToString()).AggregateWith(",")))
+                                                              ))));
 
         }
 
@@ -251,12 +244,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ToJSON(this EVSEAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
+        #region ToJSON(this EVSEStatusSchedules,      Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<EVSEStatusSchedule>  EVSEStatusSchedules,
-                                     UInt64?                               Skip         = null,
-                                     UInt64?                               Take         = null,
-                                     UInt64?                               HistorySize  = 1)
+                                     UInt64?                               Skip  = null,
+                                     UInt64?                               Take  = null)
         {
 
             #region Initial checks
@@ -288,20 +280,14 @@ namespace org.GraphDefined.WWCP
             return new JObject(_FilteredStatus.
                                    OrderBy(status => status.Key).
                                    SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
+                                   Select (kvp    => new JProperty(kvp.Key.ToString(),
+                                                                   new JObject(
+                                                                       kvp.Value.StatusSchedule.
+                                                                                     // Filter multiple status having the exact same ISO 8601 timestamp!
+                                                                                     GroupBy(status => status.Timestamp.ToIso8601()).
+                                                                                     Select (group => new JProperty(group.First().Timestamp.ToIso8601(),
+                                                                                                                    group.Select(status => status.Value.ToString()).AggregateWith(",")))
+                                                                  ))));
 
         }
 
@@ -1205,14 +1191,27 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE admin status schedule.
         /// </summary>
-        /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
+        /// <param name="HistorySize">The size of the status history.</param>
+        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(Func<DateTime,             Boolean> TimestampFilter  = null,
+                                                                                  Func<EVSEAdminStatusTypes, Boolean> StatusFilter     = null,
+                                                                                  UInt64?                             HistorySize      = null)
         {
 
-            if (HistorySize.HasValue)
-                return _AdminStatusSchedule.Take(HistorySize);
+            if (TimestampFilter == null)
+                TimestampFilter = timestamp => true;
 
-            return _AdminStatusSchedule;
+            if (StatusFilter    == null)
+                StatusFilter    = status    => true;
+
+            var filteredStatusSchedule = _AdminStatusSchedule.
+                                             Where(status => TimestampFilter(status.Timestamp)).
+                                             Where(status => StatusFilter   (status.Value));
+
+            return HistorySize.HasValue
+                       ? filteredStatusSchedule.Take(HistorySize)
+                       : filteredStatusSchedule;
 
         }
 
@@ -1276,18 +1275,31 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE status schedule.
         /// </summary>
-        /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
+        /// <param name="HistorySize">The size of the status history.</param>
+        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(Func<DateTime,        Boolean> TimestampFilter  = null,
+                                                                        Func<EVSEStatusTypes, Boolean> StatusFilter     = null,
+                                                                        UInt64?                        HistorySize      = null)
         {
 
              if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
                  AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
              {
 
-                if (HistorySize.HasValue)
-                    return _StatusSchedule.Take(HistorySize);
+                if (TimestampFilter == null)
+                    TimestampFilter = timestamp => true;
 
-                return _StatusSchedule;
+                if (StatusFilter    == null)
+                    StatusFilter    = status    => true;
+
+                var filteredStatusSchedule = _StatusSchedule.
+                                                 Where(status => TimestampFilter(status.Timestamp)).
+                                                 Where(status => StatusFilter   (status.Value));
+
+                return HistorySize.HasValue
+                           ? filteredStatusSchedule.Take(HistorySize)
+                           : filteredStatusSchedule;
 
             }
 

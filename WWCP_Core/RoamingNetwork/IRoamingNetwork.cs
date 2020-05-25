@@ -391,17 +391,36 @@ namespace org.GraphDefined.WWCP
         IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null);
         IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null);
 
-        IEnumerable<EVSE> EVSEs { get; }
-        bool ContainsEVSE(EVSE EVSE);
-        bool ContainsEVSE(EVSE_Id EVSEId);
-        EVSE GetEVSEById(EVSE_Id EVSEId);
-        bool TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE);
-        IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null);
-        IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null);
-        IEnumerable<EVSEAdminStatus> EVSEAdminStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null);
-        IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null);
 
+        #region EVSEs
 
+        IEnumerable<EVSE>                    EVSEs { get; }
+
+        Boolean                              ContainsEVSE           (EVSE                                 EVSE);
+
+        Boolean                              ContainsEVSE           (EVSE_Id                              EVSEId);
+
+        EVSE                                 GetEVSEById            (EVSE_Id                              EVSEId);
+
+        Boolean                              TryGetEVSEById         (EVSE_Id                              EVSEId, out EVSE EVSE);
+
+        IEnumerable<EVSE_Id>                 EVSEIds                (IncludeEVSEDelegate                  IncludeEVSEs      = null);
+
+        IEnumerable<EVSEAdminStatus>         EVSEAdminStatus        (IncludeEVSEDelegate                  IncludeEVSEs      = null);
+
+        IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate                  IncludeEVSEs      = null,
+                                                                     Func<DateTime,             Boolean>  TimestampFilter   = null,
+                                                                     Func<EVSEAdminStatusTypes, Boolean>  StatusFilter      = null,
+                                                                     UInt64?                              HistorySize       = null);
+
+        IEnumerable<EVSEStatus>              EVSEStatus             (IncludeEVSEDelegate                  IncludeEVSEs      = null);
+
+        IEnumerable<EVSEStatusSchedule>      EVSEStatusSchedule     (IncludeEVSEDelegate                  IncludeEVSEs      = null,
+                                                                     Func<DateTime,        Boolean>       TimestampFilter   = null,
+                                                                     Func<EVSEStatusTypes, Boolean>       StatusFilter      = null,
+                                                                     UInt64?                              HistorySize       = null);
+
+        #endregion
 
         bool ContainsEMobilityProvider(eMobilityProvider EMobilityProvider);
         bool ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId);
@@ -460,20 +479,19 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        JObject ToJSON(Boolean                                                Embedded                                  = false,
-                       InfoStatus                                             ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
-                       InfoStatus                                             ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
-                       InfoStatus                                             ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                       InfoStatus                                             ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                       InfoStatus                                             ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                       InfoStatus                                             ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
-                       InfoStatus                                             ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+        JObject ToJSON(Boolean                                                   Embedded                                  = false,
+                       InfoStatus                                                ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
                        CustomJObjectSerializerDelegate<RoamingNetwork>           CustomRoamingNetworkSerializer            = null,
                        CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
                        CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
                        CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
                        CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null);
-
 
     }
 
