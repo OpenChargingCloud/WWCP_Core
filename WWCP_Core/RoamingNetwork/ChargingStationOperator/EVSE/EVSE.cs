@@ -1585,7 +1585,7 @@ namespace org.GraphDefined.WWCP
         public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
                               ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
         {
-            _StatusSchedule.Insert(NewStatusList, ChangeMethod);
+            _StatusSchedule.Set(NewStatusList, ChangeMethod);
         }
 
         #endregion
@@ -1642,7 +1642,7 @@ namespace org.GraphDefined.WWCP
         public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
                                    ChangeMethods                                   ChangeMethod = ChangeMethods.Replace)
         {
-            _AdminStatusSchedule.Insert(NewAdminStatusList, ChangeMethod);
+            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
         }
 
         #endregion

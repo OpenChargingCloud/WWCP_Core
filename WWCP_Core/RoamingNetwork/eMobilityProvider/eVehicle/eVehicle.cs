@@ -743,7 +743,7 @@ namespace org.GraphDefined.WWCP
                                    ChangeMethods                                             ChangeMethod = ChangeMethods.Replace)
         {
 
-            _AdminStatusSchedule.Insert(NewAdminStatusList, ChangeMethod);
+            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
 
         }
 

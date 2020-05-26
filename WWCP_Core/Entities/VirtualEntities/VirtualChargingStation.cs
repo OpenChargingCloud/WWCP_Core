@@ -433,7 +433,7 @@ namespace org.GraphDefined.WWCP.Virtual
         public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  NewAdminStatusList,
                                    ChangeMethods                                              ChangeMethod = ChangeMethods.Replace)
         {
-            _AdminStatusSchedule.Insert(NewAdminStatusList, ChangeMethod);
+            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
         }
 
         #endregion
@@ -490,7 +490,7 @@ namespace org.GraphDefined.WWCP.Virtual
         public void SetStatus(IEnumerable<Timestamped<ChargingStationStatusTypes>>  NewStatusList,
                               ChangeMethods                                        ChangeMethod = ChangeMethods.Replace)
         {
-            _StatusSchedule.Insert(NewStatusList, ChangeMethod);
+            _StatusSchedule.Set(NewStatusList, ChangeMethod);
         }
 
         #endregion
