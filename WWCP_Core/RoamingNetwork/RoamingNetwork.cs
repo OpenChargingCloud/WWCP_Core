@@ -4910,11 +4910,13 @@ namespace org.GraphDefined.WWCP
 
                                              Timeout:       RequestTimeout ?? this.RequestTimeout,
 
+                                             OnException:   null,
+
                                              DefaultResult: runtime                   => AuthStartResult.NotAuthorized(Id,
-                                                                                                                           this,
-                                                                                                                           SessionId,
-                                                                                                                           Description:  I18NString.Create(Languages.eng, "No authorization service returned a positiv result!"),
-                                                                                                                           Runtime:      runtime));
+                                                                                                                       this,
+                                                                                                                       SessionId,
+                                                                                                                       Description:  I18NString.Create(Languages.eng, "No authorization service returned a positiv result!"),
+                                                                                                                       Runtime:      runtime));
 
 
             //DebugX.LogT("RN AuthStart Response: " + result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ??
@@ -5184,27 +5186,29 @@ namespace org.GraphDefined.WWCP
                 {
 
                     result = await _ISend2RemoteAuthorizeStartStop.
-                                       WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                                  AuthorizeStop(SessionId,
-                                                                                                LocalAuthentication,
-                                                                                                ChargingLocation,
-                                                                                                OperatorId,
+                                       WhenFirst(Work:           iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                                                  AuthorizeStop(SessionId,
+                                                                                                                LocalAuthentication,
+                                                                                                                ChargingLocation,
+                                                                                                                OperatorId,
 
-                                                                                                Timestamp,
-                                                                                                CancellationToken,
-                                                                                                EventTrackingId,
-                                                                                                RequestTimeout),
+                                                                                                                Timestamp,
+                                                                                                                CancellationToken,
+                                                                                                                EventTrackingId,
+                                                                                                                RequestTimeout),
 
-                                                 result2 => result2.Result == AuthStopResultTypes.Authorized ||
-                                                            result2.Result == AuthStopResultTypes.Blocked,
+                                                 VerifyResult:   result2 => result2.Result == AuthStopResultTypes.Authorized ||
+                                                                            result2.Result == AuthStopResultTypes.Blocked,
 
-                                                 RequestTimeout ?? this.RequestTimeout,
+                                                 Timeout:        RequestTimeout ?? this.RequestTimeout,
 
-                                                 runtime => AuthStopResult.NotAuthorized(Id,
-                                                                                             this,
-                                                                                             SessionId,
-                                                                                             Description: I18NString.Create(Languages.eng, "No authorization service returned a positiv result!"),
-                                                                                             Runtime:     runtime)).
+                                                 OnException:    null,
+
+                                                 DefaultResult:  runtime => AuthStopResult.NotAuthorized(Id,
+                                                                                                         this,
+                                                                                                         SessionId,
+                                                                                                         Description: I18NString.Create(Languages.eng, "No authorization service returned a positiv result!"),
+                                                                                                         Runtime:     runtime)).
 
                                        ConfigureAwait(false);
 
