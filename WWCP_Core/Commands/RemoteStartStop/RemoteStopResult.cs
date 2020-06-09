@@ -20,7 +20,7 @@
 using System;
 
 using Newtonsoft.Json.Linq;
-
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -165,20 +165,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) InvalidSessionId  (SessionId, Runtime = null)
+        #region (static) InvalidSessionId  (SessionId, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The charging session identification is unknown or invalid.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static RemoteStopResult InvalidSessionId(ChargingSession_Id  SessionId,
-                                                        TimeSpan?           Runtime  = null)
+                                                        String              AdditionalInfo   = null,
+                                                        TimeSpan?           Runtime          = null)
 
-            => new RemoteStopResult(SessionId,
-                                    RemoteStopResultTypes.InvalidSessionId,
-                                    I18NString.Create(Languages.eng, "The session identification is unknown or invalid!"),
-                                    Runtime: Runtime);
+            => new RemoteStopResult(SessionId:       SessionId,
+                                    Result:          RemoteStopResultTypes.InvalidSessionId,
+                                    Description:     I18NString.Create(Languages.eng, "The session identification is unknown or invalid!"),
+                                    AdditionalInfo:  AdditionalInfo,
+                                    Runtime:         Runtime);
 
         #endregion
 
@@ -414,14 +417,16 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="ResponseMapper">An optional response mapper delegate.</param>
-        public JObject ToJSON(Func<JObject, JObject> ResponseMapper = null)
+        public JObject ToJSON(Boolean                                              Embedded                             = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
+                              Func<JObject, JObject>                               ResponseMapper                       = null)
         {
 
             var JSON = JSONObject.Create(
 
-                new JProperty("result",                     Result.             ToString()),
-
                 new JProperty("sessionId",                  SessionId.          ToString()),
+
+                new JProperty("result",                     Result.             ToString()),
 
                 Description.IsNeitherNullNorEmpty()
                     ? new JProperty("description",          Description.        ToJSON())
@@ -438,7 +443,8 @@ namespace org.GraphDefined.WWCP
                 new JProperty("reservationHandling",        ReservationHandling.ToString()),
 
                 ChargeDetailRecord != null
-                    ? new JProperty("chargeDetailRecord",   ReservationId.      ToString())
+                    ? new JProperty("chargeDetailRecord",   ChargeDetailRecord.ToJSON(Embedded: false,
+                                                                                      CustomChargeDetailRecordSerializer))
                     : null,
 
                 Runtime.HasValue
@@ -454,6 +460,21 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        public static RemoteStopResult Parse(JObject JSON)
+        {
+
+            return new RemoteStopResult(ChargingSession_Id.Parse(JSON["sessionId"]?.Value<String>()),
+                                        (RemoteStopResultTypes) Enum.Parse(typeof(RemoteStopResultTypes), JSON["result"]?.Value<String>(), true),
+                                        JSON["description"] is JObject descriptionJSON ? I18NString.Parse(descriptionJSON) : null,
+                                        JSON["additionalInfo"] != null ? JSON["additionalInfo"].Value<String>() : null,
+                                        JSON["reservationId"] != null ? ChargingReservation_Id.Parse(JSON["reservationId"]?.Value<String>()) : new ChargingReservation_Id?(),
+                                        null,
+                                        null, //JSON["chargeDetailRecord"] != null ? ChargeDetailRecord.Parse(JSON["chargeDetailRecord"]) : null,
+                                        JSON["runtime"] != null ? TimeSpan.FromMilliseconds(JSON["runtime"].Value<Double>()) : new TimeSpan?());
+
+        }
+
 
         #region (override) ToString()
 

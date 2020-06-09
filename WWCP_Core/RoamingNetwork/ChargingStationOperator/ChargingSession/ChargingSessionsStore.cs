@@ -27,11 +27,103 @@ using org.GraphDefined.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
+
+    public class SessionStopRequest
+    {
+
+        public DateTime                Timestamp               { get; }
+        public System_Id               SystemId                { get; }
+        public CSORoamingProvider_Id?  CSORoamingProviderId    { get; }
+        public EMPRoamingProvider_Id?  EMPRoamingProviderId    { get; }
+        public eMobilityProvider_Id?   ProviderId              { get; }
+        public AAuthentication         Authentication          { get; }
+
+        public RemoteStopResult        RemoteStopResult        { get; }
+
+
+        public SessionStopRequest(DateTime                Timestamp,
+                                  System_Id               SystemId,
+                                  CSORoamingProvider_Id?  CSORoamingProviderId,
+                                  EMPRoamingProvider_Id?  EMPRoamingProviderId,
+                                  eMobilityProvider_Id?   ProviderId,
+                                  AAuthentication         Authentication,
+                                  RemoteStopResult        RemoteStopResult)
+        {
+
+            this.Timestamp              = Timestamp;
+            this.SystemId               = SystemId;
+            this.CSORoamingProviderId   = CSORoamingProviderId;
+            this.EMPRoamingProviderId   = EMPRoamingProviderId;
+            this.ProviderId             = ProviderId;
+            this.Authentication         = Authentication;
+            this.RemoteStopResult       = RemoteStopResult;
+
+        }
+
+
+
+        public JObject ToJSON(Boolean                                              Embedded                             = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
+                              CustomJObjectSerializerDelegate<SessionStopRequest>  CustomSessionStopRequestSerializer   = null)
+
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("timestamp",                     Timestamp.ToIso8601()),
+                           new JProperty("systemId",                      SystemId. ToString()),
+
+                           CSORoamingProviderId.HasValue
+                               ? new JProperty("CSORoamingProviderId",    CSORoamingProviderId.Value.ToString())
+                               : null,
+
+                           EMPRoamingProviderId.HasValue
+                               ? new JProperty("EMPRoamingProviderId",    EMPRoamingProviderId.Value.ToString())
+                               : null,
+
+                           ProviderId.HasValue
+                               ? new JProperty("providerId",              ProviderId.Value.ToString())
+                               : null,
+
+                           Authentication.IsDefined()
+                               ? new JProperty("authentication",          Authentication.ToJSON())
+                               : null,
+
+                           RemoteStopResult != null
+                               ? new JProperty("remoteStopResult",        RemoteStopResult.ToJSON(Embedded: true,
+                                                                                                  CustomChargeDetailRecordSerializer))
+                               : null
+
+                );
+
+            return CustomSessionStopRequestSerializer != null
+                       ? CustomSessionStopRequestSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        public static SessionStopRequest Parse(JObject JSON)
+        {
+
+            return new SessionStopRequest(JSON["timestamp"].Value<DateTime>(),
+                                          System_Id.Parse(JSON["systemId"]?.Value<String>()),
+                                          JSON["CSORoamingProviderId"] != null                        ? CSORoamingProvider_Id.Parse(JSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?(),
+                                          JSON["EMPRoamingProviderId"] != null                        ? EMPRoamingProvider_Id.Parse(JSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?(),
+                                          JSON["providerId"]           != null                        ? eMobilityProvider_Id. Parse(JSON["providerId"]?.Value<String>())           : new eMobilityProvider_Id?(),
+                                          JSON["authentication"]       is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                           : null,
+                                          JSON["remoteStopResult"]     is JObject remoteStopResult    ? RemoteStopResult.     Parse(remoteStopResult)                              : null);
+
+        }
+
+
+    }
+
 
     /// <summary>
     /// A charging session data store.
@@ -415,7 +507,7 @@ namespace org.GraphDefined.WWCP
         public Boolean RemoteStop(ChargingSession_Id     Id,
                                   AAuthentication        Authentication,
                                   eMobilityProvider_Id?  ProviderId,
-                                  IEMPRoamingProvider    CSORoamingProvider,
+                                  IEMPRoamingProvider    EMPRoamingProvider,
                                   RemoteStopResult       Result)
         {
 
@@ -425,13 +517,27 @@ namespace org.GraphDefined.WWCP
                 if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
 
-                    session.SessionTime.EndTime     = DateTime.UtcNow;
-                    session.SystemIdStop            = System_Id.Parse(Environment.MachineName);
-                    session.EMPRoamingProviderStop  = CSORoamingProvider;
-                    session.ProviderIdStop          = ProviderId;
-                    session.AuthenticationStop      = Authentication;
-                    session.CDR                     = Result.ChargeDetailRecord;
-                    session.RuntimeStop             = Result.Runtime;
+                    var now = DateTime.UtcNow;
+
+                    if (Result.Result == RemoteStopResultTypes.Success)
+                    {
+                        session.SessionTime.EndTime     = now;
+                        session.SystemIdStop            = System_Id.Parse(Environment.MachineName);
+                        session.EMPRoamingProviderStop  = EMPRoamingProvider;
+                        session.ProviderIdStop          = ProviderId;
+                        session.AuthenticationStop      = Authentication;
+                        session.CDR                     = Result.ChargeDetailRecord;
+                        session.RuntimeStop             = Result.Runtime;
+                    }
+
+                    session.AddStopRequest(new SessionStopRequest(
+                                               now,
+                                               System_Id.Parse(Environment.MachineName),
+                                               null,
+                                               EMPRoamingProvider?.Id,
+                                               ProviderId,
+                                               Authentication,
+                                               Result));
 
                     LogIt("remoteStop",
                           session.Id,

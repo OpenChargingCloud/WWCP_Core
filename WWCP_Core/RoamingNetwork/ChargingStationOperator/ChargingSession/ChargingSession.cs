@@ -800,11 +800,11 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public ChargeDetailRecord         CDR                           { get; set; }
+        public ChargeDetailRecord            CDR                           { get; set; }
 
-        public DateTime?                  CDRReceived                   { get; set; }
+        public DateTime?                     CDRReceived                   { get; set; }
 
-        public SendCDRResult              CDRResult                     { get; set; }
+        public SendCDRResult                 CDRResult                     { get; set; }
 
 
         #region Runtime
@@ -818,7 +818,14 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public Boolean                    RemoveMe                      { get; set; }
+
+        private readonly List<SessionStopRequest> _StopRequests;
+        public IEnumerable<SessionStopRequest> StopRequests
+            => _StopRequests;
+
+
+
+        public Boolean                       RemoveMe                      { get; set; }
 
 
         private readonly HashSet<String> _Signatures;
@@ -875,6 +882,7 @@ namespace org.GraphDefined.WWCP
 
             this.SessionTime         = new StartEndDateTime(Timestamp ?? DateTime.UtcNow);
             this._EnergyMeterValues  = new List<Timestamped<Decimal>>();
+            this._StopRequests       = new List<SessionStopRequest>();
 
         }
 
@@ -886,6 +894,11 @@ namespace org.GraphDefined.WWCP
             _EnergyMeterValues.Add(Value);
         }
 
+        public void AddStopRequest(SessionStopRequest Value)
+        {
+            _StopRequests.Add(Value);
+        }
+
 
         //public ChargingSession AddUserData(String Key, Object Value)
         //{
@@ -893,8 +906,9 @@ namespace org.GraphDefined.WWCP
         //}
 
 
+        #region ToJSON(Embedded, ...)
 
-        public JObject ToJSON(Boolean                                           Embedded                             = false,
+        public JObject ToJSON(Boolean                                              Embedded                             = false,
                               CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
                               CustomJObjectSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null,
                               CustomJObjectSerializerDelegate<ChargingSession>     CustomChargingSessionSerializer      = null)
@@ -1018,6 +1032,14 @@ namespace org.GraphDefined.WWCP
                                : null,
 
 
+
+                           StopRequests.Any()
+                               ? new JProperty("stopRequests",                new JArray(StopRequests.Select(stopRequest => stopRequest.ToJSON(Embedded: false,
+                                                                                                                                               CustomChargeDetailRecordSerializer))))
+                               : null,
+
+
+
                            ChargingStationOperatorId.HasValue
                                ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
                                : null,
@@ -1059,6 +1081,8 @@ namespace org.GraphDefined.WWCP
                        : JSON;
 
         }
+
+        #endregion
 
 
         public static ChargingSession Parse(String Text, IRoamingNetwork RoamingNetwork)
@@ -1107,6 +1131,9 @@ namespace org.GraphDefined.WWCP
             //             "evseId":                "DE*LVF*E970993236*1"
             //         }
             //     },
+            //
+            //     "stopRequests":                  [ ... ],
+            //
             //     "chargingStationOperatorId":     "DE*LVF",
             //     "chargingPoolId":                "DE*LVF*P555F437E4ECB6F6",
             //     "chargingStationId":             "DE*LVF*S970993236",
@@ -1180,6 +1207,19 @@ namespace org.GraphDefined.WWCP
                             session.CDRResult     = sendCDRResult;
                     }
 
+                }
+
+            }
+
+            if (JSON["stopRequests"] is JArray stopRequestsJSON)
+            {
+
+                foreach (var stopRequestJSON in stopRequestsJSON)
+                {
+                    if (stopRequestJSON is JObject stopRequestJObject)
+                    {
+                        session.AddStopRequest(SessionStopRequest.Parse(stopRequestJObject));
+                    }
                 }
 
             }
