@@ -5189,33 +5189,35 @@ namespace org.GraphDefined.WWCP
                     AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
                 {
 
-                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out ChargingPool Pool)) ||
-                        (ChargingLocation.ChargingStationId.HasValue && TryGetChargingPoolByStationId(ChargingLocation.ChargingStationId.Value, out Pool)) ||
-                        (ChargingLocation.ChargingPoolId.   HasValue && TryGetChargingPoolById       (ChargingLocation.ChargingPoolId.   Value, out Pool)))
+                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out ChargingPool chargingPool)) ||
+                        (ChargingLocation.ChargingStationId.HasValue && TryGetChargingPoolByStationId(ChargingLocation.ChargingStationId.Value, out              chargingPool)) ||
+                        (ChargingLocation.ChargingPoolId.   HasValue && TryGetChargingPoolById       (ChargingLocation.ChargingPoolId.   Value, out              chargingPool)))
                     {
 
-                        result = await Pool.RemoteStart(ChargingLocation,
-                                                        ChargingProduct,
-                                                        ReservationId,
-                                                        SessionId,
-                                                        ProviderId,
-                                                        RemoteAuthentication,
+                        result = await chargingPool.
+                                           RemoteStart(ChargingLocation,
+                                                       ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
 
-                                                        Timestamp,
-                                                        CancellationToken,
-                                                        EventTrackingId,
-                                                        RequestTimeout);
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
 
 
                         #region In case of success...
 
-                        if (result != null &&
-                            result.Result == RemoteStartResultTypes.Success)
+                        if (result?.Result == RemoteStartResultTypes.Success ||
+                            result?.Result == RemoteStartResultTypes.AsyncOperation)
                         {
 
                             // The session can be delivered within the response
                             // or via an explicit message afterwards!
-                            result.Session.ChargingStationOperator = this;
+                            if (result.Session != null)
+                                result.Session.ChargingStationOperator = this;
 
                         }
 

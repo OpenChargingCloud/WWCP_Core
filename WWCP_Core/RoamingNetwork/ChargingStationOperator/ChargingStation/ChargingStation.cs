@@ -3292,7 +3292,8 @@ namespace org.GraphDefined.WWCP
 
                         #region In case of success...
 
-                        if (result?.Result == RemoteStartResultTypes.Success)
+                        if (result?.Result == RemoteStartResultTypes.Success ||
+                            result?.Result == RemoteStartResultTypes.AsyncOperation)
                         {
 
                             // The session can be delivered within the response
