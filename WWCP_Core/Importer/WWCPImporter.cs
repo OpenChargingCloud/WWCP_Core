@@ -60,7 +60,8 @@ namespace org.GraphDefined.WWCP.Importer
         #region Data
 
         private                  Boolean                            Started;
-        private readonly         Object                             ImporterRunLock;
+        //private readonly         Object                             ImporterRunLock;
+        private static readonly  SemaphoreSlim                      ImporterRunSemaphore = new SemaphoreSlim(1, 1);
         private readonly         Timer                              ImporterRunTimer;
 
         /// <summary>
@@ -68,9 +69,9 @@ namespace org.GraphDefined.WWCP.Importer
         /// </summary>
         public  readonly static  TimeSpan                           DefaultImportEvery                = TimeSpan.FromMinutes(1);
 
-        private readonly         Action<WWCPImporter<T>, Task<T>>   OnStartup;
+        private readonly         Action<WWCPImporter<T>, T>         OnStartup;
         private readonly         GetDataDelegate<T>                 GetData;
-        private readonly         Action<WWCPImporter<T>, Task<T>>   OnEveryRun;
+        private readonly         Action<WWCPImporter<T>, T>         OnEveryRun;
         private readonly         CreateForwardingTableDelegate<T>   CreateForwardingTable;
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// </summary>
         public  const            UInt32                             DefaultMaxNumberOfCachedImports   = 3;
 
-        private readonly         Action<WWCPImporter<T>, Task<T>>   OnShutdown;
+        private readonly         Action<WWCPImporter<T>, T>         OnShutdown;
 
         #endregion
 
@@ -286,12 +287,12 @@ namespace org.GraphDefined.WWCP.Importer
                             Func<ChargingStation_Id, ChargingStationOperator>               GetDefaultChargingStationOperator   = null,
                             CreateForwardingTableDelegate<T>                                CreateForwardingTable               = null,
 
-                            Action<WWCPImporter<T>, Task<T>>                                OnStartup                           = null,
+                            Action<WWCPImporter<T>, T>                                      OnStartup                           = null,
                             TimeSpan?                                                       ImportEvery                         = null,
                             GetDataDelegate<T>                                              GetData                             = null,
-                            Action<WWCPImporter<T>, Task<T>>                                OnEveryRun                          = null,
+                            Action<WWCPImporter<T>, T>                                      OnEveryRun                          = null,
                             UInt32                                                          MaxNumberOfCachedDataImports        = DefaultMaxNumberOfCachedImports,
-                            Action<WWCPImporter<T>, Task<T>>                                OnShutdown                          = null,
+                            Action<WWCPImporter<T>, T>                                      OnShutdown                          = null,
 
                             DNSClient                                                       DNSClient                           = null)
 
@@ -319,9 +320,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                           ? ForwardingFilenamePrefix
                                                           : Id + "_forwardings_";
 
-            this.ImportEvery                        = ImportEvery.HasValue
-                                                          ? ImportEvery.Value
-                                                          : DefaultImportEvery;
+            this.ImportEvery                        = ImportEvery ?? DefaultImportEvery;
 
             this.OnStartup                          = OnStartup;
             this.GetData                            = GetData;
@@ -337,7 +336,7 @@ namespace org.GraphDefined.WWCP.Importer
             this._ImportedData                      = new List<Timestamped<T>>();
 
             this.Started                            = false;
-            this.ImporterRunLock                    = new Object();
+            //this.ImporterRunLock                    = new Object();
             this.ImporterRunTimer                   = new Timer(ImporterRun);
 
             this.DNSClient                          = DNSClient;
@@ -382,20 +381,20 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region LoadForwardingDataFromFile()
+        #region (private) LoadForwardingDataFromFile()
 
-        public WWCPImporter<T> LoadForwardingDataFromFile()
+        private async Task<WWCPImporter<T>> LoadForwardingDataFromFile()
         {
 
-            lock (ImporterRunLock)
+            try
             {
 
                 var CurrentDirectory  = Directory.GetCurrentDirectory();
                 var ConfigFilename    = Directory.EnumerateFiles(CurrentDirectory).
-                                                  Select           (file => file.Remove(0, CurrentDirectory.Length + 1)).
-                                                  Where            (file => file.StartsWith(ForwardingFilenamePrefix, StringComparison.Ordinal)).
-                                                  OrderByDescending(file => file).
-                                                  FirstOrDefault();
+                                                    Select           (file => file.Remove(0, CurrentDirectory.Length + 1)).
+                                                    Where            (file => file.StartsWith(ForwardingFilenamePrefix, StringComparison.Ordinal)).
+                                                    OrderByDescending(file => file).
+                                                    FirstOrDefault();
 
                 var InputFile         = ConfigFilename.IsNotNullOrEmpty()
                                             ? ConfigFilename
@@ -458,7 +457,7 @@ namespace org.GraphDefined.WWCP.Importer
 
 
                                                         var CurrentEVSEOperator = GetChargingStationOperators(ChargingStationId)?.
-                                                                                      FirstOrDefault(cso => cso                   != null &&
+                                                                                        FirstOrDefault(cso => cso                   != null &&
                                                                                                             cso.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
                                                         if (CurrentEVSEOperator != null)
@@ -534,7 +533,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                                                             Created:                    DateTime.UtcNow,
                                                                                             OutOfService:               true,
                                                                                             ForwardedToOperator:        CurrentEVSEOperator)
-                                                                                       );
+                                                                                        );
 
                                                             }
 
@@ -570,10 +569,14 @@ namespace org.GraphDefined.WWCP.Importer
 
 
                 OnLoadForwardingDataFromFileFinished?.Invoke(DateTime.UtcNow,
-                                                             this,
-                                                             InputFile,
-                                                             (UInt64) _AllForwardingInfos.Count);
+                                                                this,
+                                                                InputFile,
+                                                                (UInt64) _AllForwardingInfos.Count);
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
 
             return this;
@@ -582,96 +585,92 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        #region SaveForwardingDataToFile()
+        #region (private) SaveForwardingDataToFile()
 
-        public WWCPImporter<T> SaveForwardingDataToFile()
+        private async Task<WWCPImporter<T>> SaveForwardingDataToFile()
         {
 
-            lock (ImporterRunLock)
+            try
             {
 
-                var Now             = DateTime.UtcNow;
+                var Now              = DateTime.UtcNow;
 
-                var _ConfigFilename = String.Concat(ForwardingFilenamePrefix,     "_",
-                                                    Now.Year,                  "-",
-                                                    Now.Month. ToString("D2"), "-",
-                                                    Now.Day.   ToString("D2"), "_",
-                                                    Now.Hour.  ToString("D2"), "-",
-                                                    Now.Minute.ToString("D2"), "-",
-                                                    Now.Second.ToString("D2"),
-                                                    ".json");
+                var _ConfigFilename  = String.Concat(ForwardingFilenamePrefix,     "_",
+                                                        Now.Year,                  "-",
+                                                        Now.Month. ToString("D2"), "-",
+                                                        Now.Day.   ToString("D2"), "_",
+                                                        Now.Hour.  ToString("D2"), "-",
+                                                        Now.Minute.ToString("D2"), "-",
+                                                        Now.Second.ToString("D2"),
+                                                        ".json");
 
-                try
-                {
+                var JSON = new JObject(
 
-                    var JSON = new JObject(
+                                _AllForwardingInfos.
 
-                                   _AllForwardingInfos.
+                                    GroupBy(kvp     => kvp.Value.ForwardedToRoamingNetworkId,
+                                            kvp     => kvp.Value).
 
-                                       GroupBy(kvp     => kvp.Value.ForwardedToRoamingNetworkId,
-                                               kvp     => kvp.Value).
+                                    Where  (RNGroup => RNGroup.Key.ToString() != "-").
+                                    Select (RNGroup => new JProperty(RNGroup.Key.ToString(),
+                                                                new JObject(
 
-                                       Where  (RNGroup => RNGroup.Key.ToString() != "-").
-                                       Select (RNGroup => new JProperty(RNGroup.Key.ToString(),
-                                                                  new JObject(
+                                                                    new JProperty("ValidChargingStations", new JObject(
+                                                                        RNGroup.Select(FwdInfo =>
+                                                                            new JProperty(FwdInfo.StationId.ToString(), new JObject(
+                                                                                    new JProperty("PhoneNumber", FwdInfo.PhoneNumber),
+                                                                                    new JProperty("AdminStatus", FwdInfo.AdminStatus.Value.ToString())
+                                                                                ))
+                                                                        )
+                                                                    ))
 
-                                                                      new JProperty("ValidChargingStations", new JObject(
-                                                                          RNGroup.Select(FwdInfo =>
-                                                                              new JProperty(FwdInfo.StationId.ToString(), new JObject(
-                                                                                      new JProperty("PhoneNumber", FwdInfo.PhoneNumber),
-                                                                                      new JProperty("AdminStatus", FwdInfo.AdminStatus.Value.ToString())
-                                                                                  ))
-                                                                          )
-                                                                      ))
-
-                                                                ))).
-                                       ToArray()
-                               );
+                                                            ))).
+                                    ToArray()
+                            );
 
 
 
-                    //var JSON = new JObject(
-                    //    RoamingNetworkIds.Select(RNId => new JProperty(RNId.ToString(),
-                    //                                          new JObject(
+                //var JSON = new JObject(
+                //    RoamingNetworkIds.Select(RNId => new JProperty(RNId.ToString(),
+                //                                          new JObject(
 
-                    //                                              new JProperty("ValidChargingStations", new JObject(
-                    //                                                        EVSEOperators.
-                    //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
-                    //                                                            First().
-                    //                                                            ValidEVSEIds.
-                    //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
-                    //                                                  )),
+                //                                              new JProperty("ValidChargingStations", new JObject(
+                //                                                        EVSEOperators.
+                //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
+                //                                                            First().
+                //                                                            ValidEVSEIds.
+                //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
+                //                                                  )),
 
-                    //                                              new JProperty("ValidEVSEIds",   new JObject(
-                    //                                                        EVSEOperators.
-                    //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
-                    //                                                            First().
-                    //                                                            ValidEVSEIds.
-                    //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
-                    //                                                  )),
+                //                                              new JProperty("ValidEVSEIds",   new JObject(
+                //                                                        EVSEOperators.
+                //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
+                //                                                            First().
+                //                                                            ValidEVSEIds.
+                //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
+                //                                                  )),
 
-                    //                                              new JProperty("InvalidEVSEIds", new JObject(
-                    //                                                        EVSEOperators.
-                    //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
-                    //                                                            First().
-                    //                                                            InvalidEVSEIds.
-                    //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
-                    //                                                  ))
+                //                                              new JProperty("InvalidEVSEIds", new JObject(
+                //                                                        EVSEOperators.
+                //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
+                //                                                            First().
+                //                                                            InvalidEVSEIds.
+                //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
+                //                                                  ))
 
-                    //                                          )))
+                //                                          )))
 
-                    //);
+                //);
 
-                    File.WriteAllText(_ConfigFilename, JSON.ToString(), Encoding.UTF8);
-
-                }
-
-                catch (Exception e)
-                {
-                    DebugX.Log("SaveForwardingDataInFile failed: " + e.Message);
-                }
+                File.WriteAllText(_ConfigFilename, JSON.ToString(), Encoding.UTF8);
 
             }
+
+            catch (Exception e)
+            {
+                DebugX.Log("SaveForwardingDataInFile failed: " + e.Message);
+            }
+
 
             return this;
 
@@ -686,8 +685,8 @@ namespace org.GraphDefined.WWCP.Importer
                                                           Boolean                              MarkAllOutOfService = true)
         {
 
-            lock (_AllForwardingInfos)
-            {
+            //lock (_AllForwardingInfos)
+            //{
 
                 // Mark ForwardingInfos as 'OutOfService', to detect which are no longer within the XML...
                 if (MarkAllOutOfService)
@@ -775,7 +774,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 }
 
-            }
+            //}
 
             return this;
 
@@ -788,12 +787,14 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// Start the WWCP importer.
         /// </summary>
-        public WWCPImporter<T> Start()
+        public async Task<WWCPImporter<T>> Start()
         {
 
             //DebugX.Log("Starting WWCP importer '" + Id + "'!");
 
-            if (Monitor.TryEnter(ImporterRunLock))
+            var success = await ImporterRunSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+
+            if (success)
             {
 
                 try
@@ -820,19 +821,19 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #endregion
 
-                        LoadForwardingDataFromFile();
+                        await LoadForwardingDataFromFile();
 
-                        var FirstData = GetData(DateTime.UtcNow,
-                                                this,
-                                                DateTime.UtcNow,
-                                                _LastRunId,
-                                                DNSClient);
+                        var FirstData = await GetData(DateTime.UtcNow,
+                                                      this,
+                                                      DateTime.UtcNow,
+                                                      _LastRunId,
+                                                      DNSClient);
 
                         if (FirstData != null)
                         {
 
                             AddOrUpdateForwardingInfos(CreateForwardingTable(this,
-                                                                             FirstData.Result,
+                                                                             FirstData,
                                                                              AllChargingStationOperators,
                                                                              GetChargingStationOperators,
                                                                              GetDefaultChargingStationOperator));
@@ -863,6 +864,8 @@ namespace org.GraphDefined.WWCP.Importer
 
                         Started = true;
 
+                        await SaveForwardingDataToFile();
+
                     }
 
                 }
@@ -870,15 +873,13 @@ namespace org.GraphDefined.WWCP.Importer
                 {
                     DebugX.Log("Starting the WWCP Importer '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
-
                 finally
                 {
-                    Monitor.Exit(ImporterRunLock);
+                    ImporterRunSemaphore.Release();
                 }
 
             }
 
-            SaveForwardingDataToFile();
             return this;
 
         }
@@ -888,17 +889,19 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region (private, Timer) ImporterRun(Status)
 
-        private void ImporterRun(Object Status)
+        private async void ImporterRun(Object Status)
         {
 
-          Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
-            if (Monitor.TryEnter(ImporterRunLock))
+            var success = await ImporterRunSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
+
+            if (success)
             {
 
                 #region Debug info
 
-                #if DEBUG
+#if DEBUG
 
                 DebugX.LogT("WWCP importer '" + Id + "' started!");
 
@@ -924,64 +927,40 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    GetData(DateTime.UtcNow,
-                            this,
-                            DateTime.UtcNow,
-                            _LastRunId++,
-                            DNSClient).
+                    var data = await GetData(DateTime.UtcNow,
+                                             this,
+                                             DateTime.UtcNow,
+                                             _LastRunId++,
+                                             DNSClient);
 
-                        ContinueWith(ImporterTask => {
+                    // Check for null...
+                    if (!EqualityComparer<T>.Default.Equals(data, default))
+                    {
 
-                            // Check for null...
-                            if (!EqualityComparer<T>.Default.Equals(ImporterTask.Result, default(T)))
-                            {
+                        //ToDo: Handle XML parser exceptions...
+                        AddOrUpdateForwardingInfos(CreateForwardingTable(this,
+                                                                         data,
+                                                                         AllChargingStationOperators,
+                                                                         GetChargingStationOperators,
+                                                                         GetDefaultChargingStationOperator));
 
-                                //ToDo: Handle XML parser exceptions...
-                                AddOrUpdateForwardingInfos(CreateForwardingTable(this,
-                                                                                 ImporterTask.Result,
-                                                                                 AllChargingStationOperators,
-                                                                                 GetChargingStationOperators,
-                                                                                 GetDefaultChargingStationOperator));
+                        //if (_ImportedData.Count >= MaxNumberOfCachedDataImports)
+                        //{
+                        //    var succ = _ImportedData.Remove(_ImportedData[0]);
+                        //    DebugX.LogT("Importer Count = " + _ImportedData.Count + " " + succ);
+                        //}
 
-                            }
+                        //// Save the imported data for later review...
+                        //_ImportedData.Add(new Timestamped<T>(ImporterTask.Result));
 
-                            return ImporterTask.Result;
+                        // Update ForwardingInfos
+                        OnEveryRun?.Invoke(this, data);
 
-                        }).
+                        OnFinished?.Invoke(DateTime.UtcNow,
+                                           this,
+                                           "WWCP importer '" + Id + "' finished after " + (DateTime.UtcNow - StartTime).TotalSeconds + " seconds!");
 
-                        ContinueWith(ImporterTask => {
-
-                            // Check for null...
-                            if (!EqualityComparer<T>.Default.Equals(ImporterTask.Result, default(T)))
-                            {
-
-                                //if (_ImportedData.Count >= MaxNumberOfCachedDataImports)
-                                //{
-                                //    var succ = _ImportedData.Remove(_ImportedData[0]);
-                                //    DebugX.LogT("Importer Count = " + _ImportedData.Count + " " + succ);
-                                //}
-
-                                //// Save the imported data for later review...
-                                //_ImportedData.Add(new Timestamped<T>(ImporterTask.Result));
-
-                                // Update ForwardingInfos
-                                OnEveryRun?.Invoke(this, ImporterTask);
-
-                            }
-
-                        }).
-
-                        Wait();
-
-                        #region Debug info
-
-                        #if DEBUG
-
-                        OnFinished?.Invoke(DateTime.UtcNow, this, "WWCP importer '" + Id + "' finished after " + (DateTime.UtcNow - StartTime).TotalSeconds + " seconds!");
-
-                        #endif
-
-                        #endregion
+                    }
 
                 }
                 catch (Exception e)
@@ -996,7 +975,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 finally
                 {
-                    Monitor.Exit(ImporterRunLock);
+                    ImporterRunSemaphore.Release();
                 }
 
             }

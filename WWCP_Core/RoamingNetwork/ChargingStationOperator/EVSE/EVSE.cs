@@ -2436,23 +2436,6 @@ namespace org.GraphDefined.WWCP
                                                        EventTrackingId,
                                                        RequestTimeout);
 
-                        #region In case of success...
-
-                        if (result?.Result == RemoteStartResultTypes.Success)
-                        {
-
-                            // The session can be delivered within the response
-                            // or via an explicit message afterwards!
-                            if (result.Session != null)
-                            {
-                                ChargingSession = result.Session;
-                                result.Session.EVSE = this;
-                            }
-
-                        }
-
-                        #endregion
-
                     }
 
                     #endregion
@@ -2554,8 +2537,9 @@ namespace org.GraphDefined.WWCP
                     #endregion
 
 
-                    if (result.Result == RemoteStartResultTypes.Success &&
-                        result.Session != null)
+                    if (result?.Session != null &&
+                       (result?.Result == RemoteStartResultTypes.Success ||
+                        result?.Result == RemoteStartResultTypes.AsyncOperation))
                     {
                         ChargingSession      = result.Session;
                         result.Session.EVSE  = this;
