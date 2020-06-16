@@ -533,7 +533,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ChargingStationId1, ChargingStationId2))
+            if (ReferenceEquals(ChargingStationId1, ChargingStationId2))
                 return true;
 
             // If one is null, but not both, return false.

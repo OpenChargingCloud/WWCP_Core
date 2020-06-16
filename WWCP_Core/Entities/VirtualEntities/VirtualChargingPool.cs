@@ -1773,7 +1773,7 @@ namespace org.GraphDefined.WWCP.Virtual
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(VirtualChargingPool1, VirtualChargingPool2))
+            if (ReferenceEquals(VirtualChargingPool1, VirtualChargingPool2))
                 return true;
 
             // If one is null, but not both, return false.

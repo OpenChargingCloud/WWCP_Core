@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(RoamingNetworkAdminStatus1, RoamingNetworkAdminStatus2))
+            if (ReferenceEquals(RoamingNetworkAdminStatus1, RoamingNetworkAdminStatus2))
                 return true;
 
             // If one is null, but not both, return false.

@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(eMAIdWithPIN21, eMAIdWithPIN22))
+            if (ReferenceEquals(eMAIdWithPIN21, eMAIdWithPIN22))
                 return true;
 
             // If one is null, but not both, return false.

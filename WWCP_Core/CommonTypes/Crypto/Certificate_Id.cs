@@ -196,7 +196,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(CertificateId1, CertificateId2))
+            if (ReferenceEquals(CertificateId1, CertificateId2))
                 return true;
 
             // If one is null, but not both, return false.

@@ -584,7 +584,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(eMobilityAccountId1, eMobilityAccountId2))
+            if (ReferenceEquals(eMobilityAccountId1, eMobilityAccountId2))
                 return true;
 
             // If one is null, but not both, return false.

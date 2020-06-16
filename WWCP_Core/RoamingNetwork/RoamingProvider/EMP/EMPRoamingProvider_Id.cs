@@ -199,7 +199,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(CSORoamingProviderId1, CSORoamingProviderId2))
+            if (ReferenceEquals(CSORoamingProviderId1, CSORoamingProviderId2))
                 return true;
 
             // If one is null, but not both, return false.

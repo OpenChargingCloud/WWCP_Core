@@ -154,7 +154,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVPS_Id1, EVPS_Id2))
+            if (ReferenceEquals(EVPS_Id1, EVPS_Id2))
                 return true;
 
             // If one is null, but not both, return false.

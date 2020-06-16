@@ -275,7 +275,7 @@ namespace org.GraphDefined.WWCP.Networking
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(RemoteRoamingNetworkInfo1, RemoteRoamingNetworkInfo2))
+            if (ReferenceEquals(RemoteRoamingNetworkInfo1, RemoteRoamingNetworkInfo2))
                 return true;
 
             // If one is null, but not both, return false.

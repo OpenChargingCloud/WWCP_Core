@@ -170,7 +170,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(AAuthentication1, AAuthentication2))
+            if (ReferenceEquals(AAuthentication1, AAuthentication2))
                 return true;
 
             // If one is null, but not both, return false.

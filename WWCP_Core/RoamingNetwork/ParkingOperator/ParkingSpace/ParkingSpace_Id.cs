@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ParkingSpaceId1, ParkingSpaceId2))
+            if (ReferenceEquals(ParkingSpaceId1, ParkingSpaceId2))
                 return true;
 
             // If one is null, but not both, return false.

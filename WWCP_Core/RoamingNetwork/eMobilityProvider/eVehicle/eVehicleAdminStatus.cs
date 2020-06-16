@@ -110,7 +110,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(eVehicleAdminStatus1, eVehicleAdminStatus2))
+            if (ReferenceEquals(eVehicleAdminStatus1, eVehicleAdminStatus2))
                 return true;
 
             // If one is null, but not both, return false.

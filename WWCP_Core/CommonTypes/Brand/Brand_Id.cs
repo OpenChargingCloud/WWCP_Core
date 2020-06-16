@@ -199,7 +199,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(BrandId1, BrandId2))
+            if (ReferenceEquals(BrandId1, BrandId2))
                 return true;
 
             // If one is null, but not both, return false.

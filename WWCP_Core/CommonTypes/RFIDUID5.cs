@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(RFIDUID51, RFIDUID52))
+            if (ReferenceEquals(RFIDUID51, RFIDUID52))
                 return true;
 
             // If one is null, but not both, return false.

@@ -2146,7 +2146,7 @@ namespace org.GraphDefined.WWCP.Virtual
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(VirtualChargingStation1, VirtualChargingStation2))
+            if (ReferenceEquals(VirtualChargingStation1, VirtualChargingStation2))
                 return true;
 
             // If one is null, but not both, return false.
