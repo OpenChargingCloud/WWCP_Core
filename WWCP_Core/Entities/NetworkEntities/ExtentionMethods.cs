@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP.Networking
         //                                                     String                                    Service                            = null,
         //                                                     RemoteCertificateValidationCallback       RemoteCertificateValidator         = null,
         //                                                     String                                    VirtualHost                        = null,
-        //                                                     String                                    URIPrefix                          = null,
+        //                                                     String                                    URLPrefix                          = null,
         //                                                     TimeSpan?                                 RequestTimeout                       = null,
         //                                                     Action<NetworkChargingStationStub>        RemoteChargingStationConfigurator  = null,
         //                                                     Action<ChargingStation>                   OnSuccess                          = null,

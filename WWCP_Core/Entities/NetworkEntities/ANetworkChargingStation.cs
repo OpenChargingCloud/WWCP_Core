@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// </summary>
         public static readonly TimeSpan DefaultSelfCheckTimeSpan = TimeSpan.FromSeconds(5);
 
-        private static readonly HTTPPath DefaultURIPrefix = HTTPPath.Parse("/");
+        private static readonly HTTPPath DefaultURLPrefix = HTTPPath.Parse("/");
 
         private Timer _SelfCheckTimer;
 
@@ -162,7 +162,7 @@ namespace org.GraphDefined.WWCP.Networking
 
         public IPTransport                          IPTransport                     { get; }
 
-        public HTTPPath                             URIPrefix                       { get; }
+        public HTTPPath                             URLPrefix                       { get; }
 
         public String                               Service                         { get; }
 
@@ -508,7 +508,7 @@ namespace org.GraphDefined.WWCP.Networking
                                        LocalCertificateSelectionCallback    LocalCertificateSelector     = null,
                                        X509Certificate                      ClientCert                   = null,
                                        HTTPHostname?                        VirtualHostname              = null,
-                                       HTTPPath?                            URIPrefix                    = null,
+                                       HTTPPath?                            URLPrefix                    = null,
                                        TimeSpan?                            RequestTimeout               = null)
 
             : this(Id,
@@ -535,7 +535,7 @@ namespace org.GraphDefined.WWCP.Networking
             this.LocalCertificateSelector    = LocalCertificateSelector;
             this.ClientCert                  = ClientCert;
             this.VirtualHostname             = VirtualHostname;
-            this.URIPrefix                   = URIPrefix      ?? DefaultURIPrefix;
+            this.URLPrefix                   = URLPrefix      ?? DefaultURLPrefix;
             this.RequestTimeout              = RequestTimeout ?? DefaultRequestTimeout;
 
             this._SelfCheckTimeSpan           = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;

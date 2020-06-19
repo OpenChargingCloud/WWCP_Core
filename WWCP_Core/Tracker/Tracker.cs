@@ -43,13 +43,13 @@ namespace org.GraphDefined.WWCP.Networking
     //    public static Tracker AttachTracker(this WWCP_HTTPAPI     HTTPAPI,
     //                                        Tracker_Id            Id,
     //                                        I18NString            Description  = null,
-    //                                        HTTPPath?             URIPrefix    = null)
+    //                                        HTTPPath?             URLPrefix    = null)
     //    {
 
     //        return new Tracker(Id,
     //                           Description,
     //                           HTTPAPI?.HTTPServer,
-    //                           URIPrefix ?? Tracker.DefaultURIPrefix);
+    //                           URLPrefix ?? Tracker.DefaultURLPrefix);
 
     //    }
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// The default URI prefix of the WWCP tracker API.
         /// </summary>
-        public  static readonly HTTPPath DefaultURIPrefix       = HTTPPath.Parse("/tracker");
+        public  static readonly HTTPPath DefaultURLPrefix       = HTTPPath.Parse("/tracker");
 
         private ConcurrentDictionary<RoamingNetwork_Id, List<RoamingNetworkInfo>> _LocalRoamingNetworks;
 
@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// The common URI prefix of the HTTP server of the WWCP tracker.
         /// </summary>
-        public HTTPPath                                      URIPrefix       { get; }
+        public HTTPPath                                      URLPrefix       { get; }
 
         /// <summary>
         /// The DNS client used by the tracker.
@@ -110,7 +110,7 @@ namespace org.GraphDefined.WWCP.Networking
         public Tracker(Tracker_Id                                   Id,
                        I18NString                                   Description,
                        HTTPServer<RoamingNetworks, RoamingNetwork>  HTTPServer,
-                       HTTPPath?                                    URIPrefix = null)
+                       HTTPPath?                                    URLPrefix = null)
         {
 
             #region Initial checks
@@ -123,7 +123,7 @@ namespace org.GraphDefined.WWCP.Networking
             this.Id                     = Id;
             this.Description            = Description ?? I18NString.Empty;
             this.HTTPServer             = HTTPServer  ?? throw new ArgumentNullException(nameof(HTTPServer),  "The given HTTP server must not be null!");
-            this.URIPrefix              = URIPrefix   ?? DefaultURIPrefix;
+            this.URLPrefix              = URLPrefix   ?? DefaultURLPrefix;
             this._Logins                = new Dictionary<String, String>();
             this._LocalRoamingNetworks  = new ConcurrentDictionary<RoamingNetwork_Id, List<RoamingNetworkInfo>>();
 
@@ -145,7 +145,7 @@ namespace org.GraphDefined.WWCP.Networking
             //      http://127.0.0.1:3004/tracker
             HTTPServer.AddMethodCallback(HTTPHostname.Any,
                                          HTTPMethod.GET,
-                                         URIPrefix,
+                                         URLPrefix,
                                          HTTPContentType.JSON_UTF8,
                                          HTTPDelegate: Request => {
 
@@ -222,7 +222,7 @@ namespace org.GraphDefined.WWCP.Networking
             //      http://127.0.0.1:3004/ext/BoschEBike/EVSEs/49*822*483*1/NotClosed
             HTTPServer.AddMethodCallback(HTTPHostname.Any,
                                          HTTPMethod.ANNOUNCE,
-                                         URIPrefix,
+                                         URLPrefix,
                                          HTTPContentType.JSON_UTF8,
                                          HTTPDelegate: Request => {
 
