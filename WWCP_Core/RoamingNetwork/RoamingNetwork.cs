@@ -4953,8 +4953,8 @@ namespace org.GraphDefined.WWCP
                 // Will be deleted when the charge detail record was sent!
 
                 var EVSE            = ChargingLocation?.EVSEId.           HasValue == true ? GetEVSEById           (ChargingLocation.EVSEId.           Value) : null;
-                var ChargingStation = ChargingLocation?.ChargingStationId.HasValue == true ? GetChargingStationById(ChargingLocation.ChargingStationId.Value) : EVSE.ChargingStation;
-                var ChargingPool    = ChargingLocation?.ChargingPoolId.   HasValue == true ? GetChargingPoolById   (ChargingLocation.ChargingPoolId.   Value) : ChargingStation.ChargingPool;
+                var ChargingStation = ChargingLocation?.ChargingStationId.HasValue == true ? GetChargingStationById(ChargingLocation.ChargingStationId.Value) : EVSE?.ChargingStation;
+                var ChargingPool    = ChargingLocation?.ChargingPoolId.   HasValue == true ? GetChargingPoolById   (ChargingLocation.ChargingPoolId.   Value) : ChargingStation?.ChargingPool;
 
                 var NewChargingSession = new ChargingSession(result.SessionId.Value) {
                                              RoamingNetworkId           = Id,
@@ -5134,8 +5134,8 @@ namespace org.GraphDefined.WWCP
 
                             if (result?.Result == AuthStopResultTypes.Authorized)
                                 SessionsStore.AuthStop(SessionId,
-                                                        LocalAuthentication,
-                                                        result.ProviderId.Value);
+                                                       LocalAuthentication,
+                                                       result.ProviderId.Value);
 
                         }
 
