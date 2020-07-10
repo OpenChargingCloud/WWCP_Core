@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A lookup for user-defined properties.
         /// </summary>
-        private readonly UserDefinedDictionary _UserDefined;
+        protected readonly UserDefinedDictionary _UserDefined;
 
         #endregion
 

@@ -382,7 +382,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Update     (Id, UpdateFunc)
+        #region SessionExists(Id)
+
+        public Boolean SessionExists(ChargingSession_Id Id)
+
+            => InternalData.ContainsKey(Id);
+
+        public Boolean SessionExists(ChargingSession_Id? Id)
+
+            => Id.HasValue && InternalData.ContainsKey(Id.Value);
+
+        #endregion
+
+        #region Update(Id, UpdateFunc)
 
         public ChargingSessionsStore Update(ChargingSession_Id       Id,
                                             Action<ChargingSession>  UpdateFunc)

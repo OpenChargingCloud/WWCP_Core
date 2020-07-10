@@ -4267,6 +4267,11 @@ namespace org.GraphDefined.WWCP
                     result = RemoteStartResult.UnknownLocation();
                 }
 
+                else if (SessionsStore.SessionExists(SessionId))
+                {
+                    result = RemoteStartResult.InvalidSessionId();
+                }
+
                 else if (AdminStatus.Value == RoamingNetworkAdminStatusTypes.Operational ||
                          AdminStatus.Value == RoamingNetworkAdminStatusTypes.InternalUse)
                 {
