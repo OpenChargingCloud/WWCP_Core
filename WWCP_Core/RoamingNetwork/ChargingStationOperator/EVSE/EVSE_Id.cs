@@ -44,10 +44,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
         /// </summary>                                            // new format:
-        public static readonly Regex  EVSEId_RegEx      = new Regex(@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Za-z0-9][A-Za-z0-9\*]{0,30})$ | " +
+        public static readonly Regex  EVSEId_RegEx      = new Regex(@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Za-z0-9\*]{1,30})$ | " +
 
                                                                     // old format:
-                                                                    @"^(\+?[0-9]{1,5}\*[0-9]{3,6})\*?([A-Za-z0-9][A-Za-z0-9\*]{0,29})$",
+                                                                    @"^(\+?[0-9]{1,5}\*[0-9]{3,6})\*?([A-Za-z0-9\*]{1,32})$",
                                                                     // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
                                                                     // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;
                                                                     // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter

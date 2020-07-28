@@ -1072,6 +1072,11 @@ namespace org.GraphDefined.WWCP
                                                                                                            new JProperty("value",     meterValue.Value)
                                                                                                        ))
                                                                               ))
+                               : null,
+
+                           _UserDefined.Any()
+                               ? new JProperty("userDefined",    new JObject(_UserDefined.Where(kkvp => kkvp.Value is JObject).
+                                                                                          Select(kkvp => new JProperty(kkvp.Key, kkvp.Value as JObject))))
                                : null
 
                 );
