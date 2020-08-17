@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                      InfoStatus      ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
                                      InfoStatus      ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
                                      InfoStatus      ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                     InfoStatus      ExpandEVSEIds                     = InfoStatus.Expand,
+                                     InfoStatus      ExpandEVSEIds                     = InfoStatus.Expanded,
                                      InfoStatus      ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                                      InfoStatus      ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                     InfoStatus                   ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
                                     InfoStatus                   ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
                                     InfoStatus                   ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                   ExpandEVSEIds                     = InfoStatus.Expand,
+                                    InfoStatus                   ExpandEVSEIds                     = InfoStatus.Expanded,
                                     InfoStatus                   ExpandBrandIds                    = InfoStatus.ShowIdOnly,
                                     InfoStatus                   ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 

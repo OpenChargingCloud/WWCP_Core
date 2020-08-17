@@ -61,9 +61,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an electric vehicle charging pool (EVCP).
     /// </summary>
-    public struct ChargingPool_Id : IId,
-                                    IEquatable<ChargingPool_Id>,
-                                    IComparable<ChargingPool_Id>
+    public readonly struct ChargingPool_Id : IId,
+                                             IEquatable<ChargingPool_Id>,
+                                             IComparable<ChargingPool_Id>
 
     {
 

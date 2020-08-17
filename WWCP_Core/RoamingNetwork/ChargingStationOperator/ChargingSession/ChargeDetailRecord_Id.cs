@@ -29,9 +29,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of a charge detail record.
     /// </summary>
-    public struct ChargeDetailRecord_Id : IId,
-                                          IEquatable<ChargeDetailRecord_Id>,
-                                          IComparable<ChargeDetailRecord_Id>
+    public readonly struct ChargeDetailRecord_Id : IId,
+                                                   IEquatable<ChargeDetailRecord_Id>,
+                                                   IComparable<ChargeDetailRecord_Id>
 
     {
 

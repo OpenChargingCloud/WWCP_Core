@@ -62,9 +62,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an electric vehicle charging station (EVCS).
     /// </summary>
-    public struct ChargingStation_Id : IId,
-                                       IEquatable<ChargingStation_Id>,
-                                       IComparable<ChargingStation_Id>
+    public readonly struct ChargingStation_Id : IId,
+                                                IEquatable<ChargingStation_Id>,
+                                                IComparable<ChargingStation_Id>
 
     {
 

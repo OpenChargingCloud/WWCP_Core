@@ -29,9 +29,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of a charging session.
     /// </summary>
-    public struct ChargingSession_Id : IId,
-                                       IEquatable<ChargingSession_Id>,
-                                       IComparable<ChargingSession_Id>
+    public readonly struct ChargingSession_Id : IId,
+                                                IEquatable<ChargingSession_Id>,
+                                                IComparable<ChargingSession_Id>
 
     {
 

@@ -6195,7 +6195,7 @@ namespace org.GraphDefined.WWCP
                                                                                                                         CustomEVSESerializer:                     CustomEVSESerializer))))
                              : null,
 
-                         !ChargingStationOperators.Any() || ExpandChargingStationOperatorIds == InfoStatus.Expand
+                         !ChargingStationOperators.Any() || ExpandChargingStationOperatorIds == InfoStatus.Expanded
                              ? null
                              : ExpandChargingPoolIds.Switch(
                                    () => new JProperty("chargingPoolIds",             new JArray(ChargingPoolIds().
@@ -6215,7 +6215,7 @@ namespace org.GraphDefined.WWCP
                                                                                                                         CustomChargingStationSerializer:  CustomChargingStationSerializer,
                                                                                                                         CustomEVSESerializer:             CustomEVSESerializer)))),
 
-                         !ChargingStationOperators.Any() || (ExpandChargingPoolIds == InfoStatus.Expand || ExpandChargingStationOperatorIds == InfoStatus.Expand)
+                         !ChargingStationOperators.Any() || (ExpandChargingPoolIds == InfoStatus.Expanded || ExpandChargingStationOperatorIds == InfoStatus.Expanded)
                              ? null
                              : ExpandChargingStationIds.Switch(
                                    () => new JProperty("chargingStationIds",          new JArray(ChargingStationIds().
@@ -6234,7 +6234,7 @@ namespace org.GraphDefined.WWCP
                                                                                                                         CustomChargingStationSerializer:  CustomChargingStationSerializer,
                                                                                                                         CustomEVSESerializer:             CustomEVSESerializer)))),
 
-                         !ChargingStationOperators.Any() || (ExpandChargingStationIds == InfoStatus.Expand || ExpandChargingPoolIds == InfoStatus.Expand || ExpandChargingStationOperatorIds == InfoStatus.Expand)
+                         !ChargingStationOperators.Any() || (ExpandChargingStationIds == InfoStatus.Expanded || ExpandChargingPoolIds == InfoStatus.Expanded || ExpandChargingStationOperatorIds == InfoStatus.Expanded)
                              ? null
                              : ExpandEVSEIds.Switch(
                                    () => new JProperty("EVSEIds",                     new JArray(EVSEIds().

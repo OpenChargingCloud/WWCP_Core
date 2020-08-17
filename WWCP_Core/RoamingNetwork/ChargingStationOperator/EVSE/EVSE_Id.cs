@@ -30,9 +30,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an Electric Vehicle Supply Equipment (EVSE).
     /// </summary>
-    public struct EVSE_Id : IId,
-                            IEquatable<EVSE_Id>,
-                            IComparable<EVSE_Id>
+    public readonly struct EVSE_Id : IId,
+                                     IEquatable<EVSE_Id>,
+                                     IComparable<EVSE_Id>
 
     {
 
