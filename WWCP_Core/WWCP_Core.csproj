@@ -60,8 +60,9 @@
     <Compile Include="CommonTypes\Crypto\PublicKeyLifetime.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificate.cs" />
     <Compile Include="CommonTypes\Crypto\Certificate_Id.cs" />
+    <Compile Include="CommonTypes\RFIDUID10.cs" />
     <Compile Include="CommonTypes\RFIDUID7.cs" />
-    <Compile Include="CommonTypes\RFIDUID5.cs" />
+    <Compile Include="CommonTypes\RFIDUID4.cs" />
     <Compile Include="CommonTypes\ChargingLocation.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificates.cs" />
     <Compile Include="Delegates.cs" />
