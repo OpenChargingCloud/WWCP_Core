@@ -2964,10 +2964,10 @@ namespace org.GraphDefined.WWCP
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                                     TransmissionTypes                TransmissionType,
 
-                                    DateTime?                        Timestamp,
-                                    CancellationToken?               CancellationToken,
-                                    EventTracking_Id                 EventTrackingId,
-                                    TimeSpan?                        RequestTimeout)
+                                    DateTime?                        Timestamp           = null,
+                                    CancellationToken?               CancellationToken   = null,
+                                    EventTracking_Id                 EventTrackingId     = null,
+                                    TimeSpan?                        RequestTimeout      = null)
         {
 
             if (!DisableSendChargeDetailRecords && RemoteEMobilityProvider != null)

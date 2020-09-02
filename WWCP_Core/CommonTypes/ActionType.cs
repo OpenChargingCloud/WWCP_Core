@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The type of data management action when updating remote data.
     /// </summary>
-    public enum ActionType
+    public enum ActionTypes
     {
         fullLoad,
         update,     // will act like an 'upsert' for dynamic EVSE states!

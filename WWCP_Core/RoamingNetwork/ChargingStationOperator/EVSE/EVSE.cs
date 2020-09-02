@@ -596,13 +596,13 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingModes
 
-        private ChargingModes? _ChargingModes;
+        private ReactiveSet<ChargingModes> _ChargingModes;
 
         /// <summary>
         /// Charging modes.
         /// </summary>
         [Mandatory]
-        public ChargingModes? ChargingModes
+        public ReactiveSet<ChargingModes> ChargingModes
         {
 
             get
@@ -613,15 +613,21 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (_ChargingModes != value)
+                if (value.IsNullOrEmpty())
+                    DeleteProperty(ref _ChargingModes);
+
+                else
                 {
 
                     if (_ChargingModes == null)
-                        _ChargingModes = value;
+                        SetProperty(ref _ChargingModes,
+                                    value,
+                                    EventTracking_Id.New);
 
-                    SetProperty(ref _ChargingModes,
-                                value,
-                                EventTracking_Id.New);
+                    else
+                        SetProperty(ref _ChargingModes,
+                                    _ChargingModes.Set(value),
+                                    EventTracking_Id.New);
 
                 }
 
@@ -1509,16 +1515,16 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public void AddChargingMode(ChargingModes ChargingMode)
-        {
+        //public void AddChargingMode(ChargingModes ChargingMode)
+        //{
 
-            if (!_ChargingModes.HasValue)
-                _ChargingModes = ChargingMode;
+        //    if (!_ChargingModes.HasValue)
+        //        _ChargingModes = ChargingMode;
 
-            else
-                _ChargingModes |= ChargingMode;
+        //    else
+        //        _ChargingModes |= ChargingMode;
 
-        }
+        //}
 
         public void AddCurrentType(CurrentTypes CurrentType)
         {
@@ -3034,8 +3040,8 @@ namespace org.GraphDefined.WWCP
                          !Embedded ? ChargingStation.Address.            ToJSON("address")             : null,
                          !Embedded ? ChargingStation.AuthenticationModes.ToJSON("authenticationModes") : null,
 
-                         ChargingModes.HasValue && ChargingModes.Value != WWCP.ChargingModes.Unspecified
-                             ? new JProperty("chargingModes",  new JArray(ChargingModes.Value.ToText()))
+                         ChargingModes.Any()
+                             ? new JProperty("chargingModes",  new JArray(ChargingModes.Select(mode => mode.ToText())))
                              : null,
 
                          CurrentType.HasValue  && CurrentType.Value  != WWCP.CurrentTypes.Unspecified
