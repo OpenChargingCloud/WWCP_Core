@@ -50,22 +50,11 @@ namespace org.GraphDefined.WWCP
     /// The common generic interface of an entity having one or multiple unique identification(s).
     /// </summary>
     /// <typeparam name="TId">THe type of the unique identificator.</typeparam>
-    public interface IEntity<TId> : IEntity, IId<TId>
+    public interface IEntity<TId> : IEntity, IHasId<TId>
 
         where TId : IId
 
     {
-
-        ///// <summary>
-        ///// The primary unique identification of this entity.
-        ///// </summary>
-        //TId              Id     { get; }
-
-        /// <summary>
-        /// Auxilary unique identifications of this entity.
-        /// (Think of CNAMES in DNS, or brand names for companies)
-        /// </summary>
-        IEnumerable<TId> Ids    { get; }
 
     }
 

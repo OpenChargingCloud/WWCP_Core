@@ -313,13 +313,48 @@ namespace org.GraphDefined.WWCP
     }
 
 
+    public interface IChargingStation : IEquatable<ChargingStation>, IComparable<ChargingStation>, IComparable,
+                                        IEnumerable<EVSE>,
+                                        IStatus<ChargingStationStatusTypes>,
+                                        IEntity<ChargingStation_Id>,
+                                        IHasIds<ChargingStation_Id>
+    {
+
+        /// <summary>
+        /// The unique identification of this charging Station.
+        /// </summary>
+        ChargingStation_Id         Id                    { get; }
+
+        /// <summary>
+        /// The roaming network of this charging Station.
+        /// </summary>
+        IRoamingNetwork          RoamingNetwork        { get; }
+
+        /// <summary>
+        /// The charging station operator of this charging Station.
+        /// </summary>
+        [Optional]
+        ChargingStationOperator  Operator              { get; }
+
+        /// <summary>
+        /// The remote charging Station.
+        /// </summary>
+        [Optional]
+        IRemoteChargingStation     RemoteChargingStation    { get; }
+
+
+
+        I18NString Name         { get; }
+        I18NString Description  { get; }
+
+    }
+
+
     /// <summary>
     /// A charging station to charge an electric vehicle.
     /// </summary>
     public class ChargingStation : AEMobilityEntity<ChargingStation_Id>,
-                                   IEquatable<ChargingStation>, IComparable<ChargingStation>, IComparable,
-                                   IEnumerable<EVSE>,
-                                   IStatus<ChargingStationStatusTypes>
+                                   IChargingStation
     {
 
         #region Data

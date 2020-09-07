@@ -84,7 +84,8 @@ namespace org.GraphDefined.WWCP
     /// This is meant to be one electrical circuit which can charge a electric vehicle
     /// independently. Thus there could be multiple interdependent power sockets.
     /// </summary>
-    public class Brand : IId<Brand_Id>,
+    public class Brand : IHasId<Brand_Id>,
+                         IEntity<Brand_Id>,
                          IEquatable<Brand>,
                          IComparable<Brand>,
                          IComparable
@@ -118,6 +119,8 @@ namespace org.GraphDefined.WWCP
 
         public bool IsNullOrEmpty => Id.IsNullOrEmpty;
 
+        public DateTime LastChange => throw new NotImplementedException();
+
         #endregion
 
         #region Constructor(s)
@@ -148,6 +151,8 @@ namespace org.GraphDefined.WWCP
             this.Homepage  = Homepage;
 
         }
+
+        public event OnPropertyChangedDelegate OnPropertyChanged;
 
         #endregion
 

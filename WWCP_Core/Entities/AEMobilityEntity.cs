@@ -35,7 +35,8 @@ namespace org.GraphDefined.WWCP
     /// An abstract e-mobility entity.
     /// </summary>
     public abstract class AEMobilityEntity<TId> : ACustomData,
-                                                  IEntity<TId>
+                                                  IEntity<TId>,
+                                                  IHasIds<TId>
 
         where TId : IId
 
@@ -419,6 +420,9 @@ namespace org.GraphDefined.WWCP
 
         public int CompareTo(ChargingSession_Id other)
             => Id.CompareTo(other);
+
+        public Boolean Equals(TId other)
+            => Id.Equals(other);
 
     }
 

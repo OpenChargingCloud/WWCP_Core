@@ -318,7 +318,9 @@ namespace org.GraphDefined.WWCP
 
     public interface IChargingPool : IEquatable<ChargingPool>, IComparable<ChargingPool>, IComparable,
                                      IEnumerable<ChargingStation>,
-                                     IStatus<ChargingPoolStatusTypes>
+                                     IStatus<ChargingPoolStatusTypes>,
+                                     IEntity<ChargingPool_Id>,
+                                     IHasIds<ChargingPool_Id>
     {
 
         /// <summary>

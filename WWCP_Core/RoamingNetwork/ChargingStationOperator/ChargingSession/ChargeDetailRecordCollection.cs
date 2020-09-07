@@ -36,6 +36,7 @@ namespace org.GraphDefined.WWCP
 {
 
     public class ChargeDetailRecordCollection : IId<ChargingSession_Id>,
+                                                IHasId<ChargingSession_Id>,
                                                 IEnumerable<ChargeDetailRecord>
     {
 
@@ -108,10 +109,11 @@ namespace org.GraphDefined.WWCP
             throw new NotImplementedException();
         }
 
-        public int CompareTo(ChargingSession_Id other)
-        {
-            throw new NotImplementedException();
-        }
+        public Int32 CompareTo(ChargingSession_Id other)
+            => Id.CompareTo(other);
+
+        public Boolean Equals(ChargingSession_Id other)
+            => Id.Equals(other);
 
     }
 
