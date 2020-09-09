@@ -33,7 +33,7 @@ namespace org.GraphDefined.WWCP
 
     public class EntityHashSet<THost, TId, T> : IEnumerable<T>
 
-        where T   : IEntity<TId>
+        where T   : IEntity<TId>, IHasIds<TId>
         where TId : IId
 
     {
@@ -332,7 +332,7 @@ namespace org.GraphDefined.WWCP
 
     public class SpecialHashSet<THost, TId, T> : IEnumerable<T>
 
-        where T   : IId<TId>
+        where T   : IEntity<TId>
         where TId : IId
 
     {

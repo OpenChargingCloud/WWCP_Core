@@ -29,6 +29,7 @@ namespace org.GraphDefined.WWCP
 {
 
     public class ChargingReservationCollection : IId<ChargingReservation_Id>,
+                                                 IHasId<ChargingReservation_Id>,
                                                  IEnumerable<ChargingReservation>
     {
 
@@ -145,10 +146,11 @@ namespace org.GraphDefined.WWCP
             throw new NotImplementedException();
         }
 
-        public int CompareTo(ChargingReservation_Id other)
-        {
-            throw new NotImplementedException();
-        }
+        public Int32 CompareTo(ChargingReservation_Id other)
+            => Id.CompareTo(other);
+
+        public Boolean Equals(ChargingReservation_Id other)
+            => Id.Equals(other);
 
     }
 

@@ -43,7 +43,8 @@ namespace org.GraphDefined.WWCP
     /// <typeparam name="TId">The type of the identificators.</typeparam>
     /// <typeparam name="TData">The type of the stored data.</typeparam>
     public abstract class ADataStore<TId, TData> : IEnumerable<TData>
-        where TData : IId<TId>
+        where TId:   IId
+        where TData: IHasId<TId>
     {
 
         #region Data

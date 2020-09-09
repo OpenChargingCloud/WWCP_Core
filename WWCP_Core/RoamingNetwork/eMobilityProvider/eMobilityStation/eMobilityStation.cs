@@ -35,11 +35,34 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace org.GraphDefined.WWCP
 {
 
+    public interface IeMobilityStation : IEquatable<eMobilityStation>, IComparable<eMobilityStation>, IComparable,
+                                         IEntity<eMobilityStation_Id>,
+                                         IHasIds<eMobilityStation_Id>
+    {
+
+        /// <summary>
+        /// The unique identification of this charging pool.
+        /// </summary>
+        eMobilityStation_Id     Id                    { get; }
+
+        ///// <summary>
+        ///// The roaming network of this charging pool.
+        ///// </summary>
+        //IRoamingNetwork         RoamingNetwork        { get; }
+
+
+
+        I18NString Name         { get; }
+        I18NString Description  { get; }
+
+    }
+
+
     /// <summary>
     /// A e-mobility station for hosting electric vehicles.
     /// </summary>
     public class eMobilityStation : AEMobilityEntity<eMobilityStation_Id>,
-                                    IEquatable<eMobilityStation>, IComparable<eMobilityStation>, IComparable
+                                    IeMobilityStation
 
     {
 
@@ -604,7 +627,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the e-mobility station pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal eMobilityStation(eMobilityStation_Id                    Id,
-                                  eMobilityProvider                  Provider,
+                                  eMobilityProvider                      Provider,
                                   Action<eMobilityStation>               Configurator                   = null,
                                   RemoteEMobilityStationCreatorDelegate  RemoteeMobilityStationCreator  = null,
                                   eMobilityStationAdminStatusType        AdminStatus                    = eMobilityStationAdminStatusType.Operational,
