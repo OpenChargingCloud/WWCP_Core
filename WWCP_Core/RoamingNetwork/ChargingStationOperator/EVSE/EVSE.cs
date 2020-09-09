@@ -1420,10 +1420,11 @@ namespace org.GraphDefined.WWCP
 
             this.ChargingStation        = ChargingStation;
 
-            InitialAdminStatus          = InitialAdminStatus ?? new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
-            InitialStatus               = InitialStatus      ?? new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
+            InitialAdminStatus          ??= new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
+            InitialStatus               ??= new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
 
             this._Description           = new I18NString();
+            this._ChargingModes         = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
             this._Brands                = new SpecialHashSet<EVSE, Brand_Id, Brand>(this);
 
