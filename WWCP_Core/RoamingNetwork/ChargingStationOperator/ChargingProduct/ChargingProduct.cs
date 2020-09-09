@@ -140,25 +140,41 @@ namespace org.GraphDefined.WWCP
         public JObject ToJSON()
 
             => JSONObject.Create(
+
                            new JProperty("@id",                   Id.ToString()),
+
                            MinDuration.HasValue
                                ? new JProperty("minDuration",               MinDuration.Value.TotalSeconds)
                                : null,
+
                            StopChargingAfterTime.HasValue
                                ? new JProperty("stopChargingAfterTime",     StopChargingAfterTime.Value.TotalSeconds)
                                : null,
+
                            MinPower.HasValue
                                ? new JProperty("minPower",                  MinPower.Value)
                                : null,
+
                            MaxPower.HasValue
                                ? new JProperty("maxPower",                  MaxPower.Value)
                                : null,
+
                            MinEnergy.HasValue
                                ? new JProperty("minEnergy",                 MinEnergy.Value)
                                : null,
+
                            StopChargingAfterKWh.HasValue
                                ? new JProperty("stopChargingAfterKWh",      StopChargingAfterKWh.Value)
+                               : null,
+
+                           MaxB2BServiceCosts.HasValue
+                               ? new JProperty("maxB2BServiceCosts",        MaxB2BServiceCosts.Value)
+                               : null,
+
+                           IntermediateCDRs.HasValue
+                               ? new JProperty("intermediateCDRs",          IntermediateCDRs.Value)
                                : null
+
                        );
 
 
