@@ -30,9 +30,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an electric mobility account (eMAId).
     /// </summary>
-    public struct eMobilityAccount_Id : IId,
-                                        IEquatable<eMobilityAccount_Id>,
-                                        IComparable<eMobilityAccount_Id>
+    public readonly struct eMobilityAccount_Id : IId,
+                                                 IEquatable<eMobilityAccount_Id>,
+                                                 IComparable<eMobilityAccount_Id>
     {
 
         #region Data

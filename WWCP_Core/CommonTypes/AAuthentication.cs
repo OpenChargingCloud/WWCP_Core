@@ -19,10 +19,11 @@
 
 using System;
 
+using Newtonsoft.Json.Linq;
+
 using Org.BouncyCastle.Bcpg.OpenPgp;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -36,10 +37,10 @@ namespace org.GraphDefined.WWCP
 
             => Authentication != null &&
                (Authentication.AuthToken.                  HasValue ||
-                Authentication.QRCodeIdentification        != null  ||
+                Authentication.QRCodeIdentification.       HasValue ||
                 Authentication.PlugAndChargeIdentification.HasValue ||
                 Authentication.RemoteIdentification.       HasValue ||
-                Authentication.PIN.                        HasValue ||
+                Authentication.PIN.               IsNotNullOrEmpty()||
                 Authentication.PublicKey                   != null);
 
 
@@ -51,7 +52,7 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// Some sort of token for authentication.
+    /// An abstract user authentication.
     /// </summary>
     public abstract class AAuthentication : IEquatable<AAuthentication>,
                                             IComparable<AAuthentication>
@@ -68,7 +69,7 @@ namespace org.GraphDefined.WWCP
         /// A e-mobility account identification and its password/PIN.
         /// Used within OICP.
         /// </summary>
-        public eMAIdWithPIN2         QRCodeIdentification           { get; }
+        public eMAIdWithPIN2?        QRCodeIdentification           { get; }
 
         /// <summary>
         /// A e-mobility account identification transmitted via PnC.
@@ -83,7 +84,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A PIN.
         /// </summary>
-        public UInt32?               PIN                            { get; }
+        public String                PIN                            { get; }
 
         /// <summary>
         /// A PGP/GPG public key.
@@ -100,10 +101,10 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         protected AAuthentication(Auth_Token?           AuthToken                     = null,
-                                  eMAIdWithPIN2         QRCodeIdentification          = null,
+                                  eMAIdWithPIN2?        QRCodeIdentification          = null,
                                   eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                   eMobilityAccount_Id?  RemoteIdentification          = null,
-                                  UInt32?               PIN                           = null,
+                                  String                PIN                           = null,
                                   PgpPublicKey          PublicKey                     = null,
                                   I18NString            Description                   = null)
         {
@@ -121,39 +122,46 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ToJSON()
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         public JObject ToJSON()
 
             => JSONObject.Create(
 
                    AuthToken.HasValue
-                       ? new JProperty("authToken",                     AuthToken.                      ToString())
+                       ? new JProperty("authToken",                     AuthToken.                        ToString())
                        : null,
 
-                   QRCodeIdentification != null
-                       ? new JProperty("QRCodeIdentification",          QRCodeIdentification.           ToString())
+                   QRCodeIdentification.HasValue
+                       ? new JProperty("QRCodeIdentification",          QRCodeIdentification.       Value.ToJSON())
                        : null,
 
                    PlugAndChargeIdentification.HasValue
-                       ? new JProperty("plugAndChargeIdentification",   PlugAndChargeIdentification.    ToString())
+                       ? new JProperty("plugAndChargeIdentification",   PlugAndChargeIdentification.Value.ToString())
                        : null,
 
                    RemoteIdentification.HasValue
-                       ? new JProperty("remoteIdentification",          RemoteIdentification.           ToString())
+                       ? new JProperty("remoteIdentification",          RemoteIdentification.       Value.ToString())
                        : null,
 
-                   PIN.HasValue
-                       ? new JProperty("PIN",                           PIN.                            ToString())
+                   PIN.IsNotNullOrEmpty()
+                       ? new JProperty("PIN",                           PIN.                              ToString())
                        : null,
 
                    PublicKey != null
-                       ? new JProperty("publicKey",                     PublicKey.                      ToString())
+                       ? new JProperty("publicKey",                     PublicKey.                        ToString())
                        : null,
 
                    Description.IsNeitherNullNorEmpty()
-                       ? new JProperty("description",                   Description.                    ToString())
+                       ? new JProperty("description",                   Description.                      ToString())
                        : null
 
                );
+
+        #endregion
 
 
         #region Operator overloading
@@ -174,7 +182,7 @@ namespace org.GraphDefined.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) AAuthentication1 == null) || ((Object) AAuthentication2 == null))
+            if ((AAuthentication1 is null) || (AAuthentication2 is null))
                 return false;
 
             return AAuthentication1.Equals(AAuthentication2);
@@ -192,9 +200,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AAuthentication2">Another AAuthentication.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
-        {
-            return !(AAuthentication1 == AAuthentication2);
-        }
+            => !(AAuthentication1 == AAuthentication2);
 
         #endregion
 
@@ -209,7 +215,7 @@ namespace org.GraphDefined.WWCP
         public static Boolean operator < (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
         {
 
-            if ((Object) AAuthentication1 == null)
+            if (AAuthentication1 is null)
                 throw new ArgumentNullException("The given AAuthentication1 must not be null!");
 
             return AAuthentication1.CompareTo(AAuthentication2) < 0;
@@ -227,9 +233,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AAuthentication2">Another AAuthentication.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
-        {
-            return !(AAuthentication1 > AAuthentication2);
-        }
+            => !(AAuthentication1 > AAuthentication2);
 
         #endregion
 
@@ -244,7 +248,7 @@ namespace org.GraphDefined.WWCP
         public static Boolean operator > (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
         {
 
-            if ((Object) AAuthentication1 == null)
+            if (AAuthentication1 is null)
                 throw new ArgumentNullException("The given AAuthentication1 must not be null!");
 
             return AAuthentication1.CompareTo(AAuthentication2) > 0;
@@ -262,9 +266,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AAuthentication2">Another AAuthentication.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (AAuthentication AAuthentication1, AAuthentication AAuthentication2)
-        {
-            return !(AAuthentication1 < AAuthentication2);
-        }
+            => !(AAuthentication1 < AAuthentication2);
 
         #endregion
 
@@ -302,23 +304,23 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(AAuthentication AAuthentication)
         {
 
-            if ((Object) AAuthentication == null)
+            if (AAuthentication is null)
                 throw new ArgumentNullException(nameof(AAuthentication),  "The given abstract authentication must not be null!");
 
             if (AuthToken.HasValue && AAuthentication.AuthToken.HasValue)
-                return AuthToken.Value.CompareTo(AAuthentication.AuthToken.Value);
+                return AuthToken.                  Value.CompareTo(AAuthentication.AuthToken.                  Value);
 
-            if (QRCodeIdentification != null && AAuthentication.QRCodeIdentification != null)
-                return QRCodeIdentification.CompareTo(AAuthentication.QRCodeIdentification);
+            if (QRCodeIdentification.HasValue && AAuthentication.QRCodeIdentification.HasValue)
+                return QRCodeIdentification.       Value.CompareTo(AAuthentication.QRCodeIdentification.       Value);
 
             if (PlugAndChargeIdentification.HasValue && AAuthentication.PlugAndChargeIdentification.HasValue)
                 return PlugAndChargeIdentification.Value.CompareTo(AAuthentication.PlugAndChargeIdentification.Value);
 
             if (RemoteIdentification.HasValue && AAuthentication.RemoteIdentification.HasValue)
-                return RemoteIdentification.Value.CompareTo(AAuthentication.RemoteIdentification.Value);
+                return RemoteIdentification.       Value.CompareTo(AAuthentication.RemoteIdentification.       Value);
 
-            if (PIN.HasValue && AAuthentication.PIN.HasValue)
-                return PIN.Value.CompareTo(AAuthentication.PIN.Value);
+            if (PIN.IsNotNullOrEmpty()        && AAuthentication.PIN.IsNotNullOrEmpty())
+                return PIN.                              CompareTo(AAuthentication.PIN);
 
             if (PublicKey != null && AAuthentication.PublicKey != null)
                 return PublicKey.Fingerprint.ToHexString().CompareTo(AAuthentication.PublicKey.Fingerprint.ToHexString());
@@ -365,23 +367,23 @@ namespace org.GraphDefined.WWCP
         public Boolean Equals(AAuthentication AAuthentication)
         {
 
-            if ((Object) AAuthentication == null)
+            if (AAuthentication is null)
                 return false;
 
-            if (AuthToken.HasValue && AAuthentication.AuthToken.HasValue)
+            if (AuthToken.                  HasValue && AAuthentication.AuthToken.                  HasValue)
                 return AuthToken.Value.Equals(AAuthentication.AuthToken.Value);
 
-            if (QRCodeIdentification != null && AAuthentication.QRCodeIdentification != null)
+            if (QRCodeIdentification.       HasValue && AAuthentication.QRCodeIdentification.       HasValue)
                 return QRCodeIdentification.Equals(AAuthentication.QRCodeIdentification);
 
             if (PlugAndChargeIdentification.HasValue && AAuthentication.PlugAndChargeIdentification.HasValue)
                 return PlugAndChargeIdentification.Value.Equals(AAuthentication.PlugAndChargeIdentification.Value);
 
-            if (RemoteIdentification.HasValue && AAuthentication.RemoteIdentification.HasValue)
+            if (RemoteIdentification.       HasValue && AAuthentication.RemoteIdentification.       HasValue)
                 return RemoteIdentification.Value.Equals(AAuthentication.RemoteIdentification.Value);
 
-            if (PIN.HasValue && AAuthentication.PIN.HasValue)
-                return PIN.Value.Equals(AAuthentication.PIN.Value);
+            if (PIN.              IsNotNullOrEmpty() && AAuthentication.PIN.              IsNotNullOrEmpty())
+                return PIN.Equals(AAuthentication.PIN);
 
             if (PublicKey != null && AAuthentication.PublicKey != null)
                 return PublicKey.Fingerprint.ToHexString().Equals(AAuthentication.PublicKey.Fingerprint.ToHexString());
@@ -421,8 +423,8 @@ namespace org.GraphDefined.WWCP
             if (AuthToken.HasValue)
                 return AuthToken.                        ToString();
 
-            if (QRCodeIdentification != null)
-                return QRCodeIdentification.             ToString();
+            if (QRCodeIdentification.HasValue)
+                return QRCodeIdentification.       Value.ToString();
 
             if (PlugAndChargeIdentification.HasValue)
                 return PlugAndChargeIdentification.Value.ToString();
@@ -430,8 +432,8 @@ namespace org.GraphDefined.WWCP
             if (RemoteIdentification.HasValue)
                 return RemoteIdentification.       Value.ToString();
 
-            if (PIN.HasValue)
-                return PIN.                        Value.ToString();
+            if (PIN.IsNotNullOrEmpty())
+                return PIN;
 
             if (PublicKey            != null)
                 return PublicKey.Fingerprint.            ToHexString();
@@ -452,10 +454,10 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         protected internal LocalAuthentication(Auth_Token?           AuthToken                     = null,
-                                               eMAIdWithPIN2         QRCodeIdentification          = null,
+                                               eMAIdWithPIN2?        QRCodeIdentification          = null,
                                                eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                eMobilityAccount_Id?  RemoteIdentification          = null,
-                                               UInt32?               PIN                           = null,
+                                               String                PIN                           = null,
                                                PgpPublicKey          PublicKey                     = null,
                                                I18NString            Description                   = null)
 
@@ -472,7 +474,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) FromAuthToken                  (AuthToken,                   Description = null)
+        #region (static) FromAuthToken                  (AuthToken,                              Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given authentication token.
@@ -487,7 +489,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromQRCodeIdentification       (eMAId, PIN,                  Description = null)
+        #region (static) FromQRCodeIdentification       (eMAId, PIN,                             Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -505,7 +507,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromQRCodeIdentification       (QRCodeIdentification,        Description = null)
+        #region (static) FromQRCodeIdentification       (EVCOId, HashedPIN, Function, Salt = "", Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given
+        /// e-mobility account identification and its hashed password.
+        /// </summary>
+        /// <param name="eMAId">An QR code identification.</param>
+        /// <param name="HashedPIN">A hashed pin.</param>
+        /// <param name="Function">A crypto function.</param>
+        /// <param name="Salt">A salt of the crypto function.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static LocalAuthentication FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
+                                                                   String               HashedPIN,
+                                                                   PINCrypto            Function,
+                                                                   String               Salt          = "",
+                                                                   I18NString           Description   = null)
+
+            => new LocalAuthentication(QRCodeIdentification:  new eMAIdWithPIN2(eMAId,
+                                                                                HashedPIN,
+                                                                                Function,
+                                                                                Salt),
+                                       Description:           Description);
+
+        #endregion
+
+        #region (static) FromQRCodeIdentification       (QRCodeIdentification,                   Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -521,7 +548,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromPlugAndChargeIdentification(PlugAndChargeIdentification, Description = null)
+        #region (static) FromPlugAndChargeIdentification(PlugAndChargeIdentification,            Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -537,7 +564,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromRemoteIdentification       (RemoteIdentification,        Description = null)
+        #region (static) FromRemoteIdentification       (RemoteIdentification,                   Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -568,36 +595,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromPIN                        (PIN,                         Description = null)
+        #region (static) FromPIN                        (PIN,                                    Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given PIN.
         /// </summary>
         /// <param name="PIN">An PIN.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromPIN(UInt32      PIN,
+        public static LocalAuthentication FromPIN(String      PIN,
                                                   I18NString  Description  = null)
 
-            => new LocalAuthentication(PIN:          PIN,
-                                       Description:  Description);
-
-
-        /// <summary>
-        /// Create a new authentication info based on the given PIN.
-        /// </summary>
-        /// <param name="PIN">An PIN.</param>
-        /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromPIN(UInt32?     PIN,
-                                                  I18NString  Description  = null)
-
-            => PIN.HasValue
+            => PIN?.Trim().IsNotNullOrEmpty() == true
                    ? new LocalAuthentication(PIN:          PIN,
                                              Description:  Description)
                    : null;
 
         #endregion
 
-        #region (static) FromPublicKey                  (PublicKey,                   Description = null)
+        #region (static) FromPublicKey                  (PublicKey,                              Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -621,7 +636,7 @@ namespace org.GraphDefined.WWCP
                    null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
                    JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
                    JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<UInt32>()  : new UInt32?(),
+                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<String>()  : null,
                    null, //JSON["remoteIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
                    JSON["description"]                 != null ? I18NString.         Parse(JSON["description"] as JObject)                       : I18NString.Empty
                 );
@@ -646,10 +661,10 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         protected internal RemoteAuthentication(Auth_Token?           AuthToken                     = null,
-                                                eMAIdWithPIN2         QRCodeIdentification          = null,
+                                                eMAIdWithPIN2?        QRCodeIdentification          = null,
                                                 eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                 eMobilityAccount_Id?  RemoteIdentification          = null,
-                                                UInt32?               PIN                           = null,
+                                                String                PIN                           = null,
                                                 PgpPublicKey          PublicKey                     = null,
                                                 I18NString            Description                   = null)
 
@@ -666,7 +681,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) FromAuthToken                  (AuthToken,                   Description = null)
+        #region (static) FromAuthToken                  (AuthToken,                              Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given authentication token.
@@ -681,7 +696,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromQRCodeIdentification       (eMAId, PIN,                  Description = null)
+        #region (static) FromQRCodeIdentification       (eMAId, PIN,                             Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -699,7 +714,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromQRCodeIdentification       (QRCodeIdentification,        Description = null)
+        #region (static) FromQRCodeIdentification       (EVCOId, HashedPIN, Function, Salt = "", Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given
+        /// e-mobility account identification and its hashed password.
+        /// </summary>
+        /// <param name="eMAId">An QR code identification.</param>
+        /// <param name="HashedPIN">A hashed pin.</param>
+        /// <param name="Function">A crypto function.</param>
+        /// <param name="Salt">A salt of the crypto function.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static RemoteAuthentication FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
+                                                                    String               HashedPIN,
+                                                                    PINCrypto            Function,
+                                                                    String               Salt          = "",
+                                                                    I18NString           Description   = null)
+
+            => new RemoteAuthentication(QRCodeIdentification:  new eMAIdWithPIN2(eMAId,
+                                                                                 HashedPIN,
+                                                                                 Function,
+                                                                                 Salt),
+                                        Description:           Description);
+
+        #endregion
+
+        #region (static) FromQRCodeIdentification       (QRCodeIdentification,                   Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -715,7 +755,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromPlugAndChargeIdentification(PlugAndChargeIdentification, Description = null)
+        #region (static) FromPlugAndChargeIdentification(PlugAndChargeIdentification,            Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -731,7 +771,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromRemoteIdentification       (RemoteIdentification,        Description = null)
+        #region (static) FromRemoteIdentification       (RemoteIdentification,                   Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -762,36 +802,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) FromPIN       (PIN,        Description = null)
+        #region (static) FromPIN                        (PIN,                                    Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given PIN.
         /// </summary>
         /// <param name="PIN">An PIN.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromPIN(UInt32      PIN,
+        public static RemoteAuthentication FromPIN(String      PIN,
                                                    I18NString  Description  = null)
 
-            => new RemoteAuthentication(PIN:          PIN,
-                                        Description:  Description);
-
-
-        /// <summary>
-        /// Create a new authentication info based on the given PIN.
-        /// </summary>
-        /// <param name="PIN">An PIN.</param>
-        /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromPIN(UInt32?     PIN,
-                                                   I18NString  Description  = null)
-
-            => PIN.HasValue
+            => PIN?.Trim().IsNotNullOrEmpty() == true
                    ? new RemoteAuthentication(PIN:          PIN,
                                               Description:  Description)
                    : null;
 
         #endregion
 
-        #region (static) FromPublicKey                  (PublicKey,                   Description = null)
+        #region (static) FromPublicKey                  (PublicKey,                              Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -815,7 +843,7 @@ namespace org.GraphDefined.WWCP
                    null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
                    JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
                    JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<UInt32>()  : new UInt32?(),
+                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<String>()  : null,
                    null, //JSON["remoteIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
                    JSON["description"]                 != null ? I18NString.         Parse(JSON["description"] as JObject)                       : I18NString.Empty
                 );

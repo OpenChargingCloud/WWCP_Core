@@ -30,9 +30,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A unique authentication token.
     /// </summary>
-    public struct Auth_Token : IId,
-                               IEquatable<Auth_Token>,
-                               IComparable<Auth_Token>
+    public readonly struct Auth_Token : IId,
+                                        IEquatable<Auth_Token>,
+                                        IComparable<Auth_Token>
     {
 
         #region Data

@@ -17,27 +17,18 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public enum PINCrypto
-    {
-        none,
-        MD5,
-        SHA1
-    }
-
-
-    public class eMAIdWithPIN2 : IEquatable<eMAIdWithPIN2>,
-                                 IComparable<eMAIdWithPIN2>
+    public readonly struct eMAIdWithPIN2 : IEquatable<eMAIdWithPIN2>,
+                                           IComparable<eMAIdWithPIN2>
     {
 
         #region Properties
@@ -61,8 +52,9 @@ namespace org.GraphDefined.WWCP
         {
 
             this.eMAId     = eMAId;
-            this.PIN       = PIN;
-            this.Function  = PINCrypto.none;
+            this.PIN       = PIN?.Trim() ?? "";
+            this.Function  = PINCrypto.None;
+            this.Salt      = "";
 
         }
 
@@ -77,13 +69,44 @@ namespace org.GraphDefined.WWCP
         {
 
             this.eMAId     = eMAId;
-            this.PIN       = PIN;
+            this.PIN       = PIN?. Trim() ?? "";
             this.Function  = Function;
-            this.Salt      = Salt;
+            this.Salt      = Salt?.Trim() ?? "";
 
         }
 
         #endregion
+
+        #endregion
+
+
+        #region ToJSON(CustomEMAIdWithPIN2Serializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomEMAIdWithPIN2Serializer">A delegate to serialize custom eMAIdWithPIN JSON objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<eMAIdWithPIN2> CustomEMAIdWithPIN2Serializer = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("eMAId", eMAId.ToString(),
+
+                           Function == PINCrypto.None
+
+                               ? new JProperty("PIN", PIN)
+
+                               : new JProperty("hashedPIN",
+                                     new JProperty("value",     PIN),
+                                     new JProperty("function",  Function.AsString()),
+                                     new JProperty("salt",      Salt))));
+
+            return CustomEMAIdWithPIN2Serializer != null
+                       ? CustomEMAIdWithPIN2Serializer(this, JSON)
+                       : JSON;
+
+        }
 
         #endregion
 
@@ -124,9 +147,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-        {
-            return !(eMAIdWithPIN21 == eMAIdWithPIN22);
-        }
+            => !(eMAIdWithPIN21 == eMAIdWithPIN22);
 
         #endregion
 
@@ -159,9 +180,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-        {
-            return !(eMAIdWithPIN21 > eMAIdWithPIN22);
-        }
+            => !(eMAIdWithPIN21 > eMAIdWithPIN22);
 
         #endregion
 
@@ -194,9 +213,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAIdWithPIN22">Another eMAIdWithPIN2.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (eMAIdWithPIN2 eMAIdWithPIN21, eMAIdWithPIN2 eMAIdWithPIN22)
-        {
-            return !(eMAIdWithPIN21 < eMAIdWithPIN22);
-        }
+            => !(eMAIdWithPIN21 < eMAIdWithPIN22);
 
         #endregion
 
@@ -216,9 +233,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an eMAIdWithPIN2.
-            var eMAIdWithPIN2 = Object as eMAIdWithPIN2;
-            if ((Object) eMAIdWithPIN2 == null)
+            if (!(Object is eMAIdWithPIN2 eMAIdWithPIN2))
                 throw new ArgumentException("The given object is not a eMAIdWithPIN2!");
 
             return CompareTo(eMAIdWithPIN2);
@@ -239,14 +254,18 @@ namespace org.GraphDefined.WWCP
             if ((Object) eMAIdWithPIN2 == null)
                 throw new ArgumentNullException("The given eMAIdWithPIN2 must not be null!");
 
-            // Compare EVSE Ids
-            var _Result = eMAId.CompareTo(eMAIdWithPIN2.eMAId);
+            var result = eMAId.   CompareTo(eMAIdWithPIN2.eMAId);
 
-            // If equal: Compare EVSE status
-            if (_Result == 0)
-                _Result = PIN.CompareTo(eMAIdWithPIN2.PIN);
+            if (result == 0)
+                result = PIN.     CompareTo(eMAIdWithPIN2.PIN);
 
-            return _Result;
+            if (result == 0)
+                result = Function.CompareTo(eMAIdWithPIN2.Function);
+
+            if (result == 0)
+                result = Salt.    CompareTo(eMAIdWithPIN2.Salt);
+
+            return result;
 
         }
 
@@ -269,12 +288,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an eMAIdWithPIN2.
-            var eMAIdWithPIN2 = Object as eMAIdWithPIN2;
-            if ((Object) eMAIdWithPIN2 == null)
+            if (!(Object is eMAIdWithPIN2 eMAIdWithPIN2))
                 return false;
 
-            return this.Equals(eMAIdWithPIN2);
+            return Equals(eMAIdWithPIN2);
 
         }
 
@@ -293,8 +310,10 @@ namespace org.GraphDefined.WWCP
             if ((Object) eMAIdWithPIN2 == null)
                 return false;
 
-            return eMAId.Equals(eMAIdWithPIN2.eMAId) &&
-                   PIN.  Equals(eMAIdWithPIN2.PIN);
+            return eMAId.   Equals(eMAIdWithPIN2.eMAId)    &&
+                   PIN.     Equals(eMAIdWithPIN2.PIN)      &&
+                   Function.Equals(eMAIdWithPIN2.Function) &&
+                   Salt.    Equals(eMAIdWithPIN2.Salt);
 
         }
 
@@ -312,7 +331,10 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return eMAId.GetHashCode() * 17 ^ PIN.GetHashCode();
+                return eMAId.   GetHashCode() * 7 ^
+                       PIN.     GetHashCode() * 5 ^
+                       Function.GetHashCode() * 3 ^
+                       Salt.    GetHashCode();
             }
         }
 
@@ -324,9 +346,13 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat(eMAId.ToString(), " -", Function != PINCrypto.none ? Function.ToString(): "", "-> ", PIN );
-        }
+
+            => String.Concat(eMAId.ToString(),
+                             Function != PINCrypto.None
+                                 ? String.Concat(" -", Function.AsString(), "-> ",
+                                                 PIN,
+                                                 Salt.IsNotNullOrEmpty() ? " (" + Salt + ")" : "")
+                                 : PIN);
 
         #endregion
 
