@@ -398,31 +398,31 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public int CompareTo(object obj)
-        {
+        //public int CompareTo(object obj)
+        //{
 
-            if (obj is ChargingSession_Id chargingSessionId)
-                return CompareTo(chargingSessionId);
+        //    if (obj is ChargingSession_Id chargingSessionId)
+        //        return CompareTo(chargingSessionId);
 
-            return -1;
+        //    return -1;
 
-        }
+        //}
 
-        public int CompareTo(TId obj)
-        {
+        //public int CompareTo(TId obj)
+        //{
 
-            if (obj is ChargingSession_Id chargingSessionId)
-                return CompareTo(chargingSessionId);
+        //    if (obj is ChargingSession_Id chargingSessionId)
+        //        return CompareTo(chargingSessionId);
 
-            return -1;
+        //    return -1;
 
-        }
+        //}
 
-        public int CompareTo(ChargingSession_Id other)
-            => Id.CompareTo(other);
+        //public int CompareTo(ChargingSession_Id other)
+        //    => Id.CompareTo(other);
 
-        public Boolean Equals(TId other)
-            => Id.Equals(other);
+        //public Boolean Equals(TId other)
+        //    => Id.Equals(other);
 
     }
 
