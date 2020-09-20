@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Generate(EVSEOperatorId, Address, GeoLocation, Lenght = 50, Mapper = null)
+        #region Generate(EVSEOperatorId, Address, GeoLocation, Length = 50, Mapper = null)
 
         /// <summary>
         /// Create a valid charging pool identification based on the given parameters.

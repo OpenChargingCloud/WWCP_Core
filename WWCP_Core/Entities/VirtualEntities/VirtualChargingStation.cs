@@ -2248,7 +2248,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public override Int32 CompareTo(Object Object)
         {
 
             if (Object is null)

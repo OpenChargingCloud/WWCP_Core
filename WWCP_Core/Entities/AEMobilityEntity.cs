@@ -398,7 +398,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-        //public int CompareTo(object obj)
+        public abstract int CompareTo(object obj);
         //{
 
         //    if (obj is ChargingSession_Id chargingSessionId)
