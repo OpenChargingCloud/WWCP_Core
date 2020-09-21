@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IReceiveData
+    public interface IReceivePOIData
     {
 
         // Events

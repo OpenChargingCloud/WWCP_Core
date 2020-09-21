@@ -96,12 +96,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An object implementing ISendData.
         /// </summary>
-        public ISendData             ISendData       { get; }
+        public ISendPOIData             ISendData       { get; }
 
         /// <summary>
         /// An object implementing IReceiveData.
         /// </summary>
-        public IReceiveData          IReceiveData    { get; }
+        public IReceivePOIData          IReceiveData    { get; }
 
         /// <summary>
         /// The result of the operation.
@@ -185,7 +185,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushEVSEDataResult(IId                   AuthId,
-                                    ISendData             ISendData,
+                                    ISendPOIData             ISendData,
                                     PushDataResultTypes   Result,
                                     String                Description     = null,
                                     IEnumerable<EVSE>     RejectedEVSEs   = null,
@@ -220,7 +220,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushEVSEDataResult(IId                   AuthId,
-                                    IReceiveData          IReceiveData,
+                                    IReceivePOIData          IReceiveData,
                                     PushDataResultTypes   Result,
                                     IEnumerable<EVSE>     RejectedEVSEs   = null,
                                     String                Description     = null,
@@ -250,7 +250,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             AdminDown(IId                   AuthId,
-                      ISendData             ISendData,
+                      ISendPOIData             ISendData,
                       IEnumerable<EVSE>     RejectedEVSEs  = null,
                       String                Description    = null,
                       IEnumerable<Warning>  Warnings       = null,
@@ -268,7 +268,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             AdminDown(IId                   AuthId,
-                      IReceiveData          IReceiveData,
+                      IReceivePOIData          IReceiveData,
                       IEnumerable<EVSE>     RejectedEVSEs  = null,
                       String                Description    = null,
                       IEnumerable<Warning>  Warnings       = null,
@@ -289,7 +289,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             Success(IId                   AuthId,
-                    ISendData             ISendData,
+                    ISendPOIData             ISendData,
                     String                Description    = null,
                     IEnumerable<Warning>  Warnings       = null,
                     TimeSpan?             Runtime        = null)
@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             Success(IId                   AuthId,
-                    IReceiveData          IReceiveData,
+                    IReceivePOIData          IReceiveData,
                     String                Description    = null,
                     IEnumerable<Warning>  Warnings       = null,
                     TimeSpan?             Runtime        = null)
@@ -326,7 +326,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             Enqueued(IId                   AuthId,
-                     ISendData             ISendData,
+                     ISendPOIData             ISendData,
                      String                Description    = null,
                      IEnumerable<Warning>  Warnings       = null,
                      TimeSpan?             Runtime        = null)
@@ -346,7 +346,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             NoOperation(IId                   AuthId,
-                        ISendData             ISendData,
+                        ISendPOIData             ISendData,
                         String                Description    = null,
                         IEnumerable<Warning>  Warnings       = null,
                         TimeSpan?             Runtime        = null)
@@ -363,7 +363,7 @@ namespace org.GraphDefined.WWCP
          public static PushEVSEDataResult
 
             NoOperation(IId                   AuthId,
-                        IReceiveData          IReceiveData,
+                        IReceivePOIData          IReceiveData,
                         String                Description    = null,
                         IEnumerable<Warning>  Warnings       = null,
                         TimeSpan?             Runtime        = null)
@@ -392,7 +392,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             Timeout(IId                   AuthorizatorId,
-                    ISendData             ISendChargeDetailRecords,
+                    ISendPOIData             ISendChargeDetailRecords,
                     IEnumerable<EVSE>     ResultMap,
                     String                Description   = null,
                     IEnumerable<Warning>  Warnings      = null,
@@ -415,7 +415,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             Error(IId                   AuthId,
-                  ISendData             ISendData,
+                  ISendPOIData             ISendData,
                   IEnumerable<EVSE>     RejectedEVSEs  = null,
                   String                Description    = null,
                   IEnumerable<Warning>  Warnings       = null,
@@ -433,7 +433,7 @@ namespace org.GraphDefined.WWCP
         public static PushEVSEDataResult
 
             Error(IId                   AuthId,
-                  IReceiveData          IReceiveData,
+                  IReceivePOIData          IReceiveData,
                   IEnumerable<EVSE>     RejectedEVSEs  = null,
                   String                Description    = null,
                   IEnumerable<Warning>  Warnings       = null,
@@ -475,9 +475,9 @@ namespace org.GraphDefined.WWCP
 
         public IId                                               Id                 { get; }
 
-        public ISendData                                         ISendData          { get; }
+        public ISendPOIData                                         ISendData          { get; }
 
-        public IReceiveData                                      IReceiveData       { get; }
+        public IReceivePOIData                                      IReceiveData       { get; }
 
         /// <summary>
         /// Warnings or additional information.
@@ -518,7 +518,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private PushChargingStationDataResult(IId                                               Id,
-                                              ISendData                                         ISendData,
+                                              ISendPOIData                                         ISendData,
                                               PushDataResultTypes                               Result,
                                               IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                                               String                                            Description     = null,
@@ -558,7 +558,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private PushChargingStationDataResult(IId                                               Id,
-                                              IReceiveData                                      IReceiveData,
+                                              IReceivePOIData                                      IReceiveData,
                                               PushDataResultTypes                               Result,
                                               IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                                               String                                            Description     = null,
@@ -596,7 +596,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             AdminDown(IId                                               AuthId,
-                      ISendData                                         ISendData,
+                      ISendPOIData                                         ISendData,
                       IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                       String                                            Description     = null,
                       IEnumerable<Warning>                              Warnings        = null,
@@ -614,7 +614,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             AdminDown(IId                                               AuthId,
-                      IReceiveData                                      IReceiveData,
+                      IReceivePOIData                                      IReceiveData,
                       IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                       String                                            Description     = null,
                       IEnumerable<Warning>                              Warnings        = null,
@@ -635,7 +635,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             Success(IId                   AuthId,
-                    ISendData             ISendData,
+                    ISendPOIData             ISendData,
                     String                Description    = null,
                     IEnumerable<Warning>  Warnings       = null,
                     TimeSpan?             Runtime        = null)
@@ -652,7 +652,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             Success(IId                   AuthId,
-                    IReceiveData          IReceiveData,
+                    IReceivePOIData          IReceiveData,
                     String                Description    = null,
                     IEnumerable<Warning>  Warnings       = null,
                     TimeSpan?             Runtime        = null)
@@ -672,7 +672,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             Enqueued(IId                   AuthId,
-                     ISendData             ISendData,
+                     ISendPOIData             ISendData,
                      String                Description    = null,
                      IEnumerable<Warning>  Warnings       = null,
                      TimeSpan?             Runtime        = null)
@@ -692,7 +692,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             NoOperation(IId                   AuthId,
-                        ISendData             ISendData,
+                        ISendPOIData             ISendData,
                         String                Description    = null,
                         IEnumerable<Warning>  Warnings       = null,
                         TimeSpan?             Runtime        = null)
@@ -709,7 +709,7 @@ namespace org.GraphDefined.WWCP
          public static PushChargingStationDataResult
 
             NoOperation(IId                   AuthId,
-                        IReceiveData          IReceiveData,
+                        IReceivePOIData          IReceiveData,
                         String                Description    = null,
                         IEnumerable<Warning>  Warnings       = null,
                         TimeSpan?             Runtime        = null)
@@ -729,7 +729,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             Error(IId                                               AuthId,
-                  ISendData                                         ISendData,
+                  ISendPOIData                                         ISendData,
                   IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                   String                                            Description     = null,
                   IEnumerable<Warning>                              Warnings        = null,
@@ -747,7 +747,7 @@ namespace org.GraphDefined.WWCP
         public static PushChargingStationDataResult
 
             Error(IId                                               AuthId,
-                  IReceiveData                                      IReceiveData,
+                  IReceivePOIData                                      IReceiveData,
                   IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                   String                                            Description     = null,
                   IEnumerable<Warning>                              Warnings        = null,

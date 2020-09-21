@@ -52,10 +52,13 @@
   <ItemGroup>
     <Compile Include="Commands\AdminStatus\IReceiveAdminStatus.cs" />
     <Compile Include="Commands\AdminStatus\ISendAdminStatus.cs" />
+    <Compile Include="Commands\AdminStatus\AdminStatusPull.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAuthorizeStartStop.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
+    <Compile Include="Commands\POIData\POIDataPull.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartResult.cs" />
     <Compile Include="Commands\SendCDRs\SendCDRResult.cs" />
+    <Compile Include="Commands\Status\StatusPull.cs" />
     <Compile Include="CommonTypes\Crypto\CertificateSignature.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyLifetime.cs" />
     <Compile Include="CommonTypes\Crypto\PublicKeyCertificate.cs" />
@@ -91,12 +94,12 @@
     <Compile Include="Commands\AuthenticationData\ISendAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\OnPushAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\PushAuthenticationDataResult.cs" />
-    <Compile Include="Commands\StaticData\IPullData.cs" />
-    <Compile Include="Commands\StaticData\ISendData.cs" />
+    <Compile Include="Commands\POIData\IPullPOIData.cs" />
+    <Compile Include="Commands\POIData\ISendPOIData.cs" />
     <Compile Include="Commands\Status\IPullStatus.cs" />
     <Compile Include="Commands\SendCDRs\IReceiveChargeDetailRecords.cs" />
     <Compile Include="Commands\SendCDRs\ISendChargeDetailRecords.cs" />
-    <Compile Include="Commands\StaticData\IReceiveData.cs" />
+    <Compile Include="Commands\POIData\IReceivePOIData.cs" />
     <Compile Include="Commands\Status\IReceiveStatus.cs" />
     <Compile Include="Commands\Status\IRemotePushStatusExtentions.cs" />
     <Compile Include="Commands\Status\ISendStatus.cs" />
@@ -258,7 +261,7 @@
     <Compile Include="RoamingNetwork\RoamingProvider\CSO\ICSORoamingProvider.cs" />
     <Compile Include="RoamingNetwork\RoamingProvider\EMP\IEMPRoamingProvider.cs" />
     <Compile Include="Commands\Status\AnonymousPushEVSEStatusService.cs" />
-    <Compile Include="Commands\StaticData\PushDataAndStatusDelegates.cs" />
+    <Compile Include="Commands\POIData\PushDataAndStatusDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
     <Compile Include="Commands\Reserve\CancelReservationResult.cs" />
     <Compile Include="Commands\SendCDRs\OnSendCDRsDelegate.cs" />
@@ -269,7 +272,7 @@
     <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\EVSE\PushEVSEStatusResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStationOperator\EVSE\PushEVSEAdminStatusResult.cs" />
-    <Compile Include="Commands\StaticData\PushDataResult.cs" />
+    <Compile Include="Commands\POIData\PushDataResult.cs" />
     <Compile Include="CommonTypes\AuthTokenStatus.cs" />
     <Compile Include="CommonTypes\StatusDiff.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />

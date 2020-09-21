@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The Roaming Provider provided eMobility services interface.
     /// </summary>
-    public interface ICSORoamingProvider : IPullData,
+    public interface ICSORoamingProvider : IPullPOIData,
                                            IPullStatus,
                                            IReserveRemoteStartStop
     {

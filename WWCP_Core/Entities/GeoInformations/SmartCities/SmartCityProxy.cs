@@ -603,7 +603,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(EVSE                EVSE,
+            ISendPOIData.SetStaticData(EVSE                EVSE,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -640,7 +640,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(EVSE                EVSE,
+            ISendPOIData.AddStaticData(EVSE                EVSE,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -681,7 +681,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(EVSE                EVSE,
+            ISendPOIData.UpdateStaticData(EVSE                EVSE,
                                              String              PropertyName,
                                              Object              OldValue,
                                              Object              NewValue,
@@ -721,7 +721,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(EVSE                EVSE,
+            ISendPOIData.DeleteStaticData(EVSE                EVSE,
                                              TransmissionTypes   TransmissionType,
 
                                              DateTime?           Timestamp,
@@ -758,7 +758,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(IEnumerable<EVSE>   EVSEs,
+            ISendPOIData.SetStaticData(IEnumerable<EVSE>   EVSEs,
                                     TransmissionTypes   TransmissionType,
 
                                     DateTime?           Timestamp,
@@ -794,7 +794,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(IEnumerable<EVSE>   EVSEs,
+            ISendPOIData.AddStaticData(IEnumerable<EVSE>   EVSEs,
                                     TransmissionTypes   TransmissionType,
 
                                     DateTime?           Timestamp,
@@ -830,7 +830,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(IEnumerable<EVSE>   EVSEs,
+            ISendPOIData.UpdateStaticData(IEnumerable<EVSE>   EVSEs,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -866,7 +866,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(IEnumerable<EVSE>   EVSEs,
+            ISendPOIData.DeleteStaticData(IEnumerable<EVSE>   EVSEs,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -978,7 +978,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(ChargingStation     ChargingStation,
+            ISendPOIData.SetStaticData(ChargingStation     ChargingStation,
                                     TransmissionTypes   TransmissionType,
 
                                     DateTime?           Timestamp,
@@ -1015,7 +1015,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(ChargingStation     ChargingStation,
+            ISendPOIData.AddStaticData(ChargingStation     ChargingStation,
                                     TransmissionTypes   TransmissionType,
 
                                     DateTime?           Timestamp,
@@ -1055,7 +1055,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(ChargingStation     ChargingStation,
+            ISendPOIData.UpdateStaticData(ChargingStation     ChargingStation,
                                        String              PropertyName,
                                        Object              OldValue,
                                        Object              NewValue,
@@ -1095,7 +1095,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(ChargingStation     ChargingStation,
+            ISendPOIData.DeleteStaticData(ChargingStation     ChargingStation,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -1133,7 +1133,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
+            ISendPOIData.SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
                                     TransmissionTypes             TransmissionType,
 
                                     DateTime?                     Timestamp,
@@ -1170,7 +1170,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
+            ISendPOIData.AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
                                     TransmissionTypes             TransmissionType,
 
 
@@ -1208,7 +1208,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
+            ISendPOIData.UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
                                        TransmissionTypes             TransmissionType,
 
                                        DateTime?                     Timestamp,
@@ -1245,7 +1245,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
+            ISendPOIData.DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
                                        TransmissionTypes             TransmissionType,
 
                                        DateTime?                     Timestamp,
@@ -1347,7 +1347,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(ChargingPool        ChargingPool,
+            ISendPOIData.SetStaticData(ChargingPool        ChargingPool,
                                     TransmissionTypes   TransmissionType,
 
                                     DateTime?           Timestamp,
@@ -1384,7 +1384,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(ChargingPool        ChargingPool,
+            ISendPOIData.AddStaticData(ChargingPool        ChargingPool,
                                     TransmissionTypes   TransmissionType,
 
                                     DateTime?           Timestamp,
@@ -1424,7 +1424,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(ChargingPool        ChargingPool,
+            ISendPOIData.UpdateStaticData(ChargingPool        ChargingPool,
                                        String              PropertyName,
                                        Object              OldValue,
                                        Object              NewValue,
@@ -1464,7 +1464,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(ChargingPool        ChargingPool,
+            ISendPOIData.DeleteStaticData(ChargingPool        ChargingPool,
                                        TransmissionTypes   TransmissionType,
 
                                        DateTime?           Timestamp,
@@ -1502,7 +1502,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
+            ISendPOIData.SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
                                     TransmissionTypes          TransmissionType,
 
                                     DateTime?                  Timestamp,
@@ -1539,7 +1539,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
+            ISendPOIData.AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
                                     TransmissionTypes          TransmissionType,
 
                                     DateTime?                  Timestamp,
@@ -1576,7 +1576,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
+            ISendPOIData.UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
                                        TransmissionTypes          TransmissionType,
 
                                        DateTime?                  Timestamp,
@@ -1613,7 +1613,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
+            ISendPOIData.DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
                                        TransmissionTypes          TransmissionType,
 
                                        DateTime?                  Timestamp,
@@ -1712,7 +1712,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                           DateTime?                Timestamp,
                                           CancellationToken?       CancellationToken,
@@ -1747,7 +1747,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                           DateTime?                Timestamp,
                                           CancellationToken?       CancellationToken,
@@ -1782,7 +1782,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                              DateTime?                Timestamp,
                                              CancellationToken?       CancellationToken,
@@ -1817,7 +1817,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                              DateTime?                Timestamp,
                                              CancellationToken?       CancellationToken,
@@ -1853,7 +1853,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                           DateTime?                             Timestamp,
                                           CancellationToken?                    CancellationToken,
@@ -1888,7 +1888,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                           DateTime?                             Timestamp,
                                           CancellationToken?                    CancellationToken,
@@ -1924,7 +1924,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                              DateTime?                             Timestamp,
                                              CancellationToken?                    CancellationToken,
@@ -1959,7 +1959,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                              DateTime?                             Timestamp,
                                              CancellationToken?                    CancellationToken,
@@ -2059,7 +2059,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.SetStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.SetStaticData(RoamingNetwork      RoamingNetwork,
 
                                           DateTime?           Timestamp,
                                           CancellationToken?  CancellationToken,
@@ -2094,7 +2094,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.AddStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.AddStaticData(RoamingNetwork      RoamingNetwork,
 
                                           DateTime?           Timestamp,
                                           CancellationToken?  CancellationToken,
@@ -2129,7 +2129,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.UpdateStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
                                              DateTime?           Timestamp,
                                              CancellationToken?  CancellationToken,
@@ -2164,7 +2164,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendData.DeleteStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.DeleteStaticData(RoamingNetwork      RoamingNetwork,
 
                                              DateTime?           Timestamp,
                                              CancellationToken?  CancellationToken,

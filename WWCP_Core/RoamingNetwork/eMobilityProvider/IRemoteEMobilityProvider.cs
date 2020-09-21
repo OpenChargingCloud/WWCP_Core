@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP
     }
 
 
-    public interface IRemoteEMobilityProvider : IReceiveData,
+    public interface IRemoteEMobilityProvider : IReceivePOIData,
                                                 IReceiveAdminStatus,
                                                 IReceiveStatus,
                                                 IReceiveAuthorizeStartStop,

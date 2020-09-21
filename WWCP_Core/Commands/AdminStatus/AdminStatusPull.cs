@@ -31,26 +31,23 @@ using org.GraphDefined.Vanaheimr.Aegir;
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// The EV Roaming Provider provided EVSE Operator services interface.
-    /// </summary>
-    public interface IPullStatus
+    public class AdminStatusPull<T>
     {
 
-        Task<StatusPull<EVSEStatus>>
+        public IEnumerable<T>        Status      { get; }
+        public IEnumerable<Warning>  Warnings    { get; }
 
-            PullEVSEStatus(DateTime?              LastCall            = null,
-                           GeoCoordinate?         SearchCenter        = null,
-                           Single                 DistanceKM          = 0f,
-                           EVSEStatusTypes?       EVSEStatusFilter    = null,
-                           eMobilityProvider_Id?  ProviderId          = null,
+        public AdminStatusPull(IEnumerable<T>        Status,
+                               IEnumerable<Warning>  Warnings = null)
+        {
 
-                           DateTime?              Timestamp           = null,
-                           CancellationToken?     CancellationToken   = null,
-                           EventTracking_Id       EventTrackingId     = null,
-                           TimeSpan?              RequestTimeout      = null);
+            this.Status    = Status ?? new T[0];
+            this.Warnings  = Warnings != null
+                                 ? Warnings.Where(warning => warning != null)
+                                 : new Warning[0];
+
+        }
 
     }
-
 
 }

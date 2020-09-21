@@ -418,7 +418,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         protected async Task<PushEVSEDataResult>
 
-            SetStaticData(ISendData           Sender,
+            SetStaticData(ISendPOIData           Sender,
                           EVSE                EVSE,
 
                           DateTime?           Timestamp,
@@ -503,7 +503,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         protected async Task<PushEVSEDataResult>
 
-            AddStaticData(ISendData           Sender,
+            AddStaticData(ISendPOIData           Sender,
                           EVSE                EVSE,
 
                           DateTime?           Timestamp,

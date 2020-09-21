@@ -348,7 +348,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        private readonly PriorityList<ISendData>                 _ISendData                        = new PriorityList<ISendData>();
+        private readonly PriorityList<ISendPOIData>                 _ISendData                        = new PriorityList<ISendPOIData>();
         private readonly PriorityList<ISendAdminStatus>          _ISendAdminStatus                 = new PriorityList<ISendAdminStatus>();
         private readonly PriorityList<ISendStatus>               _ISendStatus                      = new PriorityList<ISendStatus>();
         private readonly PriorityList<ISendAuthorizeStartStop>   _ISend2RemoteAuthorizeStartStop   = new PriorityList<ISendAuthorizeStartStop>();

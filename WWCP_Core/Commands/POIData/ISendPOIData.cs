@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface ISendData
+    public interface ISendPOIData
     {
 
         // Events

@@ -29,7 +29,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The interface of all e-mobility provider roaming providers.
     /// </summary>
-    public interface IEMPRoamingProvider : ISendData,
+    public interface IEMPRoamingProvider : ISendPOIData,
                                            ISendAdminStatus,
                                            ISendStatus,
                                            ISendAuthorizeStartStop,

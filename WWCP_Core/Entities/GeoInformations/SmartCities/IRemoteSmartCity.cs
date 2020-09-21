@@ -29,7 +29,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface ISend2RemoteSmartCity  : ISendData,
+    public interface ISend2RemoteSmartCity  : ISendPOIData,
                                               ISendAdminStatus,
                                               ISendStatus
                                              //IRemoteAuthorizeStartStop,
@@ -53,7 +53,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public interface IRemoteSmartCity  : IReceiveData,
+    public interface IRemoteSmartCity  : IReceivePOIData,
                                          IReceiveAdminStatus,
                                          IReceiveStatus
                                         //IRemoteAuthorizeStartStop,

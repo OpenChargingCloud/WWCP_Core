@@ -31,37 +31,7 @@ using org.GraphDefined.Vanaheimr.Aegir;
 namespace org.GraphDefined.WWCP
 {
 
-    public class EVSEDataPull
-    {
-
-        public IEnumerable<EVSE>    EVSEs      { get; }
-        public IEnumerable<String>  Warnings   { get; }
-
-        public EVSEDataPull(IEnumerable<EVSE>    EVSEs,
-                            IEnumerable<String>  Warnings = null)
-        {
-
-            this.EVSEs     = EVSEs;
-            this.Warnings  = Warnings != null
-                                 ? Warnings.Where     (warning => warning != null).
-                                            SafeSelect(warning => warning.Trim()).
-                                            Where     (warning => warning.IsNotNullOrEmpty())
-                                 : new String[0];
-
-        }
-
-        public EVSEDataPull(IEnumerable<EVSE>  EVSEs,
-                            params String[]    Warnings)
-        {
-
-            this.EVSEs     = EVSEs;
-            this.Warnings  = Warnings ?? new String[0];
-
-        }
-
-    }
-
-    public interface IPullData
+    public interface IPullPOIData
     {
 
         // Events
@@ -84,7 +54,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  DisablePullData   { get; set; }
+        Boolean  DisablePullPOIData   { get; set; }
 
 
         // Push data directly...
@@ -105,7 +75,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<EVSEDataPull>
+        Task<POIDataPull<EVSE>>
 
             PullEVSEData(DateTime?                                LastCall            = null,
                          GeoCoordinate?                           SearchCenter        = null,
@@ -120,12 +90,6 @@ namespace org.GraphDefined.WWCP
                          TimeSpan?                                RequestTimeout      = null);
 
         #endregion
-
-    }
-
-    public interface IReceivePullData
-    {
-
 
     }
 
