@@ -71,9 +71,10 @@ namespace org.GraphDefined.WWCP.Virtual
 
             return ChargingStationOperator.CreateChargingPool(ChargingPoolId,
                                                               ChargingPoolConfigurator,
-                                                              newstation => {
+                                                              newPool => {
 
-                                                                  var virtualstation = new VirtualChargingPool(newstation.Id,
+                                                                  var virtualstation = new VirtualChargingPool(newPool.Id,
+                                                                                                               newPool.Name,
                                                                                                                ChargingStationOperator.RoamingNetwork,
                                                                                                                Description,
                                                                                                                InitialAdminStatus,
@@ -135,9 +136,10 @@ namespace org.GraphDefined.WWCP.Virtual
 
             return ChargingPool.CreateChargingStation(ChargingStationId,
                                                       ChargingStationConfigurator,
-                                                      newstation => {
+                                                      newStation => {
 
-                                                          var virtualstation = new VirtualChargingStation(newstation.Id,
+                                                          var virtualstation = new VirtualChargingStation(newStation.Id,
+                                                                                                          newStation.Name,
                                                                                                           ChargingPool.RoamingNetwork,
                                                                                                           Description,
                                                                                                           InitialAdminStatus,
@@ -200,9 +202,10 @@ namespace org.GraphDefined.WWCP.Virtual
 
             return ChargingStation.CreateEVSE(EVSEId,
                                               EVSEConfigurator,
-                                              newevse => {
+                                              newEVSE => {
 
-                                                  var virtualevse = new VirtualEVSE(newevse.Id,
+                                                  var virtualevse = new VirtualEVSE(newEVSE.Id,
+                                                                                    null,
                                                                                     ChargingStation.RoamingNetwork,
                                                                                     Description,
                                                                                     InitialAdminStatus,

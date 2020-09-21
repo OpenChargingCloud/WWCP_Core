@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The parking operator is responsible for operating parking spaces.
     /// </summary>
-    public class ParkingOperator : ABaseEMobilityEntity<ParkingOperator_Id>,
+    public class ParkingOperator : ACryptoEMobilityEntity<ParkingOperator_Id>,
                                    IEquatable<ParkingOperator>, IComparable<ParkingOperator>, IComparable,
                                    IEnumerable<ParkingGarage>,
                                    IStatus<ParkingOperatorStatusType>
@@ -61,37 +61,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Properties
-
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of the ParkingSpace Operator.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Name != value)
-                    SetProperty(ref _Name, value);
-
-            }
-
-        }
-
-        #endregion
 
         #region Description
 
@@ -452,6 +421,7 @@ namespace org.GraphDefined.WWCP
                                  UInt16                                 MaxStatusListSize              = DefaultMaxStatusListSize)
 
             : base(Id,
+                   Name,
                    RoamingNetwork)
 
         {
@@ -465,7 +435,6 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new List<DataLicense>();
 

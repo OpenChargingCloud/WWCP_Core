@@ -256,6 +256,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="MaxStatusListSize">The maximum size of the charging station status list.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the charging station admin status list.</param>
         public VirtualChargingStation(ChargingStation_Id               Id,
+                                      I18NString                       Name,
                                       IRoamingNetwork                  RoamingNetwork,
                                       I18NString                       Description              = null,
                                       ChargingStationAdminStatusTypes  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
@@ -268,6 +269,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                       UInt16                           MaxStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id,
+                   Name,
                    RoamingNetwork,
                    EllipticCurve,
                    PrivateKey,
@@ -648,6 +650,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
         public VirtualEVSE CreateVirtualEVSE(EVSE_Id                       EVSEId,
+                                             I18NString                    Name,
                                              I18NString                    Description              = null,
                                              EVSEAdminStatusTypes          InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
                                              EVSEStatusTypes               InitialStatus            = EVSEStatusTypes.Available,
@@ -678,6 +681,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             var Now             = DateTime.UtcNow;
             var newVirtualEVSE  = new VirtualEVSE(EVSEId,
+                                                  Name,
                                                   RoamingNetwork,
                                                   Description,
                                                   InitialAdminStatus,

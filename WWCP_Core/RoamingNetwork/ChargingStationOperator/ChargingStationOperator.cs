@@ -238,7 +238,7 @@ namespace org.GraphDefined.WWCP
     /// e-mobility service provider. The required pricing information can either be public
     /// information or part of B2B contracts.
     /// </summary>
-    public class ChargingStationOperator : ABaseEMobilityEntity<ChargingStationOperator_Id>,
+    public class ChargingStationOperator : ACryptoEMobilityEntity<ChargingStationOperator_Id>,
                                            IChargingStationOperator
     {
 
@@ -264,46 +264,6 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         //  public IEnumerable<ChargingStationOperator_Id> OperatedIds { get; }
-
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of the EVSE Operator.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Name != value)
-                    SetProperty(ref _Name, value);
-
-            }
-
-        }
-
-        public I18NString SetName(Languages Language, String Text)
-            => _Name = I18NString.Create(Language, Text);
-
-        public I18NString SetName(I18NString I18NText)
-            => _Name = I18NText;
-
-        public I18NString AddName(Languages Language, String Text)
-            => _Name.Add(Language, Text);
-
-        #endregion
 
         #region Description
 
@@ -723,6 +683,7 @@ namespace org.GraphDefined.WWCP
                                        UInt16                                                 MaxStatusListSize                      = DefaultMaxStatusListSize)
 
             : base(Ids,
+                   Name,
                    RoamingNetwork)
 
         {
@@ -739,7 +700,6 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new ReactiveSet<DataLicense>();
 

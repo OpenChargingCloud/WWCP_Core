@@ -501,6 +501,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
         /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
         internal VirtualEVSE(EVSE_Id                 Id,
+                             I18NString              Name,
                              IRoamingNetwork         RoamingNetwork,
                              I18NString              Description              = null,
                              EVSEAdminStatusTypes    InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
@@ -514,6 +515,7 @@ namespace org.GraphDefined.WWCP.Virtual
                              UInt16                  MaxStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id,
+                   Name,
                    RoamingNetwork,
                    EllipticCurve,
                    PrivateKey,

@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class eMobilityProvider : ABaseEMobilityEntity<eMobilityProvider_Id>,
+    public class eMobilityProvider : ACryptoEMobilityEntity<eMobilityProvider_Id>,
                                      //IRemoteAuthorizeStartStop,
                                      ISend2RemoteEMobilityProvider,
                                      IEquatable <eMobilityProvider>,
@@ -76,37 +76,6 @@ namespace org.GraphDefined.WWCP
 
         IEnumerable<IId> ISendChargeDetailRecords.Ids
             => Ids.Cast<IId>();
-
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of the EVSE Operator.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Name != value)
-                    SetProperty(ref _Name, value);
-
-            }
-
-        }
-
-        #endregion
 
         #region Description
 
@@ -591,6 +560,7 @@ namespace org.GraphDefined.WWCP
                                    UInt16                                  MaxStatusListSize                = DefaultMaxStatusListSize)
 
             : base(Id,
+                   Name,
                    RoamingNetwork)
 
         {
@@ -604,7 +574,6 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new ReactiveSet<DataLicense>();
 

@@ -208,6 +208,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// Create a new virtual charging pool.
         /// </summary>
         public VirtualChargingPool(ChargingPool_Id               Id,
+                                   I18NString                    Name,
                                    IRoamingNetwork               RoamingNetwork,
                                    I18NString                    Description              = null,
                                    ChargingPoolAdminStatusTypes  InitialAdminStatus       = ChargingPoolAdminStatusTypes.Operational,
@@ -220,6 +221,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                    UInt16                        MaxStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id,
+                   Name,
                    RoamingNetwork,
                    EllipticCurve,
                    PrivateKey,
@@ -337,6 +339,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="OnSuccess">An optional delegate called after successful creation of the charging station.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
         public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                                  ChargingStationId,
+                                                           I18NString                                          Name,
                                                            I18NString                                          Description              = null,
                                                            ChargingStationAdminStatusTypes                     InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
                                                            ChargingStationStatusTypes                          InitialStatus            = ChargingStationStatusTypes.Available,
@@ -366,6 +369,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             var Now              = DateTime.UtcNow;
             var _VirtualStation  = new VirtualChargingStation(ChargingStationId,
+                                                              Name,
                                                               RoamingNetwork,
                                                               Description,
                                                               InitialAdminStatus,

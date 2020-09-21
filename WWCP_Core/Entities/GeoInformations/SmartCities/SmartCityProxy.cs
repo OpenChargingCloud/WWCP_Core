@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class SmartCityProxy : ABaseEMobilityEntity<SmartCity_Id>,
+    public class SmartCityProxy : ACryptoEMobilityEntity<SmartCity_Id>,
                                   ISend2RemoteSmartCity,
                                   IEquatable <SmartCityProxy>,
                                   IComparable<SmartCityProxy>,
@@ -68,37 +68,6 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         //public Authorizator_Id AuthorizatorId { get; }
-
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of the EVSE Operator.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Name != value)
-                    SetProperty(ref _Name, value);
-
-            }
-
-        }
-
-        #endregion
 
         #region Description
 
@@ -540,18 +509,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="Name">The offical (multi-language) name of the smart city.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal SmartCityProxy(SmartCity_Id                    Id,
-                               I18NString                      Name,
-                               RoamingNetwork                  RoamingNetwork,
-                               I18NString                      Description              = null,
-                               Action<SmartCityProxy>           Configurator             = null,
-                               RemoteSmartCityCreatorDelegate  RemoteSmartCityCreator   = null,
-                               SmartCityPriority               Priority                 = null,
-                               SmartCityAdminStatusType        AdminStatus              = SmartCityAdminStatusType.Available,
-                               SmartCityStatusType             Status                   = SmartCityStatusType.Available,
-                               UInt16                          MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                               UInt16                          MaxStatusListSize        = DefaultMaxStatusListSize)
+                                I18NString                      Name,
+                                RoamingNetwork                  RoamingNetwork,
+                                I18NString                      Description              = null,
+                                Action<SmartCityProxy>          Configurator             = null,
+                                RemoteSmartCityCreatorDelegate  RemoteSmartCityCreator   = null,
+                                SmartCityPriority               Priority                 = null,
+                                SmartCityAdminStatusType        AdminStatus              = SmartCityAdminStatusType.Available,
+                                SmartCityStatusType             Status                   = SmartCityStatusType.Available,
+                                UInt16                          MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                                UInt16                          MaxStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id,
+                   Name,
                    RoamingNetwork)
 
         {
@@ -565,7 +535,6 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new List<DataLicense>();
 

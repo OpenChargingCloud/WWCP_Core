@@ -45,7 +45,8 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        public IRoamingNetwork RoamingNetwork { get; }
+        public I18NString              Name                     { get; }
+        public IRoamingNetwork         RoamingNetwork           { get; }
 
         public String                  EllipticCurve            { get; }
         public X9ECParameters          ECP                      { get; }
@@ -70,6 +71,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         protected ACryptoEMobilityEntity(TId                     Id,
+                                         I18NString              Name,
                                          IRoamingNetwork         RoamingNetwork,
                                          String                  EllipticCurve          = "P-256",
                                          ECPrivateKeyParameters  PrivateKey             = null,
@@ -79,6 +81,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            this.Name                   = Name;
             this.RoamingNetwork         = RoamingNetwork;
             this.EllipticCurve          = EllipticCurve ?? "P-256";
             this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
@@ -98,6 +101,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
         protected ACryptoEMobilityEntity(IEnumerable<TId>        Ids,
+                                         I18NString              Name,
                                          IRoamingNetwork         RoamingNetwork,
                                          String                  EllipticCurve          = "P-256",
                                          ECPrivateKeyParameters  PrivateKey             = null,

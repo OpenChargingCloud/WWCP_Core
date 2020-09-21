@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
 {
 
 
-    public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ABaseEMobilityEntity<EMPRoamingProvider_Id>
+    public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id>
                                                       //            IEMPRoamingProvider
     {
 
@@ -131,12 +131,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The offical (multi-language) name of the charging station operator roaming provider.
-        /// </summary>
-        [Mandatory]
-        public I18NString                         Name                              { get; }
 
         /// <summary>
         /// An optional (multi-language) description of the charging station operator roaming provider.
@@ -348,6 +342,7 @@ namespace org.GraphDefined.WWCP
                                   DNSClient                          DNSClient                        = null)
 
             : base(Id,
+                   Name,
                    RoamingNetwork,
                    EllipticCurve,
                    PrivateKey,
@@ -362,7 +357,6 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.Name                                            = Name;
             this.Description                                     = Description;
 
             //this._ISendData                                      = this as ISendData;
