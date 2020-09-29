@@ -482,6 +482,9 @@ namespace org.GraphDefined.WWCP
                                    Action<ChargingSession>  UpdateFunc = null)
         {
 
+            if (NewChargingSession == null)
+                return false;
+
             lock (InternalData)
             {
 

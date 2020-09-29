@@ -91,16 +91,23 @@ namespace org.GraphDefined.WWCP
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("eMAId", eMAId.ToString(),
+                           new JProperty("eMAId", eMAId.ToString()),
 
-                           Function == PINCrypto.None
+                           PIN.IsNotNullOrEmpty()
 
-                               ? new JProperty("PIN", PIN)
+                               ? Function == PINCrypto.None
 
-                               : new JProperty("hashedPIN",
-                                     new JProperty("value",     PIN),
-                                     new JProperty("function",  Function.AsString()),
-                                     new JProperty("salt",      Salt))));
+                                     ? new JProperty("PIN", PIN)
+
+                                     : new JProperty("hashedPIN", JSONObject.Create(
+                                             new JProperty("value",     PIN),
+                                             new JProperty("function",  Function.AsString()),
+                                             new JProperty("salt",      Salt)
+                                       ))
+
+                               : null
+
+                       );
 
             return CustomEMAIdWithPIN2Serializer != null
                        ? CustomEMAIdWithPIN2Serializer(this, JSON)
