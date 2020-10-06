@@ -230,22 +230,22 @@ namespace org.GraphDefined.WWCP.Networking
 
                                              #region Check HTTP Basic Authentication
 
-                                             if (Request.Authorization          == null               ||
-                                                 !_Logins.ContainsKey(Request.Authorization.Username) ||
-                                                  _Logins[Request.Authorization.Username] != Request.Authorization.Password)
-                                             {
+                                             //if (Request.Authorization          == null               ||
+                                             //    !_Logins.ContainsKey(Request.Authorization.Username) ||
+                                             //     _Logins[Request.Authorization.Username] != Request.Authorization.Password)
+                                             //{
 
-                                                 return Task.FromResult<HTTPResponse>(
-                                                  //SendEVSEDoorNotClosedNotifiedLog(
-                                                     new HTTPResponse.Builder(Request) {
-                                                         HTTPStatusCode   = HTTPStatusCode.Unauthorized,
-                                                         WWWAuthenticate  = @"Basic realm=""WWCP tracker""",
-                                                         Server           = HTTPServer.DefaultServerName,
-                                                         Date             = DateTime.Now,
-                                                         Connection       = "close"
-                                                     });
+                                             //    return Task.FromResult<HTTPResponse>(
+                                             //     //SendEVSEDoorNotClosedNotifiedLog(
+                                             //        new HTTPResponse.Builder(Request) {
+                                             //            HTTPStatusCode   = HTTPStatusCode.Unauthorized,
+                                             //            WWWAuthenticate  = @"Basic realm=""WWCP tracker""",
+                                             //            Server           = HTTPServer.DefaultServerName,
+                                             //            Date             = DateTime.Now,
+                                             //            Connection       = "close"
+                                             //        });
 
-                                             }
+                                             //}
 
                                              #endregion
 
