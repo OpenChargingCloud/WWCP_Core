@@ -323,7 +323,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                                Comment:    I18NString.Empty
                                                                            )
                                                                        },
-                                                  Description:         I18NString.Create(Languages.eng, "Auto-generated test keys for a virtual charging station!"),
+                                                  Description:         I18NString.Create(Languages.en, "Auto-generated test keys for a virtual charging station!"),
                                                   Operations:          JSONObject.Create(
                                                                            new JProperty("signMeterValues",  true),
                                                                            new JProperty("signCertificates",

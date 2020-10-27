@@ -507,7 +507,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                                     {
                                                                         CurrentEVSEOperator.
                                                                             GetOrCreateChargingStationGroup(GroupId,
-                                                                                                            I18NString.Create(Languages.deu, GroupId)).
+                                                                                                            I18NString.Create(Languages.de, GroupId)).
                                                                             Add(ChargingStationId);
                                                                     }
                                                                 }

@@ -143,7 +143,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.UnknownOperator,
-                                    I18NString.Create(Languages.eng, "The EVSE or charging station operator is unknown!"),
+                                    I18NString.Create(Languages.en, "The EVSE or charging station operator is unknown!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.UnknownLocation,
-                                    I18NString.Create(Languages.eng, "The charging location is unknown!"),
+                                    I18NString.Create(Languages.en, "The charging location is unknown!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId:       SessionId,
                                     Result:          RemoteStopResultTypes.InvalidSessionId,
-                                    Description:     I18NString.Create(Languages.eng, "The session identification is unknown or invalid!"),
+                                    Description:     I18NString.Create(Languages.en, "The session identification is unknown or invalid!"),
                                     AdditionalInfo:  AdditionalInfo,
                                     Runtime:         Runtime);
 
@@ -197,7 +197,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.InvalidCredentials,
-                                    I18NString.Create(Languages.eng, "Unauthorized remote stop or invalid credentials!"),
+                                    I18NString.Create(Languages.en, "Unauthorized remote stop or invalid credentials!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -214,7 +214,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.InternalUse,
-                                    I18NString.Create(Languages.eng, "Reserved for internal use!"),
+                                    I18NString.Create(Languages.en, "Reserved for internal use!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -231,7 +231,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.OutOfService,
-                                    I18NString.Create(Languages.eng, "The EVSE or charging station is out of service!"),
+                                    I18NString.Create(Languages.en, "The EVSE or charging station is out of service!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -248,7 +248,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Offline,
-                                    I18NString.Create(Languages.eng, "The EVSE or charging station is offline!"),
+                                    I18NString.Create(Languages.en, "The EVSE or charging station is offline!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -267,7 +267,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.AlreadyStopped,
-                                    I18NString.Create(Languages.eng, "The charging process was already stopped!"),
+                                    I18NString.Create(Languages.en, "The charging process was already stopped!"),
                                     AdditionalInfo,
                                     Runtime: Runtime);
 
@@ -320,7 +320,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.AsyncOperation,
-                                    Description ?? I18NString.Create(Languages.eng, "An async remote stop was sent successfully!"),
+                                    Description ?? I18NString.Create(Languages.en, "An async remote stop was sent successfully!"),
                                     AdditionalInfo,
                                     Runtime: Runtime);
 
@@ -340,7 +340,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Timeout,
-                                    Description ?? I18NString.Create(Languages.eng, "A timeout occured!"),
+                                    Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
                                     Runtime: Runtime);
 
         #endregion
@@ -361,7 +361,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.CommunicationError,
-                                    Description ?? I18NString.Create(Languages.eng, "A communication error occured!"),
+                                    Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
                                     AdditionalInfo,
                                     Runtime: Runtime);
 
@@ -383,7 +383,7 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Error,
-                                    Description ?? I18NString.Create(Languages.eng, "An error occured!"),
+                                    Description ?? I18NString.Create(Languages.en, "An error occured!"),
                                     AdditionalInfo,
                                     Runtime: Runtime);
 
@@ -403,8 +403,8 @@ namespace org.GraphDefined.WWCP
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultTypes.Error,
                                     Description?.Trim().IsNotNullOrEmpty() == false
-                                         ? I18NString.Create(Languages.eng, Description)
-                                         : I18NString.Create(Languages.eng, "An error occured!"),
+                                         ? I18NString.Create(Languages.en, Description)
+                                         : I18NString.Create(Languages.en, "An error occured!"),
                                     AdditionalInfo,
                                     Runtime: Runtime);
 

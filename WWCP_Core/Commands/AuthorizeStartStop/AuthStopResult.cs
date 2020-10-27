@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.AdminDown,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "The authentication service was disabled by the administrator!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
                                       Runtime:      Runtime);
 
 
@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.AdminDown,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "The authentication service was disabled by the administrator!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -334,7 +334,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.UnknownLocation,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Unknown location!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
                                       Runtime:      Runtime);
 
 
@@ -360,7 +360,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.UnknownLocation,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Unknown location!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -388,7 +388,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.InvalidToken,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid token!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
                                       Runtime:      Runtime);
 
 
@@ -414,7 +414,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.InvalidToken,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid token!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -442,7 +442,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.InvalidSessionId,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid session identification!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
                                       Runtime:      Runtime);
 
 
@@ -468,7 +468,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.InvalidSessionId,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Invalid session identification!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -496,7 +496,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.AlreadyStopped,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Already stopped!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
                                       Runtime:      Runtime);
 
 
@@ -522,7 +522,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.AlreadyStopped,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Already stopped!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -550,7 +550,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.OutOfService,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Out of service!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
                                       Runtime:      Runtime);
 
 
@@ -576,7 +576,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.OutOfService,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Out of service!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -609,7 +609,7 @@ namespace org.GraphDefined.WWCP
                                       AuthStopResultTypes.Authorized,
                                       SessionId,
                                       ProviderId,
-                                      Description ?? I18NString.Create(Languages.eng, "Success!"),
+                                      Description ?? I18NString.Create(Languages.en, "Success!"),
                                       AdditionalInfo,
                                       Runtime: Runtime);
 
@@ -641,7 +641,7 @@ namespace org.GraphDefined.WWCP
                                       AuthStopResultTypes.Authorized,
                                       SessionId,
                                       ProviderId,
-                                      Description ?? I18NString.Create(Languages.eng, "Success!"),
+                                      Description ?? I18NString.Create(Languages.en, "Success!"),
                                       AdditionalInfo,
                                       Runtime: Runtime);
 
@@ -675,7 +675,7 @@ namespace org.GraphDefined.WWCP
                                       AuthStopResultTypes.NotAuthorized,
                                       SessionId,
                                       ProviderId,
-                                      Description ?? I18NString.Create(Languages.eng, "Not Authorized"),
+                                      Description ?? I18NString.Create(Languages.en, "Not Authorized"),
                                       AdditionalInfo,
                                       Runtime: Runtime);
 
@@ -707,7 +707,7 @@ namespace org.GraphDefined.WWCP
                                       AuthStopResultTypes.NotAuthorized,
                                       SessionId,
                                       ProviderId,
-                                      Description ?? I18NString.Create(Languages.eng, "Not Authorized"),
+                                      Description ?? I18NString.Create(Languages.en, "Not Authorized"),
                                       AdditionalInfo,
                                       Runtime: Runtime);
 
@@ -741,7 +741,7 @@ namespace org.GraphDefined.WWCP
                                   AuthStopResultTypes.Blocked,
                                   SessionId,
                                   ProviderId,
-                                  Description ?? I18NString.Create(Languages.eng, "Blocked!"),
+                                  Description ?? I18NString.Create(Languages.en, "Blocked!"),
                                   AdditionalInfo,
                                   Runtime: Runtime);
 
@@ -773,7 +773,7 @@ namespace org.GraphDefined.WWCP
                                   AuthStopResultTypes.Blocked,
                                   SessionId,
                                   ProviderId,
-                                  Description ?? I18NString.Create(Languages.eng, "Blocked!"),
+                                  Description ?? I18NString.Create(Languages.en, "Blocked!"),
                                   AdditionalInfo,
                                   Runtime: Runtime);
 
@@ -802,7 +802,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.CommunicationTimeout,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Communication timeout!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
                                       Runtime:      Runtime);
 
 
@@ -828,7 +828,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.CommunicationTimeout,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Communication timeout!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -856,7 +856,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.StopChargingTimeout,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Stop charging timeout!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
                                       Runtime:      Runtime);
 
 
@@ -882,7 +882,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.StopChargingTimeout,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Stop charging timeout!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
                                       Runtime:      Runtime);
 
         #endregion
@@ -910,7 +910,7 @@ namespace org.GraphDefined.WWCP
                                       ISendAuthorizeStartStop,
                                       AuthStopResultTypes.Error,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Error!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
                                       Runtime:      Runtime);
 
 
@@ -936,7 +936,7 @@ namespace org.GraphDefined.WWCP
                                       IReceiveAuthorizeStartStop,
                                       AuthStopResultTypes.Error,
                                       SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.eng, "Error!"),
+                                      Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
                                       Runtime:      Runtime);
 
         #endregion
