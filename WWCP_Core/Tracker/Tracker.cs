@@ -167,7 +167,7 @@ namespace org.GraphDefined.WWCP.Networking
                                                                                                                    new JProperty("hostname",      rni.hostname),
                                                                                                                    new JProperty("port",          rni.port.        ToString()),
                                                                                                                    new JProperty("transport",     rni.transport.   ToString()),
-                                                                                                                   new JProperty("uriPrefix",     rni.uriPrefix),
+                                                                                                                   new JProperty("URLPrefix",     rni.URLPrefix),
                                                                                                                    new JProperty("contentType",   rni.contentType. ToString()),
                                                                                                                    new JProperty("protocol",      rni.protocolType.ToString()),
                                                                                                                    new JProperty("expiresAfter",  rni.ExpiredAfter.ToIso8601()),
