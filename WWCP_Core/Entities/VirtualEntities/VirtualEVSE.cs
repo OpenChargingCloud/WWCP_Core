@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2021 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -563,7 +563,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                            Comment:    I18NString.Empty
                                                                        )
                                                                    },
-                                                  Description:     I18NString.Create(Languages.eng, "Auto-generated test keys for a virtual EVSE!"),
+                                                  Description:     I18NString.Create(Languages.en, "Auto-generated test keys for a virtual EVSE!"),
                                                   Operations:      JSONObject.Create(
                                                                        new JProperty("signMeterValues",  true),
                                                                        new JProperty("signCertificates", false)
@@ -1721,10 +1721,10 @@ namespace org.GraphDefined.WWCP.Virtual
                             #region Not matching reservation identifications...
 
                             if (firstReservation != null && !ReservationId.HasValue)
-                                result = RemoteStartResult.Reserved(I18NString.Create(Languages.eng, "Missing reservation identification!"));
+                                result = RemoteStartResult.Reserved(I18NString.Create(Languages.en, "Missing reservation identification!"));
 
                             else if (firstReservation != null && ReservationId.HasValue && firstReservation.Id != ReservationId.Value)
-                                result = RemoteStartResult.Reserved(I18NString.Create(Languages.eng, "Invalid reservation identification!"));
+                                result = RemoteStartResult.Reserved(I18NString.Create(Languages.en, "Invalid reservation identification!"));
 
                             #endregion
 

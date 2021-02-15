@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2021 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -112,7 +112,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult UnknownOperator(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.UnknownOperator,
-                                     I18NString.Create(Languages.eng, "The EVSE or charging station operator is unknown!"), 
+                                     I18NString.Create(Languages.en, "The EVSE or charging station operator is unknown!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -126,7 +126,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult UnknownLocation(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.UnknownLocation,
-                                     I18NString.Create(Languages.eng, "The charging location is unknown!"), 
+                                     I18NString.Create(Languages.en, "The charging location is unknown!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -140,7 +140,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult InvalidSessionId(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InvalidSessionId,
-                                     I18NString.Create(Languages.eng, "The session identification is unknown or invalid!"), 
+                                     I18NString.Create(Languages.en, "The session identification is unknown or invalid!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -154,7 +154,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult InvalidCredentials(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InvalidCredentials,
-                                     I18NString.Create(Languages.eng, "Unauthorized remote start or invalid credentials!"),
+                                     I18NString.Create(Languages.en, "Unauthorized remote start or invalid credentials!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult NoEVConnectedToEVSE(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.NoEVConnectedToEVSE,
-                                     I18NString.Create(Languages.eng, "No electric vehicle connected to EVSE!"),
+                                     I18NString.Create(Languages.en, "No electric vehicle connected to EVSE!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult AlreadyInUse(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.AlreadyInUse,
-                                     I18NString.Create(Languages.eng, "The EVSE is already in use!"),
+                                     I18NString.Create(Languages.en, "The EVSE is already in use!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -196,7 +196,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult InternalUse(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.InternalUse,
-                                     I18NString.Create(Languages.eng, "Reserved for internal use!"), 
+                                     I18NString.Create(Languages.en, "Reserved for internal use!"), 
                                      Runtime: Runtime);
 
         #endregion
@@ -210,7 +210,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult OutOfService(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.OutOfService,
-                                     I18NString.Create(Languages.eng, "The EVSE or charging station is out of service!"),
+                                     I18NString.Create(Languages.en, "The EVSE or charging station is out of service!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -224,7 +224,7 @@ namespace org.GraphDefined.WWCP
         public static RemoteStartResult Offline(TimeSpan? Runtime = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Offline,
-                                     I18NString.Create(Languages.eng, "The EVSE or charging station is offline!"),
+                                     I18NString.Create(Languages.en, "The EVSE or charging station is offline!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -242,7 +242,7 @@ namespace org.GraphDefined.WWCP
                                                  TimeSpan?   Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Reserved,
-                                     Description ?? I18NString.Create(Languages.eng, "The EVSE or charging station is reserved!"),
+                                     Description ?? I18NString.Create(Languages.en, "The EVSE or charging station is reserved!"),
                                      AdditionalInfo,
                                      Runtime: Runtime);
 
@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP
                                                        TimeSpan?        Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.AsyncOperation,
-                                     Description ?? I18NString.Create(Languages.eng, "An async remote start was sent successfully!"),
+                                     Description ?? I18NString.Create(Languages.en, "An async remote start was sent successfully!"),
                                      AdditionalInfo,
                                      Session,
                                      Runtime: Runtime);
@@ -302,7 +302,7 @@ namespace org.GraphDefined.WWCP
                                                                           TimeSpan?        Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.SuccessPlugInCableToStartCharging,
-                                     Description ?? I18NString.Create(Languages.eng, "The remote start was successful. Please plug in the cable to start charging!"),
+                                     Description ?? I18NString.Create(Languages.en, "The remote start was successful. Please plug in the cable to start charging!"),
                                      AdditionalInfo,
                                      Session,
                                      Runtime: Runtime);
@@ -320,7 +320,7 @@ namespace org.GraphDefined.WWCP
                                                 TimeSpan?   Runtime       = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Timeout,
-                                     Description ?? I18NString.Create(Languages.eng, "A timeout occured!"),
+                                     Description ?? I18NString.Create(Languages.en, "A timeout occured!"),
                                      Runtime: Runtime);
 
         #endregion
@@ -338,7 +338,7 @@ namespace org.GraphDefined.WWCP
                                                            TimeSpan?   Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.CommunicationError,
-                                     Description ?? I18NString.Create(Languages.eng, "A communication error occured!"),
+                                     Description ?? I18NString.Create(Languages.en, "A communication error occured!"),
                                      AdditionalInfo,
                                      Runtime: Runtime);
 
@@ -357,7 +357,7 @@ namespace org.GraphDefined.WWCP
                                               TimeSpan?   Runtime          = null)
 
             => new RemoteStartResult(RemoteStartResultTypes.Error,
-                                     Description ?? I18NString.Create(Languages.eng, "An error occured!"),
+                                     Description ?? I18NString.Create(Languages.en, "An error occured!"),
                                      AdditionalInfo,
                                      Runtime: Runtime);
 
@@ -374,8 +374,8 @@ namespace org.GraphDefined.WWCP
 
             => new RemoteStartResult(RemoteStartResultTypes.Error,
                                      Description?.Trim().IsNotNullOrEmpty() == false
-                                         ? I18NString.Create(Languages.eng, Description)
-                                         : I18NString.Create(Languages.eng, "An error occured!"),
+                                         ? I18NString.Create(Languages.en, Description)
+                                         : I18NString.Create(Languages.en, "An error occured!"),
                                      AdditionalInfo,
                                      Runtime: Runtime);
 

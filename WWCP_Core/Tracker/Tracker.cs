@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP Tracker <https://github.com/OpenChargingCloud/WWCP_Tracker>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -167,7 +167,7 @@ namespace org.GraphDefined.WWCP.Networking
                                                                                                                    new JProperty("hostname",      rni.hostname),
                                                                                                                    new JProperty("port",          rni.port.        ToString()),
                                                                                                                    new JProperty("transport",     rni.transport.   ToString()),
-                                                                                                                   new JProperty("uriPrefix",     rni.uriPrefix),
+                                                                                                                   new JProperty("URLPrefix",     rni.URLPrefix),
                                                                                                                    new JProperty("contentType",   rni.contentType. ToString()),
                                                                                                                    new JProperty("protocol",      rni.protocolType.ToString()),
                                                                                                                    new JProperty("expiresAfter",  rni.ExpiredAfter.ToIso8601()),
@@ -230,22 +230,22 @@ namespace org.GraphDefined.WWCP.Networking
 
                                              #region Check HTTP Basic Authentication
 
-                                             if (Request.Authorization          == null               ||
-                                                 !_Logins.ContainsKey(Request.Authorization.Username) ||
-                                                  _Logins[Request.Authorization.Username] != Request.Authorization.Password)
-                                             {
+                                             //if (Request.Authorization          == null               ||
+                                             //    !_Logins.ContainsKey(Request.Authorization.Username) ||
+                                             //     _Logins[Request.Authorization.Username] != Request.Authorization.Password)
+                                             //{
 
-                                                 return Task.FromResult<HTTPResponse>(
-                                                  //SendEVSEDoorNotClosedNotifiedLog(
-                                                     new HTTPResponse.Builder(Request) {
-                                                         HTTPStatusCode   = HTTPStatusCode.Unauthorized,
-                                                         WWWAuthenticate  = @"Basic realm=""WWCP tracker""",
-                                                         Server           = HTTPServer.DefaultServerName,
-                                                         Date             = DateTime.Now,
-                                                         Connection       = "close"
-                                                     });
+                                             //    return Task.FromResult<HTTPResponse>(
+                                             //     //SendEVSEDoorNotClosedNotifiedLog(
+                                             //        new HTTPResponse.Builder(Request) {
+                                             //            HTTPStatusCode   = HTTPStatusCode.Unauthorized,
+                                             //            WWWAuthenticate  = @"Basic realm=""WWCP tracker""",
+                                             //            Server           = HTTPServer.DefaultServerName,
+                                             //            Date             = DateTime.Now,
+                                             //            Connection       = "close"
+                                             //        });
 
-                                             }
+                                             //}
 
                                              #endregion
 
