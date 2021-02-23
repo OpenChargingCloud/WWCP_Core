@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP Tracker <https://github.com/OpenChargingCloud/WWCP_Tracker>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -167,7 +167,7 @@ namespace org.GraphDefined.WWCP.Networking
                                                                                                                    new JProperty("hostname",      rni.hostname),
                                                                                                                    new JProperty("port",          rni.port.        ToString()),
                                                                                                                    new JProperty("transport",     rni.transport.   ToString()),
-                                                                                                                   new JProperty("uriPrefix",     rni.uriPrefix),
+                                                                                                                   new JProperty("URLPrefix",     rni.URLPrefix),
                                                                                                                    new JProperty("contentType",   rni.contentType. ToString()),
                                                                                                                    new JProperty("protocol",      rni.protocolType.ToString()),
                                                                                                                    new JProperty("expiresAfter",  rni.ExpiredAfter.ToIso8601()),

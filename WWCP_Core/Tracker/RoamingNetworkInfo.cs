@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2020 GraphDefined GmbH
+ * Copyright (c) 2014-2021 GraphDefined GmbH
  * This file is part of WWCP Tracker <https://github.com/OpenChargingCloud/WWCP_Tracker>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP.Networking
                                                 String                hostname,
                                                 IPPort                port,
                                                 TransportTypes        transport,
-                                                String                uriPrefix,
+                                                String                URLPrefix,
                                                 HTTPContentType       contentType,
                                                 ProtocolTypes         protocolType,
                                                 IEnumerable<String>   PublicKeys)
@@ -92,7 +92,7 @@ namespace org.GraphDefined.WWCP.Networking
                                           hostname,
                                           port,
                                           transport,
-                                          uriPrefix,
+                                          URLPrefix,
                                           contentType,
                                           protocolType,
                                           PublicKeys);
@@ -118,7 +118,7 @@ namespace org.GraphDefined.WWCP.Networking
         /// <summary>
         /// An URI for the roaming network.
         /// </summary>
-        public String               IncomingURI         { get; }
+        public String               IncomingURL         { get; }
 
         /// <summary>
         /// When this information expires.
@@ -157,7 +157,7 @@ namespace org.GraphDefined.WWCP.Networking
 
         public TransportTypes       transport           { get; }
 
-        public String               uriPrefix           { get; }
+        public String               URLPrefix           { get; }
 
         public HTTPContentType      contentType         { get; }
 
@@ -173,7 +173,7 @@ namespace org.GraphDefined.WWCP.Networking
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
                                   Node_Id               NodeId,
-                                  String                IncomingURI,
+                                  String                IncomingURL,
                                   DateTime              ExpiredAfter,
 
                                   RoamingNetwork_Id     RoamingNetworkId,
@@ -183,7 +183,7 @@ namespace org.GraphDefined.WWCP.Networking
                                   String                hostname,
                                   IPPort                port,
                                   TransportTypes        transport,
-                                  String                uriPrefix,
+                                  String                URLPrefix,
                                   HTTPContentType       contentType,
                                   ProtocolTypes         protocolType,
                                   IEnumerable<String>   PublicKeys)
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP.Networking
 
             this.TrackerId         = TrackerId;
             this.NodeId            = NodeId;
-            this.IncomingURI       = IncomingURI;
+            this.IncomingURL       = IncomingURL;
             this.ExpiredAfter      = ExpiredAfter;
 
             this.RoamingNetworkId  = RoamingNetworkId;
@@ -202,12 +202,12 @@ namespace org.GraphDefined.WWCP.Networking
             this.IPAddress         = IPAddress;
             this.port              = port;
             this.transport         = transport;
-            this.uriPrefix         = uriPrefix;
+            this.URLPrefix         = URLPrefix;
             this.contentType       = contentType;
             this.protocolType      = protocolType;
             this.publicKeys        = PublicKeys;
 
-            this.AnnouncedURI      = String.Concat(transport, "://", hostname, ":", port, uriPrefix, "_", contentType);
+            this.AnnouncedURI      = String.Concat(transport, "://", hostname, ":", port, URLPrefix, "_", contentType);
 
         }
 
@@ -217,7 +217,7 @@ namespace org.GraphDefined.WWCP.Networking
 
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
                                   Node_Id               NodeId,
-                                  String                IncomingURI,
+                                  String                IncomingURL,
                                   DateTime              ExpiredAfter,
 
                                   RoamingNetwork        RoamingNetwork,
@@ -227,14 +227,14 @@ namespace org.GraphDefined.WWCP.Networking
                                   String                hostname,
                                   IPPort                port,
                                   TransportTypes        transport,
-                                  String                uriPrefix,
+                                  String                URLPrefix,
                                   HTTPContentType       contentType,
                                   ProtocolTypes         protocolType,
                                   IEnumerable<String>   PublicKeys)
 
             : this(TrackerId,
                    NodeId,
-                   IncomingURI,
+                   IncomingURL,
                    ExpiredAfter,
 
                    RoamingNetwork.Id,
@@ -244,7 +244,7 @@ namespace org.GraphDefined.WWCP.Networking
                    hostname,
                    port,
                    transport,
-                   uriPrefix,
+                   URLPrefix,
                    contentType,
                    protocolType,
                    PublicKeys)
