@@ -70,49 +70,49 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The attached roaming network.
         /// </summary>
-        public IRoamingNetwork                  RoamingNetwork          { get; }
+        public RoamingNetwork_Id?                RoamingNetworkId        { get; }
 
 
         /// <summary>
         /// Whether to write data to the log file.
         /// </summary>
-        public Boolean                          DisableLogfiles         { get; }
+        public Boolean                           DisableLogfiles         { get; }
 
         /// <summary>
         /// The path to all log files.
         /// </summary>
-        public String                           LogFilePath             { get; }
+        public String                            LogFilePath             { get; }
 
         /// <summary>
         /// A delegate for creating the log file.
         /// </summary>
-        public Func<RoamingNetwork_Id, String>  LogfileNameCreator      { get; }
+        public Func<RoamingNetwork_Id?, String>  LogfileNameCreator      { get; }
 
         /// <summary>
         /// Whether to reload log file data to restart.
         /// </summary>
-        public Boolean                          ReloadDataOnStart       { get; }
+        public Boolean                           ReloadDataOnStart       { get; }
 
         /// <summary>
         /// The log file search pattern for reloading old log files.
         /// </summary>
-        public Func<RoamingNetwork_Id, String>  LogfileSearchPattern    { get; }
+        public Func<RoamingNetwork_Id?, String>  LogfileSearchPattern    { get; }
 
 
         /// <summary>
         /// Whether to disable network synchronization.
         /// </summary>
-        public Boolean                          DisableNetworkSync      { get; }
+        public Boolean                           DisableNetworkSync      { get; }
 
 
-        public Node_Id                          NodeId                  { get; }
+        public Node_Id                           NodeId                  { get; }
 
         private readonly List<RoamingNetworkInfo> _RoamingNetworkInfos;
 
         /// <summary>
         /// Roaming network informations.
         /// </summary>
-        public IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos
+        public IEnumerable<RoamingNetworkInfo>   RoamingNetworkInfos
             => _RoamingNetworkInfos;
 
 
@@ -133,16 +133,15 @@ namespace org.GraphDefined.WWCP
         /// Create a generic data store.
         /// </summary>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ADataStore(IRoamingNetwork                                                            RoamingNetwork,
-
-                          Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>  CommandProcessor       = null,
+        public ADataStore(Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>  CommandProcessor       = null,
 
                           Boolean                                                                    DisableLogfiles        = false,
-                          Func<RoamingNetwork_Id, String>                                            LogFilePathCreator     = null,
-                          Func<RoamingNetwork_Id, String>                                            LogFileNameCreator     = null,
+                          Func<RoamingNetwork_Id?, String>                                           LogFilePathCreator     = null,
+                          Func<RoamingNetwork_Id?, String>                                           LogFileNameCreator     = null,
                           Boolean                                                                    ReloadDataOnStart      = true,
-                          Func<RoamingNetwork_Id, String>                                            LogfileSearchPattern   = null,
+                          Func<RoamingNetwork_Id?, String>                                           LogfileSearchPattern   = null,
 
+                          RoamingNetwork_Id?                                                         RoamingNetworkId       = null,
                           IEnumerable<RoamingNetworkInfo>                                            RoamingNetworkInfos    = null,
                           Boolean                                                                    DisableNetworkSync     = false,
                           DNSClient                                                                  DNSClient              = null)
@@ -153,8 +152,7 @@ namespace org.GraphDefined.WWCP
 
             this.InternalData                  = new Dictionary<TId, TData>();
 
-            this.RoamingNetwork                = RoamingNetwork       ?? throw new ArgumentNullException(nameof(RoamingNetwork),        "The given roaming network must not be null or empty!");
-
+            this.RoamingNetworkId              = RoamingNetworkId;
             this._RoamingNetworkInfos          = RoamingNetworkInfos != null
                                                      ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
                                                      : new List<RoamingNetworkInfo>();
@@ -167,7 +165,7 @@ namespace org.GraphDefined.WWCP
             if (!DisableLogfiles)
             {
 
-                this.LogFilePath               = LogFilePathCreator(this.RoamingNetwork.Id)?.Trim();
+                this.LogFilePath               = LogFilePathCreator(this.RoamingNetworkId)?.Trim();
                 if (this.LogFilePath.IsNullOrEmpty())
                     throw new ArgumentNullException(nameof(LogFilePath), "The given log file path must not be null or empty!");
 
@@ -275,7 +273,7 @@ namespace org.GraphDefined.WWCP
 
             if (this.ReloadDataOnStart)
                 LoadLogFiles(LogFilePath,
-                             LogfileSearchPattern(this.RoamingNetwork.Id));
+                             LogfileSearchPattern(this.RoamingNetworkId));
 
         }
 
@@ -296,7 +294,7 @@ namespace org.GraphDefined.WWCP
         public void LoadLogfiles()
         {
             LoadLogFiles(LogFilePath,
-                         LogfileSearchPattern(this.RoamingNetwork.Id));
+                         LogfileSearchPattern(this.RoamingNetworkId));
         }
 
 
@@ -380,7 +378,7 @@ namespace org.GraphDefined.WWCP
             {
                 lock (Lock)
                 {
-                    File.AppendAllText(LogFilePath + LogfileNameCreator(RoamingNetwork.Id), data.Trim() + Environment.NewLine);
+                    File.AppendAllText(LogFilePath + LogfileNameCreator(RoamingNetworkId), data.Trim() + Environment.NewLine);
                 }
             }
         }

@@ -90,7 +90,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The PIN is hashed via SHA-256.
         /// </summary>
-        SHA256
+        SHA256,
+
+        /// <summary>
+        /// Bcrypt
+        /// </summary>
+        Bcrypt
 
     }
 

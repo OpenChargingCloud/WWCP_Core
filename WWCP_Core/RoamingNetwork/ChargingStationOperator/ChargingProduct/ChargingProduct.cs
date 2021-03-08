@@ -18,7 +18,9 @@
 #region Usings
 
 using System;
+
 using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -117,13 +119,13 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Parse(ChargingProductId)
+        #region FromId(ChargingProductId)
 
         /// <summary>
         /// Parse the given string as a charging product identification.
         /// </summary>
         /// <param name="ChargingProductId">A text representation of a charging product identification.</param>
-        public static ChargingProduct Parse(String ChargingProductId)
+        public static ChargingProduct FromId(String ChargingProductId)
         {
 
             if (ChargingProductId?.Trim().IsNullOrEmpty() != false)
@@ -133,13 +135,27 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        /// <summary>
+        /// Create a charging product based on the given charging product identification.
+        /// </summary>
+        /// <param name="ChargingProductId">A charging product identification.</param>
+        public static ChargingProduct FromId(ChargingProduct_Id ChargingProductId)
+
+            => new ChargingProduct(ChargingProductId);
+
         #endregion
 
 
+        #region ToJSON(CustomChargingProductSerializer = null)
 
-        public JObject ToJSON()
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomChargingProductSerializer">A delegate to serialize custom ChargingProduct JSON objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProduct> CustomChargingProductSerializer = null)
+        {
 
-            => JSONObject.Create(
+            var JSON = JSONObject.Create(
 
                            new JProperty("@id",                   Id.ToString()),
 
@@ -176,6 +192,14 @@ namespace org.GraphDefined.WWCP
                                : null
 
                        );
+
+            return CustomChargingProductSerializer != null
+                       ? CustomChargingProductSerializer(this, JSON)
+                       : JSON;
+
+        }
+
+        #endregion
 
 
         #region Operator overloading

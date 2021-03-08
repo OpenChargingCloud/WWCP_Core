@@ -18,17 +18,10 @@
 #region Usings
 
 using System;
-using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using Org.BouncyCastle.Bcpg;
-using System.IO;
-using System.Text.RegularExpressions;
-using Org.BouncyCastle.Crypto.Parameters;
-using System.Collections;
 
 #endregion
 
