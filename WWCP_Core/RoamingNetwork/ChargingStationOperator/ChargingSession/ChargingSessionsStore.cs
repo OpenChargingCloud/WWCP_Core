@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetworkInfos"></param>
         /// <param name="DisableNetworkSync"></param>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ChargingSessionsStore(IRoamingNetwork                  RoamingNetwork,
+        public ChargingSessionsStore(RoamingNetwork                   RoamingNetwork,
 
                                      Boolean                          DisableLogfiles       = false,
                                      Boolean                          ReloadDataOnStart     = true,
@@ -184,7 +184,7 @@ namespace org.GraphDefined.WWCP
                                      Boolean                          DisableNetworkSync    = false,
                                      DNSClient                        DNSClient             = null)
 
-            : base(RoamingNetwork:         RoamingNetwork,
+            : base(RoamingNetworkId:       RoamingNetwork.Id,
 
                    CommandProcessor:       (logfilename, remoteSocket, command, json, InternalData) => {
 
@@ -501,7 +501,7 @@ namespace org.GraphDefined.WWCP
                           NewChargingSession.ToJSON());
 
                     OnNewChargingSession?.Invoke(DateTime.UtcNow,
-                                                 RoamingNetwork,
+                                                 RoamingNetworkId,
                                                  NewChargingSession);
 
                     return true;
@@ -594,7 +594,7 @@ namespace org.GraphDefined.WWCP
                           NewChargingSession.ToJSON());
 
                     OnNewChargingSession?.Invoke(DateTime.UtcNow,
-                                                 RoamingNetwork,
+                                                 RoamingNetworkId,
                                                  NewChargingSession);
 
                     return true;
@@ -677,7 +677,7 @@ namespace org.GraphDefined.WWCP
                           session.ToJSON());
 
                     OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
-                                                    RoamingNetwork,
+                                                    RoamingNetworkId,
                                                     NewChargeDetailRecord);
 
                     return true;
@@ -713,7 +713,7 @@ namespace org.GraphDefined.WWCP
                           session.ToJSON());
 
                     OnNewChargeDetailRecordResult?.Invoke(DateTime.UtcNow,
-                                                          RoamingNetwork,
+                                                          RoamingNetworkId,
                                                           CDRResult);
 
                     return true;

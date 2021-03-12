@@ -313,10 +313,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
+        public const           String    JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
 
 
-        private readonly Decimal EPSILON = 0.01m;
+        private readonly       Decimal   EPSILON = 0.01m;
 
         /// <summary>
         /// The default max size of the EVSE status history.

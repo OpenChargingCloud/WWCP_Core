@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public ChargingReservationsStore(IRoamingNetwork                  RoamingNetwork,
+        public ChargingReservationsStore(RoamingNetwork_Id                RoamingNetworkId,
                                          IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
                                          Boolean                          DisableLogfiles       = false,
                                          Boolean                          ReloadDataOnStart     = true,
@@ -55,9 +55,7 @@ namespace org.GraphDefined.WWCP
                                          Boolean                          DisableNetworkSync    = false,
                                          DNSClient                        DNSClient             = null)
 
-            : base(RoamingNetwork,
-
-                   (a, b, c, d, e) => false,
+            : base((a, b, c, d, e) => false,
 
                    DisableLogfiles,
                    roamingNetworkId => "ChargingReservations" + Path.DirectorySeparatorChar,
@@ -69,6 +67,7 @@ namespace org.GraphDefined.WWCP
                    ReloadDataOnStart,
                    roamingNetworkId => "ChargingReservations-" + roamingNetworkId + "-" + Environment.MachineName + "_",
 
+                   RoamingNetworkId,
                    RoamingNetworkInfos,
                    DisableNetworkSync,
                    DNSClient)

@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.WWCP.Networking;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
@@ -46,7 +45,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public ChargeDetailRecordsStore(IRoamingNetwork                  RoamingNetwork,
+        public ChargeDetailRecordsStore(RoamingNetwork_Id                RoamingNetworkId,
                                         IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
                                         Boolean                          DisableLogfiles       = false,
                                         Boolean                          ReloadDataOnStart     = true,
@@ -54,9 +53,7 @@ namespace org.GraphDefined.WWCP
                                         Boolean                          DisableNetworkSync    = false,
                                         DNSClient                        DNSClient             = null)
 
-            : base(RoamingNetwork,
-
-                   (a, b, c, d, e) => false,
+            : base((a, b, c, d, e) => false,
 
                    DisableLogfiles,
                    roamingNetworkId => "ChargeDetailRecords" + Path.DirectorySeparatorChar,
@@ -66,9 +63,9 @@ namespace org.GraphDefined.WWCP
                                                      DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
                                                      ".log"),
                    ReloadDataOnStart,
-                   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "-" + Environment.MachineName + "_",
+                   roamingNetworkId => "ChargeDetailRecords-" + roamingNetworkId + "-" + Environment.MachineName + "_",
 
-
+                   RoamingNetworkId,
                    RoamingNetworkInfos,
                    DisableNetworkSync,
                    DNSClient)
@@ -78,21 +75,10 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region New   (NewChargeDetailRecords)
-
-        public void New(IEnumerable<ChargeDetailRecord> NewChargeDetailRecords)
-        {
-            foreach (var chargeDetailRecord in NewChargeDetailRecords)
-                New(chargeDetailRecord);
-        }
-
-        #endregion
-
         #region New   (NewChargeDetailRecord)
 
         public void New(ChargeDetailRecord NewChargeDetailRecord)
         {
-
             lock (InternalData)
             {
 
@@ -108,7 +94,19 @@ namespace org.GraphDefined.WWCP
                       new JArray(NewChargeDetailRecord.ToJSON()));
 
             }
+        }
 
+        #endregion
+
+        #region New   (NewChargeDetailRecords)
+
+        public void New(IEnumerable<ChargeDetailRecord> NewChargeDetailRecords)
+        {
+            lock (InternalData)
+            {
+                foreach (var chargeDetailRecord in NewChargeDetailRecords)
+                    New(chargeDetailRecord);
+            }
         }
 
         #endregion

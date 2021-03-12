@@ -295,7 +295,7 @@ namespace org.GraphDefined.WWCP
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
-            this.ReservationsStore                                  = new ChargingReservationsStore(this,
+            this.ReservationsStore                                  = new ChargingReservationsStore(this.Id,
                                                                                                     DisableNetworkSync:   true);
 
             this.SessionsStore                                      = new ChargingSessionsStore    (this,
