@@ -55,6 +55,7 @@ namespace org.GraphDefined.WWCP
                                                           ChargingLocation                       ChargingLocation,
                                                           ChargingProduct                        ChargingProduct,
                                                           ChargingSession_Id?                    SessionId,
+                                                          ChargingSession_Id?                    CPOPartnerSessionId,
                                                           IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
                                                           TimeSpan?                              RequestTimeout);
 
@@ -88,6 +89,7 @@ namespace org.GraphDefined.WWCP
                                                           ChargingLocation                       ChargingLocation,
                                                           ChargingProduct                        ChargingProduct,
                                                           ChargingSession_Id?                    SessionId,
+                                                          ChargingSession_Id?                    CPOPartnerSessionId,
                                                           IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
                                                           TimeSpan?                              RequestTimeout,
                                                           AuthStartResult                        Result,

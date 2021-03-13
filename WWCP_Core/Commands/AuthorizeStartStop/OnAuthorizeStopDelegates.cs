@@ -19,7 +19,6 @@
 
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -51,6 +50,7 @@ namespace org.GraphDefined.WWCP
                                                         ChargingStationOperator_Id?   OperatorId,
                                                         ChargingLocation              ChargingLocation,
                                                         ChargingSession_Id?           SessionId,
+                                                        ChargingSession_Id?           CPOPartnerSessionId,
                                                         LocalAuthentication           LocalAuthentication,
                                                         TimeSpan?                     RequestTimeout);
 
@@ -78,6 +78,7 @@ namespace org.GraphDefined.WWCP
                                                          ChargingStationOperator_Id?   OperatorId,
                                                          ChargingLocation              ChargingLocation,
                                                          ChargingSession_Id?           SessionId,
+                                                         ChargingSession_Id?           CPOPartnerSessionId,
                                                          LocalAuthentication           LocalAuthentication,
                                                          TimeSpan?                     RequestTimeout,
                                                          AuthStopResult                Result,

@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
             this._eMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProvider>      (this);
-            this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>              (this);
+            this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>         (this);
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
 
@@ -348,7 +348,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        private readonly PriorityList<ISendPOIData>                 _ISendData                        = new PriorityList<ISendPOIData>();
+        private readonly PriorityList<ISendPOIData>              _ISendData                        = new PriorityList<ISendPOIData>();
         private readonly PriorityList<ISendAdminStatus>          _ISendAdminStatus                 = new PriorityList<ISendAdminStatus>();
         private readonly PriorityList<ISendStatus>               _ISendStatus                      = new PriorityList<ISendStatus>();
         private readonly PriorityList<ISendAuthorizeStartStop>   _ISend2RemoteAuthorizeStartStop   = new PriorityList<ISendAuthorizeStartStop>();
@@ -4822,6 +4822,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingLocation">The charging location.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="CPOPartnerSessionId">An optional session identification of the CPO.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -4831,15 +4832,16 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStartResult>
 
             AuthorizeStart(LocalAuthentication          LocalAuthentication,
-                           ChargingLocation             ChargingLocation    = null,
-                           ChargingProduct              ChargingProduct     = null,
-                           ChargingSession_Id?          SessionId           = null,
-                           ChargingStationOperator_Id?  OperatorId          = null,
+                           ChargingLocation             ChargingLocation      = null,
+                           ChargingProduct              ChargingProduct       = null,
+                           ChargingSession_Id?          SessionId             = null,
+                           ChargingSession_Id?          CPOPartnerSessionId   = null,
+                           ChargingStationOperator_Id?  OperatorId            = null,
 
-                           DateTime?                    Timestamp           = null,
-                           CancellationToken?           CancellationToken   = null,
-                           EventTracking_Id             EventTrackingId     = null,
-                           TimeSpan?                    RequestTimeout      = null)
+                           DateTime?                    Timestamp             = null,
+                           CancellationToken?           CancellationToken     = null,
+                           EventTracking_Id             EventTrackingId       = null,
+                           TimeSpan?                    RequestTimeout        = null)
 
         {
 
@@ -4880,6 +4882,7 @@ namespace org.GraphDefined.WWCP
                                                 ChargingLocation,
                                                 ChargingProduct,
                                                 SessionId,
+                                                CPOPartnerSessionId,
                                                 _ISend2RemoteAuthorizeStartStop,
                                                 RequestTimeout);
 
@@ -4903,6 +4906,7 @@ namespace org.GraphDefined.WWCP
                                                                                                             ChargingLocation,
                                                                                                             ChargingProduct,
                                                                                                             SessionId,
+                                                                                                            CPOPartnerSessionId,
                                                                                                             OperatorId,
 
                                                                                                             Timestamp,
@@ -5004,6 +5008,7 @@ namespace org.GraphDefined.WWCP
                                                      ChargingLocation,
                                                      ChargingProduct,
                                                      SessionId,
+                                                     CPOPartnerSessionId,
                                                      _ISend2RemoteAuthorizeStartStop,
                                                      RequestTimeout,
                                                      result,
@@ -5031,6 +5036,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="LocalAuthentication">An user identification.</param>
         /// <param name="ChargingLocation">The charging location.</param>
+        /// <param name="CPOPartnerSessionId">An optional session identification of the CPO.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -5041,13 +5047,14 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStop(ChargingSession_Id           SessionId,
                           LocalAuthentication          LocalAuthentication,
-                          ChargingLocation             ChargingLocation    = null,
-                          ChargingStationOperator_Id?  OperatorId          = null,
+                          ChargingLocation             ChargingLocation      = null,
+                          ChargingSession_Id?          CPOPartnerSessionId   = null,
+                          ChargingStationOperator_Id?  OperatorId            = null,
 
-                          DateTime?                    Timestamp           = null,
-                          CancellationToken?           CancellationToken   = null,
-                          EventTracking_Id             EventTrackingId     = null,
-                          TimeSpan?                    RequestTimeout      = null)
+                          DateTime?                    Timestamp             = null,
+                          CancellationToken?           CancellationToken     = null,
+                          EventTracking_Id             EventTrackingId       = null,
+                          TimeSpan?                    RequestTimeout        = null)
 
         {
 
@@ -5089,6 +5096,7 @@ namespace org.GraphDefined.WWCP
                                                OperatorId,
                                                ChargingLocation,
                                                SessionId,
+                                               CPOPartnerSessionId,
                                                LocalAuthentication,
                                                RequestTimeout);
 
@@ -5130,6 +5138,7 @@ namespace org.GraphDefined.WWCP
                             result  = await chargingSession.ProviderStart.AuthorizeStop(SessionId,
                                                                                         LocalAuthentication,
                                                                                         ChargingLocation,
+                                                                                        CPOPartnerSessionId,
                                                                                         OperatorId,
 
                                                                                         Timestamp,
@@ -5160,6 +5169,7 @@ namespace org.GraphDefined.WWCP
                                 result  = await chargingSession.EMPRoamingProviderStart.AuthorizeStop(SessionId,
                                                                                                       LocalAuthentication,
                                                                                                       ChargingLocation,
+                                                                                                      CPOPartnerSessionId,
                                                                                                       OperatorId,
 
                                                                                                       Timestamp,
@@ -5195,6 +5205,7 @@ namespace org.GraphDefined.WWCP
                                                                                                   AuthorizeStop(SessionId,
                                                                                                                 LocalAuthentication,
                                                                                                                 ChargingLocation,
+                                                                                                                CPOPartnerSessionId,
                                                                                                                 OperatorId,
 
                                                                                                                 Timestamp,
@@ -5252,6 +5263,7 @@ namespace org.GraphDefined.WWCP
                                                 OperatorId,
                                                 ChargingLocation,
                                                 SessionId,
+                                                CPOPartnerSessionId,
                                                 LocalAuthentication,
                                                 RequestTimeout,
                                                 result,
