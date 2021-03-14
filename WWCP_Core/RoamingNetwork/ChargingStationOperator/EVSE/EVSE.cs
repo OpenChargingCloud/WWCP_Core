@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP
                                                                          ExpandBrandIds,
                                                                          ExpandDataLicenses,
                                                                          CustomEVSESerializer)).
-                                      Where         (evse => evse is not null))
+                                      Where         (evse => evse != null))
 
                    : new JArray();
 

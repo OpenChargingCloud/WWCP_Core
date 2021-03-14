@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP
                                                                        CustomChargingPoolSerializer,
                                                                        CustomChargingStationSerializer,
                                                                        CustomEVSESerializer)).
-                                    Where         (pool => pool is not null))
+                                    Where         (pool => pool != null))
 
                    : new JArray();
 

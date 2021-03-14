@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
                                                                              ExpandDataLicenses,
                                                                              CustomChargingStationSerializer,
                                                                              CustomEVSESerializer)).
-                                    Where         (station => station is not null))
+                                    Where         (station => station != null))
 
                    : new JArray();
 
