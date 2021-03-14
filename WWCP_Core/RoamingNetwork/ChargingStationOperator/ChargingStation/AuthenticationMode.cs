@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public enum RFIDAuthenticationModes
+    public enum RFIDCardTypes
     {
 
         MifareClassic,
@@ -44,21 +44,277 @@ namespace org.GraphDefined.WWCP
                                        IComparable
     {
 
-        #region Properties
-
-        #region Type
-
-        protected readonly String _Type;
-
-        public String Type
+        public class FreeCharging : AuthenticationModes
         {
-            get
-            {
-                return _Type;
-            }
+
+            public FreeCharging()
+
+                : base("Free Charging")
+
+            { }
+
         }
 
-        #endregion
+        public class RFID : AuthenticationModes
+        {
+
+            #region Properties
+
+            public IEnumerable<RFIDCardTypes>  CardTypes    { get; }
+
+            public IEnumerable<Brand_Id>       BrandIds     { get; }
+
+            #endregion
+
+            #region Constructor(s)
+
+            public RFID(RFIDCardTypes  CardType)
+
+                : base("RFID")
+
+            {
+
+                this.CardTypes  = CardTypes ?? new RFIDCardTypes[] { CardType };
+                this.BrandIds   = BrandIds  ?? new Brand_Id[0];
+
+            }
+
+            public RFID(IEnumerable<RFIDCardTypes>  CardTypes,
+                        IEnumerable<Brand_Id>       BrandIds)
+
+                : base("RFID")
+
+            {
+
+                this.CardTypes  = CardTypes ?? new RFIDCardTypes[0];
+                this.BrandIds   = BrandIds  ?? new Brand_Id[0];
+
+            }
+
+            #endregion
+
+            public override JObject ToJSON()
+
+                => new JObject(
+                       new JProperty("type",       Type),
+                       new JProperty("cardTypes",  new JArray(CardTypes.Select(cardType => cardType.ToString()))),
+                       new JProperty("brandIds",   new JArray(BrandIds. Select(brandId  => brandId. ToString())))
+                   );
+
+            public override String ToString()
+
+                => String.Concat("RFID: ",
+                                 CardTypes.AggregateWith(", "),
+                                 " / ",
+                                 BrandIds. AggregateWith(", "));
+
+        }
+
+        public class NFC : AuthenticationModes
+        {
+
+            public NFC()
+
+                : base("NFC")
+
+            { }
+
+        }
+
+        public class PINPAD : AuthenticationModes
+        {
+
+            public PINPAD()
+
+                : base("PINPAD")
+
+            { }
+
+        }
+
+        public class ISO15118_PLC : AuthenticationModes
+        {
+
+            public ISO15118_PLC()    // ISO/IEC 15118 PLC
+
+                : base("ISO/IEC 15118 PLC")
+
+            { }
+
+        }
+
+        public class ISO15118_Air : AuthenticationModes
+        {
+
+            public ISO15118_Air()    // ISO/IEC 15118 Over-the-Air
+
+                : base("ISO/IEC 15118 Over-the-Air")
+
+            { }
+
+        }
+
+        public class REMOTE : AuthenticationModes
+        {
+
+            public REMOTE()
+
+                : base("REMOTE")  // App, QR-Code, Phone
+
+            { }
+
+        }
+
+        public class CreditCard : AuthenticationModes
+        {
+
+            public CreditCard()
+
+                : base("Credit Card")
+
+            { }
+
+        }
+
+        public class PrepaidCard : AuthenticationModes
+        {
+
+            public PrepaidCard()
+
+                : base("Prepaid Card")
+
+            { }
+
+        }
+
+        public class LocalCurrency : AuthenticationModes
+        {
+
+            public LocalCurrency()
+
+                : base("Local currency")
+
+            { }
+
+        }
+
+        public class DirectPayment : AuthenticationModes
+        {
+
+            public DirectPayment()
+
+                : base("Direct payment")
+
+            { }
+
+        }
+
+        public class NoAuthenticationRequired : AuthenticationModes
+        {
+
+            public NoAuthenticationRequired()
+
+                : base("No authentication required")
+
+            { }
+
+        }
+
+
+        public class SMS : AuthenticationModes
+        {
+
+            #region Properties
+
+            public String  Number         { get; }
+
+            public String  StationCode    { get; }
+
+            #endregion
+
+            #region Constructor(s)
+
+            public SMS(String  Number,
+                       String  StationCode = null)
+
+                : base("SMS")
+
+            {
+
+                if (Number.IsNullOrEmpty())
+                    throw new ArgumentNullException("Number", "The given SMS telephone number must not be null or empty!");
+
+                this.Number       = Number;
+                this.StationCode  = StationCode;
+
+            }
+
+            #endregion
+
+
+            public override JObject ToJSON()
+
+                => new JObject(
+
+                       new JProperty("type",    Type),
+                       new JProperty("Number",  Number),
+
+                       StationCode.IsNotNullOrEmpty()
+                           ? new JProperty("StationCode",  StationCode)
+                           : null
+                   );
+
+            public override String ToString()
+
+                => String.Concat("SMS: ", Number,
+                                 StationCode.IsNotNullOrEmpty()
+                                     ? ", " + StationCode
+                                     : "");
+
+        }
+
+        public class PhoneCall : AuthenticationModes
+        {
+
+            #region Properties
+
+            public String  Number    { get; }
+
+            #endregion
+
+            #region Constructor(s)
+
+            public PhoneCall(String Number)
+
+                : base("PhoneCall")
+
+            {
+
+                this.Number = Number;
+
+            }
+
+            #endregion
+
+
+            public override JObject ToJSON()
+
+                => new JObject(
+                       new JProperty("type",    Type),
+                       new JProperty("Number",  Number)
+                   );
+
+            public override String ToString()
+
+                => String.Concat("Phone call: ", Number);
+
+        }
+
+
+
+        #region Properties
+
+        public String  Type    { get; }
 
         #endregion
 
@@ -66,90 +322,65 @@ namespace org.GraphDefined.WWCP
 
         public AuthenticationModes(String Type)
         {
-
-            this._Type = Type;
-
+            this.Type = Type;
         }
 
         #endregion
 
 
 
-        public static AuthenticationModes Unkown
-        {
-            get
-            {
-                return new Unkown();
-            }
-        }
+        //public static AuthenticationModes FreeCharging
+        //    => new FreeCharging();
 
-        public static AuthenticationModes FreeCharging
-        {
-            get
-            {
-                return new FreeCharging();
-            }
-        }
+        //public static AuthenticationModes RFID(RFIDCardTypes CardType)
 
-        public static AuthenticationModes RFID(RFIDAuthenticationModes  RFIDAuthModes)
-        {
-            return new RFID(new RFIDAuthenticationModes[] { RFIDAuthModes }, new String[0]);
-        }
+        //    => new RFID(
+        //           new RFIDCardTypes[] {
+        //               CardType
+        //           },
+        //           new Brand_Id[0]
+        //       );
 
-        public static AuthenticationModes RFID(IEnumerable<RFIDAuthenticationModes>  RFIDAuthModes,
-                                              IEnumerable<String>                   Brands)
-        {
-            return new RFID(RFIDAuthModes, Brands);
-        }
+        //public static AuthenticationModes RFID(IEnumerable<RFIDCardTypes>  CardTypes,
+        //                                       IEnumerable<Brand_Id>       BrandIds = null)
 
-        public static AuthenticationModes NFC
-        {
-            get
-            {
-                return new NFC();
-            }
-        }
+        //    => new RFID(CardTypes,
+        //                BrandIds);
 
-        public static AuthenticationModes ISO15118_PLC
-        {
-            get
-            {
-                return new ISO15118_PLC();
-            }
-        }
+        //public static AuthenticationModes NFC
+        //    => new NFC();
 
-        public static AuthenticationModes REMOTE
-        {
-            get
-            {
-                return new REMOTE();
-            }
-        }
+        //public static AuthenticationModes ISO15118_PLC
+        //    => new ISO15118_PLC();
 
-        public static AuthenticationModes DirectPayment
-        {
-            get
-            {
-                return new DirectPayment();
-            }
-        }
+        //public static AuthenticationModes REMOTE
+        //    => new REMOTE();
 
-        public static AuthenticationModes SMS(String  Number,
-                                             String  StationCode = null)
-        {
-            return new SMS(Number, StationCode);
-        }
+        //public static AuthenticationModes DirectPayment
+        //    => new DirectPayment();
 
-        public static AuthenticationModes PhoneCall(String Number)
-        {
-            return new PhoneCall(Number);
-        }
+        //public static AuthenticationModes NoAuthenticationRequired
+        //    => new NoAuthenticationRequired();
+
+
+        //public static AuthenticationModes SMS(String  Number,
+        //                                      String  StationCode = null)
+        //{
+        //    return new SMS(Number, StationCode);
+        //}
+
+        //public static AuthenticationModes PhoneCall(String Number)
+        //{
+        //    return new PhoneCall(Number);
+        //}
 
 
 
+        public virtual JObject ToJSON()
+            => new JObject(new JProperty("type", Type));
 
 
-        #region IComparable<AuthenticationMode> Members
+        #region IComparable<AuthenticationModes> Members
 
         #region CompareTo(Object)
 
@@ -158,19 +389,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is an authentication mode.
-            var AuthenticationMode = Object as AuthenticationModes;
-            if ((Object) AuthenticationMode == null)
-                throw new ArgumentException("The given object is not an authentication mode!");
-
-            return CompareTo(AuthenticationMode);
-
-        }
+            => Object is AuthenticationModes authenticationModes
+                   ? CompareTo(authenticationModes)
+                   : throw new ArgumentException("The given object is not an authentication mode!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -183,10 +406,10 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(AuthenticationModes AuthenticationMode)
         {
 
-            if ((Object) AuthenticationMode == null)
+            if (AuthenticationMode is null)
                 throw new ArgumentNullException("The given authentication mode must not be null!");
 
-            return _Type.CompareTo(AuthenticationMode._Type);
+            return Type.CompareTo(AuthenticationMode.Type);
 
         }
 
@@ -194,7 +417,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<AuthenticationMode> Members
+        #region IEquatable<AuthenticationModes> Members
 
         #region Equals(Object)
 
@@ -204,19 +427,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an authentication mode.
-            var AuthenticationMode = Object as AuthenticationModes;
-            if ((Object) AuthenticationMode == null)
-                return false;
-
-            return this.Equals(AuthenticationMode);
-
-        }
+            => Object is AuthenticationModes authenticationMode &&
+                   Equals(authenticationMode);
 
         #endregion
 
@@ -228,14 +441,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthenticationMode">An authentication mode to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(AuthenticationModes AuthenticationMode)
-        {
 
-            if ((Object) AuthenticationMode == null)
-                return false;
+            => !(AuthenticationMode is null) &&
 
-            return _Type.Equals(AuthenticationMode._Type);
-
-        }
+                 String.Equals(Type, AuthenticationMode.Type, StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -247,332 +456,34 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return _Type.GetHashCode();
-        }
+            => Type.GetHashCode();
 
         #endregion
 
+        #region (override) ToString()
 
-        public virtual JObject ToJSON()
-        {
-            return new JObject(new JProperty("Type", _Type));
-        }
-
+        /// <summary>
+        /// Return a text-representation of this object.
+        /// </summary>
         public override String ToString()
-        {
-            return _Type;
-        }
-
-    }
-
-
-    public class Unkown : AuthenticationModes
-    {
-
-        public Unkown()
-
-            : base("Unkown")
-
-        { }
-
-    }
-
-    public class FreeCharging : AuthenticationModes
-    {
-
-        public FreeCharging()
-
-            : base("Free Charging")
-
-        { }
-
-    }
-
-    public class RFID : AuthenticationModes
-    {
-
-        #region Properties
-
-        #region Cards
-
-        private readonly IEnumerable<RFIDAuthenticationModes> _Cards;
-
-        public IEnumerable<RFIDAuthenticationModes> Cards
-        {
-            get
-            {
-                return _Cards;
-            }
-        }
+            => Type;
 
         #endregion
 
-        #region Brands
-
-        private readonly IEnumerable<String> _Brands;
-
-        public IEnumerable<String> Brands
-        {
-            get
-            {
-                return _Brands;
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Constructor(s)
-
-        public RFID(IEnumerable<RFIDAuthenticationModes>  Cards,
-                    IEnumerable<String>                   Brands)
-
-            : base("RFID")
-
-        {
-
-            this._Cards   = Cards;
-            this._Brands  = Brands;
-
-        }
-
-        #endregion
-
-        public override JObject ToJSON()
-        {
-            return new JObject(new JProperty("Type",    _Type),
-                               new JProperty("Cards",   new JArray(_Cards. Select(Card  => Card. ToString()))),
-                               new JProperty("Brands",  new JArray(_Brands.Select(Brand => Brand.ToString()))));
-        }
-
-        public override String ToString()
-        {
-            return String.Concat("RFID: ", _Cards.AggregateWith(", "), " / ", _Brands.AggregateWith(", "));
-        }
-
     }
 
-    public class NFC : AuthenticationModes
-    {
 
-        public NFC()
+    //public class Unkown : AuthenticationModes
+    //{
 
-            : base("NFC")
+    //    public Unkown()
 
-        { }
+    //        : base("Unkown")
 
-    }
+    //    { }
 
-    public class PINPAD : AuthenticationModes
-    {
+    //}
 
-        public PINPAD()
-
-            : base("PINPAD")
-
-        { }
-
-    }
-
-    public class ISO15118_PLC : AuthenticationModes
-    {
-
-        public ISO15118_PLC()    // ISO/IEC 15118 PLC
-
-            : base("ISO/IEC 15118 PLC")
-
-        { }
-
-    }
-
-    public class ISO15118_Air : AuthenticationModes
-    {
-
-        public ISO15118_Air()    // ISO/IEC 15118 Over-the-Air
-
-            : base("ISO/IEC 15118 Over-the-Air")
-
-        { }
-
-    }
-
-    public class REMOTE : AuthenticationModes
-    {
-
-        public REMOTE()
-
-            : base("REMOTE")  // App, QR-Code, Phone
-
-        { }
-
-    }
-
-    public class CreditCard : AuthenticationModes
-    {
-
-        public CreditCard()
-
-            : base("Credit Card")
-
-        { }
-
-    }
-
-    public class PrepaidCard : AuthenticationModes
-    {
-
-        public PrepaidCard()
-
-            : base("Prepaid Card")
-
-        { }
-
-    }
-
-    public class LocalCurrency : AuthenticationModes
-    {
-
-        public LocalCurrency()
-
-            : base("Local currency")
-
-        { }
-
-    }
-
-    public class DirectPayment : AuthenticationModes
-    {
-
-        public DirectPayment()
-
-            : base("Direct payment")
-
-        { }
-
-    }
-
-    public class SMS : AuthenticationModes
-    {
-
-        #region Properties
-
-        #region Number
-
-        private readonly String _Number;
-
-        public String Number
-        {
-            get
-            {
-                return _Number;
-            }
-        }
-
-        #endregion
-
-        #region StationCode
-
-        private readonly String _StationCode;
-
-        public String StationCode
-        {
-            get
-            {
-                return _StationCode;
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Constructor(s)
-
-        public SMS(String  Number,
-                   String  StationCode = null)
-
-            : base("SMS")
-
-        {
-
-            #region Initial checks
-
-            if (Number.IsNullOrEmpty())
-                throw new ArgumentNullException("Number", "The given SMS telephone number must not be null or empty!");
-
-            #endregion
-
-            this._Number       = Number;
-            this._StationCode  = StationCode != null ? StationCode : String.Empty;
-
-        }
-
-        #endregion
-
-
-        public override JObject ToJSON()
-        {
-            return new JObject(new JProperty("Type",        _Type),
-                               new JProperty("Number",      _Number),
-                               new JProperty("StationCode", _StationCode));
-        }
-
-        public override String ToString()
-        {
-            return String.Concat("SMS: ", _Number, ", ", _StationCode);
-        }
-
-    }
-
-    public class PhoneCall : AuthenticationModes
-    {
-
-        #region Properties
-
-        #region Number
-
-        private readonly String _Number;
-
-        public String Number
-        {
-            get
-            {
-                return _Number;
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Constructor(s)
-
-        public PhoneCall(String Number)
-
-            : base("PhoneCall")
-
-        {
-
-            this._Number = Number;
-
-        }
-
-        #endregion
-
-
-        public override JObject ToJSON()
-        {
-            return new JObject(new JProperty("Type",    _Type),
-                               new JProperty("Number",  _Number));
-        }
-
-        public override String ToString()
-        {
-            return String.Concat("Phone call: ", _Number);
-        }
-
-    }
+    
 
 }

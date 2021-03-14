@@ -1,1422 +1,1422 @@
-﻿/*
- * Copyright (c) 2014-2021 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
- *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.gnu.org/licenses/agpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿///*
+// * Copyright (c) 2014-2021 GraphDefined GmbH <achim.friedland@graphdefined.com>
+// * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
+// *
+// * Licensed under the Affero GPL license, Version 3.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.gnu.org/licenses/agpl.html
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
 
-#region Usings
+//#region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+//using System;
+//using System.Threading;
+//using System.Threading.Tasks;
+//using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Hermod;
-using System.Linq;
+//using org.GraphDefined.Vanaheimr.Illias;
+//using org.GraphDefined.Vanaheimr.Illias.Votes;
+//using org.GraphDefined.Vanaheimr.Styx.Arrows;
+//using org.GraphDefined.Vanaheimr.Hermod;
+//using System.Linq;
 
-#endregion
+//#endregion
 
-namespace org.GraphDefined.WWCP.Networking
-{
+//namespace org.GraphDefined.WWCP.Networking
+//{
 
-    /// <summary>
-    /// An Electric Vehicle Supply Equipment (EVSE) to charge an electric vehicle (EV).
-    /// This is meant to be one electrical circuit which can charge a electric vehicle
-    /// independently. Thus there could be multiple interdependent power sockets.
-    /// </summary>
-    public class NetworkEVSEStub : AEMobilityEntity<EVSE_Id>,
-                                   IEquatable<NetworkEVSEStub>, IComparable<NetworkEVSEStub>, IComparable,
-                                   IEnumerable<SocketOutlet>,
-                                   IStatus<EVSEStatusTypes>,
-                                   IRemoteEVSE
-    {
+//    /// <summary>
+//    /// An Electric Vehicle Supply Equipment (EVSE) to charge an electric vehicle (EV).
+//    /// This is meant to be one electrical circuit which can charge a electric vehicle
+//    /// independently. Thus there could be multiple interdependent power sockets.
+//    /// </summary>
+//    public class NetworkEVSEStub : AEMobilityEntity<EVSE_Id>,
+//                                   IEquatable<NetworkEVSEStub>, IComparable<NetworkEVSEStub>, IComparable,
+//                                   IEnumerable<SocketOutlet>,
+//                                   IStatus<EVSEStatusTypes>,
+//                                   IRemoteEVSE
+//    {
 
-        #region Data
+//        #region Data
 
-        /// <summary>
-        /// The default max size of the EVSE status history.
-        /// </summary>
-        public const UInt16 DefaultMaxEVSEStatusListSize = 50;
+//        /// <summary>
+//        /// The default max size of the EVSE status history.
+//        /// </summary>
+//        public const UInt16 DefaultMaxEVSEStatusListSize = 50;
 
-        /// <summary>
-        /// The default max size of the EVSE admin status history.
-        /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize = 50;
+//        /// <summary>
+//        /// The default max size of the EVSE admin status history.
+//        /// </summary>
+//        public const UInt16 DefaultMaxAdminStatusListSize = 50;
 
-        /// <summary>
-        /// The maximum time span for a reservation.
-        /// </summary>
-        public static readonly TimeSpan MaxReservationDuration      = TimeSpan.FromMinutes(15);
+//        /// <summary>
+//        /// The maximum time span for a reservation.
+//        /// </summary>
+//        public static readonly TimeSpan MaxReservationDuration      = TimeSpan.FromMinutes(15);
 
 
-        public static readonly TimeSpan ReservationSelfCancelAfter  = TimeSpan.FromSeconds(10);
+//        public static readonly TimeSpan ReservationSelfCancelAfter  = TimeSpan.FromSeconds(10);
 
-        private static readonly Random _random = new Random(DateTime.UtcNow.Millisecond);
+//        private static readonly Random _random = new Random(DateTime.UtcNow.Millisecond);
 
-        #endregion
+//        #endregion
 
-        #region Properties
+//        #region Properties
 
-        #region Description
+//        #region Description
 
-        private I18NString _Description;
+//        private I18NString _Description;
 
-        /// <summary>
-        /// An description of this EVSE.
-        /// </summary>
-        [Mandatory]
-        public I18NString Description
-        {
+//        /// <summary>
+//        /// An description of this EVSE.
+//        /// </summary>
+//        [Mandatory]
+//        public I18NString Description
+//        {
 
-            get
-            {
-                return _Description ?? _ANetworkChargingStation.Description;
-            }
+//            get
+//            {
+//                return _Description ?? _ANetworkChargingStation.Description;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (value == _ANetworkChargingStation.Description)
-                    value = null;
+//                if (value == _ANetworkChargingStation.Description)
+//                    value = null;
 
-                if (_Description != value)
-                    SetProperty<I18NString>(ref _Description, value);
+//                if (_Description != value)
+//                    SetProperty<I18NString>(ref _Description, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region ChargingModes
+//        #region ChargingModes
 
-        private ReactiveSet<ChargingModes> _ChargingModes;
+//        private ReactiveSet<ChargingModes> _ChargingModes;
 
-        /// <summary>
-        /// Charging modes.
-        /// </summary>
-        [Mandatory]
-        public ReactiveSet<ChargingModes> ChargingModes
-        {
+//        /// <summary>
+//        /// Charging modes.
+//        /// </summary>
+//        [Mandatory]
+//        public ReactiveSet<ChargingModes> ChargingModes
+//        {
 
-            get
-            {
-                return _ChargingModes;
-            }
+//            get
+//            {
+//                return _ChargingModes;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_ChargingModes != value)
-                    SetProperty(ref _ChargingModes, value);
+//                if (_ChargingModes != value)
+//                    SetProperty(ref _ChargingModes, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region AverageVoltage
+//        #region AverageVoltage
 
-        private Double _AverageVoltage;
+//        private Double _AverageVoltage;
 
-        /// <summary>
-        /// The average voltage.
-        /// </summary>
-        [Mandatory]
-        public Double AverageVoltage
-        {
+//        /// <summary>
+//        /// The average voltage.
+//        /// </summary>
+//        [Mandatory]
+//        public Double AverageVoltage
+//        {
 
-            get
-            {
-                return _AverageVoltage;
-            }
+//            get
+//            {
+//                return _AverageVoltage;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_AverageVoltage != value)
-                    SetProperty(ref _AverageVoltage, value);
+//                if (_AverageVoltage != value)
+//                    SetProperty(ref _AverageVoltage, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region CurrentType
+//        #region CurrentType
 
-        private CurrentTypes _CurrentType;
+//        private CurrentTypes _CurrentType;
 
-        /// <summary>
-        /// The type of the current.
-        /// </summary>
-        [Mandatory]
-        public CurrentTypes CurrentType
-        {
+//        /// <summary>
+//        /// The type of the current.
+//        /// </summary>
+//        [Mandatory]
+//        public CurrentTypes CurrentType
+//        {
 
-            get
-            {
-                return _CurrentType;
-            }
+//            get
+//            {
+//                return _CurrentType;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_CurrentType != value)
-                    SetProperty(ref _CurrentType, value);
+//                if (_CurrentType != value)
+//                    SetProperty(ref _CurrentType, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region MaxCurrent
+//        #region MaxCurrent
 
-        private Double _MaxCurrent;
+//        private Double _MaxCurrent;
 
-        /// <summary>
-        /// The maximum current [Ampere].
-        /// </summary>
-        [Mandatory]
-        public Double MaxCurrent
-        {
+//        /// <summary>
+//        /// The maximum current [Ampere].
+//        /// </summary>
+//        [Mandatory]
+//        public Double MaxCurrent
+//        {
 
-            get
-            {
-                return _MaxCurrent;
-            }
+//            get
+//            {
+//                return _MaxCurrent;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_MaxCurrent != value)
-                    SetProperty(ref _MaxCurrent, value);
+//                if (_MaxCurrent != value)
+//                    SetProperty(ref _MaxCurrent, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region MaxPower
+//        #region MaxPower
 
-        private Double _MaxPower;
+//        private Double _MaxPower;
 
-        /// <summary>
-        /// The maximum power [kWatt].
-        /// </summary>
-        [Mandatory]
-        public Double MaxPower
-        {
+//        /// <summary>
+//        /// The maximum power [kWatt].
+//        /// </summary>
+//        [Mandatory]
+//        public Double MaxPower
+//        {
 
-            get
-            {
-                return _MaxPower;
-            }
+//            get
+//            {
+//                return _MaxPower;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_MaxPower != value)
-                    SetProperty(ref _MaxPower, value);
+//                if (_MaxPower != value)
+//                    SetProperty(ref _MaxPower, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region RealTimePower
+//        #region RealTimePower
 
-        private Double _RealTimePower;
+//        private Double _RealTimePower;
 
-        /// <summary>
-        /// The current real-time power delivery [Watt].
-        /// </summary>
-        [Mandatory]
-        public Double RealTimePower
-        {
+//        /// <summary>
+//        /// The current real-time power delivery [Watt].
+//        /// </summary>
+//        [Mandatory]
+//        public Double RealTimePower
+//        {
 
-            get
-            {
-                return _RealTimePower;
-            }
+//            get
+//            {
+//                return _RealTimePower;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_RealTimePower != value)
-                    SetProperty(ref _RealTimePower, value);
+//                if (_RealTimePower != value)
+//                    SetProperty(ref _RealTimePower, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region MaxCapacity
+//        #region MaxCapacity
 
-        private Double? _MaxCapacity;
+//        private Double? _MaxCapacity;
 
-        /// <summary>
-        /// The maximum capacity [kWh].
-        /// </summary>
-        [Mandatory]
-        public Double? MaxCapacity
-        {
+//        /// <summary>
+//        /// The maximum capacity [kWh].
+//        /// </summary>
+//        [Mandatory]
+//        public Double? MaxCapacity
+//        {
 
-            get
-            {
-                return _MaxCapacity;
-            }
+//            get
+//            {
+//                return _MaxCapacity;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_MaxCapacity != value)
-                    SetProperty(ref _MaxCapacity, value);
+//                if (_MaxCapacity != value)
+//                    SetProperty(ref _MaxCapacity, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region EnergyMeterId
+//        #region EnergyMeterId
 
-        private EnergyMeter_Id? _EnergyMeterId;
+//        private EnergyMeter_Id? _EnergyMeterId;
 
-        /// <summary>
-        /// The energy meter identification.
-        /// </summary>
-        [Optional]
-        public EnergyMeter_Id? EnergyMeterId
-        {
+//        /// <summary>
+//        /// The energy meter identification.
+//        /// </summary>
+//        [Optional]
+//        public EnergyMeter_Id? EnergyMeterId
+//        {
 
-            get
-            {
-                return _EnergyMeterId;
-            }
+//            get
+//            {
+//                return _EnergyMeterId;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_EnergyMeterId != value)
-                    SetProperty<EnergyMeter_Id?>(ref _EnergyMeterId, value);
+//                if (_EnergyMeterId != value)
+//                    SetProperty<EnergyMeter_Id?>(ref _EnergyMeterId, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region SocketOutlets
+//        #region SocketOutlets
 
-        private ReactiveSet<SocketOutlet> _SocketOutlets;
+//        private ReactiveSet<SocketOutlet> _SocketOutlets;
 
-        public ReactiveSet<SocketOutlet> SocketOutlets
-        {
+//        public ReactiveSet<SocketOutlet> SocketOutlets
+//        {
 
-            get
-            {
-                return _SocketOutlets;
-            }
+//            get
+//            {
+//                return _SocketOutlets;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                if (_SocketOutlets != value)
-                    SetProperty(ref _SocketOutlets, value);
+//                if (_SocketOutlets != value)
+//                    SetProperty(ref _SocketOutlets, value);
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region Status
+//        #region Status
 
-        /// <summary>
-        /// The current EVSE status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEStatusTypes> Status
-        {
+//        /// <summary>
+//        /// The current EVSE status.
+//        /// </summary>
+//        [InternalUseOnly]
+//        public Timestamped<EVSEStatusTypes> Status
+//        {
 
-            get
-            {
-                return _StatusSchedule.CurrentStatus;
-            }
+//            get
+//            {
+//                return _StatusSchedule.CurrentStatus;
+//            }
 
-            set
-            {
-                SetStatus(value);
-            }
+//            set
+//            {
+//                SetStatus(value);
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region StatusSchedule
+//        #region StatusSchedule
 
-        private StatusSchedule<EVSEStatusTypes> _StatusSchedule;
+//        private StatusSchedule<EVSEStatusTypes> _StatusSchedule;
 
-        /// <summary>
-        /// The EVSE status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule
-        {
-            get
-            {
-                return _StatusSchedule;
-            }
-        }
+//        /// <summary>
+//        /// The EVSE status schedule.
+//        /// </summary>
+//        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule
+//        {
+//            get
+//            {
+//                return _StatusSchedule;
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region AdminStatus
+//        #region AdminStatus
 
-        /// <summary>
-        /// The current EVSE admin status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEAdminStatusTypes> AdminStatus
-        {
+//        /// <summary>
+//        /// The current EVSE admin status.
+//        /// </summary>
+//        [InternalUseOnly]
+//        public Timestamped<EVSEAdminStatusTypes> AdminStatus
+//        {
 
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
+//            get
+//            {
+//                return _AdminStatusSchedule.CurrentStatus;
+//            }
 
-            set
-            {
-                SetAdminStatus(value);
-            }
+//            set
+//            {
+//                SetAdminStatus(value);
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region AdminStatusSchedule
+//        #region AdminStatusSchedule
 
-        private StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
+//        private StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
 
-        /// <summary>
-        /// The EVSE admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
+//        /// <summary>
+//        /// The EVSE admin status schedule.
+//        /// </summary>
+//        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule
+//        {
+//            get
+//            {
+//                return _AdminStatusSchedule;
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region Links
+//        #region Links
 
-        #region ChargingStation
+//        #region ChargingStation
 
-        private readonly ANetworkChargingStation _ANetworkChargingStation;
+//        private readonly ANetworkChargingStation _ANetworkChargingStation;
 
-        /// <summary>
-        /// The charging station of this EVSE.
-        /// </summary>
-        [InternalUseOnly]
-        public IRemoteChargingStation ChargingStation
-            => _ANetworkChargingStation;
+//        /// <summary>
+//        /// The charging station of this EVSE.
+//        /// </summary>
+//        [InternalUseOnly]
+//        public IRemoteChargingStation ChargingStation
+//            => _ANetworkChargingStation;
 
-        #endregion
+//        #endregion
 
-        #region OperatorId
+//        #region OperatorId
 
-        /// <summary>
-        /// The identification of the operator of this EVSE.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingStationOperator_Id OperatorId
-            => _ANetworkChargingStation.Id.OperatorId;
+//        /// <summary>
+//        /// The identification of the operator of this EVSE.
+//        /// </summary>
+//        [InternalUseOnly]
+//        public ChargingStationOperator_Id OperatorId
+//            => _ANetworkChargingStation.Id.OperatorId;
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region Events
+//        #region Events
 
-        #region SocketOutletAddition
+//        #region SocketOutletAddition
 
-        internal readonly IVotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean> SocketOutletAddition;
+//        internal readonly IVotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean> SocketOutletAddition;
 
-        /// <summary>
-        /// Called whenever a socket outlet will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, Boolean> OnSocketOutletAddition
-        {
-            get
-            {
-                return SocketOutletAddition;
-            }
-        }
+//        /// <summary>
+//        /// Called whenever a socket outlet will be or was added.
+//        /// </summary>
+//        public IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+//        {
+//            get
+//            {
+//                return SocketOutletAddition;
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SocketOutletRemoval
+//        #region SocketOutletRemoval
 
-        internal readonly IVotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean> SocketOutletRemoval;
+//        internal readonly IVotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean> SocketOutletRemoval;
 
-        /// <summary>
-        /// Called whenever a socket outlet will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
-        {
-            get
-            {
-                return SocketOutletRemoval;
-            }
-        }
+//        /// <summary>
+//        /// Called whenever a socket outlet will be or was removed.
+//        /// </summary>
+//        public IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+//        {
+//            get
+//            {
+//                return SocketOutletRemoval;
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region Constructor(s)
+//        #region Constructor(s)
 
-        /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of this EVSE.</param>
-        /// <param name="ChargingStation">The parent charging station.</param>
-        /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
-        /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
-        internal NetworkEVSEStub(EVSE_Id                  Id,
-                                 ANetworkChargingStation  ChargingStation,
-                                 UInt16                   MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
-                                 UInt16                   MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+//        /// <summary>
+//        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
+//        /// </summary>
+//        /// <param name="Id">The unique identification of this EVSE.</param>
+//        /// <param name="ChargingStation">The parent charging station.</param>
+//        /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
+//        /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
+//        internal NetworkEVSEStub(EVSE_Id                  Id,
+//                                 ANetworkChargingStation  ChargingStation,
+//                                 UInt16                   MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
+//                                 UInt16                   MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
 
-            : base(Id)
+//            : base(Id)
 
-        {
+//        {
 
-            #region Initial checks
+//            #region Initial checks
 
-            if (ChargingStation == null)
-                throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
+//            if (ChargingStation == null)
+//                throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
 
-            #endregion
+//            #endregion
 
-            #region Init data and properties
+//            #region Init data and properties
 
-            this._ANetworkChargingStation       = ChargingStation;
+//            this._ANetworkChargingStation       = ChargingStation;
 
-            this._Description           = new I18NString();
-            this._ChargingModes         = new ReactiveSet<ChargingModes>();
-            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
+//            this._Description           = new I18NString();
+//            this._ChargingModes         = new ReactiveSet<ChargingModes>();
+//            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.Insert(EVSEStatusTypes.OutOfService);
+//            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
+//            this._StatusSchedule.Insert(EVSEStatusTypes.OutOfService);
 
-            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxStatusListSize);
-            this._AdminStatusSchedule.Insert(EVSEAdminStatusTypes.OutOfService);
+//            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxStatusListSize);
+//            this._AdminStatusSchedule.Insert(EVSEAdminStatusTypes.OutOfService);
 
-            #endregion
+//            #endregion
 
-            #region Init events
+//            #region Init events
 
-            this.SocketOutletAddition   = new VotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval    = new VotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+//            this.SocketOutletAddition   = new VotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+//            this.SocketOutletRemoval    = new VotingNotificator<DateTime, IRemoteEVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
-            #endregion
+//            #endregion
 
-            #region Link events
+//            #region Link events
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+//            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+//                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+//            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+//                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
 
-            //this.SocketOutletAddition.OnVoting        += (timestamp, evse, outlet, vote)
-            //                                              => ChargingStation.SocketOutletAddition.SendVoting      (timestamp, evse, outlet, vote);
-            //
-            //this.SocketOutletAddition.OnNotification  += (timestamp, evse, outlet)
-            //                                              => ChargingStation.SocketOutletAddition.SendNotification(timestamp, evse, outlet);
-            //
-            //this.SocketOutletRemoval. OnVoting        += (timestamp, evse, outlet, vote)
-            //                                              => ChargingStation.SocketOutletRemoval. SendVoting      (timestamp, evse, outlet, vote);
-            //
-            //this.SocketOutletRemoval. OnNotification  += (timestamp, evse, outlet)
-            //                                              => ChargingStation.SocketOutletRemoval. SendNotification(timestamp, evse, outlet);
+//            //this.SocketOutletAddition.OnVoting        += (timestamp, evse, outlet, vote)
+//            //                                              => ChargingStation.SocketOutletAddition.SendVoting      (timestamp, evse, outlet, vote);
+//            //
+//            //this.SocketOutletAddition.OnNotification  += (timestamp, evse, outlet)
+//            //                                              => ChargingStation.SocketOutletAddition.SendNotification(timestamp, evse, outlet);
+//            //
+//            //this.SocketOutletRemoval. OnVoting        += (timestamp, evse, outlet, vote)
+//            //                                              => ChargingStation.SocketOutletRemoval. SendVoting      (timestamp, evse, outlet, vote);
+//            //
+//            //this.SocketOutletRemoval. OnNotification  += (timestamp, evse, outlet)
+//            //                                              => ChargingStation.SocketOutletRemoval. SendNotification(timestamp, evse, outlet);
 
-            #endregion
+//            #endregion
 
 
-            //this.OnStatusChanged += async (Timestamp,
-            //                               EventTrackingId,
-            //                               IRemoteEVSE,
-            //                               OldStatus,
-            //                               NewStatus) => {
+//            //this.OnStatusChanged += async (Timestamp,
+//            //                               EventTrackingId,
+//            //                               IRemoteEVSE,
+//            //                               OldStatus,
+//            //                               NewStatus) => {
 
-            //    if (OldStatus.Value == EVSEStatusTypes.Reserved &&
-            //        NewStatus.Value != EVSEStatusTypes.Reserved &&
-            //        _Reservation != null)
-            //    {
+//            //    if (OldStatus.Value == EVSEStatusTypes.Reserved &&
+//            //        NewStatus.Value != EVSEStatusTypes.Reserved &&
+//            //        _Reservation != null)
+//            //    {
 
-            //        CancelReservation(_Reservation.Id,
-            //                          ChargingReservationCancellationReason.Aborted).Wait();
+//            //        CancelReservation(_Reservation.Id,
+//            //                          ChargingReservationCancellationReason.Aborted).Wait();
 
-            //    }
+//            //    }
 
-            //};
+//            //};
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region Data/(Admin-)Status management
+//        #region Data/(Admin-)Status management
 
-        #region OnData/(Admin)StatusChanged
+//        #region OnData/(Admin)StatusChanged
 
-        /// <summary>
-        /// An event fired whenever the static data of the EVSE changed.
-        /// </summary>
-        public event OnRemoteEVSEDataChangedDelegate          OnDataChanged;
+//        /// <summary>
+//        /// An event fired whenever the static data of the EVSE changed.
+//        /// </summary>
+//        public event OnRemoteEVSEDataChangedDelegate          OnDataChanged;
 
-        /// <summary>
-        /// An event fired whenever the dynamic status of the EVSE changed.
-        /// </summary>
-        public event OnRemoteEVSEStatusChangedDelegate        OnStatusChanged;
+//        /// <summary>
+//        /// An event fired whenever the dynamic status of the EVSE changed.
+//        /// </summary>
+//        public event OnRemoteEVSEStatusChangedDelegate        OnStatusChanged;
 
-        /// <summary>
-        /// An event fired whenever the admin status of the EVSE changed.
-        /// </summary>
-        public event OnRemoteEVSEAdminStatusChangedDelegate   OnAdminStatusChanged;
+//        /// <summary>
+//        /// An event fired whenever the admin status of the EVSE changed.
+//        /// </summary>
+//        public event OnRemoteEVSEAdminStatusChangedDelegate   OnAdminStatusChanged;
 
-        #endregion
+//        #endregion
 
 
-        #region SetStatus(NewStatus)
+//        #region SetStatus(NewStatus)
 
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus)
-        {
-            _StatusSchedule.Insert(NewStatus);
-        }
+//        /// <summary>
+//        /// Set the current status.
+//        /// </summary>
+//        /// <param name="NewStatus">A new status.</param>
+//        public void SetStatus(EVSEStatusTypes  NewStatus)
+//        {
+//            _StatusSchedule.Insert(NewStatus);
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SetStatus(NewTimestampedStatus)
+//        #region SetStatus(NewTimestampedStatus)
 
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
-        {
-            _StatusSchedule.Insert(NewTimestampedStatus);
-        }
+//        /// <summary>
+//        /// Set the current status.
+//        /// </summary>
+//        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
+//        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
+//        {
+//            _StatusSchedule.Insert(NewTimestampedStatus);
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SetStatus(NewStatus, Timestamp)
+//        #region SetStatus(NewStatus, Timestamp)
 
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus,
-                              DateTime        Timestamp)
-        {
-            _StatusSchedule.Insert(NewStatus, Timestamp);
-        }
+//        /// <summary>
+//        /// Set the status.
+//        /// </summary>
+//        /// <param name="NewStatus">A new status.</param>
+//        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+//        public void SetStatus(EVSEStatusTypes  NewStatus,
+//                              DateTime        Timestamp)
+//        {
+//            _StatusSchedule.Insert(NewStatus, Timestamp);
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
+//        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
 
-        /// <summary>
-        /// Set the timestamped status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
-                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
-        {
-            _StatusSchedule.Set(NewStatusList, ChangeMethod);
-        }
+//        /// <summary>
+//        /// Set the timestamped status.
+//        /// </summary>
+//        /// <param name="NewStatusList">A list of new timestamped status.</param>
+//        /// <param name="ChangeMethod">The change mode.</param>
+//        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
+//                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
+//        {
+//            _StatusSchedule.Set(NewStatusList, ChangeMethod);
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region SetAdminStatus(NewAdminStatus)
+//        #region SetAdminStatus(NewAdminStatus)
 
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
+//        /// <summary>
+//        /// Set the admin status.
+//        /// </summary>
+//        /// <param name="NewAdminStatus">A new admin status.</param>
+//        public void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus)
+//        {
+//            _AdminStatusSchedule.Insert(NewAdminStatus);
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SetAdminStatus(NewTimestampedAdminStatus)
+//        #region SetAdminStatus(NewTimestampedAdminStatus)
 
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
+//        /// <summary>
+//        /// Set the admin status.
+//        /// </summary>
+//        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
+//        public void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus)
+//        {
+//            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
+//        #region SetAdminStatus(NewAdminStatus, Timestamp)
 
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes  NewAdminStatus,
-                                   DateTime             Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
+//        /// <summary>
+//        /// Set the admin status.
+//        /// </summary>
+//        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+//        /// <param name="NewAdminStatus">A new admin status.</param>
+//        public void SetAdminStatus(EVSEAdminStatusTypes  NewAdminStatus,
+//                                   DateTime             Timestamp)
+//        {
+//            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
+//        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
 
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                  ChangeMethod = ChangeMethods.Replace)
-        {
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-        }
+//        /// <summary>
+//        /// Set the timestamped admin status.
+//        /// </summary>
+//        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
+//        /// <param name="ChangeMethod">The change mode.</param>
+//        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
+//                                   ChangeMethods                                  ChangeMethod = ChangeMethods.Replace)
+//        {
+//            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
+//        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
-        /// <summary>
-        /// Update the current status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="OldStatus">The old EVSE admin status.</param>
-        /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                          Timestamp,
-                                              EventTracking_Id                  EventTrackingId,
-                                              Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                              Timestamped<EVSEAdminStatusTypes>  NewStatus)
-        {
+//        /// <summary>
+//        /// Update the current status.
+//        /// </summary>
+//        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+//        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+//        /// <param name="OldStatus">The old EVSE admin status.</param>
+//        /// <param name="NewStatus">The new EVSE admin status.</param>
+//        internal async Task UpdateAdminStatus(DateTime                          Timestamp,
+//                                              EventTracking_Id                  EventTrackingId,
+//                                              Timestamped<EVSEAdminStatusTypes>  OldStatus,
+//                                              Timestamped<EVSEAdminStatusTypes>  NewStatus)
+//        {
 
-            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
-                await OnAdminStatusChangedLocal(Timestamp,
-                                                EventTrackingId,
-                                                this,
-                                                OldStatus,
-                                                NewStatus);
+//            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
+//            if (OnAdminStatusChangedLocal != null)
+//                await OnAdminStatusChangedLocal(Timestamp,
+//                                                EventTrackingId,
+//                                                this,
+//                                                OldStatus,
+//                                                NewStatus);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+//        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
 
-        /// <summary>
-        /// Update the current status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                     Timestamp,
-                                         EventTracking_Id             EventTrackingId,
-                                         Timestamped<EVSEStatusTypes>  OldStatus,
-                                         Timestamped<EVSEStatusTypes>  NewStatus)
-        {
+//        /// <summary>
+//        /// Update the current status.
+//        /// </summary>
+//        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+//        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+//        /// <param name="OldStatus">The old EVSE status.</param>
+//        /// <param name="NewStatus">The new EVSE status.</param>
+//        internal async Task UpdateStatus(DateTime                     Timestamp,
+//                                         EventTracking_Id             EventTrackingId,
+//                                         Timestamped<EVSEStatusTypes>  OldStatus,
+//                                         Timestamped<EVSEStatusTypes>  NewStatus)
+//        {
 
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
-                await OnStatusChangedLocal(Timestamp,
-                                           EventTrackingId,
-                                           this,
-                                           OldStatus,
-                                           NewStatus);
+//            var OnStatusChangedLocal = OnStatusChanged;
+//            if (OnStatusChangedLocal != null)
+//                await OnStatusChangedLocal(Timestamp,
+//                                           EventTrackingId,
+//                                           this,
+//                                           OldStatus,
+//                                           NewStatus);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region Reservations...
+//        #region Reservations...
 
-        #region Data
+//        #region Data
 
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
+//        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
 
-        /// <summary>
-        /// All current charging reservations.
-        /// </summary>
-        public IEnumerable<ChargingReservation> ChargingReservations
-            => _Reservations.Select(_ => _.Value);
+//        /// <summary>
+//        /// All current charging reservations.
+//        /// </summary>
+//        public IEnumerable<ChargingReservation> ChargingReservations
+//            => _Reservations.Select(_ => _.Value);
 
-        #region TryGetReservationById(ReservationId, out Reservation)
+//        #region TryGetReservationById(ReservationId, out Reservation)
 
-        /// <summary>
-        /// Return the charging reservation specified by the given identification.
-        /// </summary>
-        /// <param name="ReservationId">The charging reservation identification.</param>
-        /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-            => _Reservations.TryGetValue(ReservationId, out Reservation);
+//        /// <summary>
+//        /// Return the charging reservation specified by the given identification.
+//        /// </summary>
+//        /// <param name="ReservationId">The charging reservation identification.</param>
+//        /// <param name="Reservation">The charging reservation.</param>
+//        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
+//            => _Reservations.TryGetValue(ReservationId, out Reservation);
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region Events
+//        #region Events
 
-        /// <summary>
-        /// An event fired whenever a charging location is being reserved.
-        /// </summary>
-        public event OnReserveRequestDelegate             OnReserveRequest;
+//        /// <summary>
+//        /// An event fired whenever a charging location is being reserved.
+//        /// </summary>
+//        public event OnReserveRequestDelegate             OnReserveRequest;
 
-        /// <summary>
-        /// An event fired whenever a charging location was reserved.
-        /// </summary>
-        public event OnReserveResponseDelegate            OnReserveResponse;
+//        /// <summary>
+//        /// An event fired whenever a charging location was reserved.
+//        /// </summary>
+//        public event OnReserveResponseDelegate            OnReserveResponse;
 
-        /// <summary>
-        /// An event fired whenever a new charging reservation was created.
-        /// </summary>
-        public event OnNewReservationDelegate             OnNewReservation;
+//        /// <summary>
+//        /// An event fired whenever a new charging reservation was created.
+//        /// </summary>
+//        public event OnNewReservationDelegate             OnNewReservation;
 
 
-        /// <summary>
-        /// An event fired whenever a charging reservation is being canceled.
-        /// </summary>
-        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+//        /// <summary>
+//        /// An event fired whenever a charging reservation is being canceled.
+//        /// </summary>
+//        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
 
-        /// <summary>
-        /// An event fired whenever a charging reservation was canceled.
-        /// </summary>
-        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+//        /// <summary>
+//        /// An event fired whenever a charging reservation was canceled.
+//        /// </summary>
+//        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
 
-        /// <summary>
-        /// An event fired whenever a charging reservation was canceled.
-        /// </summary>
-        public event OnReservationCanceledDelegate        OnReservationCanceled;
+//        /// <summary>
+//        /// An event fired whenever a charging reservation was canceled.
+//        /// </summary>
+//        public event OnReservationCanceledDelegate        OnReservationCanceled;
 
-        #endregion
+//        #endregion
 
-        #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
+//        #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
-        /// <summary>
-        /// Reserve the possibility to charge at this EVSE.
-        /// </summary>
-        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProduct">The charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<ReservationResult>
+//        /// <summary>
+//        /// Reserve the possibility to charge at this EVSE.
+//        /// </summary>
+//        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+//        /// <param name="Duration">The duration of the reservation.</param>
+//        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+//        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+//        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+//        /// <param name="ChargingProduct">The charging product to be reserved.</param>
+//        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+//        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+//        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+//        /// 
+//        /// <param name="Timestamp">The optional timestamp of the request.</param>
+//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+//        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+//        public Task<ReservationResult>
 
-            Reserve(DateTime?                         StartTime              = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
+//            Reserve(DateTime?                         StartTime              = null,
+//                    TimeSpan?                         Duration               = null,
+//                    ChargingReservation_Id?           ReservationId          = null,
+//                    eMobilityProvider_Id?             ProviderId             = null,
+//                    RemoteAuthentication              RemoteAuthentication   = null,
+//                    ChargingProduct                   ChargingProduct        = null,
+//                    IEnumerable<Auth_Token>           AuthTokens             = null,
+//                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
+//                    IEnumerable<UInt32>               PINs                   = null,
 
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
+//                    DateTime?                         Timestamp              = null,
+//                    CancellationToken?                CancellationToken      = null,
+//                    EventTracking_Id                  EventTrackingId        = null,
+//                    TimeSpan?                         RequestTimeout         = null)
 
 
-                => Reserve(ChargingLocation.FromEVSEId(Id),
-                           ChargingReservationLevel.EVSE,
-                           StartTime,
-                           Duration,
-                           ReservationId,
-                           ProviderId,
-                           RemoteAuthentication,
-                           ChargingProduct,
-                           AuthTokens,
-                           eMAIds,
-                           PINs,
+//                => Reserve(ChargingLocation.FromEVSEId(Id),
+//                           ChargingReservationLevel.EVSE,
+//                           StartTime,
+//                           Duration,
+//                           ReservationId,
+//                           ProviderId,
+//                           RemoteAuthentication,
+//                           ChargingProduct,
+//                           AuthTokens,
+//                           eMAIds,
+//                           PINs,
 
-                           Timestamp,
-                           CancellationToken,
-                           EventTrackingId,
-                           RequestTimeout);
+//                           Timestamp,
+//                           CancellationToken,
+//                           EventTrackingId,
+//                           RequestTimeout);
 
-        #endregion
+//        #endregion
 
-        #region Reserve(ChargingLocation, ReservationLevel = EVSE, StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
+//        #region Reserve(ChargingLocation, ReservationLevel = EVSE, StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
-        /// <summary>
-        /// Reserve the possibility to charge at the given charging location.
-        /// </summary>
-        /// <param name="ChargingLocation">A charging location.</param>
-        /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProduct">The charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult>
+//        /// <summary>
+//        /// Reserve the possibility to charge at the given charging location.
+//        /// </summary>
+//        /// <param name="ChargingLocation">A charging location.</param>
+//        /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
+//        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+//        /// <param name="Duration">The duration of the reservation.</param>
+//        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+//        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+//        /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+//        /// <param name="ChargingProduct">The charging product to be reserved.</param>
+//        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+//        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+//        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+//        /// 
+//        /// <param name="Timestamp">The optional timestamp of the request.</param>
+//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+//        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+//        public async Task<ReservationResult>
 
-            Reserve(ChargingLocation                  ChargingLocation,
-                    ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                         StartTime              = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
+//            Reserve(ChargingLocation                  ChargingLocation,
+//                    ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
+//                    DateTime?                         StartTime              = null,
+//                    TimeSpan?                         Duration               = null,
+//                    ChargingReservation_Id?           ReservationId          = null,
+//                    eMobilityProvider_Id?             ProviderId             = null,
+//                    RemoteAuthentication              RemoteAuthentication   = null,
+//                    ChargingProduct                   ChargingProduct        = null,
+//                    IEnumerable<Auth_Token>           AuthTokens             = null,
+//                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
+//                    IEnumerable<UInt32>               PINs                   = null,
 
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
+//                    DateTime?                         Timestamp              = null,
+//                    CancellationToken?                CancellationToken      = null,
+//                    EventTracking_Id                  EventTrackingId        = null,
+//                    TimeSpan?                         RequestTimeout         = null)
 
-        {
+//        {
 
-            if (_ANetworkChargingStation == null)
-                return ReservationResult.OutOfService;
+//            if (_ANetworkChargingStation == null)
+//                return ReservationResult.OutOfService;
 
-            return await _ANetworkChargingStation.
-                             Reserve(ChargingLocation,
-                                     ReservationLevel,
-                                     StartTime,
-                                     Duration,
-                                     ReservationId,
-                                     ProviderId,
-                                     RemoteAuthentication,
-                                     ChargingProduct,
-                                     AuthTokens,
-                                     eMAIds,
-                                     PINs,
+//            return await _ANetworkChargingStation.
+//                             Reserve(ChargingLocation,
+//                                     ReservationLevel,
+//                                     StartTime,
+//                                     Duration,
+//                                     ReservationId,
+//                                     ProviderId,
+//                                     RemoteAuthentication,
+//                                     ChargingProduct,
+//                                     AuthTokens,
+//                                     eMAIds,
+//                                     PINs,
 
-                                     Timestamp,
-                                     CancellationToken,
-                                     EventTrackingId,
-                                     RequestTimeout);
+//                                     Timestamp,
+//                                     CancellationToken,
+//                                     EventTrackingId,
+//                                     RequestTimeout);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region CancelReservation(ReservationId, Reason, ...)
+//        #region CancelReservation(ReservationId, Reason, ...)
 
-        /// <summary>
-        /// Try to remove the given charging reservation.
-        /// </summary>
-        /// <param name="ReservationId">The unique charging reservation identification.</param>
-        /// <param name="Reason">A reason for this cancellation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<CancelReservationResult>
+//        /// <summary>
+//        /// Try to remove the given charging reservation.
+//        /// </summary>
+//        /// <param name="ReservationId">The unique charging reservation identification.</param>
+//        /// <param name="Reason">A reason for this cancellation.</param>
+//        /// 
+//        /// <param name="Timestamp">The optional timestamp of the request.</param>
+//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+//        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+//        public async Task<CancelReservationResult>
 
-            CancelReservation(ChargingReservation_Id                 ReservationId,
-                              ChargingReservationCancellationReason  Reason,
+//            CancelReservation(ChargingReservation_Id                 ReservationId,
+//                              ChargingReservationCancellationReason  Reason,
 
-                              DateTime?                              Timestamp          = null,
-                              CancellationToken?                     CancellationToken  = null,
-                              EventTracking_Id                       EventTrackingId    = null,
-                              TimeSpan?                              RequestTimeout     = null)
+//                              DateTime?                              Timestamp          = null,
+//                              CancellationToken?                     CancellationToken  = null,
+//                              EventTracking_Id                       EventTrackingId    = null,
+//                              TimeSpan?                              RequestTimeout     = null)
 
-        {
+//        {
 
-            if (_ANetworkChargingStation == null)
-                return CancelReservationResult.OutOfService(ReservationId,
-                                                            Reason);
+//            if (_ANetworkChargingStation == null)
+//                return CancelReservationResult.OutOfService(ReservationId,
+//                                                            Reason);
 
-            return await _ANetworkChargingStation.
-                             CancelReservation(ReservationId,
-                                               Reason,
+//            return await _ANetworkChargingStation.
+//                             CancelReservation(ReservationId,
+//                                               Reason,
 
-                                               Timestamp,
-                                               CancellationToken,
-                                               EventTrackingId,
-                                               RequestTimeout);
+//                                               Timestamp,
+//                                               CancellationToken,
+//                                               EventTrackingId,
+//                                               RequestTimeout);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region RemoteStart/-Stop and Sessions...
+//        #region RemoteStart/-Stop and Sessions...
 
-        #region Data
+//        #region Data
 
-        private ChargingSession _ChargingSession;
+//        private ChargingSession _ChargingSession;
 
 
-        public IEnumerable<ChargingSession> ChargingSessions
-            => _ChargingSession != null
-                   ? new ChargingSession[] { _ChargingSession }
-                   : new ChargingSession[0];
+//        public IEnumerable<ChargingSession> ChargingSessions
+//            => _ChargingSession != null
+//                   ? new ChargingSession[] { _ChargingSession }
+//                   : new ChargingSession[0];
 
-        #region TryGetChargingSessionById(SessionId, out ChargingSession)
+//        #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
-        /// <summary>
-        /// Return the charging session specified by the given identification.
-        /// </summary>
-        /// <param name="SessionId">The charging session identification.</param>
-        /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
-        {
+//        /// <summary>
+//        /// Return the charging session specified by the given identification.
+//        /// </summary>
+//        /// <param name="SessionId">The charging session identification.</param>
+//        /// <param name="ChargingSession">The charging session.</param>
+//        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession ChargingSession)
+//        {
 
-            if (SessionId == _ChargingSession.Id)
-            {
-                ChargingSession = _ChargingSession;
-                return true;
-            }
+//            if (SessionId == _ChargingSession.Id)
+//            {
+//                ChargingSession = _ChargingSession;
+//                return true;
+//            }
 
-            ChargingSession = null;
-            return false;
+//            ChargingSession = null;
+//            return false;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        /// <summary>
-        /// The current charging session, if available.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingSession ChargingSession
-        {
+//        /// <summary>
+//        /// The current charging session, if available.
+//        /// </summary>
+//        [InternalUseOnly]
+//        public ChargingSession ChargingSession
+//        {
 
-            get
-            {
-                return _ChargingSession;
-            }
+//            get
+//            {
+//                return _ChargingSession;
+//            }
 
-            set
-            {
+//            set
+//            {
 
-                // Skip, if the charging session is already known... 
-                if (_ChargingSession != value)
-                {
+//                // Skip, if the charging session is already known... 
+//                if (_ChargingSession != value)
+//                {
 
-                    _ChargingSession = value;
+//                    _ChargingSession = value;
 
-                    if (_ChargingSession != null)
-                    {
+//                    if (_ChargingSession != null)
+//                    {
 
-                        SetStatus(EVSEStatusTypes.Charging);
+//                        SetStatus(EVSEStatusTypes.Charging);
 
-                        OnNewChargingSession?.Invoke(DateTime.UtcNow, this, _ChargingSession);
+//                        OnNewChargingSession?.Invoke(DateTime.UtcNow, this, _ChargingSession);
 
-                    }
+//                    }
 
-                    else
-                        SetStatus(EVSEStatusTypes.Available);
+//                    else
+//                        SetStatus(EVSEStatusTypes.Available);
 
-                }
+//                }
 
-            }
+//            }
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Events
+//        #region Events
 
-        /// <summary>
-        /// An event fired whenever a remote start command was received.
-        /// </summary>
-        public event OnRemoteStartRequestDelegate     OnRemoteStartRequest;
+//        /// <summary>
+//        /// An event fired whenever a remote start command was received.
+//        /// </summary>
+//        public event OnRemoteStartRequestDelegate     OnRemoteStartRequest;
 
-        /// <summary>
-        /// An event fired whenever a remote start command completed.
-        /// </summary>
-        public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
+//        /// <summary>
+//        /// An event fired whenever a remote start command completed.
+//        /// </summary>
+//        public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
 
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate     OnNewChargingSession;
+//        /// <summary>
+//        /// An event fired whenever a new charging session was created.
+//        /// </summary>
+//        public event OnNewChargingSessionDelegate     OnNewChargingSession;
 
 
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopRequestDelegate      OnRemoteStopRequest;
+//        /// <summary>
+//        /// An event fired whenever a remote stop command was received.
+//        /// </summary>
+//        public event OnRemoteStopRequestDelegate      OnRemoteStopRequest;
 
-        /// <summary>
-        /// An event fired whenever a remote stop command completed.
-        /// </summary>
-        public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
+//        /// <summary>
+//        /// An event fired whenever a remote stop command completed.
+//        /// </summary>
+//        public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
 
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        public event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
+//        /// <summary>
+//        /// An event fired whenever a new charge detail record was created.
+//        /// </summary>
+//        public event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
 
-        #endregion
+//        #endregion
 
-        #region RemoteStart(                  ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+//        #region RemoteStart(                  ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
-        /// <summary>
-        /// Start a charging session.
-        /// </summary>
-        /// <param name="ChargingProduct">The choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public Task<RemoteStartResult>
+//        /// <summary>
+//        /// Start a charging session.
+//        /// </summary>
+//        /// <param name="ChargingProduct">The choosen charging product.</param>
+//        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+//        /// <param name="SessionId">The unique identification for this charging session.</param>
+//        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+//        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+//        /// 
+//        /// <param name="Timestamp">The optional timestamp of the request.</param>
+//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+//        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+//        public Task<RemoteStartResult>
 
-            RemoteStart(ChargingProduct          ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+//            RemoteStart(ChargingProduct          ChargingProduct        = null,
+//                        ChargingReservation_Id?  ReservationId          = null,
+//                        ChargingSession_Id?      SessionId              = null,
+//                        eMobilityProvider_Id?    ProviderId             = null,
+//                        RemoteAuthentication     RemoteAuthentication   = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+//                        DateTime?                Timestamp              = null,
+//                        CancellationToken?       CancellationToken      = null,
+//                        EventTracking_Id         EventTrackingId        = null,
+//                        TimeSpan?                RequestTimeout         = null)
 
 
-                => RemoteStart(ChargingLocation.FromEVSEId(Id),
-                               ChargingProduct,
-                               ReservationId,
-                               SessionId,
-                               ProviderId,
-                               RemoteAuthentication,
+//                => RemoteStart(ChargingLocation.FromEVSEId(Id),
+//                               ChargingProduct,
+//                               ReservationId,
+//                               SessionId,
+//                               ProviderId,
+//                               RemoteAuthentication,
 
-                               Timestamp,
-                               CancellationToken,
-                               EventTrackingId,
-                               RequestTimeout);
+//                               Timestamp,
+//                               CancellationToken,
+//                               EventTrackingId,
+//                               RequestTimeout);
 
-        #endregion
+//        #endregion
 
-        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
+//        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
-        /// <summary>
-        /// Start a charging session.
-        /// </summary>
-        /// <param name="ChargingLocation">The charging location.</param>
-        /// <param name="ChargingProduct">The choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartResult>
+//        /// <summary>
+//        /// Start a charging session.
+//        /// </summary>
+//        /// <param name="ChargingLocation">The charging location.</param>
+//        /// <param name="ChargingProduct">The choosen charging product.</param>
+//        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+//        /// <param name="SessionId">The unique identification for this charging session.</param>
+//        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+//        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+//        /// 
+//        /// <param name="Timestamp">The optional timestamp of the request.</param>
+//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+//        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+//        public async Task<RemoteStartResult>
 
-            RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct          ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+//            RemoteStart(ChargingLocation         ChargingLocation,
+//                        ChargingProduct          ChargingProduct        = null,
+//                        ChargingReservation_Id?  ReservationId          = null,
+//                        ChargingSession_Id?      SessionId              = null,
+//                        eMobilityProvider_Id?    ProviderId             = null,
+//                        RemoteAuthentication     RemoteAuthentication   = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
-        {
+//                        DateTime?                Timestamp              = null,
+//                        CancellationToken?       CancellationToken      = null,
+//                        EventTracking_Id         EventTrackingId        = null,
+//                        TimeSpan?                RequestTimeout         = null)
+//        {
 
-            if (_ANetworkChargingStation == null)
-                return RemoteStartResult.OutOfService();
+//            if (_ANetworkChargingStation == null)
+//                return RemoteStartResult.OutOfService();
 
-            return await _ANetworkChargingStation.
-                             RemoteStart(ChargingLocation.FromEVSEId(Id),
-                                         ChargingProduct,
-                                         ReservationId,
-                                         SessionId,
-                                         ProviderId,
-                                         RemoteAuthentication,
+//            return await _ANetworkChargingStation.
+//                             RemoteStart(ChargingLocation.FromEVSEId(Id),
+//                                         ChargingProduct,
+//                                         ReservationId,
+//                                         SessionId,
+//                                         ProviderId,
+//                                         RemoteAuthentication,
 
-                                         Timestamp,
-                                         CancellationToken,
-                                         EventTrackingId,
-                                         RequestTimeout);
+//                                         Timestamp,
+//                                         CancellationToken,
+//                                         EventTrackingId,
+//                                         RequestTimeout);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region RemoteStop (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
+//        #region RemoteStop (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
 
-        /// <summary>
-        /// Stop the given charging session.
-        /// </summary>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopResult>
+//        /// <summary>
+//        /// Stop the given charging session.
+//        /// </summary>
+//        /// <param name="SessionId">The unique identification for this charging session.</param>
+//        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
+//        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+//        /// <param name="RemoteAuthentication">The unique identification of the e-mobility account.</param>
+//        /// 
+//        /// <param name="Timestamp">The optional timestamp of the request.</param>
+//        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+//        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+//        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+//        public async Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       eMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication   RemoteAuthentication   = null,
+//            RemoteStop(ChargingSession_Id     SessionId,
+//                       ReservationHandling?   ReservationHandling    = null,
+//                       eMobilityProvider_Id?  ProviderId             = null,
+//                       RemoteAuthentication   RemoteAuthentication   = null,
 
-                       DateTime?              Timestamp              = null,
-                       CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id       EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null)
+//                       DateTime?              Timestamp              = null,
+//                       CancellationToken?     CancellationToken      = null,
+//                       EventTracking_Id       EventTrackingId        = null,
+//                       TimeSpan?              RequestTimeout         = null)
 
-        {
+//        {
 
-            if (_ANetworkChargingStation == null)
-                return RemoteStopResult.OutOfService(SessionId);
+//            if (_ANetworkChargingStation == null)
+//                return RemoteStopResult.OutOfService(SessionId);
 
-            return await _ANetworkChargingStation.
-                             RemoteStop(SessionId,
-                                        ReservationHandling,
-                                        ProviderId,
-                                        RemoteAuthentication,
+//            return await _ANetworkChargingStation.
+//                             RemoteStop(SessionId,
+//                                        ReservationHandling,
+//                                        ProviderId,
+//                                        RemoteAuthentication,
 
-                                        Timestamp,
-                                        CancellationToken,
-                                        EventTrackingId,
-                                        RequestTimeout);
+//                                        Timestamp,
+//                                        CancellationToken,
+//                                        EventTrackingId,
+//                                        RequestTimeout);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
 
-        #region CheckIfReservationIsExpired()
+//        #region CheckIfReservationIsExpired()
 
-        /// <summary>
-        /// Check if the reservation is expired.
-        /// </summary>
-        public async Task CheckIfReservationIsExpired()
-        {
-            // ToDo: What to do here?
-        }
+//        /// <summary>
+//        /// Check if the reservation is expired.
+//        /// </summary>
+//        public async Task CheckIfReservationIsExpired()
+//        {
+//            // ToDo: What to do here?
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region IEnumerable<SocketOutlet> Members
+//        #region IEnumerable<SocketOutlet> Members
 
-        /// <summary>
-        /// Return a socket outlet enumerator.
-        /// </summary>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _SocketOutlets.GetEnumerator();
-        }
+//        /// <summary>
+//        /// Return a socket outlet enumerator.
+//        /// </summary>
+//        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+//        {
+//            return _SocketOutlets.GetEnumerator();
+//        }
 
-        /// <summary>
-        /// Return a socket outlet enumerator.
-        /// </summary>
-        public IEnumerator<SocketOutlet> GetEnumerator()
-        {
-            return _SocketOutlets.GetEnumerator();
-        }
+//        /// <summary>
+//        /// Return a socket outlet enumerator.
+//        /// </summary>
+//        public IEnumerator<SocketOutlet> GetEnumerator()
+//        {
+//            return _SocketOutlets.GetEnumerator();
+//        }
 
-        #endregion
+//        #endregion
 
-        #region IComparable<RemoteEVSE> Members
+//        #region IComparable<RemoteEVSE> Members
 
-        #region CompareTo(Object)
+//        #region CompareTo(Object)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="Object">An object to compare with.</param>
+//        public override Int32 CompareTo(Object Object)
+//        {
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+//            if (Object == null)
+//                throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is a virtual EVSE.
-            var RemoteEVSE = Object as NetworkEVSEStub;
-            if ((Object) RemoteEVSE == null)
-                throw new ArgumentException("The given object is not a virtual EVSE!");
+//            // Check if the given object is a virtual EVSE.
+//            var RemoteEVSE = Object as NetworkEVSEStub;
+//            if ((Object) RemoteEVSE == null)
+//                throw new ArgumentException("The given object is not a virtual EVSE!");
 
-            return CompareTo(RemoteEVSE);
+//            return CompareTo(RemoteEVSE);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region CompareTo(RemoteEVSE)
+//        #region CompareTo(RemoteEVSE)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="RemoteEVSE">An virtual EVSE to compare with.</param>
-        public Int32 CompareTo(NetworkEVSEStub RemoteEVSE)
-        {
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="RemoteEVSE">An virtual EVSE to compare with.</param>
+//        public Int32 CompareTo(NetworkEVSEStub RemoteEVSE)
+//        {
 
-            if ((Object) RemoteEVSE == null)
-                throw new ArgumentNullException(nameof(RemoteEVSE),  "The given virtual EVSE must not be null!");
+//            if ((Object) RemoteEVSE == null)
+//                throw new ArgumentNullException(nameof(RemoteEVSE),  "The given virtual EVSE must not be null!");
 
-            return Id.CompareTo(RemoteEVSE.Id);
+//            return Id.CompareTo(RemoteEVSE.Id);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region IEquatable<RemoteEVSE> Members
+//        #region IEquatable<RemoteEVSE> Members
 
-        #region Equals(Object)
+//        #region Equals(Object)
 
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+//        /// <summary>
+//        /// Compares two instances of this object.
+//        /// </summary>
+//        /// <param name="Object">An object to compare with.</param>
+//        /// <returns>true|false</returns>
+//        public override Boolean Equals(Object Object)
+//        {
 
-            if (Object == null)
-                return false;
+//            if (Object == null)
+//                return false;
 
-            // Check if the given object is a virtual EVSE.
-            var RemoteEVSE = Object as NetworkEVSEStub;
-            if ((Object) RemoteEVSE == null)
-                return false;
+//            // Check if the given object is a virtual EVSE.
+//            var RemoteEVSE = Object as NetworkEVSEStub;
+//            if ((Object) RemoteEVSE == null)
+//                return false;
 
-            return this.Equals(RemoteEVSE);
+//            return this.Equals(RemoteEVSE);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Equals(RemoteEVSE)
+//        #region Equals(RemoteEVSE)
 
-        /// <summary>
-        /// Compares two virtual EVSEs for equality.
-        /// </summary>
-        /// <param name="RemoteEVSE">A virtual EVSE to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(NetworkEVSEStub RemoteEVSE)
-        {
+//        /// <summary>
+//        /// Compares two virtual EVSEs for equality.
+//        /// </summary>
+//        /// <param name="RemoteEVSE">A virtual EVSE to compare with.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public Boolean Equals(NetworkEVSEStub RemoteEVSE)
+//        {
 
-            if ((Object) RemoteEVSE == null)
-                return false;
+//            if ((Object) RemoteEVSE == null)
+//                return false;
 
-            return Id.Equals(RemoteEVSE.Id);
+//            return Id.Equals(RemoteEVSE.Id);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region GetHashCode()
+//        #region GetHashCode()
 
-        /// <summary>
-        /// Get the hashcode of this object.
-        /// </summary>
-        public override Int32 GetHashCode()
+//        /// <summary>
+//        /// Get the hashcode of this object.
+//        /// </summary>
+//        public override Int32 GetHashCode()
 
-            => Id.GetHashCode();
+//            => Id.GetHashCode();
 
-        #endregion
+//        #endregion
 
-        #region (override) ToString()
+//        #region (override) ToString()
 
-        /// <summary>
-        /// Return a text representation of this object.
-        /// </summary>
-        public override String ToString()
+//        /// <summary>
+//        /// Return a text representation of this object.
+//        /// </summary>
+//        public override String ToString()
 
-            => Id.ToString();
+//            => Id.ToString();
 
-        #endregion
+//        #endregion
 
-    }
+//    }
 
-}
+//}

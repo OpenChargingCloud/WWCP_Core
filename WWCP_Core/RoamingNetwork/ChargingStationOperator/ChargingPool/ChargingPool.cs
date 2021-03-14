@@ -1453,6 +1453,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        /// <summary>
+        /// The charging station operator of this charging pool.
+        /// </summary>
+        [Optional]
+        public ChargingStationOperator  Operator       { get; }
+
+        /// <summary>
+        /// The charging station sub operator of this charging pool.
+        /// </summary>
+        [Optional]
+        public ChargingStationOperator  SubOperator    { get; }
+
         #endregion
 
         #region Links
@@ -1468,14 +1481,7 @@ namespace org.GraphDefined.WWCP
         /// The remote charging pool.
         /// </summary>
         [Optional]
-        public IRemoteChargingPool      RemoteChargingPool  { get; }
-
-
-        /// <summary>
-        /// The charging station operator of this charging pool.
-        /// </summary>
-        [Optional]
-        public ChargingStationOperator  Operator            { get; }
+        public IRemoteChargingPool  RemoteChargingPool    { get; }
 
         #endregion
 
