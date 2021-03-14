@@ -45,7 +45,7 @@ namespace org.GraphDefined.WWCP
     public static partial class ChargingStationOperatorExtentions
     {
 
-        #region ToJSON(this ChargingStationOperators, Skip = null, Take = null, Embedded = false, ...)
+        #region ToJSON(this ChargingStationOperators,           Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of charging station operators.
@@ -54,27 +54,25 @@ namespace org.GraphDefined.WWCP
         /// <param name="Skip">The optional number of charging station operators to skip.</param>
         /// <param name="Take">The optional number of charging station operators to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingStationOperator>              ChargingStationOperators,
-                                    UInt64?                                                Skip                                      = null,
-                                    UInt64?                                                Take                                      = null,
-                                    Boolean                                                Embedded                                  = false,
-                                    InfoStatus                                             ExpandRoamingNetworkId                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+        public static JArray ToJSON(this IEnumerable<ChargingStationOperator>                 ChargingStationOperators,
+                                    UInt64?                                                   Skip                                      = null,
+                                    UInt64?                                                   Take                                      = null,
+                                    Boolean                                                   Embedded                                  = false,
+                                    InfoStatus                                                ExpandRoamingNetworkId                    = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
                                     CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
                                     CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
                                     CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
                                     CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
 
 
-            => ChargingStationOperators == null || !ChargingStationOperators.Any()
+            => ChargingStationOperators?.SafeAny() == true
 
-                   ? new JArray()
-
-                   : new JArray(ChargingStationOperators.
+                   ? new JArray(ChargingStationOperators.
                                     Where         (cso => cso != null).
                                     OrderBy       (cso => cso.Id).
                                     SkipTakeFilter(Skip, Take).
@@ -88,7 +86,10 @@ namespace org.GraphDefined.WWCP
                                                                      CustomChargingStationOperatorSerializer,
                                                                      CustomChargingPoolSerializer,
                                                                      CustomChargingStationSerializer,
-                                                                     CustomEVSESerializer)));
+                                                                     CustomEVSESerializer)).
+                                    Where         (cso => cso is not null))
+
+                   : new JArray();
 
         #endregion
 

@@ -54,26 +54,24 @@ namespace org.GraphDefined.WWCP
         /// <param name="Skip">The optional number of charging pools to skip.</param>
         /// <param name="Take">The optional number of charging pools to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingPool>                 ChargingPools,
-                                    UInt64?                                        Skip                              = null,
-                                    UInt64?                                        Take                              = null,
-                                    Boolean                                        Embedded                          = false,
-                                    InfoStatus                                     ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                     ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                     ExpandChargingStationIds          = InfoStatus.Expanded,
-                                    InfoStatus                                     ExpandEVSEIds                     = InfoStatus.Hidden,
-                                    InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+        public static JArray ToJSON(this IEnumerable<ChargingPool>                    ChargingPools,
+                                    UInt64?                                           Skip                              = null,
+                                    UInt64?                                           Take                              = null,
+                                    Boolean                                           Embedded                          = false,
+                                    InfoStatus                                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                        ExpandChargingStationIds          = InfoStatus.Expanded,
+                                    InfoStatus                                        ExpandEVSEIds                     = InfoStatus.Hidden,
+                                    InfoStatus                                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                        ExpandDataLicenses                = InfoStatus.ShowIdOnly,
                                     CustomJObjectSerializerDelegate<ChargingPool>     CustomChargingPoolSerializer      = null,
                                     CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
                                     CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
 
 
-            => ChargingPools == null || !ChargingPools.Any()
+            => ChargingPools?.SafeAny() == true
 
-                   ? new JArray()
-
-                   : new JArray(ChargingPools.
+                   ? new JArray(ChargingPools.
                                     Where         (pool => pool != null).
                                     OrderBy       (pool => pool.Id).
                                     SkipTakeFilter(Skip, Take).
@@ -86,7 +84,10 @@ namespace org.GraphDefined.WWCP
                                                                        ExpandDataLicenses,
                                                                        CustomChargingPoolSerializer,
                                                                        CustomChargingStationSerializer,
-                                                                       CustomEVSESerializer)));
+                                                                       CustomEVSESerializer)).
+                                    Where         (pool => pool is not null))
+
+                   : new JArray();
 
 
         #endregion
