@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a roaming network.
     /// </summary>
-    public class RoamingNetworkStatus : ACustomData,
+    public class RoamingNetworkStatus : AInternalData,
                                         IEquatable <RoamingNetworkStatus>,
                                         IComparable<RoamingNetworkStatus>
     {

@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The status schedule of a roaming network.
     /// </summary>
-    public class RoamingNetworkStatusSchedule : ACustomData
+    public class RoamingNetworkStatusSchedule : AInternalData
     {
 
         #region Properties

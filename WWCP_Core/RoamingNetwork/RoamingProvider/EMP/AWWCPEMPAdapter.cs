@@ -206,13 +206,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean                           DisableSendChargeDetailRecords     { get; set; }
 
-
-        /// <summary>
-        /// The attached DNS service.
-        /// </summary>
-        public DNSClient                   DNSClient                         { get; }
-
-
         /// <summary>
         /// The EVSE data updates transmission intervall.
         /// </summary>
@@ -337,9 +330,7 @@ namespace org.GraphDefined.WWCP
 
                                   String                             EllipticCurve                    = "P-256",
                                   ECPrivateKeyParameters             PrivateKey                       = null,
-                                  PublicKeyCertificates              PublicKeyCertificates            = null,
-
-                                  DNSClient                          DNSClient                        = null)
+                                  PublicKeyCertificates              PublicKeyCertificates            = null)
 
             : base(Id,
                    Name,
@@ -386,8 +377,6 @@ namespace org.GraphDefined.WWCP
             this.EVSEsUpdateLog                                  = new Dictionary<EVSE,            List<PropertyUpdateInfos>>();
             this.ChargingStationsUpdateLog                       = new Dictionary<ChargingStation, List<PropertyUpdateInfos>>();
             this.ChargingPoolsUpdateLog                          = new Dictionary<ChargingPool,    List<PropertyUpdateInfos>>();
-
-            this.DNSClient                                       = DNSClient;
 
             this.EVSEsToAddQueue                                 = new HashSet<EVSE>();
             this.EVSEsToUpdateQueue                              = new HashSet<EVSE>();

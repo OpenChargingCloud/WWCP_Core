@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current admin status of a charging station.
     /// </summary>
-    public class ChargingStationAdminStatus : ACustomData,
+    public class ChargingStationAdminStatus : AInternalData,
                                               IEquatable <ChargingStationAdminStatus>,
                                               IComparable<ChargingStationAdminStatus>
     {

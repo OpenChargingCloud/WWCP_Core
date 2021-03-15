@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The admin status schedule of a charging station.
     /// </summary>
-    public class ChargingStationAdminStatusSchedule : ACustomData
+    public class ChargingStationAdminStatusSchedule : AInternalData
     {
 
         #region Properties

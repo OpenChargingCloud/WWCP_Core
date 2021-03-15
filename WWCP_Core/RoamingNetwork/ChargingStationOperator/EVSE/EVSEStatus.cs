@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current timestamped status of an EVSE.
     /// </summary>
-    public class EVSEStatus : ACustomData,
+    public class EVSEStatus : AInternalData,
                               IEquatable <EVSEStatus>,
                               IComparable<EVSEStatus>
     {

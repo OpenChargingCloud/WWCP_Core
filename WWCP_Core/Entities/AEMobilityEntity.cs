@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An abstract e-mobility entity.
     /// </summary>
-    public abstract class AEMobilityEntity<TId> : ACustomData,
+    public abstract class AEMobilityEntity<TId> : AInternalData,
                                                   IEntity<TId>,
                                                   IHasIds<TId>
 

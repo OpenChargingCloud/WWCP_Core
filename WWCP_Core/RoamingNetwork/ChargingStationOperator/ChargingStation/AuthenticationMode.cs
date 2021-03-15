@@ -80,7 +80,7 @@ namespace org.GraphDefined.WWCP
             }
 
             public RFID(IEnumerable<RFIDCardTypes>  CardTypes,
-                        IEnumerable<Brand_Id>       BrandIds)
+                        IEnumerable<Brand_Id>       BrandIds = null)
 
                 : base("RFID")
 

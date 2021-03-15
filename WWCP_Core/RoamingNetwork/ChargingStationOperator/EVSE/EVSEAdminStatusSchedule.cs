@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The admin status schedule of an EVSE.
     /// </summary>
-    public class EVSEAdminStatusSchedule : ACustomData
+    public class EVSEAdminStatusSchedule : AInternalData
     {
 
         #region Properties

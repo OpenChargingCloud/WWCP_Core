@@ -1328,6 +1328,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        /// <summary>
+        /// Optional custom data, e.g. in combination with custom parsers and serializers.
+        /// </summary>
+        [Optional]
+        public JObject  CustomData    { get; }
+
         #endregion
 
         #region Events
@@ -1400,7 +1407,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        /// 
+        /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
+        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
         public EVSE(EVSE_Id                              Id,
                     ChargingStation                      ChargingStation,
                     Action<EVSE>                         Configurator             = null,
@@ -1409,10 +1418,12 @@ namespace org.GraphDefined.WWCP
                     Timestamped<EVSEStatusTypes>?        InitialStatus            = null,
                     UInt16                               MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
                     UInt16                               MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                    IReadOnlyDictionary<String, Object>  CustomData               = null)
+
+                    JObject                              CustomData               = null,
+                    IReadOnlyDictionary<String, Object>  InternalData             = null)
 
             : base(Id,
-                   CustomData)
+                   InternalData)
 
         {
 
@@ -1433,6 +1444,8 @@ namespace org.GraphDefined.WWCP
 
             this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.     Insert(InitialStatus.Value);
+
+            this.CustomData             = CustomData;
 
             #endregion
 

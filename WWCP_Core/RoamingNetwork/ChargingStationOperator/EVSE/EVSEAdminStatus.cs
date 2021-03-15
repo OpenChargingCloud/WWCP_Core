@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current admin status of an EVSE.
     /// </summary>
-    public class EVSEAdminStatus : ACustomData,
+    public class EVSEAdminStatus : AInternalData,
                                    IEquatable<EVSEAdminStatus>,
                                    IComparable<EVSEAdminStatus>
     {

@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a charging pool.
     /// </summary>
-    public class ChargingPoolStatus : ACustomData,
+    public class ChargingPoolStatus : AInternalData,
                                       IEquatable <ChargingPoolStatus>,
                                       IComparable<ChargingPoolStatus>
     {

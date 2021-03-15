@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The status schedule of an EVSE.
     /// </summary>
-    public class EVSEStatusSchedule : ACustomData
+    public class EVSEStatusSchedule : AInternalData
     {
 
         #region Properties
