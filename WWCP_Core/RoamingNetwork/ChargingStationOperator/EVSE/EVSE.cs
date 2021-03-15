@@ -1445,7 +1445,7 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.     Insert(InitialStatus.Value);
 
-            this.CustomData             = CustomData;
+            this.CustomData             = CustomData ?? new JObject();
 
             #endregion
 

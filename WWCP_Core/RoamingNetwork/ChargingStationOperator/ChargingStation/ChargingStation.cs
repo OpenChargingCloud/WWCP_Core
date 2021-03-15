@@ -1824,6 +1824,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        /// <summary>
+        /// Optional custom data, e.g. in combination with custom parsers and serializers.
+        /// </summary>
+        [Optional]
+        public JObject  CustomData    { get; }
+
         #endregion
 
         #region Links
@@ -1935,9 +1942,13 @@ namespace org.GraphDefined.WWCP
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
                                UInt16                                         MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
-                               UInt16                                         MaxStatusListSize              = DefaultMaxStatusListSize)
+                               UInt16                                         MaxStatusListSize              = DefaultMaxStatusListSize,
 
-            : base(Id)
+                               JObject                                        CustomData                     = null,
+                               IReadOnlyDictionary<String, Object>            InternalData                   = null)
+
+            : base(Id,
+                   InternalData)
 
         {
 
@@ -1960,6 +1971,8 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule.Insert(InitialStatus.Value);
 
             this._EVSEs                      = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
+
+            this.CustomData                  = CustomData ?? new JObject();
 
             #endregion
 
@@ -4047,7 +4060,6 @@ namespace org.GraphDefined.WWCP
             => Id.ToString();
 
         #endregion
-
 
     }
 

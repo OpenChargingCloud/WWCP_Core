@@ -1466,6 +1466,13 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public ChargingStationOperator  SubOperator    { get; }
 
+
+        /// <summary>
+        /// Optional custom data, e.g. in combination with custom parsers and serializers.
+        /// </summary>
+        [Optional]
+        public JObject                  CustomData     { get; }
+
         #endregion
 
         #region Links
@@ -1536,9 +1543,13 @@ namespace org.GraphDefined.WWCP
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
                             UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize)
+                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize,
 
-            : base(Id)
+                            JObject                                     CustomData                   = null,
+                            IReadOnlyDictionary<String, Object>         InternalData                 = null)
+
+            : base(Id,
+                   InternalData)
 
         {
 
@@ -1560,6 +1571,8 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule.Insert(InitialStatus.Value);
 
             this._ChargingStations           = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
+
+            this.CustomData                  = CustomData ?? new JObject();
 
             #endregion
 

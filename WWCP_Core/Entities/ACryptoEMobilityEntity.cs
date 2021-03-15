@@ -70,14 +70,16 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
-        protected ACryptoEMobilityEntity(TId                     Id,
-                                         I18NString              Name,
-                                         IRoamingNetwork         RoamingNetwork,
-                                         String                  EllipticCurve          = "P-256",
-                                         ECPrivateKeyParameters  PrivateKey             = null,
-                                         PublicKeyCertificates   PublicKeyCertificates  = null)
+        protected ACryptoEMobilityEntity(TId                                  Id,
+                                         I18NString                           Name,
+                                         IRoamingNetwork                      RoamingNetwork,
+                                         String                               EllipticCurve           = "P-256",
+                                         ECPrivateKeyParameters               PrivateKey              = null,
+                                         PublicKeyCertificates                PublicKeyCertificates   = null,
+                                         IReadOnlyDictionary<String, Object>  InternalData            = null)
 
-            : base(Id)
+            : base(Id,
+                   InternalData)
 
         {
 
@@ -100,14 +102,16 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
-        protected ACryptoEMobilityEntity(IEnumerable<TId>        Ids,
-                                         I18NString              Name,
-                                         IRoamingNetwork         RoamingNetwork,
-                                         String                  EllipticCurve          = "P-256",
-                                         ECPrivateKeyParameters  PrivateKey             = null,
-                                         PublicKeyCertificates   PublicKeyCertificates  = null)
+        protected ACryptoEMobilityEntity(IEnumerable<TId>                     Ids,
+                                         I18NString                           Name,
+                                         IRoamingNetwork                      RoamingNetwork,
+                                         String                               EllipticCurve           = "P-256",
+                                         ECPrivateKeyParameters               PrivateKey              = null,
+                                         PublicKeyCertificates                PublicKeyCertificates   = null,
+                                         IReadOnlyDictionary<String, Object>  InternalData            = null)
 
-            : base(Ids)
+            : base(Ids,
+                   InternalData)
 
         {
 

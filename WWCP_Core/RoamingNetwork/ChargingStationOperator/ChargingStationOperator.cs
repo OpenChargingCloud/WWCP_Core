@@ -610,6 +610,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        /// <summary>
+        /// Optional custom data, e.g. in combination with custom parsers and serializers.
+        /// </summary>
+        [Optional]
+        public JObject  CustomData    { get; }
+
         #endregion
 
         #region Links
@@ -681,11 +688,15 @@ namespace org.GraphDefined.WWCP
                                        Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                     = null,
                                        Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                          = null,
                                        UInt16                                                 MaxAdminStatusListSize                 = DefaultMaxAdminStatusListSize,
-                                       UInt16                                                 MaxStatusListSize                      = DefaultMaxStatusListSize)
+                                       UInt16                                                 MaxStatusListSize                      = DefaultMaxStatusListSize,
+
+                                       JObject                                                CustomData                             = null,
+                                       IReadOnlyDictionary<String, Object>                    InternalData                           = null)
 
             : base(Ids,
                    Name,
-                   RoamingNetwork)
+                   RoamingNetwork,
+                   InternalData: InternalData)
 
         {
 
@@ -696,6 +707,8 @@ namespace org.GraphDefined.WWCP
 
             InitialAdminStatus = InitialAdminStatus ?? new Timestamped<ChargingStationOperatorAdminStatusTypes>(ChargingStationOperatorAdminStatusTypes.Operational);
             InitialStatus      = InitialStatus      ?? new Timestamped<ChargingStationOperatorStatusTypes>     (ChargingStationOperatorStatusTypes.Available);
+
+            this.CustomData    = CustomData         ?? new JObject();
 
             #endregion
 
