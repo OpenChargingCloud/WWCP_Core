@@ -58,7 +58,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The cryptographical signature of this entity.
         /// </summary>
-        public Signature         Signature        { get; protected set; }
+        public Signature               Signature                { get; protected set; }
 
         #endregion
 
@@ -115,6 +115,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            this.Name                   = Name;
             this.RoamingNetwork         = RoamingNetwork;
             this.EllipticCurve          = EllipticCurve ?? "P-256";
             this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);

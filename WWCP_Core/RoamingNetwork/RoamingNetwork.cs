@@ -540,64 +540,64 @@ namespace org.GraphDefined.WWCP
             lock (_ChargingStationOperators)
             {
 
-                foreach (var ChargingStationOperatorId in ChargingStationOperatorIds)
+                foreach (var chargingStationOperatorId in ChargingStationOperatorIds)
                 {
 
-                    if (_ChargingStationOperators.ContainsId(ChargingStationOperatorId))
-                        throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorId, Name);
+                    if (_ChargingStationOperators.ContainsId(chargingStationOperatorId))
+                        throw new ChargingStationOperatorAlreadyExists(this, chargingStationOperatorId, Name);
 
                 }
 
 
-                var _ChargingStationOperator = new ChargingStationOperator(ChargingStationOperatorIds,
-                                                                           this,
-                                                                           Configurator,
-                                                                           RemoteChargingStationOperatorCreator,
-                                                                           Name,
-                                                                           Description,
-                                                                           AdminStatus,
-                                                                           Status);
+                var chargingStationOperator = new ChargingStationOperator(ChargingStationOperatorIds,
+                                                                          this,
+                                                                          Configurator,
+                                                                          RemoteChargingStationOperatorCreator,
+                                                                          Name,
+                                                                          Description,
+                                                                          AdminStatus,
+                                                                          Status);
 
 
-                if (_ChargingStationOperators.TryAdd(_ChargingStationOperator, OnSuccess))
+                if (_ChargingStationOperators.TryAdd(chargingStationOperator, OnSuccess))
                 {
 
-                    _ChargingStationOperator.OnDataChanged                                 += UpdateCSOData;
-                    _ChargingStationOperator.OnStatusChanged                               += UpdateCSOStatus;
-                    _ChargingStationOperator.OnAdminStatusChanged                          += UpdateCSOAdminStatus;
+                    chargingStationOperator.OnDataChanged                                 += UpdateCSOData;
+                    chargingStationOperator.OnStatusChanged                               += UpdateCSOStatus;
+                    chargingStationOperator.OnAdminStatusChanged                          += UpdateCSOAdminStatus;
 
-                    _ChargingStationOperator.OnChargingPoolAddition.   OnVoting            += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
-                    _ChargingStationOperator.OnChargingPoolAddition.   OnNotification      += (timestamp, cso, pool)            => ChargingPoolAddition.   SendNotification(timestamp, cso, pool);
-                    _ChargingStationOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
-                    _ChargingStationOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
-                    _ChargingStationOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
-                    _ChargingStationOperator.OnChargingPoolRemoval.    OnVoting            += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
-                    _ChargingStationOperator.OnChargingPoolRemoval.    OnNotification      += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
+                    chargingStationOperator.OnChargingPoolAddition.   OnVoting            += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
+                    chargingStationOperator.OnChargingPoolAddition.   OnNotification      += (timestamp, cso, pool)            => ChargingPoolAddition.   SendNotification(timestamp, cso, pool);
+                    chargingStationOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
+                    chargingStationOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
+                    chargingStationOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
+                    chargingStationOperator.OnChargingPoolRemoval.    OnVoting            += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
+                    chargingStationOperator.OnChargingPoolRemoval.    OnNotification      += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
 
-                    _ChargingStationOperator.OnChargingStationAddition.OnVoting            += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
-                    _ChargingStationOperator.OnChargingStationAddition.OnNotification      += (timestamp, pool, station)        => ChargingStationAddition.SendNotification(timestamp, pool, station);
-                    _ChargingStationOperator.OnChargingStationDataChanged                  += UpdateChargingStationData;
-                    _ChargingStationOperator.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-                    _ChargingStationOperator.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
-                    _ChargingStationOperator.OnChargingStationRemoval. OnVoting            += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
-                    _ChargingStationOperator.OnChargingStationRemoval. OnNotification      += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
+                    chargingStationOperator.OnChargingStationAddition.OnVoting            += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
+                    chargingStationOperator.OnChargingStationAddition.OnNotification      += (timestamp, pool, station)        => ChargingStationAddition.SendNotification(timestamp, pool, station);
+                    chargingStationOperator.OnChargingStationDataChanged                  += UpdateChargingStationData;
+                    chargingStationOperator.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
+                    chargingStationOperator.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+                    chargingStationOperator.OnChargingStationRemoval. OnVoting            += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
+                    chargingStationOperator.OnChargingStationRemoval. OnNotification      += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
 
-                    _ChargingStationOperator.OnEVSEAddition.           OnVoting            += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-                    _ChargingStationOperator.OnEVSEAddition.           OnNotification      += (timestamp, station, evse)        => EVSEAddition.           SendNotification(timestamp, station, evse);
-                    _ChargingStationOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
-                    _ChargingStationOperator.OnEVSEDataChanged                             += UpdateEVSEData;
-                    _ChargingStationOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                    _ChargingStationOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
-                    _ChargingStationOperator.OnEVSERemoval.            OnVoting            += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
-                    _ChargingStationOperator.OnEVSERemoval.            OnNotification      += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
+                    chargingStationOperator.OnEVSEAddition.           OnVoting            += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                    chargingStationOperator.OnEVSEAddition.           OnNotification      += (timestamp, station, evse)        => EVSEAddition.           SendNotification(timestamp, station, evse);
+                    chargingStationOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
+                    chargingStationOperator.OnEVSEDataChanged                             += UpdateEVSEData;
+                    chargingStationOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                    chargingStationOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+                    chargingStationOperator.OnEVSERemoval.            OnVoting            += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
+                    chargingStationOperator.OnEVSERemoval.            OnNotification      += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
 
 
-                    _ChargingStationOperator.OnNewReservation                              += SendNewReservation;
-                    _ChargingStationOperator.OnReservationCanceled                         += SendReservationCanceled;
-                    _ChargingStationOperator.OnNewChargingSession                          += SendNewChargingSession;
-                    _ChargingStationOperator.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
+                    chargingStationOperator.OnNewReservation                              += SendNewReservation;
+                    chargingStationOperator.OnReservationCanceled                         += SendReservationCanceled;
+                    chargingStationOperator.OnNewChargingSession                          += SendNewChargingSession;
+                    chargingStationOperator.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
 
-                    return _ChargingStationOperator;
+                    return chargingStationOperator;
 
                 }
 

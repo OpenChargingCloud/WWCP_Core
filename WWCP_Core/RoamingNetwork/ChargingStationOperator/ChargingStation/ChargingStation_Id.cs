@@ -390,10 +390,8 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal text representation of a charging station identification: '" + Text + "'!",
                                             nameof(Text));
 
-            ChargingStationOperator_Id _OperatorId;
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
-                return new ChargingStation_Id(_OperatorId,
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id operatorId))
+                return new ChargingStation_Id(operatorId,
                                               MatchCollection[0].Groups[2].Value);
 
             throw new ArgumentException("Illegal charging station identification '" + Text + "'!",
