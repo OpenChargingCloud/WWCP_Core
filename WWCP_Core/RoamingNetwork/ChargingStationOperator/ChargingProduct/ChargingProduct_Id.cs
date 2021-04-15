@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly static Random _Random = new Random(DateTime.Now.Millisecond);
+        private readonly static Random _Random = new Random();
 
         /// <summary>
         /// The internal identification.
