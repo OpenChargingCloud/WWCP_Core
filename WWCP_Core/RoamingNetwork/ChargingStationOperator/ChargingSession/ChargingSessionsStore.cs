@@ -338,7 +338,11 @@ namespace org.GraphDefined.WWCP
                    DisableNetworkSync:     DisableNetworkSync,
                    DNSClient:              DNSClient)
 
-        { }
+        {
+
+            Directory.CreateDirectory("ChargingSessions");
+
+        }
 
         #endregion
 

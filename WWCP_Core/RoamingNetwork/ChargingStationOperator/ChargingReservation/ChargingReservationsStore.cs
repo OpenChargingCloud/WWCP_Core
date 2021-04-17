@@ -72,7 +72,11 @@ namespace org.GraphDefined.WWCP
                    DisableNetworkSync,
                    DNSClient)
 
-        { }
+        {
+
+            Directory.CreateDirectory("ChargingReservations");
+
+        }
 
         #endregion
 
