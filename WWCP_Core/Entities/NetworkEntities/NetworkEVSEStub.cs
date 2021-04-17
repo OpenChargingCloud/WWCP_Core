@@ -65,7 +65,7 @@
 
 //        public static readonly TimeSpan ReservationSelfCancelAfter  = TimeSpan.FromSeconds(10);
 
-//        private static readonly Random _random = new Random(DateTime.UtcNow.Millisecond);
+//        private static readonly Random _random = new Random();
 
 //        #endregion
 

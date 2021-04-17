@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         //ToDo: Replace with better randomness!
-        private static readonly Random _Random                       = new Random(DateTime.UtcNow.Millisecond);
+        private static readonly Random _Random                       = new Random();
 
         /// <summary>
         /// The regular expression for parsing a charging station group identification.

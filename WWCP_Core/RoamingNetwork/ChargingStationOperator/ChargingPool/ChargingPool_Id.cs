@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         //ToDo: Replace with better randomness!
-        private static readonly Random _Random               = new Random(DateTime.UtcNow.Millisecond);
+        private static readonly Random _Random               = new Random();
 
         /// <summary>
         /// The regular expression for parsing a charging pool identification.
@@ -143,10 +143,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Mapper">A delegate to modify a generated charging pool identification suffix.</param>
         public static ChargingPool_Id Generate(ChargingStationOperator_Id  OperatorId,
                                                Address                     Address,
-                                               GeoCoordinate?              GeoLocation  = null,
-                                               //String                      HelperId     = "",
-                                               Byte                        Length       = 15,
-                                               Func<String, String>        Mapper       = null)
+                                               GeoCoordinate?              GeoLocation       = default,
+                                               String                      PoolName          = default,
+                                               String                      PoolDescription   = default,
+                                               Byte                        Length            = 15,
+                                               Func<String, String>        Mapper            = null)
         {
 
             if (Length < 12)
@@ -155,13 +156,14 @@ namespace org.GraphDefined.WWCP
             if (Length > 50)
                 Length = 50;
 
-            var Suffíx = new SHA1CryptoServiceProvider().
+            var Suffíx = new SHA256CryptoServiceProvider().
                              ComputeHash(Encoding.UTF8.GetBytes(
                                              String.Concat(
                                                  OperatorId.  ToString(),
                                                  Address.     ToString(),
-                                                 GeoLocation?.ToString() ?? ""
-                                                 //HelperId                ?? ""
+                                                 GeoLocation?.ToString() ?? "",
+                                                 PoolName                ?? "",
+                                                 PoolDescription         ?? ""
                                              )
                                          )).
                                          ToHexString().

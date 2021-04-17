@@ -28,6 +28,25 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// How strictly to parse EVSE Ids.
+    /// </summary>
+    public enum EVSEIdParsingMode
+    {
+
+        /// <summary>
+        /// Allow more EVSE Id variants.
+        /// </summary>
+        relaxed,
+
+        /// <summary>
+        /// Strict parsing of EVSE Ids.
+        /// </summary>
+        strict
+
+    }
+
+
+    /// <summary>
     /// The unique identification of an Electric Vehicle Supply Equipment (EVSE).
     /// </summary>
     public readonly struct EVSE_Id : IId,
@@ -38,33 +57,38 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        //ToDo: Replace with better randomness!
-        private static readonly Random _Random = new Random(DateTime.UtcNow.Millisecond);
+        /// <summary>
+        /// The regular expression for relaxed parsing an EVSE identification.
+        /// </summary>                                                  // new format:
+        public static readonly Regex  EVSEId_relaxed_RegEx  = new Regex(@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Za-z0-9\*]{1,30})$" + " | " +
+
+                                                                        // old format:
+                                                                        @"^(\+?[0-9]{1,5}\*[0-9]{3,6})\*?([A-Za-z0-9\*]{1,32})$",
+                                                                        // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
+                                                                        // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;
+                                                                        // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter
+
+                                                                        RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
-        /// The regular expression for parsing an EVSE identification.
-        /// </summary>                                            // new format:
-        public static readonly Regex  EVSEId_RegEx      = new Regex(@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Za-z0-9\*]{1,30})$ | " +
-
-                                                                    // old format:
-                                                                    @"^(\+?[0-9]{1,5}\*[0-9]{3,6})\*?([A-Za-z0-9\*]{1,32})$",
-                                                                    // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
-                                                                    // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;
-                                                                    // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter
-
-                                                                    RegexOptions.IgnorePatternWhitespace);
+        /// The regular expression for strict parsing an EVSE identification.
+        /// </summary>                                                  // new format:
+        public static readonly Regex  EVSEId_strict_RegEx   = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{1,30})$",
+                                                                        RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The regular expression for parsing an ISO EVSE identification suffix.
         /// </summary>
-        public static readonly Regex IdSuffixISO_RegEx  = new Regex(@"^([A-Za-z0-9\*]{1,30})$",
-                                                                    RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex IdSuffixISO_RegEx      = new Regex(@"^([A-Za-z0-9\*]{1,30})$",
+                                                                        RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The regular expression for parsing a DIN EVSE identification suffix.
         /// </summary>
-        public static readonly Regex IdSuffixDIN_RegEx  = new Regex(@"^([0-9\*]{1,32})$",
-                                                                    RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex IdSuffixDIN_RegEx      = new Regex(@"^([0-9\*]{1,32})$",
+                                                                        RegexOptions.IgnorePatternWhitespace);
+
+        private static readonly Random random = new Random();
 
         #endregion
 
@@ -146,63 +170,27 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Random(OperatorId, Mapper = null)
+        #region Random  (OperatorId, Length = 12, Mapper = null)
 
         /// <summary>
         /// Generate a new unique identification of an EVSE.
         /// </summary>
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Length">The expected length of the EVSE identification suffix</param>
         /// <param name="Mapper">A delegate to modify the newly generated EVSE identification.</param>
         public static EVSE_Id Random(ChargingStationOperator_Id  OperatorId,
+                                     Byte                        Length  = 12,
                                      Func<String, String>        Mapper  = null)
 
 
             => new EVSE_Id(OperatorId,
-                           Mapper != null ? Mapper(_Random.RandomString(12)) : _Random.RandomString(12));
+                           Mapper != null
+                               ? Mapper(random.RandomString(Length))
+                               :        random.RandomString(Length));
 
         #endregion
 
-        #region Parse(Text)
-
-        /// <summary>
-        /// Parse the given string as an EVSE identification.
-        /// </summary>
-        /// <param name="Text">A text representation of an EVSE identification.</param>
-        public static EVSE_Id Parse(String Text)
-        {
-
-            #region Initial checks
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of an EVSE identification must not be null or empty!");
-
-            #endregion
-
-            var MatchCollection = EVSEId_RegEx.Matches(Text);
-
-            if (MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of an EVSE identification: '" + Text + "'!",
-                                            nameof(Text));
-
-            ChargingStationOperator_Id _OperatorId;
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
-                return new EVSE_Id(_OperatorId,
-                                   MatchCollection[0].Groups[2].Value);
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[3].Value, out _OperatorId))
-                return new EVSE_Id(_OperatorId,
-                                   MatchCollection[0].Groups[4].Value);
-
-
-            throw new ArgumentException("Illegal EVSE identification '" + Text + "'!",
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
-        #region Parse(OperatorId, Suffix)
+        #region Parse   (OperatorId, Suffix)
 
         /// <summary>
         /// Parse the given string as an EVSE identification.
@@ -240,85 +228,144 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text)
+        #region Parse   (Text,              ParsingMode = relaxed)
 
         /// <summary>
-        /// Parse the given string as an EVSE identification.
+        /// Parse the given text-representation of an EVSE identification.
         /// </summary>
-        public static EVSE_Id? TryParse(String Text)
+        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="ParsingMode">How strictly to parse the given EVSE identification.</param>
+        public static EVSE_Id Parse(String              Text,
+                                    EVSEIdParsingMode?  ParsingMode = EVSEIdParsingMode.relaxed)
         {
 
-            EVSE_Id EVSEId;
-
-            if (TryParse(Text, out EVSEId))
+            if (TryParse(Text,
+                         out EVSE_Id EVSEId,
+                         ParsingMode))
+            {
                 return EVSEId;
+            }
 
-            return null;
+            throw new ArgumentException("Illegal EVSE identification '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region TryParse(Text, out EVSE_Id)
+        #region TryParse(Text,              ParsingMode = relaxed)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Parse the given string as an EVSE identification.
+        /// Try to parse the given text-representation of an EVSE identification.
         /// </summary>
-        public static Boolean TryParse(String Text, out EVSE_Id EVSEId)
+        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        public static EVSE_Id? TryParse(String Text)
+
+            => TryParse(Text,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given text-representation of an EVSE identification.
+        /// </summary>
+        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="ParsingMode">How strictly to parse the given EVSE identification.</param>
+        public static EVSE_Id? TryParse(String              Text,
+                                        EVSEIdParsingMode?  ParsingMode)
+        {
+
+            if (TryParse(Text,
+                         out EVSE_Id EVSEId,
+                         ParsingMode))
+            {
+                return EVSEId;
+            }
+
+            return default;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out EVSE_Id, ParsingMode = relaxed)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given text-representation of an EVSE identification.
+        /// </summary>
+        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="EVSEId">The parsed EVSE identification.</param>
+        public static Boolean TryParse(String       Text,
+                                       out EVSE_Id  EVSEId)
+
+            => TryParse(Text,
+                        out EVSEId,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given text-representation of an EVSE identification.
+        /// </summary>
+        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="EVSEId">The parsed EVSE identification.</param>
+        /// <param name="ParsingMode">How strictly to parse the given EVSE identification.</param>
+        public static Boolean TryParse(String              Text,
+                                       out EVSE_Id         EVSEId,
+                                       EVSEIdParsingMode?  ParsingMode)
         {
 
             #region Initial checks
 
+            EVSEId  = default;
+            Text    = Text?.Trim();
+
             if (Text.IsNullOrEmpty())
-            {
-                EVSEId = default(EVSE_Id);
                 return false;
-            }
 
             #endregion
 
             try
             {
 
-                EVSEId = default(EVSE_Id);
+                var matchCollection = (ParsingMode == EVSEIdParsingMode.relaxed
+                                           ? EVSEId_relaxed_RegEx
+                                           : EVSEId_strict_RegEx).Matches(Text);
 
-                var _MatchCollection = EVSEId_RegEx.Matches(Text);
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
 
                 // New format...
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value,
+                                                        out ChargingStationOperator_Id operatorId))
                 {
 
-                    EVSEId = new EVSE_Id(_OperatorId,
-                                         _MatchCollection[0].Groups[2].Value);
+                    EVSEId = new EVSE_Id(operatorId,
+                                         matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out _OperatorId))
+                // Old format...
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[3].Value,
+                                                        out operatorId))
                 {
 
-                    EVSEId = new EVSE_Id(_OperatorId,
-                                         _MatchCollection[0].Groups[4].Value);
+                    EVSEId = new EVSE_Id(operatorId,
+                                         matchCollection[0].Groups[4].Value);
 
                     return true;
 
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception e)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch (Exception)
             { }
 
-            EVSEId = default(EVSE_Id);
             return false;
 
         }
@@ -393,19 +440,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-        {
-
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(EVSEId1, EVSEId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) EVSEId1 == null) || ((Object) EVSEId2 == null))
-                return false;
-
-            return EVSEId1.Equals(EVSEId2);
-
-        }
+            => EVSEId1.Equals(EVSEId2);
 
         #endregion
 
@@ -418,7 +453,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-            => !(EVSEId1 == EVSEId2);
+            => !EVSEId1.Equals(EVSEId2);
 
         #endregion
 
@@ -431,14 +466,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-        {
-
-            if ((Object) EVSEId1 == null)
-                throw new ArgumentNullException(nameof(EVSEId1), "The given EVSEId1 must not be null!");
-
-            return EVSEId1.CompareTo(EVSEId2) < 0;
-
-        }
+            => EVSEId1.CompareTo(EVSEId2) < 0;
 
         #endregion
 
@@ -451,7 +479,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-            => !(EVSEId1 > EVSEId2);
+            => EVSEId1.CompareTo(EVSEId2) <= 0;
 
         #endregion
 
@@ -464,14 +492,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-        {
-
-            if ((Object) EVSEId1 == null)
-                throw new ArgumentNullException(nameof(EVSEId1), "The given EVSEId1 must not be null!");
-
-            return EVSEId1.CompareTo(EVSEId2) > 0;
-
-        }
+            => EVSEId1.CompareTo(EVSEId2) > 0;
 
         #endregion
 
@@ -484,7 +505,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-            => !(EVSEId1 < EVSEId2);
+            => EVSEId1.CompareTo(EVSEId2) >= 0;
 
         #endregion
 
@@ -499,17 +520,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is EVSE_Id))
-                throw new ArgumentException("The given object is not an EVSE identification!");
-
-            return CompareTo((EVSE_Id) Object);
-
-        }
+            => Object is EVSE_Id EVSEId
+                   ? CompareTo(EVSEId)
+                   : throw new ArgumentException("The given object is not an EVSE identification!", nameof(Object));
 
         #endregion
 
@@ -522,21 +536,11 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(EVSE_Id EVSEId)
         {
 
-            if ((Object) EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
+            var result = OperatorId.CompareTo(EVSEId.OperatorId);
 
-            // Compare the length of the identifications
-            var _Result = this.Length.CompareTo(EVSEId.Length);
-
-            // If equal: Compare charging operator identifications
-            if (_Result == 0)
-                _Result = OperatorId.CompareTo(EVSEId.OperatorId);
-
-            // If equal: Compare suffix
-            if (_Result == 0)
-                _Result = String.Compare(Suffix, EVSEId.Suffix, StringComparison.Ordinal);
-
-            return _Result;
+            return result == 0
+                       ? String.Compare(Suffix, EVSEId.Suffix, StringComparison.OrdinalIgnoreCase)
+                       : result;
 
         }
 
@@ -554,17 +558,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is EVSE_Id))
-                return false;
-
-            return Equals((EVSE_Id) Object);
-
-        }
+            => Object is EVSE_Id EVSEId &&
+                   Equals(EVSEId);
 
         #endregion
 
@@ -576,15 +572,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EVSE_Id EVSEId)
-        {
 
-            if ((Object) EVSEId == null)
-                return false;
-
-            return OperatorId.Equals(EVSEId.OperatorId) &&
-                   Suffix.    Equals(EVSEId.Suffix);
-
-        }
+            => OperatorId.Equals(EVSEId.OperatorId) &&
+               String.Equals(Suffix, EVSEId.Suffix, StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -610,23 +600,12 @@ namespace org.GraphDefined.WWCP
         /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
         /// </summary>
         public override String ToString()
-        {
 
-            switch (Format)
-            {
-
-                case OperatorIdFormats.DIN:
-                    return String.Concat(OperatorId,  "*", Suffix);
-
-                case OperatorIdFormats.ISO_STAR:
-                    return String.Concat(OperatorId, "*E", Suffix);
-
-                default:  // ISO
-                    return String.Concat(OperatorId,  "E", Suffix);
-
-            }
-
-        }
+            => Format switch {
+                   OperatorIdFormats.DIN       => String.Concat(OperatorId,  "*", Suffix),
+                   OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId, "*E", Suffix),
+                   _                           => String.Concat(OperatorId,  "E", Suffix),
+               };
 
         #endregion
 

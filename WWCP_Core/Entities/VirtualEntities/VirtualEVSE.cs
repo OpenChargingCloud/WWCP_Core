@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP.Virtual
         /// </summary>
         public  static readonly TimeSpan  DefaultSelfCheckTimeSpan  = TimeSpan.FromSeconds(15);
 
-        private static readonly Random    _random                   = new Random(DateTime.UtcNow.Millisecond);
+        private static readonly Random    _random                   = new Random();
 
         private        readonly Object    EnergyMeterLock;
         private                 Timer     EnergyMeterTimer;
