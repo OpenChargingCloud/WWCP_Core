@@ -171,48 +171,11 @@ namespace org.GraphDefined.WWCP
         public static eMobilityProvider_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out eMobilityProvider_Id providerId))
+                return providerId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of an e-mobility provider identification must not be null or empty!");
-
-            #endregion
-
-            var MatchCollection = ProviderId_RegEx.Matches(Text);
-
-            if (MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of an e-mobility provider identification: '" + Text + "'!", nameof(Text));
-
-            Country _CountryCode;
-
-            if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out _CountryCode))
-            {
-
-                var Separator = ProviderIdFormats.ISO;
-
-                switch (MatchCollection[0].Groups[2].Value)
-                {
-
-                    case "-" :
-                        Separator = ProviderIdFormats.ISO_HYPHEN;
-                        break;
-
-                    case "*" :
-                        Separator = ProviderIdFormats.DIN_STAR;
-                        break;
-
-                    default:
-                        Separator = ProviderIdFormats.ISO;
-                        break;
-
-                }
-
-                return new eMobilityProvider_Id(_CountryCode,
-                                                MatchCollection[0].Groups[3].Value,
-                                                Separator);
-            }
-
-            throw new ArgumentException("Unknown country code in the given text representation of an e-mobility provider identification: '" + Text + "'!", nameof(Text));
+            throw new ArgumentException("Unknown country code in the given text representation of an e-mobility provider identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -275,12 +238,10 @@ namespace org.GraphDefined.WWCP
         public static eMobilityProvider_Id? TryParse(String Text)
         {
 
-            eMobilityProvider_Id _ProviderId;
+            if (TryParse(Text, out eMobilityProvider_Id providerId))
+                return providerId;
 
-            if (TryParse(Text, out _ProviderId))
-                return _ProviderId;
-
-            return new eMobilityProvider_Id?();
+            return default;
 
         }
 
@@ -299,11 +260,11 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
+            ProviderId  = default;
+            Text        = Text?.Trim();
+
             if (Text.IsNullOrEmpty())
-            {
-                ProviderId = default(eMobilityProvider_Id);
                 return false;
-            }
 
             #endregion
 
@@ -313,38 +274,19 @@ namespace org.GraphDefined.WWCP
                 var MatchCollection = ProviderId_RegEx.Matches(Text);
 
                 if (MatchCollection.Count != 1)
-                {
-                    ProviderId = default(eMobilityProvider_Id);
                     return false;
-                }
 
-                Country _CountryCode;
 
-                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out _CountryCode))
+                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out Country countryCode))
                 {
 
-                    var Separator = ProviderIdFormats.ISO;
-
-                    switch (MatchCollection[0].Groups[2].Value)
-                    {
-
-                        case "-":
-                            Separator = ProviderIdFormats.ISO_HYPHEN;
-                            break;
-
-                        case "*":
-                            Separator = ProviderIdFormats.DIN_STAR;
-                            break;
-
-                        default:
-                            Separator = ProviderIdFormats.ISO;
-                            break;
-
-                    }
-
-                    ProviderId = new eMobilityProvider_Id(_CountryCode,
+                    ProviderId = new eMobilityProvider_Id(countryCode,
                                                           MatchCollection[0].Groups[3].Value,
-                                                          Separator);
+                                                          MatchCollection[0].Groups[2].Value switch {
+                                                              "-" => ProviderIdFormats.ISO_HYPHEN,
+                                                              "*" => ProviderIdFormats.DIN_STAR,
+                                                              _   => ProviderIdFormats.ISO,
+                                                          });
 
                     return true;
 
@@ -352,14 +294,9 @@ namespace org.GraphDefined.WWCP
 
             }
 
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            ProviderId = default(eMobilityProvider_Id);
             return false;
 
         }
@@ -385,7 +322,7 @@ namespace org.GraphDefined.WWCP
 
             if (CountryCode == null || Suffix.IsNullOrEmpty())
             {
-                ProviderId = default(eMobilityProvider_Id);
+                ProviderId = default;
                 return false;
             }
 
