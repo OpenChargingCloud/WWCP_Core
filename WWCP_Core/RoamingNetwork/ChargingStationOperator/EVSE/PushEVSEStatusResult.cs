@@ -256,17 +256,18 @@ namespace org.GraphDefined.WWCP
 
         public static PushEVSEStatusResult
 
-            NoOperation(IId                   AuthId,
-                        ISendStatus           ISendStatus,
-                        String                Description    = null,
-                        IEnumerable<Warning>  Warnings       = null,
-                        TimeSpan?             Runtime        = null)
+            NoOperation(IId                            AuthId,
+                        ISendStatus                    ISendStatus,
+                        String                         Description                 = null,
+                        IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates   = null,
+                        IEnumerable<Warning>           Warnings                    = null,
+                        TimeSpan?                      Runtime                     = null)
 
             => new PushEVSEStatusResult(AuthId,
                                         ISendStatus,
                                         PushEVSEStatusResultTypes.NoOperation,
                                         Description,
-                                        new EVSEStatusUpdate[0],
+                                        RejectedEVSEStatusUpdates,
                                         Warnings,
                                         Runtime);
 
