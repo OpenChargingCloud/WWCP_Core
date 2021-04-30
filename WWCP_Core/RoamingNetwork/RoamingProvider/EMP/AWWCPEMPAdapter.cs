@@ -23,19 +23,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Crypto.Parameters;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-
     public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id>
-                                                      //            IEMPRoamingProvider
     {
 
         #region (class) PropertyUpdateInfos
@@ -72,10 +69,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Data
-
-        //private readonly        ISendData                                                        _ISendData;
-
-        //private readonly        ISendStatus                                                      _ISendStatus;
 
         /// <summary>
         /// The default service check intervall.
@@ -304,8 +297,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
-        /// 
-        /// <param name="DNSClient">The attached DNS service.</param>
         protected AWWCPEMPAdapter(EMPRoamingProvider_Id              Id,
                                   I18NString                         Name,
                                   I18NString                         Description,
@@ -349,9 +340,6 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this.Description                                     = Description;
-
-            //this._ISendData                                      = this as ISendData;
-            //this._ISendStatus                                    = this as ISendStatus;
 
             this.IncludeEVSEIds                                  = IncludeEVSEIds                ?? (evseid             => true);
             this.IncludeEVSEs                                    = IncludeEVSEs                  ?? (evse               => true);
@@ -407,7 +395,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         protected async Task<PushEVSEDataResult>
 
-            SetStaticData(ISendPOIData           Sender,
+            SetStaticData(ISendPOIData        Sender,
                           EVSE                EVSE,
 
                           DateTime?           Timestamp,
@@ -492,7 +480,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         protected async Task<PushEVSEDataResult>
 
-            AddStaticData(ISendPOIData           Sender,
+            AddStaticData(ISendPOIData        Sender,
                           EVSE                EVSE,
 
                           DateTime?           Timestamp,
