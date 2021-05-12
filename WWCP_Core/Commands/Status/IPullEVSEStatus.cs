@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IPullStatus
+    public interface IPullEVSEStatus
     {
 
         Task<StatusPull<EVSEStatus>>

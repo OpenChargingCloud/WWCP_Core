@@ -31,7 +31,7 @@ using org.GraphDefined.Vanaheimr.Aegir;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IPullPOIData
+    public interface IPullEVSEData
     {
 
         // Events
@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  DisablePullPOIData   { get; set; }
+        Boolean  PullEVSEData_IsDisabled    { get; set; }
 
 
         // Push data directly...
