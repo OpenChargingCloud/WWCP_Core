@@ -1161,6 +1161,67 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region IsFreeOfCharge
+
+        private Boolean _IsFreeOfCharge;
+
+        /// <summary>
+        /// Charging at this EVSE is free of charge.
+        /// </summary>
+        [Optional]
+        public Boolean IsFreeOfCharge
+        {
+
+            get
+            {
+                return _IsFreeOfCharge;
+            }
+
+            set
+            {
+                SetProperty(ref _IsFreeOfCharge,
+                            value,
+                            EventTracking_Id.New);
+            }
+
+        }
+
+        #endregion
+
+        #region EnergyMeterPublicKey
+
+        private String _EnergyMeterPublicKey;
+
+        /// <summary>
+        /// The public key of the energy meter.
+        /// </summary>
+        [Optional]
+        public String EnergyMeterPublicKey
+        {
+
+            get
+            {
+                return _EnergyMeterPublicKey;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _EnergyMeterPublicKey,
+                                     value,
+                                     EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref _EnergyMeterPublicKey);
+
+            }
+
+        }
+
+        #endregion
+
+
         #region AdminStatus
 
         /// <summary>
