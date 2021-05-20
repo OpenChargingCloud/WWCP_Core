@@ -24,6 +24,7 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using System.Linq;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -57,9 +58,9 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the e-mobility service provider.
         /// </summary>
-        eMobilityProvider_Id Id { get; }
+        eMobilityProvider_Id  Id            { get; }
 
-      //  Authorizator_Id AuthorizatorId { get; }
+        //  Authorizator_Id AuthorizatorId { get; }
 
         IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> AllTokens            { get; }
         IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> AuthorizedTokens     { get; }

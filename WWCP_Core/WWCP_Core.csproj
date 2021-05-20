@@ -95,9 +95,9 @@
     <Compile Include="Commands\AuthenticationData\ISendAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\OnPushAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\PushAuthenticationDataResult.cs" />
-    <Compile Include="Commands\POIData\IPullPOIData.cs" />
+    <Compile Include="Commands\POIData\IPullEVSEData.cs" />
     <Compile Include="Commands\POIData\ISendPOIData.cs" />
-    <Compile Include="Commands\Status\IPullStatus.cs" />
+    <Compile Include="Commands\Status\IPullEVSEStatus.cs" />
     <Compile Include="Commands\SendCDRs\IReceiveChargeDetailRecords.cs" />
     <Compile Include="Commands\SendCDRs\ISendChargeDetailRecords.cs" />
     <Compile Include="Commands\POIData\IReceivePOIData.cs" />
