@@ -53,12 +53,11 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSEOperator">The updated Charging Station Operator.</param>
     /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
-    public delegate Task OnChargingStationOperatorAdminStatusChangedDelegate(DateTime                                             Timestamp,
-                                                                             ChargingStationOperator                              EVSEOperator,
+    public delegate Task OnChargingStationOperatorAdminStatusChangedDelegate(DateTime                                              Timestamp,
+                                                                             ChargingStationOperator                               EVSEOperator,
                                                                              Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
                                                                              Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus);
 
-    
     /// <summary>
     /// A delegate called whenever the dynamic status of the Charging Station Operator changed.
     /// </summary>
@@ -66,10 +65,9 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSEOperator">The updated Charging Station Operator.</param>
     /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
-    public delegate Task OnChargingStationOperatorStatusChangedDelegate(DateTime                                        Timestamp,
-                                                                        ChargingStationOperator                         EVSEOperator,
+    public delegate Task OnChargingStationOperatorStatusChangedDelegate(DateTime                                         Timestamp,
+                                                                        ChargingStationOperator                          EVSEOperator,
                                                                         Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
                                                                         Timestamped<ChargingStationOperatorStatusTypes>  NewStatus);
-
 
 }
