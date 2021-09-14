@@ -2877,7 +2877,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingPool) + "." + nameof(OnReserveRequest));
+                DebugX.LogException(e, nameof(ChargingPool) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
@@ -2982,7 +2982,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingPool) + "." + nameof(OnReserveResponse));
+                DebugX.LogException(e, nameof(ChargingPool) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -3055,7 +3055,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingPool) + "." + nameof(OnCancelReservationRequest));
+                DebugX.LogException(e, nameof(ChargingPool) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -3134,7 +3134,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingPool) + "." + nameof(OnCancelReservationResponse));
+                DebugX.LogException(e, nameof(ChargingPool) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -3347,7 +3347,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteStartRequest));
+                DebugX.LogException(e, nameof(ChargingStation) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -3446,7 +3446,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingPool) + "." + nameof(OnRemoteStartResponse));
+                DebugX.LogException(e, nameof(ChargingPool) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -3524,7 +3524,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingPool) + "." + nameof(OnRemoteStopRequest));
+                DebugX.LogException(e, nameof(ChargingPool) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -3610,7 +3610,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingPool) + "." + nameof(OnRemoteStopResponse));
+                DebugX.LogException(e, nameof(ChargingPool) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion

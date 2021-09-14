@@ -4731,7 +4731,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnReserveRequest));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
@@ -4833,7 +4833,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnReserveResponse));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -4905,7 +4905,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnCancelReservationRequest));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -4984,7 +4984,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnCancelReservationResponse));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -5150,7 +5150,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteStartRequest));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -5237,7 +5237,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteStartResponse));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -5316,7 +5316,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteStopRequest));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -5416,7 +5416,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteStopResponse));
+                DebugX.LogException(e, nameof(ChargingStationOperator) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion

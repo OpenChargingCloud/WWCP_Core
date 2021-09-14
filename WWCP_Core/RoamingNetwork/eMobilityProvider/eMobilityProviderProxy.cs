@@ -2711,7 +2711,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log((string)(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartRequest)));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartRequest));
             }
 
             #endregion
@@ -2767,7 +2767,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log((string)(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartResponse)));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartResponse));
             }
 
             #endregion
@@ -2860,7 +2860,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log((string)(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopRequest)));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopRequest));
             }
 
             #endregion
@@ -2913,7 +2913,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log((string)(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopResponse)));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopResponse));
             }
 
             #endregion
@@ -3118,7 +3118,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveRequest));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
@@ -3182,7 +3182,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveResponse));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -3256,7 +3256,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnCancelReservationRequest));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -3315,7 +3315,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnCancelReservationResponse));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -3485,7 +3485,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStartRequest));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -3542,7 +3542,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStartResponse));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -3618,7 +3618,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStopRequest));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -3671,7 +3671,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteStopResponse));
+                DebugX.LogException(e, nameof(eMobilityProvider) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion

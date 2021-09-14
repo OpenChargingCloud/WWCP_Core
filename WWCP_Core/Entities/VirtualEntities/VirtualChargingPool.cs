@@ -856,7 +856,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnReserveRequest));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
@@ -1036,7 +1036,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnReserveResponse));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -1108,7 +1108,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnCancelReservationRequest));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -1204,7 +1204,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnCancelReservationResponse));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -1422,7 +1422,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStartRequest));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -1509,7 +1509,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStartResponse));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -1590,7 +1590,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStopRequest));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -1713,7 +1713,7 @@ namespace org.GraphDefined.WWCP.Virtual
             }
             catch (Exception e)
             {
-                e.Log(nameof(VirtualChargingPool) + "." + nameof(OnRemoteStopResponse));
+                DebugX.LogException(e, nameof(VirtualChargingPool) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion
