@@ -2029,7 +2029,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnReserveRequest));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
@@ -2131,7 +2131,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnReserveResponse));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -2203,7 +2203,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnCancelReservationRequest));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -2282,7 +2282,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnCancelReservationResponse));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -2486,7 +2486,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStartRequest));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -2676,7 +2676,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStartResponse));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -2756,7 +2756,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStopRequest));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -2945,7 +2945,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStopResponse));
+                DebugX.LogException(e, nameof(EVSE) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion

@@ -3659,7 +3659,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveRequest));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
@@ -3784,7 +3784,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveResponse));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -3856,7 +3856,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnCancelReservationRequest));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -4006,7 +4006,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnCancelReservationResponse));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -4253,7 +4253,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStartRequest));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -4416,7 +4416,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStartResponse));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -4531,7 +4531,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStopRequest));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -4717,7 +4717,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStopResponse));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion
@@ -4889,7 +4889,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStartRequest));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStartRequest));
             }
 
             #endregion
@@ -5017,7 +5017,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStartResponse));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStartResponse));
             }
 
             #endregion
@@ -5103,7 +5103,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStopRequest));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStopRequest));
             }
 
             #endregion
@@ -5272,7 +5272,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStopResponse));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStopResponse));
             }
 
             #endregion
@@ -5489,7 +5489,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnSendCDRsRequest));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnSendCDRsRequest));
             }
 
             #endregion
@@ -6099,7 +6099,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnSendCDRsResponse));
+                DebugX.LogException(e, nameof(RoamingNetwork) + "." + nameof(OnSendCDRsResponse));
             }
 
             #endregion

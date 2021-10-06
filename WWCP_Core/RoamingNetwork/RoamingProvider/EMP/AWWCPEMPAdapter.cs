@@ -434,7 +434,7 @@ namespace org.GraphDefined.WWCP
             //}
             //catch (Exception e)
             //{
-            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //    DebugX.LogException(e, nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
             //}
 
             #endregion
@@ -519,7 +519,7 @@ namespace org.GraphDefined.WWCP
             //}
             //catch (Exception e)
             //{
-            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //    DebugX.LogException(e, nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
             //}
 
             #endregion
@@ -606,7 +606,7 @@ namespace org.GraphDefined.WWCP
             //}
             //catch (Exception e)
             //{
-            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //    DebugX.LogException(e, nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
             //}
 
             #endregion
@@ -707,7 +707,7 @@ namespace org.GraphDefined.WWCP
             //}
             //catch (Exception e)
             //{
-            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //    DebugX.LogException(e, nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
             //}
 
             #endregion

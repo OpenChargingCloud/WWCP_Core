@@ -366,7 +366,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -451,7 +451,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -546,7 +546,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -643,7 +643,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -729,7 +729,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -819,7 +819,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -909,7 +909,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -999,7 +999,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -1129,7 +1129,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -1232,7 +1232,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -1321,7 +1321,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -1416,7 +1416,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -1787,7 +1787,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -1876,7 +1876,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -1971,7 +1971,7 @@
 //                //}
 //                //catch (Exception e)
 //                //{
-//                //    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
+//                //    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRRequest));
 //                //}
 
 //                #endregion
@@ -2940,7 +2940,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStartRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStartRequest));
 //            }
 
 //            #endregion
@@ -2984,7 +2984,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStartResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStartResponse));
 //            }
 
 //            #endregion
@@ -3066,7 +3066,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStartRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStartRequest));
 //            }
 
 //            #endregion
@@ -3112,7 +3112,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStartResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStartResponse));
 //            }
 
 //            #endregion
@@ -3193,7 +3193,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStartRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStartRequest));
 //            }
 
 //            #endregion
@@ -3238,7 +3238,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStartResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStartResponse));
 //            }
 
 //            #endregion
@@ -3319,7 +3319,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
 //            }
 
 //            #endregion
@@ -3364,7 +3364,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
 //            }
 
 //            #endregion
@@ -3443,7 +3443,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStopRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStopRequest));
 //            }
 
 //            #endregion
@@ -3486,7 +3486,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStopResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeStopResponse));
 //            }
 
 //            #endregion
@@ -3563,7 +3563,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStopRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStopRequest));
 //            }
 
 //            #endregion
@@ -3607,7 +3607,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStopResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeEVSEStopResponse));
 //            }
 
 //            #endregion
@@ -3685,7 +3685,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStopRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStopRequest));
 //            }
 
 //            #endregion
@@ -3729,7 +3729,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStopResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingStationStopResponse));
 //            }
 
 //            #endregion
@@ -3807,7 +3807,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStopRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStopRequest));
 //            }
 
 //            #endregion
@@ -3851,7 +3851,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStopResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnAuthorizeChargingPoolStopResponse));
 //            }
 
 //            #endregion
@@ -3928,7 +3928,7 @@
 //                }
 //                catch (Exception e)
 //                {
-//                    e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRsRequest));
+//                    DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRsRequest));
 //                }
 
 //                #endregion
@@ -3968,7 +3968,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRsRequest));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRsRequest));
 //            }
 
 //            #endregion
@@ -4010,7 +4010,7 @@
 //            }
 //            catch (Exception e)
 //            {
-//                e.Log(nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRsResponse));
+//                DebugX.LogException(e, nameof(CSORoamingProviderLogger) + "." + nameof(OnSendCDRsResponse));
 //            }
 
 //            #endregion
