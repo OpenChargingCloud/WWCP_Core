@@ -274,12 +274,14 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (PropertyName == null)
-                throw new ArgumentNullException(nameof(PropertyName),  "The given parameter must not be null!");
+            if (PropertyName is null)
+                throw new ArgumentNullException(nameof(PropertyName), "The given property name must not be null!");
 
             #endregion
 
             this.LastChange = DateTime.UtcNow;
+
+            DebugX.Log(String.Concat("Property '", PropertyName, "' changed from '", OldValue?.ToString() ?? "", "' to '", NewValue?.ToString() ?? "", "'!"));
 
             OnPropertyChanged?.Invoke(LastChange,
                                       EventTrackingId,
