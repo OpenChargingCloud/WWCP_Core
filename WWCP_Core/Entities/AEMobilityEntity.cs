@@ -281,7 +281,7 @@ namespace org.GraphDefined.WWCP
 
             this.LastChange = DateTime.UtcNow;
 
-            DebugX.Log(String.Concat("Property '", PropertyName, "' changed from '", OldValue?.ToString() ?? "", "' to '", NewValue?.ToString() ?? "", "'!"));
+            //DebugX.Log(String.Concat("Property '", PropertyName, "' changed from '", OldValue?.ToString() ?? "", "' to '", NewValue?.ToString() ?? "", "'!"));
 
             OnPropertyChanged?.Invoke(LastChange,
                                       EventTrackingId,
