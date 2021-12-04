@@ -36,9 +36,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention methods for brands.
+    /// Extension methods for brands.
     /// </summary>
-    public static class BrandExtentions
+    public static class BrandExtensions
     {
 
         #region ToJSON(this Brands, Skip = null, Take = null, Embedded = false, ...)

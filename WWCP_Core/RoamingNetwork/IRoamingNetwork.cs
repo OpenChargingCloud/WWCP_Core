@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// WWCP JSON I/O roaming network interface extentions.
     /// </summary>
-    public static partial class IRoamingNetworkExtentions
+    public static partial class IRoamingNetworkExtensions
     {
 
         #region ToJSON(this RoamingNetworks, Skip = null, Take = null, Embedded = false, ...)

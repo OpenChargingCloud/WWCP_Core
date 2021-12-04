@@ -30,9 +30,9 @@ namespace org.GraphDefined.WWCP
 {
 
     ///// <summary>
-    ///// Extention method for the IRemotePushStatus interface.
+    ///// Extension method for the IRemotePushStatus interface.
     ///// </summary>
-    //public static class IRemotePushStatusExtentions
+    //public static class IRemotePushStatusExtensions
     //{
 
     //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, EVSEAdminStatusUpdate,    TransmissionType = Enqueue, ...)

@@ -31,7 +31,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public static class SendCDRResultTypesExtentions
+    public static class SendCDRResultTypesExtensions
     {
 
         public static SendCDRsResultTypes Covert(this SendCDRResultTypes result)

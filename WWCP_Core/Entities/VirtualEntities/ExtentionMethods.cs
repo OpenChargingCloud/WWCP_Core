@@ -29,7 +29,7 @@ namespace org.GraphDefined.WWCP.Virtual
 {
 
     /// <summary>
-    /// Extention methods
+    /// Extension methods
     /// </summary>
     public static partial class ExtentionMethods
     {

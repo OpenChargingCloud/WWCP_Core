@@ -38,9 +38,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention methods for charging tariffs.
+    /// Extension methods for charging tariffs.
     /// </summary>
-    public static class ChargingTariffExtentions
+    public static class ChargingTariffExtensions
     {
 
         #region ToJSON(this ChargingTariffs, Skip = null, Take = null, Embedded = false, ...)

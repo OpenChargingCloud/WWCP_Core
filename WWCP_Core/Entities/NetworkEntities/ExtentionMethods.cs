@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP.Networking
 {
 
     /// <summary>
-    /// Extention methods
+    /// Extension methods
     /// </summary>
     public static partial class ExtentionMethods
     {

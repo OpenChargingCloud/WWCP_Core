@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public static class AAuthenticationExtentions
+    public static class AAuthenticationExtensions
     {
 
         public static Boolean IsDefined(this AAuthentication Authentication)

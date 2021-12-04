@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Extention emthods for the EVSE admin status.
     /// </summary>
-    public static class EVSEAdminStatusExtentions
+    public static class EVSEAdminStatusExtensions
     {
 
         #region Contains(this AdminStatus, Id, Status)

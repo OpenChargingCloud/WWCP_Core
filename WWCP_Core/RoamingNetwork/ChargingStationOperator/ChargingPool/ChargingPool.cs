@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// WWCP JSON I/O charging station extentions.
     /// </summary>
-    public static partial class ChargingPoolExtentions
+    public static partial class ChargingPoolExtensions
     {
 
         #region ToJSON(this ChargingPools, Skip = null, Take = null, Embedded = false, ...)

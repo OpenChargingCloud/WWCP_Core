@@ -27,9 +27,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention methods for charging modes.
+    /// Extension methods for charging modes.
     /// </summary>
-    public static class ChargingModesExtentions
+    public static class ChargingModesExtensions
     {
 
         public static ChargingModes Reduce(this IEnumerable<ChargingModes> EnumerationOfChargingModes)

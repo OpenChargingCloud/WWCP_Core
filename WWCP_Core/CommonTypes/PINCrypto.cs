@@ -25,9 +25,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extentions methods for PIN cryptos.
+    /// Extensions methods for PIN cryptos.
     /// </summary>
-    public static class PINCryptoExtentions
+    public static class PINCryptoExtensions
     {
 
         #region Parse(Text)

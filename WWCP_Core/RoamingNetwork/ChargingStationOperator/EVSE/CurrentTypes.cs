@@ -27,9 +27,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention methods for current types.
+    /// Extension methods for current types.
     /// </summary>
-    public static class CurrentTypesExtentions
+    public static class CurrentTypesExtensions
     {
 
         public static CurrentTypes Reduce(this IEnumerable<CurrentTypes> EnumerationOfCurrentTypes)

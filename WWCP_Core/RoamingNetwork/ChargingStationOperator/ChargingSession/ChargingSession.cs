@@ -31,9 +31,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention methods for the charging sessions.
+    /// Extension methods for the charging sessions.
     /// </summary>
-    public static class ChargingSessionExtentions
+    public static class ChargingSessionExtensions
     {
 
         #region ToJSON(this ChargingSession, JPropertyKey)

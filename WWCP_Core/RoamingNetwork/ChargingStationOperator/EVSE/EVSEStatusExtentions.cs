@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Extention emthods for the EVSE status.
     /// </summary>
-    public static class EVSEStatusExtentions
+    public static class EVSEStatusExtensions
     {
 
         #region Contains(this EVSEStatus, Id, Status)

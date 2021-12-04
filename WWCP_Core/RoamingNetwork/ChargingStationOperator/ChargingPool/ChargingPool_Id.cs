@@ -32,9 +32,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention methods for charging pool identifications.
+    /// Extension methods for charging pool identifications.
     /// </summary>
-    public static class ChargingPoolIdExtentions
+    public static class ChargingPoolIdExtensions
     {
 
         /// <summary>

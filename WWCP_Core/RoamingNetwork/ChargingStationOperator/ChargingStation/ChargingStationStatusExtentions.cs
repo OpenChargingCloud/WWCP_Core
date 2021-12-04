@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Extention emthods for the charging station status.
     /// </summary>
-    public static class ChargingStationStatusExtentions
+    public static class ChargingStationStatusExtensions
     {
 
         #region Contains(this ChargingStationStatus, Id, Status)

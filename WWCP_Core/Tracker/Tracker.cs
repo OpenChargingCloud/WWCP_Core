@@ -37,7 +37,7 @@ using org.GraphDefined.WWCP.Net;
 namespace org.GraphDefined.WWCP.Networking
 {
 
-    //public static class WWCPTrackerExtentions
+    //public static class WWCPTrackerExtensions
     //{
 
     //    public static Tracker AttachTracker(this WWCP_HTTPAPI     HTTPAPI,

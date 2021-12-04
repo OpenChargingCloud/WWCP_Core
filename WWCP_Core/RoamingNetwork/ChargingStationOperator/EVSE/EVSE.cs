@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// WWCP JSON I/O EVSE extentions.
     /// </summary>
-    public static partial class EVSEExtentions
+    public static partial class EVSEExtensions
     {
 
         #region ToJSON(this EVSEs, Skip = null, Take = null, Embedded = false, ...)

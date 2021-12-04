@@ -32,9 +32,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention methods for charging station identifications.
+    /// Extension methods for charging station identifications.
     /// </summary>
-    public static class ChargingStationIdExtentions
+    public static class ChargingStationIdExtensions
     {
 
         /// <summary>

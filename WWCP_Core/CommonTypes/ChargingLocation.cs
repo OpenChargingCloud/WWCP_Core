@@ -29,7 +29,7 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.WWCP
 {
 
-    public static class ChargingLocationExtentions
+    public static class ChargingLocationExtensions
     {
 
         public static Boolean IsNull(this ChargingLocation ChargingLocation)
