@@ -26,7 +26,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention emthods for the charging station status.
+    /// Extension emthods for the charging station status.
     /// </summary>
     public static class ChargingStationStatusExtensions
     {

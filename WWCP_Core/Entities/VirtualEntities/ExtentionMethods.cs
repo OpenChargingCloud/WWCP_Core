@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP.Virtual
     /// <summary>
     /// Extension methods
     /// </summary>
-    public static partial class ExtentionMethods
+    public static partial class ExtensionMethods
     {
 
         #region CreateVirtualPool   (this ChargingStationOperator, ChargingPoolId    = null, ChargingPoolConfigurator    = null, VirtualChargingPoolConfigurator    = null, OnSuccess = null, OnError = null)

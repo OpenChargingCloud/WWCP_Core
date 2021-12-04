@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP.Networking
     /// <summary>
     /// Extension methods
     /// </summary>
-    public static partial class ExtentionMethods
+    public static partial class ExtensionMethods
     {
 
         #region CreateNewRemoteStation(this ChargingPool, ChargingStationId, ChargingStationConfigurator = null, RemoteChargingStationConfigurator = null, OnSuccess = null, OnError = null)

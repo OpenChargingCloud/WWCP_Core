@@ -26,7 +26,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention emthods for the EVSE status.
+    /// Extension emthods for the EVSE status.
     /// </summary>
     public static class EVSEStatusExtensions
     {
