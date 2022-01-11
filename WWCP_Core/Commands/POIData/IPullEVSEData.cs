@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2021 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2022 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  PullEVSEData_IsDisabled    { get; set; }
+        Boolean  PullOperatorInfos_IsDisabled    { get; set; }
 
 
         // Push data directly...

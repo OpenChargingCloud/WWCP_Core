@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2021 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2022 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -156,7 +156,7 @@ namespace org.GraphDefined.WWCP
             if (Length > 50)
                 Length = 50;
 
-            var Suffíx = new SHA256CryptoServiceProvider().
+            var Suffix = new SHA256CryptoServiceProvider().
                              ComputeHash(Encoding.UTF8.GetBytes(
                                              String.Concat(
                                                  OperatorId.  ToString(),
@@ -172,14 +172,14 @@ namespace org.GraphDefined.WWCP
 
             return Parse(OperatorId,
                          Mapper != null
-                            ? Mapper(Suffíx)
-                            : Suffíx);
+                            ? Mapper(Suffix)
+                            : Suffix);
 
         }
 
         #endregion
 
-        #region Random(OperatorId, Mapper = null)
+        #region Random  (OperatorId, Mapper = null)
 
         /// <summary>
         /// Generate a new unique identification of a charging pool identification.
@@ -195,7 +195,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charging pool identification.
@@ -217,10 +217,8 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal text representation of a charging pool identification: '" + Text + "'!",
                                             nameof(Text));
 
-            ChargingStationOperator_Id _OperatorId;
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
-                return new ChargingPool_Id(_OperatorId,
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id operatorId))
+                return new ChargingPool_Id(operatorId,
                                            MatchCollection[0].Groups[2].Value);
 
             throw new ArgumentException("Illegal charging pool identification '" + Text + "'!",
@@ -230,7 +228,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Parse(OperatorId, Suffix)
+        #region Parse   (OperatorId, Suffix)
 
         /// <summary>
         /// Parse the given string as a charging pool identification.
@@ -252,10 +250,8 @@ namespace org.GraphDefined.WWCP
         public static ChargingPool_Id? TryParse(String Text)
         {
 
-            ChargingPool_Id ChargingPoolId;
-
-            if (TryParse(Text, out ChargingPoolId))
-                return ChargingPoolId;
+            if (TryParse(Text, out ChargingPool_Id chargingPoolId))
+                return chargingPoolId;
 
             return null;
 
@@ -273,9 +269,11 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
+            Text = Text?.Trim();
+
             if (Text.IsNullOrEmpty())
             {
-                ChargingPoolId = default(ChargingPool_Id);
+                ChargingPoolId = default;
                 return false;
             }
 
@@ -284,19 +282,17 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                ChargingPoolId = default(ChargingPool_Id);
+                ChargingPoolId = default;
 
                 var _MatchCollection = ChargingPoolId_RegEx.Matches(Text);
 
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
-
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id operatorId))
                 {
 
-                    ChargingPoolId = new ChargingPool_Id(_OperatorId,
+                    ChargingPoolId = new ChargingPool_Id(operatorId,
                                                          _MatchCollection[0].Groups[2].Value);
 
                     return true;
@@ -311,7 +307,7 @@ namespace org.GraphDefined.WWCP
 #pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            ChargingPoolId = default(ChargingPool_Id);
+            ChargingPoolId = default;
             return false;
 
         }
