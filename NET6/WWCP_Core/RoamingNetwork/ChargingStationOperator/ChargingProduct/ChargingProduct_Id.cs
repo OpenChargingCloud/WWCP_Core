@@ -27,6 +27,29 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// Extension methods for charging product identifications.
+    /// </summary>
+    public static class ChargingProductIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this charging product identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingProductId">A charging product identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingProduct_Id? ChargingProductId)
+            => !ChargingProductId.HasValue || ChargingProductId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging product identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingProductId">A charging product identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingProduct_Id? ChargingProductId)
+            => ChargingProductId.HasValue && ChargingProductId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The unique identification of a charging product.
     /// </summary>
     public struct ChargingProduct_Id : IId,
@@ -36,28 +59,37 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly static Random _Random = new Random();
-
         /// <summary>
-        /// The internal identification.
+        /// The internal user identification.
         /// </summary>
         private readonly String InternalId;
+
+        /// <summary>
+        /// Private non-cryptographic random number generator.
+        /// </summary>
+        private static readonly Random _random = new Random();
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this charging product identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this charging product identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the charging product identificator.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -75,22 +107,15 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) Random(Length = 20)
+        #region (static) Random  (Length = 20)
 
         /// <summary>
-        /// Returns a new charging product identification.
+        /// Create a new random charging product identification.
         /// </summary>
+        /// <param name="Length">The expected length of the random charging product identification.</param>
         public static ChargingProduct_Id Random(Byte Length = 20)
-            => new ChargingProduct_Id(_Random.RandomString(Length));
 
-        #endregion
-
-
-        #region (static) New
-
-        public static ChargingProduct_Id New
-
-            => ChargingProduct_Id.Parse(Guid.NewGuid().ToString());
+            => new(_random.RandomString(Length).ToUpper());
 
         #endregion
 
@@ -103,20 +128,11 @@ namespace org.GraphDefined.WWCP
         public static ChargingProduct_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out ChargingProduct_Id chargingProductId))
+                return chargingProductId;
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging product identification must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out ChargingProduct_Id ChargingProductId))
-                return ChargingProductId;
-
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a charging product identification is invalid!");
+            throw new ArgumentException("Invalid text-representation of a charging product identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -128,13 +144,13 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as a charging product identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging product identification.</param>
-        public static ChargingProduct_Id? TryParse(String Text)
+        public static ChargingProduct_Id? TryParse(String? Text)
         {
 
-            if (TryParse(Text, out ChargingProduct_Id ChargingProductId))
+            if (Text is not null && TryParse(Text, out ChargingProduct_Id ChargingProductId))
                 return ChargingProductId;
 
-            return new ChargingProduct_Id?();
+            return null;
 
         }
 
@@ -152,10 +168,9 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Text != null)
-                Text = Text.Trim();
+            Text = Text?.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text?.IsNullOrEmpty() == true)
             {
                 ChargingProductId = default;
                 return false;
@@ -204,20 +219,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId1">A charging product identification.</param>
         /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
-        {
+        public static Boolean operator == (ChargingProduct_Id ChargingProductId1,
+                                           ChargingProduct_Id ChargingProductId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingProductId1, ChargingProductId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingProductId1 == null) || ((Object) ChargingProductId2 == null))
-                return false;
-
-            return ChargingProductId1.Equals(ChargingProductId2);
-
-        }
+            => ChargingProductId1.Equals(ChargingProductId2);
 
         #endregion
 
@@ -229,8 +234,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId1">A charging product identification.</param>
         /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
-            => !(ChargingProductId1 == ChargingProductId2);
+        public static Boolean operator != (ChargingProduct_Id ChargingProductId1,
+                                           ChargingProduct_Id ChargingProductId2)
+
+            => !ChargingProductId1.Equals(ChargingProductId2);
 
         #endregion
 
@@ -242,15 +249,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId1">A charging product identification.</param>
         /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
-        {
+        public static Boolean operator < (ChargingProduct_Id ChargingProductId1,
+                                          ChargingProduct_Id ChargingProductId2)
 
-            if ((Object) ChargingProductId1 == null)
-                throw new ArgumentNullException(nameof(ChargingProductId1), "The given ChargingProductId1 must not be null!");
-
-            return ChargingProductId1.CompareTo(ChargingProductId2) < 0;
-
-        }
+            => ChargingProductId1.CompareTo(ChargingProductId2) < 0;
 
         #endregion
 
@@ -262,8 +264,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId1">A charging product identification.</param>
         /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
-            => !(ChargingProductId1 > ChargingProductId2);
+        public static Boolean operator <= (ChargingProduct_Id ChargingProductId1,
+                                           ChargingProduct_Id ChargingProductId2)
+
+            => ChargingProductId1.CompareTo(ChargingProductId2) <= 0;
 
         #endregion
 
@@ -275,15 +279,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId1">A charging product identification.</param>
         /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
-        {
+        public static Boolean operator > (ChargingProduct_Id ChargingProductId1,
+                                          ChargingProduct_Id ChargingProductId2)
 
-            if ((Object) ChargingProductId1 == null)
-                throw new ArgumentNullException(nameof(ChargingProductId1), "The given ChargingProductId1 must not be null!");
-
-            return ChargingProductId1.CompareTo(ChargingProductId2) > 0;
-
-        }
+            => ChargingProductId1.CompareTo(ChargingProductId2) > 0;
 
         #endregion
 
@@ -295,8 +294,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId1">A charging product identification.</param>
         /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
-            => !(ChargingProductId1 < ChargingProductId2);
+        public static Boolean operator >= (ChargingProduct_Id ChargingProductId1,
+                                           ChargingProduct_Id ChargingProductId2)
+
+            => ChargingProductId1.CompareTo(ChargingProductId2) >= 0;
 
         #endregion
 
@@ -310,19 +311,12 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingProduct_Id ChargingProductId))
-                throw new ArgumentException("The given object is not a charging product identification!",
-                                            nameof(Object));
-
-            return CompareTo(ChargingProductId);
-
-        }
+            => Object is ChargingProduct_Id chargingProductId
+                   ? CompareTo(chargingProductId)
+                   : throw new ArgumentException("The given object is not a charging product identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -333,14 +327,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingProductId">An object to compare with.</param>
         public Int32 CompareTo(ChargingProduct_Id ChargingProductId)
-        {
 
-            if ((Object) ChargingProductId == null)
-                throw new ArgumentNullException(nameof(ChargingProductId),  "The given charging product identification must not be null!");
-
-            return String.Compare(InternalId, ChargingProductId.InternalId, StringComparison.OrdinalIgnoreCase);
-
-        }
+            => String.Compare(InternalId,
+                              ChargingProductId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -355,18 +345,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingProduct_Id ChargingProductId))
-                return false;
-
-            return Equals(ChargingProductId);
-
-        }
+            => Object is ChargingProduct_Id chargingProductId &&
+                   Equals(chargingProductId);
 
         #endregion
 
@@ -378,14 +360,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId">A ChargingProductId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingProduct_Id ChargingProductId)
-        {
 
-            if ((Object) ChargingProductId == null)
-                return false;
-
-            return InternalId.ToLower().Equals(ChargingProductId.InternalId.ToLower());
-
-        }
+            => String.Equals(InternalId,
+                             ChargingProductId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -398,7 +376,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -408,7 +387,8 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 

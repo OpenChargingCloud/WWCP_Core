@@ -125,13 +125,13 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as a charging product identification.
         /// </summary>
         /// <param name="ChargingProductId">A text representation of a charging product identification.</param>
-        public static ChargingProduct FromId(String ChargingProductId)
+        public static ChargingProduct? FromId(String? ChargingProductId)
         {
 
-            if (ChargingProductId?.Trim().IsNullOrEmpty() != false)
-                throw new ArgumentNullException(nameof(ChargingProductId), "The given charging product identification must not be null or empty!");
+            if (ChargingProductId?.Trim().IsNullOrEmpty() == true)
+                return null;
 
-            return new ChargingProduct(ChargingProduct_Id.Parse(ChargingProductId));
+            return FromId(ChargingProduct_Id.Parse(ChargingProductId!));
 
         }
 
@@ -141,7 +141,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId">A charging product identification.</param>
         public static ChargingProduct FromId(ChargingProduct_Id ChargingProductId)
 
-            => new ChargingProduct(ChargingProductId);
+            => new(ChargingProductId);
 
         #endregion
 
