@@ -182,6 +182,7 @@ namespace org.GraphDefined.WWCP
 
                                      IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
                                      Boolean                          DisableNetworkSync    = false,
+                                     String?                          LoggingPath           = null,
                                      DNSClient                        DNSClient             = null)
 
             : base(RoamingNetworkId:       RoamingNetwork.Id,
@@ -326,7 +327,7 @@ namespace org.GraphDefined.WWCP
                    },
 
                    DisableLogfiles:        DisableLogfiles,
-                   LogFilePathCreator:     roamingNetworkId => "ChargingSessions" + Path.DirectorySeparatorChar,
+                   LogFilePathCreator:     roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingSessions"),
                    LogFileNameCreator:     roamingNetworkId => String.Concat("ChargingSessions-",
                                                                              roamingNetworkId, "_",
                                                                              DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
@@ -338,11 +339,7 @@ namespace org.GraphDefined.WWCP
                    DisableNetworkSync:     DisableNetworkSync,
                    DNSClient:              DNSClient)
 
-        {
-
-            Directory.CreateDirectory("ChargingSessions");
-
-        }
+        { }
 
         #endregion
 

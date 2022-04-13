@@ -165,9 +165,8 @@ namespace org.GraphDefined.WWCP
             if (!DisableLogfiles)
             {
 
-                this.LogFilePath               = LogFilePathCreator(this.RoamingNetworkId)?.Trim();
-                if (this.LogFilePath.IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(LogFilePath), "The given log file path must not be null or empty!");
+                this.LogFilePath               = LogFilePathCreator(this.RoamingNetworkId)?.Trim() ?? AppContext.BaseDirectory;
+                Directory.CreateDirectory(this.LogFilePath);
 
                 this.LogfileNameCreator        = LogFileNameCreator   ?? throw new ArgumentNullException(nameof(LogFileNameCreator),    "The given log file name creator must not be null or empty!");
                 this.LogfileSearchPattern      = LogfileSearchPattern;

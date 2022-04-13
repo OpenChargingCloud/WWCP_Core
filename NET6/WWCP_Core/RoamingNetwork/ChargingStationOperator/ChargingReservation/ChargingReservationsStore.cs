@@ -53,30 +53,27 @@ namespace org.GraphDefined.WWCP
                                          Boolean                          ReloadDataOnStart     = true,
 
                                          Boolean                          DisableNetworkSync    = false,
+                                         String?                          LoggingPath           = null,
                                          DNSClient                        DNSClient             = null)
 
-            : base((a, b, c, d, e) => false,
+            : base(CommandProcessor:      (a, b, c, d, e) => false,
 
-                   DisableLogfiles,
-                   roamingNetworkId => "ChargingReservations" + Path.DirectorySeparatorChar,
-                   roamingNetworkId => String.Concat("ChargingReservations-",
-                                                     roamingNetworkId, "-",
-                                                     Environment.MachineName, "_",
-                                                     DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
-                                                     ".log"),
-                   ReloadDataOnStart,
-                   roamingNetworkId => "ChargingReservations-" + roamingNetworkId + "-" + Environment.MachineName + "_",
+                   DisableLogfiles:       DisableLogfiles,
+                   LogFilePathCreator:    roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingReservations"),
+                   LogFileNameCreator:    roamingNetworkId => String.Concat("ChargingReservations-",
+                                                                            roamingNetworkId, "-",
+                                                                            Environment.MachineName, "_",
+                                                                            DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                                            ".log"),
+                   ReloadDataOnStart:     ReloadDataOnStart,
+                   LogfileSearchPattern:  roamingNetworkId => "ChargingReservations-" + roamingNetworkId + "-" + Environment.MachineName + "_",
 
-                   RoamingNetworkId,
-                   RoamingNetworkInfos,
-                   DisableNetworkSync,
-                   DNSClient)
+                   RoamingNetworkId:      RoamingNetworkId,
+                   RoamingNetworkInfos:   RoamingNetworkInfos,
+                   DisableNetworkSync:    DisableNetworkSync,
+                   DNSClient:             DNSClient)
 
-        {
-
-            Directory.CreateDirectory("ChargingReservations");
-
-        }
+        { }
 
         #endregion
 
