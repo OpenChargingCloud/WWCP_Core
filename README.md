@@ -24,7 +24,8 @@ The following project are compatible solutions:
 
 #### Requirements & Configuration
 
-1. You need .NET 4.7.1+
+1. You will need .NET6
+2. (Stress) tested under Debian GNU/Linux running in a KVM environment on AMD Ryzen 9 16-Core Zen3 machines
 
 
 #### Your contributions
