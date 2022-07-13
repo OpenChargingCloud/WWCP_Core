@@ -487,10 +487,10 @@ namespace org.GraphDefined.WWCP
         {
 
             var SignatureGenerator = new PgpSignatureGenerator(SecretKey.PublicKey.Algorithm,
-                                                               HashAlgorithms.Sha512);
+                                                               HashAlgorithmTag.Sha512);
 
-            SignatureGenerator.InitSign(PgpSignatureTypes.BinaryDocument,
-                                        SecretKey.ExtractPrivateKey(Passphrase));
+            SignatureGenerator.InitSign(PgpSignature.BinaryDocument,
+                                        SecretKey.ExtractPrivateKey(Passphrase.ToCharArray()));
 
             var JSON             = ToJSON(false);
             var JSONBlob         = JSON.ToString(Newtonsoft.Json.Formatting.None).ToUTF8Bytes();

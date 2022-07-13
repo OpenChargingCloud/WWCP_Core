@@ -173,10 +173,8 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal text representation of a charging station operator identification: '" + Text + "'!",
                                             nameof(Text));
 
-            Country _CountryCode;
-
             // DE...
-            if (Country.TryParseAlpha2Code(MatchCollection[0]. Groups[1].Value.ToUpper(), out _CountryCode))
+            if (Country.TryParseAlpha2Code(MatchCollection[0]. Groups[1].Value.ToUpper(), out Country _CountryCode))
                 return new ChargingStationOperator_Id(_CountryCode,
                                                       MatchCollection[0].Groups[3].Value,
                                                       MatchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
@@ -289,10 +287,8 @@ namespace org.GraphDefined.WWCP
                     return false;
                 }
 
-                Country _CountryCode;
-
                 // DE...
-                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out _CountryCode))
+                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out Country _CountryCode))
                 {
 
                     ChargingStationOperatorId = new ChargingStationOperator_Id(_CountryCode,

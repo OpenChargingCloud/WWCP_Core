@@ -239,6 +239,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargeDetailRecordFilterDelegate          ChargeDetailRecordFilter                     { get; }
 
+
+        public String                                    LoggingPath                                  { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -269,7 +272,8 @@ namespace org.GraphDefined.WWCP
                               ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
 
                               IEnumerable<RoamingNetworkInfo>           RoamingNetworkInfos                        = null,
-                              Boolean                                   DisableNetworkSync                         = false)
+                              Boolean                                   DisableNetworkSync                         = false,
+                              String?                                   LoggingPath                                = null)
 
             : base(Id)
 
@@ -288,20 +292,25 @@ namespace org.GraphDefined.WWCP
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
 
-            this.chargingStationOperatorRoamingProviders           = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
+            this.chargingStationOperatorRoamingProviders            = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
             this._EMPRoamingProviders                               = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
 
             this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
             //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
+            this.LoggingPath                                        = LoggingPath ?? AppContext.BaseDirectory;
+            Directory.CreateDirectory(this.LoggingPath);
+
             this.ReservationsStore                                  = new ChargingReservationsStore(this.Id,
-                                                                                                    DisableNetworkSync:   true);
+                                                                                                    DisableNetworkSync:   true,
+                                                                                                    LoggingPath:          this.LoggingPath);
 
             this.SessionsStore                                      = new ChargingSessionsStore    (this,
                                                                                                     ReloadDataOnStart:    false,
                                                                                                     RoamingNetworkInfos:  RoamingNetworkInfos,
-                                                                                                    DisableNetworkSync:   DisableNetworkSync);
+                                                                                                    DisableNetworkSync:   DisableNetworkSync,
+                                                                                                    LoggingPath:          this.LoggingPath);
 
             this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);

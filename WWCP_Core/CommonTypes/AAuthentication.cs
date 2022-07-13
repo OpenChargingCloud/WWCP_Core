@@ -323,7 +323,7 @@ namespace org.GraphDefined.WWCP
                 return PIN.                              CompareTo(AAuthentication.PIN);
 
             if (PublicKey != null && AAuthentication.PublicKey != null)
-                return PublicKey.Fingerprint.ToHexString().CompareTo(AAuthentication.PublicKey.Fingerprint.ToHexString());
+                return PublicKey.GetFingerprint().ToHexString().CompareTo(AAuthentication.PublicKey.GetFingerprint().ToHexString());
 
             return String.Compare(ToString(), AAuthentication.ToString(), StringComparison.OrdinalIgnoreCase);
 
@@ -386,7 +386,7 @@ namespace org.GraphDefined.WWCP
                 return PIN.Equals(AAuthentication.PIN);
 
             if (PublicKey != null && AAuthentication.PublicKey != null)
-                return PublicKey.Fingerprint.ToHexString().Equals(AAuthentication.PublicKey.Fingerprint.ToHexString());
+                return PublicKey.GetFingerprint().ToHexString().Equals(AAuthentication.PublicKey.GetFingerprint().ToHexString());
 
             return false;
 
@@ -435,8 +435,8 @@ namespace org.GraphDefined.WWCP
             if (PIN.IsNotNullOrEmpty())
                 return PIN;
 
-            if (PublicKey            != null)
-                return PublicKey.Fingerprint.            ToHexString();
+            if (PublicKey != null)
+                return PublicKey.GetFingerprint().ToHexString();
 
             return String.Empty;
 

@@ -140,7 +140,8 @@ namespace org.GraphDefined.WWCP
                                                       ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator   = null,
 
                                                       IEnumerable<RoamingNetworkInfo>           RoamingNetworkInfos                         = null,
-                                                      Boolean                                   DisableNetworkSync                          = false)
+                                                      Boolean                                   DisableNetworkSync                          = false,
+                                                      String?                                   LoggingPath                                 = null)
 
         {
 
@@ -167,7 +168,8 @@ namespace org.GraphDefined.WWCP
                                                      ChargingStationOperatorSignatureGenerator,
 
                                                      RoamingNetworkInfos,
-                                                     DisableNetworkSync);
+                                                     DisableNetworkSync,
+                                                     LoggingPath);
 
             Configurator?.Invoke(_RoamingNetwork);
 
