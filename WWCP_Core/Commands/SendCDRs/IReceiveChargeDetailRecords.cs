@@ -18,9 +18,6 @@
 #region Usings
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 

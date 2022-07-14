@@ -112,8 +112,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public AEMobilityEntity(TId                                  Id,
-                                IReadOnlyDictionary<String, Object>  CustomData   = null)
+        public AEMobilityEntity(TId                                   Id,
+                                IReadOnlyDictionary<String, Object>?  CustomData   = null)
 
             : base(CustomData)
 
@@ -140,8 +140,8 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract entity.
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
-        public AEMobilityEntity(IEnumerable<TId>                     Ids,
-                                IReadOnlyDictionary<String, Object>  CustomData   = null)
+        public AEMobilityEntity(IEnumerable<TId>                      Ids,
+                                IReadOnlyDictionary<String, Object>?  CustomData   = null)
 
             : base(CustomData)
 

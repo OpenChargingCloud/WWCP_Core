@@ -27,6 +27,29 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// Extension methods for charge detail record identifications.
+    /// </summary>
+    public static class ChargeDetailRecordIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this charge detail record identification is null or empty.
+        /// </summary>
+        /// <param name="ChargeDetailRecordId">A charge detail record identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargeDetailRecord_Id? ChargeDetailRecordId)
+            => !ChargeDetailRecordId.HasValue || ChargeDetailRecordId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charge detail record identification is null or empty.
+        /// </summary>
+        /// <param name="ChargeDetailRecordId">A charge detail record identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargeDetailRecord_Id? ChargeDetailRecordId)
+            => ChargeDetailRecordId.HasValue && ChargeDetailRecordId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The unique identification of a charge detail record.
     /// </summary>
     public readonly struct ChargeDetailRecord_Id : IId,
@@ -47,10 +70,16 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this charge detail record identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this charge detail record identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
@@ -74,26 +103,50 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region New
+        #region (static) NewRandom
 
         /// <summary>
-        /// Returns a new charge detail record identification.
+        /// Create a new random charge detail record identification.
         /// </summary>
-        public static ChargeDetailRecord_Id New
-
-            => ChargeDetailRecord_Id.Parse(Guid.NewGuid().ToString());
+        public static ChargeDetailRecord_Id NewRandom
+            => Parse(Guid.NewGuid().ToString());
 
         #endregion
 
-        #region Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charge detail record identification.
         /// </summary>
         /// <param name="Text">A text representation of a charge detail record identification.</param>
         public static ChargeDetailRecord_Id Parse(String Text)
+        {
 
-            => new ChargeDetailRecord_Id(Text);
+            if (TryParse(Text, out ChargeDetailRecord_Id cdrId))
+                return cdrId;
+
+            throw new ArgumentException("Invalid text-representation of a charge detail record identification: '" + Text + "'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given string as a charge detail record identification.
+        /// </summary>
+        /// <param name="Text">A text-representation of a charge detail record identification.</param>
+        public static ChargeDetailRecord_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out ChargeDetailRecord_Id cdrId))
+                return cdrId;
+
+            return null;
+
+        }
 
         #endregion
 
@@ -106,19 +159,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargeDetailRecordId">The parsed charge detail record identification.</param>
         public static Boolean TryParse(String Text, out ChargeDetailRecord_Id ChargeDetailRecordId)
         {
-            try
+
+            Text = Text?.Trim();
+
+            if (Text.IsNotNullOrEmpty())
             {
-
-                ChargeDetailRecordId = new ChargeDetailRecord_Id(Text);
-
-                return true;
-
+                try
+                {
+                    ChargeDetailRecordId = new ChargeDetailRecord_Id(Text.SubstringMax(250));
+                    return true;
+                }
+                catch
+                { }
             }
-            catch (Exception)
-            {
-                ChargeDetailRecordId = default(ChargeDetailRecord_Id);
-                return false;
-            }
+
+            ChargeDetailRecordId = default;
+            return false;
+
         }
 
         #endregion
@@ -144,23 +201,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecordId1">A ChargeDetailRecordId.</param>
-        /// <param name="ChargeDetailRecordId2">Another ChargeDetailRecordId.</param>
+        /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
+        /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargeDetailRecord_Id ChargeDetailRecordId1, ChargeDetailRecord_Id ChargeDetailRecordId2)
-        {
+        public static Boolean operator == (ChargeDetailRecord_Id ChargeDetailRecordId1,
+                                           ChargeDetailRecord_Id ChargeDetailRecordId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargeDetailRecordId1, ChargeDetailRecordId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargeDetailRecordId1 == null) || ((Object) ChargeDetailRecordId2 == null))
-                return false;
-
-            return ChargeDetailRecordId1.Equals(ChargeDetailRecordId2);
-
-        }
+            => ChargeDetailRecordId1.Equals(ChargeDetailRecordId2);
 
         #endregion
 
@@ -169,11 +216,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecordId1">A ChargeDetailRecordId.</param>
-        /// <param name="ChargeDetailRecordId2">Another ChargeDetailRecordId.</param>
+        /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
+        /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargeDetailRecord_Id ChargeDetailRecordId1, ChargeDetailRecord_Id ChargeDetailRecordId2)
-            => !(ChargeDetailRecordId1 == ChargeDetailRecordId2);
+        public static Boolean operator != (ChargeDetailRecord_Id ChargeDetailRecordId1,
+                                           ChargeDetailRecord_Id ChargeDetailRecordId2)
+
+            => !ChargeDetailRecordId1.Equals(ChargeDetailRecordId2);
 
         #endregion
 
@@ -182,18 +231,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecordId1">A ChargeDetailRecordId.</param>
-        /// <param name="ChargeDetailRecordId2">Another ChargeDetailRecordId.</param>
+        /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
+        /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargeDetailRecord_Id ChargeDetailRecordId1, ChargeDetailRecord_Id ChargeDetailRecordId2)
-        {
+        public static Boolean operator < (ChargeDetailRecord_Id ChargeDetailRecordId1,
+                                          ChargeDetailRecord_Id ChargeDetailRecordId2)
 
-            if ((Object) ChargeDetailRecordId1 == null)
-                throw new ArgumentNullException(nameof(ChargeDetailRecordId1), "The given ChargeDetailRecordId1 must not be null!");
-
-            return ChargeDetailRecordId1.CompareTo(ChargeDetailRecordId2) < 0;
-
-        }
+            => ChargeDetailRecordId1.CompareTo(ChargeDetailRecordId2) < 0;
 
         #endregion
 
@@ -202,11 +246,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecordId1">A ChargeDetailRecordId.</param>
-        /// <param name="ChargeDetailRecordId2">Another ChargeDetailRecordId.</param>
+        /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
+        /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargeDetailRecord_Id ChargeDetailRecordId1, ChargeDetailRecord_Id ChargeDetailRecordId2)
-            => !(ChargeDetailRecordId1 > ChargeDetailRecordId2);
+        public static Boolean operator <= (ChargeDetailRecord_Id ChargeDetailRecordId1,
+                                           ChargeDetailRecord_Id ChargeDetailRecordId2)
+
+            => ChargeDetailRecordId1.CompareTo(ChargeDetailRecordId2) <= 0;
 
         #endregion
 
@@ -215,18 +261,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecordId1">A ChargeDetailRecordId.</param>
-        /// <param name="ChargeDetailRecordId2">Another ChargeDetailRecordId.</param>
+        /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
+        /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargeDetailRecord_Id ChargeDetailRecordId1, ChargeDetailRecord_Id ChargeDetailRecordId2)
-        {
+        public static Boolean operator > (ChargeDetailRecord_Id ChargeDetailRecordId1,
+                                          ChargeDetailRecord_Id ChargeDetailRecordId2)
 
-            if ((Object) ChargeDetailRecordId1 == null)
-                throw new ArgumentNullException(nameof(ChargeDetailRecordId1), "The given ChargeDetailRecordId1 must not be null!");
-
-            return ChargeDetailRecordId1.CompareTo(ChargeDetailRecordId2) > 0;
-
-        }
+            => ChargeDetailRecordId1.CompareTo(ChargeDetailRecordId2) > 0;
 
         #endregion
 
@@ -235,11 +276,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecordId1">A ChargeDetailRecordId.</param>
-        /// <param name="ChargeDetailRecordId2">Another ChargeDetailRecordId.</param>
+        /// <param name="ChargeDetailRecordId1">A charge detail record identification.</param>
+        /// <param name="ChargeDetailRecordId2">Another charge detail record identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargeDetailRecord_Id ChargeDetailRecordId1, ChargeDetailRecord_Id ChargeDetailRecordId2)
-            => !(ChargeDetailRecordId1 < ChargeDetailRecordId2);
+        public static Boolean operator >= (ChargeDetailRecord_Id ChargeDetailRecordId1,
+                                           ChargeDetailRecord_Id ChargeDetailRecordId2)
+
+            => ChargeDetailRecordId1.CompareTo(ChargeDetailRecordId2) >= 0;
 
         #endregion
 
@@ -253,19 +296,11 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargeDetailRecord_Id))
-                throw new ArgumentException("The given object is not a charge detail record identification!",
-                                            nameof(Object));
-
-            return CompareTo((ChargeDetailRecord_Id) Object);
-
-        }
+            => Object is ChargeDetailRecord_Id cdrId
+                   ? CompareTo(cdrId)
+                   : throw new ArgumentException("The given object is not a charge detail record identification!");
 
         #endregion
 
@@ -276,20 +311,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecordId">An object to compare with.</param>
         public Int32 CompareTo(ChargeDetailRecord_Id ChargeDetailRecordId)
-        {
 
-            if ((Object) ChargeDetailRecordId == null)
-                throw new ArgumentNullException(nameof(ChargeDetailRecordId),  "The given charge detail record identification must not be null!");
-
-            // Compare the length of the ChargeDetailRecordIds
-            var _Result = this.Length.CompareTo(ChargeDetailRecordId.Length);
-
-            if (_Result == 0)
-                _Result = String.Compare(InternalId, ChargeDetailRecordId.InternalId, StringComparison.Ordinal);
-
-            return _Result;
-
-        }
+            => String.Compare(InternalId,
+                              ChargeDetailRecordId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -304,18 +329,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargeDetailRecord_Id))
-                return false;
-
-            return Equals((ChargeDetailRecord_Id) Object);
-
-        }
+            => Object is ChargeDetailRecord_Id cdrId &&
+                   Equals(cdrId);
 
         #endregion
 
@@ -324,17 +341,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two ChargeDetailRecordIds for equality.
         /// </summary>
-        /// <param name="ChargeDetailRecordId">A ChargeDetailRecordId to compare with.</param>
+        /// <param name="ChargeDetailRecordId">A charge detail record identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargeDetailRecord_Id ChargeDetailRecordId)
-        {
 
-            if ((Object) ChargeDetailRecordId == null)
-                return false;
-
-            return InternalId.Equals(ChargeDetailRecordId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             ChargeDetailRecordId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -343,24 +356,25 @@ namespace org.GraphDefined.WWCP
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
-
 
     }
 

@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as a charging product identification.
         /// </summary>
         /// <param name="ChargingProductId">A text representation of a charging product identification.</param>
-        public static ChargingProduct? FromId(String? ChargingProductId)
+        public static ChargingProduct? FromId(String ChargingProductId)
         {
 
             if (ChargingProductId?.Trim().IsNullOrEmpty() == true)
