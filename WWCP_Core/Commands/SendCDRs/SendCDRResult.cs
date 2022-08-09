@@ -992,16 +992,16 @@ namespace org.GraphDefined.WWCP
 
         #region (static) TryParse(JSONObject, ..., out SendCDRResult, out ErrorResponse, VerifyContext = false)
 
-        public static Boolean TryParse(JObject            JSONObject,
-                                       out SendCDRResult  SendCDRResult,
-                                       out String         ErrorResponse,
-                                       Boolean            VerifyContext = false)
+        public static Boolean TryParse(JObject             JSONObject,
+                                       out SendCDRResult?  SendCDRResult,
+                                       out String?         ErrorResponse,
+                                       Boolean             VerifyContext = false)
         {
 
             try
             {
 
-                SendCDRResult = null;
+                SendCDRResult = default;
 
                 if (JSONObject?.HasValues != true)
                 {
