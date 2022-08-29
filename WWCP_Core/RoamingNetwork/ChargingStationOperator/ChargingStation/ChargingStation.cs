@@ -3750,11 +3750,11 @@ namespace org.GraphDefined.WWCP
                                                                                                                                ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          GeoLocation.Value.  ToJSON())    : null,
-                         (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              Address.            ToJSON())    : null,
-                         (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? new JProperty("authenticationModes",  new JArray(AuthenticationModes)) : null,
-                         (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON())    : null,
-                         (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? new JProperty("openingTimes",         OpeningTimes.       ToJSON())    : null,
+                         (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          GeoLocation.Value.  ToJSON()) : null,
+                         (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              Address.            ToJSON()) : null,
+                         (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? new JProperty("authenticationModes",  AuthenticationModes.ToJSON()) : null,
+                         (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON()) : null,
+                         (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? new JProperty("openingTimes",         OpeningTimes.       ToJSON()) : null,
 
                          ExpandEVSEIds != InfoStatus.Hidden && EVSEs.Any()
                              ? ExpandEVSEIds.Switch(

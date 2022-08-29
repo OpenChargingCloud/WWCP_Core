@@ -59,13 +59,22 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this AuthenticationModes, JPropertyKey)
+        #region ToJSON(this PaymentOptions)
 
-        public static JProperty ToJSON(this ReactiveSet<AuthenticationModes> AuthenticationModes, String JPropertyKey)
+        public static JArray? ToJSON(this IEnumerable<PaymentOptions> PaymentOptions)
 
-            => AuthenticationModes != null
-                   ? new JProperty(JPropertyKey,
-                                   new JArray(AuthenticationModes.SafeSelect(mode => mode.ToJSON())))
+            => PaymentOptions is not null
+                   ? new JArray(PaymentOptions.SafeSelect(paymentOption => paymentOption.ToString()))
+                   : null;
+
+        #endregion
+
+        #region ToJSON(this AuthenticationModes)
+
+        public static JArray? ToJSON(this IEnumerable<AuthenticationModes> AuthenticationModes)
+
+            => AuthenticationModes is not null
+                   ? new JArray(AuthenticationModes.SafeSelect(authenticationMode => authenticationMode.ToJSON()))
                    : null;
 
         #endregion

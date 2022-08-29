@@ -3732,7 +3732,7 @@ namespace org.GraphDefined.WWCP
 
                          new JProperty("geoLocation",          GeoLocation.        ToJSON()),
                          new JProperty("address",              Address.            ToJSON()),
-                         new JProperty("authenticationModes",  new JArray(AuthenticationModes)),
+                         new JProperty("authenticationModes",  AuthenticationModes.ToJSON()),
                          new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON()),
                          new JProperty("openingTimes",         OpeningTimes.       ToJSON()),
 

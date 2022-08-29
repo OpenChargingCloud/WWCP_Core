@@ -3114,9 +3114,9 @@ namespace org.GraphDefined.WWCP
                                                                                                                             ExpandDataLicenses:                InfoStatus.Hidden)))
                                    : null,
 
-                               !Embedded ? ChargingStation.GeoLocation.Value.  ToJSON("geoLocation")         : null,
-                               !Embedded ? ChargingStation.Address.            ToJSON("address")             : null,
-                               !Embedded ? ChargingStation.AuthenticationModes.ToJSON("authenticationModes") : null,
+                               !Embedded ? new JProperty("geoLocation",         ChargingStation.GeoLocation.Value.  ToJSON()) : null,
+                               !Embedded ? new JProperty("address",             ChargingStation.Address.            ToJSON()) : null,
+                               !Embedded ? new JProperty("authenticationModes", ChargingStation.AuthenticationModes.ToJSON()) : null,
 
                                ChargingModes.SafeAny()
                                    ? new JProperty("chargingModes",  new JArray(ChargingModes.SafeSelect(mode => mode.ToText())))
