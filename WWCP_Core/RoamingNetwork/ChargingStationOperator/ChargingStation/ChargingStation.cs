@@ -3750,11 +3750,11 @@ namespace org.GraphDefined.WWCP
                                                                                                                                ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? GeoLocation.Value.  ToJSON("geoLocation")         : null,
-                         (!Embedded || Address             != ChargingPool.Address)             ? Address.            ToJSON("address")             : null,
-                         (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? AuthenticationModes.ToJSON("authenticationModes") : null,
-                         (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? HotlinePhoneNumber. ToJSON("hotlinePhoneNumber")  : null,
-                         (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? OpeningTimes.       ToJSON("openingTimes")        : null,
+                         (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          GeoLocation.Value.  ToJSON())    : null,
+                         (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              Address.            ToJSON())    : null,
+                         (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? new JProperty("authenticationModes",  new JArray(AuthenticationModes)) : null,
+                         (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON())    : null,
+                         (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? new JProperty("openingTimes",         OpeningTimes.       ToJSON())    : null,
 
                          ExpandEVSEIds != InfoStatus.Hidden && EVSEs.Any()
                              ? ExpandEVSEIds.Switch(

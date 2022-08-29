@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP
         /// The source of this information, e.g. the WWCP importer used.
         /// </summary>
         [Optional]
-        public String            DataSource     { get; set; }
+        public String?           DataSource     { get; set; }
 
         /// <summary>
         /// The timestamp of the last changes within this ChargingPool.

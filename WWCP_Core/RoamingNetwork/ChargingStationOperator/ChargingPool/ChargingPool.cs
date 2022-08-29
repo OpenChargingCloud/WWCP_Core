@@ -3730,11 +3730,11 @@ namespace org.GraphDefined.WWCP
                                                                                                                       ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         GeoLocation.        ToJSON("geoLocation"),
-                         Address.            ToJSON("address"),
-                         AuthenticationModes.ToJSON("authenticationModes"),
-                         HotlinePhoneNumber. ToJSON("hotlinePhoneNumber"),
-                         OpeningTimes.       ToJSON("openingTimes"),
+                         new JProperty("geoLocation",          GeoLocation.        ToJSON()),
+                         new JProperty("address",              Address.            ToJSON()),
+                         new JProperty("authenticationModes",  new JArray(AuthenticationModes)),
+                         new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON()),
+                         new JProperty("openingTimes",         OpeningTimes.       ToJSON()),
 
 
                          ExpandChargingStationIds != InfoStatus.Hidden && ChargingStations.Any()

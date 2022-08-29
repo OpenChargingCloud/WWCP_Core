@@ -1426,7 +1426,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE              RemoteEVSE        { get; }
+        public IRemoteEVSE?             RemoteEVSE        { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
@@ -1471,17 +1471,17 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        public EVSE(EVSE_Id                              Id,
-                    ChargingStation                      ChargingStation,
-                    Action<EVSE>                         Configurator             = null,
-                    RemoteEVSECreatorDelegate            RemoteEVSECreator        = null,
-                    Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus       = null,
-                    Timestamped<EVSEStatusTypes>?        InitialStatus            = null,
-                    UInt16                               MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
-                    UInt16                               MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+        public EVSE(EVSE_Id                               Id,
+                    ChargingStation                       ChargingStation,
+                    Action<EVSE>?                         Configurator             = null,
+                    RemoteEVSECreatorDelegate?            RemoteEVSECreator        = null,
+                    Timestamped<EVSEAdminStatusTypes>?    InitialAdminStatus       = null,
+                    Timestamped<EVSEStatusTypes>?         InitialStatus            = null,
+                    UInt16                                MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
+                    UInt16                                MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
 
-                    JObject                              CustomData               = null,
-                    IReadOnlyDictionary<String, Object>  InternalData             = null)
+                    JObject?                              CustomData               = null,
+                    IReadOnlyDictionary<String, Object>?  InternalData             = null)
 
             : base(Id,
                    InternalData)
@@ -3132,20 +3132,20 @@ namespace org.GraphDefined.WWCP
                                MaxCapacity.   HasValue && MaxCapacity.  HasValue ? new JProperty("maxCapacity",     Math.Round(MaxCapacity.   Value, 2)) : null,
 
                                SocketOutlets.Count > 0
-                                  ? new JProperty("socketOutlets",  new JArray(SocketOutlets.ToJSON()))
-                                  : null,
-
-                               EnergyMeterId.HasValue
-                                   ? new JProperty("energyMeterId", EnergyMeterId)
+                                   ? new JProperty("socketOutlets",  new JArray(SocketOutlets.ToJSON()))
                                    : null,
 
-                               !Embedded
-                                   ? ChargingStation.OpeningTimes.ToJSON("openingTimes")
+                               EnergyMeterId.HasValue
+                                   ? new JProperty("energyMeterId",  EnergyMeterId)
+                                   : null,
+
+                               !Embedded && ChargingStation?.OpeningTimes is not null
+                                   ? new JProperty("openingTimes",   ChargingStation.OpeningTimes.ToJSON())
                                    : null
 
                          );
 
-                return CustomEVSESerializer != null
+                return CustomEVSESerializer is not null
                            ? CustomEVSESerializer(this, JSON)
                            : JSON;
 

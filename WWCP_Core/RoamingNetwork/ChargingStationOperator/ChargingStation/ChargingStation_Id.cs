@@ -17,14 +17,12 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System;
 
 #endregion
 
@@ -38,21 +36,38 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
+        /// Indicates whether this charging station identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingStationId">A charging station identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingStation_Id? ChargingStationId)
+            => !ChargingStationId.HasValue || ChargingStationId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging station identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingStationId">A charging station identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingStation_Id? ChargingStationId)
+            => ChargingStationId.HasValue && ChargingStationId.Value.IsNotNullOrEmpty;
+
+
+
+        /// <summary>
         /// Create a new EVSE identification
         /// based on the given charging station identification.
         /// </summary>
         /// <param name="ChargingStationId">A charging station identification.</param>
-        /// <param name="AdditionalSuffix">An additional EVSE suffix.</param>
+        /// <param name="AdditionalSuffix">An optional additional EVSE suffix.</param>
         public static EVSE_Id CreateEVSEId(this ChargingStation_Id  ChargingStationId,
-                                           String                   AdditionalSuffix)
+                                           String?                  AdditionalSuffix   = null)
         {
 
-            var Suffix = ChargingStationId.Suffix;
+            var suffix = ChargingStationId.Suffix;
 
-            if (Suffix.StartsWith("TATION", StringComparison.Ordinal))
-                Suffix = "VSE" + Suffix.Substring(6);
+            if (suffix.StartsWith("TATION", StringComparison.OrdinalIgnoreCase))
+                suffix = String.Concat("VSE", suffix.AsSpan(6));
 
-            return EVSE_Id.Parse(ChargingStationId.OperatorId, Suffix + AdditionalSuffix ?? "");
+            return EVSE_Id.Parse(ChargingStationId.OperatorId,
+                                 suffix + (AdditionalSuffix ?? ""));
 
         }
 
@@ -100,6 +115,12 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => !Suffix.IsNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
@@ -164,19 +185,20 @@ namespace org.GraphDefined.WWCP
                                                 Boolean  RemoveLastStar = true)
         {
 
-            var _Suffix = EVSEId.Suffix;
+            var suffix = EVSEId.Suffix;
 
             if (RemoveLastStar)
             {
 
-                var _HasAStar = EVSEId.Suffix.LastIndexOf("*");
+                var hasAStar = EVSEId.Suffix.LastIndexOf("*");
 
-                if (_HasAStar > 0)
-                    _Suffix = _Suffix.Substring(0, _HasAStar);
+                if (hasAStar > 0)
+                    suffix = suffix[..hasAStar];
 
             }
 
-            return Parse(EVSEId.OperatorId, _Suffix.ToUpper());
+            return Parse(EVSEId.OperatorId,
+                         suffix.ToUpper());
 
             //var _Array = new String[] {
             //                 EVSEId.OperatorId.CountryCode.Alpha2Code,
@@ -438,10 +460,8 @@ namespace org.GraphDefined.WWCP
         public static ChargingStation_Id? TryParse(String Text)
         {
 
-            ChargingStation_Id ChargingStationId;
-
-            if (TryParse(Text, out ChargingStationId))
-                return ChargingStationId;
+            if (TryParse(Text, out ChargingStation_Id chargingStationId))
+                return chargingStationId;
 
             return null;
 
@@ -459,45 +479,37 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
+            ChargingStationId = default;
+
+            Text = Text.Trim();
+
             if (Text.IsNullOrEmpty())
-            {
-                ChargingStationId = default(ChargingStation_Id);
                 return false;
-            }
 
             #endregion
 
             try
             {
 
-                ChargingStationId = default(ChargingStation_Id);
+                var matchCollection = ChargingStationId_RegEx.Matches(Text);
 
-                var _MatchCollection = ChargingStationId_RegEx.Matches(Text);
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
-
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
                 {
 
-                    ChargingStationId = new ChargingStation_Id(_OperatorId,
-                                                               _MatchCollection[0].Groups[2].Value);
+                    ChargingStationId = new ChargingStation_Id(chargingStationOperatorId,
+                                                               matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception e)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch
             { }
 
-            ChargingStationId = default(ChargingStation_Id);
             return false;
 
         }
@@ -511,8 +523,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingStation_Id Clone
 
-            => new ChargingStation_Id(OperatorId.Clone,
-                                      new String(Suffix.ToCharArray()));
+            => new (OperatorId.Clone,
+                    new String(Suffix.ToCharArray()));
 
         #endregion
 
@@ -527,20 +539,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId1">A charging station identification.</param>
         /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-        {
+        public static Boolean operator == (ChargingStation_Id ChargingStationId1,
+                                           ChargingStation_Id ChargingStationId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingStationId1, ChargingStationId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingStationId1 == null) || ((Object) ChargingStationId2 == null))
-                return false;
-
-            return ChargingStationId1.Equals(ChargingStationId2);
-
-        }
+            => ChargingStationId1.Equals(ChargingStationId2);
 
         #endregion
 
@@ -552,8 +554,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId1">A charging station identification.</param>
         /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-            => !(ChargingStationId1 == ChargingStationId2);
+        public static Boolean operator != (ChargingStation_Id ChargingStationId1,
+                                           ChargingStation_Id ChargingStationId2)
+
+            => !ChargingStationId1.Equals(ChargingStationId2);
 
         #endregion
 
@@ -565,15 +569,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId1">A charging station identification.</param>
         /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-        {
+        public static Boolean operator < (ChargingStation_Id ChargingStationId1,
+                                          ChargingStation_Id ChargingStationId2)
 
-            if ((Object) ChargingStationId1 == null)
-                throw new ArgumentNullException(nameof(ChargingStationId1), "The given ChargingStationId1 must not be null!");
-
-            return ChargingStationId1.CompareTo(ChargingStationId2) < 0;
-
-        }
+            => ChargingStationId1.CompareTo(ChargingStationId2) < 0;
 
         #endregion
 
@@ -585,8 +584,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId1">A charging station identification.</param>
         /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-            => !(ChargingStationId1 > ChargingStationId2);
+        public static Boolean operator <= (ChargingStation_Id ChargingStationId1,
+                                           ChargingStation_Id ChargingStationId2)
+
+            => ChargingStationId1.CompareTo(ChargingStationId2) <= 0;
 
         #endregion
 
@@ -598,15 +599,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId1">A charging station identification.</param>
         /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-        {
+        public static Boolean operator > (ChargingStation_Id ChargingStationId1,
+                                          ChargingStation_Id ChargingStationId2)
 
-            if ((Object) ChargingStationId1 == null)
-                throw new ArgumentNullException(nameof(ChargingStationId1), "The given ChargingStationId1 must not be null!");
-
-            return ChargingStationId1.CompareTo(ChargingStationId2) > 0;
-
-        }
+            => ChargingStationId1.CompareTo(ChargingStationId2) > 0;
 
         #endregion
 
@@ -618,8 +614,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId1">A charging station identification.</param>
         /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-            => !(ChargingStationId1 < ChargingStationId2);
+        public static Boolean operator >= (ChargingStation_Id ChargingStationId1,
+                                           ChargingStation_Id ChargingStationId2)
+
+            => ChargingStationId1.CompareTo(ChargingStationId2) >= 0;
 
         #endregion
 
@@ -633,18 +631,12 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingStation_Id))
-                throw new ArgumentException("The given object is not a charging station identification!", nameof(Object));
-
-            return CompareTo((ChargingStation_Id) Object);
-
-        }
+            => Object is ChargingStation_Id chargingStationId
+                   ? CompareTo(chargingStationId)
+                   : throw new ArgumentException("The given object is not a charging station identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -657,21 +649,12 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(ChargingStation_Id ChargingStationId)
         {
 
-            if ((Object) ChargingStationId == null)
-                throw new ArgumentNullException(nameof(ChargingStationId), "The given charging station identification must not be null!");
+            var c = OperatorId.CompareTo(ChargingStationId.OperatorId);
 
-            // Compare the length of the ChargingStationIds
-            var _Result = Length.CompareTo(ChargingStationId.Length);
+            if (c == 0)
+                c = String.Compare(Suffix, ChargingStationId.Suffix, StringComparison.OrdinalIgnoreCase);
 
-            // If equal: Compare charging operator identifications
-            if (_Result == 0)
-                _Result = OperatorId.CompareTo(ChargingStationId.OperatorId);
-
-            // If equal: Compare ChargingStationId suffix
-            if (_Result == 0)
-                _Result = String.Compare(Suffix, ChargingStationId.Suffix, StringComparison.Ordinal);
-
-            return _Result;
+            return c;
 
         }
 
@@ -688,18 +671,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingStation_Id))
-                return false;
-
-            return Equals((ChargingStation_Id) Object);
-
-        }
+            => Object is ChargingStation_Id chargingStationId &&
+                   Equals(chargingStationId);
 
         #endregion
 
@@ -711,15 +686,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId">A charging station identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStation_Id ChargingStationId)
-        {
 
-            if ((Object) ChargingStationId == null)
-                return false;
-
-            return OperatorId.Equals(ChargingStationId.OperatorId) &&
-                   Suffix.    Equals(ChargingStationId.Suffix);
-
-        }
+            => OperatorId.Equals(ChargingStationId.OperatorId) &&
+               Suffix.    Equals(ChargingStationId.Suffix);
 
         #endregion
 
@@ -744,23 +713,12 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            switch (OperatorId.Format)
-            {
-
-                case OperatorIdFormats.DIN:
-                    return "+" + OperatorId.CountryCode.TelefonCode.ToString() + "*" + OperatorId.Suffix + "*S" + Suffix;
-
-                case OperatorIdFormats.ISO_STAR:
-                    return OperatorId.CountryCode.Alpha2Code + "*" + OperatorId.Suffix + "*S" + Suffix;
-
-                default: // ISO
-                    return OperatorId.CountryCode.Alpha2Code       + OperatorId.Suffix + "S" + Suffix;
-
-            }
-
-        }
+            => OperatorId.Format switch {
+                OperatorIdFormats.DIN       => "+" + OperatorId.CountryCode.TelefonCode.ToString() + "*" + OperatorId.Suffix + "*S" + Suffix,
+                OperatorIdFormats.ISO_STAR  =>       OperatorId.CountryCode.Alpha2Code +             "*" + OperatorId.Suffix + "*S" + Suffix,
+                _                           =>       OperatorId.CountryCode.Alpha2Code +                   OperatorId.Suffix +  "S" + Suffix
+            };
 
         #endregion
 
@@ -771,35 +729,28 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Format">The format of the identification.</param>
         public String ToString(OperatorIdFormats Format)
-        {
 
-            switch (OperatorId.Format)
-            {
+            => OperatorId.Format switch {
 
-                case OperatorIdFormats.ISO:
-                    return String.Concat(OperatorId.CountryCode.Alpha2Code,
-                                         OperatorId.Suffix,
-                                         "S",
-                                         Suffix);
+                OperatorIdFormats.ISO       => String.Concat(OperatorId.CountryCode.Alpha2Code,
+                                                             OperatorId.Suffix,
+                                                             "S",
+                                                             Suffix),
 
-                case OperatorIdFormats.ISO_STAR:
-                    return String.Concat(OperatorId.CountryCode.Alpha2Code,
-                                         "*",
-                                         OperatorId.Suffix,
-                                         "*S",
-                                         Suffix);
+                OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId.CountryCode.Alpha2Code,
+                                                             "*",
+                                                             OperatorId.Suffix,
+                                                             "*S",
+                                                             Suffix),
 
-                default: // DIN
-                    return String.Concat("+",
-                                         OperatorId.CountryCode.TelefonCode,
-                                         "*",
-                                         OperatorId.Suffix,
-                                         "*S",
-                                         Suffix);
+                _                           => String.Concat("+",
+                                                             OperatorId.CountryCode.TelefonCode,
+                                                             "*",
+                                                             OperatorId.Suffix,
+                                                             "*S",
+                                                             Suffix)
 
-            }
-
-        }
+            };
 
         #endregion
 
