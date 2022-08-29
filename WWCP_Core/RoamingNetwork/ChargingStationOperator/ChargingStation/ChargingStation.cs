@@ -915,30 +915,59 @@ namespace org.GraphDefined.WWCP
 
         #region OpeningTimes
 
-        private OpeningTimes _OpeningTimes;
+        private OpeningTimes? openingTimes;
 
         /// <summary>
-        /// The opening times of this charging station.
+        /// The opening times of this charging station (non recursive).
         /// </summary>
-        public OpeningTimes OpeningTimes
+        public OpeningTimes? _OpeningTimes
         {
 
             get
             {
-                return _OpeningTimes ?? ChargingPool?.OpeningTimes;
+                return openingTimes;
             }
 
             set
             {
 
-                if (value != _OpeningTimes && value != ChargingPool?.OpeningTimes)
+                if (value != openingTimes)
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _OpeningTimes);
+                    if (value is null)
+                        DeleteProperty(ref openingTimes);
 
                     else
-                        SetProperty(ref _OpeningTimes, value);
+                        SetProperty(ref openingTimes, value);
+
+                }
+
+            }
+
+        }
+
+        /// <summary>
+        /// The opening times of this charging station (or the charging pool).
+        /// </summary>
+        public OpeningTimes? OpeningTimes
+        {
+
+            get
+            {
+                return openingTimes ?? ChargingPool?.OpeningTimes;
+            }
+
+            set
+            {
+
+                if (value != openingTimes && value != ChargingPool?.OpeningTimes)
+                {
+
+                    if (value is null)
+                        DeleteProperty(ref openingTimes);
+
+                    else
+                        SetProperty(ref openingTimes, value);
 
                 }
 
@@ -1829,7 +1858,7 @@ namespace org.GraphDefined.WWCP
         /// Optional custom data, e.g. in combination with custom parsers and serializers.
         /// </summary>
         [Optional]
-        public JObject  CustomData    { get; }
+        public JObject                   CustomData               { get; }
 
         #endregion
 
@@ -1838,28 +1867,28 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional remote charging station.
         /// </summary>
-        public IRemoteChargingStation  RemoteChargingStation    { get; }
+        public IRemoteChargingStation?   RemoteChargingStation    { get; }
 
 
         /// <summary>
         /// The charging pool.
         /// </summary>
         [InternalUseOnly]
-        public ChargingPool            ChargingPool             { get; }
+        public ChargingPool?             ChargingPool             { get; }
 
 
         /// <summary>
         /// The Charging Station Operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator  Operator
+        public ChargingStationOperator?  Operator
             => ChargingPool?.Operator;
 
         /// <summary>
         /// The roaming network of this charging station.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork RoamingNetwork
+        public IRoamingNetwork?          RoamingNetwork
             => Operator?.RoamingNetwork;
 
         #endregion
@@ -1902,12 +1931,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
         public ChargingStation(ChargingStation_Id                             Id,
-                               Action<ChargingStation>                        Configurator                  = null,
-                               RemoteChargingStationCreatorDelegate           RemoteChargingStationCreator  = null,
-                               Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus            = null,
-                               Timestamped<ChargingStationStatusTypes>?       InitialStatus                 = null,
-                               UInt16                                         MaxAdminStatusListSize        = DefaultMaxAdminStatusListSize,
-                               UInt16                                         MaxStatusListSize             = DefaultMaxStatusListSize)
+                               Action<ChargingStation>?                       Configurator                   = null,
+                               RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
+                               Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
+                               Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
+                               UInt16                                         MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
+                               UInt16                                         MaxStatusListSize              = DefaultMaxStatusListSize)
 
             : this(Id,
                    null,
@@ -1937,15 +1966,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
         public ChargingStation(ChargingStation_Id                             Id,
                                ChargingPool                                   ChargingPool,
-                               Action<ChargingStation>                        Configurator                   = null,
-                               RemoteChargingStationCreatorDelegate           RemoteChargingStationCreator   = null,
+                               Action<ChargingStation>?                       Configurator                   = null,
+                               RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
                                UInt16                                         MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
                                UInt16                                         MaxStatusListSize              = DefaultMaxStatusListSize,
 
-                               JObject                                        CustomData                     = null,
-                               IReadOnlyDictionary<String, Object>            InternalData                   = null)
+                               JObject?                                       CustomData                     = null,
+                               IReadOnlyDictionary<String, Object>?           InternalData                   = null)
 
             : base(Id,
                    InternalData)
@@ -1961,7 +1990,7 @@ namespace org.GraphDefined.WWCP
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
-            this._OpeningTimes               = OpeningTimes.Open24Hours;
+            this.openingTimes               = OpeningTimes.Open24Hours;
             this._Brands                     = new SpecialHashSet<ChargingStation, Brand_Id, Brand>(this);
 
             this._AdminStatusSchedule        = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxAdminStatusListSize);

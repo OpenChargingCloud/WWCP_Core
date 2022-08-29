@@ -917,7 +917,7 @@ namespace org.GraphDefined.WWCP
 
         #region OpeningTimes
 
-        private OpeningTimes _OpeningTimes;
+        private OpeningTimes openingTimes;
 
         /// <summary>
         /// The opening times of this charging pool.
@@ -928,7 +928,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _OpeningTimes;
+                return openingTimes;
             }
 
             set
@@ -937,13 +937,13 @@ namespace org.GraphDefined.WWCP
                 //if (value == null)
                 //    value = OpeningTimes.Open24Hours;
 
-                if (_OpeningTimes != value)
+                if (openingTimes != value)
                 {
 
                     // Can not be deleted!
                     // Will always be at least 'Open24Hours'!
 
-                    SetProperty(ref _OpeningTimes, value);
+                    SetProperty(ref openingTimes, value);
 
                     // Delete inherited opening times
                     _ChargingStations.ForEach(station => station.OpeningTimes = null);
