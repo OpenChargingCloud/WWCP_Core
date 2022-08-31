@@ -55,7 +55,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                      InfoStatus                 ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
 
-            => ChargingStationGroup == null
+            => ChargingStationGroup is null
 
                    ? null
 

@@ -53,22 +53,22 @@ namespace org.GraphDefined.WWCP
         /// <param name="Skip">The optional number of EVSEs to skip.</param>
         /// <param name="Take">The optional number of EVSEs to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public static JArray ToJSON(this IEnumerable<EVSE>                 EVSEs,
-                                    UInt64?                                Skip                              = null,
-                                    UInt64?                                Take                              = null,
-                                    Boolean                                Embedded                          = false,
-                                    InfoStatus                             ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                             ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                             ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                             ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                                    InfoStatus                             ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                             ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJObjectSerializerDelegate<EVSE>  CustomEVSESerializer              = null)
+        public static JArray ToJSON(this IEnumerable<EVSE>                  EVSEs,
+                                    UInt64?                                 Skip                              = null,
+                                    UInt64?                                 Take                              = null,
+                                    Boolean                                 Embedded                          = false,
+                                    InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                    InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                                    InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                    InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                                    CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
 
 
-            => EVSEs?.SafeAny() == true
+            => EVSEs?.Any() == true
 
-                   ? new JArray(EVSEs.Where         (evse => evse != null).
+                   ? new JArray(EVSEs.Where         (evse => evse is not null).
                                       OrderBy       (evse => evse.Id).
                                       SkipTakeFilter(Skip, Take).
                                       SafeSelect    (evse => evse.ToJSON(Embedded,
@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP
                                                                          ExpandBrandIds,
                                                                          ExpandDataLicenses,
                                                                          CustomEVSESerializer)).
-                                      Where         (evse => evse != null))
+                                      Where         (evse => evse is not null))
 
                    : new JArray();
 
@@ -3025,14 +3025,14 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of the given EVSE.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public JObject ToJSON(Boolean                                Embedded                          = false,
-                              InfoStatus                             ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                             ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                             ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                             ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                              InfoStatus                             ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                             ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<EVSE>  CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean                                 Embedded                          = false,
+                              InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
 
         {
 

@@ -3657,10 +3657,10 @@ namespace org.GraphDefined.WWCP
         public void AddParkingSpaces(params ParkingSpace[] ParkingSpaces)
         {
 
-            if (ParkingSpaces != null)
+            if (ParkingSpaces is not null)
             {
 
-                if (_ParkingSpaces == null)
+                if (_ParkingSpaces is null)
                     _ParkingSpaces = new ReactiveSet<ParkingSpace>();
 
                 _ParkingSpaces.Add(ParkingSpaces);
@@ -3677,15 +3677,15 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of the given charging station.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public JObject ToJSON(Boolean                                        Embedded                          = false,
-                              InfoStatus                                     ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                                     ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                                     ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                                     ExpandEVSEIds                     = InfoStatus.Expanded,
-                              InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                              CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean                                            Embedded                          = false,
+                              InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
+                              InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
+                              CustomJObjectSerializerDelegate<EVSE>?             CustomEVSESerializer              = null)
         {
 
             var JSON = JSONObject.Create(
@@ -3801,7 +3801,7 @@ namespace org.GraphDefined.WWCP
 
                      );
 
-            return CustomChargingStationSerializer != null
+            return CustomChargingStationSerializer is not null
                        ? CustomChargingStationSerializer(this, JSON)
                        : JSON;
 

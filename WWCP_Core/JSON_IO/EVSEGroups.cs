@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -45,17 +41,17 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// </summary>
         /// <param name="EVSEGroup">A EVSE group.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
-        public static JObject ToJSON(this EVSEGroup  EVSEGroup,
-                                     Boolean         Embedded                          = false,
-                                     InfoStatus      ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                     InfoStatus      ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                     InfoStatus      ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                     InfoStatus      ExpandEVSEIds                     = InfoStatus.Expanded,
-                                     InfoStatus      ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                     InfoStatus      ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+        public static JObject? ToJSON(this EVSEGroup  EVSEGroup,
+                                      Boolean         Embedded                          = false,
+                                      InfoStatus      ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                      InfoStatus      ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                      InfoStatus      ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                      InfoStatus      ExpandEVSEIds                     = InfoStatus.Expanded,
+                                      InfoStatus      ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                      InfoStatus      ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
 
-            => EVSEGroup == null
+            => EVSEGroup is null
 
                    ? null
 
@@ -153,19 +149,19 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Skip">The optional number of charging stations to skip.</param>
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public static JArray ToJSON(this IEnumerable<EVSEGroup>  EVSEGroups,
-                                    UInt64?                      Skip                              = null,
-                                    UInt64?                      Take                              = null,
-                                    Boolean                      Embedded                          = false,
-                                    InfoStatus                   ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                   ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                   ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                   ExpandEVSEIds                     = InfoStatus.Expanded,
-                                    InfoStatus                   ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                   ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+        public static JArray? ToJSON(this IEnumerable<EVSEGroup>  EVSEGroups,
+                                     UInt64?                      Skip                              = null,
+                                     UInt64?                      Take                              = null,
+                                     Boolean                      Embedded                          = false,
+                                     InfoStatus                   ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                     InfoStatus                   ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                     InfoStatus                   ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                     InfoStatus                   ExpandEVSEIds                     = InfoStatus.Expanded,
+                                     InfoStatus                   ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                     InfoStatus                   ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
 
-            => EVSEGroups != null && EVSEGroups.Any()
+            => EVSEGroups is not null && EVSEGroups.Any()
 
                    ? new JArray(EVSEGroups.
                                     Where     (stationgroup => stationgroup != null).
@@ -185,7 +181,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #region ToJSON(this EVSEGroups, JPropertyKey)
 
-        public static JProperty ToJSON(this IEnumerable<EVSEGroup> EVSEGroups, String JPropertyKey)
+        public static JProperty? ToJSON(this IEnumerable<EVSEGroup> EVSEGroups, String JPropertyKey)
         {
 
             #region Initial checks
@@ -202,7 +198,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         }
 
         #endregion
-
 
     }
 
