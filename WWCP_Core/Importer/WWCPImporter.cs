@@ -17,14 +17,7 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
@@ -41,27 +34,33 @@ namespace org.GraphDefined.WWCP.Importer
                                                WWCPImporter<T>  WWCPImporter,
                                                DateTime         LastRuntimestamp,
                                                UInt64           LastRunId,
-                                               DNSClient        DNSClient);
+                                               DNSClient        DNSClient)
+
+        where T : class;
 
 
     public delegate IEnumerable<ImporterForwardingInfo> CreateForwardingTableDelegate<T>(WWCPImporter<T>                                                 Importer,
                                                                                          T                                                               Input,
                                                                                          IEnumerable<ChargingStationOperator>                            AllChargingStationOperators,
                                                                                          Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperatorSelector,
-                                                                                         Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator);
+                                                                                         Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator)
+
+        where T : class;
+
 
     /// <summary>
     /// Import data into the WWCP in-memory datastructures.
     /// </summary>
     /// <typeparam name="T">The type of data which will be processed on every update run.</typeparam>
     public class WWCPImporter<T>
+        where T: class
     {
 
         #region Data
 
         private                  Boolean                            Started;
         //private readonly         Object                             ImporterRunLock;
-        private static readonly  SemaphoreSlim                      ImporterRunSemaphore = new SemaphoreSlim(1, 1);
+        private static readonly  SemaphoreSlim                      ImporterRunSemaphore = new (1, 1);
         private readonly         Timer                              ImporterRunTimer;
 
         /// <summary>
@@ -113,11 +112,19 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region LastRunId
 
-        private UInt64 _LastRunId;
+        private UInt64 lastRunId;
 
-        public UInt64 RunId => _LastRunId + 1;
+        public UInt64 LastRunId
+            => lastRunId;
 
         #endregion
+
+        #region LastRunTimestamp
+
+        public DateTime  LastRunTimestamp    { get; private set; }
+
+        #endregion
+
 
         #region AllForwardingInfos
 
@@ -265,8 +272,9 @@ namespace org.GraphDefined.WWCP.Importer
         public delegate Task OnImportFailedDelegate(DateTime         Timestamp,
                                                     WWCPImporter<T>  Importer,
                                                     String           Category,
-                                                    String           Message,
-                                                    String           ExportTimestamp = null);
+                                                    Exception?       Exception         = null,
+                                                    String?          Description       = null,
+                                                    DateTime?        ExportTimestamp   = null);
 
         public event OnImportFailedDelegate  OnImportFailed;
 
@@ -279,22 +287,22 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// Create a new WWCP importer.
         /// </summary>
-        public WWCPImporter(String                                                          Id,
-                            String                                                          ForwardingFilenamePrefix            = null,
+        public WWCPImporter(String                                                           Id,
+                            String?                                                          ForwardingFilenamePrefix            = null,
 
-                            IEnumerable<ChargingStationOperator>                            AllChargingStationOperators         = null,
-                            Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  GetChargingStationOperators         = null,
-                            Func<ChargingStation_Id, ChargingStationOperator>               GetDefaultChargingStationOperator   = null,
-                            CreateForwardingTableDelegate<T>                                CreateForwardingTable               = null,
+                            IEnumerable<ChargingStationOperator>?                            AllChargingStationOperators         = null,
+                            Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>?  GetChargingStationOperators         = null,
+                            Func<ChargingStation_Id, ChargingStationOperator>?               GetDefaultChargingStationOperator   = null,
+                            CreateForwardingTableDelegate<T>?                                CreateForwardingTable               = null,
 
-                            Action<WWCPImporter<T>, T>                                      OnStartup                           = null,
-                            TimeSpan?                                                       ImportEvery                         = null,
-                            GetDataDelegate<T>                                              GetData                             = null,
-                            Action<WWCPImporter<T>, T>                                      OnEveryRun                          = null,
-                            UInt32                                                          MaxNumberOfCachedDataImports        = DefaultMaxNumberOfCachedImports,
-                            Action<WWCPImporter<T>, T>                                      OnShutdown                          = null,
+                            Action<WWCPImporter<T>, T>?                                      OnStartup                           = null,
+                            TimeSpan?                                                        ImportEvery                         = null,
+                            GetDataDelegate<T>?                                              GetData                             = null,
+                            Action<WWCPImporter<T>, T>?                                      OnEveryRun                          = null,
+                            UInt32                                                           MaxNumberOfCachedDataImports        = DefaultMaxNumberOfCachedImports,
+                            Action<WWCPImporter<T>, T>?                                      OnShutdown                          = null,
 
-                            DNSClient                                                       DNSClient                           = null)
+                            DNSClient?                                                       DNSClient                           = null)
 
         {
 
@@ -346,18 +354,20 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region (protected) SendImportFailed(Timestamp, Category, Message, ExportTimestamp = null)
+        #region (protected) SendImportFailed(Timestamp, Category, Exception, Description = null, ExportTimestamp = null)
 
-        protected void SendImportFailed(DateTime  Timestamp,
-                                        String    Category,
-                                        String    Message,
-                                        String    ExportTimestamp = null)
+        protected void SendImportFailed(DateTime    Timestamp,
+                                        String      Category,
+                                        Exception?  Exception         = null,
+                                        String?     Description       = null,
+                                        DateTime?   ExportTimestamp   = null)
         {
 
             OnImportFailed?.Invoke(Timestamp,
                                    this,
                                    Category,
-                                   Message,
+                                   Exception,
+                                   Description,
                                    ExportTimestamp);
 
         }
@@ -530,7 +540,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                                                             StationGeoCoordinate:       null,
                                                                                             PhoneNumber:                PhoneNumber,
                                                                                             AdminStatus:                AdminStatus,
-                                                                                            Created:                    DateTime.UtcNow,
+                                                                                            Created:                    Timestamp.Now,
                                                                                             OutOfService:               true,
                                                                                             ForwardedToOperator:        CurrentEVSEOperator)
                                                                                         );
@@ -568,7 +578,7 @@ namespace org.GraphDefined.WWCP.Importer
                     throw new ApplicationException("Config file '" + ForwardingFilenamePrefix + "' does not exist!");
 
 
-                OnLoadForwardingDataFromFileFinished?.Invoke(DateTime.UtcNow,
+                OnLoadForwardingDataFromFileFinished?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 InputFile,
                                                                 (UInt64) _AllForwardingInfos.Count);
@@ -593,7 +603,7 @@ namespace org.GraphDefined.WWCP.Importer
             try
             {
 
-                var Now              = DateTime.UtcNow;
+                var Now              = Timestamp.Now;
 
                 var _ConfigFilename  = String.Concat(ForwardingFilenamePrefix,     "_",
                                                         Now.Year,                  "-",
@@ -748,7 +758,7 @@ namespace org.GraphDefined.WWCP.Importer
                         ExistingForwardingInfo.UpdateTimestamp();
 
                         if (ForwardingInformationChanged)
-                            OnForwardingInformationChanged?.Invoke(DateTime.UtcNow,
+                            OnForwardingInformationChanged?.Invoke(Timestamp.Now,
                                                                    this,
                                                                    ExistingForwardingInfo, //ToDo: Send a clone of the previous forwarding info!
                                                                    ExistingForwardingInfo);
@@ -764,7 +774,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         _AllForwardingInfos.Add(ForwardingInfo.StationId, ForwardingInfo);
 
-                        OnNewForwardingInformation?.Invoke(DateTime.UtcNow,
+                        OnNewForwardingInformation?.Invoke(Timestamp.Now,
                                                            this,
                                                            ForwardingInfo);
 
@@ -782,6 +792,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
+
         #region Start()
 
         /// <summary>
@@ -789,8 +800,6 @@ namespace org.GraphDefined.WWCP.Importer
         /// </summary>
         public async Task<WWCPImporter<T>> Start()
         {
-
-            //DebugX.Log("Starting WWCP importer '" + Id + "'!");
 
             var success = await ImporterRunSemaphore.WaitAsync(TimeSpan.FromSeconds(10));
 
@@ -803,19 +812,14 @@ namespace org.GraphDefined.WWCP.Importer
                     if (!Started)
                     {
 
-                        #region Debug info
+                        #region OnStarted
 
-                        _LastRunId = 0;
+                        var startTime = Timestamp.Now;
 
-                        var StartTime = DateTime.UtcNow;
+                        LastRunTimestamp = startTime;
+                        lastRunId        = 0;
 
-                        #if DEBUG
-
-                        //DebugX.Log("WWCP importer '" + Id + "' Initital import started!");
-
-                        #endif
-
-                        OnStarted?.Invoke(StartTime,
+                        OnStarted?.Invoke(startTime,
                                           this,
                                           "Importer started");
 
@@ -823,37 +827,31 @@ namespace org.GraphDefined.WWCP.Importer
 
                         await LoadForwardingDataFromFile();
 
-                        var FirstData = await GetData(DateTime.UtcNow,
-                                                      this,
-                                                      DateTime.UtcNow,
-                                                      _LastRunId,
-                                                      DNSClient);
+                        var firstData = await GetData(Timestamp:         Timestamp.Now,
+                                                      WWCPImporter:      this,
+                                                      LastRuntimestamp:  LastRunTimestamp,
+                                                      LastRunId:         lastRunId,
+                                                      DNSClient:         DNSClient);
 
-                        if (FirstData != null)
+                        if (firstData is not null)
                         {
 
                             AddOrUpdateForwardingInfos(CreateForwardingTable(this,
-                                                                             FirstData,
+                                                                             firstData,
                                                                              AllChargingStationOperators,
                                                                              GetChargingStationOperators,
                                                                              GetDefaultChargingStationOperator));
 
-                            OnStartup (this, FirstData);
-                            OnEveryRun(this, FirstData);
+                            OnStartup (this, firstData);
+                            OnEveryRun(this, firstData);
 
                         }
 
-                        #region Debug info
+                        #region OnStartFinished
 
-                        var EndTime = DateTime.UtcNow;
+                        var endTime = Timestamp.Now;
 
-                        #if DEBUG
-
-                        //DebugX.Log("WWCP importer '" + Id + "' Initital import finished after " + (EndTime - StartTime).TotalSeconds + " seconds!");
-
-                        #endif
-
-                        OnStartFinished?.Invoke(StartTime,
+                        OnStartFinished?.Invoke(endTime,
                                                 this,
                                                 "Importer finished its startup!");
 
@@ -901,13 +899,9 @@ namespace org.GraphDefined.WWCP.Importer
 
                 #region Debug info
 
-#if DEBUG
+                DebugX.LogT("WWCP importer '" + Id + "' run started!");
 
-                DebugX.LogT("WWCP importer '" + Id + "' started!");
-
-                var StartTime = DateTime.UtcNow;
-
-                #endif
+                var startTime = Timestamp.Now;
 
                 #endregion
 
@@ -916,7 +910,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #region Remove ForwardingInfos older than 7 days...
 
-                    //var Now       = DateTime.UtcNow;
+                    //var Now       = Timestamp.Now;
 
                     //var ToRemove  = _AllForwardingInfos.
                     //                    Where (ForwardingInfo => ForwardingInfo.Value.LastTimeSeen + TimeSpan.FromDays(7) < Now).
@@ -927,14 +921,15 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    var data = await GetData(DateTime.UtcNow,
-                                             this,
-                                             DateTime.UtcNow,
-                                             _LastRunId++,
-                                             DNSClient);
+                    var data = await GetData(Timestamp:         Timestamp.Now,
+                                             WWCPImporter:      this,
+                                             LastRuntimestamp:  LastRunTimestamp,
+                                             LastRunId:         lastRunId++,
+                                             DNSClient:         DNSClient);
 
-                    // Check for null...
-                    if (!EqualityComparer<T>.Default.Equals(data, default))
+                    LastRunTimestamp = startTime;
+
+                    if (data is not null)
                     {
 
                         //ToDo: Handle XML parser exceptions...
@@ -956,9 +951,9 @@ namespace org.GraphDefined.WWCP.Importer
                         // Update ForwardingInfos
                         OnEveryRun?.Invoke(this, data);
 
-                        OnFinished?.Invoke(DateTime.UtcNow,
+                        OnFinished?.Invoke(Timestamp.Now,
                                            this,
-                                           "WWCP importer '" + Id + "' finished after " + (DateTime.UtcNow - StartTime).TotalSeconds + " seconds!");
+                                           "WWCP importer '" + Id + "' finished after " + (Timestamp.Now - startTime).TotalSeconds + " seconds!");
 
                     }
 
@@ -966,7 +961,7 @@ namespace org.GraphDefined.WWCP.Importer
                 catch (Exception e)
                 {
 
-                    while (e.InnerException != null)
+                    while (e.InnerException is not null)
                         e = e.InnerException;
 
                     DebugX.LogT("WWCP importer '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
