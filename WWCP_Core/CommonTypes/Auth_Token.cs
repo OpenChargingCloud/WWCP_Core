@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -36,8 +33,6 @@ namespace org.GraphDefined.WWCP
     {
 
         #region Data
-
-        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
 
         /// <summary>
         /// The internal identification.
@@ -79,7 +74,8 @@ namespace org.GraphDefined.WWCP
         #region (static) Random(Length = 20)
 
         public static Auth_Token Random(Byte Length = 20)
-            => new Auth_Token(_Random.RandomString(Length));
+
+            => new (RandomExtensions.RandomString(Length));
 
         #endregion
 
@@ -175,7 +171,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Auth_Token Clone
 
-            => new Auth_Token(
+            => new (
                    new String(InternalId.ToCharArray())
                );
 

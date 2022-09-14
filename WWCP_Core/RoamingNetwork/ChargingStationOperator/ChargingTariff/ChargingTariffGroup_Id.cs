@@ -38,13 +38,10 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        //ToDo: Replace with better randomness!
-        private static readonly Random _Random                       = new Random();
-
         /// <summary>
         /// The regular expression for parsing a charging tariff group identification.
         /// </summary>
-        public  static readonly Regex  ChargingTariffGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?TG([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
+        public  static readonly Regex  ChargingTariffGroupId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?TG([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
                                                                            RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -108,11 +105,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging tariff group identification.</param>
         public static ChargingTariffGroup_Id Random(ChargingStationOperator_Id  OperatorId,
-                                               Func<String, String>        Mapper  = null)
+                                                    Func<String, String>?       Mapper   = null)
 
 
-            => new ChargingTariffGroup_Id(OperatorId,
-                                     Mapper != null ? Mapper(_Random.RandomString(30)) : _Random.RandomString(30));
+            => new (OperatorId,
+                    Mapper is not null
+                        ? Mapper(RandomExtensions.RandomString(30))
+                        :        RandomExtensions.RandomString(30));
 
         #endregion
 
@@ -132,15 +131,15 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var MatchCollection = ChargingTariffGroupId_RegEx.Matches(Text);
+            var matchCollection = ChargingTariffGroupId_RegEx.Matches(Text);
 
-            if (MatchCollection.Count != 1)
+            if (matchCollection.Count != 1)
                 throw new ArgumentException("Illegal text representation of a charging tariff group identification: '" + Text + "'!",
                                             nameof(Text));
 
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id _OperatorId))
-                return new ChargingTariffGroup_Id(_OperatorId,
-                                             MatchCollection[0].Groups[2].Value);
+            if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
+                return new ChargingTariffGroup_Id(chargingStationOperatorId,
+                                                  matchCollection[0].Groups[2].Value);
 
             throw new ArgumentException("Illegal charging tariff group identification '" + Text + "'!",
                                         nameof(Text));
@@ -175,7 +174,7 @@ namespace org.GraphDefined.WWCP
 
             if (Text.IsNullOrEmpty())
             {
-                ChargingTariffGroupId = default(ChargingTariffGroup_Id);
+                ChargingTariffGroupId = default;
                 return false;
             }
 
@@ -186,32 +185,26 @@ namespace org.GraphDefined.WWCP
 
                 ChargingTariffGroupId = default(ChargingTariffGroup_Id);
 
-                var _MatchCollection = ChargingTariffGroupId_RegEx.Matches(Text);
+                var matchCollection = ChargingTariffGroupId_RegEx.Matches(Text);
 
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
-
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
                 {
 
-                    ChargingTariffGroupId = new ChargingTariffGroup_Id(_OperatorId,
-                                                             _MatchCollection[0].Groups[2].Value);
+                    ChargingTariffGroupId = new ChargingTariffGroup_Id(chargingStationOperatorId,
+                                                                       matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception e)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch (Exception)
             { }
 
-            ChargingTariffGroupId = default(ChargingTariffGroup_Id);
+            ChargingTariffGroupId = default;
             return false;
 
         }
@@ -225,8 +218,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingTariffGroup_Id Clone
 
-            => new ChargingTariffGroup_Id(OperatorId.Clone,
-                                     new String(Suffix.ToCharArray()));
+            => new (OperatorId.Clone,
+                    new String(Suffix.ToCharArray()));
 
         #endregion
 

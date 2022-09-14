@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -63,11 +61,6 @@ namespace org.GraphDefined.WWCP
         /// The internal user identification.
         /// </summary>
         private readonly String InternalId;
-
-        /// <summary>
-        /// Private non-cryptographic random number generator.
-        /// </summary>
-        private static readonly Random _random = new Random();
 
         #endregion
 
@@ -115,7 +108,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Length">The expected length of the random charging product identification.</param>
         public static ChargingProduct_Id Random(Byte Length = 20)
 
-            => new(_random.RandomString(Length).ToUpper());
+            => new (RandomExtensions.RandomString(Length).ToUpper());
 
         #endregion
 
@@ -202,7 +195,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingProduct_Id Clone
 
-            => new ChargingProduct_Id(
+            => new (
                    new String(InternalId.ToCharArray())
                );
 

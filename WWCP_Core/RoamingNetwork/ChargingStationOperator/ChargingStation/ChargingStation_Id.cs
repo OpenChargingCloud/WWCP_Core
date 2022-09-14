@@ -22,7 +22,6 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System;
 
 #endregion
 
@@ -85,14 +84,11 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        //ToDo: Replace with better randomness!
-        private static readonly Random _Random                  = new Random();
-
         /// <summary>
         /// The regular expression for parsing a charging station identification.
         /// </summary>
-        public  static readonly Regex  ChargingStationId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,50})$",
-                                                                            RegexOptions.IgnorePatternWhitespace);
+        public  static readonly Regex  ChargingStationId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,50})$",
+                                                                       RegexOptions.IgnorePatternWhitespace);
 
         private static readonly Char[] StarSplitter             = new Char[] { '*' };
 
@@ -374,17 +370,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
         public static ChargingStation_Id Random(ChargingStationOperator_Id  OperatorId,
                                                 Byte                        Length  = 50,
-                                                Func<String, String>        Mapper  = null)
+                                                Func<String, String>?       Mapper  = null)
 
         {
 
             if (Length < 12 || Length > 50)
                 Length = 50;
 
-            return new ChargingStation_Id(OperatorId,
-                                          Mapper != null
-                                              ? Mapper(_Random.RandomString(Length))
-                                              : _Random.RandomString(Length));
+            return new (OperatorId,
+                        Mapper != null
+                            ? Mapper(RandomExtensions.RandomString(Length))
+                            :        RandomExtensions.RandomString(Length));
 
         }
 

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 #endregion
 
@@ -39,9 +40,6 @@ namespace org.GraphDefined.WWCP
     {
 
         #region Data
-
-        //ToDo: Replace with better randomness!
-        private static readonly Random _Random = new Random();
 
         /// <summary>
         /// The regular expression for parsing an e-mobility station identification.
@@ -123,21 +121,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
-        public static eMobilityStation_Id Random(eMobilityProvider_Id  ProviderId,
-                                                Func<String, String>   Mapper    = null)
-        {
+        public static eMobilityStation_Id Random(eMobilityProvider_Id   ProviderId,
+                                                 Func<String, String>?  Mapper   = null)
 
-            #region Initial checks
-
-            if (ProviderId == null)
-                throw new ArgumentNullException(nameof(ProviderId),  "The parameter must not be null!");
-
-            #endregion
-
-            return new eMobilityStation_Id(ProviderId,
-                                           Mapper != null ? Mapper(_Random.RandomString(12)) : _Random.RandomString(12));
-
-        }
+            => new (ProviderId,
+                    Mapper is not null
+                        ? Mapper(RandomExtensions.RandomString(12))
+                        :        RandomExtensions.RandomString(12));
 
         #endregion
 
@@ -199,22 +189,13 @@ namespace org.GraphDefined.WWCP
                                                 String                Suffix)
         {
 
-            #region Initial checks
-
-            if (ProviderId == null)
-                throw new ArgumentNullException(nameof(ProviderId),  "The unique provider identification must not be null!");
-
             if (Suffix.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Suffix),      "The suffix must not be null or empty!");
 
-            #endregion
+            if (TryParse(ProviderId, Suffix, out eMobilityStation_Id? eMobilityStationId))
+                return eMobilityStationId!;
 
-            eMobilityStation_Id _eMobilityStationId = null;
-
-            if (TryParse(ProviderId, Suffix, out _eMobilityStationId))
-                return _eMobilityStationId;
-
-            return null;
+            throw new ArgumentException("Illegal e-mobility station identification '" + Suffix + "'!", nameof(Suffix));
 
         }
 
@@ -227,82 +208,76 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging station identification.</param>
         /// <param name="eMobilityStationId">The parsed charging station identification.</param>
-        public static Boolean TryParse(String Text, out eMobilityStation_Id eMobilityStationId)
+        public static Boolean TryParse(String Text, out eMobilityStation_Id? eMobilityStationId)
         {
 
             #region Initial checks
 
+            eMobilityStationId = default;
+
             if (Text.IsNullOrEmpty())
-            {
-                eMobilityStationId = null;
                 return false;
-            }
 
             #endregion
 
             try
             {
 
-                eMobilityStationId = null;
+                var matchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                    eMobilityStationId_RegEx,
+                                                    RegexOptions.IgnorePatternWhitespace);
 
-                var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
-                                                     eMobilityStationId_RegEx,
-                                                     RegexOptions.IgnorePatternWhitespace);
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                eMobilityProvider_Id __EVSEOperatorId;
-
                 // New format...
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out eMobilityProvider_Id eMobilityProviderId))
                 {
 
-                    eMobilityStationId = new eMobilityStation_Id(__EVSEOperatorId,
-                                                                 _MatchCollection[0].Groups[2].Value);
+                    eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
+                                                                 matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
                 // Old format...
-                else if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+                else if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[3].Value, out eMobilityProviderId))
                 {
 
-                    eMobilityStationId = new eMobilityStation_Id(__EVSEOperatorId,
-                                                                 _MatchCollection[0].Groups[4].Value);
+                    eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
+                                                                 matchCollection[0].Groups[4].Value);
 
                     return true;
 
                 }
 
                 // New format without the 'S'...
-                else if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
+                else if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[5].Value, out eMobilityProviderId))
                 {
 
-                    eMobilityStationId = new eMobilityStation_Id(__EVSEOperatorId,
-                                                                 _MatchCollection[0].Groups[6].Value);
+                    eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
+                                                                 matchCollection[0].Groups[6].Value);
 
                     return true;
 
                 }
 
                 // Old format without the 'S'...
-                else if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
+                else if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[7].Value, out eMobilityProviderId))
                 {
 
-                    eMobilityStationId = new eMobilityStation_Id(__EVSEOperatorId,
-                                                                 _MatchCollection[0].Groups[8].Value);
+                    eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
+                                                                 matchCollection[0].Groups[8].Value);
 
                     return true;
 
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             { }
 
-            eMobilityStationId = null;
             return false;
 
         }
@@ -317,43 +292,39 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Suffix">A text representation of a charging station identification.</param>
         /// <param name="eMobilityStationId">The parsed charging station identification.</param>
-        public static Boolean TryParse(eMobilityProvider_Id         OperatorId,
-                                       String                  Suffix,
-                                       out eMobilityStation_Id  eMobilityStationId)
+        public static Boolean TryParse(eMobilityProvider_Id      OperatorId,
+                                       String                    Suffix,
+                                       out eMobilityStation_Id?  eMobilityStationId)
         {
 
             #region Initial checks
 
-            if (OperatorId == null || Suffix.IsNullOrEmpty())
-            {
-                eMobilityStationId = null;
+            eMobilityStationId = default;
+
+            if (Suffix.IsNullOrEmpty())
                 return false;
-            }
 
             #endregion
 
             try
             {
 
-                eMobilityStationId = null;
+                var matchCollection = Regex.Matches(Suffix.Trim().ToUpper(),
+                                                    IdSuffix_RegEx,
+                                                    RegexOptions.IgnorePatternWhitespace);
 
-                var _MatchCollection = Regex.Matches(Suffix.Trim().ToUpper(),
-                                                     IdSuffix_RegEx,
-                                                     RegexOptions.IgnorePatternWhitespace);
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
                 eMobilityStationId = new eMobilityStation_Id(OperatorId,
-                                                             _MatchCollection[0].Groups[0].Value);
+                                                             matchCollection[0].Groups[0].Value);
 
                 return true;
 
             }
-            catch (Exception e)
+            catch (Exception)
             { }
 
-            eMobilityStationId = null;
             return false;
 
         }
@@ -366,13 +337,9 @@ namespace org.GraphDefined.WWCP
         /// Clone this Electric Vehicle Charging Station identification.
         /// </summary>
         public eMobilityStation_Id Clone
-        {
-            get
-            {
-                return new eMobilityStation_Id(ProviderId,
-                                              new String(Suffix.ToCharArray()));
-            }
-        }
+
+            => new (ProviderId,
+                    new String(Suffix.ToCharArray()));
 
         #endregion
 

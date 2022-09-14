@@ -110,11 +110,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated EVSE group identification.</param>
         public static EVSEGroup_Id Random(ChargingStationOperator_Id  OperatorId,
-                                          Func<String, String>        Mapper  = null)
+                                          Func<String, String>?       Mapper   = null)
 
 
-            => new EVSEGroup_Id(OperatorId,
-                                Mapper != null ? Mapper(_Random.RandomString(30)) : _Random.RandomString(30));
+            => new (OperatorId,
+                    Mapper is not null
+                        ? Mapper(RandomExtensions.RandomString(30))
+                        :        RandomExtensions.RandomString(30));
 
         #endregion
 
@@ -134,15 +136,15 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var MatchCollection = EVSEGroupId_RegEx.Matches(Text);
+            var matchCollection = EVSEGroupId_RegEx.Matches(Text);
 
-            if (MatchCollection.Count != 1)
+            if (matchCollection.Count != 1)
                 throw new ArgumentException("Illegal text representation of an EVSE group identification: '" + Text + "'!",
                                             nameof(Text));
 
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id _OperatorId))
-                return new EVSEGroup_Id(_OperatorId,
-                                        MatchCollection[0].Groups[2].Value);
+            if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
+                return new EVSEGroup_Id(chargingStationOperatorId,
+                                        matchCollection[0].Groups[2].Value);
 
             throw new ArgumentException("Illegal EVSE group identification '" + Text + "'!",
                                         nameof(Text));
@@ -192,7 +194,7 @@ namespace org.GraphDefined.WWCP
 
             if (Text.IsNullOrEmpty())
             {
-                EVSEGroupId = default(EVSEGroup_Id);
+                EVSEGroupId = default;
                 return false;
             }
 
@@ -201,34 +203,28 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                EVSEGroupId = default(EVSEGroup_Id);
+                EVSEGroupId = default;
 
-                var _MatchCollection = EVSEGroupId_RegEx.Matches(Text);
+                var matchCollection = EVSEGroupId_RegEx.Matches(Text);
 
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
-
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
                 {
 
-                    EVSEGroupId = new EVSEGroup_Id(_OperatorId,
-                                                   _MatchCollection[0].Groups[2].Value);
+                    EVSEGroupId = new EVSEGroup_Id(chargingStationOperatorId,
+                                                   matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception e)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch (Exception)
             { }
 
-            EVSEGroupId = default(EVSEGroup_Id);
+            EVSEGroupId = default;
             return false;
 
         }

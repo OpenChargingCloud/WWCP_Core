@@ -35,8 +35,6 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
-
         /// <summary>
         /// The internal identification.
         /// </summary>
@@ -74,7 +72,8 @@ namespace org.GraphDefined.WWCP
         /// Return a random 7-byte RFID UID.
         /// </summary>
         public static RFIDUID7 Random
-            => new RFIDUID7(_Random.RandomHexString(14));
+
+            => new (RandomExtensions.RandomHexString(14));
 
         #endregion
 

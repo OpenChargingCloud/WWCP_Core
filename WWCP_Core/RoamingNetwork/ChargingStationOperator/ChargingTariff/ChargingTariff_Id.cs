@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -38,14 +37,11 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        //ToDo: Replace with better randomness!
-        private static readonly Random _Random                       = new Random();
-
         /// <summary>
         /// The regular expression for parsing a charging tariff identification.
         /// </summary>
-        public  static readonly Regex  ChargingTariffId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?T([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
-                                                                           RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex ChargingTariffId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?T([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
+                                                                    RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -108,11 +104,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging tariff identification.</param>
         public static ChargingTariff_Id Random(ChargingStationOperator_Id  OperatorId,
-                                               Func<String, String>        Mapper  = null)
+                                               Func<String, String>?       Mapper   = null)
 
 
-            => new ChargingTariff_Id(OperatorId,
-                                     Mapper != null ? Mapper(_Random.RandomString(30)) : _Random.RandomString(30));
+            => new (OperatorId,
+                    Mapper is not null
+                        ? Mapper(RandomExtensions.RandomString(30))
+                        :        RandomExtensions.RandomString(30));
 
         #endregion
 

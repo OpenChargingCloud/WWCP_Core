@@ -17,14 +17,13 @@
 
 #region Usings
 
-using System;
 using System.Text;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
-using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Illias;
+using System;
 
 #endregion
 
@@ -50,7 +49,7 @@ namespace org.GraphDefined.WWCP
             var Suffix = ChargingPoolId.Suffix;
 
             if (Suffix.StartsWith("OOL", StringComparison.Ordinal))
-                Suffix = "TATION" + Suffix.Substring(3);
+                Suffix = String.Concat("TATION", Suffix.AsSpan(3));
 
             return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, Suffix + AdditionalSuffix ?? "");
 
@@ -69,14 +68,11 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        //ToDo: Replace with better randomness!
-        private static readonly Random _Random               = new Random();
-
         /// <summary>
         /// The regular expression for parsing a charging pool identification.
         /// </summary>
-        public  static readonly Regex  ChargingPoolId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?P([A-Z0-9][A-Z0-9\*]{0,50})$",
-                                                                         RegexOptions.IgnorePatternWhitespace);
+        public  static readonly Regex  ChargingPoolId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?P([A-Z0-9][A-Z0-9\*]{0,50})$",
+                                                                    RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -187,11 +183,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging pool identification.</param>
         public static ChargingPool_Id Random(ChargingStationOperator_Id  OperatorId,
-                                             Func<String, String>        Mapper  = null)
+                                             Func<String, String>?       Mapper  = null)
 
 
-            => new ChargingPool_Id(OperatorId,
-                                   Mapper != null ? Mapper(_Random.RandomString(50)) : _Random.RandomString(50));
+            => new (OperatorId,
+                    Mapper is not null
+                        ? Mapper(RandomExtensions.RandomString(50))
+                        :        RandomExtensions.RandomString(50));
 
         #endregion
 
@@ -321,8 +319,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingPool_Id Clone
 
-            => new ChargingPool_Id(OperatorId.Clone,
-                                   new String(Suffix.ToCharArray()));
+            => new (OperatorId.Clone,
+                    new String(Suffix.ToCharArray()));
 
         #endregion
 

@@ -17,16 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
@@ -45,9 +36,6 @@ namespace org.GraphDefined.WWCP.Networking
         #region Data
 
         private readonly String InternalId;
-
-        //ToDo: Replace with better randomness!
-        private static readonly Random _Random = new Random();
 
         #endregion
 
@@ -155,7 +143,8 @@ namespace org.GraphDefined.WWCP.Networking
         /// Generate a new unique identification of a tracker.
         /// </summary>
         public static Tracker_Id Random
-            => new Tracker_Id(_Random.RandomString(23));
+
+            => new (RandomExtensions.RandomString(23));
 
         #endregion
 

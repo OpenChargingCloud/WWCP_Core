@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -38,13 +37,11 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
-
         /// <summary>
         /// The regular expression for parsing a charging reservation identification.
         /// </summary>
-        public static readonly Regex  ReservationId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?R([A-Za-z0-9][A-Za-z0-9\*\-]{0,50})$", // The GUID in OICP is atleast 36 characters long!
-                                                                       RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex  ReservationId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?R([A-Za-z0-9][A-Za-z0-9\*\-]{0,50})$", // The GUID in OICP is atleast 36 characters long!
+                                                                  RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -107,8 +104,8 @@ namespace org.GraphDefined.WWCP
         public static ChargingReservation_Id Random(ChargingStationOperator_Id  OperatorId,
                                                     Byte                        Length  = 20)
 
-            => new ChargingReservation_Id(OperatorId,
-                                          _Random.RandomString(Length));
+            => new (OperatorId,
+                    RandomExtensions.RandomString(Length));
 
         #endregion
 
@@ -128,16 +125,15 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var MatchCollection = ReservationId_RegEx.Matches(Text);
+            var matchCollection = ReservationId_RegEx.Matches(Text);
 
-            if (MatchCollection.Count != 1)
+            if (matchCollection.Count != 1)
                 throw new ArgumentException("Illegal text representation of a charging session identification: '" + Text + "'!", nameof(Text));
 
-            ChargingStationOperator_Id _OperatorId;
 
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
-                return new ChargingReservation_Id(_OperatorId,
-                                                  MatchCollection[0].Groups[2].Value);
+            if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
+                return new ChargingReservation_Id(chargingStationOperatorId,
+                                                  matchCollection[0].Groups[2].Value);
 
             throw new ArgumentException("Illegal charging reservation identification '" + Text + "'!",
                                         nameof(Text));
@@ -183,29 +179,28 @@ namespace org.GraphDefined.WWCP
 
                 ReservationId = default(ChargingReservation_Id);
 
-                var _MatchCollection = ReservationId_RegEx.Matches(Text);
+                var matchCollection = ReservationId_RegEx.Matches(Text);
 
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
 
                 // New format...
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
                 {
 
-                    ReservationId = new ChargingReservation_Id(_OperatorId,
-                                                               _MatchCollection[0].Groups[2].Value);
+                    ReservationId = new ChargingReservation_Id(chargingStationOperatorId,
+                                                               matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[3].Value, out chargingStationOperatorId))
                 {
 
-                    ReservationId = new ChargingReservation_Id(_OperatorId,
-                                                               _MatchCollection[0].Groups[4].Value);
+                    ReservationId = new ChargingReservation_Id(chargingStationOperatorId,
+                                                               matchCollection[0].Groups[4].Value);
 
                     return true;
 
@@ -246,8 +241,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingReservation_Id Clone
 
-            => new ChargingReservation_Id(OperatorId.Clone,
-                                          Suffix);
+            => new (OperatorId.Clone,
+                    new String(Suffix.ToCharArray()));
 
         #endregion
 

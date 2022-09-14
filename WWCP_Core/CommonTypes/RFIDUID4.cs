@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -34,8 +31,6 @@ namespace org.GraphDefined.WWCP
     {
 
         #region Data
-
-        private readonly static Random _Random = new Random(Guid.NewGuid().GetHashCode());
 
         /// <summary>
         /// The internal identification.
@@ -74,7 +69,8 @@ namespace org.GraphDefined.WWCP
         /// Return a random 4-byte RFID UID.
         /// </summary>
         public static RFIDUID4 Random
-            => new RFIDUID4(_Random.RandomHexString(8));
+
+            => new (RandomExtensions.RandomHexString(8));
 
         #endregion
 

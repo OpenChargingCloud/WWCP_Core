@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -60,35 +59,33 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for relaxed parsing an EVSE identification.
         /// </summary>                                                  // new format:
-        public static readonly Regex  EVSEId_relaxed_RegEx  = new Regex(@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Za-z0-9\*]{1,30})$" + " | " +
+        public static readonly Regex  EVSEId_relaxed_RegEx  = new (@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Za-z0-9\*]{1,30})$" + " | " +
 
-                                                                        // old format:
-                                                                        @"^(\+?[0-9]{1,5}\*[0-9]{3,6})\*?([A-Za-z0-9\*]{1,32})$",
-                                                                        // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
-                                                                        // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;
-                                                                        // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter
+                                                                   // old format:
+                                                                   @"^(\+?[0-9]{1,5}\*[0-9]{3,6})\*?([A-Za-z0-9\*]{1,32})$",
+                                                                   // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
+                                                                   // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;
+                                                                   // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter
 
-                                                                        RegexOptions.IgnorePatternWhitespace);
+                                                                   RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The regular expression for strict parsing an EVSE identification.
         /// </summary>                                                  // new format:
-        public static readonly Regex  EVSEId_strict_RegEx   = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{1,30})$",
-                                                                        RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex  EVSEId_strict_RegEx   = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{1,30})$",
+                                                                   RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The regular expression for parsing an ISO EVSE identification suffix.
         /// </summary>
-        public static readonly Regex IdSuffixISO_RegEx      = new Regex(@"^([A-Za-z0-9\*]{1,30})$",
-                                                                        RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex IdSuffixISO_RegEx      = new (@"^([A-Za-z0-9\*]{1,30})$",
+                                                                   RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The regular expression for parsing a DIN EVSE identification suffix.
         /// </summary>
-        public static readonly Regex IdSuffixDIN_RegEx      = new Regex(@"^([0-9\*]{1,32})$",
-                                                                        RegexOptions.IgnorePatternWhitespace);
-
-        private static readonly Random random = new Random();
+        public static readonly Regex IdSuffixDIN_RegEx      = new (@"^([0-9\*]{1,32})$",
+                                                                   RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -180,13 +177,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Mapper">A delegate to modify the newly generated EVSE identification.</param>
         public static EVSE_Id Random(ChargingStationOperator_Id  OperatorId,
                                      Byte                        Length  = 12,
-                                     Func<String, String>        Mapper  = null)
+                                     Func<String, String>?       Mapper  = null)
 
 
-            => new EVSE_Id(OperatorId,
-                           Mapper != null
-                               ? Mapper(random.RandomString(Length))
-                               :        random.RandomString(Length));
+            => new (OperatorId,
+                    Mapper is not null
+                        ? Mapper(RandomExtensions.RandomString(Length))
+                        :        RandomExtensions.RandomString(Length));
 
         #endregion
 
@@ -392,8 +389,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public EVSE_Id Clone
 
-            => new EVSE_Id(OperatorId.Clone,
-                           new String(Suffix.ToCharArray()));
+            => new (OperatorId.Clone,
+                    new String(Suffix.ToCharArray()));
 
         #endregion
 
