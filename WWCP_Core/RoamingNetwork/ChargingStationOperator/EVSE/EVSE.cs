@@ -1390,6 +1390,9 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        public DateTime? LastStatusUpdate { get; set; }
+
+
         /// <summary>
         /// Optional custom data, e.g. in combination with custom parsers and serializers.
         /// </summary>
