@@ -786,7 +786,7 @@ namespace org.GraphDefined.WWCP
 
                     #region Send StartEvent...
 
-                    var StartTime = DateTime.UtcNow;
+                    var StartTime = Timestamp.Now;
 
                     FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
                                                                      StartTime,
@@ -799,7 +799,7 @@ namespace org.GraphDefined.WWCP
 
                     #region Send Finished Event...
 
-                    var EndTime = DateTime.UtcNow;
+                    var EndTime = Timestamp.Now;
 
                     FlushEVSEDataAndStatusQueuesFinishedEvent?.Invoke(this,
                                                                       StartTime,
@@ -823,7 +823,7 @@ namespace org.GraphDefined.WWCP
 
                 DebugX.LogT(GetType().Name + ".FlushEVSEDataAndStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
-                OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
+                OnWWCPCPOAdapterException?.Invoke(Timestamp.Now,
                                                   this,
                                                   e);
 
@@ -877,7 +877,7 @@ namespace org.GraphDefined.WWCP
 
                     #region Send StartEvent...
 
-                    var StartTime = DateTime.UtcNow;
+                    var StartTime = Timestamp.Now;
 
                     FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
                                                                   StartTime,
@@ -890,7 +890,7 @@ namespace org.GraphDefined.WWCP
 
                     #region Send Finished Event...
 
-                    var EndTime = DateTime.UtcNow;
+                    var EndTime = Timestamp.Now;
 
                     FlushEVSEFastStatusQueuesFinishedEvent?.Invoke(this,
                                                                    StartTime,
@@ -914,7 +914,7 @@ namespace org.GraphDefined.WWCP
 
                 DebugX.LogT(GetType().Name + ".FlushEVSEFastStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
-                OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
+                OnWWCPCPOAdapterException?.Invoke(Timestamp.Now,
                                                   this,
                                                   e);
 
@@ -968,7 +968,7 @@ namespace org.GraphDefined.WWCP
 
                     #region Send StartEvent...
 
-                    var StartTime = DateTime.UtcNow;
+                    var StartTime = Timestamp.Now;
 
                     FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
                                                                        StartTime,
@@ -984,7 +984,7 @@ namespace org.GraphDefined.WWCP
 
                     #region Send Finished Event...
 
-                    var EndTime = DateTime.UtcNow;
+                    var EndTime = Timestamp.Now;
 
                     FlushChargeDetailRecordsQueuesFinishedEvent?.Invoke(this,
                                                                         StartTime,
@@ -1008,7 +1008,7 @@ namespace org.GraphDefined.WWCP
 
                 DebugX.LogT(GetType().Name + ".FlushChargeDetailRecords '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
-                OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
+                OnWWCPCPOAdapterException?.Invoke(Timestamp.Now,
                                                   this,
                                                   e);
 

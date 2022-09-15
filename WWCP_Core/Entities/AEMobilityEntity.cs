@@ -17,14 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -36,7 +33,7 @@ namespace org.GraphDefined.WWCP
     /// </summary>
     public abstract class AEMobilityEntity<TId> : AInternalData,
                                                   IEntity<TId>,
-                                                  IHasIds<TId>
+                                                  IHasId<TId>
 
         where TId : IId
 
@@ -57,29 +54,17 @@ namespace org.GraphDefined.WWCP
         /// The global unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public TId               Id
-            => _Ids.FirstOrDefault();
-
-        private List<TId>        _Ids;
-
+        public TId               Id             { get; }
 
         public ulong Length => 0;
 
         public bool IsNullOrEmpty => false;
 
-
-        /// <summary>
-        /// The global unique identification of this entity.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<TId>  Ids
-            => _Ids;
-
         /// <summary>
         /// A unique status identification of this entity.
         /// </summary>
         [Mandatory]
-        public String            ETag             { get; }
+        public String?           ETag           { get; }
 
         /// <summary>
         /// The source of this information, e.g. the WWCP importer used.
@@ -101,7 +86,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event called whenever a property of this entity changed.
         /// </summary>
-        public event OnPropertyChangedDelegate OnPropertyChanged;
+        public event OnPropertyChangedDelegate? OnPropertyChanged;
 
         #endregion
 
@@ -126,70 +111,14 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Ids            = new List<TId> { Id };
+            this.Id              = Id;
             this.DataSource      = String.Empty;
-            this.LastChange      = DateTime.UtcNow;
+            this.LastChange      = Timestamp.Now;
             this._UserDefined    = new UserDefinedDictionary();
 
             this._UserDefined.OnPropertyChanged += (timestamp, eventtrackingid, sender, key, oldValue, newValue)
                 => OnPropertyChanged?.Invoke(timestamp, eventtrackingid, sender, key, oldValue, newValue);
 
-        }
-
-        /// <summary>
-        /// Create a new abstract entity.
-        /// </summary>
-        /// <param name="Ids">The unique entity identifications.</param>
-        public AEMobilityEntity(IEnumerable<TId>                      Ids,
-                                IReadOnlyDictionary<String, Object>?  CustomData   = null)
-
-            : base(CustomData)
-
-        {
-
-            #region Initial checks
-
-            if (!Ids.SafeAny())
-                throw new ArgumentNullException(nameof(Ids),  "The given enumeration of identifications must not be null!");
-
-            #endregion
-
-            this._Ids            = new List<TId>(Ids);
-            this.DataSource      = String.Empty;
-            this.LastChange      = DateTime.UtcNow;
-            this._UserDefined    = new UserDefinedDictionary();
-
-            this._UserDefined.OnPropertyChanged += (timestamp, eventtrackingid, sender, key, oldValue, newValue)
-                => OnPropertyChanged?.Invoke(timestamp, eventtrackingid, sender, key, oldValue, newValue);
-
-        }
-
-        #endregion
-
-        // Ids
-
-        #region AddId(Id)
-
-        /// <summary>
-        /// Add a new identification.
-        /// </summary>
-        /// <param name="Id">An identification.</param>
-        public void AddId(TId Id)
-        {
-            _Ids.Add(Id);
-        }
-
-        #endregion
-
-        #region RemoveId(Id)
-
-        /// <summary>
-        /// Remove an identification.
-        /// </summary>
-        /// <param name="Id">An identification.</param>
-        public void RemoveId(TId Id)
-        {
-            _Ids.Remove(Id);
         }
 
         #endregion
@@ -279,7 +208,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.LastChange = DateTime.UtcNow;
+            this.LastChange = Timestamp.Now;
 
             //DebugX.Log(String.Concat("Property '", PropertyName, "' changed from '", OldValue?.ToString() ?? "", "' to '", NewValue?.ToString() ?? "", "'!"));
 

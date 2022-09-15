@@ -1077,7 +1077,7 @@
 
 //                        SetStatus(EVSEStatusTypes.Charging);
 
-//                        OnNewChargingSession?.Invoke(DateTime.UtcNow, this, _ChargingSession);
+//                        OnNewChargingSession?.Invoke(Timestamp.Now, this, _ChargingSession);
 
 //                    }
 

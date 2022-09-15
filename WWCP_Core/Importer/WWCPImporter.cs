@@ -128,19 +128,19 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region AllForwardingInfos
 
-        private readonly Dictionary<ChargingStation_Id, ImporterForwardingInfo> _AllForwardingInfos;
+        //private readonly Dictionary<ChargingStation_Id, ImporterForwardingInfo> _AllForwardingInfos;
 
-        public IEnumerable<ImporterForwardingInfo> AllForwardingInfos
+        //public IEnumerable<ImporterForwardingInfo> AllForwardingInfos
 
-            => _AllForwardingInfos.
-                   OrderBy(AllForwardingInfos => AllForwardingInfos.Key).
-                   Select (AllForwardingInfos => AllForwardingInfos.Value);
+        //    => _AllForwardingInfos.
+        //           OrderBy(AllForwardingInfos => AllForwardingInfos.Key).
+        //           Select (AllForwardingInfos => AllForwardingInfos.Value);
 
         #endregion
 
-        public Boolean Get(ChargingStation_Id ChargingStationId, out ImporterForwardingInfo ImporterForwardingInfo)
+        //public Boolean Get(ChargingStation_Id ChargingStationId, out ImporterForwardingInfo ImporterForwardingInfo)
 
-            => _AllForwardingInfos.TryGetValue(ChargingStationId, out ImporterForwardingInfo);
+        //    => _AllForwardingInfos.TryGetValue(ChargingStationId, out ImporterForwardingInfo);
 
 
         #region ImportedData
@@ -340,7 +340,7 @@ namespace org.GraphDefined.WWCP.Importer
             this.AllChargingStationOperators        = AllChargingStationOperators;
             this.GetChargingStationOperators        = GetChargingStationOperators;
             this.GetDefaultChargingStationOperator  = GetDefaultChargingStationOperator;
-            this._AllForwardingInfos                = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
+            //this._AllForwardingInfos                = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
             this._ImportedData                      = new List<Timestamped<T>>();
 
             this.Started                            = false;
@@ -376,419 +376,419 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region SendOnForwardingChanged(Timestamp, ForwardingInfo, OldRN, NewRN)
 
-        public void SendOnForwardingChanged(DateTime                Timestamp,
-                                            ImporterForwardingInfo  ForwardingInfo,
-                                            RoamingNetwork_Id?      OldRN,
-                                            RoamingNetwork_Id?      NewRN)
-        {
+        //public void SendOnForwardingChanged(DateTime                Timestamp,
+        //                                    ImporterForwardingInfo  ForwardingInfo,
+        //                                    RoamingNetwork_Id?      OldRN,
+        //                                    RoamingNetwork_Id?      NewRN)
+        //{
 
-            SaveForwardingDataToFile();
+        //    SaveForwardingDataToFile();
 
-            OnForwardingChanged?.Invoke(Timestamp, this, ForwardingInfo, OldRN, NewRN);
+        //    OnForwardingChanged?.Invoke(Timestamp, this, ForwardingInfo, OldRN, NewRN);
 
-        }
+        //}
 
         #endregion
 
 
         #region (private) LoadForwardingDataFromFile()
 
-        private async Task<WWCPImporter<T>> LoadForwardingDataFromFile()
-        {
+        //private async Task<WWCPImporter<T>> LoadForwardingDataFromFile()
+        //{
 
-            try
-            {
+        //    try
+        //    {
 
-                var CurrentDirectory  = Directory.GetCurrentDirectory();
-                var ConfigFilename    = Directory.EnumerateFiles(CurrentDirectory).
-                                                    Select           (file => file.Remove(0, CurrentDirectory.Length + 1)).
-                                                    Where            (file => file.StartsWith(ForwardingFilenamePrefix, StringComparison.Ordinal)).
-                                                    OrderByDescending(file => file).
-                                                    FirstOrDefault();
+        //        var CurrentDirectory  = Directory.GetCurrentDirectory();
+        //        var ConfigFilename    = Directory.EnumerateFiles(CurrentDirectory).
+        //                                            Select           (file => file.Remove(0, CurrentDirectory.Length + 1)).
+        //                                            Where            (file => file.StartsWith(ForwardingFilenamePrefix, StringComparison.Ordinal)).
+        //                                            OrderByDescending(file => file).
+        //                                            FirstOrDefault();
 
-                var InputFile         = ConfigFilename.IsNotNullOrEmpty()
-                                            ? ConfigFilename
-                                            : ForwardingFilenamePrefix + ".json";
+        //        var InputFile         = ConfigFilename.IsNotNullOrEmpty()
+        //                                    ? ConfigFilename
+        //                                    : ForwardingFilenamePrefix + ".json";
 
-                if (File.Exists(InputFile))
-                {
+        //        if (File.Exists(InputFile))
+        //        {
 
-                    #region Try to read JSON from file...
+        //            #region Try to read JSON from file...
 
-                    JObject JSONConfig;
+        //            JObject JSONConfig;
 
-                    try
-                    {
-                        JSONConfig = JObject.Parse(File.ReadAllText(InputFile));
-                    }
-                    catch (Exception)
-                    {
-                        throw new ApplicationException("Could not read '" + InputFile + "'!");
-                    }
+        //            try
+        //            {
+        //                JSONConfig = JObject.Parse(File.ReadAllText(InputFile));
+        //            }
+        //            catch (Exception)
+        //            {
+        //                throw new ApplicationException("Could not read '" + InputFile + "'!");
+        //            }
 
-                    #endregion
+        //            #endregion
 
-                    try
-                    {
+        //            try
+        //            {
 
-                        foreach (var CurrentRoamingNetwork in JSONConfig)
-                        {
+        //                foreach (var CurrentRoamingNetwork in JSONConfig)
+        //                {
 
-                            var CurrentRoamingNetworkId  = RoamingNetwork_Id.Parse(CurrentRoamingNetwork.Key);
+        //                    var CurrentRoamingNetworkId  = RoamingNetwork_Id.Parse(CurrentRoamingNetwork.Key);
 
-                            //var CurrentEVSEOperator      = ChargingStationOperators.FirstOrDefault(evseoperator => evseoperator.RoamingNetwork.Id == CurrentRoamingNetworkId);
+        //                    //var CurrentEVSEOperator      = ChargingStationOperators.FirstOrDefault(evseoperator => evseoperator.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
-                            //if (CurrentEVSEOperator == null)
-                            //    throw new ApplicationException("Could not find any charging station operator for roaming network '" + CurrentRoamingNetworkId + "'!");
+        //                    //if (CurrentEVSEOperator == null)
+        //                    //    throw new ApplicationException("Could not find any charging station operator for roaming network '" + CurrentRoamingNetworkId + "'!");
 
-                            var CurrentRoamingNetworkJObject = CurrentRoamingNetwork.Value as JObject;
+        //                    var CurrentRoamingNetworkJObject = CurrentRoamingNetwork.Value as JObject;
 
-                            if (CurrentRoamingNetworkJObject != null)
-                            {
-                                foreach (var ChargingStationGroups in CurrentRoamingNetworkJObject)
-                                {
+        //                    if (CurrentRoamingNetworkJObject != null)
+        //                    {
+        //                        foreach (var ChargingStationGroups in CurrentRoamingNetworkJObject)
+        //                        {
 
-                                    switch (ChargingStationGroups.Key.ToLower())
-                                    {
+        //                            switch (ChargingStationGroups.Key.ToLower())
+        //                            {
 
-                                        #region ValidChargingStations
+        //                                #region ValidChargingStations
 
-                                        case "validchargingstations":
+        //                                case "validchargingstations":
 
-                                            (ChargingStationGroups.Value as JObject).GetEnumerator().
-                                                ConsumeAll().
-                                                OrderBy(KVP => KVP.Key).
-                                                ForEach(StationConfig => {
+        //                                    (ChargingStationGroups.Value as JObject).GetEnumerator().
+        //                                        ConsumeAll().
+        //                                        OrderBy(KVP => KVP.Key).
+        //                                        ForEach(StationConfig => {
 
-                                                    ChargingStation_Id ChargingStationId;
+        //                                            ChargingStation_Id ChargingStationId;
 
-                                                    if (ChargingStation_Id.TryParse(StationConfig.Key, out ChargingStationId))
-                                                    {
-
-
-                                                        var CurrentEVSEOperator = GetChargingStationOperators(ChargingStationId)?.
-                                                                                        FirstOrDefault(cso => cso                   != null &&
-                                                                                                            cso.RoamingNetwork.Id == CurrentRoamingNetworkId);
-
-                                                        if (CurrentEVSEOperator != null)
-                                                        {
-
-                                                            JToken JSONToken2;
-                                                            String PhoneNumber = null;
-                                                            var CurrentSettings = StationConfig.Value as JObject;
-
-                                                            #region PhoneNumber
-
-                                                            //if (CurrentSettings.TryGetValue("PhoneNumber", out JSONToken2))
-                                                            //{
-                                                            //    PhoneNumber = JSONToken2.Value<String>();
-                                                            //}
-
-                                                            #endregion
-
-                                                            #region AdminStatus
-
-                                                            var AdminStatus = ChargingStationAdminStatusTypes.Operational;
-
-                                                            if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken2) &&
-                                                                !Enum.TryParse(JSONToken2.Value<String>(), true, out AdminStatus))
-
-                                                                DebugX.Log("Invalid admin status '" + JSONToken2.Value<String>() + "' for charging station '" + ChargingStationId + "'!");
-
-                                                            #endregion
-
-                                                            #region Group
-
-                                                            if (CurrentSettings.TryGetValue("Group", out JSONToken2))
-                                                            {
-
-                                                                var JV = JSONToken2 as JValue;
-                                                                var JA = JSONToken2 as JArray;
-
-                                                                var GroupList = JV != null
-                                                                                    ? new String[] { JV.Value<String>() }
-                                                                                    : JA != null
-                                                                                        ? JA.AsEnumerable().Select(v => v.Value<String>())
-                                                                                        : null;
-
-                                                                if (GroupList != null)
-                                                                {
-                                                                    foreach (var GroupId in GroupList)
-                                                                    {
-                                                                        CurrentEVSEOperator.
-                                                                            GetOrCreateChargingStationGroup(GroupId,
-                                                                                                            I18NString.Create(Languages.de, GroupId)).
-                                                                            Add(ChargingStationId);
-                                                                    }
-                                                                }
-
-                                                            }
-
-                                                            #endregion
-
-                                                            if (!_AllForwardingInfos.ContainsKey(ChargingStationId))
-                                                            {
-
-                                                                _AllForwardingInfos.Add(ChargingStationId,
-                                                                                        new ImporterForwardingInfo(
-                                                                                            OnChangedCallback:          SendOnForwardingChanged,
-                                                                                            ChargingStationOperators:   GetChargingStationOperators(ChargingStationId),
-                                                                                            StationId:                  ChargingStationId,
-                                                                                            StationName:                "",
-                                                                                            StationServiceTag:          "",
-                                                                                            StationAddress:             null,//new Address(),
-                                                                                            StationGeoCoordinate:       null,
-                                                                                            PhoneNumber:                PhoneNumber,
-                                                                                            AdminStatus:                AdminStatus,
-                                                                                            Created:                    Timestamp.Now,
-                                                                                            OutOfService:               true,
-                                                                                            ForwardedToOperator:        CurrentEVSEOperator)
-                                                                                        );
-
-                                                            }
-
-                                                        }
-
-                                                    }
-
-                                                });
-
-                                            break;
-
-                                        #endregion
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                    catch (Exception e)
-                    {
-                        DebugX.Log("LoadForwardingDataFromFile failed: " + e.Message);
-                    }
-
-                }
-
-                else
-                    throw new ApplicationException("Config file '" + ForwardingFilenamePrefix + "' does not exist!");
+        //                                            if (ChargingStation_Id.TryParse(StationConfig.Key, out ChargingStationId))
+        //                                            {
 
 
-                OnLoadForwardingDataFromFileFinished?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                InputFile,
-                                                                (UInt64) _AllForwardingInfos.Count);
+        //                                                var CurrentEVSEOperator = GetChargingStationOperators(ChargingStationId)?.
+        //                                                                                FirstOrDefault(cso => cso                   != null &&
+        //                                                                                                    cso.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+        //                                                if (CurrentEVSEOperator != null)
+        //                                                {
 
-            return this;
+        //                                                    JToken JSONToken2;
+        //                                                    String PhoneNumber = null;
+        //                                                    var CurrentSettings = StationConfig.Value as JObject;
 
-        }
+        //                                                    #region PhoneNumber
+
+        //                                                    //if (CurrentSettings.TryGetValue("PhoneNumber", out JSONToken2))
+        //                                                    //{
+        //                                                    //    PhoneNumber = JSONToken2.Value<String>();
+        //                                                    //}
+
+        //                                                    #endregion
+
+        //                                                    #region AdminStatus
+
+        //                                                    var AdminStatus = ChargingStationAdminStatusTypes.Operational;
+
+        //                                                    if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken2) &&
+        //                                                        !Enum.TryParse(JSONToken2.Value<String>(), true, out AdminStatus))
+
+        //                                                        DebugX.Log("Invalid admin status '" + JSONToken2.Value<String>() + "' for charging station '" + ChargingStationId + "'!");
+
+        //                                                    #endregion
+
+        //                                                    #region Group
+
+        //                                                    if (CurrentSettings.TryGetValue("Group", out JSONToken2))
+        //                                                    {
+
+        //                                                        var JV = JSONToken2 as JValue;
+        //                                                        var JA = JSONToken2 as JArray;
+
+        //                                                        var GroupList = JV != null
+        //                                                                            ? new String[] { JV.Value<String>() }
+        //                                                                            : JA != null
+        //                                                                                ? JA.AsEnumerable().Select(v => v.Value<String>())
+        //                                                                                : null;
+
+        //                                                        if (GroupList != null)
+        //                                                        {
+        //                                                            foreach (var GroupId in GroupList)
+        //                                                            {
+        //                                                                CurrentEVSEOperator.
+        //                                                                    GetOrCreateChargingStationGroup(GroupId,
+        //                                                                                                    I18NString.Create(Languages.de, GroupId)).
+        //                                                                    Add(ChargingStationId);
+        //                                                            }
+        //                                                        }
+
+        //                                                    }
+
+        //                                                    #endregion
+
+        //                                                    //if (!_AllForwardingInfos.ContainsKey(ChargingStationId))
+        //                                                    //{
+
+        //                                                    //    _AllForwardingInfos.Add(ChargingStationId,
+        //                                                    //                            new ImporterForwardingInfo(
+        //                                                    //                                OnChangedCallback:          SendOnForwardingChanged,
+        //                                                    //                                ChargingStationOperators:   GetChargingStationOperators(ChargingStationId),
+        //                                                    //                                StationId:                  ChargingStationId,
+        //                                                    //                                StationName:                "",
+        //                                                    //                                StationServiceTag:          "",
+        //                                                    //                                StationAddress:             null,//new Address(),
+        //                                                    //                                StationGeoCoordinate:       null,
+        //                                                    //                                PhoneNumber:                PhoneNumber,
+        //                                                    //                                AdminStatus:                AdminStatus,
+        //                                                    //                                Created:                    Timestamp.Now,
+        //                                                    //                                OutOfService:               true,
+        //                                                    //                                ForwardedToOperator:        CurrentEVSEOperator)
+        //                                                    //                            );
+
+        //                                                    //}
+
+        //                                                }
+
+        //                                            }
+
+        //                                        });
+
+        //                                    break;
+
+        //                                #endregion
+
+        //                            }
+
+        //                        }
+
+        //                    }
+
+        //                }
+
+        //            }
+
+        //            catch (Exception e)
+        //            {
+        //                DebugX.Log("LoadForwardingDataFromFile failed: " + e.Message);
+        //            }
+
+        //        }
+
+        //        else
+        //            throw new ApplicationException("Config file '" + ForwardingFilenamePrefix + "' does not exist!");
+
+
+        //        OnLoadForwardingDataFromFileFinished?.Invoke(Timestamp.Now,
+        //                                                        this,
+        //                                                        InputFile,
+        //                                                        (UInt64) _AllForwardingInfos.Count);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e.Message);
+        //    }
+
+        //    return this;
+
+        //}
 
         #endregion
 
         #region (private) SaveForwardingDataToFile()
 
-        private async Task<WWCPImporter<T>> SaveForwardingDataToFile()
-        {
+        //private async Task<WWCPImporter<T>> SaveForwardingDataToFile()
+        //{
 
-            try
-            {
+        //    try
+        //    {
 
-                var Now              = Timestamp.Now;
+        //        var Now              = Timestamp.Now;
 
-                var _ConfigFilename  = String.Concat(ForwardingFilenamePrefix,     "_",
-                                                        Now.Year,                  "-",
-                                                        Now.Month. ToString("D2"), "-",
-                                                        Now.Day.   ToString("D2"), "_",
-                                                        Now.Hour.  ToString("D2"), "-",
-                                                        Now.Minute.ToString("D2"), "-",
-                                                        Now.Second.ToString("D2"),
-                                                        ".json");
+        //        var _ConfigFilename  = String.Concat(ForwardingFilenamePrefix,     "_",
+        //                                                Now.Year,                  "-",
+        //                                                Now.Month. ToString("D2"), "-",
+        //                                                Now.Day.   ToString("D2"), "_",
+        //                                                Now.Hour.  ToString("D2"), "-",
+        //                                                Now.Minute.ToString("D2"), "-",
+        //                                                Now.Second.ToString("D2"),
+        //                                                ".json");
 
-                var JSON = new JObject(
+        //        var JSON = new JObject(
 
-                                _AllForwardingInfos.
+        //                        _AllForwardingInfos.
 
-                                    GroupBy(kvp     => kvp.Value.ForwardedToRoamingNetworkId,
-                                            kvp     => kvp.Value).
+        //                            GroupBy(kvp     => kvp.Value.ForwardedToRoamingNetworkId,
+        //                                    kvp     => kvp.Value).
 
-                                    Where  (RNGroup => RNGroup.Key.ToString() != "-").
-                                    Select (RNGroup => new JProperty(RNGroup.Key.ToString(),
-                                                                new JObject(
+        //                            Where  (RNGroup => RNGroup.Key.ToString() != "-").
+        //                            Select (RNGroup => new JProperty(RNGroup.Key.ToString(),
+        //                                                        new JObject(
 
-                                                                    new JProperty("ValidChargingStations", new JObject(
-                                                                        RNGroup.Select(FwdInfo =>
-                                                                            new JProperty(FwdInfo.StationId.ToString(), new JObject(
-                                                                                    new JProperty("PhoneNumber", FwdInfo.PhoneNumber),
-                                                                                    new JProperty("AdminStatus", FwdInfo.AdminStatus.Value.ToString())
-                                                                                ))
-                                                                        )
-                                                                    ))
+        //                                                            new JProperty("ValidChargingStations", new JObject(
+        //                                                                RNGroup.Select(FwdInfo =>
+        //                                                                    new JProperty(FwdInfo.StationId.ToString(), new JObject(
+        //                                                                            new JProperty("PhoneNumber", FwdInfo.PhoneNumber),
+        //                                                                            new JProperty("AdminStatus", FwdInfo.AdminStatus.Value.ToString())
+        //                                                                        ))
+        //                                                                )
+        //                                                            ))
 
-                                                            ))).
-                                    ToArray()
-                            );
-
-
-
-                //var JSON = new JObject(
-                //    RoamingNetworkIds.Select(RNId => new JProperty(RNId.ToString(),
-                //                                          new JObject(
-
-                //                                              new JProperty("ValidChargingStations", new JObject(
-                //                                                        EVSEOperators.
-                //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
-                //                                                            First().
-                //                                                            ValidEVSEIds.
-                //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
-                //                                                  )),
-
-                //                                              new JProperty("ValidEVSEIds",   new JObject(
-                //                                                        EVSEOperators.
-                //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
-                //                                                            First().
-                //                                                            ValidEVSEIds.
-                //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
-                //                                                  )),
-
-                //                                              new JProperty("InvalidEVSEIds", new JObject(
-                //                                                        EVSEOperators.
-                //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
-                //                                                            First().
-                //                                                            InvalidEVSEIds.
-                //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
-                //                                                  ))
-
-                //                                          )))
-
-                //);
-
-                File.WriteAllText(_ConfigFilename, JSON.ToString(), Encoding.UTF8);
-
-            }
-
-            catch (Exception e)
-            {
-                DebugX.Log("SaveForwardingDataInFile failed: " + e.Message);
-            }
+        //                                                    ))).
+        //                            ToArray()
+        //                    );
 
 
-            return this;
 
-        }
+        //        //var JSON = new JObject(
+        //        //    RoamingNetworkIds.Select(RNId => new JProperty(RNId.ToString(),
+        //        //                                          new JObject(
+
+        //        //                                              new JProperty("ValidChargingStations", new JObject(
+        //        //                                                        EVSEOperators.
+        //        //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
+        //        //                                                            First().
+        //        //                                                            ValidEVSEIds.
+        //        //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
+        //        //                                                  )),
+
+        //        //                                              new JProperty("ValidEVSEIds",   new JObject(
+        //        //                                                        EVSEOperators.
+        //        //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
+        //        //                                                            First().
+        //        //                                                            ValidEVSEIds.
+        //        //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
+        //        //                                                  )),
+
+        //        //                                              new JProperty("InvalidEVSEIds", new JObject(
+        //        //                                                        EVSEOperators.
+        //        //                                                            Where(evseoperator => evseoperator.RoamingNetwork.Id == RNId).
+        //        //                                                            First().
+        //        //                                                            InvalidEVSEIds.
+        //        //                                                            Select(EVSEId => new JProperty(EVSEId.ToString(), new JObject()))
+        //        //                                                  ))
+
+        //        //                                          )))
+
+        //        //);
+
+        //        File.WriteAllText(_ConfigFilename, JSON.ToString(), Encoding.UTF8);
+
+        //    }
+
+        //    catch (Exception e)
+        //    {
+        //        DebugX.Log("SaveForwardingDataInFile failed: " + e.Message);
+        //    }
+
+
+        //    return this;
+
+        //}
 
         #endregion
 
 
         #region AddOrUpdateForwardingInfos(ForwardingInfos, MarkAllOutOfService = true)
 
-        public WWCPImporter<T> AddOrUpdateForwardingInfos(IEnumerable<ImporterForwardingInfo>  ForwardingInfos,
-                                                          Boolean                              MarkAllOutOfService = true)
-        {
+        //public WWCPImporter<T> AddOrUpdateForwardingInfos(IEnumerable<ImporterForwardingInfo>  ForwardingInfos,
+        //                                                  Boolean                              MarkAllOutOfService = true)
+        //{
 
-            //lock (_AllForwardingInfos)
-            //{
+        //    //lock (_AllForwardingInfos)
+        //    //{
 
-                // Mark ForwardingInfos as 'OutOfService', to detect which are no longer within the XML...
-                if (MarkAllOutOfService)
-                    _AllForwardingInfos.Values.ForEach(FwdInfo => FwdInfo.OutOfService = true);
+        //        // Mark ForwardingInfos as 'OutOfService', to detect which are no longer within the XML...
+        //        if (MarkAllOutOfService)
+        //            _AllForwardingInfos.Values.ForEach(FwdInfo => FwdInfo.OutOfService = true);
 
-                ImporterForwardingInfo ExistingForwardingInfo;
-                Boolean ForwardingInformationChanged = false;
+        //        ImporterForwardingInfo ExistingForwardingInfo;
+        //        Boolean ForwardingInformationChanged = false;
 
-                foreach (var ForwardingInfo in ForwardingInfos)
-                {
+        //        foreach (var ForwardingInfo in ForwardingInfos)
+        //        {
 
-                    #region An existing forwarding information was found: Look for changes...
+        //            #region An existing forwarding information was found: Look for changes...
 
-                    if (_AllForwardingInfos.TryGetValue(ForwardingInfo.StationId, out ExistingForwardingInfo))
-                    {
+        //            if (_AllForwardingInfos.TryGetValue(ForwardingInfo.StationId, out ExistingForwardingInfo))
+        //            {
 
-                        ForwardingInformationChanged = false;
+        //                ForwardingInformationChanged = false;
 
-                        #region StationNameChanged...
+        //                #region StationNameChanged...
 
-                        if (ExistingForwardingInfo.StationName != ForwardingInfo.StationName)
-                        {
-                            ExistingForwardingInfo.StationName  = ForwardingInfo.StationName;
-                            ForwardingInformationChanged        = true;
-                        }
+        //                if (ExistingForwardingInfo.StationName != ForwardingInfo.StationName)
+        //                {
+        //                    ExistingForwardingInfo.StationName  = ForwardingInfo.StationName;
+        //                    ForwardingInformationChanged        = true;
+        //                }
 
-                        #endregion
+        //                #endregion
 
-                        #region StationServiceTag changed...
+        //                #region StationServiceTag changed...
 
-                        if (ExistingForwardingInfo.StationServiceTag != ForwardingInfo.StationServiceTag)
-                        {
-                            ExistingForwardingInfo.StationServiceTag  = ForwardingInfo.StationServiceTag;
-                            ForwardingInformationChanged              = true;
-                        }
+        //                if (ExistingForwardingInfo.StationServiceTag != ForwardingInfo.StationServiceTag)
+        //                {
+        //                    ExistingForwardingInfo.StationServiceTag  = ForwardingInfo.StationServiceTag;
+        //                    ForwardingInformationChanged              = true;
+        //                }
 
-                        #endregion
+        //                #endregion
 
-                        #region StationAddress changed...
+        //                #region StationAddress changed...
 
-                        if (ExistingForwardingInfo.StationAddress != ForwardingInfo.StationAddress)
-                        {
-                            ExistingForwardingInfo.StationAddress  = ForwardingInfo.StationAddress;
-                            ForwardingInformationChanged           = true;
-                        }
+        //                if (ExistingForwardingInfo.StationAddress != ForwardingInfo.StationAddress)
+        //                {
+        //                    ExistingForwardingInfo.StationAddress  = ForwardingInfo.StationAddress;
+        //                    ForwardingInformationChanged           = true;
+        //                }
 
-                        #endregion
+        //                #endregion
 
-                        #region StationGeoCoordinate changed...
+        //                #region StationGeoCoordinate changed...
 
-                        if (ExistingForwardingInfo.StationGeoCoordinate != ForwardingInfo.StationGeoCoordinate)
-                        {
-                            ExistingForwardingInfo.StationGeoCoordinate  = ForwardingInfo.StationGeoCoordinate;
-                            ForwardingInformationChanged                 = true;
-                        }
+        //                if (ExistingForwardingInfo.StationGeoCoordinate != ForwardingInfo.StationGeoCoordinate)
+        //                {
+        //                    ExistingForwardingInfo.StationGeoCoordinate  = ForwardingInfo.StationGeoCoordinate;
+        //                    ForwardingInformationChanged                 = true;
+        //                }
 
-                        #endregion
+        //                #endregion
 
-                        ExistingForwardingInfo.UpdateTimestamp();
+        //                ExistingForwardingInfo.UpdateTimestamp();
 
-                        if (ForwardingInformationChanged)
-                            OnForwardingInformationChanged?.Invoke(Timestamp.Now,
-                                                                   this,
-                                                                   ExistingForwardingInfo, //ToDo: Send a clone of the previous forwarding info!
-                                                                   ExistingForwardingInfo);
+        //                if (ForwardingInformationChanged)
+        //                    OnForwardingInformationChanged?.Invoke(Timestamp.Now,
+        //                                                           this,
+        //                                                           ExistingForwardingInfo, //ToDo: Send a clone of the previous forwarding info!
+        //                                                           ExistingForwardingInfo);
 
-                    }
+        //            }
 
-                    #endregion
+        //            #endregion
 
-                    #region ...or a new one was created!
+        //            #region ...or a new one was created!
 
-                    else
-                    {
+        //            else
+        //            {
 
-                        _AllForwardingInfos.Add(ForwardingInfo.StationId, ForwardingInfo);
+        //                _AllForwardingInfos.Add(ForwardingInfo.StationId, ForwardingInfo);
 
-                        OnNewForwardingInformation?.Invoke(Timestamp.Now,
-                                                           this,
-                                                           ForwardingInfo);
+        //                OnNewForwardingInformation?.Invoke(Timestamp.Now,
+        //                                                   this,
+        //                                                   ForwardingInfo);
 
-                    }
+        //            }
 
-                    #endregion
+        //            #endregion
 
-                }
+        //        }
 
-            //}
+        //    //}
 
-            return this;
+        //    return this;
 
-        }
+        //}
 
         #endregion
 
@@ -825,7 +825,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #endregion
 
-                        await LoadForwardingDataFromFile();
+                        //await LoadForwardingDataFromFile();
 
                         var firstData = await GetData(Timestamp:         Timestamp.Now,
                                                       WWCPImporter:      this,
@@ -836,11 +836,11 @@ namespace org.GraphDefined.WWCP.Importer
                         if (firstData is not null)
                         {
 
-                            AddOrUpdateForwardingInfos(CreateForwardingTable(this,
-                                                                             firstData,
-                                                                             AllChargingStationOperators,
-                                                                             GetChargingStationOperators,
-                                                                             GetDefaultChargingStationOperator));
+                            //AddOrUpdateForwardingInfos(CreateForwardingTable(this,
+                            //                                                 firstData,
+                            //                                                 AllChargingStationOperators,
+                            //                                                 GetChargingStationOperators,
+                            //                                                 GetDefaultChargingStationOperator));
 
                             OnStartup (this, firstData);
                             OnEveryRun(this, firstData);
@@ -862,7 +862,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         Started = true;
 
-                        await SaveForwardingDataToFile();
+                        //await SaveForwardingDataToFile();
 
                     }
 
@@ -933,11 +933,11 @@ namespace org.GraphDefined.WWCP.Importer
                     {
 
                         //ToDo: Handle XML parser exceptions...
-                        AddOrUpdateForwardingInfos(CreateForwardingTable(this,
-                                                                         data,
-                                                                         AllChargingStationOperators,
-                                                                         GetChargingStationOperators,
-                                                                         GetDefaultChargingStationOperator));
+                        //AddOrUpdateForwardingInfos(CreateForwardingTable(this,
+                        //                                                 data,
+                        //                                                 AllChargingStationOperators,
+                        //                                                 GetChargingStationOperators,
+                        //                                                 GetDefaultChargingStationOperator));
 
                         //if (_ImportedData.Count >= MaxNumberOfCachedDataImports)
                         //{
@@ -990,7 +990,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// </summary>
         public override String ToString()
 
-            => String.Concat("WWCP importer '", Id, "': ", _AllForwardingInfos.Count, " forwarding infos");
+            => String.Concat("WWCP importer '", Id, "': "); //, _AllForwardingInfos.Count, " forwarding infos");
 
         #endregion
 

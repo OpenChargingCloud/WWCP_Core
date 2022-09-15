@@ -149,7 +149,7 @@ namespace org.GraphDefined.WWCP.Networking
                                          HTTPContentType.JSON_UTF8,
                                          HTTPDelegate: Request => {
 
-                                             var Now   = DateTime.UtcNow;
+                                             var Now   = Timestamp.Now;
                                              var JSON  = _LocalRoamingNetworks.
                                                              Select (kvp => {
 

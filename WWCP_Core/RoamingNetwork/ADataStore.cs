@@ -192,7 +192,7 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        var LastDataReceivedAt = DateTime.UtcNow;
+                        var LastDataReceivedAt = Timestamp.Now;
 
                         do
                         {
@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP
 
                                     Console.WriteLine("Received '" + data + "' from '" + connection.RemoteSocket.ToString() + "'!");
 
-                                    LastDataReceivedAt = DateTime.UtcNow;
+                                    LastDataReceivedAt = Timestamp.Now;
 
                                     if (data == "BYE!")
                                         connection.Close();
@@ -249,7 +249,7 @@ namespace org.GraphDefined.WWCP
                             catch (Exception)
                             { }
 
-                        } while (!connection.IsClosed && DateTime.UtcNow - LastDataReceivedAt < TimeSpan.FromSeconds(10));
+                        } while (!connection.IsClosed && Timestamp.Now - LastDataReceivedAt < TimeSpan.FromSeconds(10));
 
                     }
                     catch (Exception)
@@ -349,7 +349,7 @@ namespace org.GraphDefined.WWCP
 
             var data = JSONObject.Create(
 
-                           new JProperty("timestamp",  DateTime.UtcNow.ToIso8601()),
+                           new JProperty("timestamp",  Timestamp.Now.ToIso8601()),
                            new JProperty("id",         Id.ToString()),
                            new JProperty("command",    Command),
 

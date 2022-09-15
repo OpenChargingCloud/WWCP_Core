@@ -743,14 +743,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ParkingGarageIds
-
-        public IEnumerable<ParkingGarage_Id> ParkingGarageIds
-
-            => _ParkingGarages.Ids;
-
-        #endregion
-
         #region ParkingGarageAdminStatus(IncludePool = null)
 
         //public IEnumerable<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>> ParkingGarageAdminStatus(Func<ParkingGarage, Boolean> IncludePool = null)
@@ -807,7 +799,7 @@ namespace org.GraphDefined.WWCP
         //                                         Status);
 
 
-        //    if (ParkingGarageAddition.SendVoting(DateTime.UtcNow, this, _ParkingGarage))
+        //    if (ParkingGarageAddition.SendVoting(Timestamp.Now, this, _ParkingGarage))
         //    {
         //        if (_ParkingGarages.TryAdd(_ParkingGarage))
         //        {
@@ -831,7 +823,7 @@ namespace org.GraphDefined.WWCP
 
 
         //            OnSuccess?.Invoke(_ParkingGarage);
-        //            ParkingGarageAddition.SendNotification(DateTime.UtcNow, this, _ParkingGarage);
+        //            ParkingGarageAddition.SendNotification(Timestamp.Now, this, _ParkingGarage);
 
         //            return _ParkingGarage;
 
@@ -895,13 +887,13 @@ namespace org.GraphDefined.WWCP
         //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
         //    {
 
-        //        if (ParkingGarageRemoval.SendVoting(DateTime.UtcNow, this, _ParkingGarage))
+        //        if (ParkingGarageRemoval.SendVoting(Timestamp.Now, this, _ParkingGarage))
         //        {
 
         //            if (_ParkingGarages.TryRemove(ParkingGarageId, out _ParkingGarage))
         //            {
 
-        //                ParkingGarageRemoval.SendNotification(DateTime.UtcNow, this, _ParkingGarage);
+        //                ParkingGarageRemoval.SendNotification(Timestamp.Now, this, _ParkingGarage);
 
         //                return _ParkingGarage;
 
@@ -925,13 +917,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetParkingGaragebyId(ParkingGarageId, out ParkingGarage))
             {
 
-                if (ParkingGarageRemoval.SendVoting(DateTime.UtcNow, this, ParkingGarage))
+                if (ParkingGarageRemoval.SendVoting(Timestamp.Now, this, ParkingGarage))
                 {
 
                     if (_ParkingGarages.TryRemove(ParkingGarageId, out ParkingGarage))
                     {
 
-                        ParkingGarageRemoval.SendNotification(DateTime.UtcNow, this, ParkingGarage);
+                        ParkingGarageRemoval.SendNotification(Timestamp.Now, this, ParkingGarage);
 
                         return true;
 
@@ -994,7 +986,7 @@ namespace org.GraphDefined.WWCP
         //    //{
         //    //
         //    //    RoamingNetwork.
-        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.UtcNow,
+        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(Timestamp.Now,
         //    //                                               ParkingOperatorId:    Id,
         //    //                                               ParkingOperatorName:  Name,
         //    //                                               NewStatus:         new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>(),
@@ -1317,7 +1309,7 @@ namespace org.GraphDefined.WWCP
         //    //{
         //    //
         //    //    RoamingNetwork.
-        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.UtcNow,
+        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(Timestamp.Now,
         //    //                                               ParkingOperatorId:    Id,
         //    //                                               ParkingOperatorName:  Name,
         //    //                                               NewStatus:         new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>(),
@@ -1531,7 +1523,7 @@ namespace org.GraphDefined.WWCP
         //    if (Configurator != null)
         //        Configurator(_ParkingGarageGroup);
 
-        //    if (ParkingGarageGroupAddition.SendVoting(DateTime.UtcNow, this, _ParkingGarageGroup))
+        //    if (ParkingGarageGroupAddition.SendVoting(Timestamp.Now, this, _ParkingGarageGroup))
         //    {
         //        if (_ParkingGarageGroups.TryAdd(_ParkingGarageGroup))
         //        {
@@ -1548,7 +1540,7 @@ namespace org.GraphDefined.WWCP
         //            //_ParkingGarageGroup.OnAdminStatusChanged                          += UpdateParkingGarageGroupAdminStatus;
 
         //            OnSuccess?.Invoke(_ParkingGarageGroup);
-        //            ParkingGarageGroupAddition.SendNotification(DateTime.UtcNow, this, _ParkingGarageGroup);
+        //            ParkingGarageGroupAddition.SendNotification(Timestamp.Now, this, _ParkingGarageGroup);
         //            return _ParkingGarageGroup;
 
         //        }
@@ -1786,11 +1778,11 @@ namespace org.GraphDefined.WWCP
         //{
 
         //    if (ParkingSpaceStatus == null || ParkingSpaceStatus.Count == 0)
-        //        return new ParkingSpaceStatusDiff(DateTime.UtcNow, Id, Name);
+        //        return new ParkingSpaceStatusDiff(Timestamp.Now, Id, Name);
 
         //    #region Get data...
 
-        //    var ParkingSpaceStatusDiff     = new ParkingSpaceStatusDiff(DateTime.UtcNow, Id, Name);
+        //    var ParkingSpaceStatusDiff     = new ParkingSpaceStatusDiff(Timestamp.Now, Id, Name);
 
         //    // Only ValidParkingSpaceIds!
         //    // Do nothing with manual ParkingSpace Ids!
@@ -1856,7 +1848,7 @@ namespace org.GraphDefined.WWCP
         //    }
 
         //    // empty!
-        //    return new ParkingSpaceStatusDiff(DateTime.UtcNow, Id, Name);
+        //    return new ParkingSpaceStatusDiff(Timestamp.Now, Id, Name);
 
         //}
 

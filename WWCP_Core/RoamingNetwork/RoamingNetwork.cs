@@ -79,9 +79,6 @@ namespace org.GraphDefined.WWCP
         IId ISendChargeDetailRecords.Id
             => Id;
 
-        IEnumerable<IId> ISendChargeDetailRecords.Ids
-            => Ids.Cast<IId>();
-
         public Boolean DisableAuthentication            { get; set; }
 
         public Boolean DisableSendChargeDetailRecords   { get; set; }
@@ -433,12 +430,16 @@ namespace org.GraphDefined.WWCP
 
             => _ChargingStationOperators;
 
+        #endregion
+
+        #region ChargingStationOperatorIds
+
         /// <summary>
-        /// Return all charging station operator identifications registered within this roaming network.
+        /// Return all charging station operators registered within this roaming network.
         /// </summary>
         public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds
 
-            => _ChargingStationOperators.SafeSelect(cso => cso.Id);
+            => _ChargingStationOperators.Select(cso => cso.Id);
 
         #endregion
 
@@ -492,34 +493,11 @@ namespace org.GraphDefined.WWCP
 
         #region CreateChargingStationOperator(ChargingStationOperatorId, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
 
-        public ChargingStationOperator
-
-            CreateChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
-                                          I18NString                                          Name                                  = null,
-                                          I18NString                                          Description                           = null,
-                                          Action<ChargingStationOperator>                     Configurator                          = null,
-                                          RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
-                                          ChargingStationOperatorAdminStatusTypes             AdminStatus                           = ChargingStationOperatorAdminStatusTypes.Operational,
-                                          ChargingStationOperatorStatusTypes                  Status                                = ChargingStationOperatorStatusTypes.Available,
-                                          Action<ChargingStationOperator>                     OnSuccess                             = null,
-                                          Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
-
-                => CreateChargingStationOperator(new ChargingStationOperator_Id[] { ChargingStationOperatorId },
-                                                 Name,
-                                                 Description,
-                                                 Configurator,
-                                                 RemoteChargingStationOperatorCreator,
-                                                 AdminStatus,
-                                                 Status,
-                                                 OnSuccess,
-                                                 OnError);
-
-
         /// <summary>
         /// Create and register a new charging station operator having the given
         /// unique charging station operator identification.
         /// </summary>
-        /// <param name="ChargingStationOperatorIds">The unique identification of the new charging station operator.</param>
+        /// <param name="ChargingStationOperatorId">The unique identification of the new charging station operator.</param>
         /// <param name="Name">The offical (multi-language) name of the charging station operator.</param>
         /// <param name="Description">An optional (multi-language) description of the charging station operator.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
@@ -527,7 +505,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
         public ChargingStationOperator
 
-            CreateChargingStationOperator(IEnumerable<ChargingStationOperator_Id>             ChargingStationOperatorIds,
+            CreateChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
                                           I18NString                                          Name                                   = null,
                                           I18NString                                          Description                            = null,
                                           Action<ChargingStationOperator>                     Configurator                           = null,
@@ -549,16 +527,10 @@ namespace org.GraphDefined.WWCP
             lock (_ChargingStationOperators)
             {
 
-                foreach (var chargingStationOperatorId in ChargingStationOperatorIds)
-                {
+                if (_ChargingStationOperators.ContainsId(ChargingStationOperatorId))
+                    throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorId, Name);
 
-                    if (_ChargingStationOperators.ContainsId(chargingStationOperatorId))
-                        throw new ChargingStationOperatorAlreadyExists(this, chargingStationOperatorId, Name);
-
-                }
-
-
-                var chargingStationOperator = new ChargingStationOperator(ChargingStationOperatorIds,
+                var chargingStationOperator = new ChargingStationOperator(ChargingStationOperatorId,
                                                                           this,
                                                                           Configurator,
                                                                           RemoteChargingStationOperatorCreator,
@@ -3628,7 +3600,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3643,7 +3615,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3766,7 +3738,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3831,7 +3803,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3847,7 +3819,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3960,7 +3932,7 @@ namespace org.GraphDefined.WWCP
                         result = CancelReservationResult.UnknownReservationId(ReservationId,
                                                                               Reason);
 
-                        //SendReservationCanceled(DateTime.UtcNow,
+                        //SendReservationCanceled(Timestamp.Now,
                         //                        this,
                         //                           EventTrackingId,
                         //                           Id,
@@ -3995,7 +3967,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -4224,7 +4196,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4239,7 +4211,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -4400,7 +4372,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -4504,7 +4476,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4519,7 +4491,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -4556,7 +4528,7 @@ namespace org.GraphDefined.WWCP
                     //ToDo: Add a --useForce Option to overwrite!
                     if (chargingSession.SessionTime.EndTime.HasValue)
                         result = RemoteStopResult.AlreadyStopped(SessionId,
-                                                                 Runtime: DateTime.UtcNow - StartTime);
+                                                                 Runtime: Vanaheimr.Illias.Timestamp.Now - StartTime);
 
                     else
                     {
@@ -4689,7 +4661,7 @@ namespace org.GraphDefined.WWCP
             {
                 result = RemoteStopResult.Error(SessionId,
                                                 e.Message,
-                                                Runtime: DateTime.UtcNow - StartTime);
+                                                Runtime: Vanaheimr.Illias.Timestamp.Now - StartTime);
             }
 
 
@@ -4703,7 +4675,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -4861,7 +4833,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4873,7 +4845,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStartRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -4999,7 +4971,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStartResponse event
 
-            var Endtime = DateTime.UtcNow;
+            var Endtime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -5074,7 +5046,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -5089,7 +5061,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStopRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -5131,7 +5103,7 @@ namespace org.GraphDefined.WWCP
                         result = AuthStopResult.AlreadyStopped(SessionId,
                                                                this,
                                                                SessionId,
-                                                               Runtime: DateTime.UtcNow - StartTime);
+                                                               Runtime: Vanaheimr.Illias.Timestamp.Now - StartTime);
 
                     else
                     {
@@ -5249,14 +5221,14 @@ namespace org.GraphDefined.WWCP
                                               this,
                                               SessionId,
                                               I18NString.Create(Languages.en, e.Message),
-                                              DateTime.UtcNow - StartTime);
+                                              Vanaheimr.Illias.Timestamp.Now - StartTime);
 
             }
 
 
             #region Send OnAuthorizeStopResponse event
 
-            var Endtime = DateTime.UtcNow;
+            var Endtime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -5466,7 +5438,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -5481,7 +5453,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnSendCDRsRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -5513,9 +5485,9 @@ namespace org.GraphDefined.WWCP
             if (DisableSendChargeDetailRecords)
             {
 
-                Endtime  = DateTime.UtcNow;
+                Endtime  = Vanaheimr.Illias.Timestamp.Now;
                 Runtime  = Endtime - StartTime;
-                result   = SendCDRsResult.AdminDown(DateTime.UtcNow,
+                result   = SendCDRsResult.AdminDown(Vanaheimr.Illias.Timestamp.Now,
                                                     Id,
                                                     this as ISendChargeDetailRecords,
                                                     ChargeDetailRecords,
@@ -5530,9 +5502,9 @@ namespace org.GraphDefined.WWCP
             else if (!ChargeDetailRecords.Any())
             {
 
-                Endtime  = DateTime.UtcNow;
+                Endtime  = Vanaheimr.Illias.Timestamp.Now;
                 Runtime  = Endtime - StartTime;
-                result   = SendCDRsResult.NoOperation(DateTime.UtcNow,
+                result   = SendCDRsResult.NoOperation(Vanaheimr.Illias.Timestamp.Now,
                                                       Id,
                                                       this as ISendChargeDetailRecords,
                                                       ChargeDetailRecords,
@@ -5594,7 +5566,7 @@ namespace org.GraphDefined.WWCP
                         if (FilterResult.IsNeitherNullNorEmpty())
                         {
 
-                            resultMap.Add(SendCDRResult.Filtered(DateTime.UtcNow,
+                            resultMap.Add(SendCDRResult.Filtered(Vanaheimr.Illias.Timestamp.Now,
                                                                  ChargeDetailRecord,
                                                                  FilterResult.SafeSelect(filterResult => Warning.Create(filterResult))));
 
@@ -5985,7 +5957,7 @@ namespace org.GraphDefined.WWCP
                 foreach (var unknownCDR in ChargeDetailRecordsToProcess.ToArray())
                 {
 
-                    resultMap.Add(SendCDRResult.UnknownSessionId(DateTime.UtcNow,
+                    resultMap.Add(SendCDRResult.UnknownSessionId(Vanaheimr.Illias.Timestamp.Now,
                                                                  unknownCDR));
 
                     ChargeDetailRecordsToProcess.Remove(unknownCDR);
@@ -6015,7 +5987,7 @@ namespace org.GraphDefined.WWCP
 
                         foreach (var _cdr in sendCDR.Value)
                         {
-                            resultMap.Add(SendCDRResult.Error(DateTime.UtcNow,
+                            resultMap.Add(SendCDRResult.Error(Vanaheimr.Illias.Timestamp.Now,
                                                               _cdr,
                                                               Warning.Create(I18NString.Create(Languages.en, sendCDR.Key + " returned null!"))));
                         }
@@ -6042,7 +6014,7 @@ namespace org.GraphDefined.WWCP
                 {
                     foreach (var _cdr in ExpectedChargeDetailRecords)
                     {
-                        resultMap.Add(SendCDRResult.Error(DateTime.UtcNow,
+                        resultMap.Add(SendCDRResult.Error(Vanaheimr.Illias.Timestamp.Now,
                                                           _cdr,
                                                           Warning.Create(I18NString.Create(Languages.en, "Did not receive an result for this charge detail record!"))));
                     }
@@ -6075,9 +6047,9 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-                Endtime  = DateTime.UtcNow;
+                Endtime  = Vanaheimr.Illias.Timestamp.Now;
                 Runtime  = Endtime - StartTime;
-                result   = new SendCDRsResult(DateTime.UtcNow,
+                result   = new SendCDRsResult(Vanaheimr.Illias.Timestamp.Now,
                                               Id,
                                               this as IReceiveChargeDetailRecords,
                                               GlobalResults[0].Covert(),

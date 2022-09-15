@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #endregion
 
-            var TimeLeft = (UInt32) (ChargingReservation.StartTime + ChargingReservation.Duration - DateTime.UtcNow).TotalSeconds;
+            var TimeLeft = (UInt32) (ChargingReservation.StartTime + ChargingReservation.Duration - Timestamp.Now).TotalSeconds;
 
             return JSONObject.Create(
                        new JProperty("ReservationId",            ChargingReservation.Id.               ToString()),

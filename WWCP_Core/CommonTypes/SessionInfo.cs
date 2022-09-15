@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
 
         public SessionInfo(AAuthentication Token)
         {
-            this.Created               = DateTime.UtcNow;
+            this.Created               = Vanaheimr.Illias.Timestamp.Now;
             this.ListOfAuthStopTokens  = new List<AAuthentication>() { Token };
         }
 

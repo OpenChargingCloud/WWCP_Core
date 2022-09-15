@@ -2908,7 +2908,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -2920,7 +2920,7 @@
 
 //            #region Send OnAuthorizeStartRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -2946,7 +2946,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -3032,7 +3032,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3044,7 +3044,7 @@
 
 //            #region Send OnAuthorizeEVSEStartRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3072,7 +3072,7 @@
 //            #endregion
 
 
-//            var Endtime = DateTime.UtcNow;
+//            var Endtime = Timestamp.Now;
 //            var Runtime = Endtime - StartTime;
 
 //            var result = DisableAuthentication
@@ -3160,7 +3160,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3172,7 +3172,7 @@
 
 //            #region Send OnAuthorizeChargingStationStartRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3199,7 +3199,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -3286,7 +3286,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3298,7 +3298,7 @@
 
 //            #region Send OnAuthorizeChargingPoolStartRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3325,7 +3325,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -3412,7 +3412,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3424,7 +3424,7 @@
 
 //            #region Send OnAuthorizeStopRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3449,7 +3449,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -3531,7 +3531,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3543,7 +3543,7 @@
 
 //            #region Send OnAuthorizeEVSEStopRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3569,7 +3569,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -3653,7 +3653,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3665,7 +3665,7 @@
 
 //            #region Send OnAuthorizeChargingStationStopRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3691,7 +3691,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -3775,7 +3775,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3787,7 +3787,7 @@
 
 //            #region Send OnAuthorizeChargingPoolStopRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3813,7 +3813,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -3895,7 +3895,7 @@
 
 
 //            if (!Timestamp.HasValue)
-//                Timestamp = DateTime.UtcNow;
+//                Timestamp = Timestamp.Now;
 
 //            if (!CancellationToken.HasValue)
 //                CancellationToken = new CancellationTokenSource().Token;
@@ -3915,7 +3915,7 @@
 //                try
 //                {
 
-//                    OnEnqueueSendCDRsRequest?.Invoke(DateTime.UtcNow,
+//                    OnEnqueueSendCDRsRequest?.Invoke(Timestamp.Now,
 //                                                     Timestamp.Value,
 //                                                     this,
 //                                                     Id.ToString(),
@@ -3950,7 +3950,7 @@
 
 //            #region Send OnSendCDRsRequest event
 
-//            var StartTime = DateTime.UtcNow;
+//            var StartTime = Timestamp.Now;
 
 //            try
 //            {
@@ -3974,7 +3974,7 @@
 //            #endregion
 
 
-//            var Endtime  = DateTime.UtcNow;
+//            var Endtime  = Timestamp.Now;
 //            var Runtime  = Endtime - StartTime;
 
 //            var result   = DisableAuthentication
@@ -4309,7 +4309,7 @@
 
 //                    //var SendCDRResults = await SendChargeDetailRecords(ChargeDetailRecordQueueCopy.Value,
 //                    //                                                   TransmissionTypes.Direct,
-//                    //                                                   DateTime.UtcNow,
+//                    //                                                   Timestamp.Now,
 //                    //                                                   new CancellationTokenSource().Token,
 //                    //                                                   EventTrackingId,
 //                    //                                                   DefaultRequestTimeout).

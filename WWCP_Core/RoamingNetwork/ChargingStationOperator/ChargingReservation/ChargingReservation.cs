@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                var _TimeLeft = EndTime - DateTime.UtcNow;// _StartTime + _Duration - DateTime.UtcNow;
+                var _TimeLeft = EndTime - Vanaheimr.Illias.Timestamp.Now;// _StartTime + _Duration - Timestamp.Now;
 
                 return ChargingSession == null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
@@ -222,7 +222,7 @@ namespace org.GraphDefined.WWCP
         public Boolean IsExpired()
 
             => ChargingSession == null
-                   ? DateTime.UtcNow > EndTime
+                   ? Vanaheimr.Illias.Timestamp.Now > EndTime
                    : false;
 
         #endregion
@@ -234,7 +234,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
 
-            => DateTime.UtcNow > (EndTime + ReservationSelfCancelAfter);
+            => Vanaheimr.Illias.Timestamp.Now > (EndTime + ReservationSelfCancelAfter);
 
         #endregion
 

@@ -110,13 +110,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingStationOperator">The charging station operator in which the exception occured.</param>
         /// <param name="InvalidChargingStationOperatorId">The invalid operator identification.</param>
-        /// <param name="ValidChargingStationOperatorIds">All expected operator identifications.</param>
-        public InvalidChargingPoolOperatorId(ChargingStationOperator                  ChargingStationOperator,
-                                             ChargingStationOperator_Id               InvalidChargingStationOperatorId,
-                                             IEnumerable<ChargingStationOperator_Id>  ValidChargingStationOperatorIds)
+        public InvalidChargingPoolOperatorId(ChargingStationOperator     ChargingStationOperator,
+                                             ChargingStationOperator_Id  InvalidChargingStationOperatorId)
 
             : base(ChargingStationOperator,
-                   "Invalid charging station operator identification '" + InvalidChargingStationOperatorId + "' where only '" + ValidChargingStationOperatorIds.AggregateWith(", ") + "' are expected!")
+                   "Invalid charging station operator identification '" + InvalidChargingStationOperatorId + "'!")
 
         { }
 

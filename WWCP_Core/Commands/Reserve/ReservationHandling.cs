@@ -63,13 +63,13 @@ namespace org.GraphDefined.WWCP
             if (KeepAliveTime.TotalSeconds > 0)
             {
                 this.KeepAliveTime  = KeepAliveTime;
-                this.EndTime        = DateTime.UtcNow + KeepAliveTime;
+                this.EndTime        = Vanaheimr.Illias.Timestamp.Now + KeepAliveTime;
             }
 
             else
             {
                 this.KeepAliveTime  = null;
-                this.EndTime        = DateTime.UtcNow;
+                this.EndTime        = Vanaheimr.Illias.Timestamp.Now;
             }
 
         }

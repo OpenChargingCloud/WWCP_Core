@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
                    LogFileNameCreator:    roamingNetworkId => String.Concat("ChargingReservations-",
                                                                             roamingNetworkId, "-",
                                                                             Environment.MachineName, "_",
-                                                                            DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                                            Vanaheimr.Illias.Timestamp.Now.Year, "-", Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
                                                                             ".log"),
                    ReloadDataOnStart:     ReloadDataOnStart,
                    LogfileSearchPattern:  roamingNetworkId => "ChargingReservations-" + roamingNetworkId + "-" + Environment.MachineName + "_",
@@ -224,7 +224,7 @@ namespace org.GraphDefined.WWCP
                     if (reservation != null)
                     {
 
-                        reservation.EndTime                 = Timestamp ?? DateTime.UtcNow;
+                        reservation.EndTime                 = Timestamp ?? Vanaheimr.Illias.Timestamp.Now;
 
                         if (StopAuthentication != null)
                             reservation.StopAuthentication  = StopAuthentication;
@@ -277,7 +277,7 @@ namespace org.GraphDefined.WWCP
         //                //// 9: result.ReservationId
 
         //                //var NewChargingReservation = new ChargingReservation(ChargingReservation_Id.Parse(elements[9]),
-        //                //                                             elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow)
+        //                //                                             elements[0] != "" ? DateTime.Parse(elements[0]) : Timestamp.Now)
         //                //{
         //                //    AuthorizatorId = elements[7] != "" ? CSORoamingProvider_Id.Parse(elements[7]) : null,
         //                //    //AuthService          = result.ISendAuthorizeStartStop,

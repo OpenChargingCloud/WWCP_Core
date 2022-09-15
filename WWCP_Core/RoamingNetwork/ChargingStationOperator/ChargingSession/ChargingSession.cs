@@ -463,7 +463,7 @@ namespace org.GraphDefined.WWCP
         #region Duration
 
         public TimeSpan Duration
-            => (SessionTime.EndTime ?? DateTime.UtcNow) - SessionTime.StartTime;
+            => (SessionTime.EndTime ?? Timestamp.Now) - SessionTime.StartTime;
 
         #endregion
 
@@ -880,7 +880,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this.SessionTime         = new StartEndDateTime(Timestamp ?? DateTime.UtcNow);
+            this.SessionTime         = new StartEndDateTime(Timestamp ?? Vanaheimr.Illias.Timestamp.Now);
             this._EnergyMeterValues  = new List<Timestamped<Decimal>>();
             this._StopRequests       = new List<SessionStopRequest>();
 
