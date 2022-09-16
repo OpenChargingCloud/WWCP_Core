@@ -60,7 +60,8 @@ namespace org.GraphDefined.WWCP
                                           StatusSchedule<ChargingPoolStatusTypes>  StatusSchedule,
                                           IReadOnlyDictionary<String, Object>      CustomData  = null)
 
-            : base(CustomData)
+            : base(null,
+                   CustomData)
 
         {
 

@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP.Importer
         private readonly         Action<WWCPImporter<T>, T>         OnStartup;
         private readonly         GetDataDelegate<T>                 GetData;
         private readonly         Action<WWCPImporter<T>, T>         OnEveryRun;
-        private readonly         CreateForwardingTableDelegate<T>   CreateForwardingTable;
+      //  private readonly         CreateForwardingTableDelegate<T>   CreateForwardingTable;
 
         /// <summary>
         /// The default number of cached data imports.
@@ -92,7 +92,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// The prefix of the importer forwarding files.
         /// </summary>
-        public String                                                          ForwardingFilenamePrefix            { get; }
+        //public String                                                          ForwardingFilenamePrefix            { get; }
 
 
         public IEnumerable<ChargingStationOperator>                            AllChargingStationOperators         { get; }
@@ -288,12 +288,12 @@ namespace org.GraphDefined.WWCP.Importer
         /// Create a new WWCP importer.
         /// </summary>
         public WWCPImporter(String                                                           Id,
-                            String?                                                          ForwardingFilenamePrefix            = null,
+                            //String?                                                          ForwardingFilenamePrefix            = null,
 
                             IEnumerable<ChargingStationOperator>?                            AllChargingStationOperators         = null,
                             Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>?  GetChargingStationOperators         = null,
                             Func<ChargingStation_Id, ChargingStationOperator>?               GetDefaultChargingStationOperator   = null,
-                            CreateForwardingTableDelegate<T>?                                CreateForwardingTable               = null,
+                            //CreateForwardingTableDelegate<T>?                                CreateForwardingTable               = null,
 
                             Action<WWCPImporter<T>, T>?                                      OnStartup                           = null,
                             TimeSpan?                                                        ImportEvery                         = null,
@@ -311,8 +311,8 @@ namespace org.GraphDefined.WWCP.Importer
             if (Id.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Id),                        "The given importer identification must not be null or empty!");
 
-            if (ForwardingFilenamePrefix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ForwardingFilenamePrefix),  "The given importer config filename prefix must not be null or empty!");
+            //if (ForwardingFilenamePrefix.IsNullOrEmpty())
+            //    throw new ArgumentNullException(nameof(ForwardingFilenamePrefix),  "The given importer config filename prefix must not be null or empty!");
 
             if (GetData == null)
                 throw new ArgumentNullException(nameof(GetData),                   "The given GetData delegate must not be null!");
@@ -324,16 +324,16 @@ namespace org.GraphDefined.WWCP.Importer
 
             this.Id                                 = Id;
 
-            this.ForwardingFilenamePrefix           = ForwardingFilenamePrefix.IsNotNullOrEmpty()
-                                                          ? ForwardingFilenamePrefix
-                                                          : Id + "_forwardings_";
+            //this.ForwardingFilenamePrefix           = ForwardingFilenamePrefix.IsNotNullOrEmpty()
+            //                                              ? ForwardingFilenamePrefix
+            //                                              : Id + "_forwardings_";
 
             this.ImportEvery                        = ImportEvery ?? DefaultImportEvery;
 
             this.OnStartup                          = OnStartup;
             this.GetData                            = GetData;
             this.OnEveryRun                         = OnEveryRun;
-            this.CreateForwardingTable              = CreateForwardingTable;
+            //this.CreateForwardingTable              = CreateForwardingTable;
             this.MaxNumberOfCachedDataImports       = MaxNumberOfCachedDataImports;
             this.OnShutdown                         = OnShutdown;
 

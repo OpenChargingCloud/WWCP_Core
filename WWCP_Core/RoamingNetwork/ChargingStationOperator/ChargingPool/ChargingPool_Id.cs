@@ -23,7 +23,6 @@ using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
-using System;
 
 #endregion
 
@@ -37,6 +36,21 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
+        /// Indicates whether this charging pool identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingPoolId">A charging pool identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingPool_Id? ChargingPoolId)
+            => !ChargingPoolId.HasValue || ChargingPoolId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging pool identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingPoolId">A charging pool identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingPool_Id? ChargingPoolId)
+            => ChargingPoolId.HasValue && ChargingPoolId.Value.IsNotNullOrEmpty;
+
+
+        /// <summary>
         /// Create a new charging station identification based
         /// on the given charging pool identification.
         /// </summary>
@@ -48,6 +62,7 @@ namespace org.GraphDefined.WWCP
 
             var Suffix = ChargingPoolId.Suffix;
 
+            // (P)OOL => (S)TATION
             if (Suffix.StartsWith("OOL", StringComparison.Ordinal))
                 Suffix = String.Concat("TATION", Suffix.AsSpan(3));
 
@@ -71,8 +86,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging pool identification.
         /// </summary>
-        public  static readonly Regex  ChargingPoolId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?P([A-Z0-9][A-Z0-9\*]{0,50})$",
-                                                                    RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex ChargingPoolId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?P([A-Z0-9][A-Z0-9\*]{0,50})$",
+                                                                  RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -81,12 +96,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station operator identification.
         /// </summary>
-        public ChargingStationOperator_Id  OperatorId   { get; }
+        public ChargingStationOperator_Id  OperatorId    { get; }
 
         /// <summary>
         /// The suffix of the identification.
         /// </summary>
-        public String                      Suffix       { get; }
+        public String                      Suffix        { get; }
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
@@ -95,10 +110,16 @@ namespace org.GraphDefined.WWCP
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
+
+        /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) (OperatorId.ToString(OperatorIdFormats.ISO_STAR).Length + 2 + Suffix.Length);
+            => (UInt64) (OperatorId.ToString(OperatorIdFormats.ISO_STAR).Length + 2 + Suffix.Length); // +2 because of "*P"
 
         #endregion
 
@@ -112,12 +133,8 @@ namespace org.GraphDefined.WWCP
                                 String                      Suffix)
         {
 
-            #region Initial checks
-
             if (Suffix.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Suffix), "The charging pool identification suffix must not be null or empty!");
-
-            #endregion
 
             this.OperatorId  = OperatorId;
             this.Suffix      = Suffix;
@@ -140,10 +157,10 @@ namespace org.GraphDefined.WWCP
         public static ChargingPool_Id Generate(ChargingStationOperator_Id  OperatorId,
                                                Address                     Address,
                                                GeoCoordinate?              GeoLocation       = default,
-                                               String                      PoolName          = default,
-                                               String                      PoolDescription   = default,
+                                               String?                     PoolName          = default,
+                                               String?                     PoolDescription   = default,
                                                Byte                        Length            = 15,
-                                               Func<String, String>        Mapper            = null)
+                                               Func<String, String>?       Mapper            = null)
         {
 
             if (Length < 12)
@@ -152,8 +169,7 @@ namespace org.GraphDefined.WWCP
             if (Length > 50)
                 Length = 50;
 
-            var Suffix = new SHA256CryptoServiceProvider().
-                             ComputeHash(Encoding.UTF8.GetBytes(
+            var Suffix = SHA256.HashData(Encoding.UTF8.GetBytes(
                                              String.Concat(
                                                  OperatorId.  ToString(),
                                                  Address.     ToString(),
@@ -167,7 +183,7 @@ namespace org.GraphDefined.WWCP
                                          ToUpper();
 
             return Parse(OperatorId,
-                         Mapper != null
+                         Mapper is not null
                             ? Mapper(Suffix)
                             : Suffix);
 
@@ -202,24 +218,10 @@ namespace org.GraphDefined.WWCP
         public static ChargingPool_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out ChargingPool_Id chargingPoolId))
+                return chargingPoolId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging pool identification must not be null or empty!");
-
-            #endregion
-
-            var MatchCollection = ChargingPoolId_RegEx.Matches(Text);
-
-            if (MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging pool identification: '" + Text + "'!",
-                                            nameof(Text));
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id operatorId))
-                return new ChargingPool_Id(operatorId,
-                                           MatchCollection[0].Groups[2].Value);
-
-            throw new ArgumentException("Illegal charging pool identification '" + Text + "'!",
+            throw new ArgumentException("Invalid text-representation of a charging pool identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -265,47 +267,33 @@ namespace org.GraphDefined.WWCP
         public static Boolean TryParse(String Text, out ChargingPool_Id ChargingPoolId)
         {
 
-            #region Initial checks
-
-            Text = Text?.Trim();
+            ChargingPoolId = default;
 
             if (Text.IsNullOrEmpty())
-            {
-                ChargingPoolId = default;
                 return false;
-            }
-
-            #endregion
 
             try
             {
 
-                ChargingPoolId = default;
+                var matchCollection = ChargingPoolId_RegEx.Matches(Text);
 
-                var _MatchCollection = ChargingPoolId_RegEx.Matches(Text);
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id operatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
                 {
 
-                    ChargingPoolId = new ChargingPool_Id(operatorId,
-                                                         _MatchCollection[0].Groups[2].Value);
+                    ChargingPoolId = new ChargingPool_Id(chargingStationOperatorId,
+                                                         matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception e)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch (Exception)
             { }
 
-            ChargingPoolId = default;
             return false;
 
         }
@@ -320,7 +308,7 @@ namespace org.GraphDefined.WWCP
         public ChargingPool_Id Clone
 
             => new (OperatorId.Clone,
-                    new String(Suffix.ToCharArray()));
+                    new String(Suffix?.ToCharArray() ?? Array.Empty<Char>()));
 
         #endregion
 
@@ -335,20 +323,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
-        {
+        public static Boolean operator == (ChargingPool_Id ChargingPoolId1,
+                                           ChargingPool_Id ChargingPoolId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingPoolId1, ChargingPoolId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingPoolId1 == null) || ((Object) ChargingPoolId2 == null))
-                return false;
-
-            return ChargingPoolId1.Equals(ChargingPoolId2);
-
-        }
+            => ChargingPoolId1.Equals(ChargingPoolId2);
 
         #endregion
 
@@ -360,8 +338,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
-            => !(ChargingPoolId1 == ChargingPoolId2);
+        public static Boolean operator != (ChargingPool_Id ChargingPoolId1,
+                                           ChargingPool_Id ChargingPoolId2)
+
+            => !ChargingPoolId1.Equals(ChargingPoolId2);
 
         #endregion
 
@@ -373,15 +353,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
-        {
+        public static Boolean operator < (ChargingPool_Id ChargingPoolId1,
+                                          ChargingPool_Id ChargingPoolId2)
 
-            if ((Object) ChargingPoolId1 == null)
-                throw new ArgumentNullException(nameof(ChargingPoolId1), "The given ChargingPoolId1 must not be null!");
-
-            return ChargingPoolId1.CompareTo(ChargingPoolId2) < 0;
-
-        }
+            => ChargingPoolId1.CompareTo(ChargingPoolId2) < 0;
 
         #endregion
 
@@ -393,8 +368,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
-            => !(ChargingPoolId1 > ChargingPoolId2);
+        public static Boolean operator <= (ChargingPool_Id ChargingPoolId1,
+                                           ChargingPool_Id ChargingPoolId2)
+
+            => ChargingPoolId1.CompareTo(ChargingPoolId2) <= 0;
 
         #endregion
 
@@ -406,15 +383,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
-        {
+        public static Boolean operator > (ChargingPool_Id ChargingPoolId1,
+                                          ChargingPool_Id ChargingPoolId2)
 
-            if ((Object) ChargingPoolId1 == null)
-                throw new ArgumentNullException(nameof(ChargingPoolId1), "The given ChargingPoolId1 must not be null!");
-
-            return ChargingPoolId1.CompareTo(ChargingPoolId2) > 0;
-
-        }
+            => ChargingPoolId1.CompareTo(ChargingPoolId2) > 0;
 
         #endregion
 
@@ -426,8 +398,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId1">A charging pool identification.</param>
         /// <param name="ChargingPoolId2">Another charging pool identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
-            => !(ChargingPoolId1 < ChargingPoolId2);
+        public static Boolean operator >= (ChargingPool_Id ChargingPoolId1,
+                                           ChargingPool_Id ChargingPoolId2)
+
+            => ChargingPoolId1.CompareTo(ChargingPoolId2) >= 0;
 
         #endregion
 
@@ -441,18 +415,12 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingPool_Id))
-                throw new ArgumentException("The given object is not a ChargingPoolId!", nameof(Object));
-
-            return CompareTo((ChargingPool_Id) Object);
-
-        }
+            => Object is ChargingPool_Id chargingPoolId
+                   ? CompareTo(chargingPoolId)
+                   : throw new ArgumentException("The given object is not a charging pool identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -465,21 +433,14 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(ChargingPool_Id ChargingPoolId)
         {
 
-            if ((Object) ChargingPoolId == null)
-                throw new ArgumentNullException(nameof(ChargingPoolId), "The given charging pool identification must not be null!");
+            var c = OperatorId.CompareTo(ChargingPoolId.OperatorId);
 
-            // Compare the length of the identifications
-            var _Result = this.Length.CompareTo(ChargingPoolId.Length);
+            if (c == 0)
+                c = String.Compare(Suffix,
+                                   ChargingPoolId.Suffix,
+                                   StringComparison.OrdinalIgnoreCase);
 
-            // If equal: Compare charging operator identifications
-            if (_Result == 0)
-                _Result = OperatorId.CompareTo(ChargingPoolId.OperatorId);
-
-            // If equal: Compare suffix
-            if (_Result == 0)
-                _Result = String.Compare(Suffix, ChargingPoolId.Suffix, StringComparison.Ordinal);
-
-            return _Result;
+            return c;
 
         }
 
@@ -496,18 +457,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingPool_Id))
-                return false;
-
-            return Equals((ChargingPool_Id) Object);
-
-        }
+            => Object is ChargingPool_Id chargingPoolId &&
+                   Equals(chargingPoolId);
 
         #endregion
 
@@ -519,15 +472,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId">A charging pool identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingPool_Id ChargingPoolId)
-        {
 
-            if ((Object) ChargingPoolId == null)
-                return false;
-
-            return OperatorId.Equals(ChargingPoolId.OperatorId) &&
-                   Suffix.    Equals(ChargingPoolId.Suffix);
-
-        }
+            => OperatorId.Equals(ChargingPoolId.OperatorId) &&
+               String.Equals(Suffix,
+                             ChargingPoolId.Suffix,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -542,7 +491,7 @@ namespace org.GraphDefined.WWCP
         public override Int32 GetHashCode()
 
             => OperatorId.GetHashCode() ^
-               Suffix.    GetHashCode();
+               Suffix?.   GetHashCode() ?? 0;
 
         #endregion
 
@@ -552,7 +501,8 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => String.Concat(OperatorId, "*P", Suffix);
+
+            => String.Concat(OperatorId, "*P", Suffix ?? "");
 
         #endregion
 

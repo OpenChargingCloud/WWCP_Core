@@ -17,19 +17,13 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+
 using org.GraphDefined.WWCP.Net.IO.JSON;
 
 #endregion

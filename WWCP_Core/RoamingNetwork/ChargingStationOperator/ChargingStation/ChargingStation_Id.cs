@@ -49,7 +49,6 @@ namespace org.GraphDefined.WWCP
             => ChargingStationId.HasValue && ChargingStationId.Value.IsNotNullOrEmpty;
 
 
-
         /// <summary>
         /// Create a new EVSE identification
         /// based on the given charging station identification.
@@ -125,21 +124,11 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-
-                switch (OperatorId.Format)
-                {
-
-                    case OperatorIdFormats.DIN:
-                        return (UInt64) (OperatorId.CountryCode.TelefonCode.ToString().Length + 1 + OperatorId.Suffix.Length + 2 + Suffix.Length);
-
-                    case OperatorIdFormats.ISO_STAR:
-                        return (UInt64) (OperatorId.CountryCode.Alpha2Code.Length             + 1 + OperatorId.Suffix.Length + 2 + Suffix.Length);
-
-                    default:  // ISO
-                        return (UInt64) (OperatorId.CountryCode.Alpha2Code.Length                 + OperatorId.Suffix.Length + 1 + Suffix.Length);
-
-                }
-
+                return OperatorId.Format switch {
+                    OperatorIdFormats.DIN       => (UInt64) (OperatorId.CountryCode.TelefonCode.ToString().Length + 1 + (OperatorId.Suffix?.Length ?? 0) + 2 + (Suffix?.Length ?? 0)),
+                    OperatorIdFormats.ISO_STAR  => (UInt64) (OperatorId.CountryCode.Alpha2Code.            Length + 1 + (OperatorId.Suffix?.Length ?? 0) + 2 + (Suffix?.Length ?? 0)),
+                    _                           => (UInt64) (OperatorId.CountryCode.Alpha2Code.            Length +     (OperatorId.Suffix?.Length ?? 0) + 1 + (Suffix?.Length ?? 0)), // also ISO!
+                };
             }
         }
 
@@ -648,7 +637,9 @@ namespace org.GraphDefined.WWCP
             var c = OperatorId.CompareTo(ChargingStationId.OperatorId);
 
             if (c == 0)
-                c = String.Compare(Suffix, ChargingStationId.Suffix, StringComparison.OrdinalIgnoreCase);
+                c = String.Compare(Suffix,
+                                   ChargingStationId.Suffix,
+                                   StringComparison.OrdinalIgnoreCase);
 
             return c;
 
@@ -684,7 +675,9 @@ namespace org.GraphDefined.WWCP
         public Boolean Equals(ChargingStation_Id ChargingStationId)
 
             => OperatorId.Equals(ChargingStationId.OperatorId) &&
-               Suffix.    Equals(ChargingStationId.Suffix);
+               String.Equals(Suffix,
+                             ChargingStationId.Suffix,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -699,7 +692,7 @@ namespace org.GraphDefined.WWCP
         public override Int32 GetHashCode()
 
             => OperatorId.GetHashCode() ^
-               Suffix.    GetHashCode();
+               Suffix?.   GetHashCode() ?? 0;
 
         #endregion
 
@@ -711,10 +704,10 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => OperatorId.Format switch {
-                OperatorIdFormats.DIN       => "+" + OperatorId.CountryCode.TelefonCode.ToString() + "*" + OperatorId.Suffix + "*S" + Suffix,
-                OperatorIdFormats.ISO_STAR  =>       OperatorId.CountryCode.Alpha2Code +             "*" + OperatorId.Suffix + "*S" + Suffix,
-                _                           =>       OperatorId.CountryCode.Alpha2Code +                   OperatorId.Suffix +  "S" + Suffix
-            };
+                   OperatorIdFormats.DIN       => "+" + OperatorId.CountryCode.TelefonCode.ToString() + "*" + (OperatorId.Suffix ?? "") + "*S" + (Suffix ?? ""),
+                   OperatorIdFormats.ISO_STAR  =>       OperatorId.CountryCode.Alpha2Code +             "*" + (OperatorId.Suffix ?? "") + "*S" + (Suffix ?? ""),
+                   _                           =>       OperatorId.CountryCode.Alpha2Code +                   (OperatorId.Suffix ?? "") +  "S" + (Suffix ?? "")
+               };
 
         #endregion
 

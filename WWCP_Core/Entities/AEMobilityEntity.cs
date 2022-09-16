@@ -100,7 +100,8 @@ namespace org.GraphDefined.WWCP
         public AEMobilityEntity(TId                                   Id,
                                 IReadOnlyDictionary<String, Object>?  CustomData   = null)
 
-            : base(CustomData)
+            : base(null,
+                   CustomData)
 
         {
 

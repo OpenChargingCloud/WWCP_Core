@@ -1375,15 +1375,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateOrUpdateChargingPool(ChargingPool_Id                                   ChargingPoolId,
-                                                       Action<ChargingPool>                              Configurator                = null,
-                                                       RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator   = null,
-                                                       Timestamped<ChargingPoolAdminStatusTypes>?        InitialAdminStatus          = null,
-                                                       Timestamped<ChargingPoolStatusTypes>?             InitialStatus               = null,
-                                                       UInt16                                            MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusListSize,
-                                                       UInt16                                            MaxStatusListSize           = ChargingPool.DefaultMaxStatusListSize,
-                                                       Action<ChargingPool>                              OnSuccess                   = null,
-                                                       Action<ChargingStationOperator, ChargingPool_Id>  OnError                     = null)
+        public ChargingPool CreateOrUpdateChargingPool(ChargingPool_Id                                    ChargingPoolId,
+                                                       Action<ChargingPool>?                              Configurator                = null,
+                                                       RemoteChargingPoolCreatorDelegate?                 RemoteChargingPoolCreator   = null,
+                                                       Timestamped<ChargingPoolAdminStatusTypes>?         InitialAdminStatus          = null,
+                                                       Timestamped<ChargingPoolStatusTypes>?              InitialStatus               = null,
+                                                       UInt16                                             MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusListSize,
+                                                       UInt16                                             MaxStatusListSize           = ChargingPool.DefaultMaxStatusListSize,
+                                                       Action<ChargingPool>?                              OnSuccess                   = null,
+                                                       Action<ChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
 
         {
 
@@ -5520,7 +5520,7 @@ namespace org.GraphDefined.WWCP
                                                                                                        ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         Address?.ToJSON("address"),
+                         new JProperty("address", Address.ToJSON()),
 
                          // API
                          // MainKeys
