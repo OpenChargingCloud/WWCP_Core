@@ -17,12 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
@@ -31,7 +26,6 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 using org.GraphDefined.WWCP.Net.IO.JSON;
 
 #endregion
@@ -72,7 +66,7 @@ namespace org.GraphDefined.WWCP
             => ChargingPools?.SafeAny() == true
 
                    ? new JArray(ChargingPools.
-                                    Where         (pool => pool != null).
+                                    Where         (pool => pool is not null).
                                     OrderBy       (pool => pool.Id).
                                     SkipTakeFilter(Skip, Take).
                                     SafeSelect    (pool => pool.ToJSON(Embedded,
@@ -85,30 +79,10 @@ namespace org.GraphDefined.WWCP
                                                                        CustomChargingPoolSerializer,
                                                                        CustomChargingStationSerializer,
                                                                        CustomEVSESerializer)).
-                                    Where         (pool => pool != null))
+                                    Where         (pool => pool is not null))
 
                    : new JArray();
 
-
-        #endregion
-
-        #region ToJSON(this ChargingPools, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<ChargingPool> ChargingPools, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
-
-            #endregion
-
-            return ChargingPools?.Any() == true
-                       ? new JProperty(JPropertyKey, ChargingPools.ToJSON())
-                       : null;
-
-        }
 
         #endregion
 
@@ -122,31 +96,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingPoolAdminStatus == null || !ChargingPoolAdminStatus.Any())
+            if (ChargingPoolAdminStatus is null || !ChargingPoolAdminStatus.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatus>();
+            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatus>();
 
             foreach (var status in ChargingPoolAdminStatus)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
@@ -167,32 +141,32 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingPoolAdminStatusSchedules == null || !ChargingPoolAdminStatusSchedules.Any())
+            if (ChargingPoolAdminStatusSchedules is null || !ChargingPoolAdminStatusSchedules.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatusSchedule>();
+            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatusSchedule>();
 
             foreach (var status in ChargingPoolAdminStatusSchedules)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
@@ -223,31 +197,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingPoolStatus == null || !ChargingPoolStatus.Any())
+            if (ChargingPoolStatus is null || !ChargingPoolStatus.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatus>();
+            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatus>();
 
             foreach (var status in ChargingPoolStatus)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
@@ -268,32 +242,32 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingPoolStatusSchedules == null || !ChargingPoolStatusSchedules.Any())
+            if (ChargingPoolStatusSchedules is null || !ChargingPoolStatusSchedules.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatusSchedule>();
+            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatusSchedule>();
 
             foreach (var status in ChargingPoolStatusSchedules)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
@@ -322,11 +296,6 @@ namespace org.GraphDefined.WWCP
                                      IStatus<ChargingPoolStatusTypes>,
                                      IEntity<ChargingPool_Id>
     {
-
-        /// <summary>
-        /// The unique identification of this charging pool.
-        /// </summary>
-        ChargingPool_Id         Id                    { get; }
 
         /// <summary>
         /// The roaming network of this charging pool.

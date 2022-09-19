@@ -17,21 +17,15 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 using org.GraphDefined.WWCP.Net.IO.JSON;
 
 #endregion
@@ -54,24 +48,24 @@ namespace org.GraphDefined.WWCP
         /// <param name="Skip">The optional number of charging stations to skip.</param>
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingStation>                 ChargingStations,
-                                    UInt64?                                           Skip                              = null,
-                                    UInt64?                                           Take                              = null,
-                                    Boolean                                           Embedded                          = false,
-                                    InfoStatus                                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                        ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                        ExpandEVSEIds                     = InfoStatus.Expanded,
-                                    InfoStatus                                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                        ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                                    CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
+        public static JArray ToJSON(this IEnumerable<ChargingStation>                  ChargingStations,
+                                    UInt64?                                            Skip                              = null,
+                                    UInt64?                                            Take                              = null,
+                                    Boolean                                            Embedded                          = false,
+                                    InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
+                                    InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                                    CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
+                                    CustomJObjectSerializerDelegate<EVSE>?             CustomEVSESerializer              = null)
 
 
             => ChargingStations?.SafeAny() == true
 
                    ? new JArray(ChargingStations.
-                                    Where         (station => station != null).
+                                    Where         (station => station is not null).
                                     OrderBy       (station => station.Id).
                                     SkipTakeFilter(Skip, Take).
                                     SafeSelect    (station => station.ToJSON(Embedded,
@@ -83,29 +77,9 @@ namespace org.GraphDefined.WWCP
                                                                              ExpandDataLicenses,
                                                                              CustomChargingStationSerializer,
                                                                              CustomEVSESerializer)).
-                                    Where         (station => station != null))
+                                    Where         (station => station is not null))
 
                    : new JArray();
-
-        #endregion
-
-        #region ToJSON(this ChargingStations, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<ChargingStation> ChargingStations, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
-
-            #endregion
-
-            return ChargingStations?.Any() == true
-                       ? new JProperty(JPropertyKey, ChargingStations.ToJSON())
-                       : null;
-
-        }
 
         #endregion
 
@@ -119,31 +93,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingStationAdminStatus == null || !ChargingStationAdminStatus.Any())
+            if (ChargingStationAdminStatus is null || !ChargingStationAdminStatus.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatus>();
+            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatus>();
 
             foreach (var status in ChargingStationAdminStatus)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
@@ -164,32 +138,32 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingStationAdminStatusSchedules == null || !ChargingStationAdminStatusSchedules.Any())
+            if (ChargingStationAdminStatusSchedules is null || !ChargingStationAdminStatusSchedules.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatusSchedule>();
+            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatusSchedule>();
 
             foreach (var status in ChargingStationAdminStatusSchedules)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
@@ -220,31 +194,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingStationStatus == null || !ChargingStationStatus.Any())
+            if (ChargingStationStatus is null || !ChargingStationStatus.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatus>();
+            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatus>();
 
             foreach (var status in ChargingStationStatus)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
@@ -265,32 +239,32 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingStationStatusSchedules == null || !ChargingStationStatusSchedules.Any())
+            if (ChargingStationStatusSchedules is null || !ChargingStationStatusSchedules.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatusSchedule>();
+            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatusSchedule>();
 
             foreach (var status in ChargingStationStatusSchedules)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
@@ -320,27 +294,23 @@ namespace org.GraphDefined.WWCP
                                         IEntity<ChargingStation_Id>
     {
 
-        /// <summary>
-        /// The unique identification of this charging Station.
-        /// </summary>
-        ChargingStation_Id         Id                    { get; }
 
         /// <summary>
         /// The roaming network of this charging Station.
         /// </summary>
-        IRoamingNetwork          RoamingNetwork        { get; }
+        IRoamingNetwork          RoamingNetwork           { get; }
 
         /// <summary>
         /// The charging station operator of this charging Station.
         /// </summary>
         [Optional]
-        ChargingStationOperator  Operator              { get; }
+        ChargingStationOperator  Operator                 { get; }
 
         /// <summary>
         /// The remote charging Station.
         /// </summary>
         [Optional]
-        IRemoteChargingStation     RemoteChargingStation    { get; }
+        IRemoteChargingStation   RemoteChargingStation    { get; }
 
 
 

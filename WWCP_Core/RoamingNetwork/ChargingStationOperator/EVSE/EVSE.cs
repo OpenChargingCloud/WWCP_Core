@@ -79,26 +79,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ToJSON(this EVSEs, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<EVSE> EVSEs, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
-
-            #endregion
-
-            return EVSEs?.Any() == true
-                       ? new JProperty(JPropertyKey, EVSEs.ToJSON())
-                       : null;
-
-        }
-
-        #endregion
-
 
         #region ToJSON(this EVSEAdminStatus,          Skip = null, Take = null)
 
@@ -109,30 +89,30 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEAdminStatus == null || !EVSEAdminStatus.Any())
+            if (EVSEAdminStatus is null || !EVSEAdminStatus.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatus>();
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatus>();
 
             foreach (var status in EVSEAdminStatus)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject(_FilteredStatus.
+            return new JObject(filteredStatus.
                                    OrderBy(status => status.Key).
                                    SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
@@ -153,31 +133,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEAdminStatusSchedules == null || !EVSEAdminStatusSchedules.Any())
+            if (EVSEAdminStatusSchedules is null || !EVSEAdminStatusSchedules.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatusSchedule>();
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatusSchedule>();
 
             foreach (var status in EVSEAdminStatusSchedules)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject(_FilteredStatus.
+            return new JObject(filteredStatus.
                                    OrderBy(status => status.Key).
                                    SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
@@ -203,30 +183,30 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEStatus == null || !EVSEStatus.Any())
+            if (EVSEStatus is null || !EVSEStatus.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
 
             foreach (var status in EVSEStatus)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject(_FilteredStatus.
+            return new JObject(filteredStatus.
                                    OrderBy(status => status.Key).
                                    SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
@@ -247,31 +227,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEStatusSchedules == null || !EVSEStatusSchedules.Any())
+            if (EVSEStatusSchedules is null || !EVSEStatusSchedules.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEStatusSchedule>();
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatusSchedule>();
 
             foreach (var status in EVSEStatusSchedules)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject(_FilteredStatus.
+            return new JObject(filteredStatus.
                                    OrderBy(status => status.Key).
                                    SkipTakeFilter(Skip, Take).
                                    Select (kvp    => new JProperty(kvp.Key.ToString(),
