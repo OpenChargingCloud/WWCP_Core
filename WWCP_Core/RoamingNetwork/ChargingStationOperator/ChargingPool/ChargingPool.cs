@@ -3669,16 +3669,16 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of the given charging pool.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
-        public JObject ToJSON(Boolean                                        Embedded                          = false,
-                              InfoStatus                                     ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                                     ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                                     ExpandChargingStationIds          = InfoStatus.Expanded,
-                              InfoStatus                                     ExpandEVSEIds                     = InfoStatus.Hidden,
-                              InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<ChargingPool>     CustomChargingPoolSerializer      = null,
-                              CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                              CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean                                            Embedded                          = false,
+                              InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandChargingStationIds          = InfoStatus.Expanded,
+                              InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Hidden,
+                              InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<ChargingPool>?     CustomChargingPoolSerializer      = null,
+                              CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
+                              CustomJObjectSerializerDelegate<EVSE>?             CustomEVSESerializer              = null)
         {
 
             var JSON = JSONObject.Create(
@@ -3697,7 +3697,7 @@ namespace org.GraphDefined.WWCP
                              ? Description.ToJSON("description")
                              : null,
 
-                         (!Embedded || DataSource != Operator.DataSource)
+                         ((!Embedded || DataSource != Operator.DataSource) && DataSource is not null)
                              ? DataSource.ToJSON("dataSource")
                              : null,
 
@@ -3706,7 +3706,7 @@ namespace org.GraphDefined.WWCP
                              () => new JProperty("dataLicenses",    DataLicenses.ToJSON())),
 
 
-                         ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork != null
+                         ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork is not null
                              ? ExpandRoamingNetworkId.Switch(
                                    () => new JProperty("roamingNetworkId",                  RoamingNetwork.Id. ToString()),
                                    () => new JProperty("roamingNetwork",                    RoamingNetwork.    ToJSON(Embedded:                          true,
@@ -3718,7 +3718,7 @@ namespace org.GraphDefined.WWCP
                                                                                                                       ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator != null
+                         ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator is not null
                              ? ExpandChargingStationOperatorId.Switch(
                                    () => new JProperty("chargingStationOperatorperatorId",  Operator.Id.       ToString()),
                                    () => new JProperty("chargingStationOperatorperator",    Operator.          ToJSON(Embedded:                          true,
@@ -3732,9 +3732,18 @@ namespace org.GraphDefined.WWCP
 
                          new JProperty("geoLocation",          GeoLocation.        ToJSON()),
                          new JProperty("address",              Address.            ToJSON()),
-                         new JProperty("authenticationModes",  AuthenticationModes.ToJSON()),
-                         new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON()),
-                         new JProperty("openingTimes",         OpeningTimes.       ToJSON()),
+
+                         AuthenticationModes is not null && AuthenticationModes.Any()
+                             ? new JProperty("authenticationModes",  AuthenticationModes.ToJSON())
+                             : null,
+
+                         HotlinePhoneNumber is not null && HotlinePhoneNumber.Any()
+                             ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON())
+                             : null,
+
+                         OpeningTimes is not null
+                             ? new JProperty("openingTimes",         OpeningTimes.       ToJSON())
+                             : null,
 
 
                          ExpandChargingStationIds != InfoStatus.Hidden && ChargingStations.Any()
@@ -3803,7 +3812,7 @@ namespace org.GraphDefined.WWCP
 
                      );
 
-            return CustomChargingPoolSerializer != null
+            return CustomChargingPoolSerializer is not null
                        ? CustomChargingPoolSerializer(this, JSON)
                        : JSON;
 
