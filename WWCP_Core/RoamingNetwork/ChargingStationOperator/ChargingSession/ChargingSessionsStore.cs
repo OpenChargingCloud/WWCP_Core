@@ -330,7 +330,7 @@ namespace org.GraphDefined.WWCP
                    LogFilePathCreator:     roamingNetworkId => Path.Combine(LoggingPath ?? AppContext.BaseDirectory, "ChargingSessions"),
                    LogFileNameCreator:     roamingNetworkId => String.Concat("ChargingSessions-",
                                                                              roamingNetworkId, "_",
-                                                                             DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                                             Timestamp.Now.Year, "-", Timestamp.Now.Month.ToString("D2"),
                                                                              ".log"),
                    ReloadDataOnStart:      ReloadDataOnStart,
                    LogfileSearchPattern:   roamingNetworkId => "ChargingSessions-" + roamingNetworkId + "_*.log",
@@ -501,7 +501,7 @@ namespace org.GraphDefined.WWCP
                           "chargingSession",
                           NewChargingSession.ToJSON());
 
-                    OnNewChargingSession?.Invoke(DateTime.UtcNow,
+                    OnNewChargingSession?.Invoke(Timestamp.Now,
                                                  RoamingNetworkId,
                                                  NewChargingSession);
 
@@ -533,7 +533,7 @@ namespace org.GraphDefined.WWCP
                 if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
 
-                    var now = DateTime.UtcNow;
+                    var now = Timestamp.Now;
 
                     if (Result.Result == RemoteStopResultTypes.Success)
                     {
@@ -594,7 +594,7 @@ namespace org.GraphDefined.WWCP
                           "chargingSession",
                           NewChargingSession.ToJSON());
 
-                    OnNewChargingSession?.Invoke(DateTime.UtcNow,
+                    OnNewChargingSession?.Invoke(Timestamp.Now,
                                                  RoamingNetworkId,
                                                  NewChargingSession);
 
@@ -625,7 +625,7 @@ namespace org.GraphDefined.WWCP
                 if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
 
-                    session.SessionTime.EndTime     = DateTime.UtcNow;
+                    session.SessionTime.EndTime     = Timestamp.Now;
                     session.SystemIdStop            = System_Id.Parse(Environment.MachineName);
                     session.EMPRoamingProviderStop  = CSORoamingProvider;
                     session.ProviderIdStop          = ProviderId;
@@ -664,11 +664,11 @@ namespace org.GraphDefined.WWCP
                     // Most charging session will be stopped by just unplugging the socket!
                     if (!session.SessionTime.EndTime.HasValue)
                     {
-                        session.SessionTime.EndTime  = DateTime.UtcNow;
+                        session.SessionTime.EndTime  = Timestamp.Now;
                         session.SystemIdStop         = System_Id.Parse(Environment.MachineName);
                     }
 
-                    session.CDRReceived  = DateTime.UtcNow;
+                    session.CDRReceived  = Timestamp.Now;
                     session.SystemIdCDR  = System_Id.Parse(Environment.MachineName);
                     session.CDR          = NewChargeDetailRecord;
 
@@ -677,7 +677,7 @@ namespace org.GraphDefined.WWCP
                           "chargingSession",
                           session.ToJSON());
 
-                    OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
+                    OnNewChargeDetailRecord?.Invoke(Timestamp.Now,
                                                     RoamingNetworkId,
                                                     NewChargeDetailRecord);
 
@@ -713,7 +713,7 @@ namespace org.GraphDefined.WWCP
                           "chargingSession",
                           session.ToJSON());
 
-                    OnNewChargeDetailRecordResult?.Invoke(DateTime.UtcNow,
+                    OnNewChargeDetailRecordResult?.Invoke(Timestamp.Now,
                                                           RoamingNetworkId,
                                                           CDRResult);
 
@@ -754,7 +754,7 @@ namespace org.GraphDefined.WWCP
 
         //        _ChargingSessions.Remove(sendCDRResult.ChargeDetailRecord.SessionId);
 
-        //        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+        //        var LogLine = String.Concat(Timestamp.Now.ToIso8601(), ",",
         //                                    "SendCDR,",
         //                                    sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
         //                                    sendCDRResult.ChargeDetailRecord.SessionId, ",",

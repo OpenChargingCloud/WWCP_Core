@@ -17,16 +17,11 @@
 
 #region Usings
 
-using System.Collections.Generic;
-
-using Org.BouncyCastle.Bcpg.OpenPgp;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using Org.BouncyCastle.Crypto.Parameters;
-using System;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Math.EC;
+using Org.BouncyCastle.Crypto.Parameters;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -58,13 +53,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The cryptographical signature of this entity.
         /// </summary>
-        public Signature               Signature                { get; protected set; }
+        public Signature?              Signature                { get; protected set; }
 
         #endregion
 
         #region Constructor(s)
-
-        #region ACryptoEMobilityEntity(Id, ...)
 
         /// <summary>
         /// Create a new abstract crypto entity.
@@ -93,40 +86,6 @@ namespace org.GraphDefined.WWCP
             this.PublicKeyCertificates  = PublicKeyCertificates;
 
         }
-
-        #endregion
-
-        #region ACryptoEMobilityEntity(Ids, ...)
-
-        /// <summary>
-        /// Create a new abstract crypto entity.
-        /// </summary>
-        /// <param name="Ids">The unique entity identifications.</param>
-        protected ACryptoEMobilityEntity(IEnumerable<TId>                     Ids,
-                                         I18NString                           Name,
-                                         IRoamingNetwork                      RoamingNetwork,
-                                         String                               EllipticCurve           = "P-256",
-                                         ECPrivateKeyParameters               PrivateKey              = null,
-                                         PublicKeyCertificates                PublicKeyCertificates   = null,
-                                         IReadOnlyDictionary<String, Object>  InternalData            = null)
-
-            : base(Ids,
-                   InternalData)
-
-        {
-
-            this.Name                   = Name;
-            this.RoamingNetwork         = RoamingNetwork;
-            this.EllipticCurve          = EllipticCurve ?? "P-256";
-            this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
-            this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
-            this.C                      = (FpCurve) ECSpec.Curve;
-            this.PrivateKey             = PrivateKey;
-            this.PublicKeyCertificates  = PublicKeyCertificates;
-
-        }
-
-        #endregion
 
         #endregion
 

@@ -62,7 +62,8 @@ namespace org.GraphDefined.WWCP
                                        Timestamped<ChargingPoolAdminStatusTypes>  Status,
                                        IReadOnlyDictionary<String, Object>        CustomData  = null)
 
-            : base(CustomData)
+            : base(null,
+                   CustomData)
 
         {
 

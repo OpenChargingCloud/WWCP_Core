@@ -74,9 +74,6 @@ namespace org.GraphDefined.WWCP
         IId ISendChargeDetailRecords.Id
             => Id;
 
-        IEnumerable<IId> ISendChargeDetailRecords.Ids
-            => Ids.Cast<IId>();
-
         #region Description
 
         private I18NString _Description;
@@ -637,14 +634,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region eMobilityStationIds
-
-        public IEnumerable<eMobilityStation_Id> eMobilityStationIds
-
-            => _eMobilityStations.Ids;
-
-        #endregion
-
         #region eMobilityStationAdminStatus
 
         public IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusType>> eMobilityStationAdminStatus
@@ -698,7 +687,7 @@ namespace org.GraphDefined.WWCP
                                                          AdminStatus);
 
 
-            if (eMobilityStationAddition.SendVoting(DateTime.UtcNow, this, _eMobilityStation))
+            if (eMobilityStationAddition.SendVoting(Timestamp.Now, this, _eMobilityStation))
             {
                 if (_eMobilityStations.TryAdd(_eMobilityStation))
                 {
@@ -713,7 +702,7 @@ namespace org.GraphDefined.WWCP
 
 
                     OnSuccess?.Invoke(_eMobilityStation);
-                    eMobilityStationAddition.SendNotification(DateTime.UtcNow, this, _eMobilityStation);
+                    eMobilityStationAddition.SendNotification(Timestamp.Now, this, _eMobilityStation);
 
                     return _eMobilityStation;
 
@@ -777,13 +766,13 @@ namespace org.GraphDefined.WWCP
             if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
             {
 
-                if (eMobilityStationRemoval.SendVoting(DateTime.UtcNow, this, _eMobilityStation))
+                if (eMobilityStationRemoval.SendVoting(Timestamp.Now, this, _eMobilityStation))
                 {
 
                     if (_eMobilityStations.TryRemove(eMobilityStationId, out _eMobilityStation))
                     {
 
-                        eMobilityStationRemoval.SendNotification(DateTime.UtcNow, this, _eMobilityStation);
+                        eMobilityStationRemoval.SendNotification(Timestamp.Now, this, _eMobilityStation);
 
                         return _eMobilityStation;
 
@@ -807,13 +796,13 @@ namespace org.GraphDefined.WWCP
             if (TryGeteMobilityStationById(eMobilityStationId, out eMobilityStation))
             {
 
-                if (eMobilityStationRemoval.SendVoting(DateTime.UtcNow, this, eMobilityStation))
+                if (eMobilityStationRemoval.SendVoting(Timestamp.Now, this, eMobilityStation))
                 {
 
                     if (_eMobilityStations.TryRemove(eMobilityStationId, out eMobilityStation))
                     {
 
-                        eMobilityStationRemoval.SendNotification(DateTime.UtcNow, this, eMobilityStation);
+                        eMobilityStationRemoval.SendNotification(Timestamp.Now, this, eMobilityStation);
 
                         return true;
 
@@ -876,7 +865,7 @@ namespace org.GraphDefined.WWCP
             //{
             //
             //    RoamingNetwork.
-            //        SendeMobilityStationAdminStatusDiff(new eMobilityStationAdminStatusDiff(DateTime.UtcNow,
+            //        SendeMobilityStationAdminStatusDiff(new eMobilityStationAdminStatusDiff(Timestamp.Now,
             //                                               ChargingStationOperatorId:    Id,
             //                                               ChargingStationOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusType>>(),
@@ -1009,14 +998,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region eVehicleIds
-
-        public IEnumerable<eVehicle_Id> eVehicleIds
-
-            => _eVehicles.Ids;
-
-        #endregion
-
         #region eVehicleAdminStatus
 
         public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>> eVehicleAdminStatus
@@ -1082,7 +1063,7 @@ namespace org.GraphDefined.WWCP
                                                  Status);
 
 
-            if (eVehicleAddition.SendVoting(DateTime.UtcNow, this, _eVehicle))
+            if (eVehicleAddition.SendVoting(Timestamp.Now, this, _eVehicle))
             {
                 if (_eVehicles.TryAdd(_eVehicle))
                 {
@@ -1098,7 +1079,7 @@ namespace org.GraphDefined.WWCP
 
 
                     OnSuccess?.Invoke(_eVehicle);
-                    eVehicleAddition.SendNotification(DateTime.UtcNow, this, _eVehicle);
+                    eVehicleAddition.SendNotification(Timestamp.Now, this, _eVehicle);
 
                     return _eVehicle;
 
@@ -1162,13 +1143,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetEVehicleById(eVehicleId, out _eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(DateTime.UtcNow, this, _eVehicle))
+                if (eVehicleRemoval.SendVoting(Timestamp.Now, this, _eVehicle))
                 {
 
                     if (_eVehicles.TryRemove(eVehicleId, out _eVehicle))
                     {
 
-                        eVehicleRemoval.SendNotification(DateTime.UtcNow, this, _eVehicle);
+                        eVehicleRemoval.SendNotification(Timestamp.Now, this, _eVehicle);
 
                         return _eVehicle;
 
@@ -1192,13 +1173,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetEVehicleById(eVehicleId, out eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(DateTime.UtcNow, this, eVehicle))
+                if (eVehicleRemoval.SendVoting(Timestamp.Now, this, eVehicle))
                 {
 
                     if (_eVehicles.TryRemove(eVehicleId, out eVehicle))
                     {
 
-                        eVehicleRemoval.SendNotification(DateTime.UtcNow, this, eVehicle);
+                        eVehicleRemoval.SendNotification(Timestamp.Now, this, eVehicle);
 
                         return true;
 
@@ -1261,7 +1242,7 @@ namespace org.GraphDefined.WWCP
             //{
             //
             //    RoamingNetwork.
-            //        SendeVehicleAdminStatusDiff(new eVehicleAdminStatusDiff(DateTime.UtcNow,
+            //        SendeVehicleAdminStatusDiff(new eVehicleAdminStatusDiff(Timestamp.Now,
             //                                               ChargingStationOperatorId:    Id,
             //                                               ChargingStationOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>>(),
@@ -1750,7 +1731,7 @@ namespace org.GraphDefined.WWCP
         //{
 
         //    foreach (var _ChargingStation in ChargingStations)
-        //        Console.WriteLine(DateTime.UtcNow + " LocalEMobilityService says: " + _ChargingStation.Id + " was removed!");
+        //        Console.WriteLine(Timestamp.Now + " LocalEMobilityService says: " + _ChargingStation.Id + " was removed!");
 
         //}
 
@@ -1807,7 +1788,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -1839,7 +1820,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -1893,7 +1874,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -1925,7 +1906,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -1979,7 +1960,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2011,7 +1992,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2065,7 +2046,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2097,7 +2078,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2151,7 +2132,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2183,7 +2164,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2240,7 +2221,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2270,7 +2251,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2324,7 +2305,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2354,7 +2335,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2408,7 +2389,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2438,7 +2419,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2492,7 +2473,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2522,7 +2503,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2576,7 +2557,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2606,7 +2587,7 @@ namespace org.GraphDefined.WWCP
             //                                    (UInt32) _NumberOfEVSEStatus,
             //                                    RequestTimeout,
             //                                    result,
-            //                                    DateTime.UtcNow - Timestamp.Value);
+            //                                    Timestamp.Now - Timestamp.Value);
 
             #endregion
 
@@ -2668,7 +2649,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2686,7 +2667,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStartRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2736,7 +2717,7 @@ namespace org.GraphDefined.WWCP
                                                       SessionId,
                                                       Runtime: TimeSpan.Zero);
 
-            var Endtime  = DateTime.UtcNow;
+            var Endtime  = Vanaheimr.Illias.Timestamp.Now;
             var Runtime  = Endtime - StartTime;
 
 
@@ -2819,7 +2800,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2837,7 +2818,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStopRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2884,7 +2865,7 @@ namespace org.GraphDefined.WWCP
                                                      SessionId,
                                                      Runtime: TimeSpan.Zero);
 
-            var Endtime  = DateTime.UtcNow;
+            var Endtime  = Vanaheimr.Illias.Timestamp.Now;
             var Runtime  = Endtime - StartTime;
 
 
@@ -2957,7 +2938,7 @@ namespace org.GraphDefined.WWCP
                                                                              EventTrackingId,
                                                                              RequestTimeout);
 
-            return SendCDRsResult.OutOfService(DateTime.UtcNow,
+            return SendCDRsResult.OutOfService(Vanaheimr.Illias.Timestamp.Now,
                                                Id,
                                                this,
                                                ChargeDetailRecords);
@@ -3078,7 +3059,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3093,7 +3074,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3155,7 +3136,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3222,7 +3203,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3238,7 +3219,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3277,7 +3258,7 @@ namespace org.GraphDefined.WWCP
 
                 //var OnCancelReservationResponseLocal = OnCancelReservationResponse;
                 //if (OnCancelReservationResponseLocal != null)
-                //    OnCancelReservationResponseLocal(DateTime.UtcNow,
+                //    OnCancelReservationResponseLocal(Timestamp.Now,
                 //                                this,
                 //                                EventTracking_Id.New,
                 //                                ReservationId,
@@ -3295,7 +3276,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3447,7 +3428,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3462,7 +3443,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3517,7 +3498,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3582,7 +3563,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3597,7 +3578,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3648,7 +3629,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {

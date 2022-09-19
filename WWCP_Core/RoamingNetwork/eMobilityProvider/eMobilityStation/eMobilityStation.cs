@@ -36,8 +36,7 @@ namespace org.GraphDefined.WWCP
 {
 
     public interface IeMobilityStation : IEquatable<eMobilityStation>, IComparable<eMobilityStation>, IComparable,
-                                         IEntity<eMobilityStation_Id>,
-                                         IHasIds<eMobilityStation_Id>
+                                         IEntity<eMobilityStation_Id>
     {
 
         /// <summary>
@@ -877,14 +876,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region eVehicleIds
-
-        public IEnumerable<eVehicle_Id> eVehicleIds
-
-            => _eVehicles.Ids;
-
-        #endregion
-
         #region eVehicleAdminStatus
 
         public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>> eVehicleAdminStatus
@@ -950,7 +941,7 @@ namespace org.GraphDefined.WWCP
                                          Status);
 
 
-            if (eVehicleAddition.SendVoting(DateTime.UtcNow, this, _eVehicle))
+            if (eVehicleAddition.SendVoting(Timestamp.Now, this, _eVehicle))
             {
                 if (_eVehicles.TryAdd(_eVehicle))
                 {
@@ -966,7 +957,7 @@ namespace org.GraphDefined.WWCP
 
 
                     OnSuccess?.Invoke(_eVehicle);
-                    eVehicleAddition.SendNotification(DateTime.UtcNow, this, _eVehicle);
+                    eVehicleAddition.SendNotification(Timestamp.Now, this, _eVehicle);
 
                     return _eVehicle;
 
@@ -1030,13 +1021,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetEVehicleById(eVehicleId, out _eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(DateTime.UtcNow, this, _eVehicle))
+                if (eVehicleRemoval.SendVoting(Timestamp.Now, this, _eVehicle))
                 {
 
                     if (_eVehicles.TryRemove(eVehicleId, out _eVehicle))
                     {
 
-                        eVehicleRemoval.SendNotification(DateTime.UtcNow, this, _eVehicle);
+                        eVehicleRemoval.SendNotification(Timestamp.Now, this, _eVehicle);
 
                         return _eVehicle;
 
@@ -1060,13 +1051,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetEVehicleById(eVehicleId, out eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(DateTime.UtcNow, this, eVehicle))
+                if (eVehicleRemoval.SendVoting(Timestamp.Now, this, eVehicle))
                 {
 
                     if (_eVehicles.TryRemove(eVehicleId, out eVehicle))
                     {
 
-                        eVehicleRemoval.SendNotification(DateTime.UtcNow, this, eVehicle);
+                        eVehicleRemoval.SendNotification(Timestamp.Now, this, eVehicle);
 
                         return true;
 
@@ -1129,7 +1120,7 @@ namespace org.GraphDefined.WWCP
             //{
             //
             //    RoamingNetwork.
-            //        SendeVehicleAdminStatusDiff(new eVehicleAdminStatusDiff(DateTime.UtcNow,
+            //        SendeVehicleAdminStatusDiff(new eVehicleAdminStatusDiff(Timestamp.Now,
             //                                               ChargingStationOperatorId:    Id,
             //                                               ChargingStationOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>>(),

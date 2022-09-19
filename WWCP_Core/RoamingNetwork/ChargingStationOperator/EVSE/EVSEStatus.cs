@@ -63,7 +63,8 @@ namespace org.GraphDefined.WWCP
                           Timestamped<EVSEStatusTypes>               Status,
                           IEnumerable<KeyValuePair<String, Object>>  CustomData  = null)
 
-            : base(CustomData)
+            : base(null,
+                   CustomData)
 
         {
 

@@ -91,8 +91,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                          #endregion
 
-                         eMobilityProvider.Address != null
-                             ? eMobilityProvider.Address.ToJSON("address")
+                         eMobilityProvider.Address is not null
+                             ? new JProperty("address", eMobilityProvider.Address.ToJSON())
                              : null,
 
                          // LogoURI

@@ -43,8 +43,6 @@ namespace org.GraphDefined.WWCP
 
         IId               Id                               { get; }
 
-        IEnumerable<IId>  Ids                              { get; }
-
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.

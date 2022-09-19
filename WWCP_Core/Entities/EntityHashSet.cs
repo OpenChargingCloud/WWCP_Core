@@ -33,7 +33,7 @@ namespace org.GraphDefined.WWCP
 
     public class EntityHashSet<THost, TId, T> : IEnumerable<T>
 
-        where T   : IEntity<TId>, IHasIds<TId>
+        where T   : IEntity<TId>
         where TId : IId
 
     {
@@ -44,9 +44,9 @@ namespace org.GraphDefined.WWCP
 
         private readonly Dictionary<TId, T>  _Lookup;
 
-        private readonly Dictionary<TId, T>  _MultiIdLookup;
+  //      private readonly Dictionary<TId, T>  _MultiIdLookup;
 
-        private readonly Object              Lock = new Object();
+        private readonly Object              Lock = new ();
 
         #endregion
 
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP
 
             this._Host           = Host;
             this._Lookup         = new Dictionary<TId, T>();
-            this._MultiIdLookup  = new Dictionary<TId, T>();
+     //       this._MultiIdLookup  = new Dictionary<TId, T>();
 
             this._Addition       = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
             this._Removal        = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
@@ -90,15 +90,15 @@ namespace org.GraphDefined.WWCP
 
         #region Ids
 
-        public IEnumerable<TId> Ids
-            => _MultiIdLookup.Select(kvp => kvp.Key);
+        //public IEnumerable<TId> Ids
+        //    => _MultiIdLookup.Select(kvp => kvp.Key);
 
         #endregion
 
         #region ContainsId(...)
 
         public Boolean ContainsId(TId Id)
-            => _MultiIdLookup.ContainsKey(Id);
+            => _Lookup.ContainsKey(Id);
 
         #endregion
 
@@ -117,15 +117,15 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (_Addition.SendVoting(DateTime.UtcNow, _Host, Entity))
+                if (_Addition.SendVoting(Timestamp.Now, _Host, Entity))
                 {
 
                     _Lookup.Add(Entity.Id, Entity);
 
-                    foreach (var Id in Entity.Ids)
-                        _MultiIdLookup.Add(Id, Entity);
+                    //foreach (var Id in Entity.Ids)
+                    //    _MultiIdLookup.Add(Id, Entity);
 
-                    _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                    _Addition.SendNotification(Timestamp.Now, _Host, Entity);
 
                     return true;
 
@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.UtcNow, Entity);
+                    OnSuccess?.Invoke(Timestamp.Now, Entity);
 
                     return true;
 
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.UtcNow, _Host, Entity);
+                    OnSuccess?.Invoke(Timestamp.Now, _Host, Entity);
 
                     return true;
 
@@ -207,14 +207,14 @@ namespace org.GraphDefined.WWCP
 
         #region Get(Id)
 
-        public T GetById(TId Id)
+        public T? GetById(TId Id)
         {
 
             lock (Lock)
             {
 
-                if (_MultiIdLookup.TryGetValue(Id, out T _Entity))
-                    return _Entity;
+                if (_Lookup.TryGetValue(Id, out T? entity))
+                    return entity;
 
                 return default;
 
@@ -226,28 +226,19 @@ namespace org.GraphDefined.WWCP
 
         #region TryGet(Id, out Entity)
 
-        public Boolean TryGet(TId Id, out T Entity)
+        public Boolean TryGet(TId Id, out T? Entity)
         {
-
             lock (Lock)
             {
-
-                if (_MultiIdLookup.TryGetValue(Id, out Entity))
-                    return true;
-
-                Entity = default;
-
-                return false;
-
+                return _Lookup.TryGetValue(Id, out Entity);
             }
-
         }
 
         #endregion
 
         #region TryRemove(Id, out Entity)
 
-        public Boolean TryRemove(TId Id, out T Entity)
+        public Boolean TryRemove(TId Id, out T? Entity)
         {
 
             if (_Lookup.TryGetValue(Id, out Entity))
@@ -255,8 +246,8 @@ namespace org.GraphDefined.WWCP
 
                 _Lookup.Remove(Id);
 
-                foreach (var _Id in Entity.Ids)
-                    _MultiIdLookup.Remove(_Id);
+                //foreach (var _Id in Entity.Ids)
+                //    _MultiIdLookup.Remove(_Id);
 
                 return true;
 
@@ -273,15 +264,15 @@ namespace org.GraphDefined.WWCP
         public T Remove(TId Id)
         {
 
-            if (_Lookup.TryGetValue(Id, out T _Entity))
+            if (_Lookup.TryGetValue(Id, out T? entity))
             {
 
                 _Lookup.Remove(Id);
 
-                foreach (var _Id in _Entity.Ids)
-                    _MultiIdLookup.Remove(_Id);
+                //foreach (var _Id in _Entity.Ids)
+                //    _MultiIdLookup.Remove(_Id);
 
-                return _Entity;
+                return entity;
 
             }
 
@@ -297,8 +288,8 @@ namespace org.GraphDefined.WWCP
 
                 _Lookup.Remove(Entity.Id);
 
-                foreach (var _Id in Entity.Ids)
-                    _MultiIdLookup.Remove(_Id);
+                //foreach (var _Id in Entity.Ids)
+                //    _MultiIdLookup.Remove(_Id);
 
             }
 
@@ -406,12 +397,12 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (_Addition.SendVoting(DateTime.UtcNow, _Host, Entity))
+                if (_Addition.SendVoting(Timestamp.Now, _Host, Entity))
                 {
 
                     _Lookup.Add(Entity.Id, Entity);
 
-                    _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                    _Addition.SendNotification(Timestamp.Now, _Host, Entity);
 
                     return true;
 
@@ -455,7 +446,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.UtcNow, Entity);
+                    OnSuccess?.Invoke(Timestamp.Now, Entity);
 
                     return true;
 
@@ -477,7 +468,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.UtcNow, _Host, Entity);
+                    OnSuccess?.Invoke(Timestamp.Now, _Host, Entity);
 
                     return true;
 
@@ -499,13 +490,13 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                if (Entities.All(Entity => _Addition.SendVoting(Timestamp.Now, _Host, Entity)))
                 {
 
                     foreach (var Entity in Entities)
                     {
                         _Lookup.Add(Entity.Id, Entity);
-                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                        _Addition.SendNotification(Timestamp.Now, _Host, Entity);
                     }
 
                     return true;
@@ -525,13 +516,13 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                if (Entities.All(Entity => _Addition.SendVoting(Timestamp.Now, _Host, Entity)))
                 {
 
                     foreach (var Entity in Entities)
                     {
                         _Lookup.Add(Entity.Id, Entity);
-                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                        _Addition.SendNotification(Timestamp.Now, _Host, Entity);
                     }
 
                     OnSuccess?.Invoke(Entities);
@@ -552,16 +543,16 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                if (Entities.All(Entity => _Addition.SendVoting(Timestamp.Now, _Host, Entity)))
                 {
 
                     foreach (var Entity in Entities)
                     {
                         _Lookup.Add(Entity.Id, Entity);
-                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                        _Addition.SendNotification(Timestamp.Now, _Host, Entity);
                     }
 
-                    OnSuccess?.Invoke(DateTime.UtcNow, Entities);
+                    OnSuccess?.Invoke(Timestamp.Now, Entities);
                     return true;
 
                 }
@@ -579,16 +570,16 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (Entities.All(Entity => _Addition.SendVoting(DateTime.UtcNow, _Host, Entity)))
+                if (Entities.All(Entity => _Addition.SendVoting(Timestamp.Now, _Host, Entity)))
                 {
 
                     foreach (var Entity in Entities)
                     {
                         _Lookup.Add(Entity.Id, Entity);
-                        _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
+                        _Addition.SendNotification(Timestamp.Now, _Host, Entity);
                     }
 
-                    OnSuccess?.Invoke(DateTime.UtcNow, _Host, Entities);
+                    OnSuccess?.Invoke(Timestamp.Now, _Host, Entities);
                     return true;
 
                 }

@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP
                    LogFileNameCreator:    roamingNetworkId => String.Concat("ChargeDetailRecords-",
                                                                             roamingNetworkId, "-",
                                                                             Environment.MachineName, "_",
-                                                                            DateTime.UtcNow.Year, "-", DateTime.UtcNow.Month.ToString("D2"),
+                                                                            Vanaheimr.Illias.Timestamp.Now.Year, "-", Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
                                                                             ".log"),
                    ReloadDataOnStart:     ReloadDataOnStart,
                    LogfileSearchPattern:  roamingNetworkId => "ChargeDetailRecords-" + roamingNetworkId + "-" + Environment.MachineName + "_",

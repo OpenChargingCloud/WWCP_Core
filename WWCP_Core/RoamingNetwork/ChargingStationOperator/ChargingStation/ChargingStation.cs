@@ -317,8 +317,7 @@ namespace org.GraphDefined.WWCP
     public interface IChargingStation : IEquatable<ChargingStation>, IComparable<ChargingStation>, IComparable,
                                         IEnumerable<EVSE>,
                                         IStatus<ChargingStationStatusTypes>,
-                                        IEntity<ChargingStation_Id>,
-                                        IHasIds<ChargingStation_Id>
+                                        IEntity<ChargingStation_Id>
     {
 
         /// <summary>
@@ -570,7 +569,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_Brands.TryGet(BrandId, out Brand Brand) &&
-                    BrandRemoval.SendVoting(DateTime.UtcNow,
+                    BrandRemoval.SendVoting(Timestamp.Now,
                                             this,
                                             Brand) &&
                     _Brands.TryRemove(BrandId, out Brand _Brand))
@@ -578,7 +577,7 @@ namespace org.GraphDefined.WWCP
 
                     OnSuccess?.Invoke(this, Brand);
 
-                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                    BrandRemoval.SendNotification(Timestamp.Now,
                                                   this,
                                                   _Brand);
 
@@ -612,7 +611,7 @@ namespace org.GraphDefined.WWCP
             lock (_Brands)
             {
 
-                if (BrandRemoval.SendVoting(DateTime.UtcNow,
+                if (BrandRemoval.SendVoting(Timestamp.Now,
                                             this,
                                             Brand) &&
                     _Brands.TryRemove(Brand.Id, out Brand _Brand))
@@ -620,7 +619,7 @@ namespace org.GraphDefined.WWCP
 
                     OnSuccess?.Invoke(this, _Brand);
 
-                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                    BrandRemoval.SendNotification(Timestamp.Now,
                                                   this,
                                                   _Brand);
 
@@ -2330,14 +2329,13 @@ namespace org.GraphDefined.WWCP
                         OnError?.Invoke(this, EVSEId);
                 }
 
-                if (!Operator.Ids.Contains(EVSEId.OperatorId))
+                if (Operator.Id != EVSEId.OperatorId)
                     throw new InvalidEVSEOperatorId(this,
-                                                    EVSEId.OperatorId,
-                                                    Operator.Ids);
+                                                    EVSEId.OperatorId);
 
                 #endregion
 
-                var Now   = DateTime.UtcNow;
+                var Now   = Timestamp.Now;
                 var _EVSE = new EVSE(EVSEId,
                                      this,
                                      Configurator,
@@ -2421,10 +2419,9 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (!Operator.Ids.Contains(EVSEId.OperatorId))
+            if (Operator.Id != EVSEId.OperatorId)
                 throw new InvalidEVSEOperatorId(this,
-                                                EVSEId.OperatorId,
-                                                Operator.Ids);
+                                                EVSEId.OperatorId);
 
             InitialAdminStatus = InitialAdminStatus ?? new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
             InitialStatus      = InitialStatus      ?? new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
@@ -2829,7 +2826,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2844,7 +2841,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2913,7 +2910,7 @@ namespace org.GraphDefined.WWCP
                         if (result.Result == ReservationResultType.Success)
                         {
 
-                            OnNewReservation?.Invoke(DateTime.UtcNow,
+                            OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now,
                                                      this,
                                                      result.Reservation);
 
@@ -2948,7 +2945,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3013,7 +3010,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3029,7 +3026,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3106,7 +3103,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3301,7 +3298,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3316,7 +3313,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3412,7 +3409,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3479,7 +3476,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.UtcNow;
+                Timestamp = Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3494,7 +3491,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = DateTime.UtcNow;
+            var StartTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3578,7 +3575,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = DateTime.UtcNow;
+            var EndTime = Vanaheimr.Illias.Timestamp.Now;
 
             try
             {

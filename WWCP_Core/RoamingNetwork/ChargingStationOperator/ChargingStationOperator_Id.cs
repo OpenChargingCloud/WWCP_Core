@@ -65,10 +65,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging station operator identification.
         /// </summary>
-        public static readonly Regex  OperatorId_RegEx  = new Regex(@"^([A-Z]{2})(\*?)([A-Z0-9]{3})$ | "  +
-                                                                    @"^\+?([0-9]{1,5})\*([0-9]{3,6})$ | " +
-                                                                    @"^([0-9]{1,5})$",
-                                                                    RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex  OperatorId_RegEx  = new (@"^([A-Z]{2})(\*?)([A-Z0-9]{3})$ | "  +
+                                                               @"^\+?([0-9]{1,5})\*([0-9]{3,6})$ | " +
+                                                               @"^([0-9]{1,5})$",
+                                                               RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -167,27 +167,27 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var MatchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
+            var matchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
 
-            if (MatchCollection.Count != 1)
+            if (matchCollection.Count != 1)
                 throw new ArgumentException("Illegal text representation of a charging station operator identification: '" + Text + "'!",
                                             nameof(Text));
 
             // DE...
-            if (Country.TryParseAlpha2Code(MatchCollection[0]. Groups[1].Value.ToUpper(), out Country _CountryCode))
+            if (Country.TryParseAlpha2Code(matchCollection[0]. Groups[1].Value.ToUpper(), out Country _CountryCode))
                 return new ChargingStationOperator_Id(_CountryCode,
-                                                      MatchCollection[0].Groups[3].Value,
-                                                      MatchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
+                                                      matchCollection[0].Groups[3].Value,
+                                                      matchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
 
             // +49*...
-            if (Country.TryParseTelefonCode(MatchCollection[0].Groups[4].Value.ToUpper(), out _CountryCode))
+            if (Country.TryParseTelefonCode(matchCollection[0].Groups[4].Value.ToUpper(), out _CountryCode))
                 return new ChargingStationOperator_Id(_CountryCode,
-                                                      MatchCollection[0].Groups[5].Value,
+                                                      matchCollection[0].Groups[5].Value,
                                                       OperatorIdFormats.DIN);
 
             // Just e.g. "822"...
             return new ChargingStationOperator_Id(Country.Germany,
-                                                  MatchCollection[0].Groups[6].Value,
+                                                  matchCollection[0].Groups[6].Value,
                                                   OperatorIdFormats.DIN);
 
         }

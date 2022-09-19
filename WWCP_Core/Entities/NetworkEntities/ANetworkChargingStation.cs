@@ -445,8 +445,8 @@
 //                                                  PublicKeys:          new PublicKeyLifetime[] {
 //                                                                           new PublicKeyLifetime(
 //                                                                               PublicKey:  keyPair.Public as ECPublicKeyParameters,
-//                                                                               NotBefore:  DateTime.UtcNow,
-//                                                                               NotAfter:   DateTime.UtcNow + TimeSpan.FromDays(365),
+//                                                                               NotBefore:  Timestamp.Now,
+//                                                                               NotAfter:   Timestamp.Now + TimeSpan.FromDays(365),
 //                                                                               Algorithm:  "P-256",
 //                                                                               Comment:    I18NString.Empty
 //                                                                           )
@@ -882,7 +882,7 @@
 
 //            #endregion
 
-//            var Now           = DateTime.UtcNow;
+//            var Now           = Timestamp.Now;
 //            var _NetworkEVSE  = new NetworkEVSEStub(EVSEId, this);
 
 //            Configurator?.Invoke(_NetworkEVSE);

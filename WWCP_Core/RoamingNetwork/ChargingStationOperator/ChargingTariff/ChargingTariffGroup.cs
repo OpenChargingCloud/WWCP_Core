@@ -203,7 +203,7 @@ namespace org.GraphDefined.WWCP
                                                          TariffElements);
 
 
-                if (ChargingTariffAddition.SendVoting(DateTime.UtcNow, this, _ChargingTariff))
+                if (ChargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff))
                 {
 
                     _ChargingTariffs.Add(_ChargingTariff.Id, _ChargingTariff);
@@ -221,7 +221,7 @@ namespace org.GraphDefined.WWCP
 
                     OnSuccess?.Invoke(_ChargingTariff);
 
-                    ChargingTariffAddition.SendNotification(DateTime.UtcNow,
+                    ChargingTariffAddition.SendNotification(Timestamp.Now,
                                                             this,
                                                             _ChargingTariff);
 
