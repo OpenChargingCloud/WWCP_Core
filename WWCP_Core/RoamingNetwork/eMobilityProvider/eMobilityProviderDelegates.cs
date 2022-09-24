@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
     public delegate Task OnEMobilityProviderAdminStatusChangedDelegate(DateTime                                      Timestamp,
                                                                        eMobilityStation                              eMobilityStation,
-                                                                       Timestamped<eMobilityStationAdminStatusType>  OldStatus,
-                                                                       Timestamped<eMobilityStationAdminStatusType>  NewStatus);
+                                                                       Timestamped<eMobilityStationAdminStatusTypes>  OldStatus,
+                                                                       Timestamped<eMobilityStationAdminStatusTypes>  NewStatus);
 
 }

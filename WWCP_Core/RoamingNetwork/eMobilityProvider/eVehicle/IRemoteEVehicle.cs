@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         eVehicle_Id Id          { get; }
 
-        Timestamped<eVehicleAdminStatusType> AdminStatus { get; set; }
+        Timestamped<eVehicleAdminStatusTypes> AdminStatus { get; set; }
 
         #region OnEVSEData/(Admin)StatusChanged
 

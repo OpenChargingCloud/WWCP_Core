@@ -19,47 +19,37 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The admin status of a charging station.
+    /// The admin status of a roaming network.
     /// </summary>
-    public enum eMobilityStationAdminStatusType
+    public enum EMPRoamingProviderAdminStatusTypes
     {
 
         /// <summary>
-        /// Unclear or unknown admin status of the charging station.
+        /// Unclear or unknown admin status of the roaming network.
         /// </summary>
-        Unspecified         = 0,
+        Unspecified             = 0,
 
         /// <summary>
-        /// The charging station is planned for the future.
+        /// The roaming network is under maintenance.
         /// </summary>
-        Planned             = 1,
+        OutOfService            = 1,
 
         /// <summary>
-        /// The charging station is currently in deployment, but not fully operational yet.
+        /// The roaming network is operational.
         /// </summary>
-        InDeployment        = 2,
+        Operational             = 2,
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        InternalUse         = 3,
-
-        /// <summary>
-        /// The charging station is not ready for charging because it is under maintenance.
-        /// </summary>
-        OutOfService        = 4,
-
-        /// <summary>
-        /// The charging station is ready to charge.
-        /// </summary>
-        Operational         = 5,
+        InternalUse             = 3,
 
 
         /// <summary>
-        /// The charging station was not found!
+        /// The roaming network was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownStation      = 7
+        UnknownRoamingNetwork   = 4
 
     }
 

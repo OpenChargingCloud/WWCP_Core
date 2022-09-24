@@ -71,6 +71,14 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
             Assert.IsNotNull(roamingNetwork);
 
+            Assert.AreEqual ("PROD",                                      roamingNetwork.Id.  ToString());
+            Assert.AreEqual ("PRODUCTION",                                roamingNetwork.Name.FirstText());
+            Assert.AreEqual ("The main production roaming network",       roamingNetwork.Name.FirstText());
+            Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
+            Assert.AreEqual (RoamingNetworkStatusTypes.Available,         roamingNetwork.Status);
+
+            Assert.IsTrue   (roamingNetwork.DisableNetworkSync);
+
 
             //empClientAPI.OnPullEVSEData                    += (timestamp, empClientAPI, pullEVSEDataRequest)                    => {
 

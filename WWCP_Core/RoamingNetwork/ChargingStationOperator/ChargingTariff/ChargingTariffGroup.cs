@@ -32,7 +32,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging tariff group.
     /// </summary>
-    public class ChargingTariffGroup : AEMobilityEntity<ChargingTariffGroup_Id>,
+    public class ChargingTariffGroup : AEMobilityEntity<ChargingTariffGroup_Id,
+                                                        ChargingTariffGroupAdminStatusTypes,
+                                                        ChargingTariffGroupStatusTypes>,
                                        IEquatable<ChargingTariffGroup>, IComparable<ChargingTariffGroup>, IComparable,
                                        IEnumerable<ChargingTariff>
     {

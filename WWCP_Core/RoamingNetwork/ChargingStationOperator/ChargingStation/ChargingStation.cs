@@ -323,7 +323,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging station to charge an electric vehicle.
     /// </summary>
-    public class ChargingStation : AEMobilityEntity<ChargingStation_Id>,
+    public class ChargingStation : AEMobilityEntity<ChargingStation_Id,
+                                                    ChargingStationAdminStatusTypes,
+                                                    ChargingStationStatusTypes>,
                                    IChargingStation
     {
 
@@ -340,12 +342,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the charging station (aggregated EVSE) status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize         = 15;
+        public const UInt16 DefaultMaxStatusScheduleSize         = 15;
 
         /// <summary>
         /// The default max size of the charging station admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize    = 15;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize    = 15;
 
         /// <summary>
         /// The maximum time span for a reservation.
@@ -1679,140 +1681,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current charging station admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ChargingStationAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-                SetAdminStatus(value);
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<ChargingStationAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The charging station admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingStationAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (HistorySize.HasValue)
-                return _AdminStatusSchedule.Take(HistorySize);
-
-            return _AdminStatusSchedule;
-
-        }
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current charging station status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ChargingStationStatusTypes> Status
-        {
-
-            get
-            {
-
-                if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                    AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
-                {
-
-                    return _StatusSchedule.CurrentStatus;
-
-                }
-
-                else
-                {
-
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            return new Timestamped<ChargingStationStatusTypes>(AdminStatus.Timestamp, ChargingStationStatusTypes.OutOfService);
-
-                    }
-
-                }
-
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_StatusSchedule.CurrentValue != value.Value)
-                    SetStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<ChargingStationStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The charging station status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingStationStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
-            {
-
-                if (HistorySize.HasValue)
-                    return _StatusSchedule.Take(HistorySize);
-
-                return _StatusSchedule;
-
-            }
-
-            else
-            {
-
-                switch (AdminStatus.Value)
-                {
-
-                    default:
-                        return new Timestamped<ChargingStationStatusTypes>[] {
-                                   new Timestamped<ChargingStationStatusTypes>(AdminStatus.Timestamp, ChargingStationStatusTypes.OutOfService)
-                               };
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
         #region StatusAggregationDelegate
 
         /// <summary>
@@ -1821,13 +1689,6 @@ namespace cloud.charging.open.protocols.WWCP
         public Func<EVSEStatusReport, ChargingStationStatusTypes> StatusAggregationDelegate { get; set; }
 
         #endregion
-
-
-        /// <summary>
-        /// Optional custom data, e.g. in combination with custom parsers and serializers.
-        /// </summary>
-        [Optional]
-        public JObject                   CustomData               { get; }
 
         #endregion
 
@@ -1904,8 +1765,8 @@ namespace cloud.charging.open.protocols.WWCP
                                RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                               UInt16                                         MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
-                               UInt16                                         MaxStatusListSize              = DefaultMaxStatusListSize)
+                               UInt16                                         MaxAdminStatusListSize         = DefaultMaxAdminStatusScheduleSize,
+                               UInt16                                         MaxStatusListSize              = DefaultMaxStatusScheduleSize)
 
             : this(Id,
                    null,
@@ -1931,21 +1792,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
-        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">An optional max length of the admin staus list.</param>
+        /// <param name="MaxStatusScheduleSize">An optional max length of the staus list.</param>
         public ChargingStation(ChargingStation_Id                             Id,
                                ChargingPool                                   ChargingPool,
                                Action<ChargingStation>?                       Configurator                   = null,
                                RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                               UInt16                                         MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
-                               UInt16                                         MaxStatusListSize              = DefaultMaxStatusListSize,
+                               UInt16                                         MaxAdminStatusScheduleSize     = DefaultMaxAdminStatusScheduleSize,
+                               UInt16                                         MaxStatusScheduleSize          = DefaultMaxStatusScheduleSize,
+
+                               String?                                        DataSource                     = null,
+                               DateTime?                                      LastChange                     = null,
 
                                JObject?                                       CustomData                     = null,
-                               IReadOnlyDictionary<String, Object>?           InternalData                   = null)
+                               UserDefinedDictionary?                         InternalData                   = null)
 
             : base(Id,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
                    InternalData)
 
         {
@@ -1959,18 +1830,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
-            this.openingTimes               = OpeningTimes.Open24Hours;
+            this.openingTimes                = OpeningTimes.Open24Hours;
             this._Brands                     = new SpecialHashSet<ChargingStation, Brand_Id, Brand>(this);
-
-            this._AdminStatusSchedule        = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
-
-            this._StatusSchedule             = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.Insert(InitialStatus.Value);
-
             this._EVSEs                      = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
-
-            this.CustomData                  = CustomData ?? new JObject();
 
             #endregion
 
@@ -1990,10 +1852,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
@@ -2008,87 +1870,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         #region Data/(Admin-)Status
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<ChargingStationStatusTypes>  NewStatus)
-        {
-
-            _StatusSchedule.Insert(NewStatus);
-
-        }
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(ChargingStationAdminStatusTypes  NewAdminStatus)
-        {
-
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingStationAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingStationAdminStatusTypes  NewAdminStatus,
-                                   DateTime                        Timestamp)
-        {
-
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                             ChangeMethod = ChangeMethods.Replace)
-        {
-
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
 
         #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
@@ -2270,14 +2051,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
         public EVSE CreateEVSE(EVSE_Id                             EVSEId,
-                               Action<EVSE>                        Configurator             = null,
-                               RemoteEVSECreatorDelegate           RemoteEVSECreator        = null,
-                               Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus       = null,
-                               Timestamped<EVSEStatusTypes>?       InitialStatus            = null,
-                               UInt16                              MaxAdminStatusListSize   = EVSE.DefaultMaxAdminStatusListSize,
-                               UInt16                              MaxStatusListSize        = EVSE.DefaultMaxEVSEStatusListSize,
-                               Action<EVSE>                        OnSuccess                = null,
-                               Action<ChargingStation, EVSE_Id>    OnError                  = null)
+                               Action<EVSE>?                       Configurator                 = null,
+                               RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                               Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                               Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                               UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
+                               UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
+                               Action<EVSE>?                       OnSuccess                    = null,
+                               Action<ChargingStation, EVSE_Id>?   OnError                      = null)
         {
 
             lock (_EVSEs)
@@ -2312,8 +2093,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      RemoteEVSECreator,
                                      InitialAdminStatus,
                                      InitialStatus,
-                                     MaxAdminStatusListSize,
-                                     MaxStatusListSize);
+                                     MaxAdminStatusScheduleSize,
+                                     MaxStatusScheduleSize);
 
                 if (EVSEAddition.SendVoting(Now, this, _EVSE) &&
                     _EVSEs.TryAdd(_EVSE))
@@ -2377,14 +2158,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnSuccess">An optional delegate to configure the new EVSE after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the EVSE failed.</param>
         public EVSE CreateOrUpdateEVSE(EVSE_Id                             EVSEId,
-                                       Action<EVSE>                        Configurator             = null,
-                                       RemoteEVSECreatorDelegate           RemoteEVSECreator        = null,
-                                       Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus       = null,
-                                       Timestamped<EVSEStatusTypes>?       InitialStatus            = null,
-                                       UInt16                              MaxAdminStatusListSize   = EVSE.DefaultMaxAdminStatusListSize,
-                                       UInt16                              MaxStatusListSize        = EVSE.DefaultMaxEVSEStatusListSize,
-                                       Action<EVSE>                        OnSuccess                = null,
-                                       Action<ChargingStation, EVSE_Id>    OnError                  = null)
+                                       Action<EVSE>?                       Configurator                 = null,
+                                       RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                       Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                       Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                       UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
+                                       UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
+                                       Action<EVSE>?                       OnSuccess                    = null,
+                                       Action<ChargingStation, EVSE_Id>?   OnError                      = null)
         {
 
             #region Initial checks
@@ -2409,8 +2190,8 @@ namespace cloud.charging.open.protocols.WWCP
                                       RemoteEVSECreator,
                                       InitialAdminStatus,
                                       InitialStatus,
-                                      MaxAdminStatusListSize,
-                                      MaxStatusListSize,
+                                      MaxAdminStatusScheduleSize,
+                                      MaxStatusScheduleSize,
                                       OnSuccess,
                                       OnError);
 
@@ -2599,8 +2380,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (StatusAggregationDelegate != null)
             {
-                _StatusSchedule.Insert(StatusAggregationDelegate(new EVSEStatusReport(_EVSEs)),
-                                       Timestamp);
+                statusSchedule.Insert(StatusAggregationDelegate(new EVSEStatusReport(_EVSEs)),
+                                      Timestamp);
             }
 
         }

@@ -275,10 +275,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// This is meant to be one electrical circuit which can charge a electric vehicle
     /// independently. Thus there could be multiple interdependent power sockets.
     /// </summary>
-    public class EVSE : AEMobilityEntity<EVSE_Id>,
+    public class EVSE : AEMobilityEntity<EVSE_Id,
+                                         EVSEAdminStatusTypes,
+                                         EVSEStatusTypes>,
                         IEquatable<EVSE>, IComparable<EVSE>, IComparable,
-                        IEnumerable<SocketOutlet>,
-                        IStatus<EVSEStatusTypes>
+                        IEnumerable<SocketOutlet>
 
     {
 
@@ -293,14 +294,14 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly       Decimal   EPSILON = 0.01m;
 
         /// <summary>
-        /// The default max size of the EVSE status history.
+        /// The default max size of the EVSE admin status schedule/history.
         /// </summary>
-        public const           UInt16    DefaultMaxEVSEStatusListSize    = 50;
+        public const           UInt16    DefaultMaxAdminStatusScheduleSize   = 50;
 
         /// <summary>
-        /// The default max size of the EVSE admin status history.
+        /// The default max size of the EVSE status schedule/history.
         /// </summary>
-        public const           UInt16    DefaultMaxAdminStatusListSize   = 50;
+        public const           UInt16    DefaultMaxEVSEStatusScheduleSize    = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
@@ -1195,183 +1196,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current EVSE admin status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_AdminStatusSchedule.CurrentValue != value.Value)
-                    SetAdminStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule(HistorySize = null)
-
-        private readonly StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The EVSE admin status schedule.
-        /// </summary>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the status history.</param>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(Func<DateTime,             Boolean> TimestampFilter  = null,
-                                                                                  Func<EVSEAdminStatusTypes, Boolean> StatusFilter     = null,
-                                                                                  UInt64?                             HistorySize      = null)
-        {
-
-            if (TimestampFilter == null)
-                TimestampFilter = timestamp => true;
-
-            if (StatusFilter    == null)
-                StatusFilter    = status    => true;
-
-            var filteredStatusSchedule = _AdminStatusSchedule.
-                                             Where(status => TimestampFilter(status.Timestamp)).
-                                             Where(status => StatusFilter   (status.Value));
-
-            return HistorySize.HasValue
-                       ? filteredStatusSchedule.Take(HistorySize)
-                       : filteredStatusSchedule;
-
-        }
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current EVSE status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEStatusTypes> Status
-        {
-
-            get
-            {
-
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
-                {
-
-                    return _StatusSchedule.CurrentStatus;
-
-                }
-
-                else
-                {
-
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            return new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService);
-
-                    }
-
-                }
-
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_StatusSchedule.CurrentValue != value.Value)
-                    SetStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region StatusSchedule(HistorySize = null)
-
-        private readonly StatusSchedule<EVSEStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The EVSE status schedule.
-        /// </summary>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the status history.</param>
-        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(Func<DateTime,        Boolean> TimestampFilter  = null,
-                                                                        Func<EVSEStatusTypes, Boolean> StatusFilter     = null,
-                                                                        UInt64?                        HistorySize      = null)
-        {
-
-             if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                 AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
-             {
-
-                if (TimestampFilter == null)
-                    TimestampFilter = timestamp => true;
-
-                if (StatusFilter    == null)
-                    StatusFilter    = status    => true;
-
-                var filteredStatusSchedule = _StatusSchedule.
-                                                 Where(status => TimestampFilter(status.Timestamp)).
-                                                 Where(status => StatusFilter   (status.Value));
-
-                return HistorySize.HasValue
-                           ? filteredStatusSchedule.Take(HistorySize)
-                           : filteredStatusSchedule;
-
-            }
-
-             else
-             {
-
-                 switch (AdminStatus.Value)
-                 {
-
-                     default:
-                         return new Timestamped<EVSEStatusTypes>[] {
-                                    new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService)
-                                };
-
-                 }
-
-             }
-
-        }
-
-        #endregion
-
-
         public DateTime? LastStatusUpdate { get; set; }
-
-
-        /// <summary>
-        /// Optional custom data, e.g. in combination with custom parsers and serializers.
-        /// </summary>
-        [Optional]
-        public JObject  CustomData    { get; }
 
         #endregion
 
@@ -1450,17 +1275,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
         public EVSE(EVSE_Id                               Id,
                     ChargingStation                       ChargingStation,
-                    Action<EVSE>?                         Configurator             = null,
-                    RemoteEVSECreatorDelegate?            RemoteEVSECreator        = null,
-                    Timestamped<EVSEAdminStatusTypes>?    InitialAdminStatus       = null,
-                    Timestamped<EVSEStatusTypes>?         InitialStatus            = null,
-                    UInt16                                MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
-                    UInt16                                MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                    Action<EVSE>?                         Configurator                 = null,
+                    RemoteEVSECreatorDelegate?            RemoteEVSECreator            = null,
+                    Timestamped<EVSEAdminStatusTypes>?    InitialAdminStatus           = null,
+                    Timestamped<EVSEStatusTypes>?         InitialStatus                = null,
+                    UInt16                                MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
+                    UInt16                                MaxStatusScheduleSize        = DefaultMaxEVSEStatusScheduleSize,
 
-                    JObject?                              CustomData               = null,
-                    IReadOnlyDictionary<String, Object>?  InternalData             = null)
+                    String?                               DataSource                   = null,
+                    DateTime?                             LastChange                   = null,
+
+                    JObject?                              CustomData                   = null,
+                    UserDefinedDictionary?                InternalData                 = null)
 
             : base(Id,
+                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus      ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
                    InternalData)
 
         {
@@ -1469,21 +1304,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingStation        = ChargingStation;
 
-            InitialAdminStatus          ??= new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
-            InitialStatus               ??= new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
-
             this._Description           = new I18NString();
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
             this._Brands                = new SpecialHashSet<EVSE, Brand_Id, Brand>(this);
-
-            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
-
-            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.     Insert(InitialStatus.Value);
-
-            this.CustomData             = CustomData ?? new JObject();
 
             #endregion
 
@@ -1493,10 +1317,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
@@ -1591,120 +1415,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         #region Data/(Admin-)Status
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(EVSEStatusTypes NewStatus)
-        {
-            _StatusSchedule.Insert(NewStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewTimestampedStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
-        {
-            _StatusSchedule.Insert(NewTimestampedStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatus, Timestamp)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus,
-                              DateTime        Timestamp)
-        {
-            _StatusSchedule.Insert(NewStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
-                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
-        {
-            _StatusSchedule.Set(NewStatusList, ChangeMethod);
-        }
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes  NewAdminStatus,
-                                   DateTime             Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                   ChangeMethod = ChangeMethods.Replace)
-        {
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-        }
-
-        #endregion
-
 
         #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
@@ -2694,7 +2404,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;

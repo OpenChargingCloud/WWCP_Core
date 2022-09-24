@@ -17,20 +17,13 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
+using System.Collections;
 
+using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
-using System.Collections;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -40,10 +33,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The parking operator is responsible for operating parking spaces.
     /// </summary>
-    public class ParkingOperator : ACryptoEMobilityEntity<ParkingOperator_Id>,
+    public class ParkingOperator : ACryptoEMobilityEntity<ParkingOperator_Id,
+                                                          ParkingOperatorAdminStatusTypes,
+                                                          ParkingOperatorStatusTypes>,
                                    IEquatable<ParkingOperator>, IComparable<ParkingOperator>, IComparable,
-                                   IEnumerable<ParkingGarage>,
-                                   IStatus<ParkingOperatorStatusType>
+                                   IEnumerable<ParkingGarage>
     {
 
         #region Data
@@ -299,60 +293,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ParkingOperatorAdminStatusType> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<ParkingOperatorAdminStatusType> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ParkingOperatorAdminStatusType>> AdminStatusSchedule
-
-            => _AdminStatusSchedule;
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ParkingOperatorStatusType> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<ParkingOperatorStatusType> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ParkingOperatorStatusType>> StatusSchedule
-
-            => _StatusSchedule;
-
-        #endregion
-
         #endregion
 
         #region Links
@@ -415,8 +355,8 @@ namespace cloud.charging.open.protocols.WWCP
                                  RemoteParkingOperatorCreatorDelegate   RemoteParkingOperatorCreator   = null,
                                  I18NString                             Name                           = null,
                                  I18NString                             Description                    = null,
-                                 ParkingOperatorAdminStatusType         AdminStatus                    = ParkingOperatorAdminStatusType.Operational,
-                                 ParkingOperatorStatusType              Status                         = ParkingOperatorStatusType.Available,
+                                 ParkingOperatorAdminStatusTypes         AdminStatus                    = ParkingOperatorAdminStatusTypes.Operational,
+                                 ParkingOperatorStatusTypes              Status                         = ParkingOperatorStatusTypes.Available,
                                  UInt16                                 MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
                                  UInt16                                 MaxStatusListSize              = DefaultMaxStatusListSize)
 
@@ -460,13 +400,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             this._ParkingGarages               = new EntityHashSet<ParkingOperator, ParkingGarage_Id,         ParkingGarage>(this);
             //this._ParkingGarageGroups         = new EntityHashSet<ParkingOperator, ParkingGarageGroup_Id, ParkingGarageGroup>(this);
-
-            this._AdminStatusSchedule         = new StatusSchedule<ParkingOperatorAdminStatusType>();
-            this._AdminStatusSchedule.Insert(AdminStatus);
-
-            this._StatusSchedule              = new StatusSchedule<ParkingOperatorStatusType>();
-            this._StatusSchedule.Insert(Status);
-
             //this._ParkingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ParkingGarage>();
             //this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ParkingGarage>();
 
@@ -553,71 +486,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(ParkingOperatorAdminStatusType  NewAdminStatus)
-        {
-
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ParkingOperatorAdminStatusType> NewTimestampedAdminStatus)
-        {
-
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ParkingOperatorAdminStatusType  NewAdminStatus,
-                                   DateTime                     Timestamp)
-        {
-
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>  NewAdminStatusList,
-                                   ChangeMethods                                          ChangeMethod = ChangeMethods.Replace)
-        {
-
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
-
         #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
 
         /// <summary>
@@ -652,8 +520,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The old ParkingSpace status.</param>
         /// <param name="NewStatus">The new ParkingSpace status.</param>
         internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         Timestamped<ParkingOperatorStatusType>  OldStatus,
-                                         Timestamped<ParkingOperatorStatusType>  NewStatus)
+                                         Timestamped<ParkingOperatorStatusTypes>  OldStatus,
+                                         Timestamped<ParkingOperatorStatusTypes>  NewStatus)
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
@@ -673,8 +541,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
-                                              Timestamped<ParkingOperatorAdminStatusType>  OldStatus,
-                                              Timestamped<ParkingOperatorAdminStatusType>  NewStatus)
+                                              Timestamped<ParkingOperatorAdminStatusTypes>  OldStatus,
+                                              Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;

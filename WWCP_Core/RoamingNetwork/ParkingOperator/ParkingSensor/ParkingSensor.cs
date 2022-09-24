@@ -17,13 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
@@ -34,7 +28,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A parking sensor.
     /// </summary>
-    public class ParkingSensor : AEMobilityEntity<ParkingSensor_Id>,
+    public class ParkingSensor : AEMobilityEntity<ParkingSensor_Id,
+                                                  ParkingSensorAdminStatusTypes,
+                                                  ParkingSensorStatusTypes>,
                                  IEquatable<ParkingSensor>, IComparable<ParkingSensor>, IComparable
     {
 

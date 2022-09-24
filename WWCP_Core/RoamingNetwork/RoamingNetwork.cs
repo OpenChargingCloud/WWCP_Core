@@ -17,11 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
@@ -30,7 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 using cloud.charging.open.protocols.WWCP.Networking;
 
@@ -45,7 +40,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// This can e.g. be a differentation of service levels (premiun, basic,
     /// discount) or allow a simplified testing (production, qa, featureX, ...)
     /// </summary>
-    public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id>, IRoamingNetwork
+    public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id,
+                                                   RoamingNetworkAdminStatusTypes,
+                                                   RoamingNetworkStatusTypes>,
+                                  IRoamingNetwork
     {
 
         #region Data
@@ -74,7 +72,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        IId IAuthorizeStartStop.AuthId => Id;
+        IId IAuthorizeStartStop.AuthId
+            => Id;
 
         IId ISendChargeDetailRecords.Id
             => Id;
@@ -83,10 +82,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean DisableSendChargeDetailRecords   { get; set; }
 
+        public Boolean DisableNetworkSync               { get; set; }
+
 
         #region Name
 
-        private I18NString _Name;
+        private I18NString name;
 
         /// <summary>
         /// The multi-language name of the roaming network.
@@ -97,12 +98,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _Name;
+                return name;
             }
 
             set
             {
-                SetProperty(ref _Name, value);
+                SetProperty(ref name, value);
             }
 
         }
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Description
 
-        private I18NString _Description;
+        private I18NString description;
 
         /// <summary>
         /// An optional multi-language description of the roaming network.
@@ -122,12 +123,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _Description;
+                return description;
             }
 
             set
             {
-                SetProperty(ref _Description, value);
+                SetProperty(ref description, value);
             }
 
         }
@@ -136,78 +137,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private ReactiveSet<DataLicense> _DataLicenses;
+        private ReactiveSet<DataLicense> dataLicenses;
 
         /// <summary>
         /// The license of the roaming network data.
         /// </summary>
         [Mandatory]
         public ReactiveSet<DataLicense> DataLicenses
-            => _DataLicenses;
-
-        #endregion
-
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<RoamingNetworkAdminStatusTypes> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<RoamingNetworkAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<RoamingNetworkAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (HistorySize.HasValue)
-                return _AdminStatusSchedule.Take(HistorySize);
-
-            return _AdminStatusSchedule;
-
-        }
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<RoamingNetworkStatusTypes> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<RoamingNetworkStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<RoamingNetworkStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (HistorySize.HasValue)
-                return _StatusSchedule.Take(HistorySize);
-
-            return _StatusSchedule;
-
-        }
+            => dataLicenses;
 
         #endregion
 
@@ -218,26 +155,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate to sign a charging station.
         /// </summary>
-        public ChargingStationSignatureDelegate          ChargingStationSignatureGenerator            { get; }
+        public ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator            { get; }
 
         /// <summary>
         /// A delegate to sign a charging pool.
         /// </summary>
-        public ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator               { get; }
+        public ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator               { get; }
 
         /// <summary>
         /// A delegate to sign a charging station operator.
         /// </summary>
-        public ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator    { get; }
+        public ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator    { get; }
 
 
         /// <summary>
         /// A delegate for filtering charge detail records.
         /// </summary>
-        public ChargeDetailRecordFilterDelegate          ChargeDetailRecordFilter                     { get; }
+        public ChargeDetailRecordFilterDelegate           ChargeDetailRecordFilter                     { get; }
 
 
-        public String                                    LoggingPath                                  { get; }
+        public String                                     LoggingPath                                  { get; }
 
         #endregion
 
@@ -256,21 +193,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
         /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
         /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
-        public RoamingNetwork(RoamingNetwork_Id                         Id,
-                              I18NString                                Name                                       = null,
-                              I18NString                                Description                                = null,
-                              RoamingNetworkAdminStatusTypes            AdminStatus                                = RoamingNetworkAdminStatusTypes.Operational,
-                              RoamingNetworkStatusTypes                 Status                                     = RoamingNetworkStatusTypes.Available,
-                              UInt16                                    MaxAdminStatusListSize                     = DefaultMaxAdminStatusListSize,
-                              UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
+        public RoamingNetwork(RoamingNetwork_Id                          Id,
+                              I18NString?                                Name                                        = null,
+                              I18NString?                                Description                                 = null,
+                              RoamingNetworkAdminStatusTypes             AdminStatus                                 = RoamingNetworkAdminStatusTypes.Operational,
+                              RoamingNetworkStatusTypes                  Status                                      = RoamingNetworkStatusTypes.Available,
+                              UInt16                                     MaxAdminStatusListSize                      = DefaultMaxAdminStatusListSize,
+                              UInt16                                     MaxStatusListSize                           = DefaultMaxStatusListSize,
 
-                              ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
-                              ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
-                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null,
+                              ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
+                              ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
+                              ChargingStationOperatorSignatureDelegate?  ChargingStationOperatorSignatureGenerator   = null,
 
-                              IEnumerable<RoamingNetworkInfo>           RoamingNetworkInfos                        = null,
-                              Boolean                                   DisableNetworkSync                         = false,
-                              String?                                   LoggingPath                                = null)
+                              IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                         = null,
+                              Boolean                                    DisableNetworkSync                          = true,
+                              String?                                    LoggingPath                                 = null)
 
             : base(Id)
 
@@ -278,9 +215,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this._Name                                              = Name        ?? new I18NString();
-            this._Description                                       = Description ?? new I18NString();
-            this._DataLicenses                                      = new ReactiveSet<DataLicense>();
+            this.name                                               = Name        ?? new I18NString(Languages.en, "TEST");
+            this.description                                        = Description ?? new I18NString(Languages.en, "A roaming network for testing purposes");
+            this.dataLicenses                                       = new ReactiveSet<DataLicense>();
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
@@ -299,6 +236,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.LoggingPath                                        = LoggingPath ?? AppContext.BaseDirectory;
             Directory.CreateDirectory(this.LoggingPath);
 
+            this.DisableNetworkSync                                 = DisableNetworkSync;
+
             this.ReservationsStore                                  = new ChargingReservationsStore(this.Id,
                                                                                                     DisableNetworkSync:   true,
                                                                                                     LoggingPath:          this.LoggingPath);
@@ -308,12 +247,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                     RoamingNetworkInfos:  RoamingNetworkInfos,
                                                                                                     DisableNetworkSync:   DisableNetworkSync,
                                                                                                     LoggingPath:          this.LoggingPath);
-
-            this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(AdminStatus);
-
-            this._StatusSchedule                                    = new StatusSchedule<RoamingNetworkStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.Insert(Status);
 
             this.ChargingStationSignatureGenerator                  = ChargingStationSignatureGenerator;
             this.ChargingPoolSignatureGenerator                     = ChargingPoolSignatureGenerator;
@@ -837,11 +770,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the admin status of all parking operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>>> ParkingOperatorAdminStatus
+        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>> ParkingOperatorAdminStatus
 
             => _ParkingOperators.
-                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>>(pop.Id,
-                                                                                                                                pop.AdminStatusSchedule));
+                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>(pop.Id,
+                                                                                                                                pop.AdminStatusSchedule()));
 
         #endregion
 
@@ -850,11 +783,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the status of all parking operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusType>>>> ParkingOperatorStatus
+        public IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>> ParkingOperatorStatus
 
             => _ParkingOperators.
-                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusType>>>(pop.Id,
-                                                                                                                           pop.StatusSchedule));
+                   Select(pop => new KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>(pop.Id,
+                                                                                                                           pop.StatusSchedule()));
 
         #endregion
 
@@ -899,8 +832,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      I18NString                                  Description                   = null,
                                      Action<ParkingOperator>                     Configurator                  = null,
                                      RemoteParkingOperatorCreatorDelegate        RemoteParkingOperatorCreator  = null,
-                                     ParkingOperatorAdminStatusType              AdminStatus                   = ParkingOperatorAdminStatusType.Operational,
-                                     ParkingOperatorStatusType                   Status                        = ParkingOperatorStatusType.Available,
+                                     ParkingOperatorAdminStatusTypes              AdminStatus                   = ParkingOperatorAdminStatusTypes.Operational,
+                                     ParkingOperatorStatusTypes                   Status                        = ParkingOperatorStatusTypes.Available,
                                      Action<ParkingOperator>                     OnSuccess                     = null,
                                      Action<RoamingNetwork, ParkingOperator_Id>  OnError                       = null)
 
@@ -1083,8 +1016,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted parking Operator status.</param>
         internal async Task UpdateStatus(DateTime                             Timestamp,
                                          ParkingOperator                         cso,
-                                         Timestamped<ParkingOperatorStatusType>  OldStatus,
-                                         Timestamped<ParkingOperatorStatusType>  NewStatus)
+                                         Timestamped<ParkingOperatorStatusTypes>  OldStatus,
+                                         Timestamped<ParkingOperatorStatusTypes>  NewStatus)
         {
 
             // Send parking Operator status change upstream
@@ -1130,8 +1063,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted parking Operator status.</param>
         internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
                                               ParkingOperator                              cso,
-                                              Timestamped<ParkingOperatorAdminStatusType>  OldStatus,
-                                              Timestamped<ParkingOperatorAdminStatusType>  NewStatus)
+                                              Timestamped<ParkingOperatorAdminStatusTypes>  OldStatus,
+                                              Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus)
         {
 
             // Send parking Operator admin status change upstream
@@ -1209,7 +1142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => _eMobilityProviders.
                    SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>(emp.Id,
-                                                                                                                                         emp.AdminStatusSchedule));
+                                                                                                                                         emp.AdminStatusSchedule()));
 
         #endregion
 
@@ -1222,7 +1155,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => _eMobilityProviders.
                    SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>(emp.Id,
-                                                                                                                                     emp.StatusSchedule));
+                                                                                                                                     emp.StatusSchedule()));
 
         #endregion
 
@@ -1429,10 +1362,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the admin status of all smart cities registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusType>>>> SmartCitiesAdminStatus
+        public IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusTypes>>>> SmartCitiesAdminStatus
 
             => _SmartCities.
-                   Select(emp => new KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+                   Select(emp => new KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusTypes>>>(emp.Id, emp.AdminStatusSchedule()));
 
         #endregion
 
@@ -1441,10 +1374,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return the status of all smart cities registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusType>>>> SmartCitiesStatus
+        public IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusTypes>>>> SmartCitiesStatus
 
             => _SmartCities.
-                   Select(emp => new KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusType>>>(emp.Id, emp.StatusSchedule));
+                   Select(emp => new KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusTypes>>>(emp.Id, emp.StatusSchedule()));
 
         #endregion
 
@@ -1486,8 +1419,8 @@ namespace cloud.charging.open.protocols.WWCP
                                             I18NString                            Name                     = null,
                                             I18NString                            Description              = null,
                                             SmartCityPriority                     Priority                 = null,
-                                            SmartCityAdminStatusType              AdminStatus              = SmartCityAdminStatusType.Available,
-                                            SmartCityStatusType                   Status                   = SmartCityStatusType.Available,
+                                            SmartCityAdminStatusTypes              AdminStatus              = SmartCityAdminStatusTypes.Available,
+                                            SmartCityStatusTypes                   Status                   = SmartCityStatusTypes.Available,
                                             Action<SmartCityProxy>                 Configurator             = null,
                                             Action<SmartCityProxy>                 OnSuccess                = null,
                                             Action<RoamingNetwork, SmartCity_Id>  OnError                  = null,
@@ -1649,7 +1582,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderAdminStatusType>>>> NavigationProviderAdminStatus
 
             => _NavigationProviders.
-                   Select(emp => new KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+                   Select(emp => new KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule()));
 
         #endregion
 
@@ -1661,7 +1594,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderStatusType>>>> NavigationProviderStatus
 
             => _NavigationProviders.
-                   Select(emp => new KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderStatusType>>>(emp.Id, emp.StatusSchedule));
+                   Select(emp => new KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderStatusType>>>(emp.Id, emp.StatusSchedule()));
 
         #endregion
 
@@ -1833,7 +1766,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>> GridOperatorsAdminStatus
 
             => _GridOperators.
-                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule()));
 
         #endregion
 
@@ -1845,7 +1778,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>> GridOperatorsStatus
 
             => _GridOperators.
-                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>(emp.Id, emp.StatusSchedule));
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>(emp.Id, emp.StatusSchedule()));
 
         #endregion
 
@@ -4922,7 +4855,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!result.SessionId.HasValue)
                     result = AuthStartResult.Authorized(result.AuthorizatorId,
                                                         result.ISendAuthorizeStartStop,
-                                                        ChargingSession_Id.New,
+                                                        ChargingSession_Id.NewRandom,
                                                         result.ContractId,
                                                         result.PrintedNumber,
                                                         result.ExpiryDate,

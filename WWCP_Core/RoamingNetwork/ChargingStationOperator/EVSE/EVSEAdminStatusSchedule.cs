@@ -17,10 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -39,12 +37,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                                         Id               { get; }
+        public EVSE_Id                                         Id                { get; }
 
         /// <summary>
         /// The timestamped admin status of the EVSE.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>>  StatusSchedule   { get; }
+        public IEnumerable<Timestamped<EVSEAdminStatusTypes>>  StatusSchedule    { get; }
 
         #endregion
 
@@ -58,10 +56,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EVSEAdminStatusSchedule(EVSE_Id                                         Id,
                                        IEnumerable<Timestamped<EVSEAdminStatusTypes>>  StatusSchedule,
-                                       IReadOnlyDictionary<String, Object>             CustomData  = null)
+                                       JObject?                                        CustomData     = null,
+                                       UserDefinedDictionary?                          InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

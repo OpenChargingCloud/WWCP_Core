@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -40,18 +39,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                       Id       { get; }
+        public EVSE_Id                       Id        { get; }
 
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>  Status   { get; }
+        public Timestamped<EVSEStatusTypes>  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region EVSEStatus(Id, Status,            CustomData = null)
+        #region EVSEStatus(Id, Status,            CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new EVSE status.
@@ -59,12 +58,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current timestamped status of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public EVSEStatus(EVSE_Id                                    Id,
-                          Timestamped<EVSEStatusTypes>               Status,
-                          IEnumerable<KeyValuePair<String, Object>>  CustomData  = null)
+        public EVSEStatus(EVSE_Id                       Id,
+                          Timestamped<EVSEStatusTypes>  Status,
+                          JObject?                      CustomData     = null,
+                          UserDefinedDictionary?        InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSEStatus(Id, Status, Timestamp, CustomData = null)
+        #region EVSEStatus(Id, Status, Timestamp, CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new EVSE status.
@@ -84,14 +84,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Status">The current status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public EVSEStatus(EVSE_Id                                    Id,
-                          EVSEStatusTypes                            Status,
-                          DateTime                                   Timestamp,
-                          IEnumerable<KeyValuePair<String, Object>>  CustomData  = null)
+        public EVSEStatus(EVSE_Id                 Id,
+                          EVSEStatusTypes         Status,
+                          DateTime                Timestamp,
+                          JObject?                CustomData     = null,
+                          UserDefinedDictionary?  InternalData   = null)
 
             : this(Id,
                    new Timestamped<EVSEStatusTypes>(Timestamp, Status),
-                   CustomData)
+                   CustomData,
+                   InternalData)
 
         { }
 

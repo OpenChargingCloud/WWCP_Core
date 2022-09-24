@@ -22,6 +22,7 @@ using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -31,10 +32,16 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An abstract e-mobility entity having crypto capabilities.
     /// </summary>
-    public abstract class ACryptoEMobilityEntity<TId> : AEMobilityEntity<TId>,
-                                                        ICryptoEntity<TId>
+    public abstract class ACryptoEMobilityEntity<TId,
+                                                 TAdminStatus,
+                                                 TStatus> : AEMobilityEntity<TId,
+                                                                             TAdminStatus,
+                                                                             TStatus>,
+                                                            ICryptoEntity<TId>
 
-        where TId : IId
+        where TId          : IId
+        where TAdminStatus : IComparable
+        where TStatus      : IComparable
 
     {
 
@@ -63,15 +70,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
-        protected ACryptoEMobilityEntity(TId                                  Id,
-                                         I18NString                           Name,
-                                         IRoamingNetwork                      RoamingNetwork,
-                                         String                               EllipticCurve           = "P-256",
-                                         ECPrivateKeyParameters               PrivateKey              = null,
-                                         PublicKeyCertificates                PublicKeyCertificates   = null,
-                                         IReadOnlyDictionary<String, Object>  InternalData            = null)
+        protected ACryptoEMobilityEntity(TId                         Id,
+                                         I18NString                  Name,
+                                         IRoamingNetwork             RoamingNetwork,
+                                         String                      EllipticCurve                = "P-256",
+                                         ECPrivateKeyParameters?     PrivateKey                   = null,
+                                         PublicKeyCertificates?      PublicKeyCertificates        = null,
+
+                                         Timestamped<TAdminStatus>?  InitialAdminStatus           = null,
+                                         Timestamped<TStatus>?       InitialStatus                = null,
+                                         UInt16                      MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
+                                         UInt16                      MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize,
+
+                                         String?                     DataSource                   = null,
+                                         DateTime?                   LastChange                   = null,
+
+                                         JObject?                    CustomData                   = null,
+                                         UserDefinedDictionary?      InternalData                 = null)
 
             : base(Id,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
                    InternalData)
 
         {

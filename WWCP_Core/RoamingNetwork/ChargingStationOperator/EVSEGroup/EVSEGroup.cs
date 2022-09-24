@@ -84,7 +84,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A group of EVSEs.
     /// </summary>
-    public class EVSEGroup : AEMobilityEntity<EVSEGroup_Id>,
+    public class EVSEGroup : AEMobilityEntity<EVSEGroup_Id,
+                                              EVSEGroupAdminStatusTypes,
+                                              EVSEGroupStatusTypes>,
                              IEquatable<EVSEGroup>, IComparable<EVSEGroup>, IComparable,
                              IEnumerable<EVSE>
     {
@@ -196,7 +198,6 @@ namespace cloud.charging.open.protocols.WWCP
         public Func<EVSE_Id, Boolean> AutoIncludeEVSEIds    { get; }
 
 
-
         #region EVSEs
 
         private readonly ConcurrentDictionary<EVSE_Id, EVSE> _EVSEs;
@@ -213,56 +214,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<EVSE_Id> EVSEIds
             => EVSEs.Select(evse => evse.Id);
-
-        #endregion
-
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current charging pool admin status.
-        /// </summary>
-        [Dynamic]
-        public Timestamped<EVSEGroupAdminStatusTypes> AdminStatus
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<EVSEGroupAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The charging pool admin status schedule.
-        /// </summary>
-        [Dynamic]
-        public IEnumerable<Timestamped<EVSEGroupAdminStatusTypes>> AdminStatusSchedule
-            => _AdminStatusSchedule;
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current charging pool status.
-        /// </summary>
-        [Dynamic]
-        public Timestamped<EVSEGroupStatusTypes> Status
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<EVSEGroupStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The charging pool status schedule.
-        /// </summary>
-        [Dynamic]
-        public IEnumerable<Timestamped<EVSEGroupStatusTypes>> StatusSchedule
-            => _StatusSchedule;
 
         #endregion
 
@@ -433,12 +384,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
 
-            this._AdminStatusSchedule        = new StatusSchedule<EVSEGroupAdminStatusTypes>(MaxGroupAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(EVSEGroupAdminStatusTypes.Unknown);
-
-            this._StatusSchedule             = new StatusSchedule<EVSEGroupStatusTypes>     (MaxGroupStatusListSize);
-            this._StatusSchedule.     Insert(EVSEGroupStatusTypes.Unknown);
-
             #endregion
 
             #region Init events
@@ -453,8 +398,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                         => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             // EVSEGroup events
             //this.OnChargingStationAddition.OnVoting       += (timestamp, evseoperator, pool, vote) => EVSEOperator.ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
@@ -525,68 +470,6 @@ namespace cloud.charging.open.protocols.WWCP
             => _EVSEs.ContainsKey(EVSEId);
 
         #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(EVSEGroupAdminStatusTypes  NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEGroupAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(EVSEGroupAdminStatusTypes  NewAdminStatus,
-                                   DateTime                             Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<EVSEGroupAdminStatusTypes>>  NewStatusList,
-                                   ChangeMethods                                                  ChangeMethod = ChangeMethods.Replace)
-        {
-
-            _AdminStatusSchedule.Set(NewStatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
-
-
 
 
         #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)

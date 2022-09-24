@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,11 +25,34 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for charging service plan identifications.
+    /// </summary>
+    public static class ChargingServicePlanIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this charging service plan identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingServicePlanId">A charging service plan identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingServicePlan_Id? ChargingServicePlanId)
+            => !ChargingServicePlanId.HasValue || ChargingServicePlanId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging service plan identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingServicePlanId">A charging service plan identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingServicePlan_Id? ChargingServicePlanId)
+            => ChargingServicePlanId.HasValue && ChargingServicePlanId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The unique identification of an Electric Vehicle Charging Service Plan (EVCSP Id).
     /// </summary>
-    public class ChargingServicePlan_Id : IId,
-                                          IEquatable<ChargingServicePlan_Id>,
-                                          IComparable<ChargingServicePlan_Id>
+    public readonly struct ChargingServicePlan_Id : IId,
+                                                    IEquatable<ChargingServicePlan_Id>,
+                                                    IComparable<ChargingServicePlan_Id>
 
     {
 
@@ -40,87 +61,117 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String InternalId;
+        private readonly String InternalId;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this charging service plan identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this charging service plan identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the charging service plan identificator.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Charging Service Plan identification (EVSP Id)
+        /// Create a new charging service plan identification.
         /// based on the given string.
         /// </summary>
-        private ChargingServicePlan_Id(String String)
+        private ChargingServicePlan_Id(String Text)
         {
-            InternalId = String.Trim();
+            InternalId = Text;
         }
 
         #endregion
 
 
-        #region New
+        #region (static) NewRandom
 
         /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Charging Service Plan (EVCSP Id).
+        /// Create a new random charging service plan identification.
         /// </summary>
-        public static ChargingServicePlan_Id New
-        {
-            get
-            {
-                return new ChargingServicePlan_Id(Guid.NewGuid().ToString());
-            }
-        }
+        public static ChargingServicePlan_Id NewRandom
+            => Parse(Guid.NewGuid().ToString());
 
         #endregion
 
-        #region Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Charging Service Plan (EVCSP Id).
+        /// Parse the given string as a charging service plan identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Charging Group identification.</param>
+        /// <param name="Text">A text-representation of a charging service plan identification.</param>
         public static ChargingServicePlan_Id Parse(String Text)
         {
-            return new ChargingServicePlan_Id(Text);
+
+            if (TryParse(Text, out ChargingServicePlan_Id sessionId))
+                return sessionId;
+
+            throw new ArgumentException("Invalid text-representation of a charging service plan identification: '" + Text + "'!",
+                                        nameof(Text));
+
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingServicePlanId)
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Charging Service Plan (EVCSP Id).
+        /// Try to parse the given string as a charging service plan identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Charging Service Plan identification.</param>
-        /// <param name="ChargingServicePlanId">The parsed Electric Vehicle Charging Service Plan identification.</param>
-        public static Boolean TryParse(String Text, out ChargingServicePlan_Id ChargingServicePlanId)
+        /// <param name="Text">A text-representation of a charging service plan identification.</param>
+        public static ChargingServicePlan_Id? TryParse(String Text)
         {
-            try
+
+            if (TryParse(Text, out ChargingServicePlan_Id sessionId))
+                return sessionId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out SessionId)
+
+        /// <summary>
+        /// Try to parse the given string as a charging service plan identification.
+        /// </summary>
+        /// <param name="Text">A text-representation of a charging service plan identification.</param>
+        /// <param name="SessionId">The parsed charging service plan identification.</param>
+        public static Boolean TryParse(String Text, out ChargingServicePlan_Id SessionId)
+        {
+
+            if (Text.IsNotNullOrEmpty())
             {
-                ChargingServicePlanId = new ChargingServicePlan_Id(Text);
-                return true;
+                try
+                {
+                    SessionId = new ChargingServicePlan_Id(Text.Trim().SubstringMax(250));
+                    return true;
+                }
+                catch
+                { }
             }
-            catch (Exception)
-            {
-                ChargingServicePlanId = null;
-                return false;
-            }
+
+            SessionId = default;
+            return false;
+
         }
 
         #endregion
@@ -128,134 +179,112 @@ namespace cloud.charging.open.protocols.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Charging Service Plan identification.
+        /// Clone this charging service plan identification.
         /// </summary>
         public ChargingServicePlan_Id Clone
-        {
-            get
-            {
-                return new ChargingServicePlan_Id(InternalId);
-            }
-        }
+
+            => new (
+                   new String(InternalId?.ToCharArray())
+               );
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (EVCSP_Id1, EVCSP_Id2)
+        #region Operator == (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVCSP_Id1">A EVCSP_Id.</param>
-        /// <param name="EVCSP_Id2">Another EVCSP_Id.</param>
+        /// <param name="SessionId1">A charging service plan identification.</param>
+        /// <param name="SessionId2">Another charging service plan identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingServicePlan_Id EVCSP_Id1, ChargingServicePlan_Id EVCSP_Id2)
-        {
+        public static Boolean operator == (ChargingServicePlan_Id SessionId1,
+                                           ChargingServicePlan_Id SessionId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(EVCSP_Id1, EVCSP_Id2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) EVCSP_Id1 == null) || ((Object) EVCSP_Id2 == null))
-                return false;
-
-            return EVCSP_Id1.Equals(EVCSP_Id2);
-
-        }
+            => SessionId1.Equals(SessionId2);
 
         #endregion
 
-        #region Operator != (EVCSP_Id1, EVCSP_Id2)
+        #region Operator != (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVCSP_Id1">A EVCSP_Id.</param>
-        /// <param name="EVCSP_Id2">Another EVCSP_Id.</param>
+        /// <param name="SessionId1">A charging service plan identification.</param>
+        /// <param name="SessionId2">Another charging service plan identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingServicePlan_Id EVCSP_Id1, ChargingServicePlan_Id EVCSP_Id2)
-        {
-            return !(EVCSP_Id1 == EVCSP_Id2);
-        }
+        public static Boolean operator != (ChargingServicePlan_Id SessionId1,
+                                           ChargingServicePlan_Id SessionId2)
+
+            => !SessionId1.Equals(SessionId2);
 
         #endregion
 
-        #region Operator <  (EVCSP_Id1, EVCSP_Id2)
+        #region Operator <  (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVCSP_Id1">A EVCSP_Id.</param>
-        /// <param name="EVCSP_Id2">Another EVCSP_Id.</param>
+        /// <param name="SessionId1">A charging service plan identification.</param>
+        /// <param name="SessionId2">Another charging service plan identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingServicePlan_Id EVCSP_Id1, ChargingServicePlan_Id EVCSP_Id2)
-        {
+        public static Boolean operator < (ChargingServicePlan_Id SessionId1,
+                                          ChargingServicePlan_Id SessionId2)
 
-            if ((Object) EVCSP_Id1 == null)
-                throw new ArgumentNullException("The given EVCSP_Id1 must not be null!");
-
-            return EVCSP_Id1.CompareTo(EVCSP_Id2) < 0;
-
-        }
+            => SessionId1.CompareTo(SessionId2) < 0;
 
         #endregion
 
-        #region Operator <= (EVCSP_Id1, EVCSP_Id2)
+        #region Operator <= (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVCSP_Id1">A EVCSP_Id.</param>
-        /// <param name="EVCSP_Id2">Another EVCSP_Id.</param>
+        /// <param name="SessionId1">A charging service plan identification.</param>
+        /// <param name="SessionId2">Another charging service plan identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingServicePlan_Id EVCSP_Id1, ChargingServicePlan_Id EVCSP_Id2)
-        {
-            return !(EVCSP_Id1 > EVCSP_Id2);
-        }
+        public static Boolean operator <= (ChargingServicePlan_Id SessionId1,
+                                           ChargingServicePlan_Id SessionId2)
+
+            => SessionId1.CompareTo(SessionId2) <= 0;
 
         #endregion
 
-        #region Operator >  (EVCSP_Id1, EVCSP_Id2)
+        #region Operator >  (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVCSP_Id1">A EVCSP_Id.</param>
-        /// <param name="EVCSP_Id2">Another EVCSP_Id.</param>
+        /// <param name="SessionId1">A charging service plan identification.</param>
+        /// <param name="SessionId2">Another charging service plan identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingServicePlan_Id EVCSP_Id1, ChargingServicePlan_Id EVCSP_Id2)
-        {
+        public static Boolean operator > (ChargingServicePlan_Id SessionId1,
+                                          ChargingServicePlan_Id SessionId2)
 
-            if ((Object) EVCSP_Id1 == null)
-                throw new ArgumentNullException("The given EVCSP_Id1 must not be null!");
-
-            return EVCSP_Id1.CompareTo(EVCSP_Id2) > 0;
-
-        }
+            => SessionId1.CompareTo(SessionId2) > 0;
 
         #endregion
 
-        #region Operator >= (EVCSP_Id1, EVCSP_Id2)
+        #region Operator >= (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVCSP_Id1">A EVCSP_Id.</param>
-        /// <param name="EVCSP_Id2">Another EVCSP_Id.</param>
+        /// <param name="SessionId1">A charging service plan identification.</param>
+        /// <param name="SessionId2">Another charging service plan identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingServicePlan_Id EVCSP_Id1, ChargingServicePlan_Id EVCSP_Id2)
-        {
-            return !(EVCSP_Id1 < EVCSP_Id2);
-        }
+        public static Boolean operator >= (ChargingServicePlan_Id SessionId1,
+                                           ChargingServicePlan_Id SessionId2)
+
+            => SessionId1.CompareTo(SessionId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVCSP_Id> Members
+        #region IComparable<ChargingServicePlan_Id> Members
 
         #region CompareTo(Object)
 
@@ -263,51 +292,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is an EVCSP_Id.
-            var EVCSP_Id = Object as ChargingServicePlan_Id;
-            if ((Object) EVCSP_Id == null)
-                throw new ArgumentException("The given object is not a EVCSP_Id!");
-
-            return CompareTo(EVCSP_Id);
-
-        }
+            => Object is ChargingServicePlan_Id sessionId
+                   ? CompareTo(sessionId)
+                   : throw new ArgumentException("The given object is not a charging service plan identification!");
 
         #endregion
 
-        #region CompareTo(EVCSP_Id)
+        #region CompareTo(SessionId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVCSP_Id">An object to compare with.</param>
-        public Int32 CompareTo(ChargingServicePlan_Id EVCSP_Id)
-        {
+        /// <param name="SessionId">An object to compare with.</param>
+        public Int32 CompareTo(ChargingServicePlan_Id SessionId)
 
-            if ((Object) EVCSP_Id == null)
-                throw new ArgumentNullException("The given EVCSP_Id must not be null!");
-
-            // Compare the length of the EVP_Ids
-            var _Result = this.Length.CompareTo(EVCSP_Id.Length);
-
-            // If equal: Compare Ids
-            if (_Result == 0)
-                _Result = InternalId.CompareTo(EVCSP_Id.InternalId);
-
-            return _Result;
-
-        }
+            => String.Compare(InternalId,
+                              SessionId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<EVCSP_Id> Members
+        #region IEquatable<ChargingServicePlan_Id> Members
 
         #region Equals(Object)
 
@@ -316,39 +325,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an EVCSP_Id.
-            var EVCSP_Id = Object as ChargingServicePlan_Id;
-            if ((Object) EVCSP_Id == null)
-                return false;
-
-            return this.Equals(EVCSP_Id);
-
-        }
+            => Object is ChargingServicePlan_Id sessionId
+                   ? Equals(sessionId)
+                   : false;
 
         #endregion
 
-        #region Equals(EVCSP_Id)
+        #region Equals(SessionId)
 
         /// <summary>
-        /// Compares two electric vehicle charging service plan identifications for equality.
+        /// Compares two SessionIds for equality.
         /// </summary>
-        /// <param name="EVCSP_Id">An electric vehicle charging service plan identification to compare with.</param>
+        /// <param name="SessionId">A charging service plan identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingServicePlan_Id EVCSP_Id)
-        {
+        public Boolean Equals(ChargingServicePlan_Id SessionId)
 
-            if ((Object) EVCSP_Id == null)
-                return false;
-
-            return InternalId.Equals(EVCSP_Id.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             SessionId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -357,25 +353,23 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return InternalId.GetHashCode();
-        }
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return InternalId.ToString();
-        }
+
+            => InternalId ?? "";
 
         #endregion
 

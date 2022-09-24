@@ -22,6 +22,7 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -60,10 +61,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingPoolAdminStatus(ChargingPool_Id                            Id,
                                        Timestamped<ChargingPoolAdminStatusTypes>  Status,
-                                       IReadOnlyDictionary<String, Object>        CustomData  = null)
+                                       JObject?                                   CustomData     = null,
+                                       UserDefinedDictionary?                     InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

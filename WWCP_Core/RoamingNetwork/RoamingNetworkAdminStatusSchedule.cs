@@ -17,10 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -39,12 +37,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id                               Id               { get; }
+        public RoamingNetwork_Id                               Id                { get; }
 
         /// <summary>
         /// The timestamped admin status of the roaming network.
         /// </summary>
-        public StatusSchedule<RoamingNetworkAdminStatusTypes>  StatusSchedule   { get; }
+        public StatusSchedule<RoamingNetworkAdminStatusTypes>  StatusSchedule    { get; }
 
         #endregion
 
@@ -58,10 +56,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public RoamingNetworkAdminStatusSchedule(RoamingNetwork_Id                               Id,
                                                  StatusSchedule<RoamingNetworkAdminStatusTypes>  StatusSchedule,
-                                                 IReadOnlyDictionary<String, Object>             CustomData  = null)
+                                                 JObject?                                        CustomData     = null,
+                                                 UserDefinedDictionary?                          InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

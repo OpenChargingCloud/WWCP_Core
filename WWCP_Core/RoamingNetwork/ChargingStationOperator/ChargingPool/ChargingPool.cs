@@ -327,7 +327,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// might provide a shared network access to aggregate and optimize communication
     /// with the EVSE Operator backend.
     /// </summary>
-    public class ChargingPool : AEMobilityEntity<ChargingPool_Id>,
+    public class ChargingPool : AEMobilityEntity<ChargingPool_Id,
+                                                 ChargingPoolAdminStatusTypes,
+                                                 ChargingPoolStatusTypes>,
                                 IChargingPool
     {
 
@@ -342,12 +344,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the charging pool (aggregated charging station) status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize        = 15;
+        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
 
         /// <summary>
         /// The default max size of the charging pool admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 15;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
 
         #endregion
 
@@ -1475,8 +1477,8 @@ namespace cloud.charging.open.protocols.WWCP
                             RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator    = null,
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
-                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize)
+                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusScheduleSize,
+                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusScheduleSize)
 
             : this(Id,
                    null,
@@ -1502,21 +1504,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteChargingPoolCreator">A delegate to attach a remote charging pool.</param>
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
-        /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
+        /// <param name="MaxPoolStatusScheduleSize">The default size of the charging pool (aggregated charging station) status list.</param>
+        /// <param name="MaxPoolAdminStatusScheduleSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
                             ChargingStationOperator                     Operator,
-                            Action<ChargingPool>                        Configurator                 = null,
-                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator    = null,
-                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
-                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
-                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize,
+                            Action<ChargingPool>?                       Configurator                     = null,
+                            RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator        = null,
+                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
+                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
+                            UInt16                                      MaxPoolAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
+                            UInt16                                      MaxPoolStatusScheduleSize        = DefaultMaxStatusScheduleSize,
 
-                            JObject                                     CustomData                   = null,
-                            IReadOnlyDictionary<String, Object>         InternalData                 = null)
+                            String?                                     DataSource                       = null,
+                            DateTime?                                   LastChange                       = null,
+
+                            JObject?                                    CustomData                       = null,
+                            UserDefinedDictionary?                      InternalData                     = null)
 
             : base(Id,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxPoolAdminStatusScheduleSize,
+                   MaxPoolStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
                    InternalData)
 
         {
@@ -1532,10 +1544,10 @@ namespace cloud.charging.open.protocols.WWCP
             this._Description                = new I18NString();
             this._Brands                     = new SpecialHashSet<ChargingPool, Brand_Id, Brand>(this);
 
-            this._AdminStatusSchedule        = new StatusSchedule<ChargingPoolAdminStatusTypes>(MaxPoolAdminStatusListSize);
+            this._AdminStatusSchedule        = new StatusSchedule<ChargingPoolAdminStatusTypes>(MaxPoolAdminStatusScheduleSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
 
-            this._StatusSchedule             = new StatusSchedule<ChargingPoolStatusTypes>(MaxPoolStatusListSize);
+            this._StatusSchedule             = new StatusSchedule<ChargingPoolStatusTypes>(MaxPoolStatusScheduleSize);
             this._StatusSchedule.Insert(InitialStatus.Value);
 
             this._ChargingStations           = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
@@ -1599,81 +1611,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// An event fired whenever the aggregated dynamic status changed.
         /// </summary>
         public event OnChargingPoolAdminStatusChangedDelegate  OnAdminStatusChanged;
-
-        #endregion
-
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<ChargingPoolStatusTypes>  NewStatus)
-        {
-
-            _StatusSchedule.Insert(NewStatus);
-
-        }
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes  NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes  NewAdminStatus,
-                                   DateTime                     Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                          ChangeMethod = ChangeMethods.Replace)
-        {
-
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-
-        }
 
         #endregion
 
@@ -1881,8 +1818,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                      RemoteChargingStationCreatorDelegate           RemoteChargingStationCreator   = null,
                                                      Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                                      Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                                                     UInt16                                         MaxAdminStatusListSize         = ChargingStation.DefaultMaxAdminStatusListSize,
-                                                     UInt16                                         MaxStatusListSize              = ChargingStation.DefaultMaxStatusListSize,
+                                                     UInt16                                         MaxAdminStatusListSize         = ChargingStation.DefaultMaxAdminStatusScheduleSize,
+                                                     UInt16                                         MaxStatusListSize              = ChargingStation.DefaultMaxStatusScheduleSize,
                                                      Action<ChargingStation>                        OnSuccess                      = null,
                                                      Action<ChargingPool, ChargingStation_Id>       OnError                        = null)
         {
@@ -2021,8 +1958,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                              RemoteChargingStationCreatorDelegate           RemoteChargingStationCreator   = null,
                                                              Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                                              Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                                                             UInt16                                         MaxAdminStatusListSize         = ChargingStation.DefaultMaxAdminStatusListSize,
-                                                             UInt16                                         MaxStatusListSize              = ChargingStation.DefaultMaxStatusListSize,
+                                                             UInt16                                         MaxAdminStatusListSize         = ChargingStation.DefaultMaxAdminStatusScheduleSize,
+                                                             UInt16                                         MaxStatusListSize              = ChargingStation.DefaultMaxStatusScheduleSize,
                                                              Action<ChargingStation>                        OnSuccess                      = null,
                                                              Action<ChargingPool, ChargingStation_Id>       OnError                        = null)
         {

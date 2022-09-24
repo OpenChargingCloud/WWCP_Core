@@ -44,7 +44,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class SmartCityProxy : ACryptoEMobilityEntity<SmartCity_Id>,
+    public class SmartCityProxy : ACryptoEMobilityEntity<SmartCity_Id,
+                                                         SmartCityAdminStatusTypes,
+                                                         SmartCityStatusTypes>,
                                   ISend2RemoteSmartCity,
                                   IEquatable <SmartCityProxy>,
                                   IComparable<SmartCityProxy>,
@@ -306,61 +308,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<SmartCityAdminStatusType> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<SmartCityAdminStatusType> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<SmartCityAdminStatusType>> AdminStatusSchedule
-
-            => _AdminStatusSchedule;
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<SmartCityStatusType> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<SmartCityStatusType> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<SmartCityStatusType>> StatusSchedule
-
-            => _StatusSchedule;
-
-        #endregion
-
-
         public SmartCityPriority Priority { get; set; }
 
 
@@ -515,8 +462,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 Action<SmartCityProxy>          Configurator             = null,
                                 RemoteSmartCityCreatorDelegate  RemoteSmartCityCreator   = null,
                                 SmartCityPriority               Priority                 = null,
-                                SmartCityAdminStatusType        AdminStatus              = SmartCityAdminStatusType.Available,
-                                SmartCityStatusType             Status                   = SmartCityStatusType.Available,
+                                SmartCityAdminStatusTypes        AdminStatus              = SmartCityAdminStatusTypes.Available,
+                                SmartCityStatusTypes             Status                   = SmartCityStatusTypes.Available,
                                 UInt16                          MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
                                 UInt16                          MaxStatusListSize        = DefaultMaxStatusListSize)
 
@@ -539,12 +486,6 @@ namespace cloud.charging.open.protocols.WWCP
             this._DataLicenses                = new List<DataLicense>();
 
             this.Priority                     = Priority    ?? new SmartCityPriority(0);
-
-            this._AdminStatusSchedule         = new StatusSchedule<SmartCityAdminStatusType>();
-            this._AdminStatusSchedule.Insert(AdminStatus);
-
-            this._StatusSchedule              = new StatusSchedule<SmartCityStatusType>();
-            this._StatusSchedule.Insert(Status);
 
             #endregion
 

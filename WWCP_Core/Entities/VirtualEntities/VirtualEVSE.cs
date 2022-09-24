@@ -42,24 +42,26 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     /// <summary>
     /// A virtual EVSE.
     /// </summary>
-    public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id>,
+    public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id,
+                                                      EVSEAdminStatusTypes,
+                                                      EVSEStatusTypes>,
                                IEquatable<VirtualEVSE>, IComparable<VirtualEVSE>, IComparable,
                                IEnumerable<SocketOutlet>,
-                               IStatus<EVSEStatusTypes>,
                                IRemoteEVSE
     {
 
         #region Data
 
         /// <summary>
+        /// The default max size of the admin status history.
+        /// </summary>
+        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
+
+        /// <summary>
         /// The default max size of the status history.
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize        = 50;
 
-        /// <summary>
-        /// The default max size of the admin status history.
-        /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
@@ -339,118 +341,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        #region Status
-
-        /// <summary>
-        /// The current EVSE status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEStatusTypes> Status
-        {
-
-            get
-            {
-
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
-                {
-                    return _StatusSchedule.CurrentStatus;
-                }
-
-                else
-                {
-
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            return new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService);
-
-                    }
-
-                }
-
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_StatusSchedule.CurrentValue != value.Value)
-                    SetStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<EVSEStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The EVSE status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule
-        {
-            get
-            {
-                return _StatusSchedule;
-            }
-        }
-
-        #endregion
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current EVSE admin status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_AdminStatusSchedule.CurrentValue != value.Value)
-                    SetAdminStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The EVSE admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
-
-        #endregion
-
-
         /// <summary>
         /// The time span between self checks.
         /// </summary>
@@ -533,12 +423,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             this.SelfCheckTimeSpan      = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
 
-            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus);
-
-            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.     Insert(InitialStatus);
-
             this._Reservations          = new Dictionary<ChargingReservation_Id, ChargingReservation>();
 
             #endregion
@@ -577,10 +461,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
@@ -652,120 +536,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// An event fired whenever the admin status of the EVSE changed.
         /// </summary>
         public event OnRemoteEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
-
-        #endregion
-
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus)
-        {
-            _StatusSchedule.Insert(NewStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewTimestampedStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
-        {
-            _StatusSchedule.Insert(NewTimestampedStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatus, Timestamp)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus,
-                              DateTime        Timestamp)
-        {
-            _StatusSchedule.Insert(NewStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
-                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
-        {
-            _StatusSchedule.Set(NewStatusList, ChangeMethod);
-        }
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes  NewAdminStatus,
-                                   DateTime             Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                  ChangeMethod = ChangeMethods.Replace)
-        {
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-        }
 
         #endregion
 
@@ -1692,7 +1462,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         case EVSEStatusTypes.Available:
                         case EVSEStatusTypes.DoorNotClosed:
 
-                            _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.New) {
+                            _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.NewRandom) {
                                 EventTrackingId      = EventTrackingId,
                                 ReservationId        = ReservationId,
                                 Reservation          = _Reservations.Values.FirstOrDefault(reservation => reservation.Id == ReservationId),
@@ -1743,7 +1513,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                 firstReservation.AddToConsumedReservationTime(firstReservation.Duration - firstReservation.TimeLeft);
 
                                 // Will also set the status -> EVSEStatusType.Charging;
-                                _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.New) {
+                                _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.NewRandom) {
                                     EventTrackingId      = EventTrackingId,
                                     ReservationId        = ReservationId,
                                     Reservation          = firstReservation,
@@ -1892,7 +1662,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;

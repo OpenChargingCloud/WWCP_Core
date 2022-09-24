@@ -41,9 +41,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     /// <summary>
     /// A virtual charging pool.
     /// </summary>
-    public class VirtualChargingPool : ACryptoEMobilityEntity<ChargingPool_Id>,
+    public class VirtualChargingPool : ACryptoEMobilityEntity<ChargingPool_Id,
+                                                              ChargingPoolAdminStatusTypes,
+                                                              ChargingPoolStatusTypes>,
                                        IEquatable<VirtualChargingPool>, IComparable<VirtualChargingPool>, IComparable,
-                                       IStatus<ChargingPoolStatusTypes>,
                                        IRemoteChargingPool
     {
 
@@ -107,99 +108,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current charging station admin status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<ChargingPoolAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_AdminStatusSchedule.CurrentValue != value.Value)
-                    SetAdminStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<ChargingPoolAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The charging station admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
-
-        #endregion
-
-        #region Status
-
-        /// <summary>
-        /// The current charging station status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<ChargingPoolStatusTypes> Status
-        {
-
-            get
-            {
-                return _StatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_StatusSchedule.CurrentValue != value.Value)
-                    SetStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<ChargingPoolStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The charging station status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingPoolStatusTypes>> StatusSchedule
-        {
-            get
-            {
-                return _StatusSchedule;
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
@@ -234,12 +142,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this._Description          = Description ?? I18NString.Empty;
 
             this._ChargingStations     = new HashSet<IRemoteChargingStation>();
-
-            this._AdminStatusSchedule  = new StatusSchedule<ChargingPoolAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus);
-
-            this._StatusSchedule       = new StatusSchedule<ChargingPoolStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.Insert(InitialStatus);
 
             #endregion
 
@@ -277,10 +179,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
@@ -484,120 +386,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// An event fired whenever the dynamic status of the charging station changed.
         /// </summary>
         public event OnRemoteChargingPoolStatusChangedDelegate       OnStatusChanged;
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes  NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes  NewAdminStatus,
-                                   DateTime                         Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                              ChangeMethod = ChangeMethods.Replace)
-        {
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-        }
-
-        #endregion
-
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(ChargingPoolStatusTypes  NewStatus)
-        {
-            _StatusSchedule.Insert(NewStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewTimestampedStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<ChargingPoolStatusTypes> NewTimestampedStatus)
-        {
-            _StatusSchedule.Insert(NewTimestampedStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatus, Timestamp)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(ChargingPoolStatusTypes  NewStatus,
-                              DateTime                   Timestamp)
-        {
-            _StatusSchedule.Insert(NewStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<ChargingPoolStatusTypes>>  NewStatusList,
-                              ChangeMethods                                        ChangeMethod = ChangeMethods.Replace)
-        {
-            _StatusSchedule.Set(NewStatusList, ChangeMethod);
-        }
 
         #endregion
 
@@ -1381,7 +1169,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -1551,7 +1339,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;

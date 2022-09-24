@@ -35,7 +35,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// A car park beside a street, a tall building or
     /// an underground garage providing parking spaces.
     /// </summary>
-    public class ParkingGarage : AEMobilityEntity<ParkingGarage_Id>,
+    public class ParkingGarage : AEMobilityEntity<ParkingGarage_Id,
+                                                  ParkingGarageAdminStatusTypes,
+                                                  ParkingGarageStatusTypes>,
                                  IEquatable<ParkingGarage>, IComparable<ParkingGarage>, IComparable
     {
 

@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this ParkingOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>  ParkingOperatorAdminStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>  ParkingOperatorAdminStatus,
                                      UInt64?                                                        Skip         = null,
                                      UInt64?                                                        Take         = null,
                                      UInt64?                                                        HistorySize  = 1)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this ParkingOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>>>  ParkingOperatorAdminStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>>  ParkingOperatorAdminStatus,
                                      UInt64?                                                                                                       Skip         = null,
                                      UInt64?                                                                                                       Take         = null,
                                      UInt64?                                                                                                       HistorySize  = 1)
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this ParkingOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorStatusType>>  ParkingOperatorStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<ParkingOperatorStatusTypes>>  ParkingOperatorStatus,
                                      UInt64?                                                   Skip         = null,
                                      UInt64?                                                   Take         = null,
                                      UInt64?                                                   HistorySize  = 1)
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this ParkingOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusType>>>>  ParkingOperatorStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>>  ParkingOperatorStatus,
                                      UInt64?                                                                                                  Skip         = null,
                                      UInt64?                                                                                                  Take         = null,
                                      UInt64?                                                                                                  HistorySize  = 1)

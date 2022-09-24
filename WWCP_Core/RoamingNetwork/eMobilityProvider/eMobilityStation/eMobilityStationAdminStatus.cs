@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The current status of a e-mobility station.
         /// </summary>
-        public eMobilityStationAdminStatusType  Status      { get; }
+        public eMobilityStationAdminStatusTypes  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the e-mobility station.
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Status">The current status of a e-mobility station.</param>
         /// <param name="Timestamp">The timestamp of the current status of the e-mobility station.</param>
         public eMobilityStationAdminStatus(eMobilityStation_Id              Id,
-                                           eMobilityStationAdminStatusType  Status,
+                                           eMobilityStationAdminStatusTypes  Status,
                                            DateTime                         Timestamp)
 
         {

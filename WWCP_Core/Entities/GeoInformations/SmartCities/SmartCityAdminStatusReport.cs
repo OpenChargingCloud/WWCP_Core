@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An smart city admin status report.
     /// </summary>
-    public class SmartCityAdminStatusReport : StatusReport<SmartCityProxy, SmartCityAdminStatusType>
+    public class SmartCityAdminStatusReport : StatusReport<SmartCityProxy, SmartCityAdminStatusTypes>
     {
 
         public SmartCityAdminStatusReport(IEnumerable<SmartCityProxy> SmartCitys)

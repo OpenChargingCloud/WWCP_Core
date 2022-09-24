@@ -17,14 +17,35 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for charging session identifications.
+    /// </summary>
+    public static class ChargingSessionIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this charging session identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingSessionId">A charging session identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingSession_Id? ChargingSessionId)
+            => !ChargingSessionId.HasValue || ChargingSessionId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging session identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingSessionId">A charging session identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingSession_Id? ChargingSessionId)
+            => ChargingSessionId.HasValue && ChargingSessionId.Value.IsNotNullOrEmpty;
+
+    }
+
 
     /// <summary>
     /// The unique identification of a charging session.
@@ -47,16 +68,22 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this charging session identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this charging session identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the charging session identificator.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -74,85 +101,74 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region New
+        #region (static) NewRandom
 
         /// <summary>
-        /// Returns a new charging session identification.
+        /// Create a new random charging session identification.
         /// </summary>
-        public static ChargingSession_Id New
+        public static ChargingSession_Id NewRandom
 
-            => ChargingSession_Id.Parse(Guid.NewGuid().ToString());
+            => Parse(Guid.NewGuid().ToString());
 
         #endregion
 
-        #region Parse   (Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging session identification.</param>
+        /// <param name="Text">A text-representation of a charging session identification.</param>
         public static ChargingSession_Id Parse(String Text)
         {
-
-            #region Initial checks
-
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging session identification must not be null or empty!");
-
-            #endregion
 
             if (TryParse(Text, out ChargingSession_Id chargingSessionId))
                 return chargingSessionId;
 
-            throw new ArgumentException("Illegal text representation of a charging session identification: '" + Text + "'!", nameof(Text));
+            throw new ArgumentException("Invalid text-representation of a charging session identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region TryParse(Text)
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Parse the given string as a charging session identification.
+        /// Try to parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging session identification.</param>
+        /// <param name="Text">A text-representation of a charging session identification.</param>
         public static ChargingSession_Id? TryParse(String Text)
         {
 
             if (TryParse(Text, out ChargingSession_Id chargingSessionId))
                 return chargingSessionId;
 
-            return new ChargingSession_Id?();
+            return null;
 
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingSessionId)
+        #region (static) TryParse(Text, out SessionId)
 
         /// <summary>
-        /// Parse the given string as a charging session identification.
+        /// Try to parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging session identification.</param>
+        /// <param name="Text">A text-representation of a charging session identification.</param>
         /// <param name="ChargingSessionId">The parsed charging session identification.</param>
         public static Boolean TryParse(String Text, out ChargingSession_Id ChargingSessionId)
         {
-            try
+
+            if (Text.IsNotNullOrEmpty())
             {
-
-                ChargingSessionId = new ChargingSession_Id(Text);
-                return true;
+                try
+                {
+                    ChargingSessionId = new ChargingSession_Id(Text.Trim().SubstringMax(250));
+                    return true;
+                }
+                catch
+                { }
             }
-
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
-            { }
 
             ChargingSessionId = default;
             return false;
@@ -168,8 +184,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public ChargingSession_Id Clone
 
-            => new ChargingSession_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
@@ -177,113 +193,99 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Operator overloading
 
-        #region Operator == (ChargingSessionId1, ChargingSessionId2)
+        #region Operator == (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSessionId1">A ChargingSessionId.</param>
-        /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
+        /// <param name="SessionId1">A charging session identification.</param>
+        /// <param name="SessionId2">Another charging session identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-        {
+        public static Boolean operator == (ChargingSession_Id SessionId1,
+                                           ChargingSession_Id SessionId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingSessionId1, ChargingSessionId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingSessionId1 == null) || ((Object) ChargingSessionId2 == null))
-                return false;
-
-            return ChargingSessionId1.Equals(ChargingSessionId2);
-
-        }
+            => SessionId1.Equals(SessionId2);
 
         #endregion
 
-        #region Operator != (ChargingSessionId1, ChargingSessionId2)
+        #region Operator != (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSessionId1">A ChargingSessionId.</param>
-        /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
+        /// <param name="SessionId1">A charging session identification.</param>
+        /// <param name="SessionId2">Another charging session identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-            => !(ChargingSessionId1 == ChargingSessionId2);
+        public static Boolean operator != (ChargingSession_Id SessionId1,
+                                           ChargingSession_Id SessionId2)
+
+            => !SessionId1.Equals(SessionId2);
 
         #endregion
 
-        #region Operator <  (ChargingSessionId1, ChargingSessionId2)
+        #region Operator <  (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSessionId1">A ChargingSessionId.</param>
-        /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
+        /// <param name="SessionId1">A charging session identification.</param>
+        /// <param name="SessionId2">Another charging session identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-        {
+        public static Boolean operator < (ChargingSession_Id SessionId1,
+                                          ChargingSession_Id SessionId2)
 
-            if ((Object) ChargingSessionId1 == null)
-                throw new ArgumentNullException(nameof(ChargingSessionId1), "The given ChargingSessionId1 must not be null!");
-
-            return ChargingSessionId1.CompareTo(ChargingSessionId2) < 0;
-
-        }
+            => SessionId1.CompareTo(SessionId2) < 0;
 
         #endregion
 
-        #region Operator <= (ChargingSessionId1, ChargingSessionId2)
+        #region Operator <= (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSessionId1">A ChargingSessionId.</param>
-        /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
+        /// <param name="SessionId1">A charging session identification.</param>
+        /// <param name="SessionId2">Another charging session identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-            => !(ChargingSessionId1 > ChargingSessionId2);
+        public static Boolean operator <= (ChargingSession_Id SessionId1,
+                                           ChargingSession_Id SessionId2)
+
+            => SessionId1.CompareTo(SessionId2) <= 0;
 
         #endregion
 
-        #region Operator >  (ChargingSessionId1, ChargingSessionId2)
+        #region Operator >  (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSessionId1">A ChargingSessionId.</param>
-        /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
+        /// <param name="SessionId1">A charging session identification.</param>
+        /// <param name="SessionId2">Another charging session identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-        {
+        public static Boolean operator > (ChargingSession_Id SessionId1,
+                                          ChargingSession_Id SessionId2)
 
-            if ((Object) ChargingSessionId1 == null)
-                throw new ArgumentNullException(nameof(ChargingSessionId1), "The given ChargingSessionId1 must not be null!");
-
-            return ChargingSessionId1.CompareTo(ChargingSessionId2) > 0;
-
-        }
+            => SessionId1.CompareTo(SessionId2) > 0;
 
         #endregion
 
-        #region Operator >= (ChargingSessionId1, ChargingSessionId2)
+        #region Operator >= (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSessionId1">A ChargingSessionId.</param>
-        /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
+        /// <param name="SessionId1">A charging session identification.</param>
+        /// <param name="SessionId2">Another charging session identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-            => !(ChargingSessionId1 < ChargingSessionId2);
+        public static Boolean operator >= (ChargingSession_Id SessionId1,
+                                           ChargingSession_Id SessionId2)
+
+            => SessionId1.CompareTo(SessionId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargingSessionId> Members
+        #region IComparable<ChargingSession_Id> Members
 
         #region CompareTo(Object)
 
@@ -291,49 +293,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingSession_Id))
-                throw new ArgumentException("The given object is not a charging session identification!",
-                                            nameof(Object));
-
-            return CompareTo((ChargingSession_Id) Object);
-
-        }
+            => Object is ChargingSession_Id sessionId
+                   ? CompareTo(sessionId)
+                   : throw new ArgumentException("The given object is not a charging session identification!");
 
         #endregion
 
-        #region CompareTo(ChargingSessionId)
+        #region CompareTo(SessionId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSessionId">An object to compare with.</param>
-        public Int32 CompareTo(ChargingSession_Id ChargingSessionId)
-        {
+        /// <param name="SessionId">An object to compare with.</param>
+        public Int32 CompareTo(ChargingSession_Id SessionId)
 
-            if ((Object) ChargingSessionId == null)
-                throw new ArgumentNullException(nameof(ChargingSessionId),  "The given charging session identification must not be null!");
-
-            // Compare the length of the ChargingSessionIds
-            var _Result = this.Length.CompareTo(ChargingSessionId.Length);
-
-            if (_Result == 0)
-                _Result = String.Compare(InternalId, ChargingSessionId.InternalId, StringComparison.Ordinal);
-
-            return _Result;
-
-        }
+            => String.Compare(InternalId,
+                              SessionId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<ChargingSessionId> Members
+        #region IEquatable<ChargingSession_Id> Members
 
         #region Equals(Object)
 
@@ -342,37 +326,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingSession_Id))
-                return false;
-
-            return Equals((ChargingSession_Id) Object);
-
-        }
+            => Object is ChargingSession_Id sessionId &&
+                   Equals(sessionId);
 
         #endregion
 
-        #region Equals(ChargingSessionId)
+        #region Equals(SessionId)
 
         /// <summary>
-        /// Compares two ChargingSessionIds for equality.
+        /// Compares two SessionIds for equality.
         /// </summary>
-        /// <param name="ChargingSessionId">A ChargingSessionId to compare with.</param>
+        /// <param name="SessionId">A charging session identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingSession_Id ChargingSessionId)
-        {
+        public Boolean Equals(ChargingSession_Id SessionId)
 
-            if ((Object) ChargingSessionId == null)
-                return false;
-
-            return InternalId.Equals(ChargingSessionId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             SessionId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -381,21 +353,23 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 

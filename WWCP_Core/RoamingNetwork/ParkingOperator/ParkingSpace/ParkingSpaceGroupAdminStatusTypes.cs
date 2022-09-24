@@ -19,42 +19,56 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The current status of a parking sensor.
+    /// The current status of a parking space.
     /// </summary>
-    public enum ParkingSensorStatusType
+    public enum ParkingSpaceGroupAdminStatusTypes
     {
 
         /// <summary>
-        /// Unclear or unknown status of the parking sensor.
+        /// Unclear or unknown status of the parking space.
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The parking sensor is planned for the future.
+        /// The parking space is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The parking sensor is currently in deployment.
+        /// The parking space is currently in deployment.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// The parking sensor is currently blocked.
+        /// The parking space is currently blocked.
         /// </summary>
         Blocked             = 3,
 
         /// <summary>
-        /// The parking sensor is available.
+        /// The parking space is available.
         /// </summary>
         Available           = 4,
 
+        /// <summary>
+        /// The parking space was reserved.
+        /// </summary>
+        Reserved            = 5,
 
         /// <summary>
-        /// The parking sensor was not found!
+        /// The parking space is currently in use.
+        /// </summary>
+        InUse               = 6,
+
+        /// <summary>
+        /// Private or internal use.
+        /// </summary>
+        Other               = 7,
+
+        /// <summary>
+        /// The parking space was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownParkingSensor  = 8
+        UnknownParkingSpace  = 8
 
     }
 

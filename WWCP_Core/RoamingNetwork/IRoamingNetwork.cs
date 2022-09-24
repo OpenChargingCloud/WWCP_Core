@@ -323,6 +323,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// </summary>
     public interface IRoamingNetwork : IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
                                        IEnumerable<IEntity>,
+                                       IAdminStatus<RoamingNetworkAdminStatusTypes>,
                                        IStatus<RoamingNetworkStatusTypes>,
                                        ISendAuthorizeStartStop,
                                        IReserveRemoteStartStop,
@@ -333,22 +334,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique roaming network identification.
         /// </summary>
-        new RoamingNetwork_Id      Id                          { get; }
+        new RoamingNetwork_Id       Id                          { get; }
 
-        I18NString Name { get; set; }
-        I18NString Description { get; set; }
-        ReactiveSet<DataLicense> DataLicenses { get; }
-        String DataSource { get; }
-
-
-        Timestamped<RoamingNetworkAdminStatusTypes> AdminStatus { get; }
-        IEnumerable<Timestamped<RoamingNetworkAdminStatusTypes>> AdminStatusSchedule(ulong? HistorySize = null);
-
-        Timestamped<RoamingNetworkStatusTypes> Status { get; }
+        I18NString                  Name                        { get; set; }
+        I18NString                  Description                 { get; set; }
+        ReactiveSet<DataLicense>    DataLicenses                { get; }
+        String?                     DataSource                  { get; }
 
 
-        ChargingReservationsStore  ReservationsStore           { get; }
-        ChargingSessionsStore      SessionsStore               { get; }
+
+        ChargingReservationsStore   ReservationsStore           { get; }
+        ChargingSessionsStore       SessionsStore               { get; }
 
 
         Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider EMPRoamingProvider);

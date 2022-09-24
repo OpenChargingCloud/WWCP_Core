@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The admin status of a charging station.
     /// </summary>
-    public enum eVehicleAdminStatusType
+    public enum eVehicleAdminStatusTypes
     {
 
         /// <summary>

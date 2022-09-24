@@ -44,7 +44,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class eMobilityProvider : ACryptoEMobilityEntity<eMobilityProvider_Id>,
+    public class eMobilityProvider : ACryptoEMobilityEntity<eMobilityProvider_Id,
+                                                            eMobilityProviderAdminStatusTypes,
+                                                            eMobilityProviderStatusTypes>,
                                      //IRemoteAuthorizeStartStop,
                                      ISend2RemoteEMobilityProvider,
                                      IEquatable <eMobilityProvider>,
@@ -346,60 +348,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<eMobilityProviderAdminStatusTypes> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<eMobilityProviderAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>> AdminStatusSchedule
-
-            => _AdminStatusSchedule;
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<eMobilityProviderStatusTypes> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<eMobilityProviderStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<eMobilityProviderStatusTypes>> StatusSchedule
-
-            => _StatusSchedule;
-
-        #endregion
-
-
         public TimeSpan? RequestTimeout { get; }
 
 
@@ -576,12 +524,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Priority                     = Priority    ?? new eMobilityProviderPriority(0);
 
-            this._AdminStatusSchedule         = new StatusSchedule<eMobilityProviderAdminStatusTypes>();
-            this._AdminStatusSchedule.Insert(AdminStatus);
-
-            this._StatusSchedule              = new StatusSchedule<eMobilityProviderStatusTypes>();
-            this._StatusSchedule.Insert(Status);
-
             this.ChargeDetailRecordFilter     = ChargeDetailRecordFilter ?? (cdr => ChargeDetailRecordFilters.forward);
 
             #endregion
@@ -636,11 +578,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityStationAdminStatus
 
-        public IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusType>> eMobilityStationAdminStatus
+        public IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>> eMobilityStationAdminStatus
 
             => _eMobilityStations.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusType>(vehicle.Id, vehicle.AdminStatus.Value));
+                   Select (vehicle => new KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
         #endregion
 
@@ -658,7 +600,7 @@ namespace cloud.charging.open.protocols.WWCP
         public eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id                             eMobilityStationId             = null,
                                                           Action<eMobilityStation>                        Configurator                   = null,
                                                           RemoteEMobilityStationCreatorDelegate           RemoteeMobilityStationCreator  = null,
-                                                          eMobilityStationAdminStatusType                 AdminStatus                    = eMobilityStationAdminStatusType.Operational,
+                                                          eMobilityStationAdminStatusTypes                 AdminStatus                    = eMobilityStationAdminStatusTypes.Operational,
                                                           Action<eMobilityStation>                        OnSuccess                      = null,
                                                           Action<eMobilityProvider, eMobilityStation_Id>  OnError                        = null)
 
@@ -823,7 +765,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus)
 
         public void SetEMobilityStationAdminStatus(eMobilityStation_Id                           eMobilityStationId,
-                                                   Timestamped<eMobilityStationAdminStatusType>  NewStatus,
+                                                   Timestamped<eMobilityStationAdminStatusTypes>  NewStatus,
                                                    Boolean                                       SendUpstream = false)
         {
 
@@ -838,7 +780,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus, Timestamp)
 
         public void SetEMobilityStationAdminStatus(eMobilityStation_Id              eMobilityStationId,
-                                                   eMobilityStationAdminStatusType  NewStatus,
+                                                   eMobilityStationAdminStatusTypes  NewStatus,
                                                    DateTime                         Timestamp)
         {
 
@@ -853,7 +795,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEMobilityStationAdminStatus(eMobilityStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEMobilityStationAdminStatus(eMobilityStation_Id                                        eMobilityStationId,
-                                                   IEnumerable<Timestamped<eMobilityStationAdminStatusType>>  StatusList,
+                                                   IEnumerable<Timestamped<eMobilityStationAdminStatusTypes>>  StatusList,
                                                    ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -941,8 +883,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateeMobilityStationAdminStatus(DateTime                                      Timestamp,
                                                               EventTracking_Id                              EventTrackingId,
                                                               eMobilityStation                              eMobilityStation,
-                                                              Timestamped<eMobilityStationAdminStatusType>  OldStatus,
-                                                              Timestamped<eMobilityStationAdminStatusType>  NewStatus)
+                                                              Timestamped<eMobilityStationAdminStatusTypes>  OldStatus,
+                                                              Timestamped<eMobilityStationAdminStatusTypes>  NewStatus)
         {
 
             var OnEMobilityStationAdminStatusChangedLocal = OnEMobilityStationAdminStatusChanged;
@@ -990,7 +932,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicles
 
-        private EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
+        private readonly EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
 
         public IEnumerable<eVehicle> eVehicles
 
@@ -1000,21 +942,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleAdminStatus
 
-        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>> eVehicleAdminStatus
+        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>> eVehicleAdminStatus
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>(vehicle.Id, vehicle.AdminStatus.Value));
+                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
         #endregion
 
         #region eVehicleStatus
 
-        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleStatusType>> eVehicleStatus
+        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleStatusTypes>> eVehicleStatus
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusType>(vehicle.Id, vehicle.Status.Value));
+                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusTypes>(vehicle.Id, vehicle.Status.Value));
 
         #endregion
 
@@ -1032,8 +974,8 @@ namespace cloud.charging.open.protocols.WWCP
         public eVehicle CreateNeweVehicle(eVehicle_Id                             eVehicleId             = null,
                                           Action<eVehicle>                        Configurator           = null,
                                           RemoteEVehicleCreatorDelegate           RemoteeVehicleCreator  = null,
-                                          eVehicleAdminStatusType                 AdminStatus            = eVehicleAdminStatusType.Operational,
-                                          eVehicleStatusType                      Status                 = eVehicleStatusType.Available,
+                                          eVehicleAdminStatusTypes                 AdminStatus            = eVehicleAdminStatusTypes.Operational,
+                                          eVehicleStatusTypes                      Status                 = eVehicleStatusTypes.Available,
                                           Action<eVehicle>                        OnSuccess              = null,
                                           Action<eMobilityProvider, eVehicle_Id>  OnError                = null)
 
@@ -1200,7 +1142,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SeteVehicleAdminStatus(eVehicleId, NewStatus)
 
         public void SeteVehicleAdminStatus(eVehicle_Id                           eVehicleId,
-                                               Timestamped<eVehicleAdminStatusType>  NewStatus,
+                                               Timestamped<eVehicleAdminStatusTypes>  NewStatus,
                                                Boolean                                   SendUpstream = false)
         {
 
@@ -1215,7 +1157,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
 
         public void SetEVehicleAdminStatus(eVehicle_Id              eVehicleId,
-                                           eVehicleAdminStatusType  NewStatus,
+                                           eVehicleAdminStatusTypes  NewStatus,
                                            DateTime                     Timestamp)
         {
 
@@ -1230,7 +1172,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetEVehicleAdminStatus(eVehicleId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEVehicleAdminStatus(eVehicle_Id                                        eVehicleId,
-                                           IEnumerable<Timestamped<eVehicleAdminStatusType>>  StatusList,
+                                           IEnumerable<Timestamped<eVehicleAdminStatusTypes>>  StatusList,
                                            ChangeMethods                                      ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -1325,8 +1267,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVehicleAdminStatus(DateTime                                  Timestamp,
             EventTracking_Id  EventTrackingId,
                                                           eVehicle                              eVehicle,
-                                                          Timestamped<eVehicleAdminStatusType>  OldStatus,
-                                                          Timestamped<eVehicleAdminStatusType>  NewStatus)
+                                                          Timestamped<eVehicleAdminStatusTypes>  OldStatus,
+                                                          Timestamped<eVehicleAdminStatusTypes>  NewStatus)
         {
 
             var OnEVehicleAdminStatusChangedLocal = OnEVehicleAdminStatusChanged;
@@ -1349,8 +1291,8 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateEVehicleStatus(DateTime                             Timestamp,
             EventTracking_Id  EventTrackingId,
                                                      eVehicle                         eVehicle,
-                                                     Timestamped<eVehicleStatusType>  OldStatus,
-                                                     Timestamped<eVehicleStatusType>  NewStatus)
+                                                     Timestamped<eVehicleStatusTypes>  OldStatus,
+                                                     Timestamped<eVehicleStatusTypes>  NewStatus)
         {
 
             var OnEVehicleStatusChangedLocal = OnEVehicleStatusChanged;

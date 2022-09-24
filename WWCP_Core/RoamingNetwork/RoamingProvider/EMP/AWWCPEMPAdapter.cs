@@ -17,12 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -32,7 +26,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id>
+    public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
+                                                                                         EMPRoamingProviderAdminStatusTypes,
+                                                                                         EMPRoamingProviderStatusTypes>
     {
 
         #region (class) PropertyUpdateInfos
@@ -1040,7 +1036,7 @@ namespace cloud.charging.open.protocols.WWCP
                                       IEnumerable<Warning>  Warnings)
         {
 
-            if (Warnings != null && Warnings.Any())
+            if (Warnings is not null && Warnings.Any())
                 OnWarnings?.Invoke(Timestamp,
                                    Class,
                                    Method,

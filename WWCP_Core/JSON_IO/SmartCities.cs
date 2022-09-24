@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this SmartCityAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<SmartCityAdminStatusType>>  SmartCityAdminStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<SmartCityAdminStatusTypes>>  SmartCityAdminStatus,
                                      UInt64?                                                  Skip         = null,
                                      UInt64?                                                  Take         = null,
                                      UInt64?                                                  HistorySize  = 1)
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this SmartCityAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusType>>>>  SmartCityAdminStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusTypes>>>>  SmartCityAdminStatus,
                                      UInt64?                                                                                           Skip         = null,
                                      UInt64?                                                                                           Take         = null,
                                      UInt64?                                                                                           HistorySize  = 1)
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this SmartCityStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<SmartCityStatusType>>  SmartCityStatus,
+        public static JObject ToJSON(this IEnumerable<Timestamped<SmartCityStatusTypes>>  SmartCityStatus,
                                      UInt64?                                             Skip         = null,
                                      UInt64?                                             Take         = null,
                                      UInt64?                                             HistorySize  = 1)
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this SmartCityStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusType>>>>  SmartCityStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusTypes>>>>  SmartCityStatus,
                                      UInt64?                                                                                      Skip         = null,
                                      UInt64?                                                                                      Take         = null,
                                      UInt64?                                                                                      HistorySize  = 1)

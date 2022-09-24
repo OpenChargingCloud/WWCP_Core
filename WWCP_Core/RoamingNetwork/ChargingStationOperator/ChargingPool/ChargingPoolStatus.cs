@@ -17,11 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -41,12 +39,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id                       Id       { get; }
+        public ChargingPool_Id                       Id        { get; }
 
         /// <summary>
         /// The current status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolStatusTypes>  Status   { get; }
+        public Timestamped<ChargingPoolStatusTypes>  Status    { get; }
 
         #endregion
 
@@ -60,10 +58,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingPoolStatus(ChargingPool_Id                       Id,
                                   Timestamped<ChargingPoolStatusTypes>  Status,
-                                  IReadOnlyDictionary<String, Object>   CustomData  = null)
+                                  JObject?                              CustomData     = null,
+                                  UserDefinedDictionary?                InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 
