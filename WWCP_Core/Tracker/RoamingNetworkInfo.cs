@@ -33,7 +33,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Networking
+namespace cloud.charging.open.protocols.WWCP.Networking
 {
 
     public enum TransportTypes

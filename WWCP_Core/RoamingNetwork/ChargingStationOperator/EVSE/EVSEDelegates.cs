@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public delegate IRemoteEVSE RemoteEVSECreatorDelegate(EVSE EVSE);

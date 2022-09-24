@@ -23,12 +23,12 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using org.GraphDefined.WWCP;
+using cloud.charging.open.protocols.WWCP;
 using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.UnitTests
+namespace cloud.charging.open.protocols.WWCP.UnitTests
 {
 
     /// <summary>

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(eMobilityProvider EMobilityProvider);

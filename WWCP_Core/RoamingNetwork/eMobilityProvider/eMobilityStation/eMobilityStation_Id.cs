@@ -27,7 +27,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>

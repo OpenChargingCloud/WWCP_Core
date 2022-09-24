@@ -17,21 +17,17 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
 
-using org.GraphDefined.WWCP;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.UnitTests
+namespace cloud.charging.open.protocols.WWCP.UnitTests
 {
 
     /// <summary>
-    /// Unit tests for the EVSEOperator_Id class.
+    /// Unit tests for the EVSE operator identifications.
     /// </summary>
     [TestFixture]
     public class EVSEOperator_IdTests
@@ -45,9 +41,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EVSEOperator_IdStringConstructorTest()
         {
-            var _EVSEOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.AreEqual("123", _EVSEOperator_Id.ToString());
-            Assert.AreEqual(3,     _EVSEOperator_Id.Length);
+            var evseOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.AreEqual("GEF", evseOperator_Id.ToString());
+            Assert.AreEqual(3,     evseOperator_Id.Length);
         }
 
         #endregion
@@ -60,11 +56,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EVSEOperator_IdEVSEOperator_IdConstructorTest()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            var _EVSEOperator_Id2 = _EVSEOperator_Id1.Clone;
-            Assert.AreEqual(_EVSEOperator_Id1.ToString(), _EVSEOperator_Id2.ToString());
-            Assert.AreEqual(_EVSEOperator_Id1.Length,     _EVSEOperator_Id2.Length);
-            Assert.AreEqual(_EVSEOperator_Id1,            _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var evseOperator_Id2 = evseOperator_Id1.Clone;
+            Assert.AreEqual(evseOperator_Id1.ToString(), evseOperator_Id2.ToString());
+            Assert.AreEqual(evseOperator_Id1.Length,     evseOperator_Id2.Length);
+            Assert.AreEqual(evseOperator_Id1,            evseOperator_Id2);
         }
 
         #endregion
@@ -79,9 +75,9 @@ namespace org.GraphDefined.WWCP.UnitTests
 
         public void op_Equality_SameReference_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(_EVSEOperator_Id1 == _EVSEOperator_Id1);
+            Assert.IsTrue(evseOperator_Id1 == evseOperator_Id1);
             #pragma warning restore
         }
 
@@ -95,9 +91,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsTrue(_EVSEOperator_Id1 == _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsTrue(evseOperator_Id1 == evseOperator_Id2);
         }
 
         #endregion
@@ -110,9 +106,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "234");
-            Assert.IsFalse(_EVSEOperator_Id1 == _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "234");
+            Assert.IsFalse(evseOperator_Id1 == evseOperator_Id2);
         }
 
         #endregion
@@ -126,9 +122,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(_EVSEOperator_Id1 != _EVSEOperator_Id1);
+            Assert.IsFalse(evseOperator_Id1 != evseOperator_Id1);
             #pragma warning restore
         }
 
@@ -142,9 +138,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsFalse(_EVSEOperator_Id1 != _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsFalse(evseOperator_Id1 != evseOperator_Id2);
         }
 
         #endregion
@@ -157,9 +153,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(_EVSEOperator_Id1 != _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            Assert.IsTrue(evseOperator_Id1 != evseOperator_Id2);
         }
 
         #endregion
@@ -172,9 +168,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(_EVSEOperator_Id1 != _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            Assert.IsTrue(evseOperator_Id1 != evseOperator_Id2);
         }
 
         #endregion
@@ -188,9 +184,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(_EVSEOperator_Id1 < _EVSEOperator_Id1);
+            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id1);
             #pragma warning restore
         }
 
@@ -204,9 +200,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id2);
         }
 
         #endregion
@@ -219,9 +215,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            Assert.IsTrue(evseOperator_Id1 < evseOperator_Id2);
         }
 
         #endregion
@@ -234,9 +230,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            Assert.IsTrue(evseOperator_Id1 < evseOperator_Id2);
         }
 
         #endregion
@@ -249,9 +245,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id2);
         }
 
         #endregion
@@ -264,9 +260,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsFalse(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id2);
         }
 
         #endregion
@@ -280,9 +276,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(_EVSEOperator_Id1 <= _EVSEOperator_Id1);
+            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id1);
             #pragma warning restore
         }
 
@@ -296,9 +292,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsTrue(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id2);
         }
 
         #endregion
@@ -311,9 +307,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id2);
         }
 
         #endregion
@@ -326,9 +322,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id2);
         }
 
         #endregion
@@ -341,9 +337,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsFalse(evseOperator_Id1 <= evseOperator_Id2);
         }
 
         #endregion
@@ -356,9 +352,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsFalse(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            Assert.IsFalse(evseOperator_Id1 <= evseOperator_Id2);
         }
 
         #endregion
@@ -372,9 +368,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(_EVSEOperator_Id1 > _EVSEOperator_Id1);
+            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id1);
             #pragma warning restore
         }
 
@@ -388,9 +384,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id2);
         }
 
         #endregion
@@ -403,9 +399,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsFalse(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id2);
         }
 
         #endregion
@@ -418,9 +414,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsFalse(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id2);
         }
 
         #endregion
@@ -433,9 +429,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsTrue(evseOperator_Id1 > evseOperator_Id2);
         }
 
         #endregion
@@ -448,9 +444,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsTrue(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            Assert.IsTrue(evseOperator_Id1 > evseOperator_Id2);
         }
 
         #endregion
@@ -464,9 +460,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(_EVSEOperator_Id1 >= _EVSEOperator_Id1);
+            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id1);
             #pragma warning restore
         }
 
@@ -480,9 +476,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsTrue(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id2);
         }
 
         #endregion
@@ -495,9 +491,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsFalse(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            Assert.IsFalse(evseOperator_Id1 >= evseOperator_Id2);
         }
 
         #endregion
@@ -510,9 +506,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsFalse(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            Assert.IsFalse(evseOperator_Id1 >= evseOperator_Id2);
         }
 
         #endregion
@@ -525,9 +521,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id2);
         }
 
         #endregion
@@ -540,9 +536,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsTrue(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id2);
         }
 
         #endregion
@@ -556,9 +552,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToNonEVSEOperator_IdTest()
         {
-            var _EVSEOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            var _Object   = "123";
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id.CompareTo(_Object); });
+            var evseOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var _Object   = "GEF";
+            Assert.Throws<ArgumentNullException>(() => { var x = evseOperator_Id.CompareTo(_Object); });
         }
 
         #endregion
@@ -571,9 +567,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(_EVSEOperator_Id1.CompareTo(_EVSEOperator_Id2) < 0);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) < 0);
         }
 
         #endregion
@@ -586,9 +582,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(_EVSEOperator_Id1.CompareTo(_EVSEOperator_Id2) < 0);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
+            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) < 0);
         }
 
         #endregion
@@ -601,9 +597,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(_EVSEOperator_Id1.CompareTo(_EVSEOperator_Id2) == 0);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) == 0);
         }
 
         #endregion
@@ -616,9 +612,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(_EVSEOperator_Id1.CompareTo(_EVSEOperator_Id2) > 0);
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) > 0);
         }
 
         #endregion
@@ -632,9 +628,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNonEVSEOperator_IdTest()
         {
-            var _EVSEOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "123");
+            var evseOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             var _Object          = "DE*123";
-            Assert.IsFalse(_EVSEOperator_Id.Equals(_Object));
+            Assert.IsFalse(evseOperator_Id.Equals(_Object));
         }
 
         #endregion
@@ -647,9 +643,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(_EVSEOperator_Id1.Equals(_EVSEOperator_Id2));
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            Assert.IsTrue(evseOperator_Id1.Equals(evseOperator_Id2));
         }
 
         #endregion
@@ -662,9 +658,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsFalse(_EVSEOperator_Id1.Equals(_EVSEOperator_Id2));
+            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
+            Assert.IsFalse(evseOperator_Id1.Equals(evseOperator_Id2));
         }
 
         #endregion

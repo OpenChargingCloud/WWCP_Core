@@ -27,7 +27,7 @@
 
 //#endregion
 
-//namespace org.GraphDefined.WWCP
+//namespace cloud.charging.open.protocols.WWCP
 //{
 
 //    public class AnonymousPushEVSEStatusService : IPushStatus

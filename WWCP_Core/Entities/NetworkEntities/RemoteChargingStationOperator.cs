@@ -27,7 +27,7 @@
 
 //#endregion
 
-//namespace org.GraphDefined.WWCP.ChargingStations
+//namespace cloud.charging.open.protocols.WWCP.ChargingStations
 //{
 
 //    /// <summary>

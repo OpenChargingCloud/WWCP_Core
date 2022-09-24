@@ -24,13 +24,13 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.WWCP.Networking;
+using cloud.charging.open.protocols.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public class ChargingReservationsStore : ADataStore<ChargingReservation_Id, ChargingReservationCollection>
@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
                    LogFileNameCreator:    roamingNetworkId => String.Concat("ChargingReservations-",
                                                                             roamingNetworkId, "-",
                                                                             Environment.MachineName, "_",
-                                                                            Vanaheimr.Illias.Timestamp.Now.Year, "-", Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
+                                                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Year, "-", org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
                                                                             ".log"),
                    ReloadDataOnStart:     ReloadDataOnStart,
                    LogfileSearchPattern:  roamingNetworkId => "ChargingReservations-" + roamingNetworkId + "-" + Environment.MachineName + "_",
@@ -224,7 +224,7 @@ namespace org.GraphDefined.WWCP
                     if (reservation != null)
                     {
 
-                        reservation.EndTime                 = Timestamp ?? Vanaheimr.Illias.Timestamp.Now;
+                        reservation.EndTime                 = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
                         if (StopAuthentication != null)
                             reservation.StopAuthentication  = StopAuthentication;

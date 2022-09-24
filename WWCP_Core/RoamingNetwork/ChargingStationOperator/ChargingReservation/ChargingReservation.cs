@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                var _TimeLeft = EndTime - Vanaheimr.Illias.Timestamp.Now;// _StartTime + _Duration - Timestamp.Now;
+                var _TimeLeft = EndTime - org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;// _StartTime + _Duration - Timestamp.Now;
 
                 return ChargingSession == null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
@@ -222,7 +222,7 @@ namespace org.GraphDefined.WWCP
         public Boolean IsExpired()
 
             => ChargingSession == null
-                   ? Vanaheimr.Illias.Timestamp.Now > EndTime
+                   ? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now > EndTime
                    : false;
 
         #endregion
@@ -234,7 +234,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
 
-            => Vanaheimr.Illias.Timestamp.Now > (EndTime + ReservationSelfCancelAfter);
+            => org.GraphDefined.Vanaheimr.Illias.Timestamp.Now > (EndTime + ReservationSelfCancelAfter);
 
         #endregion
 

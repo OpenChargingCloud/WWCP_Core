@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -880,7 +880,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this.SessionTime         = new StartEndDateTime(Timestamp ?? Vanaheimr.Illias.Timestamp.Now);
+            this.SessionTime         = new StartEndDateTime(Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
             this._EnergyMeterValues  = new List<Timestamped<Decimal>>();
             this._StopRequests       = new List<SessionStopRequest>();
 

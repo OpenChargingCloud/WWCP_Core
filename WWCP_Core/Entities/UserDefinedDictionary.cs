@@ -17,17 +17,13 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
+using System.Collections;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>

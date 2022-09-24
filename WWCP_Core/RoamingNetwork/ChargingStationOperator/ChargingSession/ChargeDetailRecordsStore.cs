@@ -23,12 +23,12 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.WWCP.Networking;
+using cloud.charging.open.protocols.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public class ChargeDetailRecordsStore : ADataStore<ChargingSession_Id, ChargeDetailRecordCollection>
@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP
                    LogFileNameCreator:    roamingNetworkId => String.Concat("ChargeDetailRecords-",
                                                                             roamingNetworkId, "-",
                                                                             Environment.MachineName, "_",
-                                                                            Vanaheimr.Illias.Timestamp.Now.Year, "-", Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
+                                                                            org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Year, "-", org.GraphDefined.Vanaheimr.Illias.Timestamp.Now.Month.ToString("D2"),
                                                                             ".log"),
                    ReloadDataOnStart:     ReloadDataOnStart,
                    LogfileSearchPattern:  roamingNetworkId => "ChargeDetailRecords-" + roamingNetworkId + "-" + Environment.MachineName + "_",

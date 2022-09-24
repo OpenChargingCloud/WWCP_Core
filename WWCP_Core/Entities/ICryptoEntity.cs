@@ -30,7 +30,7 @@ using Org.BouncyCastle.Asn1.X9;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>

@@ -24,11 +24,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using org.GraphDefined.WWCP.Net.IO.JSON;
+using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
 
@@ -1966,7 +1966,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1981,7 +1981,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2046,7 +2046,7 @@ namespace org.GraphDefined.WWCP
                         if (result.Result == ReservationResultType.Success)
                         {
 
-                            OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now,
+                            OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                      this,
                                                      result.Reservation);
 
@@ -2081,7 +2081,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2146,7 +2146,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2162,7 +2162,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2239,7 +2239,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2425,7 +2425,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2440,7 +2440,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2628,7 +2628,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2697,7 +2697,7 @@ namespace org.GraphDefined.WWCP
                 SessionId = ChargingSession_Id.New;
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2712,7 +2712,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2899,7 +2899,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {

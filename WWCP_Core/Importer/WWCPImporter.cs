@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Importer
+namespace cloud.charging.open.protocols.WWCP.Importer
 {
 
     public delegate Task<T> GetDataDelegate<T>(DateTime         Timestamp,

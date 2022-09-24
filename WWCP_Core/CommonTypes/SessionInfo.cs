@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
 
         public SessionInfo(AAuthentication Token)
         {
-            this.Created               = Vanaheimr.Illias.Timestamp.Now;
+            this.Created               = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.ListOfAuthStopTokens  = new List<AAuthentication>() { Token };
         }
 

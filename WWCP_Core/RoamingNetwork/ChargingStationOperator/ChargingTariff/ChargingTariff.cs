@@ -30,11 +30,11 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.WWCP.Net.IO.JSON;
+using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>

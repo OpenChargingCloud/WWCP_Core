@@ -32,7 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public interface IeMobilityStation : IEquatable<eMobilityStation>, IComparable<eMobilityStation>, IComparable,

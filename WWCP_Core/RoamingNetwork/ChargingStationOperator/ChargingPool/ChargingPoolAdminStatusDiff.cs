@@ -24,7 +24,7 @@ using System;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public class ChargingPoolAdminStatusDiff : StatusDiff<ChargingPool_Id, ChargingPoolAdminStatusTypes>

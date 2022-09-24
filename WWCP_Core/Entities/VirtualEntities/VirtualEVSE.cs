@@ -36,7 +36,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Virtual
+namespace cloud.charging.open.protocols.WWCP.Virtual
 {
 
     /// <summary>
@@ -988,7 +988,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1004,7 +1004,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1061,7 +1061,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                               Timestamp.Value,
                                                                               oldReservation.StartTime,
                                                                               Duration ?? MaxReservationDuration,
-                                                                              (ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                                              (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                                               oldReservation.ConsumedReservationTime + oldReservation.Duration - oldReservation.TimeLeft,
                                                                               ReservationLevel,
                                                                               ProviderId,
@@ -1076,7 +1076,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                               eMAIds,
                                                                               PINs);
 
-                            OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now, this, updatedReservation);
+                            OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, this, updatedReservation);
 
                             result = ReservationResult.Success(updatedReservation);
 
@@ -1102,9 +1102,9 @@ namespace org.GraphDefined.WWCP.Virtual
 
                                     newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                              Timestamp:               Timestamp.Value,
-                                                                             StartTime:               ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now,
+                                                                             StartTime:               ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                              Duration:                Duration  ?? MaxReservationDuration,
-                                                                             EndTime:                 (ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                                             EndTime:                 (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                                              ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                              ReservationLevel:        ReservationLevel,
                                                                              ProviderId:              ProviderId,
@@ -1158,7 +1158,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
                     SetStatus(EVSEStatusTypes.Reserved);
 
-                    OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now,
+                    OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              this,
                                              newReservation);
 
@@ -1173,7 +1173,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1238,7 +1238,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1254,7 +1254,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1328,7 +1328,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         SetStatus(EVSEStatusTypes.Available);
                     }
 
-                    OnReservationCanceled?.Invoke(Vanaheimr.Illias.Timestamp.Now,
+                    OnReservationCanceled?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                   this,
                                                   canceledReservation,
                                                   Reason);
@@ -1347,7 +1347,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1627,7 +1627,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1642,7 +1642,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1702,7 +1702,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                 AuthenticationStart  = RemoteAuthentication
                             };
 
-                            _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Vanaheimr.Illias.Timestamp.Now, 0));
+                            _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                             EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
                             SetStatus(EVSEStatusTypes.Charging);
@@ -1755,7 +1755,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
                                 firstReservation.ChargingSession = ChargingSession;
 
-                                _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Vanaheimr.Illias.Timestamp.Now, 0));
+                                _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                                 EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
                                 SetStatus(EVSEStatusTypes.Charging);
@@ -1825,7 +1825,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1895,7 +1895,7 @@ namespace org.GraphDefined.WWCP.Virtual
                 SessionId = ChargingSession_Id.New;
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1910,7 +1910,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1974,7 +1974,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                 EnergyMeterTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                                 var __ChargingSession    = _ChargingSession;
-                                var Now                  = Vanaheimr.Illias.Timestamp.Now;
+                                var Now                  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
                                 var SessionTime          = __ChargingSession.SessionTime;
                                 SessionTime.EndTime = Now;
                                 __ChargingSession.SessionTime.EndTime = Now;
@@ -2109,7 +2109,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {

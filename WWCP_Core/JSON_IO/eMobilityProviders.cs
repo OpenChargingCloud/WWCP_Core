@@ -28,7 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Net.IO.JSON
+namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 {
 
     /// <summary>

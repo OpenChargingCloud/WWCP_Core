@@ -17,21 +17,17 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
 
-using org.GraphDefined.WWCP;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.UnitTests
+namespace cloud.charging.open.protocols.WWCP.UnitTests
 {
 
     /// <summary>
-    /// Unit tests for the EVSE_Id class.
+    /// Unit tests for the EVSE identifications.
     /// </summary>
     [TestFixture]
     public class EVSE_IdTests
@@ -45,9 +41,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EVSE_IdStringConstructorTest()
         {
-            var _EVSE_Id = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "123");
-            Assert.AreEqual("123", _EVSE_Id.ToString());
-            Assert.AreEqual(3,     _EVSE_Id.Length);
+            var evse_Id = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "123");
+            Assert.AreEqual("123", evse_Id.ToString());
+            Assert.AreEqual(3,     evse_Id.Length);
         }
 
         #endregion
@@ -61,9 +57,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1 == _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1 == evse_Id2);
         }
 
         #endregion
@@ -76,9 +72,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsFalse(_EVSE_Id1 == _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.IsFalse(evse_Id1 == evse_Id2);
         }
 
         #endregion
@@ -92,9 +88,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsFalse(_EVSE_Id1 != _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsFalse(evse_Id1 != evse_Id2);
         }
 
         #endregion
@@ -107,9 +103,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsTrue(_EVSE_Id1 != _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.IsTrue(evse_Id1 != evse_Id2);
         }
 
         #endregion
@@ -122,9 +118,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            Assert.IsTrue(_EVSE_Id1 != _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            Assert.IsTrue(evse_Id1 != evse_Id2);
         }
 
         #endregion
@@ -138,9 +134,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 < _EVSE_Id2; });
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.Throws<ArgumentNullException>(() => { var x = evse_Id1 < evse_Id2; });
         }
 
         #endregion
@@ -153,9 +149,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 < _EVSE_Id2; });
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.Throws<ArgumentNullException>(() => { var x = evse_Id1 < evse_Id2; });
         }
 
         #endregion
@@ -168,9 +164,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            Assert.IsTrue(_EVSE_Id1 < _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            Assert.IsTrue(evse_Id1 < evse_Id2);
         }
 
         #endregion
@@ -183,9 +179,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsFalse(_EVSE_Id1 < _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsFalse(evse_Id1 < evse_Id2);
         }
 
         #endregion
@@ -198,9 +194,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            Assert.IsFalse(_EVSE_Id1 < _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            Assert.IsFalse(evse_Id1 < evse_Id2);
         }
 
         #endregion
@@ -214,9 +210,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1 <= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1 <= evse_Id2);
         }
 
         #endregion
@@ -229,9 +225,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsTrue(_EVSE_Id1 <= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.IsTrue(evse_Id1 <= evse_Id2);
         }
 
         #endregion
@@ -244,9 +240,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            Assert.IsTrue(_EVSE_Id1 <= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            Assert.IsTrue(evse_Id1 <= evse_Id2);
         }
 
         #endregion
@@ -259,9 +255,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsFalse(_EVSE_Id1 <= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsFalse(evse_Id1 <= evse_Id2);
         }
 
         #endregion
@@ -274,9 +270,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            Assert.IsFalse(_EVSE_Id1 <= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            Assert.IsFalse(evse_Id1 <= evse_Id2);
         }
 
         #endregion
@@ -290,9 +286,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsFalse(_EVSE_Id1 > _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsFalse(evse_Id1 > evse_Id2);
         }
 
         #endregion
@@ -305,9 +301,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsFalse(_EVSE_Id1 > _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.IsFalse(evse_Id1 > evse_Id2);
         }
 
         #endregion
@@ -320,9 +316,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            Assert.IsFalse(_EVSE_Id1 > _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            Assert.IsFalse(evse_Id1 > evse_Id2);
         }
 
         #endregion
@@ -335,9 +331,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1 > _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1 > evse_Id2);
         }
 
         #endregion
@@ -350,9 +346,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            Assert.IsTrue(_EVSE_Id1 > _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            Assert.IsTrue(evse_Id1 > evse_Id2);
         }
 
         #endregion
@@ -366,9 +362,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1 >= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1 >= evse_Id2);
         }
 
         #endregion
@@ -381,9 +377,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsFalse(_EVSE_Id1 >= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.IsFalse(evse_Id1 >= evse_Id2);
         }
 
         #endregion
@@ -396,9 +392,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            Assert.IsFalse(_EVSE_Id1 >= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            Assert.IsFalse(evse_Id1 >= evse_Id2);
         }
 
         #endregion
@@ -411,9 +407,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1 >= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1 >= evse_Id2);
         }
 
         #endregion
@@ -426,9 +422,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            Assert.IsTrue(_EVSE_Id1 >= _EVSE_Id2);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            Assert.IsTrue(evse_Id1 >= evse_Id2);
         }
 
         #endregion
@@ -442,9 +438,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) < 0);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.IsTrue(evse_Id1.CompareTo(evse_Id2) < 0);
         }
 
         #endregion
@@ -457,9 +453,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "23");
-            Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) < 0);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "23");
+            Assert.IsTrue(evse_Id1.CompareTo(evse_Id2) < 0);
         }
 
         #endregion
@@ -472,9 +468,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) == 0);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1.CompareTo(evse_Id2) == 0);
         }
 
         #endregion
@@ -487,9 +483,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) > 0);
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1.CompareTo(evse_Id2) > 0);
         }
 
         #endregion
@@ -503,9 +499,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsTrue(_EVSE_Id1.Equals(_EVSE_Id2));
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            Assert.IsTrue(evse_Id1.Equals(evse_Id2));
         }
 
         #endregion
@@ -518,9 +514,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var _EVSE_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsFalse(_EVSE_Id1.Equals(_EVSE_Id2));
+            var evse_Id1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var evse_Id2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            Assert.IsFalse(evse_Id1.Equals(evse_Id2));
         }
 
         #endregion
@@ -534,8 +530,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5").GetHashCode();
-            var _SensorHashCode2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "5").GetHashCode();
+            var _SensorHashCode1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5").GetHashCode();
+            var _SensorHashCode2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "5").GetHashCode();
             Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -549,8 +545,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1").GetHashCode();
-            var _SensorHashCode2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2").GetHashCode();
+            var _SensorHashCode1 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1").GetHashCode();
+            var _SensorHashCode2 = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2").GetHashCode();
             Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -566,9 +562,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void EVSE_IdsAndNUnitTest()
         {
 
-            var a = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var b = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            var c = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
+            var a = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var b = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            var c = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
 
             Assert.AreEqual(a, a);
             Assert.AreEqual(b, b);
@@ -591,9 +587,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void EVSE_IdsInHashSetTest()
         {
 
-            var a = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
-            var b = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "2");
-            var c = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "822"), "1");
+            var a = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
+            var b = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "2");
+            var c = EVSE_Id.Parse(ChargingStationOperator_Id.Parse(Country.Germany, "GEF"), "1");
 
             var _HashSet = new HashSet<EVSE_Id>();
             Assert.AreEqual(0, _HashSet.Count);
