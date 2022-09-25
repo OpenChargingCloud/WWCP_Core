@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Id                    = Id;
             this.Name                  = Name        ?? I18NString.Empty;
-            this.Name                  = Description ?? I18NString.Empty;
+            this.Description           = Description ?? I18NString.Empty;
 
             this.adminStatusSchedule   = new StatusSchedule<TAdminStatus>(MaxAdminStatusScheduleSize);
             this.statusSchedule        = new StatusSchedule<TStatus>     (MaxStatusScheduleSize);

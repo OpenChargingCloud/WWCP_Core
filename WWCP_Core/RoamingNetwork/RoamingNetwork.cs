@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.dataLicenses                                       = new ReactiveSet<DataLicense>();
 
-            this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
+            this.chargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
             this._eMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProvider>      (this);
             this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>         (this);
@@ -318,14 +318,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationOperators
 
-        private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> _ChargingStationOperators;
+        private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> chargingStationOperators;
 
         /// <summary>
         /// Return all charging station operators registered within this roaming network.
         /// </summary>
         public IEnumerable<ChargingStationOperator> ChargingStationOperators
 
-            => _ChargingStationOperators;
+            => chargingStationOperators;
 
         #endregion
 
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds
 
-            => _ChargingStationOperators.Select(cso => cso.Id);
+            => chargingStationOperators.Select(cso => cso.Id);
 
         #endregion
 
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>> ChargingStationOperatorAdminStatus
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
                                                                                                                                                      cso.AdminStatusSchedule()));
 
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
                                                                                                                                                 cso.StatusSchedule()));
 
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Called whenever a charging station operator will be or was added.
         /// </summary>
         public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperator, Boolean> OnChargingStationOperatorAddition
-            => _ChargingStationOperators.OnAddition;
+            => chargingStationOperators.OnAddition;
 
         #endregion
 
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Called whenever charging station operator will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperator, Boolean> OnChargingStationOperatorRemoval
-            => _ChargingStationOperators.OnRemoval;
+            => chargingStationOperators.OnRemoval;
 
         #endregion
 
@@ -414,11 +414,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            lock (_ChargingStationOperators)
+            lock (chargingStationOperators)
             {
 
-                if (_ChargingStationOperators.ContainsId(Id))
-                    throw new ChargingStationOperatorAlreadyExists(this, Id, Name);
+                if (chargingStationOperators.ContainsId(Id))
+                    throw new ChargingStationOperatorAlreadyExists(this, Id, Name ?? I18NString.Empty);
 
                 var chargingStationOperator = new ChargingStationOperator(Id,
                                                                           this,
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                           InitialStatus);
 
 
-                if (_ChargingStationOperators.TryAdd(chargingStationOperator, OnSuccess))
+                if (chargingStationOperators.TryAdd(chargingStationOperator, OnSuccess))
                 {
 
                     chargingStationOperator.OnDataChanged                                 += UpdateCSOData;
@@ -491,7 +491,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperator">An Charging Station Operator.</param>
         public Boolean ContainsChargingStationOperator(ChargingStationOperator ChargingStationOperator)
 
-            => _ChargingStationOperators.ContainsId(ChargingStationOperator.Id);
+            => chargingStationOperators.ContainsId(ChargingStationOperator.Id);
 
         #endregion
 
@@ -503,7 +503,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId">The unique identification of the Charging Station Operator.</param>
         public Boolean ContainsChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
 
-            => _ChargingStationOperators.ContainsId(ChargingStationOperatorId);
+            => chargingStationOperators.ContainsId(ChargingStationOperatorId);
 
         #endregion
 
@@ -511,12 +511,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         public ChargingStationOperator GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId)
 
-             => _ChargingStationOperators.GetById(ChargingStationOperatorId);
+             => chargingStationOperators.GetById(ChargingStationOperatorId);
 
         public ChargingStationOperator GetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId)
 
              => ChargingStationOperatorId.HasValue
-                    ? _ChargingStationOperators.GetById(ChargingStationOperatorId.Value)
+                    ? chargingStationOperators.GetById(ChargingStationOperatorId.Value)
                     : null;
 
         #endregion
@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator)
 
-            => _ChargingStationOperators.TryGet(ChargingStationOperatorId, out ChargingStationOperator);
+            => chargingStationOperators.TryGet(ChargingStationOperatorId, out ChargingStationOperator);
 
         public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator)
         {
@@ -536,7 +536,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            return _ChargingStationOperators.TryGet(ChargingStationOperatorId.Value, out ChargingStationOperator);
+            return chargingStationOperators.TryGet(ChargingStationOperatorId.Value, out ChargingStationOperator);
 
         }
 
@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             ChargingStationOperator _ChargingStationOperator = null;
 
-            if (_ChargingStationOperators.TryRemove(ChargingStationOperatorId, out _ChargingStationOperator))
+            if (chargingStationOperators.TryRemove(ChargingStationOperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator;
 
             return null;
@@ -562,7 +562,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator)
 
-            => _ChargingStationOperators.TryRemove(ChargingStationOperatorId, out ChargingStationOperator);
+            => chargingStationOperators.TryRemove(ChargingStationOperatorId, out ChargingStationOperator);
 
         #endregion
 
@@ -1160,7 +1160,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          Action<RoamingNetwork, eMobilityProvider_Id>?  OnError                          = null)
         {
 
-            lock (_ChargingStationOperators)
+            lock (chargingStationOperators)
             {
 
                 var eMobilityProviderProxy = new eMobilityProvider(ProviderId,
@@ -2186,7 +2186,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<ChargingPool> ChargingPools
 
-            => _ChargingStationOperators.SelectMany(cso => cso.ChargingPools);
+            => chargingStationOperators.SelectMany(cso => cso.ChargingPools);
 
         #endregion
 
@@ -2198,7 +2198,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
         public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate IncludePools = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.ChargingPoolIds(IncludePools));
 
         #endregion
@@ -2211,7 +2211,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
         public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate IncludePools = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.ChargingPoolAdminStatus(IncludePools));
 
         #endregion
@@ -2224,7 +2224,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
         public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate IncludePools = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.ChargingPoolStatus(IncludePools));
 
         #endregion
@@ -2532,7 +2532,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
 
-            => _ChargingStationOperators.SelectMany(cso => cso.ChargingStations);
+            => chargingStationOperators.SelectMany(cso => cso.ChargingStations);
 
         #endregion
 
@@ -2544,7 +2544,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
         public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.ChargingStationIds(IncludeStations));
 
         #endregion
@@ -2557,7 +2557,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
         public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.ChargingStationAdminStatus(IncludeStations));
 
         #endregion
@@ -2570,7 +2570,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
         public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.ChargingStationStatus(IncludeStations));
 
         #endregion
@@ -2904,7 +2904,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<EVSE> EVSEs
 
-            => _ChargingStationOperators.SelectMany(cso => cso.EVSEs);
+            => chargingStationOperators.SelectMany(cso => cso.EVSEs);
 
         #endregion
 
@@ -2916,7 +2916,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.EVSEIds(IncludeEVSEs));
 
         #endregion
@@ -2929,7 +2929,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.EVSEAdminStatus(IncludeEVSEs));
 
         #endregion
@@ -2948,7 +2948,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                             Func<EVSEAdminStatusTypes, Boolean>  StatusFilter      = null,
                                                                             UInt64?                              HistorySize       = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.EVSEAdminStatusSchedule(IncludeEVSEs,
                                                                  TimestampFilter,
                                                                  StatusFilter,
@@ -2964,7 +2964,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.EVSEStatus(IncludeEVSEs));
 
         #endregion
@@ -2983,7 +2983,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   Func<EVSEStatusTypes, Boolean>  StatusFilter      = null,
                                                                   UInt64?                         HistorySize       = null)
 
-            => _ChargingStationOperators.
+            => chargingStationOperators.
                    SelectMany(cso => cso.EVSEStatusSchedule(IncludeEVSEs,
                                                             TimestampFilter,
                                                             StatusFilter,
@@ -4482,7 +4482,7 @@ namespace cloud.charging.open.protocols.WWCP
                    (result.Result == RemoteStopResultTypes.InvalidSessionId)))
                 {
 
-                    foreach (var chargingStationOperator in _ChargingStationOperators)
+                    foreach (var chargingStationOperator in chargingStationOperators)
                     {
 
                         result = await chargingStationOperator.
@@ -6161,10 +6161,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region IEnumerable<IEntity> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => _ChargingStationOperators.GetEnumerator();
+            => chargingStationOperators.GetEnumerator();
 
         public IEnumerator<IEntity> GetEnumerator()
-            => _ChargingStationOperators.GetEnumerator();
+            => chargingStationOperators.GetEnumerator();
 
         #endregion
 
