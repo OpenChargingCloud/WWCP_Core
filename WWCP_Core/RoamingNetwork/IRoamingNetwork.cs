@@ -123,30 +123,30 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (RoamingNetworkAdminStatus == null || !RoamingNetworkAdminStatus.Any())
+            if (RoamingNetworkAdminStatus is null || !RoamingNetworkAdminStatus.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkAdminStatus>();
+            var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkAdminStatus>();
 
             foreach (var status in RoamingNetworkAdminStatus)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject(_FilteredStatus.
+            return new JObject(filteredStatus.
                                    OrderBy(status => status.Key).
                                    SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
@@ -168,31 +168,31 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (RoamingNetworkAdminStatusSchedules == null || !RoamingNetworkAdminStatusSchedules.Any())
+            if (RoamingNetworkAdminStatusSchedules is null || !RoamingNetworkAdminStatusSchedules.Any())
                 return new JObject();
 
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            var _FilteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkAdminStatusSchedule>();
+            var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkAdminStatusSchedule>();
 
             foreach (var status in RoamingNetworkAdminStatusSchedules)
             {
 
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
 
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
 
-            return new JObject(_FilteredStatus.
+            return new JObject(filteredStatus.
                                    OrderBy(status => status.Key).
                                    SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
@@ -336,8 +336,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         new RoamingNetwork_Id       Id                          { get; }
 
-        I18NString                  Name                        { get; set; }
-        I18NString                  Description                 { get; set; }
+        I18NString                  Name                        { get; }
+        I18NString                  Description                 { get; }
         ReactiveSet<DataLicense>    DataLicenses                { get; }
         String?                     DataSource                  { get; }
 
@@ -429,7 +429,16 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus { get; }
         IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus { get; }
 
-        eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id ProviderId, I18NString Name = null, I18NString Description = null, eMobilityProviderPriority Priority = null, Action<eMobilityProvider> Configurator = null, RemoteEMobilityProviderCreatorDelegate RemoteEMobilityProviderCreator = null, eMobilityProviderAdminStatusTypes AdminStatus = eMobilityProviderAdminStatusTypes.Operational, eMobilityProviderStatusTypes Status = eMobilityProviderStatusTypes.Available, Action<eMobilityProvider> OnSuccess = null, Action<RoamingNetwork, eMobilityProvider_Id> OnError = null);
+        eMobilityProvider?  CreateEMobilityProvider(eMobilityProvider_Id                           ProviderId,
+                                                    I18NString?                                    Name                             = null,
+                                                    I18NString?                                    Description                      = null,
+                                                    eMobilityProviderPriority?                     Priority                         = null,
+                                                    Action<eMobilityProvider>?                     Configurator                     = null,
+                                                    RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
+                                                    eMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
+                                                    eMobilityProviderStatusTypes?                  InitialStatus                    = null,
+                                                    Action<eMobilityProvider>?                     OnSuccess                        = null,
+                                                    Action<RoamingNetwork, eMobilityProvider_Id>?  OnError                          = null);
 
 
         IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider _CPORoamingProvider, Action<IEMPRoamingProvider> Configurator = null);

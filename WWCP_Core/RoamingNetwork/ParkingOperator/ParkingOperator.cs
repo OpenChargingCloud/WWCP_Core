@@ -18,7 +18,7 @@
 #region Usings
 
 using System.Collections;
-
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
@@ -351,18 +351,36 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal ParkingOperator(ParkingOperator_Id                     Id,
                                  RoamingNetwork                         RoamingNetwork,
-                                 Action<ParkingOperator>                Configurator                   = null,
-                                 RemoteParkingOperatorCreatorDelegate   RemoteParkingOperatorCreator   = null,
-                                 I18NString                             Name                           = null,
-                                 I18NString                             Description                    = null,
-                                 ParkingOperatorAdminStatusTypes         AdminStatus                    = ParkingOperatorAdminStatusTypes.Operational,
-                                 ParkingOperatorStatusTypes              Status                         = ParkingOperatorStatusTypes.Available,
-                                 UInt16                                 MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
-                                 UInt16                                 MaxStatusListSize              = DefaultMaxStatusListSize)
+                                 I18NString?                            Name                           = null,
+                                 I18NString?                            Description                    = null,
+                                 Action<ParkingOperator>?               Configurator                   = null,
+                                 RemoteParkingOperatorCreatorDelegate?  RemoteParkingOperatorCreator   = null,
+                                 ParkingOperatorAdminStatusTypes?       InitialAdminStatus             = ParkingOperatorAdminStatusTypes.Operational,
+                                 ParkingOperatorStatusTypes?            InitialStatus                  = ParkingOperatorStatusTypes.Available,
+                                 UInt16?                                MaxAdminStatusScheduleSize     = DefaultMaxAdminStatusScheduleSize,
+                                 UInt16?                                MaxStatusScheduleSize          = DefaultMaxStatusScheduleSize,
+
+                                 String?                                DataSource                     = null,
+                                 DateTime?                              LastChange                     = null,
+
+                                 JObject?                               CustomData                     = null,
+                                 UserDefinedDictionary?                 InternalData                   = null)
 
             : base(Id,
+                   RoamingNetwork,
                    Name,
-                   RoamingNetwork)
+                   Description,
+                   null,
+                   null,
+                   null,
+                   InitialAdminStatus         ?? ParkingOperatorAdminStatusTypes.Operational,
+                   InitialStatus              ?? ParkingOperatorStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
+                   InternalData)
 
         {
 

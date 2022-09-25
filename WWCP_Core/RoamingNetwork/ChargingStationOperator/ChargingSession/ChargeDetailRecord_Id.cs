@@ -187,8 +187,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public ChargeDetailRecord_Id Clone
 
-            => new ChargeDetailRecord_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

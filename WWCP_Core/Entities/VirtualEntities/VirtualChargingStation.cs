@@ -156,25 +156,30 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="SelfCheckTimeSpan">The time span between self checks.</param>
         /// <param name="MaxStatusListSize">The maximum size of the charging station status list.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the charging station admin status list.</param>
-        public VirtualChargingStation(ChargingStation_Id               Id,
-                                      I18NString                       Name,
-                                      IRoamingNetwork                  RoamingNetwork,
-                                      I18NString                       Description              = null,
-                                      ChargingStationAdminStatusTypes  InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
-                                      ChargingStationStatusTypes       InitialStatus            = ChargingStationStatusTypes.Available,
-                                      String                           EllipticCurve            = "P-256",
-                                      ECPrivateKeyParameters           PrivateKey               = null,
-                                      PublicKeyCertificates            PublicKeyCertificates    = null,
-                                      TimeSpan?                        SelfCheckTimeSpan        = null,
-                                      UInt16                           MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                      UInt16                           MaxStatusListSize        = DefaultMaxStatusListSize)
+        public VirtualChargingStation(ChargingStation_Id                Id,
+                                      IRoamingNetwork                   RoamingNetwork,
+                                      I18NString?                       Name                     = null,
+                                      I18NString?                       Description              = null,
+                                      ChargingStationAdminStatusTypes?  InitialAdminStatus       = null,
+                                      ChargingStationStatusTypes?       InitialStatus            = null,
+                                      String?                           EllipticCurve            = "P-256",
+                                      ECPrivateKeyParameters?           PrivateKey               = null,
+                                      PublicKeyCertificates?            PublicKeyCertificates    = null,
+                                      TimeSpan?                         SelfCheckTimeSpan        = null,
+                                      UInt16?                           MaxAdminStatusListSize   = null,
+                                      UInt16?                           MaxStatusListSize        = null)
 
             : base(Id,
-                   Name,
                    RoamingNetwork,
+                   Name,
+                   Description,
                    EllipticCurve,
                    PrivateKey,
-                   PublicKeyCertificates)
+                   PublicKeyCertificates,
+                   InitialAdminStatus     ?? ChargingStationAdminStatusTypes.Operational,
+                   InitialStatus          ?? ChargingStationStatusTypes.Available,
+                   MaxAdminStatusListSize ?? DefaultMaxAdminStatusListSize,
+                   MaxStatusListSize      ?? DefaultMaxStatusListSize)
 
         {
 
@@ -430,21 +435,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Configurator">An optional delegate to configure the new EVSE after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public VirtualEVSE CreateVirtualEVSE(EVSE_Id                       EVSEId,
-                                             I18NString                    Name,
-                                             I18NString                    Description              = null,
-                                             EVSEAdminStatusTypes          InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
-                                             EVSEStatusTypes               InitialStatus            = EVSEStatusTypes.Available,
-                                             EnergyMeter_Id?               EnergyMeterId            = null,
-                                             String                        EllipticCurve            = "P-256",
-                                             ECPrivateKeyParameters        PrivateKey               = null,
-                                             PublicKeyCertificates         PublicKeyCertificates    = null,
-                                             TimeSpan?                     SelfCheckTimeSpan        = null,
-                                             Action<VirtualEVSE>           Configurator             = null,
-                                             Action<VirtualEVSE>           OnSuccess                = null,
-                                             Action<VirtualEVSE, EVSE_Id>  OnError                  = null,
-                                             UInt16                        MaxAdminStatusListSize   = VirtualEVSE.DefaultMaxAdminStatusListSize,
-                                             UInt16                        MaxStatusListSize        = VirtualEVSE.DefaultMaxStatusListSize)
+        public VirtualEVSE CreateVirtualEVSE(EVSE_Id                        EVSEId,
+                                             I18NString?                    Name                     = null,
+                                             I18NString?                    Description              = null,
+                                             EVSEAdminStatusTypes?          InitialAdminStatus       = null,
+                                             EVSEStatusTypes?               InitialStatus            = null,
+                                             EnergyMeter_Id?                EnergyMeterId            = null,
+                                             String?                        EllipticCurve            = null,
+                                             ECPrivateKeyParameters?        PrivateKey               = null,
+                                             PublicKeyCertificates?         PublicKeyCertificates    = null,
+                                             TimeSpan?                      SelfCheckTimeSpan        = null,
+                                             Action<VirtualEVSE>?           Configurator             = null,
+                                             Action<VirtualEVSE>?           OnSuccess                = null,
+                                             Action<VirtualEVSE, EVSE_Id>?  OnError                  = null,
+                                             UInt16                         MaxAdminStatusListSize   = VirtualEVSE.DefaultMaxAdminStatusListSize,
+                                             UInt16                         MaxStatusListSize        = VirtualEVSE.DefaultMaxStatusListSize)
         {
 
             #region Initial checks
@@ -460,13 +465,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #endregion
 
-            var Now             = Timestamp.Now;
+            var now             = Timestamp.Now;
             var newVirtualEVSE  = new VirtualEVSE(EVSEId,
-                                                  Name,
                                                   RoamingNetwork,
+                                                  Name,
                                                   Description,
-                                                  InitialAdminStatus,
-                                                  InitialStatus,
+                                                  InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                                                  InitialStatus      ?? EVSEStatusTypes.Available,
                                                   EnergyMeterId,
                                                   EllipticCurve,
                                                   PrivateKey,

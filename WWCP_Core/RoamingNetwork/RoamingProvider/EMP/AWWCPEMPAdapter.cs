@@ -122,41 +122,34 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// An optional (multi-language) description of the charging station operator roaming provider.
-        /// </summary>
-        [Optional]
-        public I18NString                         Description                       { get; }
-
-
-        /// <summary>
         /// Only include EVSE identifications matching the given delegate.
         /// </summary>
-        public IncludeEVSEIdDelegate              IncludeEVSEIds                    { get; }
+        public IncludeEVSEIdDelegate              IncludeEVSEIds                     { get; }
 
         /// <summary>
         /// Only include EVSEs matching the given delegate.
         /// </summary>
-        public IncludeEVSEDelegate                IncludeEVSEs                      { get; }
+        public IncludeEVSEDelegate                IncludeEVSEs                       { get; }
 
         /// <summary>
         /// Only include charging station identifications matching the given delegate.
         /// </summary>
-        public IncludeChargingStationIdDelegate   IncludeChargingStationIds         { get; }
+        public IncludeChargingStationIdDelegate   IncludeChargingStationIds          { get; }
 
         /// <summary>
         /// Only include charging stations matching the given delegate.
         /// </summary>
-        public IncludeChargingStationDelegate     IncludeChargingStations           { get; }
+        public IncludeChargingStationDelegate     IncludeChargingStations            { get; }
 
         /// <summary>
         /// Only include charging pool identifications matching the given delegate.
         /// </summary>
-        public IncludeChargingPoolIdDelegate      IncludeChargingPoolIds            { get; }
+        public IncludeChargingPoolIdDelegate      IncludeChargingPoolIds             { get; }
 
         /// <summary>
         /// Only include charging pools matching the given delegate.
         /// </summary>
-        public IncludeChargingPoolDelegate        IncludeChargingPools              { get; }
+        public IncludeChargingPoolDelegate        IncludeChargingPools               { get; }
 
         ///// <summary>
         ///// A delegate to customize the mapping of EVSE identifications.
@@ -166,49 +159,49 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate for filtering charge detail records.
         /// </summary>
-        public ChargeDetailRecordFilterDelegate   ChargeDetailRecordFilter          { get; }
+        public ChargeDetailRecordFilterDelegate   ChargeDetailRecordFilter           { get; }
 
 
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisablePushData                   { get; set; }
+        public Boolean                            DisablePushData                    { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisablePushAdminStatus            { get; set; }
+        public Boolean                            DisablePushAdminStatus             { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisablePushStatus                 { get; set; }
+        public Boolean                            DisablePushStatus                  { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisableAuthentication             { get; set; }
+        public Boolean                            DisableAuthentication              { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                           DisableSendChargeDetailRecords     { get; set; }
+        public Boolean                            DisableSendChargeDetailRecords     { get; set; }
 
         /// <summary>
         /// The EVSE data updates transmission intervall.
         /// </summary>
-        public TimeSpan                    FlushEVSEDataAndStatusEvery       { get; set; }
+        public TimeSpan                           FlushEVSEDataAndStatusEvery        { get; set; }
 
         /// <summary>
         /// The EVSE status updates transmission intervall.
         /// </summary>
-        public TimeSpan                    FlushEVSEFastStatusEvery          { get; set; }
+        public TimeSpan                           FlushEVSEFastStatusEvery           { get; set; }
 
         /// <summary>
         /// The charge detail record transmission intervall.
         /// </summary>
-        public TimeSpan                    FlushChargeDetailRecordsEvery     { get; set; }
+        public TimeSpan                           FlushChargeDetailRecordsEvery      { get; set; }
 
         #endregion
 
@@ -294,17 +287,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
         protected AWWCPEMPAdapter(EMPRoamingProvider_Id              Id,
-                                  I18NString                         Name,
-                                  I18NString                         Description,
                                   RoamingNetwork                     RoamingNetwork,
 
-                                  IncludeEVSEIdDelegate              IncludeEVSEIds                   = null,
-                                  IncludeEVSEDelegate                IncludeEVSEs                     = null,
-                                  IncludeChargingStationIdDelegate   IncludeChargingStationIds        = null,
-                                  IncludeChargingStationDelegate     IncludeChargingStations          = null,
-                                  IncludeChargingPoolIdDelegate      IncludeChargingPoolIds           = null,
-                                  IncludeChargingPoolDelegate        IncludeChargingPools             = null,
-                                  ChargeDetailRecordFilterDelegate   ChargeDetailRecordFilter         = null,
+                                  I18NString?                        Name                             = null,
+                                  I18NString?                        Description                      = null,
+
+                                  IncludeEVSEIdDelegate?             IncludeEVSEIds                   = null,
+                                  IncludeEVSEDelegate?               IncludeEVSEs                     = null,
+                                  IncludeChargingStationIdDelegate?  IncludeChargingStationIds        = null,
+                                  IncludeChargingStationDelegate?    IncludeChargingStations          = null,
+                                  IncludeChargingPoolIdDelegate?     IncludeChargingPoolIds           = null,
+                                  IncludeChargingPoolDelegate?       IncludeChargingPools             = null,
+                                  ChargeDetailRecordFilterDelegate?  ChargeDetailRecordFilter         = null,
 
                                   TimeSpan?                          FlushEVSEDataAndStatusEvery      = null,
                                   TimeSpan?                          FlushEVSEFastStatusEvery         = null,
@@ -316,26 +310,18 @@ namespace cloud.charging.open.protocols.WWCP
                                   Boolean                            DisableSendChargeDetailRecords   = false,
 
                                   String                             EllipticCurve                    = "P-256",
-                                  ECPrivateKeyParameters             PrivateKey                       = null,
-                                  PublicKeyCertificates              PublicKeyCertificates            = null)
+                                  ECPrivateKeyParameters?            PrivateKey                       = null,
+                                  PublicKeyCertificates?             PublicKeyCertificates            = null)
 
             : base(Id,
-                   Name,
                    RoamingNetwork,
+                   Name,
+                   Description,
                    EllipticCurve,
                    PrivateKey,
                    PublicKeyCertificates)
 
         {
-
-            #region Initial checks
-
-            if (Name.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Name), "The given roaming provider name must not be null or empty!");
-
-            #endregion
-
-            this.Description                                     = Description;
 
             this.IncludeEVSEIds                                  = IncludeEVSEIds                ?? (evseid             => true);
             this.IncludeEVSEs                                    = IncludeEVSEs                  ?? (evse               => true);

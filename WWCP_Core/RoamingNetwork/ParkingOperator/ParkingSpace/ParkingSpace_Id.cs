@@ -129,8 +129,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public ParkingSpace_Id Clone
 
-            => new ParkingSpace_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

@@ -1275,12 +1275,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
         public EVSE(EVSE_Id                               Id,
                     ChargingStation                       ChargingStation,
+                    I18NString?                           Name                         = null,
+                    I18NString?                           Description                  = null,
                     Action<EVSE>?                         Configurator                 = null,
                     RemoteEVSECreatorDelegate?            RemoteEVSECreator            = null,
                     Timestamped<EVSEAdminStatusTypes>?    InitialAdminStatus           = null,
                     Timestamped<EVSEStatusTypes>?         InitialStatus                = null,
-                    UInt16                                MaxAdminStatusScheduleSize   = DefaultMaxEVSEAdminStatusScheduleSize,
-                    UInt16                                MaxStatusScheduleSize        = DefaultMaxEVSEStatusScheduleSize,
+                    UInt16?                               MaxAdminStatusScheduleSize   = null,
+                    UInt16?                               MaxStatusScheduleSize        = null,
 
                     String?                               DataSource                   = null,
                     DateTime?                             LastChange                   = null,
@@ -1289,10 +1291,12 @@ namespace cloud.charging.open.protocols.WWCP
                     UserDefinedDictionary?                InternalData                 = null)
 
             : base(Id,
-                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
-                   InitialStatus      ?? EVSEStatusTypes.Available,
-                   MaxAdminStatusScheduleSize,
-                   MaxStatusScheduleSize,
+                   Name,
+                   Description,
+                   InitialAdminStatus         ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus              ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxEVSEAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxEVSEStatusScheduleSize,
                    DataSource,
                    LastChange,
                    CustomData,

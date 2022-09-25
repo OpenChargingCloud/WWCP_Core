@@ -1055,9 +1055,9 @@
 //        [Test]
 //        public void GetHashCodeEqualTest()
 //        {
-//            var _SensorHashCode1 = new eMT_Id("5").GetHashCode();
-//            var _SensorHashCode2 = new eMT_Id("5").GetHashCode();
-//            Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
+//            var hashCode1 = new eMT_Id("5").GetHashCode();
+//            var hashCode2 = new eMT_Id("5").GetHashCode();
+//            Assert.AreEqual(hashCode1, hashCode2);
 //        }
 
 //        #endregion
@@ -1070,9 +1070,9 @@
 //        [Test]
 //        public void GetHashCodeNotEqualTest()
 //        {
-//            var _SensorHashCode1 = new eMT_Id("1").GetHashCode();
-//            var _SensorHashCode2 = new eMT_Id("2").GetHashCode();
-//            Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
+//            var hashCode1 = new eMT_Id("1").GetHashCode();
+//            var hashCode2 = new eMT_Id("2").GetHashCode();
+//            Assert.AreNotEqual(hashCode1, hashCode2);
 //        }
 
 //        #endregion

@@ -358,104 +358,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of this charging station.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-
-                return _Name.IsNeitherNullNorEmpty()
-                           ? _Name
-                           : ChargingPool?.Name;
-
-            }
-
-            set
-            {
-
-                if (value != _Name && value != ChargingPool?.Name)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _Name);
-
-                    else
-                        SetProperty(ref _Name, value);
-
-                }
-
-            }
-
-        }
-
-        public I18NString SetName(Languages Language, String Text)
-            => _Name = I18NString.Create(Language, Text);
-
-        public I18NString SetName(I18NString I18NText)
-            => _Name = I18NText;
-
-        public I18NString AddName(Languages Language, String Text)
-            => _Name.Add(Language, Text);
-
-        #endregion
-
-        #region Description
-
-        internal I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of this charging station.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-
-                return _Description.IsNeitherNullNorEmpty()
-                           ? _Description
-                           : ChargingPool?.Description;
-
-            }
-
-            set
-            {
-
-                if (value != _Description && value != ChargingPool?.Description)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _Description);
-
-                    else
-                        SetProperty(ref _Description, value);
-
-                }
-
-            }
-
-        }
-
-        public I18NString SetDescription(Languages Language, String Text)
-            => _Description = I18NString.Create(Language, Text);
-
-        public I18NString SetDescription(I18NString I18NText)
-            => _Description = I18NText;
-
-        public I18NString AddDescription(Languages Language, String Text)
-            => _Description.Add(Language, Text);
-
-        #endregion
-
         #region Brands
 
         #region BrandAddition
@@ -1761,15 +1663,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
         public ChargingStation(ChargingStation_Id                             Id,
+                               I18NString?                                    Name                           = null,
+                               I18NString?                                    Description                    = null,
                                Action<ChargingStation>?                       Configurator                   = null,
                                RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                               UInt16                                         MaxAdminStatusListSize         = DefaultMaxAdminStatusScheduleSize,
-                               UInt16                                         MaxStatusListSize              = DefaultMaxStatusScheduleSize)
+                               UInt16?                                        MaxAdminStatusListSize         = null,
+                               UInt16?                                        MaxStatusListSize              = null)
 
             : this(Id,
                    null,
+                   Name,
+                   Description,
                    Configurator,
                    RemoteChargingStationCreator,
                    InitialAdminStatus,
@@ -1795,13 +1701,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxAdminStatusScheduleSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusScheduleSize">An optional max length of the staus list.</param>
         public ChargingStation(ChargingStation_Id                             Id,
-                               ChargingPool                                   ChargingPool,
+                               ChargingPool?                                  ChargingPool                   = null,
+
+                               I18NString?                                    Name                           = null,
+                               I18NString?                                    Description                    = null,
                                Action<ChargingStation>?                       Configurator                   = null,
                                RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                               UInt16                                         MaxAdminStatusScheduleSize     = DefaultMaxAdminStatusScheduleSize,
-                               UInt16                                         MaxStatusScheduleSize          = DefaultMaxStatusScheduleSize,
+                               UInt16?                                        MaxAdminStatusScheduleSize     = null,
+                               UInt16?                                        MaxStatusScheduleSize          = null,
 
                                String?                                        DataSource                     = null,
                                DateTime?                                      LastChange                     = null,
@@ -1810,10 +1719,12 @@ namespace cloud.charging.open.protocols.WWCP
                                UserDefinedDictionary?                         InternalData                   = null)
 
             : base(Id,
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusScheduleSize,
-                   MaxStatusScheduleSize,
+                   Name,
+                   Description,
+                   InitialAdminStatus         ?? new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational),
+                   InitialStatus              ?? new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available),
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
                    LastChange,
                    CustomData,
@@ -1825,14 +1736,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingPool                = ChargingPool;
 
-            InitialAdminStatus               = InitialAdminStatus != null ? InitialAdminStatus : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
-            InitialStatus                    = InitialStatus      != null ? InitialStatus      : new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available);
-
-            this._Name                       = new I18NString();
-            this._Description                = new I18NString();
             this.openingTimes                = OpeningTimes.Open24Hours;
             this._Brands                     = new SpecialHashSet<ChargingStation, Brand_Id, Brand>(this);
-            this._EVSEs                      = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
+            this.evses                       = new EntityHashSet <ChargingStation, EVSE_Id,  EVSE> (this);
 
             #endregion
 
@@ -1976,7 +1882,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        private readonly EntityHashSet<ChargingStation, EVSE_Id, EVSE> _EVSEs;
+        private readonly EntityHashSet<ChargingStation, EVSE_Id, EVSE> evses;
 
         /// <summary>
         /// All Electric Vehicle Supply Equipments (EVSE) present
@@ -1984,7 +1890,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<EVSE> EVSEs
 
-            => _EVSEs;
+            => evses;
 
         #endregion
 
@@ -1999,10 +1905,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeEVSEs == null
 
-                   ? _EVSEs.
+                   ? evses.
                          Select(evse => evse.Id)
 
-                   : _EVSEs.
+                   : evses.
                          Where (evse => IncludeEVSEs(evse)).
                          Select(evse => evse.Id);
 
@@ -2016,7 +1922,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _EVSEs.
+            => evses.
                    Where (evse => IncludeEVSEs(evse)).
                    Select(evse => new EVSEAdminStatus(evse.Id,
                                                       evse.AdminStatus));
@@ -2031,7 +1937,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _EVSEs.
+            => evses.
                    Where (evse => IncludeEVSEs(evse)).
                    Select(evse => new EVSEStatus(evse.Id,
                                                  evse.Status));
@@ -2050,29 +1956,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteEVSECreator">An optional delegate to configure a new remote EVSE after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public EVSE CreateEVSE(EVSE_Id                             EVSEId,
-                               Action<EVSE>?                       Configurator                 = null,
-                               RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-                               Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                               Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                               UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
-                               UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
-                               Action<EVSE>?                       OnSuccess                    = null,
-                               Action<ChargingStation, EVSE_Id>?   OnError                      = null)
+        public EVSE? CreateEVSE(EVSE_Id                             EVSEId,
+                                I18NString?                         Name                         = null,
+                                I18NString?                         Description                  = null,
+                                Action<EVSE>?                       Configurator                 = null,
+                                RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                UInt16?                             MaxAdminStatusScheduleSize   = null,
+                                UInt16?                             MaxStatusScheduleSize        = null,
+                                Action<EVSE>?                       OnSuccess                    = null,
+                                Action<ChargingStation, EVSE_Id>?   OnError                      = null)
         {
 
-            lock (_EVSEs)
+            lock (evses)
             {
 
                 #region Initial checks
 
-                if (EVSEId == null)
-                    throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
-
-                InitialAdminStatus = InitialAdminStatus ?? new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
-                InitialStatus      = InitialStatus      ?? new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
-
-                if (_EVSEs.Any(evse => evse.Id == EVSEId))
+                if (evses.Any(evse => evse.Id == EVSEId))
                 {
                     if (OnError == null)
                         throw new EVSEAlreadyExistsInStation(this, EVSEId);
@@ -2086,9 +1988,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                var Now   = Timestamp.Now;
-                var _EVSE = new EVSE(EVSEId,
+                var now   = Timestamp.Now;
+                var evse  = new EVSE(EVSEId,
                                      this,
+                                     Name,
+                                     Description,
                                      Configurator,
                                      RemoteEVSECreator,
                                      InitialAdminStatus,
@@ -2096,18 +2000,18 @@ namespace cloud.charging.open.protocols.WWCP
                                      MaxAdminStatusScheduleSize,
                                      MaxStatusScheduleSize);
 
-                if (EVSEAddition.SendVoting(Now, this, _EVSE) &&
-                    _EVSEs.TryAdd(_EVSE))
+                if (EVSEAddition.SendVoting(now, this, evse) &&
+                    evses.TryAdd(evse))
                 {
 
-                    _EVSE.OnDataChanged           += UpdateEVSEData;
-                    _EVSE.OnStatusChanged         += UpdateEVSEStatus;
-                    _EVSE.OnAdminStatusChanged    += UpdateEVSEAdminStatus;
+                    evse.OnDataChanged           += UpdateEVSEData;
+                    evse.OnStatusChanged         += UpdateEVSEStatus;
+                    evse.OnAdminStatusChanged    += UpdateEVSEAdminStatus;
 
-                    _EVSE.OnNewReservation        += SendNewReservation;
-                    _EVSE.OnReservationCanceled   += SendReservationCanceled;
-                    _EVSE.OnNewChargingSession    += SendNewChargingSession;
-                    _EVSE.OnNewChargeDetailRecord += SendNewChargeDetailRecord;
+                    evse.OnNewReservation        += SendNewReservation;
+                    evse.OnReservationCanceled   += SendReservationCanceled;
+                    evse.OnNewChargingSession    += SendNewChargingSession;
+                    evse.OnNewChargeDetailRecord += SendNewChargeDetailRecord;
 
                     //UpdateEVSEStatus(Now,
                     //                 EventTracking_Id.New,
@@ -2118,8 +2022,8 @@ namespace cloud.charging.open.protocols.WWCP
                     if (RemoteChargingStation != null)
                     {
 
-                        if (_EVSE.RemoteEVSE != null)
-                            RemoteChargingStation.AddEVSE(_EVSE.RemoteEVSE);
+                        if (evse.RemoteEVSE != null)
+                            RemoteChargingStation.AddEVSE(evse.RemoteEVSE);
 
                         OnAdminStatusChanged               += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.AdminStatus      = newstatus;
                         OnStatusChanged                    += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.Status           = newstatus;
@@ -2131,10 +2035,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     }
 
-                    OnSuccess?.Invoke(_EVSE);
-                    EVSEAddition.SendNotification(Now, this, _EVSE);
+                    OnSuccess?.Invoke(evse);
+                    EVSEAddition.SendNotification(now, this, evse);
 
-                    return _EVSE;
+                    return evse;
 
                 }
 
@@ -2147,45 +2051,49 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CreateOrUpdateEVSE(EVSEId, Configurator = null, RemoteEVSECreator = null, ...)
+        #region CreateOrUpdateEVSE(Id, Configurator = null, RemoteEVSECreator = null, ...)
 
         /// <summary>
         /// Create and register a new EVSE having the given
         /// unique EVSE identification.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of the new EVSE.</param>
+        /// <param name="Id">The unique identification of the new EVSE.</param>
         /// <param name="Configurator">An optional delegate to configure the new EVSE before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new EVSE after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the EVSE failed.</param>
-        public EVSE CreateOrUpdateEVSE(EVSE_Id                             EVSEId,
-                                       Action<EVSE>?                       Configurator                 = null,
-                                       RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-                                       Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                                       Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                                       UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
-                                       UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
-                                       Action<EVSE>?                       OnSuccess                    = null,
-                                       Action<ChargingStation, EVSE_Id>?   OnError                      = null)
+        public EVSE? CreateOrUpdateEVSE(EVSE_Id                             Id,
+                                        I18NString?                         Name                         = null,
+                                        I18NString?                         Description                  = null,
+                                        Action<EVSE>?                       Configurator                 = null,
+                                        RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                        Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                        Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                        UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
+                                        UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
+                                        Action<EVSE>?                       OnSuccess                    = null,
+                                        Action<ChargingStation, EVSE_Id>?   OnError                      = null)
         {
 
             #region Initial checks
 
-            if (Operator.Id != EVSEId.OperatorId)
+            if (Operator.Id != Id.OperatorId)
                 throw new InvalidEVSEOperatorId(this,
-                                                EVSEId.OperatorId);
+                                                Id.OperatorId);
 
             InitialAdminStatus = InitialAdminStatus ?? new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
             InitialStatus      = InitialStatus      ?? new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
 
             #endregion
 
-            lock (_EVSEs)
+            lock (evses)
             {
 
                 #region If the EVSE identification is new/unknown: Call CreateEVSE(...)
 
-                if (!_EVSEs.ContainsId(EVSEId))
-                    return CreateEVSE(EVSEId,
+                if (!evses.ContainsId(Id))
+                    return CreateEVSE(Id,
+                                      Name,
+                                      Description,
                                       Configurator,
                                       RemoteEVSECreator,
                                       InitialAdminStatus,
@@ -2198,17 +2106,23 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
 
+                var existingEVSE = evses.GetById(Id);
+
                 // Merge existing EVSE with new EVSE data...
-                return _EVSEs.
-                           GetById(EVSEId).
-                           UpdateWith(new EVSE(EVSEId,
-                                               this,
-                                               Configurator,
-                                               null,
-                                               new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
-                                               new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.Available)));
+                if (existingEVSE is not null)
+                    return existingEVSE.
+                               UpdateWith(new EVSE(Id,
+                                                   this,
+                                                   Name,
+                                                   Description,
+                                                   Configurator,
+                                                   null,
+                                                   new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
+                                                   new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.     Available)));
 
             }
+
+            return null;
 
         }
 
@@ -2223,7 +2137,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
 
-            => _EVSEs.Contains(EVSE);
+            => evses.Contains(EVSE);
 
         #endregion
 
@@ -2235,7 +2149,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
 
-            => _EVSEs.ContainsId(EVSEId);
+            => evses.ContainsId(EVSEId);
 
         #endregion
 
@@ -2243,7 +2157,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
 
-            => _EVSEs.GetById(EVSEId);
+            => evses.GetById(EVSEId);
 
         #endregion
 
@@ -2251,7 +2165,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE)
 
-            => _EVSEs.TryGet(EVSEId, out EVSE);
+            => evses.TryGet(EVSEId, out EVSE);
 
         #endregion
 
@@ -2259,7 +2173,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public EVSE RemoveEVSE(EVSE_Id EVSEId)
 
-            => _EVSEs.Remove(EVSEId);
+            => evses.Remove(EVSEId);
 
         #endregion
 
@@ -2267,7 +2181,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryRemoveEVSE(EVSE_Id EVSEId, out EVSE EVSE)
 
-            => _EVSEs.TryRemove(EVSEId, out EVSE);
+            => evses.TryRemove(EVSEId, out EVSE);
 
         #endregion
 
@@ -2380,7 +2294,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (StatusAggregationDelegate != null)
             {
-                statusSchedule.Insert(StatusAggregationDelegate(new EVSEStatusReport(_EVSEs)),
+                statusSchedule.Insert(StatusAggregationDelegate(new EVSEStatusReport(evses)),
                                       Timestamp);
             }
 
@@ -2405,10 +2319,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region IEnumerable<EVSE> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => _EVSEs.GetEnumerator();
+            => evses.GetEnumerator();
 
         public IEnumerator<EVSE> GetEnumerator()
-            => _EVSEs.GetEnumerator();
+            => evses.GetEnumerator();
 
         #endregion
 

@@ -697,9 +697,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = eMobilityProvider_Id.Parse("5").GetHashCode();
-            var _SensorHashCode2 = eMobilityProvider_Id.Parse("5").GetHashCode();
-            Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
+            var hashCode1 = eMobilityProvider_Id.Parse("5").GetHashCode();
+            var hashCode2 = eMobilityProvider_Id.Parse("5").GetHashCode();
+            Assert.AreEqual(hashCode1, hashCode2);
         }
 
         #endregion
@@ -712,9 +712,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = eMobilityProvider_Id.Parse("1").GetHashCode();
-            var _SensorHashCode2 = eMobilityProvider_Id.Parse("2").GetHashCode();
-            Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
+            var hashCode1 = eMobilityProvider_Id.Parse("1").GetHashCode();
+            var hashCode2 = eMobilityProvider_Id.Parse("2").GetHashCode();
+            Assert.AreNotEqual(hashCode1, hashCode2);
         }
 
         #endregion

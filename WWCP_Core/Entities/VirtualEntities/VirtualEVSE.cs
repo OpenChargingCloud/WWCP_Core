@@ -390,26 +390,31 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Id">The unique identification of this EVSE.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
         /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
-        internal VirtualEVSE(EVSE_Id                 Id,
-                             I18NString              Name,
-                             IRoamingNetwork         RoamingNetwork,
-                             I18NString              Description              = null,
-                             EVSEAdminStatusTypes    InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
-                             EVSEStatusTypes         InitialStatus            = EVSEStatusTypes.Available,
-                             EnergyMeter_Id?         EnergyMeterId            = null,
-                             String                  EllipticCurve            = "P-256",
-                             ECPrivateKeyParameters  PrivateKey               = null,
-                             PublicKeyCertificates   PublicKeyCertificates    = null,
-                             TimeSpan?               SelfCheckTimeSpan        = null,
-                             UInt16                  MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                             UInt16                  MaxStatusListSize        = DefaultMaxStatusListSize)
+        internal VirtualEVSE(EVSE_Id                  Id,
+                             IRoamingNetwork          RoamingNetwork,
+                             I18NString?              Name                     = null,
+                             I18NString?              Description              = null,
+                             EVSEAdminStatusTypes?    InitialAdminStatus       = null,
+                             EVSEStatusTypes?         InitialStatus            = null,
+                             EnergyMeter_Id?          EnergyMeterId            = null,
+                             String?                  EllipticCurve            = null,
+                             ECPrivateKeyParameters?  PrivateKey               = null,
+                             PublicKeyCertificates?   PublicKeyCertificates    = null,
+                             TimeSpan?                SelfCheckTimeSpan        = null,
+                             UInt16?                  MaxAdminStatusListSize   = null,
+                             UInt16?                  MaxStatusListSize        = null)
 
             : base(Id,
-                   Name,
                    RoamingNetwork,
+                   Name,
+                   Description,
                    EllipticCurve,
                    PrivateKey,
-                   PublicKeyCertificates)
+                   PublicKeyCertificates,
+                   InitialAdminStatus     ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus          ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusListSize ?? DefaultMaxAdminStatusListSize,
+                   MaxStatusListSize      ?? DefaultMaxStatusListSize)
 
         {
 

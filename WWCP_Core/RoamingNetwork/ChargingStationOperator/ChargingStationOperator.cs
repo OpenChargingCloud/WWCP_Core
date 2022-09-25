@@ -266,48 +266,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        //  public IEnumerable<ChargingStationOperator_Id> OperatedIds { get; }
-
-        #region Description
-
-        private I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of the EVSE Operator.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Description != value)
-                    SetProperty(ref _Description, value);
-
-            }
-
-        }
-
-        public I18NString SetDescription(Languages Language, String Text)
-            => _Description = I18NString.Create(Language, Text);
-
-        public I18NString SetDescription(I18NString I18NText)
-            => _Description = I18NText;
-
-        public I18NString AddDescription(Languages Language, String Text)
-            => _Description.Add(Language, Text);
-
-        #endregion
-
         #region Logo
 
         private String _Logo;
@@ -625,8 +583,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        UserDefinedDictionary?                                 InternalData                           = null)
 
             : base(Id,
-                   Name ?? I18NString.Create(Languages.en, "Charging Station Operator " + Id.ToString()),
                    RoamingNetwork,
+                   Name        ?? I18NString.Create(Languages.en, "Charging Station Operator " + Id.ToString()),
+                   Description,
                    null,
                    null,
                    null,
@@ -650,7 +609,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new ReactiveSet<DataLicense>();
 
             #region InvalidEVSEIds
@@ -1133,94 +1091,97 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CreateChargingPool        (ChargingPoolId, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingPool        (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging pool having the given
         /// unique charging pool identification.
         /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
+        /// <param name="Id">The unique identification of the new charging pool.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateChargingPool(ChargingPool_Id?                                  ChargingPoolId              = null,
-                                               Action<ChargingPool>                              Configurator                = null,
-                                               RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator   = null,
-                                               Timestamped<ChargingPoolAdminStatusTypes>?        InitialAdminStatus          = null,
-                                               Timestamped<ChargingPoolStatusTypes>?             InitialStatus               = null,
-                                               UInt16                                            MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                               UInt16                                            MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
-                                               Action<ChargingPool>                              OnSuccess                   = null,
-                                               Action<ChargingStationOperator, ChargingPool_Id>  OnError                     = null)
+        public ChargingPool? CreateChargingPool(ChargingPool_Id?                                   Id                          = null,
+                                                I18NString?                                        Name                        = null,
+                                                I18NString?                                        Description                 = null,
+                                                Action<ChargingPool>?                              Configurator                = null,
+                                                RemoteChargingPoolCreatorDelegate?                 RemoteChargingPoolCreator   = null,
+                                                Timestamped<ChargingPoolAdminStatusTypes>?         InitialAdminStatus          = null,
+                                                Timestamped<ChargingPoolStatusTypes>?              InitialStatus               = null,
+                                                UInt16                                             MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                                UInt16                                             MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                Action<ChargingPool>?                              OnSuccess                   = null,
+                                                Action<ChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
 
         {
 
             #region Initial checks
 
-            if (!ChargingPoolId.HasValue)
-                ChargingPoolId = ChargingPool_Id.Random(Id);
+            Id ??= ChargingPool_Id.NewRandom(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
-            if (_ChargingPools.ContainsId(ChargingPoolId.Value))
+            if (_ChargingPools.ContainsId(Id.Value))
             {
 
                 if (OnError == null)
-                    throw new ChargingPoolAlreadyExists(this, ChargingPoolId.Value);
+                    throw new ChargingPoolAlreadyExists(this, Id.Value);
 
-                    OnError?.Invoke(this, ChargingPoolId.Value);
+                    OnError?.Invoke(this, Id.Value);
 
             }
 
-            if (Id != ChargingPoolId.Value.OperatorId)
+            if (this.Id != Id.Value.OperatorId)
                 throw new InvalidChargingPoolOperatorId(this,
-                                                        ChargingPoolId.Value.OperatorId);
+                                                        Id.Value.OperatorId);
 
             #endregion
 
-            var _ChargingPool = new ChargingPool(ChargingPoolId.Value,
-                                                 this,
-                                                 Configurator,
-                                                 RemoteChargingPoolCreator,
-                                                 InitialAdminStatus,
-                                                 InitialStatus,
-                                                 MaxAdminStatusListSize,
-                                                 MaxStatusListSize);
+            var chargingPool = new ChargingPool(Id.Value,
+                                                this,
+                                                Name,
+                                                Description,
+                                                Configurator,
+                                                RemoteChargingPoolCreator,
+                                                InitialAdminStatus,
+                                                InitialStatus,
+                                                MaxAdminStatusListSize,
+                                                MaxStatusListSize);
 
 
-            if (ChargingPoolAddition.SendVoting(Timestamp.Now, this, _ChargingPool) &&
-                _ChargingPools.TryAdd(_ChargingPool))
+            if (ChargingPoolAddition.SendVoting(Timestamp.Now, this, chargingPool) &&
+                _ChargingPools.TryAdd(chargingPool))
             {
 
-                _ChargingPool.OnDataChanged                             += UpdateChargingPoolData;
-                _ChargingPool.OnAdminStatusChanged                      += UpdateChargingPoolAdminStatus;
-                _ChargingPool.OnStatusChanged                           += UpdateChargingPoolStatus;
+                chargingPool.OnDataChanged                             += UpdateChargingPoolData;
+                chargingPool.OnAdminStatusChanged                      += UpdateChargingPoolAdminStatus;
+                chargingPool.OnStatusChanged                           += UpdateChargingPoolStatus;
 
-                _ChargingPool.OnChargingStationAddition.OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
-                _ChargingPool.OnChargingStationAddition.OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationAddition.SendNotification(timestamp, evseoperator, pool);
-                _ChargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
-                _ChargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
-                _ChargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
-                _ChargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationRemoval. SendVoting      (timestamp, evseoperator, pool, vote);
-                _ChargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
+                chargingPool.OnChargingStationAddition.OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
+                chargingPool.OnChargingStationAddition.OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationAddition.SendNotification(timestamp, evseoperator, pool);
+                chargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
+                chargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
+                chargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
+                chargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationRemoval. SendVoting      (timestamp, evseoperator, pool, vote);
+                chargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
-                _ChargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote)         => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-                _ChargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)               => EVSEAddition.           SendNotification(timestamp, station, evse);
-                _ChargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
-                _ChargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
-                _ChargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
-                _ChargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote)         => EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
-                _ChargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)               => EVSERemoval .           SendNotification(timestamp, station, evse);
+                chargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote)         => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                chargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)               => EVSEAddition.           SendNotification(timestamp, station, evse);
+                chargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
+                chargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
+                chargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
+                chargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote)         => EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
+                chargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)               => EVSERemoval .           SendNotification(timestamp, station, evse);
 
 
-                _ChargingPool.OnNewReservation                          += SendNewReservation;
-                _ChargingPool.OnReservationCanceled                     += SendReservationCanceled;
-                _ChargingPool.OnNewChargingSession                      += SendNewChargingSession;
-                _ChargingPool.OnNewChargeDetailRecord                   += SendNewChargeDetailRecord;
+                chargingPool.OnNewReservation                          += SendNewReservation;
+                chargingPool.OnReservationCanceled                     += SendReservationCanceled;
+                chargingPool.OnNewChargingSession                      += SendNewChargingSession;
+                chargingPool.OnNewChargeDetailRecord                   += SendNewChargeDetailRecord;
 
-                OnSuccess?.Invoke(_ChargingPool);
-                ChargingPoolAddition.SendNotification(Timestamp.Now, this, _ChargingPool);
+                OnSuccess?.Invoke(chargingPool);
+                ChargingPoolAddition.SendNotification(Timestamp.Now, this, chargingPool);
 
-                return _ChargingPool;
+                return chargingPool;
 
             }
 
@@ -1230,25 +1191,27 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CreateOrUpdateChargingPool(ChargingPoolId, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateOrUpdateChargingPool(Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register or udpate a new charging pool having the given
         /// unique charging pool identification.
         /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
+        /// <param name="Id">The unique identification of the new charging pool.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateOrUpdateChargingPool(ChargingPool_Id                                    ChargingPoolId,
-                                                       Action<ChargingPool>?                              Configurator                = null,
-                                                       RemoteChargingPoolCreatorDelegate?                 RemoteChargingPoolCreator   = null,
-                                                       Timestamped<ChargingPoolAdminStatusTypes>?         InitialAdminStatus          = null,
-                                                       Timestamped<ChargingPoolStatusTypes>?              InitialStatus               = null,
-                                                       UInt16                                             MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                       UInt16                                             MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
-                                                       Action<ChargingPool>?                              OnSuccess                   = null,
-                                                       Action<ChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
+        public ChargingPool? CreateOrUpdateChargingPool(ChargingPool_Id                                    Id,
+                                                        I18NString?                                        Name                        = null,
+                                                        I18NString?                                        Description                 = null,
+                                                        Action<ChargingPool>?                              Configurator                = null,
+                                                        RemoteChargingPoolCreatorDelegate?                 RemoteChargingPoolCreator   = null,
+                                                        Timestamped<ChargingPoolAdminStatusTypes>?         InitialAdminStatus          = null,
+                                                        Timestamped<ChargingPoolStatusTypes>?              InitialStatus               = null,
+                                                        UInt16                                             MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                                        UInt16                                             MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                        Action<ChargingPool>?                              OnSuccess                   = null,
+                                                        Action<ChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
 
         {
 
@@ -1257,16 +1220,18 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Initial checks
 
-                if (Id != ChargingPoolId.OperatorId)
+                if (this.Id != Id.OperatorId)
                     throw new InvalidChargingPoolOperatorId(this,
-                                                            ChargingPoolId.OperatorId);
+                                                            Id.OperatorId);
 
                 #endregion
 
                 #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
 
-                if (!_ChargingPools.ContainsId(ChargingPoolId))
-                    return CreateChargingPool(ChargingPoolId,
+                if (!_ChargingPools.ContainsId(Id))
+                    return CreateChargingPool(Id,
+                                              Name,
+                                              Description,
                                               Configurator,
                                               RemoteChargingPoolCreator,
                                               InitialAdminStatus,
@@ -1284,14 +1249,17 @@ namespace cloud.charging.open.protocols.WWCP
                 try
                 {
 
-                    return _ChargingPools.
-                               GetById(ChargingPoolId).
-                               UpdateWith(new ChargingPool(ChargingPoolId,
-                                                           this,
-                                                           Configurator,
-                                                           null,
-                                                           new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
-                                                           new Timestamped<ChargingPoolStatusTypes>(DateTime.MinValue, ChargingPoolStatusTypes.Available)));
+                    var existingChargingPool = _ChargingPools.GetById(Id);
+
+                    if (existingChargingPool is not null)
+                        return existingChargingPool.UpdateWith(new ChargingPool(Id,
+                                                                                this,
+                                                                                Name,
+                                                                                Description,
+                                                                                Configurator,
+                                                                                null,
+                                                                                new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
+                                                                                new Timestamped<ChargingPoolStatusTypes>     (DateTime.MinValue, ChargingPoolStatusTypes.     Available)));
 
                 } catch (Exception e)
                 {

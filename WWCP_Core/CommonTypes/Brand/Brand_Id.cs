@@ -178,8 +178,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Brand_Id Clone
 
-            => new Brand_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

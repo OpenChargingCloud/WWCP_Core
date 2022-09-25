@@ -248,6 +248,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             ChargingStationOperatorId = default;
 
+            if (Text is null)
+                return false;
+
+            Text = Text.Trim();
+
             if (Text.IsNullOrEmpty())
                 return false;
 
@@ -346,7 +351,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStationOperator_Id Clone
 
             => new (CountryCode,
-                    new String(Suffix.ToCharArray()),
+                    new String((Suffix ?? "").ToCharArray()),
                     Format);
 
         #endregion

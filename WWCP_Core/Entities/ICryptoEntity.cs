@@ -17,16 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
-using Org.BouncyCastle.Bcpg.OpenPgp;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Asn1.X9;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -40,14 +35,14 @@ namespace cloud.charging.open.protocols.WWCP
     public interface ICryptoEntity : IEntity
     {
 
-        String                  EllipticCurve            { get; }
-        X9ECParameters          ECP                      { get; }
-        ECDomainParameters      ECSpec                   { get; }
-        FpCurve                 C                        { get; }
-        ECPrivateKeyParameters  PrivateKey               { get; }
-        PublicKeyCertificates   PublicKeyCertificates    { get; }
+        String?                  EllipticCurve            { get; }
+        X9ECParameters?          ECP                      { get; }
+        ECDomainParameters?      ECSpec                   { get; }
+        FpCurve?                 C                        { get; }
+        ECPrivateKeyParameters?  PrivateKey               { get; }
+        PublicKeyCertificates?   PublicKeyCertificates    { get; }
 
-        Signature               Signature                { get; }
+        Signature?               Signature                { get; }
 
         Signature Sign();
 

@@ -675,9 +675,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = RoamingNetwork_Id.Parse("555").GetHashCode();
-            var _SensorHashCode2 = RoamingNetwork_Id.Parse("555").GetHashCode();
-            Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
+            var hashCode1 = RoamingNetwork_Id.Parse("555").GetHashCode();
+            var hashCode2 = RoamingNetwork_Id.Parse("555").GetHashCode();
+            Assert.AreEqual(hashCode1, hashCode2);
         }
 
         #endregion
@@ -690,9 +690,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = RoamingNetwork_Id.Parse("001").GetHashCode();
-            var _SensorHashCode2 = RoamingNetwork_Id.Parse("002").GetHashCode();
-            Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
+            var hashCode1 = RoamingNetwork_Id.Parse("001").GetHashCode();
+            var hashCode2 = RoamingNetwork_Id.Parse("002").GetHashCode();
+            Assert.AreNotEqual(hashCode1, hashCode2);
         }
 
         #endregion

@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingProduct_Id Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

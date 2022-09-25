@@ -178,8 +178,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public CSORoamingProvider_Id Clone
 
-            => new CSORoamingProvider_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

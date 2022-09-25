@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Auth_Token Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

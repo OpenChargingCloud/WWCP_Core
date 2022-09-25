@@ -169,8 +169,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public RFIDUID7 Clone
 
-            => new RFIDUID7(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

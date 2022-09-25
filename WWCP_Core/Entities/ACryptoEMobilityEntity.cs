@@ -47,20 +47,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        public I18NString              Name                     { get; }
-        public IRoamingNetwork         RoamingNetwork           { get; }
+        public IRoamingNetwork          RoamingNetwork           { get; }
 
-        public String                  EllipticCurve            { get; }
-        public X9ECParameters          ECP                      { get; }
-        public ECDomainParameters      ECSpec                   { get; }
-        public FpCurve                 C                        { get; }
-        public ECPrivateKeyParameters  PrivateKey               { get; protected set; }
-        public PublicKeyCertificates   PublicKeyCertificates    { get; protected set; }
+        public String                   EllipticCurve            { get; }
+        public X9ECParameters?          ECP                      { get; }
+        public ECDomainParameters?      ECSpec                   { get; }
+        public FpCurve?                 C                        { get; }
+        public ECPrivateKeyParameters?  PrivateKey               { get; protected set; }
+        public PublicKeyCertificates?   PublicKeyCertificates    { get; protected set; }
 
         /// <summary>
         /// The cryptographical signature of this entity.
         /// </summary>
-        public Signature?              Signature                { get; protected set; }
+        public Signature?               Signature                { get; protected set; }
 
         #endregion
 
@@ -71,9 +70,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         protected ACryptoEMobilityEntity(TId                         Id,
-                                         I18NString                  Name,
                                          IRoamingNetwork             RoamingNetwork,
-                                         String                      EllipticCurve                = "P-256",
+
+                                         I18NString?                 Name                         = null,
+                                         I18NString?                 Description                  = null,
+
+                                         String?                     EllipticCurve                = "P-256",
                                          ECPrivateKeyParameters?     PrivateKey                   = null,
                                          PublicKeyCertificates?      PublicKeyCertificates        = null,
 
@@ -89,6 +91,8 @@ namespace cloud.charging.open.protocols.WWCP
                                          UserDefinedDictionary?      InternalData                 = null)
 
             : base(Id,
+                   Name,
+                   Description,
                    InitialAdminStatus,
                    InitialStatus,
                    MaxAdminStatusScheduleSize,
@@ -100,9 +104,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.Name                   = Name;
-            this.RoamingNetwork         = RoamingNetwork;
-            this.EllipticCurve          = EllipticCurve ?? "P-256";
+            this.RoamingNetwork         = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The roaming network must not be null!");
+            this.EllipticCurve          = EllipticCurve  ?? "P-256";
             this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
             this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
             this.C                      = (FpCurve) ECSpec.Curve;

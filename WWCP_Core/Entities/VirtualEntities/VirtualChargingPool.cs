@@ -76,38 +76,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public ChargingStationOperator_Id OperatorId
             => Id.OperatorId;
 
-        #region Description
-
-        internal I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of this charging pool.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-
-                return _Description;
-
-            }
-
-            set
-            {
-
-                if (value == _Description)
-                    return;
-
-                _Description = value;
-
-            }
-
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
@@ -116,38 +84,52 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Create a new virtual charging pool.
         /// </summary>
         public VirtualChargingPool(ChargingPool_Id               Id,
-                                   I18NString                    Name,
                                    IRoamingNetwork               RoamingNetwork,
-                                   I18NString                    Description              = null,
-                                   ChargingPoolAdminStatusTypes  InitialAdminStatus       = ChargingPoolAdminStatusTypes.Operational,
-                                   ChargingPoolStatusTypes       InitialStatus            = ChargingPoolStatusTypes.Available,
-                                   String                        EllipticCurve            = "P-256",
-                                   ECPrivateKeyParameters        PrivateKey               = null,
-                                   PublicKeyCertificates         PublicKeyCertificates    = null,
-                                   TimeSpan?                     SelfCheckTimeSpan        = null,
-                                   UInt16                        MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                   UInt16                        MaxStatusListSize        = DefaultMaxStatusListSize)
+                                   I18NString?                   Name                         = null,
+                                   I18NString?                   Description                  = null,
+                                   ChargingPoolAdminStatusTypes  InitialAdminStatus           = ChargingPoolAdminStatusTypes.Operational,
+                                   ChargingPoolStatusTypes       InitialStatus                = ChargingPoolStatusTypes.Available,
+                                   String                        EllipticCurve                = "P-256",
+                                   ECPrivateKeyParameters?       PrivateKey                   = null,
+                                   PublicKeyCertificates?        PublicKeyCertificates        = null,
+                                   TimeSpan?                     SelfCheckTimeSpan            = null,
+                                   UInt16?                       MaxAdminStatusScheduleSize   = null,
+                                   UInt16?                       MaxStatusScheduleSize        = null,
+
+                                   String?                       DataSource                   = null,
+                                   DateTime?                     LastChange                   = null,
+
+                                   JObject?                      CustomData                   = null,
+                                   UserDefinedDictionary?        InternalData                 = null)
 
             : base(Id,
-                   Name,
                    RoamingNetwork,
+                   Name,
+                   Description,
                    EllipticCurve,
                    PrivateKey,
-                   PublicKeyCertificates)
+                   PublicKeyCertificates,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusListSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusListSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
+                   InternalData)
 
         {
 
             #region Init data and properties
 
-            this._Description          = Description ?? I18NString.Empty;
-
-            this._ChargingStations     = new HashSet<IRemoteChargingStation>();
+            this.chargingStations     = new HashSet<IRemoteChargingStation>();
 
             #endregion
 
             #region Setup crypto
 
-            if (PrivateKey == null && PublicKeyCertificates == null)
+            if (PrivateKey            is null &&
+                PublicKeyCertificates is null)
             {
 
                 var generator = GeneratorUtilities.GetKeyPairGenerator("ECDH");
@@ -199,7 +181,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE RemoteEVSE)
         {
 
-            foreach (var station in _ChargingStations)
+            foreach (var station in chargingStations)
             {
 
                 if (station.TryGetEVSEById(EVSEId, out RemoteEVSE))
@@ -220,13 +202,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region Stations
 
-        private readonly HashSet<IRemoteChargingStation> _ChargingStations;
+        private readonly HashSet<IRemoteChargingStation> chargingStations;
 
         /// <summary>
         /// All registered charging stations.
         /// </summary>
         public IEnumerable<IRemoteChargingStation> ChargingStations
-            => _ChargingStations;
+            => chargingStations;
 
         #endregion
 
@@ -240,25 +222,25 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Configurator">An optional delegate to configure the new charging station after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the charging station.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                                  ChargingStationId,
-                                                           I18NString                                          Name,
-                                                           I18NString                                          Description              = null,
-                                                           ChargingStationAdminStatusTypes                     InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
-                                                           ChargingStationStatusTypes                          InitialStatus            = ChargingStationStatusTypes.Available,
-                                                           String                                              EllipticCurve            = "P-256",
-                                                           ECPrivateKeyParameters                              PrivateKey               = null,
-                                                           PublicKeyCertificates                               PublicKeyCertificates    = null,
-                                                           TimeSpan?                                           SelfCheckTimeSpan        = null,
-                                                           Action<VirtualChargingStation>                      Configurator             = null,
-                                                           Action<VirtualChargingStation>                      OnSuccess                = null,
-                                                           Action<VirtualChargingStation, ChargingStation_Id>  OnError                  = null,
-                                                           UInt16                                              MaxAdminStatusListSize   = VirtualChargingStation.DefaultMaxAdminStatusListSize,
-                                                           UInt16                                              MaxStatusListSize        = VirtualChargingStation.DefaultMaxStatusListSize)
+        public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                                   ChargingStationId,
+                                                           I18NString?                                          Name                         = null,
+                                                           I18NString?                                          Description                  = null,
+                                                           ChargingStationAdminStatusTypes?                     InitialAdminStatus           = null,
+                                                           ChargingStationStatusTypes?                          InitialStatus                = null,
+                                                           String?                                              EllipticCurve                = null,
+                                                           ECPrivateKeyParameters?                              PrivateKey                   = null,
+                                                           PublicKeyCertificates?                               PublicKeyCertificates        = null,
+                                                           TimeSpan?                                            SelfCheckTimeSpan            = null,
+                                                           Action<VirtualChargingStation>?                      Configurator                 = null,
+                                                           Action<VirtualChargingStation>?                      OnSuccess                    = null,
+                                                           Action<VirtualChargingStation, ChargingStation_Id>?  OnError                      = null,
+                                                           UInt16?                                              MaxAdminStatusScheduleSize   = null,
+                                                           UInt16?                                              MaxStatusScheduleSize        = null)
         {
 
             #region Initial checks
 
-            if (_ChargingStations.Any(station => station.Id == ChargingStationId))
+            if (chargingStations.Any(station => station.Id == ChargingStationId))
             {
                 throw new Exception("StationAlreadyExistsInPool");
                 //if (OnError == null)
@@ -271,21 +253,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             var Now              = Timestamp.Now;
             var _VirtualStation  = new VirtualChargingStation(ChargingStationId,
-                                                              Name,
                                                               RoamingNetwork,
+                                                              Name,
                                                               Description,
-                                                              InitialAdminStatus,
-                                                              InitialStatus,
+                                                              InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                              InitialStatus      ?? ChargingStationStatusTypes.     Available,
                                                               EllipticCurve,
                                                               PrivateKey,
                                                               PublicKeyCertificates,
                                                               SelfCheckTimeSpan,
-                                                              MaxAdminStatusListSize,
-                                                              MaxStatusListSize);
+                                                              MaxAdminStatusScheduleSize,
+                                                              MaxStatusScheduleSize);
 
             Configurator?.Invoke(_VirtualStation);
 
-            if (_ChargingStations.Add(_VirtualStation))
+            if (chargingStations.Add(_VirtualStation))
             {
 
                 //_VirtualEVSE.OnPropertyChanged        += (Timestamp, Sender, PropertyName, OldValue, NewValue)
@@ -317,14 +299,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of an ChargingStation.</param>
         public Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId)
-            => _ChargingStations.Any(evse => evse.Id == ChargingStationId);
+            => chargingStations.Any(evse => evse.Id == ChargingStationId);
 
         #endregion
 
         #region GetChargingStationById(ChargingStationId)
 
         public IRemoteChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
-            => _ChargingStations.FirstOrDefault(evse => evse.Id == ChargingStationId);
+            => chargingStations.FirstOrDefault(evse => evse.Id == ChargingStationId);
 
         #endregion
 
@@ -347,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IRemoteChargingStation RemoteChargingStation)
         {
 
-            foreach (var station in _ChargingStations)
+            foreach (var station in chargingStations)
             {
 
                 if (station.TryGetEVSEById(EVSEId, out IRemoteEVSE RemoteEVSE))
@@ -693,7 +675,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                         var results = new List<ReservationResult>();
 
-                        foreach (var remoteStation2 in _ChargingStations)
+                        foreach (var remoteStation2 in chargingStations)
                         {
 
                             results.Add(await remoteStation2.
@@ -929,7 +911,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     }
 
-                    foreach (var chargingStation in _ChargingStations)
+                    foreach (var chargingStation in chargingStations)
                     {
 
                         result = await chargingStation.CancelReservation(ReservationId,
@@ -1394,7 +1376,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (!TryGetChargingSessionById(SessionId, out ChargingSession chargingSession))
                     {
 
-                        foreach (var remoteStation in _ChargingStations)
+                        foreach (var remoteStation in chargingStations)
                         {
 
                             result = await remoteStation.

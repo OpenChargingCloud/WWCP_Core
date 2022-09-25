@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -75,37 +76,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         IId ISendChargeDetailRecords.Id
             => Id;
-
-        #region Description
-
-        private I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of the EVSE Operator.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Description != value)
-                    SetProperty(ref _Description, value);
-
-            }
-
-        }
-
-        #endregion
 
         #region Logo
 
@@ -492,34 +462,50 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal eMobilityProvider(eMobilityProvider_Id                    Id,
-                                   RoamingNetwork                          RoamingNetwork,
-                                   Action<eMobilityProvider>               Configurator                     = null,
-                                   RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator   = null,
-                                   I18NString                              Name                             = null,
-                                   I18NString                              Description                      = null,
-                                   eMobilityProviderPriority               Priority                         = null,
-                                   eMobilityProviderAdminStatusTypes       AdminStatus                      = eMobilityProviderAdminStatusTypes.Operational,
-                                   eMobilityProviderStatusTypes            Status                           = eMobilityProviderStatusTypes.Available,
-                                   UInt16                                  MaxAdminStatusListSize           = DefaultMaxAdminStatusListSize,
-                                   UInt16                                  MaxStatusListSize                = DefaultMaxStatusListSize)
+        internal eMobilityProvider(eMobilityProvider_Id                     Id,
+                                   RoamingNetwork                           RoamingNetwork,
+
+                                   I18NString?                              Name                             = null,
+                                   I18NString?                              Description                      = null,
+                                   Action<eMobilityProvider>?               Configurator                     = null,
+                                   RemoteEMobilityProviderCreatorDelegate?  RemoteEMobilityProviderCreator   = null,
+                                   eMobilityProviderPriority?               Priority                         = null,
+                                   eMobilityProviderAdminStatusTypes?       InitialAdminStatus               = null,
+                                   eMobilityProviderStatusTypes?            InitialStatus                    = null,
+                                   UInt16?                                  MaxAdminStatusScheduleSize       = null,
+                                   UInt16?                                  MaxStatusScheduleSize            = null,
+
+                                   String?                                  DataSource                       = null,
+                                   DateTime?                                LastChange                       = null,
+
+                                   JObject?                                 CustomData                       = null,
+                                   UserDefinedDictionary?                   InternalData                     = null)
 
             : base(Id,
+                   RoamingNetwork,
                    Name,
-                   RoamingNetwork)
+                   Description,
+                   null,
+                   null,
+                   null,
+                   InitialAdminStatus         ?? eMobilityProviderAdminStatusTypes.Operational,
+                   InitialStatus              ?? eMobilityProviderStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
+                   InternalData)
 
         {
 
             #region Initial checks
 
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(eMobilityProvider),  "The roaming network must not be null!");
 
             #endregion
 
             #region Init data and properties
 
-            this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new ReactiveSet<DataLicense>();
 
             this.Priority                     = Priority    ?? new eMobilityProviderPriority(0);

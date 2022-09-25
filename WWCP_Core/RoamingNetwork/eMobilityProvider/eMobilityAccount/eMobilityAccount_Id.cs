@@ -563,9 +563,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public eMobilityAccount_Id Clone
 
-            => new eMobilityAccount_Id(new String(InternalId.ToCharArray()),
-                                       ProviderId.Clone,
-                                       Suffix);
+            => new (
+                   new String(InternalId?.ToCharArray()),
+                   ProviderId.Clone,
+                   new String(Suffix?.ToCharArray())
+               );
 
         #endregion
 

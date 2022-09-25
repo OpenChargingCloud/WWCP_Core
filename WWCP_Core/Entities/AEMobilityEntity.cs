@@ -71,7 +71,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// The global unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public TId               Id             { get; }
+        public TId                     Id                       { get; }
+
+        /// <summary>
+        /// The multi-language name of this entity.
+        /// </summary>
+        [Mandatory]
+        public I18NString              Name                     { get; protected set; }
+
+        /// <summary>
+        /// The multi-language description of this entity.
+        /// </summary>
+        [Mandatory]
+        public I18NString              Description              { get; protected set; }
+
 
 
         #region AdminStatus
@@ -234,6 +247,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique entity identification.</param>
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
         public AEMobilityEntity(TId                         Id,
+                                I18NString?                 Name                         = null,
+                                I18NString?                 Description                  = null,
+
                                 Timestamped<TAdminStatus>?  InitialAdminStatus           = null,
                                 Timestamped<TStatus>?       InitialStatus                = null,
                                 UInt16                      MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
@@ -258,6 +274,8 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
             this.Id                    = Id;
+            this.Name                  = Name        ?? I18NString.Empty;
+            this.Name                  = Description ?? I18NString.Empty;
 
             this.adminStatusSchedule   = new StatusSchedule<TAdminStatus>(MaxAdminStatusScheduleSize);
             this.statusSchedule        = new StatusSchedule<TStatus>     (MaxStatusScheduleSize);

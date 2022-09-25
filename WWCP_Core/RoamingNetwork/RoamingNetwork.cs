@@ -85,56 +85,6 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean DisableNetworkSync               { get; set; }
 
 
-        #region Name
-
-        private I18NString name;
-
-        /// <summary>
-        /// The multi-language name of the roaming network.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return name;
-            }
-
-            set
-            {
-                SetProperty(ref name, value);
-            }
-
-        }
-
-        #endregion
-
-        #region Description
-
-        private I18NString description;
-
-        /// <summary>
-        /// An optional multi-language description of the roaming network.
-        /// </summary>
-        [Mandatory]
-        public I18NString Description
-        {
-
-            get
-            {
-                return description;
-            }
-
-            set
-            {
-                SetProperty(ref description, value);
-            }
-
-        }
-
-        #endregion
-
         #region DataLicense
 
         private ReactiveSet<DataLicense> dataLicenses;
@@ -216,6 +166,8 @@ namespace cloud.charging.open.protocols.WWCP
                               UserDefinedDictionary?                     InternalData                                = null)
 
             : base(Id,
+                   Name        ?? new I18NString(Languages.en, "TEST"),
+                   Description ?? new I18NString(Languages.en, "A roaming network for testing purposes"),
                    InitialAdminStatus,
                    InitialStatus,
                    MaxAdminStatusListSize,
@@ -229,8 +181,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.name                                               = Name        ?? new I18NString(Languages.en, "TEST");
-            this.description                                        = Description ?? new I18NString(Languages.en, "A roaming network for testing purposes");
             this.dataLicenses                                       = new ReactiveSet<DataLicense>();
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
@@ -820,47 +770,45 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region CreateNewParkingOperator(ParkingOperatorId, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateNewParkingOperator(Id, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new parking operator having the given
         /// unique parking operator identification.
         /// </summary>
-        /// <param name="ParkingOperatorId">The unique identification of the new parking operator.</param>
+        /// <param name="Id">The unique identification of the new parking operator.</param>
         /// <param name="Name">The offical (multi-language) name of the parking operator.</param>
         /// <param name="Description">An optional (multi-language) description of the parking operator.</param>
         /// <param name="Configurator">An optional delegate to configure the new parking operator before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new parking operator after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the parking operator failed.</param>
-        public ParkingOperator
-
-            CreateNewParkingOperator(ParkingOperator_Id                          ParkingOperatorId,
-                                     I18NString                                  Name                          = null,
-                                     I18NString                                  Description                   = null,
-                                     Action<ParkingOperator>                     Configurator                  = null,
-                                     RemoteParkingOperatorCreatorDelegate        RemoteParkingOperatorCreator  = null,
-                                     ParkingOperatorAdminStatusTypes              AdminStatus                   = ParkingOperatorAdminStatusTypes.Operational,
-                                     ParkingOperatorStatusTypes                   Status                        = ParkingOperatorStatusTypes.Available,
-                                     Action<ParkingOperator>                     OnSuccess                     = null,
-                                     Action<RoamingNetwork, ParkingOperator_Id>  OnError                       = null)
+        public ParkingOperator? CreateNewParkingOperator(ParkingOperator_Id                           Id,
+                                                         I18NString?                                  Name                           = null,
+                                                         I18NString?                                  Description                    = null,
+                                                         Action<ParkingOperator>?                     Configurator                   = null,
+                                                         RemoteParkingOperatorCreatorDelegate?        RemoteParkingOperatorCreator   = null,
+                                                         ParkingOperatorAdminStatusTypes?             InititalAdminStatus            = ParkingOperatorAdminStatusTypes.Operational,
+                                                         ParkingOperatorStatusTypes?                  InititalStatus                 = ParkingOperatorStatusTypes.Available,
+                                                         Action<ParkingOperator>?                     OnSuccess                      = null,
+                                                         Action<RoamingNetwork, ParkingOperator_Id>?  OnError                        = null)
 
         {
 
             #region Initial checks
 
-            if (ParkingOperatorId == null)
-                throw new ArgumentNullException(nameof(ParkingOperatorId),  "The given parking operator identification must not be null!");
+            if (Id == null)
+                throw new ArgumentNullException(nameof(Id),  "The given parking operator identification must not be null!");
 
             #endregion
 
-            var _ParkingOperator = new ParkingOperator(ParkingOperatorId,
+            var _ParkingOperator = new ParkingOperator(Id,
                                                        this,
-                                                       Configurator,
-                                                       RemoteParkingOperatorCreator,
                                                        Name,
                                                        Description,
-                                                       AdminStatus,
-                                                       Status);
+                                                       Configurator,
+                                                       RemoteParkingOperatorCreator,
+                                                       InititalAdminStatus,
+                                                       InititalStatus);
 
 
             if (_ParkingOperators.TryAdd(_ParkingOperator, OnSuccess))
@@ -896,7 +844,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            throw new ParkingOperatorAlreadyExists(this, ParkingOperatorId);
+            throw new ParkingOperatorAlreadyExists(this, Id);
 
         }
 
@@ -1200,33 +1148,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
-        public eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id                          ProviderId,
-                                                         I18NString                                    Name                            = null,
-                                                         I18NString                                    Description                     = null,
-                                                         eMobilityProviderPriority                     Priority                        = null,
-                                                         Action<eMobilityProvider>                     Configurator                    = null,
-                                                         RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
-                                                         eMobilityProviderAdminStatusTypes             AdminStatus                     = eMobilityProviderAdminStatusTypes.Operational,
-                                                         eMobilityProviderStatusTypes                  Status                          = eMobilityProviderStatusTypes.Available,
-                                                         Action<eMobilityProvider>                     OnSuccess                       = null,
-                                                         Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
+        public eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id                           ProviderId,
+                                                         I18NString?                                    Name                             = null,
+                                                         I18NString?                                    Description                      = null,
+                                                         eMobilityProviderPriority?                     Priority                         = null,
+                                                         Action<eMobilityProvider>?                     Configurator                     = null,
+                                                         RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
+                                                         eMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
+                                                         eMobilityProviderStatusTypes?                  InitialStatus                    = null,
+                                                         Action<eMobilityProvider>?                     OnSuccess                        = null,
+                                                         Action<RoamingNetwork, eMobilityProvider_Id>?  OnError                          = null)
         {
 
             lock (_ChargingStationOperators)
             {
 
-                var _eMobilityProviderProxy = new eMobilityProvider(ProviderId,
-                                                                    this,
-                                                                    Configurator,
-                                                                    RemoteEMobilityProviderCreator,
-                                                                    Name,
-                                                                    Description,
-                                                                    Priority,
-                                                                    AdminStatus,
-                                                                    Status);
+                var eMobilityProviderProxy = new eMobilityProvider(ProviderId,
+                                                                   this,
+                                                                   Name,
+                                                                   Description,
+                                                                   Configurator,
+                                                                   RemoteEMobilityProviderCreator,
+                                                                   Priority,
+                                                                   InitialAdminStatus ?? eMobilityProviderAdminStatusTypes.Operational,
+                                                                   InitialStatus      ?? eMobilityProviderStatusTypes.Available);
 
 
-                if (_eMobilityProviders.TryAdd(_eMobilityProviderProxy, OnSuccess))
+                if (_eMobilityProviders.TryAdd(eMobilityProviderProxy, OnSuccess))
                 {
 
                     // _eMobilityProviders.OnDataChanged         += UpdateData;
@@ -1236,15 +1184,15 @@ namespace cloud.charging.open.protocols.WWCP
                     //_EMobilityProvider.OnEMobilityStationAddition
 
                     //AddIRemotePushData               (_EMobilityProvider);
-                    _ISendAdminStatus.Add              (_eMobilityProviderProxy);
-                    _ISendStatus.Add                   (_eMobilityProviderProxy);
-                    _ISend2RemoteAuthorizeStartStop.Add(_eMobilityProviderProxy);
-                    _IRemoteSendChargeDetailRecord.Add (_eMobilityProviderProxy);
+                    _ISendAdminStatus.Add              (eMobilityProviderProxy);
+                    _ISendStatus.Add                   (eMobilityProviderProxy);
+                    _ISend2RemoteAuthorizeStartStop.Add(eMobilityProviderProxy);
+                    _IRemoteSendChargeDetailRecord.Add (eMobilityProviderProxy);
 
 
                     // Link events!
 
-                    return _eMobilityProviderProxy;
+                    return eMobilityProviderProxy;
 
                 }
 
@@ -1416,40 +1364,40 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create and register a new e-mobility (service) provider having the given
         /// unique smart city identification.
         /// </summary>
-        /// <param name="SmartCityId">The unique identification of the new smart city.</param>
+        /// <param name="Id">The unique identification of the new smart city.</param>
         /// <param name="Name">The offical (multi-language) name of the smart city.</param>
         /// <param name="Description">An optional (multi-language) description of the smart city.</param>
         /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
-        public SmartCityProxy CreateNewSmartCity(SmartCity_Id                      SmartCityId,
-                                            I18NString                            Name                     = null,
-                                            I18NString                            Description              = null,
-                                            SmartCityPriority                     Priority                 = null,
-                                            SmartCityAdminStatusTypes              AdminStatus              = SmartCityAdminStatusTypes.Available,
-                                            SmartCityStatusTypes                   Status                   = SmartCityStatusTypes.Available,
-                                            Action<SmartCityProxy>                 Configurator             = null,
-                                            Action<SmartCityProxy>                 OnSuccess                = null,
-                                            Action<RoamingNetwork, SmartCity_Id>  OnError                  = null,
-                                            RemoteSmartCityCreatorDelegate        RemoteSmartCityCreator   = null)
+        public SmartCityProxy? CreateNewSmartCity(SmartCity_Id                           Id,
+                                                  I18NString?                            Name                     = null,
+                                                  I18NString?                            Description              = null,
+                                                  SmartCityPriority?                     Priority                 = null,
+                                                  SmartCityAdminStatusTypes?             InitialAdminStatus       = SmartCityAdminStatusTypes.Available,
+                                                  SmartCityStatusTypes?                  InitialStatus            = SmartCityStatusTypes.Available,
+                                                  Action<SmartCityProxy>?                Configurator             = null,
+                                                  Action<SmartCityProxy>?                OnSuccess                = null,
+                                                  Action<RoamingNetwork, SmartCity_Id>?  OnError                  = null,
+                                                  RemoteSmartCityCreatorDelegate?        RemoteSmartCityCreator   = null)
         {
 
             #region Initial checks
 
-            if (SmartCityId == null)
-                throw new ArgumentNullException(nameof(SmartCityId),  "The given smart city identification must not be null!");
+            if (Id == null)
+                throw new ArgumentNullException(nameof(Id),  "The given smart city identification must not be null!");
 
             #endregion
 
-            var _SmartCity = new SmartCityProxy(SmartCityId,
-                                               Name,
-                                               this,
-                                               Description,
-                                               Configurator,
-                                               RemoteSmartCityCreator,
-                                               Priority,
-                                               AdminStatus,
-                                               Status);
+            var _SmartCity = new SmartCityProxy(Id,
+                                                this,
+                                                Name,
+                                                Description,
+                                                Configurator,
+                                                RemoteSmartCityCreator,
+                                                Priority,
+                                                InitialAdminStatus,
+                                                InitialStatus);
 
 
             if (_SmartCities.TryAdd(_SmartCity, OnSuccess))
@@ -1461,7 +1409,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            throw new SmartCityAlreadyExists(this, SmartCityId);
+            throw new SmartCityAlreadyExists(this, Id);
 
         }
 

@@ -178,8 +178,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public EMPRoamingProvider_Id Clone
 
-            => new EMPRoamingProvider_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

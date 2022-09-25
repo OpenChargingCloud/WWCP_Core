@@ -60,13 +60,13 @@ namespace cloud.charging.open.protocols.WWCP
                                                          String                AdditionalSuffix)
         {
 
-            var Suffix = ChargingPoolId.Suffix;
+            var suffix = ChargingPoolId.Suffix;
 
             // (P)OOL => (S)TATION
-            if (Suffix.StartsWith("OOL", StringComparison.Ordinal))
-                Suffix = String.Concat("TATION", Suffix.AsSpan(3));
+            if (suffix.StartsWith("OOL", StringComparison.Ordinal))
+                suffix = String.Concat("TATION", suffix.AsSpan(3));
 
-            return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, Suffix + AdditionalSuffix ?? "");
+            return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, suffix + (AdditionalSuffix ?? ""));
 
         }
 
@@ -144,17 +144,17 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region Generate(EVSEOperatorId, Address, GeoLocation, Length = 50, Mapper = null)
+        #region (static) Generate (ChargingStationOperatorId, Address, GeoLocation, Length = 50, Mapper = null)
 
         /// <summary>
-        /// Create a valid charging pool identification based on the given parameters.
+        /// Generate a new charging pool identification based on the given parameters.
         /// </summary>
-        /// <param name="OperatorId">The identification of an Charging Station Operator.</param>
+        /// <param name="ChargingStationOperatorId">The identification of the charging station operator.</param>
         /// <param name="Address">The address of the charging pool.</param>
         /// <param name="GeoLocation">The geo location of the charging pool.</param>
         /// <param name="Length">The maximum size of the generated charging pool identification suffix [12 &lt; n &lt; 50].</param>
         /// <param name="Mapper">A delegate to modify a generated charging pool identification suffix.</param>
-        public static ChargingPool_Id Generate(ChargingStationOperator_Id  OperatorId,
+        public static ChargingPool_Id Generate(ChargingStationOperator_Id  ChargingStationOperatorId,
                                                Address                     Address,
                                                GeoCoordinate?              GeoLocation       = default,
                                                String?                     PoolName          = default,
@@ -171,18 +171,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             var Suffix = SHA256.HashData(Encoding.UTF8.GetBytes(
                                              String.Concat(
-                                                 OperatorId.  ToString(),
-                                                 Address.     ToString(),
-                                                 GeoLocation?.ToString() ?? "",
-                                                 PoolName                ?? "",
-                                                 PoolDescription         ?? ""
+                                                 ChargingStationOperatorId.ToString(),
+                                                 Address.                  ToString(),
+                                                 GeoLocation?.             ToString() ?? "",
+                                                 PoolName                             ?? "",
+                                                 PoolDescription                      ?? ""
                                              )
                                          )).
                                          ToHexString().
                                          SubstringMax(Length).
                                          ToUpper();
 
-            return Parse(OperatorId,
+            return Parse(ChargingStationOperatorId,
                          Mapper is not null
                             ? Mapper(Suffix)
                             : Suffix);
@@ -191,16 +191,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Random  (OperatorId, Mapper = null)
+        #region (static) NewRandom(OperatorId, Mapper = null)
 
         /// <summary>
         /// Generate a new unique identification of a charging pool identification.
         /// </summary>
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging pool identification.</param>
-        public static ChargingPool_Id Random(ChargingStationOperator_Id  OperatorId,
-                                             Func<String, String>?       Mapper  = null)
-
+        public static ChargingPool_Id NewRandom(ChargingStationOperator_Id  OperatorId,
+                                                Func<String, String>?       Mapper  = null)
 
             => new (OperatorId,
                     Mapper is not null
@@ -209,7 +208,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Parse   (Text)
+
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given string as a charging pool identification.
@@ -228,21 +228,26 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Parse   (OperatorId, Suffix)
+        #region (static) Parse    (ChargingStationOperatorId, Suffix)
 
         /// <summary>
         /// Parse the given string as a charging pool identification.
         /// </summary>
-        /// <param name="OperatorId">The unique identification of a charging pool operator.</param>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging pool operator.</param>
         /// <param name="Suffix">The suffix of the charging pool identification.</param>
-        public static ChargingPool_Id Parse(ChargingStationOperator_Id  OperatorId,
+        public static ChargingPool_Id Parse(ChargingStationOperator_Id  ChargingStationOperatorId,
                                             String                      Suffix)
 
-            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*P" + Suffix);
+            => ChargingStationOperatorId.Format switch {
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingStationOperatorId.ToString(),                           "*P", Suffix)),
+                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingStationOperatorId.ToString(),                            "P", Suffix)),
+                   _                           => Parse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*P", Suffix))
+               };
 
         #endregion
 
-        #region TryParse(Text)
+
+        #region (static) TryParse(Text)
 
         /// <summary>
         /// Parse the given string as a charging pool identification.
@@ -259,18 +264,48 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryParse(Text, out ChargingPoolId)
+        #region (static) TryParse(ChargingStationOperatorId, Suffix)
 
         /// <summary>
         /// Parse the given string as a charging pool identification.
         /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging pool identification.</param>
+        public static ChargingPool_Id? TryParse(ChargingStationOperator_Id  ChargingStationOperatorId,
+                                                String                      Suffix)
+
+            => ChargingStationOperatorId.Format switch {
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                           "*P", Suffix)),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                            "P", Suffix)),
+                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*P", Suffix))
+               };
+
+        #endregion
+
+
+        #region (static) TryParse(Text, out ChargingPoolId)
+
+        /// <summary>
+        /// Parse the given string as a charging pool identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging pool identification.</param>
+        /// <param name="ChargingPoolId">The parsed charging pool identification.</param>
         public static Boolean TryParse(String Text, out ChargingPool_Id ChargingPoolId)
         {
 
+            #region Initial checks
+
             ChargingPoolId = default;
+
+            if (Text is null)
+                return false;
+
+            Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
                 return false;
+
+            #endregion
 
             try
             {
@@ -300,6 +335,26 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) TryParse(ChargingPoolOperatorId, Suffix, out ChargingPoolId)
+
+        /// <summary>
+        /// Parse the given charging station operator identification and suffix as a charging pool identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging pool identification.</param>
+        public static Boolean TryParse(ChargingStationOperator_Id  ChargingStationOperatorId,
+                                       String                      Suffix,
+                                       out ChargingPool_Id         ChargingPoolId)
+
+            => ChargingStationOperatorId.Format switch {
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                           "*S", Suffix), out ChargingPoolId),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                            "S", Suffix), out ChargingPoolId),
+                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*S", Suffix), out ChargingPoolId)
+               };
+
+        #endregion
+
+
         #region Clone
 
         /// <summary>
@@ -308,7 +363,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingPool_Id Clone
 
             => new (OperatorId.Clone,
-                    new String(Suffix?.ToCharArray() ?? Array.Empty<Char>()));
+                    new String(Suffix?.ToCharArray()));
 
         #endregion
 

@@ -129,8 +129,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public EnergyMeter_Id Clone
 
-            => new EnergyMeter_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

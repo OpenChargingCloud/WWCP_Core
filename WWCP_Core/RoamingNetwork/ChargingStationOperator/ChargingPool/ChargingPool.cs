@@ -355,102 +355,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of this charging pool.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Name != value)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _Name);
-
-                    else
-                        SetProperty(ref _Name, value);
-
-                }
-
-            }
-
-        }
-
-        public I18NString SetName(Languages Language, String Text)
-            => _Name = I18NString.Create(Language, Text);
-
-        public I18NString SetName(I18NString I18NText)
-            => _Name = I18NText;
-
-        public I18NString AddName(Languages Language, String Text)
-            => _Name.Add(Language, Text);
-
-        #endregion
-
-        #region Description
-
-        private I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of this charging pool.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Description != value)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _Description);
-
-                    else
-                        SetProperty(ref _Description, value);
-
-                }
-
-            }
-
-        }
-
-        public I18NString SetDescription(Languages Language, String Text)
-            => _Description = I18NString.Create(Language, Text);
-
-        public I18NString SetDescription(I18NString I18NText)
-            => _Description = I18NText;
-
-        public I18NString AddDescription(Languages Language, String Text)
-            => _Description.Add(Language, Text);
-
-        #endregion
-
         #region Brands
 
         #region BrandAddition
@@ -714,7 +618,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _Address, value);
 
                     // Delete inherited addresses
-                    _ChargingStations.ForEach(station => station.Address = null);
+                    chargingStations.ForEach(station => station.Address = null);
 
                 }
 
@@ -753,7 +657,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _GeoLocation, value);
 
                     // Delete inherited geo locations
-                    _ChargingStations.ForEach(station => station.GeoLocation = null);
+                    chargingStations.ForEach(station => station.GeoLocation = null);
 
                 }
 
@@ -793,7 +697,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _EntranceAddress, value);
 
                     // Delete inherited entrance addresses
-                    _ChargingStations.ForEach(station => station.EntranceAddress = null);
+                    chargingStations.ForEach(station => station.EntranceAddress = null);
 
                 }
 
@@ -833,7 +737,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _EntranceLocation, value);
 
                     // Delete inherited entrance locations
-                    _ChargingStations.ForEach(station => station.EntranceLocation = null);
+                    chargingStations.ForEach(station => station.EntranceLocation = null);
 
                 }
 
@@ -875,7 +779,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _ArrivalInstructions, value);
 
                     // Delete inherited arrival instructions
-                    _ChargingStations.ForEach(station => station.ArrivalInstructions = null);
+                    chargingStations.ForEach(station => station.ArrivalInstructions = null);
 
                 }
 
@@ -916,7 +820,7 @@ namespace cloud.charging.open.protocols.WWCP
                     SetProperty(ref openingTimes, value);
 
                     // Delete inherited opening times
-                    _ChargingStations.ForEach(station => station.OpeningTimes = null);
+                    chargingStations.ForEach(station => station.OpeningTimes = null);
 
                 }
 
@@ -955,7 +859,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _UIFeatures, value);
 
                     // Delete inherited user interface features
-                    _ChargingStations.ForEach(station => station.UIFeatures = null);
+                    chargingStations.ForEach(station => station.UIFeatures = null);
 
                 }
 
@@ -1000,7 +904,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
 
                     // Delete inherited authentication modes
-                    _ChargingStations.ForEach(station => station.AuthenticationModes = null);
+                    chargingStations.ForEach(station => station.AuthenticationModes = null);
 
                 }
 
@@ -1046,7 +950,7 @@ namespace cloud.charging.open.protocols.WWCP
                     }
 
                     // Delete inherited payment options
-                    _ChargingStations.ForEach(station => station.PaymentOptions = null);
+                    chargingStations.ForEach(station => station.PaymentOptions = null);
 
                 }
 
@@ -1082,7 +986,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _Accessibility, value);
 
                     // Delete inherited accessibilities
-                    _ChargingStations.ForEach(station => station.Accessibility = null);
+                    chargingStations.ForEach(station => station.Accessibility = null);
 
                 }
 
@@ -1124,7 +1028,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _PhotoURIs, _PhotoURIs.Set(value));
 
                     // Delete inherited photo uris
-                    _ChargingStations.ForEach(station => station.PhotoURIs = null);
+                    chargingStations.ForEach(station => station.PhotoURIs = null);
 
                 }
 
@@ -1166,7 +1070,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _HotlinePhoneNumber, value);
 
                     // Delete inherited HotlinePhoneNumbers
-                    _ChargingStations.ForEach(station => station.HotlinePhoneNumber = null);
+                    chargingStations.ForEach(station => station.HotlinePhoneNumber = null);
 
                 }
 
@@ -1205,7 +1109,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _GridConnection, value);
 
                     // Delete inherited grid connections
-                    _ChargingStations.ForEach(station => station.GridConnection = null);
+                    chargingStations.ForEach(station => station.GridConnection = null);
 
                 }
 
@@ -1281,7 +1185,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _ExitAddress, value);
 
                     // Delete inherited exit addresses
-                    _ChargingStations.ForEach(station => station.ExitAddress = null);
+                    chargingStations.ForEach(station => station.ExitAddress = null);
 
                 }
 
@@ -1321,7 +1225,7 @@ namespace cloud.charging.open.protocols.WWCP
                         SetProperty(ref _ExitLocation, value);
 
                     // Delete inherited exit locations
-                    _ChargingStations.ForEach(station => station.ExitLocation = null);
+                    chargingStations.ForEach(station => station.ExitLocation = null);
 
                 }
 
@@ -1337,7 +1241,7 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional]
         public Partly IsHubjectCompatible
 
-            => PartlyHelper.Generate(_ChargingStations.Select(station => station.IsHubjectCompatible));
+            => PartlyHelper.Generate(chargingStations.Select(station => station.IsHubjectCompatible));
 
         #endregion
 
@@ -1346,73 +1250,10 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional]
         public Partly DynamicInfoAvailable
 
-            => PartlyHelper.Generate(_ChargingStations.Select(station => station.DynamicInfoAvailable));
+            => PartlyHelper.Generate(chargingStations.Select(station => station.DynamicInfoAvailable));
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ChargingPoolAdminStatusTypes> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<ChargingPoolAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (HistorySize.HasValue)
-                return _AdminStatusSchedule.Take(HistorySize);
-
-            return _AdminStatusSchedule;
-
-        }
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ChargingPoolStatusTypes> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<ChargingPoolStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingPoolStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (HistorySize.HasValue)
-                return _StatusSchedule.Take(HistorySize);
-
-            return _StatusSchedule;
-
-        }
-
-        #endregion
 
         #region StatusAggregationDelegate
 
@@ -1435,13 +1276,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         public ChargingStationOperator  SubOperator    { get; }
-
-
-        /// <summary>
-        /// Optional custom data, e.g. in combination with custom parsers and serializers.
-        /// </summary>
-        [Optional]
-        public JObject                  CustomData     { get; }
 
         #endregion
 
@@ -1473,8 +1307,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
-                            Action<ChargingPool>                        Configurator                 = null,
-                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator    = null,
+                            I18NString?                                 Name                         = null,
+                            I18NString?                                 Description                  = null,
+                            Action<ChargingPool>?                       Configurator                 = null,
+                            RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator    = null,
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
                             UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusScheduleSize,
@@ -1482,6 +1318,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             : this(Id,
                    null,
+                   Name,
+                   Description,
                    Configurator,
                    RemoteChargingPoolCreator,
                    InitialAdminStatus,
@@ -1508,12 +1346,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxPoolAdminStatusScheduleSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
                             ChargingStationOperator                     Operator,
+                            I18NString?                                 Name                             = null,
+                            I18NString?                                 Description                      = null,
                             Action<ChargingPool>?                       Configurator                     = null,
                             RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator        = null,
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
-                            UInt16                                      MaxPoolAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
-                            UInt16                                      MaxPoolStatusScheduleSize        = DefaultMaxStatusScheduleSize,
+                            UInt16?                                     MaxPoolAdminStatusScheduleSize   = null,
+                            UInt16?                                     MaxPoolStatusScheduleSize        = null,
 
                             String?                                     DataSource                       = null,
                             DateTime?                                   LastChange                       = null,
@@ -1522,10 +1362,12 @@ namespace cloud.charging.open.protocols.WWCP
                             UserDefinedDictionary?                      InternalData                     = null)
 
             : base(Id,
+                   Name,
+                   Description,
                    InitialAdminStatus,
                    InitialStatus,
-                   MaxPoolAdminStatusScheduleSize,
-                   MaxPoolStatusScheduleSize,
+                   MaxPoolAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxPoolStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
                    LastChange,
                    CustomData,
@@ -1540,19 +1382,9 @@ namespace cloud.charging.open.protocols.WWCP
             InitialAdminStatus               = InitialAdminStatus != null ? InitialAdminStatus : new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
             InitialStatus                    = InitialStatus      != null ? InitialStatus      : new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
 
-            this._Name                       = new I18NString();
-            this._Description                = new I18NString();
             this._Brands                     = new SpecialHashSet<ChargingPool, Brand_Id, Brand>(this);
 
-            this._AdminStatusSchedule        = new StatusSchedule<ChargingPoolAdminStatusTypes>(MaxPoolAdminStatusScheduleSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
-
-            this._StatusSchedule             = new StatusSchedule<ChargingPoolStatusTypes>(MaxPoolStatusScheduleSize);
-            this._StatusSchedule.Insert(InitialStatus.Value);
-
-            this._ChargingStations           = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
-
-            this.CustomData                  = CustomData ?? new JObject();
+            this.chargingStations            = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
 
             #endregion
 
@@ -1576,11 +1408,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
-
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+
+            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
 
@@ -1707,14 +1539,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStations
 
-        private readonly EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation> _ChargingStations;
+        private readonly EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation> chargingStations;
 
         /// <summary>
         /// Return all charging stations registered within this charing pool.
         /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
 
-            => _ChargingStations;
+            => chargingStations;
 
         #endregion
 
@@ -1728,10 +1560,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeStations == null
 
-                   ? _ChargingStations.
+                   ? chargingStations.
                          Select    (station => station.Id)
 
-                   : _ChargingStations.
+                   : chargingStations.
                          Where     (station => IncludeStations(station)).
                          Select    (station => station.Id);
 
@@ -1747,10 +1579,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeStations == null
 
-                   ? _ChargingStations.
+                   ? chargingStations.
                          Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus))
 
-                   : _ChargingStations.
+                   : chargingStations.
                          Where     (station => IncludeStations(station)).
                          Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus));
 
@@ -1766,10 +1598,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeStations == null
 
-                   ? _ChargingStations.
+                   ? chargingStations.
                          Select    (station => new ChargingStationStatus(station.Id, station.Status))
 
-                   : _ChargingStations.
+                   : chargingStations.
                          Where     (station => IncludeStations(station)).
                          Select    (station => new ChargingStationStatus(station.Id, station.Status));
 
@@ -1814,19 +1646,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
         public ChargingStation CreateChargingStation(ChargingStation_Id                             ChargingStationId,
-                                                     Action<ChargingStation>                        Configurator                   = null,
-                                                     RemoteChargingStationCreatorDelegate           RemoteChargingStationCreator   = null,
+                                                     I18NString?                                    Name                           = null,
+                                                     I18NString?                                    Description                    = null,
+                                                     Action<ChargingStation>?                       Configurator                   = null,
+                                                     RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                                      Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                                      Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                                                     UInt16                                         MaxAdminStatusListSize         = ChargingStation.DefaultMaxAdminStatusScheduleSize,
-                                                     UInt16                                         MaxStatusListSize              = ChargingStation.DefaultMaxStatusScheduleSize,
-                                                     Action<ChargingStation>                        OnSuccess                      = null,
-                                                     Action<ChargingPool, ChargingStation_Id>       OnError                        = null)
+                                                     UInt16?                                        MaxAdminStatusListSize         = null,
+                                                     UInt16?                                        MaxStatusListSize              = null,
+                                                     Action<ChargingStation>?                       OnSuccess                      = null,
+                                                     Action<ChargingPool, ChargingStation_Id>?      OnError                        = null)
         {
 
             #region Initial checks
 
-            if (_ChargingStations.ContainsId(ChargingStationId))
+            if (chargingStations.ContainsId(ChargingStationId))
             {
                 if (OnError == null)
                     throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId);
@@ -1842,6 +1676,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             var _ChargingStation = new ChargingStation(ChargingStationId,
                                                        this,
+                                                       Name,
+                                                       Description,
                                                        Configurator,
                                                        RemoteChargingStationCreator,
                                                        InitialAdminStatus,
@@ -1851,7 +1687,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (ChargingStationAddition.SendVoting(Timestamp.Now, this, _ChargingStation) &&
-                _ChargingStations.TryAdd(_ChargingStation))
+                chargingStations.TryAdd(_ChargingStation))
             {
 
                 _ChargingStation.OnDataChanged                  += UpdateChargingStationData;
@@ -1938,13 +1774,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CreateOrUpdateChargingStation(ChargingStationId, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateOrUpdateChargingStation(Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
         /// unique charging station identification.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the new charging station.</param>
+        /// <param name="Id">The unique identification of the new charging station.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
@@ -1953,54 +1789,64 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public ChargingStation CreateOrUpdateChargingStation(ChargingStation_Id                             ChargingStationId,
-                                                             Action<ChargingStation>                        Configurator                   = null,
-                                                             RemoteChargingStationCreatorDelegate           RemoteChargingStationCreator   = null,
-                                                             Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
-                                                             Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                                                             UInt16                                         MaxAdminStatusListSize         = ChargingStation.DefaultMaxAdminStatusScheduleSize,
-                                                             UInt16                                         MaxStatusListSize              = ChargingStation.DefaultMaxStatusScheduleSize,
-                                                             Action<ChargingStation>                        OnSuccess                      = null,
-                                                             Action<ChargingPool, ChargingStation_Id>       OnError                        = null)
+        public ChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id                             Id,
+                                                              I18NString?                                    Name                           = null,
+                                                              I18NString?                                    Description                    = null,
+                                                              Action<ChargingStation>?                       Configurator                   = null,
+                                                              RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
+                                                              Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
+                                                              Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
+                                                              UInt16?                                        MaxAdminStatusListSize         = null,
+                                                              UInt16?                                        MaxStatusListSize              = null,
+                                                              Action<ChargingStation>?                       OnSuccess                      = null,
+                                                              Action<ChargingPool, ChargingStation_Id>?      OnError                        = null)
         {
 
-            lock (_ChargingStations)
+            lock (chargingStations)
             {
 
                 #region Initial checks
 
-                if (Operator.Id != ChargingStationId.OperatorId)
+                if (Operator.Id != Id.OperatorId)
                     throw new InvalidChargingStationOperatorId(this,
-                                                               ChargingStationId.OperatorId);
+                                                               Id.OperatorId);
 
                 #endregion
 
                 #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
 
-                if (!_ChargingStations.ContainsId(ChargingStationId))
-                    return CreateChargingStation(ChargingStationId,
+                if (!chargingStations.ContainsId(Id))
+                    return CreateChargingStation(Id,
+                                                 Name,
+                                                 Description,
                                                  Configurator,
                                                  RemoteChargingStationCreator,
                                                  InitialAdminStatus,
                                                  InitialStatus,
-                                                 MaxAdminStatusListSize,
-                                                 MaxStatusListSize,
+                                                 MaxAdminStatusListSize ?? ChargingStation.DefaultMaxAdminStatusScheduleSize,
+                                                 MaxStatusListSize      ?? ChargingStation.DefaultMaxStatusScheduleSize,
                                                  OnSuccess,
                                                  OnError);
 
                 #endregion
 
 
+                var existingChargingStation = chargingStations.GetById(Id);
+
                 // Merge existing charging station with new station data...
 
-                return _ChargingStations.
-                           GetById(ChargingStationId).
-                           UpdateWith(new ChargingStation(ChargingStationId,
-                                                          this,
-                                                          Configurator,
-                                                          null,
-                                                          new Timestamped<ChargingStationAdminStatusTypes>(DateTime.MinValue, ChargingStationAdminStatusTypes.Operational),
-                                                          new Timestamped<ChargingStationStatusTypes>(DateTime.MinValue, ChargingStationStatusTypes.Available)));
+                if (existingChargingStation is not null)
+                    return existingChargingStation.
+                               UpdateWith(new ChargingStation(Id,
+                                                              this,
+                                                              Name,
+                                                              Description,
+                                                              Configurator,
+                                                              null,
+                                                              new Timestamped<ChargingStationAdminStatusTypes>(DateTime.MinValue, ChargingStationAdminStatusTypes.Operational),
+                                                              new Timestamped<ChargingStationStatusTypes>     (DateTime.MinValue, ChargingStationStatusTypes.     Available)));
+
+                return null;
 
             }
 
@@ -2017,7 +1863,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">A charging station.</param>
         public Boolean ContainsChargingStationId(ChargingStation ChargingStation)
 
-            => _ChargingStations.ContainsId(ChargingStation.Id);
+            => chargingStations.ContainsId(ChargingStation.Id);
 
         #endregion
 
@@ -2029,7 +1875,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
 
-            => _ChargingStations.ContainsId(ChargingStationId);
+            => chargingStations.ContainsId(ChargingStationId);
 
         #endregion
 
@@ -2037,7 +1883,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
 
-            => _ChargingStations.GetById(ChargingStationId);
+            => chargingStations.GetById(ChargingStationId);
 
         #endregion
 
@@ -2045,7 +1891,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
 
-            => _ChargingStations.TryGet(ChargingStationId, out ChargingStation);
+            => chargingStations.TryGet(ChargingStationId, out ChargingStation);
 
         #endregion
 
@@ -2062,7 +1908,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, _ChargingStation))
                 {
 
-                    if (_ChargingStations.TryRemove(ChargingStationId, out _ChargingStation))
+                    if (chargingStations.TryRemove(ChargingStationId, out _ChargingStation))
                     {
 
                         ChargingStationRemoval.SendNotification(Timestamp.Now, this, _ChargingStation);
@@ -2092,7 +1938,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, ChargingStation))
                 {
 
-                    if (_ChargingStations.TryRemove(ChargingStationId, out ChargingStation))
+                    if (chargingStations.TryRemove(ChargingStationId, out ChargingStation))
                     {
 
                         ChargingStationRemoval.SendNotification(Timestamp.Now, this, ChargingStation);
@@ -2184,17 +2030,17 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
-            if (OnChargingStationStatusChangedLocal != null)
+            if (OnChargingStationStatusChangedLocal is not null)
                 await OnChargingStationStatusChangedLocal(Timestamp,
                                                           EventTrackingId,
                                                           ChargingStation,
                                                           OldStatus,
                                                           NewStatus);
 
-            if (StatusAggregationDelegate != null)
+            if (StatusAggregationDelegate is not null)
             {
-                _StatusSchedule.Insert(StatusAggregationDelegate(new ChargingStationStatusReport(_ChargingStations)),
-                                       Timestamp);
+                statusSchedule.Insert(StatusAggregationDelegate(new ChargingStationStatusReport(chargingStations)),
+                                      Timestamp);
             }
 
         }
@@ -2234,10 +2080,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region IEnumerable<ChargingStation> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => _ChargingStations.GetEnumerator();
+            => chargingStations.GetEnumerator();
 
         public IEnumerator<ChargingStation> GetEnumerator()
-            => _ChargingStations.GetEnumerator();
+            => chargingStations.GetEnumerator();
 
         #endregion
 
@@ -2247,7 +2093,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out ChargingStation Station)
         {
 
-            foreach (var station in _ChargingStations)
+            foreach (var station in chargingStations)
             {
 
                 if (station.TryGetEVSEById(EVSEId, out EVSE evse))
@@ -2294,7 +2140,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<EVSE> EVSEs
 
-            => _ChargingStations.
+            => chargingStations.
                    SelectMany(station => station.EVSEs);
 
         #endregion
@@ -2310,11 +2156,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeEVSEs == null
 
-                   ? _ChargingStations.
+                   ? chargingStations.
                          SelectMany(station => station.EVSEs).
                          Select    (evse    => evse.Id)
 
-                   : _ChargingStations.
+                   : chargingStations.
                          SelectMany(station => station.EVSEs).
                          Where     (evse    => IncludeEVSEs(evse)).
                          Select    (evse    => evse.Id);
@@ -2329,7 +2175,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStations.
+            => chargingStations.
                    SelectMany(station => station.EVSEAdminStatus(IncludeEVSEs));
 
         #endregion
@@ -2342,7 +2188,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEAdminStatus> EVSEAdminStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStations.
+            => chargingStations.
                    SelectMany(station => station.EVSEAdminStatus(IncludeEVSEs));
 
         #endregion
@@ -2355,7 +2201,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStations.
+            => chargingStations.
                    SelectMany(station => station.EVSEStatus(IncludeEVSEs));
 
         #endregion
@@ -2368,7 +2214,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEStatus> EVSEStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStations.
+            => chargingStations.
                    SelectMany(station => station.EVSEStatus(IncludeEVSEs));
 
         #endregion
@@ -2382,7 +2228,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
 
-            => _ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds().Contains(EVSE.Id));
+            => chargingStations.Any(ChargingStation => ChargingStation.EVSEIds().Contains(EVSE.Id));
 
         #endregion
 
@@ -2394,7 +2240,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
 
-            => _ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds().Contains(EVSEId));
+            => chargingStations.Any(ChargingStation => ChargingStation.EVSEIds().Contains(EVSEId));
 
         #endregion
 
@@ -2402,7 +2248,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
 
-            => _ChargingStations.
+            => chargingStations.
                    SelectMany    (station => station.EVSEs).
                    FirstOrDefault(EVSE    => EVSE.Id == EVSEId);
 
@@ -2413,7 +2259,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
-            EVSE = _ChargingStations.
+            EVSE = chargingStations.
                        SelectMany    (station => station.EVSEs).
                        FirstOrDefault(_EVSE   => _EVSE.Id == EVSEId);
 
