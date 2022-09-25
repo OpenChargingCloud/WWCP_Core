@@ -33,13 +33,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
     public class RoamingNetworkTests : ARoamingNetworkTests
     {
 
-        #region RoamingNetwork_Init_Test1()
+        #region RoamingNetwork_Init_Test()
 
         /// <summary>
         /// A test for the roaming network constructor.
         /// </summary>
         [Test]
-        public void RoamingNetwork_Init_Test1()
+        public void RoamingNetwork_Init_Test()
         {
 
             Assert.IsNotNull(roamingNetwork);
@@ -47,15 +47,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
             if (roamingNetwork is not null)
             {
 
-                Assert.AreEqual ("PROD",                                      roamingNetwork.Id.         ToString());
-                Assert.AreEqual ("PRODUCTION",                                roamingNetwork.Name.       FirstText());
-                Assert.AreEqual ("The main production roaming network",       roamingNetwork.Description.FirstText());
+                Assert.AreEqual ("PROD",                                       roamingNetwork.Id.         ToString());
+                Assert.AreEqual ("PRODUCTION",                                 roamingNetwork.Name.       FirstText());
+                Assert.AreEqual ("The main production roaming network",        roamingNetwork.Description.FirstText());
 
-                Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
-                Assert.AreEqual (1,                                           roamingNetwork.AdminStatusSchedule().Count());
+                Assert.AreEqual (RoamingNetworkAdminStatusTypes.OutOfService,  roamingNetwork.AdminStatus);
+                Assert.AreEqual (1,                                            roamingNetwork.AdminStatusSchedule().Count());
 
-                Assert.AreEqual (RoamingNetworkStatusTypes.Available,         roamingNetwork.Status);
-                Assert.AreEqual (1,                                           roamingNetwork.StatusSchedule().     Count());
+                Assert.AreEqual (RoamingNetworkStatusTypes.Offline,            roamingNetwork.Status);
+                Assert.AreEqual (1,                                            roamingNetwork.StatusSchedule().     Count());
 
 
                 Assert.IsTrue   (roamingNetwork.DisableNetworkSync);
@@ -66,13 +66,48 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region RoamingNetwork_AdminStatus_Test1()
+        #region RoamingNetwork_Init_DefaultStatus_Test()
+
+        /// <summary>
+        /// A test for the roaming network constructor.
+        /// </summary>
+        [Test]
+        public void RoamingNetwork_Init_DefaultStatus_Test()
+        {
+
+            Assert.IsNotNull(roamingNetwork);
+
+            if (roamingNetwork is not null)
+            {
+
+                var rn = new RoamingNetwork(
+                             Id:                  RoamingNetwork_Id.Parse("TEST"),
+                             Name:                I18NString.Create(Languages.en, "TESTNET"),
+                             Description:         I18NString.Create(Languages.en, "A roaming network for testing"),
+                             DisableNetworkSync:  true
+                         );
+
+
+                Assert.AreEqual ("TEST",                                      rn.Id.         ToString());
+                Assert.AreEqual ("TESTNET",                                   rn.Name.       FirstText());
+                Assert.AreEqual ("A roaming network for testing",             rn.Description.FirstText());
+
+                Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  rn.AdminStatus);
+                Assert.AreEqual (RoamingNetworkStatusTypes.Available,         rn.Status);
+
+            }
+
+        }
+
+        #endregion
+
+        #region RoamingNetwork_AdminStatus_Test()
 
         /// <summary>
         /// A test for the admin status.
         /// </summary>
         [Test]
-        public void RoamingNetwork_AdminStatus_Test1()
+        public void RoamingNetwork_AdminStatus_Test()
         {
 
             Assert.IsNotNull(roamingNetwork);
@@ -83,16 +118,16 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
                 // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
-                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.OutOfService;
-                Assert.AreEqual(RoamingNetworkAdminStatusTypes.OutOfService, roamingNetwork.AdminStatus);
-                Assert.AreEqual("OutOfService, Operational",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.InternalUse;
+                Assert.AreEqual(RoamingNetworkAdminStatusTypes.InternalUse,  roamingNetwork.AdminStatus);
+                Assert.AreEqual("InternalUse, OutOfService",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                           roamingNetwork.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.InternalUse;
-                Assert.AreEqual(RoamingNetworkAdminStatusTypes.InternalUse,  roamingNetwork.AdminStatus);
-                Assert.AreEqual("InternalUse, OutOfService, Operational",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.Operational;
+                Assert.AreEqual(RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
+                Assert.AreEqual("Operational, InternalUse, OutOfService",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
 
             }
@@ -101,13 +136,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region RoamingNetwork_Status_Test1()
+        #region RoamingNetwork_Status_Test()
 
         /// <summary>
         /// A test for the admin status.
         /// </summary>
         [Test]
-        public void RoamingNetwork_Status_Test1()
+        public void RoamingNetwork_Status_Test()
         {
 
             Assert.IsNotNull(roamingNetwork);
@@ -118,17 +153,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
                 // Status entries are compared by their ISO 8601 timestamp!
                 Thread.Sleep(1000);
 
-                roamingNetwork.Status = RoamingNetworkStatusTypes.OutOfService;
-                Assert.AreEqual(RoamingNetworkStatusTypes.OutOfService, roamingNetwork.Status);
-                Assert.AreEqual("OutOfService, Available",              roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                      roamingNetwork.StatusSchedule().Count());
+                roamingNetwork.Status = RoamingNetworkStatusTypes.Faulted;
+                Assert.AreEqual(RoamingNetworkStatusTypes.Faulted,    roamingNetwork.Status);
+                Assert.AreEqual("Faulted, Offline",                   roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual(2,                                    roamingNetwork.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                roamingNetwork.Status = RoamingNetworkStatusTypes.Faulted;
-                Assert.AreEqual(RoamingNetworkStatusTypes.Faulted,      roamingNetwork.Status);
-                Assert.AreEqual("Faulted, OutOfService, Available",     roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                      roamingNetwork.StatusSchedule().Count());
+                roamingNetwork.Status = RoamingNetworkStatusTypes.Available;
+                Assert.AreEqual(RoamingNetworkStatusTypes.Available,  roamingNetwork.Status);
+                Assert.AreEqual("Available, Faulted, Offline",        roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual(3,                                    roamingNetwork.StatusSchedule().Count());
 
             }
 

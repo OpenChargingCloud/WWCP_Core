@@ -33,13 +33,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
     public class ChargingStationOperatorTests : AChargingStationOperatorTests
     {
 
-        #region ChargingStationOperator_Init_Test1()
+        #region ChargingStationOperator_Init_Test()
 
         /// <summary>
         /// A test for the roaming network constructor.
         /// </summary>
         [Test]
-        public void ChargingStationOperator_Init_Test1()
+        public void ChargingStationOperator_Init_Test()
         {
 
             Assert.IsNotNull(roamingNetwork);
@@ -73,13 +73,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region ChargingStationOperator_Init_Test2()
+        #region ChargingStationOperator_Init_DefaultStatus_Test()
 
         /// <summary>
         /// A test for the roaming network constructor.
         /// </summary>
         [Test]
-        public void ChargingStationOperator_Init_Test2()
+        public void ChargingStationOperator_Init_DefaultStatus_Test()
         {
 
             Assert.IsNotNull(roamingNetwork);
@@ -107,13 +107,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #endregion
 
 
-        #region ChargingStationOperator_AdminStatus_Test1()
+        #region ChargingStationOperator_AdminStatus_Test()
 
         /// <summary>
         /// A test for the admin status.
         /// </summary>
         [Test]
-        public void ChargingStationOperator_AdminStatus_Test1()
+        public void ChargingStationOperator_AdminStatus_Test()
         {
 
             Assert.IsNotNull(roamingNetwork);
@@ -144,13 +144,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region ChargingStationOperator_Status_Test1()
+        #region ChargingStationOperator_Status_Test()
 
         /// <summary>
         /// A test for the admin status.
         /// </summary>
         [Test]
-        public void ChargingStationOperator_Status_Test1()
+        public void ChargingStationOperator_Status_Test()
         {
 
             Assert.IsNotNull(roamingNetwork);
