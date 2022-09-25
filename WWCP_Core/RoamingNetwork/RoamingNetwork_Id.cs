@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,11 +25,34 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an e-mobility roaming network.
+    /// Extension methods for roaming network identifications.
     /// </summary>
-    public struct RoamingNetwork_Id : IId,
-                                      IEquatable <RoamingNetwork_Id>,
-                                      IComparable<RoamingNetwork_Id>
+    public static class RoamingNetworkIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this roaming network identification is null or empty.
+        /// </summary>
+        /// <param name="RoamingNetworkId">A roaming network identification.</param>
+        public static Boolean IsNullOrEmpty(this RoamingNetwork_Id? RoamingNetworkId)
+            => !RoamingNetworkId.HasValue || RoamingNetworkId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this roaming network identification is null or empty.
+        /// </summary>
+        /// <param name="RoamingNetworkId">A roaming network identification.</param>
+        public static Boolean IsNotNullOrEmpty(this RoamingNetwork_Id? RoamingNetworkId)
+            => RoamingNetworkId.HasValue && RoamingNetworkId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
+    /// The unique identification of a roaming network.
+    /// </summary>
+    public readonly struct RoamingNetwork_Id : IId,
+                                               IEquatable <RoamingNetwork_Id>,
+                                               IComparable<RoamingNetwork_Id>
 
     {
 
@@ -51,6 +72,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the roaming network identificator.
@@ -74,7 +101,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region Parse   (Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a roaming network identification.
@@ -83,23 +110,17 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetwork_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out RoamingNetwork_Id roamingNetworkId))
+                return roamingNetworkId;
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a roaming network identification must not be null or empty!");
-
-            #endregion
-
-            return new RoamingNetwork_Id(Text);
+            throw new ArgumentException("Invalid text-representation of a roaming network identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region TryParse(Text)
+        #region (static) TryParse(Text)
 
         /// <summary>
         /// Try to parse the given string as a roaming network identification.
@@ -108,16 +129,16 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetwork_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetwork_Id RoamingNetworkId))
-                return RoamingNetworkId;
+            if (TryParse(Text, out RoamingNetwork_Id roamingNetworkId))
+                return roamingNetworkId;
 
-            return new RoamingNetwork_Id?();
+            return null;
 
         }
 
         #endregion
 
-        #region TryParse(Text, out RoamingNetworkId)
+        #region (static) TryParse(Text, out RoamingNetworkId)
 
         /// <summary>
         /// Parse the given string as a roaming network identification.
@@ -127,36 +148,20 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean TryParse(String Text, out RoamingNetwork_Id RoamingNetworkId)
         {
 
-            #region Initial checks
+            Text = Text.Trim();
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                RoamingNetworkId = default(RoamingNetwork_Id);
-                return false;
+                try
+                {
+                    RoamingNetworkId = new RoamingNetwork_Id(Text);
+                    return true;
+                }
+                catch
+                { }
             }
 
-            #endregion
-
-            try
-            {
-
-                RoamingNetworkId = new RoamingNetwork_Id(Text);
-
-                return true;
-
-            }
-
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
-            { }
-
-            RoamingNetworkId = default(RoamingNetwork_Id);
+            RoamingNetworkId = default;
             return false;
 
         }
@@ -170,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public RoamingNetwork_Id Clone
 
-            => new RoamingNetwork_Id(
+            => new (
                    new String(InternalId.ToCharArray())
                );
 
@@ -187,20 +192,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-        {
+        public static Boolean operator == (RoamingNetwork_Id RoamingNetworkId1,
+                                           RoamingNetwork_Id RoamingNetworkId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(RoamingNetworkId1, RoamingNetworkId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) RoamingNetworkId1 == null) || ((Object) RoamingNetworkId2 == null))
-                return false;
-
-            return RoamingNetworkId1.Equals(RoamingNetworkId2);
-
-        }
+            => RoamingNetworkId1.Equals(RoamingNetworkId2);
 
         #endregion
 
@@ -212,8 +207,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-            => !(RoamingNetworkId1 == RoamingNetworkId2);
+        public static Boolean operator != (RoamingNetwork_Id RoamingNetworkId1,
+                                           RoamingNetwork_Id RoamingNetworkId2)
+
+            => !RoamingNetworkId1.Equals(RoamingNetworkId2);
 
         #endregion
 
@@ -225,15 +222,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-        {
+        public static Boolean operator < (RoamingNetwork_Id RoamingNetworkId1,
+                                          RoamingNetwork_Id RoamingNetworkId2)
 
-            if ((Object) RoamingNetworkId1 == null)
-                throw new ArgumentNullException(nameof(RoamingNetworkId1), "The given RoamingNetworkId1 must not be null!");
-
-            return RoamingNetworkId1.CompareTo(RoamingNetworkId2) < 0;
-
-        }
+            => RoamingNetworkId1.CompareTo(RoamingNetworkId2) < 0;
 
         #endregion
 
@@ -245,8 +237,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-            => !(RoamingNetworkId1 > RoamingNetworkId2);
+        public static Boolean operator <= (RoamingNetwork_Id RoamingNetworkId1,
+                                           RoamingNetwork_Id RoamingNetworkId2)
+
+            => RoamingNetworkId1.CompareTo(RoamingNetworkId2) <= 0;
 
         #endregion
 
@@ -258,15 +252,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-        {
+        public static Boolean operator > (RoamingNetwork_Id RoamingNetworkId1,
+                                          RoamingNetwork_Id RoamingNetworkId2)
 
-            if ((Object) RoamingNetworkId1 == null)
-                throw new ArgumentNullException(nameof(RoamingNetworkId1), "The given RoamingNetworkId1 must not be null!");
-
-            return RoamingNetworkId1.CompareTo(RoamingNetworkId2) > 0;
-
-        }
+            => RoamingNetworkId1.CompareTo(RoamingNetworkId2) > 0;
 
         #endregion
 
@@ -278,14 +267,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkId1">A roaming network identification.</param>
         /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-            => !(RoamingNetworkId1 < RoamingNetworkId2);
+        public static Boolean operator >= (RoamingNetwork_Id RoamingNetworkId1,
+                                           RoamingNetwork_Id RoamingNetworkId2)
+
+            => RoamingNetworkId1.CompareTo(RoamingNetworkId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<RoamingNetworkId> Members
+        #region IComparable<RoamingNetwork_Id> Members
 
         #region CompareTo(Object)
 
@@ -293,19 +284,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is RoamingNetwork_Id))
-                throw new ArgumentException("The given object is not a roaming network identification!",
-                                            nameof(Object));
-
-            return CompareTo((RoamingNetwork_Id) Object);
-
-        }
+            => Object is RoamingNetwork_Id roamingNetworkId
+                   ? CompareTo(roamingNetworkId)
+                   : throw new ArgumentException("The given object is not a roaming network identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -316,26 +300,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId">An object to compare with.</param>
         public Int32 CompareTo(RoamingNetwork_Id RoamingNetworkId)
-        {
 
-            if ((Object) RoamingNetworkId == null)
-                throw new ArgumentNullException(nameof(RoamingNetworkId),  "The given roaming network identification must not be null!");
-
-            // Compare the length of the RoamingNetworkIds
-            var _Result = this.Length.CompareTo(RoamingNetworkId.Length);
-
-            if (_Result == 0)
-                _Result = String.Compare(InternalId, RoamingNetworkId.InternalId, StringComparison.Ordinal);
-
-            return _Result;
-
-        }
+            => String.Compare(InternalId,
+                              RoamingNetworkId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<RoamingNetworkId> Members
+        #region IEquatable<RoamingNetwork_Id> Members
 
         #region Equals(Object)
 
@@ -344,37 +318,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is RoamingNetwork_Id))
-                return false;
-
-            return Equals((RoamingNetwork_Id) Object);
-
-        }
+            => Object is RoamingNetwork_Id roamingNetworkId &&
+                   Equals(roamingNetworkId);
 
         #endregion
 
         #region Equals(RoamingNetworkId)
 
         /// <summary>
-        /// Compares two RoamingNetworkIds for equality.
+        /// Compares two roaming network identifications for equality.
         /// </summary>
         /// <param name="RoamingNetworkId">A roaming network identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RoamingNetwork_Id RoamingNetworkId)
-        {
 
-            if ((Object) RoamingNetworkId == null)
-                return false;
-
-            return InternalId.Equals(RoamingNetworkId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             RoamingNetworkId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -383,21 +345,23 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 
