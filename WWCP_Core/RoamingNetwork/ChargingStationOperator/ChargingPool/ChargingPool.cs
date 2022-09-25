@@ -1635,17 +1635,17 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region CreateChargingStation        (ChargingStationId, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingStation        (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
         /// unique charging station identification.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the new charging station.</param>
+        /// <param name="Id">The unique identification of the new charging station.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public ChargingStation CreateChargingStation(ChargingStation_Id                             ChargingStationId,
+        public ChargingStation CreateChargingStation(ChargingStation_Id                             Id,
                                                      I18NString?                                    Name                           = null,
                                                      I18NString?                                    Description                    = null,
                                                      Action<ChargingStation>?                       Configurator                   = null,
@@ -1660,21 +1660,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (chargingStations.ContainsId(ChargingStationId))
+            if (chargingStations.ContainsId(Id))
             {
                 if (OnError == null)
-                    throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId);
+                    throw new ChargingStationAlreadyExistsInPool(this, Id);
                 else
-                    OnError?.Invoke(this, ChargingStationId);
+                    OnError?.Invoke(this, Id);
             }
 
-            if (Operator.Id != ChargingStationId.OperatorId)
+            if (Operator.Id != Id.OperatorId)
                 throw new InvalidChargingStationOperatorId(this,
-                                                           ChargingStationId.OperatorId);
+                                                           Id.OperatorId);
 
             #endregion
 
-            var _ChargingStation = new ChargingStation(ChargingStationId,
+            var _ChargingStation = new ChargingStation(Id,
                                                        this,
                                                        Name,
                                                        Description,
@@ -1762,12 +1762,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            Debug.WriteLine("ChargingStation '" + ChargingStationId + "' could not be created!");
+            Debug.WriteLine("ChargingStation '" + Id + "' could not be created!");
 
             if (OnError == null)
-                throw new ChargingStationCouldNotBeCreated(this, ChargingStationId);
+                throw new ChargingStationCouldNotBeCreated(this, Id);
 
-            OnError?.Invoke(this, ChargingStationId);
+            OnError?.Invoke(this, Id);
             return null;
 
         }

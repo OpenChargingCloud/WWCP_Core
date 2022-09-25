@@ -29,12 +29,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
     /// <summary>
     /// WWCP Roaming networks defaults.
     /// </summary>
-    public abstract class AChargingPoolTests : AChargingStationOperatorTests
+    public abstract class AChargingStationTests : AChargingPoolTests
     {
 
         #region Data
 
-        protected ChargingPool? DE_GEF_P0001;
+        protected ChargingStation? DE_GEF_S0001_AAAA;
 
         #endregion
 
@@ -47,17 +47,18 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
             base.SetupEachTest();
 
-            if (roamingNetwork is not null &&
-                DE_GEF         is not null)
+            if (roamingNetwork   is not null &&
+                DE_GEF           is not null &&
+                DE_GEF_P0001 is not null)
             {
 
-                DE_GEF_P0001 = DE_GEF.CreateChargingPool(
-                                          Id:                  ChargingPool_Id.Parse(DE_GEF.Id, "0001"),
-                                          //Name:                I18NString.Create(Languages.de, "GraphDefined CSO"),
-                                          //Description:         I18NString.Create(Languages.de, "powered by GraphDefined GmbH"),
-                                          InitialAdminStatus:  ChargingPoolAdminStatusTypes.OutOfService,
-                                          InitialStatus:       ChargingPoolStatusTypes.Offline
-                                      );
+                DE_GEF_S0001_AAAA = DE_GEF_P0001.CreateChargingStation(
+                                                     Id:                  ChargingStation_Id.Parse(DE_GEF_P0001.Id, "AAAA"),
+                                                     //Name:                I18NString.Create(Languages.de, "GraphDefined CSO"),
+                                                     //Description:         I18NString.Create(Languages.de, "powered by GraphDefined GmbH"),
+                                                     InitialAdminStatus:  ChargingStationAdminStatusTypes.OutOfService,
+                                                     InitialStatus:       ChargingStationStatusTypes.Offline
+                                                 );
 
                 Assert.IsNotNull(DE_GEF_P0001);
 

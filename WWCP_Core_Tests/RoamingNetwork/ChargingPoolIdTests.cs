@@ -755,6 +755,22 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
+
+        #region ChargingPoolId_OptionalEquals()
+
+        /// <summary>
+        /// Test the equality of charging pool identifications having different formats/optional elements.
+        /// </summary>
+        [Test]
+        public void ChargingPoolId_OptionalEquals()
+        {
+
+            Assert.IsTrue(ChargingPool_Id.Parse("DE*GEF*P1234*AAAA") == ChargingPool_Id.Parse("DEGEFP1234AAAA"));
+
+        }
+
+        #endregion
+
     }
 
 }

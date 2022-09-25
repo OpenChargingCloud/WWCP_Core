@@ -37,13 +37,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         private readonly ChargingStation_Id         ChargingStationId          = ChargingStation_Id.        Parse("DE*GEF*S1234*5678");
 
 
-        #region EVSE_IdStringConstructorTest1()
+        #region EVSEId_StringConstructorTest1()
 
         /// <summary>
         /// A test for the EVSE_Id string constructor.
         /// </summary>
         [Test]
-        public void EVSE_IdStringConstructorTest1()
+        public void EVSEId_StringConstructorTest1()
         {
             var evseId = EVSE_Id.Parse(ChargingStationOperatorId, "9012");
             Assert.AreEqual("DE*GEF*E9012", evseId.ToString());
@@ -52,13 +52,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region EVSE_IdStringConstructorTest2()
+        #region EVSEId_StringConstructorTest2()
 
         /// <summary>
         /// A test for the EVSE_Id string constructor.
         /// </summary>
         [Test]
-        public void EVSE_IdStringConstructorTest2()
+        public void EVSEId_StringConstructorTest2()
         {
             var evseId = EVSE_Id.Parse(ChargingPoolId, "9012");
             Assert.AreEqual("DE*GEF*E1234*9012", evseId.ToString());
@@ -67,13 +67,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region EVSE_IdStringConstructorTest3()
+        #region EVSEId_StringConstructorTest3()
 
         /// <summary>
         /// A test for the EVSE_Id string constructor.
         /// </summary>
         [Test]
-        public void EVSE_IdStringConstructorTest3()
+        public void EVSEId_StringConstructorTest3()
         {
             var evseId = EVSE_Id.Parse(ChargingStationId, "9012");
             Assert.AreEqual("DE*GEF*E1234*5678*9012", evseId.ToString());
@@ -603,13 +603,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #endregion
 
 
-        #region EVSE_IdsAndNUnitTest()
+        #region EVSEIds_AndNUnitTest()
 
         /// <summary>
         /// Tests EVSE_Ids in combination with NUnit.
         /// </summary>
         [Test]
-        public void EVSE_IdsAndNUnitTest()
+        public void EVSEIds_AndNUnitTest()
         {
 
             var a = EVSE_Id.Parse(ChargingStationOperatorId, "1");
@@ -628,13 +628,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region EVSE_IdsInHashSetTest()
+        #region EVSEIds_InHashSetTest()
 
         /// <summary>
         /// Test EVSE_Ids within a HashSet.
         /// </summary>
         [Test]
-        public void EVSE_IdsInHashSetTest()
+        public void EVSEIds_InHashSetTest()
         {
 
             var a = EVSE_Id.Parse(ChargingStationOperatorId, "1");
@@ -656,6 +656,46 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         }
 
         #endregion
+
+
+        #region EVSEId_FromStationId()
+
+        /// <summary>
+        /// Test EVSE identification generated from a charging station identification.
+        /// </summary>
+        [Test]
+        public void EVSEId_FromStationId()
+        {
+
+            Assert.AreEqual("DE*GEF*E1234*5678*AAAA",     ChargingStationId.                                   CreateEVSEId("AAAA").ToString());
+            Assert.AreEqual("DEGEFE12345678AAAA",         ChargingStation_Id.Parse("DEGEFS12345678").          CreateEVSEId("AAAA").ToString());
+            Assert.AreEqual("DE*GEF*EVSE*1234*5678*AAAA", ChargingStation_Id.Parse("DE*GEF*STATION*1234*5678").CreateEVSEId("AAAA").ToString());
+            Assert.AreEqual("DEGEFEVSE12345678AAAA",      ChargingStation_Id.Parse("DEGEFSTATION12345678").    CreateEVSEId("AAAA").ToString());
+
+            Assert.AreEqual("DE*GEF*E1234*5678",          ChargingStationId.                                   CreateEVSEId().ToString());
+            Assert.AreEqual("DEGEFE12345678",             ChargingStation_Id.Parse("DEGEFS12345678").          CreateEVSEId().ToString());
+            Assert.AreEqual("DE*GEF*EVSE*1234*5678",      ChargingStation_Id.Parse("DE*GEF*STATION*1234*5678").CreateEVSEId().ToString());
+            Assert.AreEqual("DEGEFEVSE12345678",          ChargingStation_Id.Parse("DEGEFSTATION12345678").    CreateEVSEId().ToString());
+
+        }
+
+        #endregion
+
+        #region EVSEId_OptionalEquals()
+
+        /// <summary>
+        /// Test the equality of EVSE identifications having different formats/optional elements.
+        /// </summary>
+        [Test]
+        public void EVSEId_OptionalEquals()
+        {
+
+            Assert.IsTrue(EVSE_Id.Parse("DE*GEF*E1234*AAAA") == EVSE_Id.Parse("DEGEFE1234AAAA"));
+
+        }
+
+        #endregion
+
 
     }
 

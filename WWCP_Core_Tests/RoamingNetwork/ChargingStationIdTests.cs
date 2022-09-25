@@ -756,6 +756,40 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
+
+
+        #region ChargingStationId_FromPoolId()
+
+        /// <summary>
+        /// Test charging station identification generated from a charging pool identification.
+        /// </summary>
+        [Test]
+        public void ChargingStationId_FromPoolId()
+        {
+
+            Assert.AreEqual("DE*GEF*S1234*AAAA",        ChargingPoolId.                           CreateStationId("AAAA").ToString());
+            Assert.AreEqual("DEGEFS1234AAAA",           ChargingPool_Id.Parse("DEGEFP1234").      CreateStationId("AAAA").ToString());
+            Assert.AreEqual("DE*GEF*STATION*0001*AAAA", ChargingPool_Id.Parse("DE*GEF*POOL*0001").CreateStationId("AAAA").ToString());
+
+        }
+
+        #endregion
+
+        #region ChargingStationId_OptionalEquals()
+
+        /// <summary>
+        /// Test the equality of charging station identifications having different formats/optional elements.
+        /// </summary>
+        [Test]
+        public void ChargingStationId_OptionalEquals()
+        {
+
+            Assert.IsTrue(ChargingStation_Id.Parse("DE*GEF*S1234*AAAA") == ChargingStation_Id.Parse("DEGEFS1234AAAA"));
+
+        }
+
+        #endregion
+
     }
 
 }

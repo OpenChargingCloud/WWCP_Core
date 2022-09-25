@@ -57,18 +57,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolId">A charging pool identification.</param>
         /// <param name="AdditionalSuffix">An additional EVSE suffix.</param>
         public static ChargingStation_Id CreateStationId(this ChargingPool_Id  ChargingPoolId,
-                                                         String                AdditionalSuffix)
-        {
+                                                         String?               AdditionalSuffix   = null)
 
-            var suffix = ChargingPoolId.Suffix;
-
-            // (P)OOL => (S)TATION
-            if (suffix.StartsWith("OOL", StringComparison.Ordinal))
-                suffix = String.Concat("TATION", suffix.AsSpan(3));
-
-            return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, suffix + (AdditionalSuffix ?? ""));
-
-        }
+               // (P)OOL => (S)TATION
+            => ChargingPoolId.Suffix.StartsWith("OOL", StringComparison.Ordinal)
+                   ? ChargingStation_Id.Parse(ChargingPool_Id.Parse(ChargingPoolId.OperatorId, "TATION" + ChargingPoolId.Suffix[3..]), AdditionalSuffix ?? "")
+                   : ChargingStation_Id.Parse(ChargingPoolId, AdditionalSuffix ?? "");
 
     }
 
@@ -529,8 +523,8 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingPool_Id ChargingPoolId)
 
             => OperatorId.Equals(ChargingPoolId.OperatorId) &&
-               String.Equals(Suffix,
-                             ChargingPoolId.Suffix,
+               String.Equals(Suffix.               Replace("*", ""),
+                             ChargingPoolId.Suffix.Replace("*", ""),
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
