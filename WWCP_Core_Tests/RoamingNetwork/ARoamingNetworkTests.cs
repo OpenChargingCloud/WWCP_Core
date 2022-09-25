@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region SetupOnce()
 
         [OneTimeSetUp]
-        public void SetupOnce()
+        public virtual void SetupOnce()
         {
 
         }
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region SetupEachTest()
 
         [SetUp]
-        public void SetupEachTest()
+        public virtual void SetupEachTest()
         {
 
             Timestamp.Reset();
@@ -62,22 +62,14 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
                                  Id:                      RoamingNetwork_Id.Parse("PROD"),
                                  Name:                    I18NString.Create(Languages.en, "PRODUCTION"),
                                  Description:             I18NString.Create(Languages.en, "The main production roaming network"),
-                                 AdminStatus:             RoamingNetworkAdminStatusTypes.Operational,
-                                 Status:                  RoamingNetworkStatusTypes.Available,
+                                 InitialAdminStatus:      RoamingNetworkAdminStatusTypes.Operational,
+                                 InitialStatus:           RoamingNetworkStatusTypes.Available,
                                  MaxAdminStatusListSize:  15,
                                  MaxStatusListSize:       15,
                                  DisableNetworkSync:      true
                              );
 
             Assert.IsNotNull(roamingNetwork);
-
-            Assert.AreEqual ("PROD",                                      roamingNetwork.Id.  ToString());
-            Assert.AreEqual ("PRODUCTION",                                roamingNetwork.Name.FirstText());
-            Assert.AreEqual ("The main production roaming network",       roamingNetwork.Name.FirstText());
-            Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
-            Assert.AreEqual (RoamingNetworkStatusTypes.Available,         roamingNetwork.Status);
-
-            Assert.IsTrue   (roamingNetwork.DisableNetworkSync);
 
 
             //empClientAPI.OnPullEVSEData                    += (timestamp, empClientAPI, pullEVSEDataRequest)                    => {
@@ -108,9 +100,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region ShutdownEachTest()
 
         [TearDown]
-        public void ShutdownEachTest()
+        public virtual void ShutdownEachTest()
         {
-            //roamingNetwork?.Shutdown();
+            roamingNetwork = null;
         }
 
         #endregion
@@ -118,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region ShutdownOnce()
 
         [OneTimeTearDown]
-        public void ShutdownOnce()
+        public virtual void ShutdownOnce()
         {
 
         }

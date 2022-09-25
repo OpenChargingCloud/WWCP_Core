@@ -186,8 +186,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="Name">The multi-language name of the roaming network.</param>
         /// <param name="Description">An optional multi-language description of the roaming network.</param>
-        /// <param name="AdminStatus">The initial admin status of the roaming network.</param>
-        /// <param name="Status">The initial status of the roaming network.</param>
+        /// <param name="InitialAdminStatus">The initial admin status of the roaming network.</param>
+        /// <param name="InitialStatus">The initial status of the roaming network.</param>
         /// <param name="MaxAdminStatusListSize">The maximum number of entries in the admin status history.</param>
         /// <param name="MaxStatusListSize">The maximum number of entries in the status history.</param>
         /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
@@ -196,8 +196,8 @@ namespace cloud.charging.open.protocols.WWCP
         public RoamingNetwork(RoamingNetwork_Id                          Id,
                               I18NString?                                Name                                        = null,
                               I18NString?                                Description                                 = null,
-                              RoamingNetworkAdminStatusTypes             AdminStatus                                 = RoamingNetworkAdminStatusTypes.Operational,
-                              RoamingNetworkStatusTypes                  Status                                      = RoamingNetworkStatusTypes.Available,
+                              RoamingNetworkAdminStatusTypes             InitialAdminStatus                          = RoamingNetworkAdminStatusTypes.Operational,
+                              RoamingNetworkStatusTypes                  InitialStatus                               = RoamingNetworkStatusTypes.Available,
                               UInt16                                     MaxAdminStatusListSize                      = DefaultMaxAdminStatusListSize,
                               UInt16                                     MaxStatusListSize                           = DefaultMaxStatusListSize,
 
@@ -207,9 +207,23 @@ namespace cloud.charging.open.protocols.WWCP
 
                               IEnumerable<RoamingNetworkInfo>?           RoamingNetworkInfos                         = null,
                               Boolean                                    DisableNetworkSync                          = true,
-                              String?                                    LoggingPath                                 = null)
+                              String?                                    LoggingPath                                 = null,
 
-            : base(Id)
+                              String?                                    DataSource                                  = null,
+                              DateTime?                                  LastChange                                  = null,
+
+                              JObject?                                   CustomData                                  = null,
+                              UserDefinedDictionary?                     InternalData                                = null)
+
+            : base(Id,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
+                   InternalData)
 
         {
 
@@ -438,24 +452,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
         public ChargingStationOperator
 
-            CreateChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
-                                          I18NString                                          Name                                   = null,
-                                          I18NString                                          Description                            = null,
-                                          Action<ChargingStationOperator>                     Configurator                           = null,
-                                          RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator   = null,
-                                          ChargingStationOperatorAdminStatusTypes             AdminStatus                            = ChargingStationOperatorAdminStatusTypes.Operational,
-                                          ChargingStationOperatorStatusTypes                  Status                                 = ChargingStationOperatorStatusTypes.Available,
-                                          Action<ChargingStationOperator>                     OnSuccess                              = null,
-                                          Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                                = null)
+            CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
+                                          I18NString?                                          Name                                   = null,
+                                          I18NString?                                          Description                            = null,
+                                          Action<ChargingStationOperator>?                     Configurator                           = null,
+                                          RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
+                                          ChargingStationOperatorAdminStatusTypes              InitialAdminStatus                     = ChargingStationOperatorAdminStatusTypes.Operational,
+                                          ChargingStationOperatorStatusTypes                   InitialStatus                          = ChargingStationOperatorStatusTypes.Available,
+                                          Action<ChargingStationOperator>?                     OnSuccess                              = null,
+                                          Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperatorIds == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperatorIds),  "The given charging station operator identification must not be null!");
-
-            #endregion
 
             lock (_ChargingStationOperators)
             {
@@ -469,8 +476,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                           RemoteChargingStationOperatorCreator,
                                                                           Name,
                                                                           Description,
-                                                                          AdminStatus,
-                                                                          Status);
+                                                                          InitialAdminStatus,
+                                                                          InitialStatus);
 
 
                 if (_ChargingStationOperators.TryAdd(chargingStationOperator, OnSuccess))

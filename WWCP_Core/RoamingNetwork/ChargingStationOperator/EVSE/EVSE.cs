@@ -288,25 +288,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const           String    JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
+        public const           String    JSONLDContext                           = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
 
 
-        private readonly       Decimal   EPSILON = 0.01m;
+        private readonly       Decimal   EPSILON                                 = 0.01m;
 
         /// <summary>
         /// The default max size of the EVSE admin status schedule/history.
         /// </summary>
-        public const           UInt16    DefaultMaxAdminStatusScheduleSize   = 50;
+        public const           UInt16    DefaultMaxEVSEAdminStatusScheduleSize   = 50;
 
         /// <summary>
         /// The default max size of the EVSE status schedule/history.
         /// </summary>
-        public const           UInt16    DefaultMaxEVSEStatusScheduleSize    = 50;
+        public const           UInt16    DefaultMaxEVSEStatusScheduleSize        = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly TimeSpan  DefaultMaxReservationDuration   = TimeSpan.FromMinutes(15);
+        public static readonly TimeSpan  DefaultMaxReservationDuration           = TimeSpan.FromMinutes(15);
 
         #endregion
 
@@ -1268,8 +1268,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteEVSECreator">A delegate to attach a remote EVSE.</param>
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
-        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">An optional max length of the admin staus schedule.</param>
+        /// <param name="MaxStatusScheduleSize">An optional max length of the staus schedule.</param>
         /// 
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
@@ -1279,7 +1279,7 @@ namespace cloud.charging.open.protocols.WWCP
                     RemoteEVSECreatorDelegate?            RemoteEVSECreator            = null,
                     Timestamped<EVSEAdminStatusTypes>?    InitialAdminStatus           = null,
                     Timestamped<EVSEStatusTypes>?         InitialStatus                = null,
-                    UInt16                                MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
+                    UInt16                                MaxAdminStatusScheduleSize   = DefaultMaxEVSEAdminStatusScheduleSize,
                     UInt16                                MaxStatusScheduleSize        = DefaultMaxEVSEStatusScheduleSize,
 
                     String?                               DataSource                   = null,
@@ -1327,23 +1327,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.RemoteEVSE = RemoteEVSECreator?.Invoke(this);
 
-            if (this.RemoteEVSE != null)
+            if (this.RemoteEVSE is not null)
             {
 
-                this.RemoteEVSE.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => AdminStatus                 = NewStatus;
-                this.RemoteEVSE.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => Status                      = NewStatus;
+                this.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => { AdminStatus = NewStatus; return Task.CompletedTask; };
+                this.RemoteEVSE.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => { Status      = NewStatus; return Task.CompletedTask; };
 
-                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)                                  => OnNewReservation.        Invoke(Timestamp, RemoteEVSE, Reservation);
-                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason)                          => OnReservationCanceled.   Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
+                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)                            => OnNewReservation.        Invoke(Timestamp, RemoteEVSE, Reservation);
+                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason)                    => OnReservationCanceled.   Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
-                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)                              => {
+                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)                        => {
                     RoamingNetwork.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
                     //_ChargingSession       = ChargingSession;
                     //_ChargingSession.EVSE  = this;
                     OnNewChargingSession.Invoke(Timestamp, this, ChargingSession);
                 };
 
-                this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)                           => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
+                this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)                     => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
 
             }
 

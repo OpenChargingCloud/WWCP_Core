@@ -62,8 +62,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
                                  Id:                      RoamingNetwork_Id.Parse("PROD"),
                                  Name:                    I18NString.Create(Languages.en, "PRODUCTION"),
                                  Description:             I18NString.Create(Languages.en, "The main production roaming network"),
-                                 AdminStatus:             RoamingNetworkAdminStatusTypes.Operational,
-                                 Status:                  RoamingNetworkStatusTypes.Available,
+                                 InitialAdminStatus:      RoamingNetworkAdminStatusTypes.Operational,
+                                 InitialStatus:           RoamingNetworkStatusTypes.Available,
                                  MaxAdminStatusListSize:  15,
                                  MaxStatusListSize:       15
                                  //RoamingNetworkInfos:     new RoamingNetworkInfo[] {
