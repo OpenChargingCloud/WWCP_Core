@@ -438,13 +438,13 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region CreateChargingStationOperator(ChargingStationOperatorId, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingStationOperator(Id, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station operator having the given
         /// unique charging station operator identification.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">The unique identification of the new charging station operator.</param>
+        /// <param name="Id">The unique identification of the new charging station operator.</param>
         /// <param name="Name">The offical (multi-language) name of the charging station operator.</param>
         /// <param name="Description">An optional (multi-language) description of the charging station operator.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
@@ -452,7 +452,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
         public ChargingStationOperator
 
-            CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
+            CreateChargingStationOperator(ChargingStationOperator_Id                           Id,
                                           I18NString?                                          Name                                   = null,
                                           I18NString?                                          Description                            = null,
                                           Action<ChargingStationOperator>?                     Configurator                           = null,
@@ -467,10 +467,10 @@ namespace cloud.charging.open.protocols.WWCP
             lock (_ChargingStationOperators)
             {
 
-                if (_ChargingStationOperators.ContainsId(ChargingStationOperatorId))
-                    throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorId, Name);
+                if (_ChargingStationOperators.ContainsId(Id))
+                    throw new ChargingStationOperatorAlreadyExists(this, Id, Name);
 
-                var chargingStationOperator = new ChargingStationOperator(ChargingStationOperatorId,
+                var chargingStationOperator = new ChargingStationOperator(Id,
                                                                           this,
                                                                           Configurator,
                                                                           RemoteChargingStationOperatorCreator,

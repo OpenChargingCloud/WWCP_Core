@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -52,11 +51,34 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
+    /// Extension methods for charging station operator identifications.
+    /// </summary>
+    public static class ChargingStationOperatorIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this charging station operator identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingStationOperator_Id? ChargingStationOperatorId)
+            => !ChargingStationOperatorId.HasValue || ChargingStationOperatorId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging station operator identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingStationOperator_Id? ChargingStationOperatorId)
+            => ChargingStationOperatorId.HasValue && ChargingStationOperatorId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The unique identification of a charging station operator (CSO).
     /// </summary>
-    public struct ChargingStationOperator_Id : IId,
-                                               IEquatable<ChargingStationOperator_Id>,
-                                               IComparable<ChargingStationOperator_Id>
+    public readonly struct ChargingStationOperator_Id : IId,
+                                                        IEquatable<ChargingStationOperator_Id>,
+                                                        IComparable<ChargingStationOperator_Id>
 
     {
 
@@ -96,29 +118,21 @@ namespace cloud.charging.open.protocols.WWCP
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
+
+        /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
 
-                switch (Format)
-                {
-
-                    case OperatorIdFormats.DIN:
-                        return (UInt64) (CountryCode.TelefonCode.ToString().Length + 1 + Suffix.Length);
-
-                    case OperatorIdFormats.ISO_STAR:
-                        return (UInt64) (CountryCode.Alpha2Code.Length             + 1 + Suffix.Length);
-
-                    default:  // ISO
-                        return (UInt64) (CountryCode.Alpha2Code.Length                 + Suffix.Length);
-
-                }
-
-            }
-        }
+            => Format switch {
+                   OperatorIdFormats.DIN       => (UInt64) (CountryCode.TelefonCode.ToString().Length + 1 + Suffix.Length),
+                   OperatorIdFormats.ISO_STAR  => (UInt64) (CountryCode.Alpha2Code.Length             + 1 + Suffix.Length),
+                   _                           => (UInt64) (CountryCode.Alpha2Code.Length             +     Suffix.Length),
+               };
 
         #endregion
 
@@ -135,15 +149,11 @@ namespace cloud.charging.open.protocols.WWCP
                                            OperatorIdFormats  Format = OperatorIdFormats.ISO)
         {
 
-            #region Initial checks
-
             if (Suffix.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Suffix),  "The charging station operator identification suffix must not be null or empty!");
 
-            #endregion
-
             this.CountryCode  = CountryCode;
-            this.Suffix       = Suffix;
+            this.Suffix       = Suffix.Trim();
             this.Format       = Format;
 
         }
@@ -194,7 +204,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Parse(CountryCode, Suffix, IdFormat = IdFormatType.ISO)
+        #region Parse(CountryCode, Suffix, IdFormat = IdFormatType.ISO_STAR)
 
         /// <summary>
         /// Parse the given string as an charging station operator identification.
@@ -204,12 +214,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IdFormat">The format of the charging station operator identification [old|new].</param>
         public static ChargingStationOperator_Id Parse(Country            CountryCode,
                                                        String             Suffix,
-                                                       OperatorIdFormats  IdFormat = OperatorIdFormats.ISO)
+                                                       OperatorIdFormats  IdFormat = OperatorIdFormats.ISO_STAR)
         {
 
             #region Initial checks
 
-            if (CountryCode == null)
+            if (CountryCode is null)
                 throw new ArgumentNullException(nameof(CountryCode),  "The given country must not be null!");
 
             if (Suffix.IsNullOrEmpty())
@@ -221,13 +231,13 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 case OperatorIdFormats.ISO:
-                    return Parse(CountryCode.Alpha2Code + Suffix);
+                    return Parse(CountryCode.Alpha2Code + Suffix.Trim());
 
                 case OperatorIdFormats.ISO_STAR:
-                    return Parse(CountryCode.Alpha2Code + "*" + Suffix);
+                    return Parse(CountryCode.Alpha2Code + "*" + Suffix.Trim());
 
-                default: // DIN:
-                    return Parse("+" + CountryCode.TelefonCode.ToString() + "*" + Suffix);
+                default:
+                    return Parse("+" + CountryCode.TelefonCode.ToString() + "*" + Suffix.Trim());
 
             }
 
@@ -244,12 +254,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingStationOperator_Id? TryParse(String Text)
         {
 
-            ChargingStationOperator_Id _OperatorId;
+            if (TryParse(Text, out ChargingStationOperator_Id chargingStationOperatorId))
+                return chargingStationOperatorId;
 
-            if (TryParse(Text, out _OperatorId))
-                return _OperatorId;
-
-            return new ChargingStationOperator_Id?();
+            return null;
 
         }
 
@@ -268,43 +276,39 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
+            ChargingStationOperatorId = default;
+
             if (Text.IsNullOrEmpty())
-            {
-                ChargingStationOperatorId = default(ChargingStationOperator_Id);
                 return false;
-            }
 
             #endregion
 
             try
             {
 
-                var MatchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
+                var matchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
 
-                if (MatchCollection.Count != 1)
-                {
-                    ChargingStationOperatorId = default(ChargingStationOperator_Id);
+                if (matchCollection.Count != 1)
                     return false;
-                }
 
                 // DE...
-                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out Country _CountryCode))
+                if (Country.TryParseAlpha2Code(matchCollection[0].Groups[1].Value, out Country countryCode))
                 {
 
-                    ChargingStationOperatorId = new ChargingStationOperator_Id(_CountryCode,
-                                                                               MatchCollection[0].Groups[3].Value,
-                                                                               MatchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
+                    ChargingStationOperatorId = new ChargingStationOperator_Id(countryCode,
+                                                                               matchCollection[0].Groups[3].Value,
+                                                                               matchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
 
                     return true;
 
                 }
 
                 // +49*...
-                if (Country.TryParseTelefonCode(MatchCollection[0].Groups[4].Value, out _CountryCode))
+                if (Country.TryParseTelefonCode(matchCollection[0].Groups[4].Value, out countryCode))
                 {
 
-                    ChargingStationOperatorId = new ChargingStationOperator_Id(_CountryCode,
-                                                                               MatchCollection[0].Groups[5].Value,
+                    ChargingStationOperatorId = new ChargingStationOperator_Id(countryCode,
+                                                                               matchCollection[0].Groups[5].Value,
                                                                                OperatorIdFormats.DIN);
 
                     return true;
@@ -314,21 +318,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                 // Just e.g. "822"...
                 ChargingStationOperatorId = new ChargingStationOperator_Id(Country.Germany,
-                                                                           MatchCollection[0].Groups[6].Value,
+                                                                           matchCollection[0].Groups[6].Value,
                                                                            OperatorIdFormats.DIN);
 
                 return true;
 
             }
 
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            ChargingStationOperatorId = default(ChargingStationOperator_Id);
             return false;
 
         }
@@ -373,20 +372,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
+        public static Boolean operator == (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingStationOperatorId1, ChargingStationOperatorId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingStationOperatorId1 == null) || ((Object) ChargingStationOperatorId2 == null))
-                return false;
-
-            return ChargingStationOperatorId1.Equals(ChargingStationOperatorId2);
-
-        }
+            => ChargingStationOperatorId1.Equals(ChargingStationOperatorId2);
 
         #endregion
 
@@ -398,8 +387,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-            => !(ChargingStationOperatorId1 == ChargingStationOperatorId2);
+        public static Boolean operator != (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
+
+            => !ChargingStationOperatorId1.Equals(ChargingStationOperatorId2);
 
         #endregion
 
@@ -411,15 +402,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
+        public static Boolean operator < (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                          ChargingStationOperator_Id ChargingStationOperatorId2)
 
-            if ((Object) ChargingStationOperatorId1 == null)
-                throw new ArgumentNullException("The given ChargingStationOperatorId1 must not be null!");
-
-            return ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) < 0;
-
-        }
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) < 0;
 
         #endregion
 
@@ -431,8 +417,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-            => !(ChargingStationOperatorId1 > ChargingStationOperatorId2);
+        public static Boolean operator <= (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
+
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) <= 0;
 
         #endregion
 
@@ -444,15 +432,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
+        public static Boolean operator > (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                          ChargingStationOperator_Id ChargingStationOperatorId2)
 
-            if ((Object) ChargingStationOperatorId1 == null)
-                throw new ArgumentNullException("The given ChargingStationOperatorId1 must not be null!");
-
-            return ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) > 0;
-
-        }
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) > 0;
 
         #endregion
 
@@ -464,8 +447,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-            => !(ChargingStationOperatorId1 < ChargingStationOperatorId2);
+        public static Boolean operator >= (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
+
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) >= 0;
 
         #endregion
 
@@ -479,18 +464,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingStationOperator_Id))
-                throw new ArgumentException("The given object is not a charging station operator identification!", nameof(Object));
-
-            return CompareTo((ChargingStationOperator_Id) Object);
-
-        }
+            => Object is ChargingStationOperator_Id chargingStationOperatorId
+                   ? CompareTo(chargingStationOperatorId)
+                   : throw new ArgumentException("The given object is not a charging station operator identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -503,21 +482,14 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingStationOperator_Id ChargingStationOperatorId)
         {
 
-            if ((Object) ChargingStationOperatorId == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperatorId), "The given charging station operator identification must not be null!");
+            var c = CountryCode.CompareTo(ChargingStationOperatorId.CountryCode);
 
-            // Compare the length of the ChargingStationOperatorIds
-            var _Result = Length.CompareTo(ChargingStationOperatorId.Length);
+            if (c == 0)
+                c = String.Compare(Suffix,
+                                   ChargingStationOperatorId.Suffix,
+                                   StringComparison.OrdinalIgnoreCase);
 
-            // If equal: Compare country codes
-            if (_Result == 0)
-                _Result = CountryCode.CompareTo(ChargingStationOperatorId.CountryCode);
-
-            // If equal: Compare operator ids
-            if (_Result == 0)
-                _Result = String.Compare(Suffix, ChargingStationOperatorId.Suffix, StringComparison.Ordinal);
-
-            return _Result;
+            return c;
 
         }
 
@@ -534,18 +506,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingStationOperator_Id))
-                return false;
-
-            return this.Equals((ChargingStationOperator_Id) Object);
-
-        }
+            => Object is ChargingStationOperator_Id chargingStationOperatorId &&
+                   Equals(chargingStationOperatorId);
 
         #endregion
 
@@ -557,15 +521,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorId">A ChargingStationOperatorId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStationOperator_Id ChargingStationOperatorId)
-        {
 
-            if ((Object) ChargingStationOperatorId == null)
-                return false;
+            => CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&
 
-            return CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&
-                   Suffix.     Equals(ChargingStationOperatorId.Suffix);
-
-        }
+               String.Equals(Suffix,
+                             ChargingStationOperatorId.Suffix,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -590,23 +551,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            switch (Format)
-            {
-
-                case OperatorIdFormats.DIN:
-                    return "+" + CountryCode.TelefonCode.ToString() + "*" + Suffix;
-
-                case OperatorIdFormats.ISO_STAR:
-                    return CountryCode.Alpha2Code + "*" + Suffix;
-
-                default: // ISO
-                    return CountryCode.Alpha2Code       + Suffix;
-
-            }
-
-        }
+            => ToString(Format);
 
         #endregion
 
@@ -617,29 +563,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Format">The format of the identification.</param>
         public String ToString(OperatorIdFormats Format)
-        {
 
-            switch (Format)
-            {
-
-                case OperatorIdFormats.ISO:
-                    return String.Concat(CountryCode.Alpha2Code,
-                                         Suffix);
-
-                case OperatorIdFormats.ISO_STAR:
-                    return String.Concat(CountryCode.Alpha2Code,
-                                         "*",
-                                         Suffix);
-
-                default: // DIN
-                    return String.Concat("+",
-                                         CountryCode.TelefonCode,
-                                         "*",
-                                         Suffix);
-
-            }
-
-        }
+            => Format switch {
+                   OperatorIdFormats.DIN       => String.Concat("+", CountryCode.TelefonCode.ToString(), "*", Suffix),
+                   OperatorIdFormats.ISO_STAR  => String.Concat(     CountryCode.Alpha2Code,             "*", Suffix),
+                   _                           => String.Concat(     CountryCode.Alpha2Code,                  Suffix)
+               };
 
         #endregion
 

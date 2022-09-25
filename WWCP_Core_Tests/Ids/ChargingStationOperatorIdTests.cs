@@ -27,40 +27,40 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
 {
 
     /// <summary>
-    /// Unit tests for the EVSE operator identifications.
+    /// Unit tests for charging station operator identifications.
     /// </summary>
     [TestFixture]
-    public class EVSEOperator_IdTests
+    public class ChargingStationOperatorIdTests
     {
 
-        #region EVSEOperator_IdStringConstructorTest()
+        #region ChargingStationOperator_IdStringConstructorTest()
 
         /// <summary>
-        /// A test for the EVSEOperator_Id string constructor.
+        /// A test for the ChargingStationOperator_Id string constructor.
         /// </summary>
         [Test]
-        public void EVSEOperator_IdStringConstructorTest()
+        public void ChargingStationOperator_IdStringConstructorTest()
         {
-            var evseOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.AreEqual("GEF", evseOperator_Id.ToString());
-            Assert.AreEqual(3,     evseOperator_Id.Length);
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.AreEqual("DE*GEF", csoId.ToString());
+            Assert.AreEqual(6,        csoId.Length);
         }
 
         #endregion
 
-        #region EVSEOperator_IdEVSEOperator_IdConstructorTest()
+        #region ChargingStationOperator_IdChargingStationOperator_IdConstructorTest()
 
         /// <summary>
-        /// A test for the EVSEOperator_Id EVSEOperator_Id constructor.
+        /// A test for the ChargingStationOperator_Id ChargingStationOperator_Id constructor.
         /// </summary>
         [Test]
-        public void EVSEOperator_IdEVSEOperator_IdConstructorTest()
+        public void ChargingStationOperator_IdChargingStationOperator_IdConstructorTest()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var evseOperator_Id2 = evseOperator_Id1.Clone;
-            Assert.AreEqual(evseOperator_Id1.ToString(), evseOperator_Id2.ToString());
-            Assert.AreEqual(evseOperator_Id1.Length,     evseOperator_Id2.Length);
-            Assert.AreEqual(evseOperator_Id1,            evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId2 = csoId1.Clone;
+            Assert.AreEqual(csoId1.ToString(), csoId2.ToString());
+            Assert.AreEqual(csoId1.Length,     csoId2.Length);
+            Assert.AreEqual(csoId1,            csoId2);
         }
 
         #endregion
@@ -75,9 +75,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
 
         public void op_Equality_SameReference_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(evseOperator_Id1 == evseOperator_Id1);
+            Assert.IsTrue(csoId1 == csoId1);
             #pragma warning restore
         }
 
@@ -91,9 +91,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsTrue(evseOperator_Id1 == evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsTrue(csoId1 == csoId2);
         }
 
         #endregion
@@ -106,9 +106,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "234");
-            Assert.IsFalse(evseOperator_Id1 == evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "234");
+            Assert.IsFalse(csoId1 == csoId2);
         }
 
         #endregion
@@ -122,9 +122,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(evseOperator_Id1 != evseOperator_Id1);
+            Assert.IsFalse(csoId1 != csoId1);
             #pragma warning restore
         }
 
@@ -138,9 +138,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsFalse(evseOperator_Id1 != evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsFalse(csoId1 != csoId2);
         }
 
         #endregion
@@ -153,9 +153,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(evseOperator_Id1 != evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            Assert.IsTrue(csoId1 != csoId2);
         }
 
         #endregion
@@ -168,9 +168,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(evseOperator_Id1 != evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            Assert.IsTrue(csoId1 != csoId2);
         }
 
         #endregion
@@ -184,9 +184,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id1);
+            Assert.IsFalse(csoId1 < csoId1);
             #pragma warning restore
         }
 
@@ -200,9 +200,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsFalse(csoId1 < csoId2);
         }
 
         #endregion
@@ -215,9 +215,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(evseOperator_Id1 < evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            Assert.IsTrue(csoId1 < csoId2);
         }
 
         #endregion
@@ -230,9 +230,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(evseOperator_Id1 < evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            Assert.IsTrue(csoId1 < csoId2);
         }
 
         #endregion
@@ -245,9 +245,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsFalse(csoId1 < csoId2);
         }
 
         #endregion
@@ -260,9 +260,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsFalse(evseOperator_Id1 < evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            Assert.IsFalse(csoId1 < csoId2);
         }
 
         #endregion
@@ -276,9 +276,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id1);
+            Assert.IsTrue(csoId1 <= csoId1);
             #pragma warning restore
         }
 
@@ -292,9 +292,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsTrue(csoId1 <= csoId2);
         }
 
         #endregion
@@ -307,9 +307,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            Assert.IsTrue(csoId1 <= csoId2);
         }
 
         #endregion
@@ -322,9 +322,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(evseOperator_Id1 <= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            Assert.IsTrue(csoId1 <= csoId2);
         }
 
         #endregion
@@ -337,9 +337,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(evseOperator_Id1 <= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsFalse(csoId1 <= csoId2);
         }
 
         #endregion
@@ -352,9 +352,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsFalse(evseOperator_Id1 <= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            Assert.IsFalse(csoId1 <= csoId2);
         }
 
         #endregion
@@ -368,9 +368,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id1);
+            Assert.IsFalse(csoId1 > csoId1);
             #pragma warning restore
         }
 
@@ -384,9 +384,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsFalse(csoId1 > csoId2);
         }
 
         #endregion
@@ -399,9 +399,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            Assert.IsFalse(csoId1 > csoId2);
         }
 
         #endregion
@@ -414,9 +414,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsFalse(evseOperator_Id1 > evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            Assert.IsFalse(csoId1 > csoId2);
         }
 
         #endregion
@@ -429,9 +429,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(evseOperator_Id1 > evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsTrue(csoId1 > csoId2);
         }
 
         #endregion
@@ -444,9 +444,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsTrue(evseOperator_Id1 > evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            Assert.IsTrue(csoId1 > csoId2);
         }
 
         #endregion
@@ -460,9 +460,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id1);
+            Assert.IsTrue(csoId1 >= csoId1);
             #pragma warning restore
         }
 
@@ -476,9 +476,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            Assert.IsTrue(csoId1 >= csoId2);
         }
 
         #endregion
@@ -491,9 +491,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsFalse(evseOperator_Id1 >= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            Assert.IsFalse(csoId1 >= csoId2);
         }
 
         #endregion
@@ -506,9 +506,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsFalse(evseOperator_Id1 >= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            Assert.IsFalse(csoId1 >= csoId2);
         }
 
         #endregion
@@ -521,9 +521,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsTrue(csoId1 >= csoId2);
         }
 
         #endregion
@@ -536,25 +536,28 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            Assert.IsTrue(evseOperator_Id1 >= evseOperator_Id2);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            Assert.IsTrue(csoId1 >= csoId2);
         }
 
         #endregion
 
 
-        #region CompareToNonEVSEOperator_IdTest()
+        #region CompareToNonChargingStationOperator_IdTest()
 
         /// <summary>
-        /// A test for CompareTo a non-EVSEOperator_Id.
+        /// A test for CompareTo a non-ChargingStationOperator_Id.
         /// </summary>
         [Test]
-        public void CompareToNonEVSEOperator_IdTest()
+        public void CompareToNonChargingStationOperator_IdTest()
         {
-            var evseOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var _Object   = "GEF";
-            Assert.Throws<ArgumentNullException>(() => { var x = evseOperator_Id.CompareTo(_Object); });
+
+            var csoId  = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var text   = "DE*GEF";
+
+            Assert.Throws<ArgumentException>(() => { var x = csoId.CompareTo(text); });
+
         }
 
         #endregion
@@ -567,9 +570,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) < 0);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            Assert.IsTrue(csoId1.CompareTo(csoId2) < 0);
         }
 
         #endregion
@@ -582,9 +585,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "5");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "23");
-            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) < 0);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "005");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "023");
+            Assert.IsTrue(csoId1.CompareTo(csoId2) < 0);
         }
 
         #endregion
@@ -597,9 +600,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) == 0);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsTrue(csoId1.CompareTo(csoId2) == 0);
         }
 
         #endregion
@@ -612,25 +615,25 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(evseOperator_Id1.CompareTo(evseOperator_Id2) > 0);
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsTrue(csoId1.CompareTo(csoId2) > 0);
         }
 
         #endregion
 
 
-        #region EqualsNonEVSEOperator_IdTest()
+        #region EqualsNonChargingStationOperator_IdTest()
 
         /// <summary>
-        /// A test for equals a non-EVSEOperator_Id.
+        /// A test for equals a non-ChargingStationOperator_Id.
         /// </summary>
         [Test]
-        public void EqualsNonEVSEOperator_IdTest()
+        public void EqualsNonChargingStationOperator_IdTest()
         {
-            var evseOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var _Object          = "DE*123";
-            Assert.IsFalse(evseOperator_Id.Equals(_Object));
+            var csoId  = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var text   = "DE*GEF";
+            Assert.IsFalse(csoId.Equals(text));
         }
 
         #endregion
@@ -643,9 +646,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            Assert.IsTrue(evseOperator_Id1.Equals(evseOperator_Id2));
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            Assert.IsTrue(csoId1.Equals(csoId2));
         }
 
         #endregion
@@ -658,9 +661,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var evseOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var evseOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            Assert.IsFalse(evseOperator_Id1.Equals(evseOperator_Id2));
+            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var csoId2 = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            Assert.IsFalse(csoId1.Equals(csoId2));
         }
 
         #endregion
@@ -674,8 +677,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = ChargingStationOperator_Id.Parse(Country.Germany, "5").GetHashCode();
-            var _SensorHashCode2 = ChargingStationOperator_Id.Parse(Country.Germany, "5").GetHashCode();
+            var _SensorHashCode1 = ChargingStationOperator_Id.Parse(Country.Germany, "555").GetHashCode();
+            var _SensorHashCode2 = ChargingStationOperator_Id.Parse(Country.Germany, "555").GetHashCode();
             Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -689,26 +692,26 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = ChargingStationOperator_Id.Parse(Country.Germany, "1").GetHashCode();
-            var _SensorHashCode2 = ChargingStationOperator_Id.Parse(Country.Germany, "2").GetHashCode();
+            var _SensorHashCode1 = ChargingStationOperator_Id.Parse(Country.Germany, "001").GetHashCode();
+            var _SensorHashCode2 = ChargingStationOperator_Id.Parse(Country.Germany, "002").GetHashCode();
             Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
         #endregion
 
 
-        #region EVSEOperator_IdsAndNUnitTest()
+        #region ChargingStationOperator_IdsAndNUnitTest()
 
         /// <summary>
-        /// Tests EVSEOperator_Ids in combination with NUnit.
+        /// Tests ChargingStationOperator_Ids in combination with NUnit.
         /// </summary>
         [Test]
-        public void EVSEOperator_IdsAndNUnitTest()
+        public void ChargingStationOperator_IdsAndNUnitTest()
         {
 
-            var a = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var b = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var c = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var a = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var b = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            var c = ChargingStationOperator_Id.Parse(Country.Germany, "111");
 
             Assert.AreEqual(a, a);
             Assert.AreEqual(b, b);
@@ -722,18 +725,18 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
 
         #endregion
 
-        #region EVSEOperator_IdsInHashSetTest()
+        #region ChargingStationOperator_IdsInHashSetTest()
 
         /// <summary>
-        /// Test EVSEOperator_Ids within a HashSet.
+        /// Test ChargingStationOperator_Ids within a HashSet.
         /// </summary>
         [Test]
-        public void EVSEOperator_IdsInHashSetTest()
+        public void ChargingStationOperator_IdsInHashSetTest()
         {
 
-            var a = ChargingStationOperator_Id.Parse(Country.Germany, "1");
-            var b = ChargingStationOperator_Id.Parse(Country.Germany, "2");
-            var c = ChargingStationOperator_Id.Parse(Country.Germany, "1");
+            var a = ChargingStationOperator_Id.Parse(Country.Germany, "111");
+            var b = ChargingStationOperator_Id.Parse(Country.Germany, "222");
+            var c = ChargingStationOperator_Id.Parse(Country.Germany, "111");
 
             var _HashSet = new HashSet<ChargingStationOperator_Id>();
             Assert.AreEqual(0, _HashSet.Count);

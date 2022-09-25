@@ -80,17 +80,19 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
             if (roamingNetwork is not null)
             {
 
-                // Status entries are compared by their ISO 8601 timestamp!
+                // Status entries are compared by their ISO 8601 timestamps!
                 Thread.Sleep(1000);
 
                 roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.OutOfService;
                 Assert.AreEqual(RoamingNetworkAdminStatusTypes.OutOfService, roamingNetwork.AdminStatus);
+                Assert.AreEqual("OutOfService, Operational",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                           roamingNetwork.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.Operational;
-                Assert.AreEqual(RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
+                roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.InternalUse;
+                Assert.AreEqual(RoamingNetworkAdminStatusTypes.InternalUse,  roamingNetwork.AdminStatus);
+                Assert.AreEqual("InternalUse, OutOfService, Operational",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
 
             }
@@ -118,12 +120,14 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
                 roamingNetwork.Status = RoamingNetworkStatusTypes.OutOfService;
                 Assert.AreEqual(RoamingNetworkStatusTypes.OutOfService, roamingNetwork.Status);
+                Assert.AreEqual("OutOfService, Available",              roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                      roamingNetwork.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 roamingNetwork.Status = RoamingNetworkStatusTypes.Faulted;
                 Assert.AreEqual(RoamingNetworkStatusTypes.Faulted,      roamingNetwork.Status);
+                Assert.AreEqual("Faulted, OutOfService, Available",     roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                      roamingNetwork.StatusSchedule().Count());
 
             }

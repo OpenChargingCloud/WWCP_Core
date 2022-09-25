@@ -51,8 +51,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
             {
 
                 DE_GEF = roamingNetwork.CreateChargingStationOperator(
-                                            ChargingStationOperator_Id.Parse("DE*GEF"),
-                                            I18NString.Create(Languages.de, "GraphDefined CSO")
+                                            Id:                  ChargingStationOperator_Id.Parse("DE*GEF"),
+                                            Name:                I18NString.Create(Languages.de, "GraphDefined CSO"),
+                                            Description:         I18NString.Create(Languages.de, "powered by GraphDefined GmbH"),
+                                            InitialAdminStatus:  ChargingStationOperatorAdminStatusTypes.OutOfService,
+                                            InitialStatus:       ChargingStationOperatorStatusTypes.Offline
                                         );
 
                 Assert.IsNotNull(DE_GEF);
