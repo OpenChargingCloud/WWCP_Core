@@ -75,4 +75,18 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingPool">A charging pool to include.</param>
     public delegate Boolean IncludeChargingPoolDelegate     (ChargingPool        ChargingPool);
 
+
+    /// <summary>
+    /// A delegate for filtering charging station operator identifications.
+    /// </summary>
+    /// <param name="ChargingStationOperatorId">A charging station operator identification to include.</param>
+    public delegate Boolean IncludeChargingStationOperatorIdDelegate   (ChargingStationOperator_Id ChargingStationOperatorId);
+
+    /// <summary>
+    /// A delegate for filtering charging station operators.
+    /// </summary>
+    /// <param name="ChargingStationOperator">A charging station operator to include.</param>
+    public delegate Boolean IncludeChargingStationOperatorDelegate(ChargingStationOperator ChargingStationOperator);
+
+
 }

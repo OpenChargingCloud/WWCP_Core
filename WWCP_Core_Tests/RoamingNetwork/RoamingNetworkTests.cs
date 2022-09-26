@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 {
 
     /// <summary>
@@ -80,20 +80,26 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
             if (roamingNetwork is not null)
             {
 
-                var rn = new RoamingNetwork(
+                var rn = new WWCP.RoamingNetwork(
                              Id:                  RoamingNetwork_Id.Parse("TEST"),
                              Name:                I18NString.Create(Languages.en, "TESTNET"),
                              Description:         I18NString.Create(Languages.en, "A roaming network for testing"),
                              DisableNetworkSync:  true
                          );
 
+                Assert.IsNotNull(rn);
 
-                Assert.AreEqual ("TEST",                                      rn.Id.         ToString());
-                Assert.AreEqual ("TESTNET",                                   rn.Name.       FirstText());
-                Assert.AreEqual ("A roaming network for testing",             rn.Description.FirstText());
+                if (rn is not null)
+                {
 
-                Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  rn.AdminStatus);
-                Assert.AreEqual (RoamingNetworkStatusTypes.Available,         rn.Status);
+                    Assert.AreEqual ("TEST",                                      rn.Id.         ToString());
+                    Assert.AreEqual ("TESTNET",                                   rn.Name.       FirstText());
+                    Assert.AreEqual ("A roaming network for testing",             rn.Description.FirstText());
+
+                    Assert.AreEqual (RoamingNetworkAdminStatusTypes.Operational,  rn.AdminStatus);
+                    Assert.AreEqual (RoamingNetworkStatusTypes.Available,         rn.Status);
+
+                }
 
             }
 

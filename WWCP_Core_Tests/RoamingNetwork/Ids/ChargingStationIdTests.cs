@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork.Ids
+namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
 {
 
     /// <summary>

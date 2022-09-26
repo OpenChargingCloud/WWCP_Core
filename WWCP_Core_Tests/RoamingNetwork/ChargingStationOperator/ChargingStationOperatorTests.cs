@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 {
 
     /// <summary>
@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region ChargingStationOperator_Init_Test()
 
         /// <summary>
-        /// A test for the roaming network constructor.
+        /// A test for creating a charging station operator within a roaming network.
         /// </summary>
         [Test]
         public void ChargingStationOperator_Init_Test()
@@ -60,8 +60,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
                 Assert.AreEqual (1,                                                     DE_GEF.StatusSchedule().     Count());
 
 
-                Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperators.  Count());
-                Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperatorIds.Count());
+                Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperators.    Count());
+                Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperatorIds().Count());
 
                 Assert.IsTrue   (roamingNetwork.ContainsChargingStationOperator(ChargingStationOperator_Id.Parse("DE*GEF")));
                 Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById (ChargingStationOperator_Id.Parse("DE*GEF")));
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region ChargingStationOperator_Init_DefaultStatus_Test()
 
         /// <summary>
-        /// A test for the roaming network constructor.
+        /// A test for creating a charging station operator within a roaming network.
         /// </summary>
         [Test]
         public void ChargingStationOperator_Init_DefaultStatus_Test()
@@ -93,12 +93,19 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
                                                 Description:         I18NString.Create(Languages.de, "powered by XXX GmbH")
                                             );
 
-                Assert.AreEqual ("DE*XXX",                                             DE_XXX.Id.         ToString());
-                Assert.AreEqual ("XXX CSO",                                            DE_XXX.Name.       FirstText());
-                Assert.AreEqual ("powered by XXX GmbH",                                DE_XXX.Description.FirstText());
+                Assert.IsNotNull(DE_XXX);
 
-                Assert.AreEqual (ChargingStationOperatorAdminStatusTypes.Operational,  DE_XXX.AdminStatus);
-                Assert.AreEqual (ChargingStationOperatorStatusTypes.Available,         DE_XXX.Status);
+                if (DE_XXX is not null)
+                {
+
+                    Assert.AreEqual ("DE*XXX",                                             DE_XXX.Id.         ToString());
+                    Assert.AreEqual ("XXX CSO",                                            DE_XXX.Name.       FirstText());
+                    Assert.AreEqual ("powered by XXX GmbH",                                DE_XXX.Description.FirstText());
+
+                    Assert.AreEqual (ChargingStationOperatorAdminStatusTypes.Operational,  DE_XXX.AdminStatus);
+                    Assert.AreEqual (ChargingStationOperatorStatusTypes.Available,         DE_XXX.Status);
+
+                }
 
             }
 

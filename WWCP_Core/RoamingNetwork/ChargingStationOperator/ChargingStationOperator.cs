@@ -625,7 +625,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this._Brands                      = new SpecialHashSet<ChargingStationOperator, Brand_Id,                Brand>               (this);
 
-            this._ChargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
+            this.chargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
             this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
             this._EVSEGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
@@ -1120,7 +1120,7 @@ namespace cloud.charging.open.protocols.WWCP
             Id ??= ChargingPool_Id.NewRandom(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
-            if (_ChargingPools.ContainsId(Id.Value))
+            if (chargingPools.ContainsId(Id.Value))
             {
 
                 if (OnError == null)
@@ -1149,7 +1149,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (ChargingPoolAddition.SendVoting(Timestamp.Now, this, chargingPool) &&
-                _ChargingPools.TryAdd(chargingPool))
+                chargingPools.TryAdd(chargingPool))
             {
 
                 chargingPool.OnDataChanged                             += UpdateChargingPoolData;
@@ -1215,7 +1215,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            lock (_ChargingPools)
+            lock (chargingPools)
             {
 
                 #region Initial checks
@@ -1228,7 +1228,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
 
-                if (!_ChargingPools.ContainsId(Id))
+                if (!chargingPools.ContainsId(Id))
                     return CreateChargingPool(Id,
                                               Name,
                                               Description,
@@ -1249,7 +1249,7 @@ namespace cloud.charging.open.protocols.WWCP
                 try
                 {
 
-                    var existingChargingPool = _ChargingPools.GetById(Id);
+                    var existingChargingPool = chargingPools.GetById(Id);
 
                     if (existingChargingPool is not null)
                         return existingChargingPool.UpdateWith(new ChargingPool(Id,
@@ -1277,29 +1277,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPools
 
-        private EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> _ChargingPools;
+        private EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> chargingPools;
 
         public IEnumerable<ChargingPool> ChargingPools
 
-            => _ChargingPools;
+            => chargingPools;
 
         #endregion
 
-        #region ChargingPoolIds        (IncludePools = null)
+        #region ChargingPoolIds        (IncludeChargingPool = null)
 
         /// <summary>
         /// Return an enumeration of all charging pool identifications.
         /// </summary>
-        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate IncludePools = null)
+        /// <param name="IncludeChargingPool">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate? IncludeChargingPool = null)
 
-            => IncludePools == null
+            => IncludeChargingPool is null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          Select    (pool => pool.Id)
 
-                   : _ChargingPools.
-                         Where     (pool => IncludePools(pool)).
+                   : chargingPools.
+                         Where     (pool => IncludeChargingPool(pool)).
                          Select    (pool => pool.Id);
 
         #endregion
@@ -1314,10 +1314,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludePools == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          Select(pool => new ChargingPoolAdminStatus(pool.Id, pool.AdminStatus))
 
-                   : _ChargingPools.
+                   : chargingPools.
                          Where (pool => IncludePools(pool)).
                          Select(pool => new ChargingPoolAdminStatus(pool.Id, pool.AdminStatus));
 
@@ -1333,10 +1333,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludePools == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          Select(pool => new ChargingPoolStatus(pool.Id, pool.Status))
 
-                   : _ChargingPools.
+                   : chargingPools.
                          Where (pool => IncludePools(pool)).
                          Select(pool => new ChargingPoolStatus(pool.Id, pool.Status));
 
@@ -1351,7 +1351,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPool">A charging pool.</param>
         public Boolean ContainsChargingPool(ChargingPool ChargingPool)
 
-            => _ChargingPools.Contains(ChargingPool);
+            => chargingPools.Contains(ChargingPool);
 
         #endregion
 
@@ -1363,7 +1363,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
         public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
 
-            => _ChargingPools.ContainsId(ChargingPoolId);
+            => chargingPools.ContainsId(ChargingPoolId);
 
         #endregion
 
@@ -1371,7 +1371,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public ChargingPool GetChargingPoolById(ChargingPool_Id ChargingPoolId)
 
-            => _ChargingPools.GetById(ChargingPoolId);
+            => chargingPools.GetById(ChargingPoolId);
 
         #endregion
 
@@ -1379,7 +1379,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
 
-            => _ChargingPools.TryGet(ChargingPoolId, out ChargingPool);
+            => chargingPools.TryGet(ChargingPoolId, out ChargingPool);
 
         #endregion
 
@@ -1396,7 +1396,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingPoolRemoval.SendVoting(Timestamp.Now, this, _ChargingPool))
                 {
 
-                    if (_ChargingPools.TryRemove(ChargingPoolId, out _ChargingPool))
+                    if (chargingPools.TryRemove(ChargingPoolId, out _ChargingPool))
                     {
 
                         ChargingPoolRemoval.SendNotification(Timestamp.Now, this, _ChargingPool);
@@ -1426,7 +1426,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingPoolRemoval.SendVoting(Timestamp.Now, this, ChargingPool))
                 {
 
-                    if (_ChargingPools.TryRemove(ChargingPoolId, out ChargingPool))
+                    if (chargingPools.TryRemove(ChargingPoolId, out ChargingPool))
                     {
 
                         ChargingPoolRemoval.SendNotification(Timestamp.Now, this, ChargingPool);
@@ -1623,11 +1623,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         IEnumerator IEnumerable.GetEnumerator()
 
-            => _ChargingPools.GetEnumerator();
+            => chargingPools.GetEnumerator();
 
         public IEnumerator<ChargingPool> GetEnumerator()
 
-            => _ChargingPools.GetEnumerator();
+            => chargingPools.GetEnumerator();
 
         #endregion
 
@@ -1670,7 +1670,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
 
-            => _ChargingPools.
+            => chargingPools.
                    SelectMany(pool => pool.ChargingStations);
 
         #endregion
@@ -1685,11 +1685,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeStations == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          SelectMany(pool    => pool.ChargingStations).
                          Select    (station => station.Id)
 
-                   : _ChargingPools.
+                   : chargingPools.
                          SelectMany(pool    => pool.ChargingStations).
                          Where     (station => IncludeStations(station)).
                          Select    (station => station.Id);
@@ -1706,11 +1706,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeStations == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          SelectMany(pool    => pool.ChargingStations).
                          Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus))
 
-                   : _ChargingPools.
+                   : chargingPools.
                          SelectMany(pool    => pool.ChargingStations).
                          Where     (station => IncludeStations(station)).
                          Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus));
@@ -1727,11 +1727,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeStations == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          SelectMany(pool    => pool.ChargingStations).
                          Select    (station => new ChargingStationStatus(station.Id, station.Status))
 
-                   : _ChargingPools.
+                   : chargingPools.
                          SelectMany(pool    => pool.ChargingStations).
                          Where     (station => IncludeStations(station)).
                          Select    (station => new ChargingStationStatus(station.Id, station.Status));
@@ -1747,7 +1747,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">A charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation ChargingStation)
 
-            => _ChargingPools.Any(pool => pool.ContainsChargingStation(ChargingStation.Id));
+            => chargingPools.Any(pool => pool.ContainsChargingStation(ChargingStation.Id));
 
         #endregion
 
@@ -1759,7 +1759,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
 
-            => _ChargingPools.Any(pool => pool.ContainsChargingStation(ChargingStationId));
+            => chargingPools.Any(pool => pool.ContainsChargingStation(ChargingStationId));
 
         #endregion
 
@@ -1767,7 +1767,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
 
-            => _ChargingPools.
+            => chargingPools.
                    SelectMany    (pool    => pool.ChargingStations).
                    FirstOrDefault(station => station.Id == ChargingStationId);
 
@@ -1778,7 +1778,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
         {
 
-            ChargingStation = _ChargingPools.
+            ChargingStation = chargingPools.
                                   SelectMany    (pool    => pool.ChargingStations).
                                   FirstOrDefault(station => station.Id == ChargingStationId);
 
@@ -1793,7 +1793,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out ChargingPool Pool)
         {
 
-            foreach (var pool in _ChargingPools)
+            foreach (var pool in chargingPools)
             {
                 if (pool.TryGetChargingStationById(ChargingStationId, out ChargingStation station))
                 {
@@ -2523,7 +2523,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<EVSE> EVSEs
 
-            => _ChargingPools.
+            => chargingPools.
                    SelectMany(v => v.ChargingStations).
                    SelectMany(v => v.EVSEs);
 
@@ -2539,11 +2539,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeEVSEs == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          SelectMany(pool => pool.EVSEs).
                          Select    (evse => evse.Id)
 
-                   : _ChargingPools.
+                   : chargingPools.
                          SelectMany(pool => pool.EVSEs).
                          Where     (evse => IncludeEVSEs(evse)).
                          Select    (evse => evse.Id);
@@ -2560,12 +2560,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeEVSEs == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          SelectMany(pool => pool.EVSEs).
                          Select    (evse => new EVSEAdminStatus(evse.Id,
                                                                 evse.AdminStatus))
 
-                   : _ChargingPools.
+                   : chargingPools.
                          SelectMany(pool    => pool.EVSEs).
                          Where     (evse => IncludeEVSEs(evse)).
                          Select    (evse => new EVSEAdminStatus(evse.Id,
@@ -2591,7 +2591,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (IncludeEVSEs == null)
                 IncludeEVSEs = evse => true;
 
-            return _ChargingPools.
+            return chargingPools.
                          SelectMany(pool           => pool.EVSEs).
                          Where     (evse           => IncludeEVSEs(evse)).
                          Select    (evse           => new EVSEAdminStatusSchedule(evse.Id,
@@ -2614,12 +2614,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             => IncludeEVSEs == null
 
-                   ? _ChargingPools.
+                   ? chargingPools.
                          SelectMany(pool => pool.EVSEs).
                          Select    (evse => new EVSEStatus(evse.Id,
                                                            evse.Status))
 
-                   : _ChargingPools.
+                   : chargingPools.
                          SelectMany(pool => pool.EVSEs).
                          Where     (evse => IncludeEVSEs(evse)).
                          Select    (evse => new EVSEStatus(evse.Id,
@@ -2645,7 +2645,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (IncludeEVSEs == null)
                 IncludeEVSEs = evse => true;
 
-            return _ChargingPools.
+            return chargingPools.
                          SelectMany(pool           => pool.EVSEs).
                          Where     (evse           => IncludeEVSEs(evse)).
                          Select    (evse           => new EVSEStatusSchedule(evse.Id,
@@ -2667,7 +2667,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
 
-            => _ChargingPools.Any(pool => pool.ContainsEVSE(EVSE.Id));
+            => chargingPools.Any(pool => pool.ContainsEVSE(EVSE.Id));
 
         #endregion
 
@@ -2679,7 +2679,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
 
-            => _ChargingPools.Any(pool => pool.ContainsEVSE(EVSEId));
+            => chargingPools.Any(pool => pool.ContainsEVSE(EVSEId));
 
         /// <summary>
         /// Check if the given EVSE identification is already present within the Charging Station Operator.
@@ -2691,7 +2691,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (!EVSEId.HasValue)
                 return false;
 
-            return _ChargingPools.Any(pool => pool.ContainsEVSE(EVSEId.Value));
+            return chargingPools.Any(pool => pool.ContainsEVSE(EVSEId.Value));
 
         }
 
@@ -2701,7 +2701,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public EVSE GetEVSEById(EVSE_Id EVSEId)
 
-            => _ChargingPools.
+            => chargingPools.
                    SelectMany    (pool    => pool.   ChargingStations).
                    SelectMany    (station => station.EVSEs).
                    FirstOrDefault(evse    => evse.Id == EVSEId);
@@ -2713,7 +2713,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
-            EVSE = _ChargingPools.
+            EVSE = chargingPools.
                        SelectMany    (pool    => pool.   ChargingStations).
                        SelectMany    (station => station.EVSEs).
                        FirstOrDefault(evse    => evse.Id == EVSEId);
@@ -2731,7 +2731,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            EVSE = _ChargingPools.
+            EVSE = chargingPools.
                        SelectMany    (pool    => pool.   ChargingStations).
                        SelectMany    (station => station.EVSEs).
                        FirstOrDefault(evse    => evse.Id == EVSEId);
@@ -2747,7 +2747,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetChargingPoolByEVSEId(EVSE_Id EVSEId, out ChargingPool Pool)
         {
 
-            foreach (var pool in _ChargingPools)
+            foreach (var pool in chargingPools)
             {
                 foreach (var station in pool.ChargingStations)
                 {

@@ -20,11 +20,10 @@
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using cloud.charging.open.protocols.WWCP.Networking;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 {
 
     /// <summary>
@@ -35,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #region Data
 
-        protected RoamingNetwork? roamingNetwork;
+        protected WWCP.RoamingNetwork? roamingNetwork;
 
         #endregion
 
@@ -58,7 +57,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
             Timestamp.Reset();
 
-            roamingNetwork = new RoamingNetwork(
+            roamingNetwork = new WWCP.RoamingNetwork(
                                  Id:                      RoamingNetwork_Id.Parse("PROD"),
                                  Name:                    I18NString.Create(Languages.en, "PRODUCTION"),
                                  Description:             I18NString.Create(Languages.en, "The main production roaming network"),

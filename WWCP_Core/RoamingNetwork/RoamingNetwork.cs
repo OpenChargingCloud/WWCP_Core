@@ -329,40 +329,64 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ChargingStationOperatorIds
+        #region ChargingStationOperatorIds        (IncludeChargingStationOperator = null)
 
         /// <summary>
         /// Return all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds
+        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
+        public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
 
-            => chargingStationOperators.Select(cso => cso.Id);
+            => IncludeChargingStationOperator is null
+
+                   ? chargingStationOperators.
+                         Select(cso => cso.Id)
+
+                   : chargingStationOperators.
+                         Where (cso => IncludeChargingStationOperator(cso)).
+                         Select(cso => cso.Id);
 
         #endregion
 
-        #region ChargingStationOperatorAdminStatus
+        #region ChargingStationOperatorAdminStatus(IncludeChargingStationOperator = null)
 
         /// <summary>
         /// Return the admin status of all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>> ChargingStationOperatorAdminStatus
+        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
+        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>> ChargingStationOperatorAdminStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
 
-            => chargingStationOperators.
-                   SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
-                                                                                                                                                     cso.AdminStatusSchedule()));
+            => IncludeChargingStationOperator is null
+
+                   ? chargingStationOperators.
+                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
+                                                                                                                                                       cso.AdminStatusSchedule()))
+
+                   : chargingStationOperators.
+                         Where (cso => IncludeChargingStationOperator(cso)).
+                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
+                                                                                                                                                       cso.AdminStatusSchedule()));
 
         #endregion
 
-        #region ChargingStationOperatorStatus
+        #region ChargingStationOperatorStatus     (IncludeChargingStationOperator = null)
 
         /// <summary>
         /// Return the status of all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus
+        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
+        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
 
-            => chargingStationOperators.
-                   SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
-                                                                                                                                                cso.StatusSchedule()));
+            => IncludeChargingStationOperator is null
+
+                   ? chargingStationOperators.
+                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
+                                                                                                                                                  cso.StatusSchedule()))
+
+                   : chargingStationOperators.
+                         Where (cso => IncludeChargingStationOperator(cso)).
+                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
+                                                                                                                                                  cso.StatusSchedule()));
 
         #endregion
 
@@ -474,7 +498,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 //ToDo: Throw a more usefull exception!
                 throw new ChargingStationOperatorAlreadyExists(this,
-                                                               ChargingStationOperatorIds.FirstOrDefault(),
+                                                               ChargingStationOperatorIds().FirstOrDefault(),
                                                                Name);
 
             }
@@ -6057,7 +6081,7 @@ namespace cloud.charging.open.protocols.WWCP
                          ChargingStationOperators.Any()
                              ? ExpandChargingStationOperatorIds.Switch(
 
-                                   () => new JProperty("chargingStationOperatorIds",  new JArray(ChargingStationOperatorIds.
+                                   () => new JProperty("chargingStationOperatorIds",  new JArray(ChargingStationOperatorIds().
                                                                                                                 OrderBy(id => id).
                                                                                                                 Select (id => id.ToString()))),
 
@@ -6135,7 +6159,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                          eMobilityProviders.Any()
                              ? ExpandEMobilityProviderId.Switch(
-                                   () => new JProperty("eMobilityProviderIds",        new JArray(ChargingStationOperatorIds.
+                                   () => new JProperty("eMobilityProviderIds",        new JArray(eMobilityProviderIds.
                                                                                                                 OrderBy(id => id).
                                                                                                                 Select (id => id.ToString()))),
 

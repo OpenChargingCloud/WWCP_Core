@@ -23,18 +23,18 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 {
 
     /// <summary>
     /// WWCP Roaming networks defaults.
     /// </summary>
-    public abstract class AChargingStationOperatorTests : ARoamingNetworkTests
+    public abstract class AChargingStationTests : AChargingPoolTests
     {
 
         #region Data
 
-        protected ChargingStationOperator? DE_GEF;
+        protected ChargingStation? DE_GEF_S0001_AAAA;
 
         #endregion
 
@@ -47,18 +47,20 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
             base.SetupEachTest();
 
-            if (roamingNetwork is not null)
+            if (roamingNetwork   is not null &&
+                DE_GEF           is not null &&
+                DE_GEF_P0001 is not null)
             {
 
-                DE_GEF = roamingNetwork.CreateChargingStationOperator(
-                                            Id:                  ChargingStationOperator_Id.Parse("DE*GEF"),
-                                            Name:                I18NString.Create(Languages.de, "GraphDefined CSO"),
-                                            Description:         I18NString.Create(Languages.de, "powered by GraphDefined GmbH"),
-                                            InitialAdminStatus:  ChargingStationOperatorAdminStatusTypes.OutOfService,
-                                            InitialStatus:       ChargingStationOperatorStatusTypes.Offline
-                                        );
+                DE_GEF_S0001_AAAA = DE_GEF_P0001.CreateChargingStation(
+                                                     Id:                  ChargingStation_Id.Parse(DE_GEF_P0001.Id, "AAAA"),
+                                                     //Name:                I18NString.Create(Languages.de, "GraphDefined CSO"),
+                                                     //Description:         I18NString.Create(Languages.de, "powered by GraphDefined GmbH"),
+                                                     InitialAdminStatus:  ChargingStationAdminStatusTypes.OutOfService,
+                                                     InitialStatus:       ChargingStationStatusTypes.Offline
+                                                 );
 
-                Assert.IsNotNull(DE_GEF);
+                Assert.IsNotNull(DE_GEF_P0001);
 
             }
 
