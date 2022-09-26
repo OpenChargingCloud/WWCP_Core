@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork.Ids
 {
 
     /// <summary>
@@ -31,7 +31,6 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
     public class EVSEIdTests
     {
 
-
         private readonly ChargingStationOperator_Id ChargingStationOperatorId  = ChargingStationOperator_Id.Parse("DE*GEF");
         private readonly ChargingPool_Id            ChargingPoolId             = ChargingPool_Id.           Parse("DE*GEF*P1234");
         private readonly ChargingStation_Id         ChargingStationId          = ChargingStation_Id.        Parse("DE*GEF*S1234*5678");
@@ -40,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
         public void Parse_ChargingStationOperatorId_Test()
@@ -55,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_ChargingPoolId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
         public void Parse_ChargingPoolId_Test()
@@ -70,7 +69,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_ChargingStationId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
         public void Parse_ChargingStationId_Test()
@@ -83,13 +82,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #endregion
 
 
-        #region TryParse_ChargingStationOperatorId_Test1()
+        #region TryParse_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationOperatorId_Test1()
+        public void TryParse_ChargingStationOperatorId_Test()
         {
 
             var evseId = EVSE_Id.TryParse(ChargingStationOperatorId, "9012");
@@ -105,13 +104,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingPoolId_Test1()
+        #region TryParse_ChargingPoolId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingPoolId_Test1()
+        public void TryParse_ChargingPoolId_Test()
         {
 
             var evseId = EVSE_Id.TryParse(ChargingPoolId, "9012");
@@ -127,13 +126,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingStationId_Test1()
+        #region TryParse_ChargingStationId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationId_Test1()
+        public void TryParse_ChargingStationId_Test()
         {
 
             var evseId = EVSE_Id.TryParse(ChargingStationId, "9012");
@@ -150,13 +149,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #endregion
 
 
-        #region TryParse_ChargingStationOperatorId_Test2()
+        #region TryParseOut_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationOperatorId_Test2()
+        public void TryParseOut_ChargingStationOperatorId_Test()
         {
             Assert.IsTrue(EVSE_Id.TryParse(ChargingStationOperatorId, "9012", out var evseId));
             Assert.AreEqual("DE*GEF*E9012", evseId.ToString());
@@ -165,13 +164,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingPoolId_Test2()
+        #region TryParseOut_ChargingPoolId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingPoolId_Test2()
+        public void TryParseOut_ChargingPoolId_Test()
         {
             Assert.IsTrue(EVSE_Id.TryParse(ChargingPoolId, "9012", out var evseId));
             Assert.AreEqual("DE*GEF*E1234*9012", evseId.ToString());
@@ -180,13 +179,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingStationId_Test2()
+        #region TryParseOut_ChargingStationId_Test()
 
         /// <summary>
-        /// A test for the EVSE_Id string constructor.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationId_Test2()
+        public void TryParseOut_ChargingStationId_Test()
         {
             Assert.IsTrue(EVSE_Id.TryParse(ChargingStationId, "9012", out var evseId));
             Assert.AreEqual("DE*GEF*E1234*5678*9012", evseId.ToString());
@@ -199,7 +198,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_Small_E_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
         public void Parse_Small_E_Test()
@@ -209,26 +208,26 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_Small_E_Test1()
+        #region TryParse_Small_E_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_Small_E_Test1()
+        public void TryParse_Small_E_Test()
         {
             Assert.IsNull(EVSE_Id.TryParse("DE*GEF*evse*1234*5678"));
         }
 
         #endregion
 
-        #region TryParse_Small_E_Test2()
+        #region TryParseOut_Small_E_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing EVSE identifications.
         /// </summary>
         [Test]
-        public void TryParse_Small_E_Test2()
+        public void TryParseOut_Small_E_Test()
         {
             Assert.IsFalse(EVSE_Id.TryParse("DE*GEF*evse*1234*5678", out _));
         }
@@ -996,7 +995,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         /// Test EVSE identification generated from a charging station identification.
         /// </summary>
         [Test]
-        public void EVSEId_FromStationId()
+        public void ChargingStationId_CreateEVSEId()
         {
 
             Assert.AreEqual("DE*GEF*E1234*5678*AAAA",     ChargingStationId.                                   CreateEVSEId("AAAA").ToString());

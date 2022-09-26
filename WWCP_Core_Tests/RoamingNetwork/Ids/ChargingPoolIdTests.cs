@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork.Ids
 {
 
     /// <summary>
@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging pool identifications.
         /// </summary>
         [Test]
         public void Parse_ChargingStationOperatorId_Test()
@@ -49,13 +49,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingStationOperatorId_Test1()
+        #region TryParse_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging pool identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationOperatorId_Test1()
+        public void TryParse_ChargingStationOperatorId_Test()
         {
 
             var poolId = ChargingPool_Id.TryParse(ChargingStationOperatorId, "1234");
@@ -71,13 +71,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingStationOperatorId_Test2()
+        #region TryParseOut_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging pool identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationOperatorId_Test2()
+        public void TryParseOut_ChargingStationOperatorId_Test()
         {
             Assert.IsTrue(ChargingPool_Id.TryParse(ChargingStationOperatorId, "1234", out var poolId));
             Assert.AreEqual("DE*GEF*P1234", poolId.ToString());
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_Small_P_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing charging pool identifications.
         /// </summary>
         [Test]
         public void Parse_Small_P_Test()
@@ -100,26 +100,26 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_Small_P_Test1()
+        #region TryParse_Small_P_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing charging pool identifications.
         /// </summary>
         [Test]
-        public void TryParse_Small_P_Test1()
+        public void TryParse_Small_P_Test()
         {
             Assert.IsNull(ChargingStation_Id.TryParse("DE*GEF*pool*1234"));
         }
 
         #endregion
 
-        #region TryParse_Small_P_Test2()
+        #region TryParseOut_Small_P_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing charging pool identifications.
         /// </summary>
         [Test]
-        public void TryParse_Small_P_Test2()
+        public void TryParseOut_Small_P_Test()
         {
             Assert.IsFalse(ChargingStation_Id.TryParse("DE*GEF*pool*1234", out _));
         }
@@ -863,29 +863,20 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #endregion
 
 
-        #region ChargingPoolId_CreateStationId()
+        #region ChargingStationOperatorId_CreateChargingPoolId()
 
         /// <summary>
-        /// Test charging station identification generated from a charging pool identification.
+        /// Test charging pool identification generated from a charging station operator identification.
         /// </summary>
         [Test]
-        public void ChargingStationId_FromPoolId()
+        public void ChargingStationOperatorId_CreateChargingPoolId()
         {
-
-            var xx = ChargingStationOperator_Id.Parse("DEGEF").CreatePoolId("1234").ToString();
-
-
-        //    Assert.AreEqual("DE*GEF*P1234",     ChargingStationOperatorId.      CreatePoolId("1234").ToString());
             Assert.AreEqual("DEGEFP1234",   ChargingStationOperator_Id.Parse("DEGEF"). CreatePoolId("1234").ToString());
             Assert.AreEqual("DE*GEF*P1234", ChargingStationOperator_Id.Parse("DE*GEF").CreatePoolId("1234").ToString());
-
-            //Assert.AreEqual("DE*GEF*S1234",             ChargingStationOperatorId.      CreatePoolId().ToString());
-            //Assert.AreEqual("DEGEFS1234",               ChargingPool_Id.Parse("DEGEF"). CreatePoolId().ToString());
-            //Assert.AreEqual("DE*GEF*STATION*0001",      ChargingPool_Id.Parse("DE*GEF").CreatePoolId().ToString());
-
         }
 
         #endregion
+
 
     }
 

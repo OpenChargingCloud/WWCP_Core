@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork.Ids
 {
 
     /// <summary>
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
         public void Parse_ChargingStationOperatorId_Test()
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_ChargingPoolId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
         public void Parse_ChargingPoolId_Test()
@@ -66,13 +66,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #endregion
 
 
-        #region TryParse_ChargingStationOperatorId_Test1()
+        #region TryParse_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationOperatorId_Test1()
+        public void TryParse_ChargingStationOperatorId_Test()
         {
 
             var stationId = ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234");
@@ -88,13 +88,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingPoolId_Test1()
+        #region TryParse_ChargingPoolId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingPoolId_Test1()
+        public void TryParse_ChargingPoolId_Test()
         {
 
             var stationId = ChargingStation_Id.TryParse(ChargingPoolId, "5678");
@@ -111,13 +111,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #endregion
 
 
-        #region TryParse_ChargingStationOperatorId_Test2()
+        #region TryParseOut_ChargingStationOperatorId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingStationOperatorId_Test2()
+        public void TryParseOut_ChargingStationOperatorId_Test()
         {
             Assert.IsTrue(ChargingStation_Id.TryParse(ChargingStationOperatorId, "1234", out var stationId));
             Assert.AreEqual("DE*GEF*S1234", stationId.ToString());
@@ -126,13 +126,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_ChargingPoolId_Test2()
+        #region TryParseOut_ChargingPoolId_Test()
 
         /// <summary>
-        /// A test for the ChargingStation_Id string constructor.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
-        public void TryParse_ChargingPoolId_Test2()
+        public void TryParseOut_ChargingPoolId_Test()
         {
             Assert.IsTrue(ChargingStation_Id.TryParse(ChargingPoolId, "5678", out var stationId));
             Assert.AreEqual("DE*GEF*S1234*5678", stationId.ToString());
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         #region Parse_Small_S_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
         public void Parse_Small_S_Test()
@@ -155,26 +155,26 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region TryParse_Small_S_Test1()
+        #region TryParse_Small_S_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
-        public void TryParse_Small_S_Test1()
+        public void TryParse_Small_S_Test()
         {
             Assert.IsNull(ChargingStation_Id.TryParse("DE*GEF*station*1234*5678"));
         }
 
         #endregion
 
-        #region TryParse_Small_S_Test2()
+        #region TryParseOut_Small_S_Test()
 
         /// <summary>
-        /// A test for CompareTo a non-ChargingStation_Id.
+        /// A test for parsing charging station identifications.
         /// </summary>
         [Test]
-        public void TryParse_Small_S_Test2()
+        public void TryParseOut_Small_S_Test()
         {
             Assert.IsFalse(ChargingStation_Id.TryParse("DE*GEF*station*1234*5678", out _));
         }
@@ -942,7 +942,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         /// Test charging station identification generated from a charging pool identification.
         /// </summary>
         [Test]
-        public void ChargingStationId_FromPoolId()
+        public void ChargingPoolId_CreateStationId()
         {
 
             Assert.AreEqual("DE*GEF*S1234*AAAA",        ChargingPoolId.                           CreateStationId("AAAA").ToString());

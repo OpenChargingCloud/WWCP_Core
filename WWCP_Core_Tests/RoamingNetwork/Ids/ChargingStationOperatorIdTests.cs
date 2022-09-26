@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
+namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork.Ids
 {
 
     /// <summary>
@@ -33,13 +33,43 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
     public class ChargingStationOperatorIdTests
     {
 
-        #region ChargingStationOperator_IdStringConstructorTest()
+        #region Parse_Test1()
 
         /// <summary>
-        /// A test for the ChargingStationOperator_Id string constructor.
+        /// A test for parsing charging station operator identifications.
         /// </summary>
         [Test]
-        public void ChargingStationOperator_IdStringConstructorTest()
+        public void Parse_Test1()
+        {
+            var csoId = ChargingStationOperator_Id.Parse("DEGEF");
+            Assert.AreEqual("DEGEF", csoId.ToString());
+            Assert.AreEqual(5,       csoId.Length);
+        }
+
+        #endregion
+
+        #region Parse_Test2()
+
+        /// <summary>
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void Parse_Test2()
+        {
+            var csoId = ChargingStationOperator_Id.Parse("DE*GEF");
+            Assert.AreEqual("DE*GEF", csoId.ToString());
+            Assert.AreEqual(6,        csoId.Length);
+        }
+
+        #endregion
+
+        #region Parse_Test3()
+
+        /// <summary>
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void Parse_Test3()
         {
             var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             Assert.AreEqual("DE*GEF", csoId.ToString());
@@ -48,10 +78,124 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         #endregion
 
-        #region ChargingStationOperator_IdChargingStationOperator_IdConstructorTest()
+
+        #region TryParse_Test1()
 
         /// <summary>
-        /// A test for the ChargingStationOperator_Id ChargingStationOperator_Id constructor.
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void TryParse_Test1()
+        {
+
+            var csoId = ChargingStationOperator_Id.TryParse("DEGEF");
+            Assert.IsNotNull(csoId);
+
+            if (csoId is not null)
+            {
+                Assert.AreEqual("DEGEF", csoId.Value.ToString());
+                Assert.AreEqual(5,       csoId.Value.Length);
+            }
+
+        }
+
+        #endregion
+
+        #region TryParse_Test2()
+
+        /// <summary>
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void TryParse_Test2()
+        {
+
+            var csoId = ChargingStationOperator_Id.TryParse("DE*GEF");
+            Assert.IsNotNull(csoId);
+
+            if (csoId is not null)
+            {
+                Assert.AreEqual("DE*GEF", csoId.Value.ToString());
+                Assert.AreEqual(6,        csoId.Value.Length);
+            }
+
+        }
+
+        #endregion
+
+        #region TryParse_Test3()
+
+        /// <summary>
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void TryParse_Test3()
+        {
+
+            var csoId = ChargingStationOperator_Id.TryParse(Country.Germany, "GEF");
+            Assert.IsNotNull(csoId);
+
+            if (csoId is not null)
+            {
+                Assert.AreEqual("DE*GEF", csoId.Value.ToString());
+                Assert.AreEqual(6,        csoId.Value.Length);
+            }
+
+        }
+
+        #endregion
+
+
+        #region TryParseOut_Test1()
+
+        /// <summary>
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void TryParseOut_Test1()
+        {
+            Assert.IsTrue(ChargingStationOperator_Id.TryParse("DEGEF", out var csoId));
+            Assert.AreEqual("DEGEF", csoId.ToString());
+            Assert.AreEqual(5,       csoId.Length);
+        }
+
+        #endregion
+
+        #region TryParseOut_Test2()
+
+        /// <summary>
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void TryParseOut_Test2()
+        {
+            Assert.IsTrue(ChargingStationOperator_Id.TryParse("DE*GEF", out var csoId));
+            Assert.AreEqual("DE*GEF", csoId.ToString());
+            Assert.AreEqual(6,        csoId.Length);
+        }
+
+        #endregion
+
+        #region TryParseOut_Test3()
+
+        /// <summary>
+        /// A test for parsing charging station operator identifications.
+        /// </summary>
+        [Test]
+        public void TryParseOut_Test3()
+        {
+            Assert.IsTrue(ChargingStationOperator_Id.TryParse(Country.Germany, "GEF", out var csoId));
+            Assert.AreEqual("DE*GEF", csoId.ToString());
+            Assert.AreEqual(6,        csoId.Length);
+        }
+
+        #endregion
+
+
+        #region Clone_Test()
+
+        /// <summary>
+        /// A test for cloning charging station operator identifications.
         /// </summary>
         [Test]
         public void ChargingStationOperator_IdChargingStationOperator_IdConstructorTest()
@@ -75,9 +219,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
 
         public void op_Equality_SameReference_Test()
         {
-            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(csoId1 == csoId1);
+            Assert.IsTrue(csoId == csoId);
             #pragma warning restore
         }
 
@@ -122,9 +266,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(csoId1 != csoId1);
+            Assert.IsFalse(csoId != csoId);
             #pragma warning restore
         }
 
@@ -184,9 +328,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(csoId1 < csoId1);
+            Assert.IsFalse(csoId < csoId);
             #pragma warning restore
         }
 
@@ -276,9 +420,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(csoId1 <= csoId1);
+            Assert.IsTrue(csoId <= csoId);
             #pragma warning restore
         }
 
@@ -368,9 +512,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsFalse(csoId1 > csoId1);
+            Assert.IsFalse(csoId > csoId);
             #pragma warning restore
         }
 
@@ -460,9 +604,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var csoId1 = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
             #pragma warning disable
-            Assert.IsTrue(csoId1 >= csoId1);
+            Assert.IsTrue(csoId >= csoId);
             #pragma warning restore
         }
 
@@ -553,8 +697,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         public void CompareToNonChargingStationOperator_IdTest()
         {
 
-            var csoId  = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var text   = "DE*GEF";
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var text  = "DE*GEF";
 
             Assert.Throws<ArgumentException>(() => { var x = csoId.CompareTo(text); });
 
@@ -631,8 +775,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.roamingNetwork
         [Test]
         public void EqualsNonChargingStationOperator_IdTest()
         {
-            var csoId  = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
-            var text   = "DE*GEF";
+            var csoId = ChargingStationOperator_Id.Parse(Country.Germany, "GEF");
+            var text  = "DE*GEF";
             Assert.IsFalse(csoId.Equals(text));
         }
 
