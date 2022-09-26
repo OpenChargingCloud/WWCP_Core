@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing a charging pool identification.
         /// </summary>
-        public static readonly Regex ChargingPoolId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?P([A-Z0-9][A-Z0-9\*]{0,50})$",
+        public static readonly Regex ChargingPoolId_RegEx  = new (@"^([a-zA-Z]{2}\*?[a-zA-Z0-9]{3})\*?P([a-zA-Z0-9][a-zA-Z0-9\*]{0,50})$",
                                                                   RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -341,9 +341,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        out ChargingPool_Id         ChargingPoolId)
 
             => ChargingStationOperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                           "*S", Suffix), out ChargingPoolId),
-                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                            "S", Suffix), out ChargingPoolId),
-                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*S", Suffix), out ChargingPoolId)
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                           "*P", Suffix), out ChargingPoolId),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                            "P", Suffix), out ChargingPoolId),
+                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*P", Suffix), out ChargingPoolId)
                };
 
         #endregion
@@ -539,8 +539,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => OperatorId.GetHashCode() ^
-               Suffix?.   GetHashCode() ?? 0;
+            => OperatorId.               GetHashCode() ^
+               Suffix?.Replace("*", "")?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -551,7 +551,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(OperatorId, "*P", Suffix ?? "");
+            => OperatorId.Format switch {
+
+                OperatorIdFormats.ISO       => String.Concat(OperatorId.CountryCode.Alpha2Code,
+                                                             OperatorId.Suffix,
+                                                             "P",
+                                                             Suffix),
+
+                OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId.CountryCode.Alpha2Code,
+                                                             "*",
+                                                             OperatorId.Suffix,
+                                                             "*P",
+                                                             Suffix),
+
+                _                           => String.Concat("+",
+                                                             OperatorId.CountryCode.TelefonCode,
+                                                             "*",
+                                                             OperatorId.Suffix,
+                                                             "*P",
+                                                             Suffix)
+
+            };
 
         #endregion
 

@@ -60,20 +60,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                // (S)TATION => (E)VSE
             => ChargingStationId.Suffix.StartsWith("TATION", StringComparison.Ordinal)
-                   ? EVSE_Id.Parse(ChargingPool_Id.Parse(ChargingStationId.OperatorId, "VSE" + ChargingStationId.Suffix[6..]), AdditionalSuffix ?? "")
+                   ? EVSE_Id.Parse(ChargingStation_Id.Parse(ChargingStationId.OperatorId, "VSE" + ChargingStationId.Suffix[6..]), AdditionalSuffix ?? "")
                    : EVSE_Id.Parse(ChargingStationId, AdditionalSuffix ?? "");
-
-        //{
-
-        //    var suffix = ChargingStationId.Suffix;
-
-        //    if (suffix.StartsWith("TATION", StringComparison.OrdinalIgnoreCase))
-        //        suffix = String.Concat("VSE", suffix.AsSpan(6));
-
-        //    return EVSE_Id.Parse(ChargingStationId.OperatorId,
-        //                         suffix + (AdditionalSuffix ?? ""));
-
-        //}
 
     }
 
@@ -92,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing a charging station identification.
         /// </summary>
-        public  static readonly Regex  ChargingStationId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,50})$",
+        public  static readonly Regex  ChargingStationId_RegEx  = new (@"^([a-zA-Z]{2}\*?[a-zA-Z0-9]{3})\*?S([a-zA-Z0-9][a-zA-Z0-9\*]{0,50})$",
                                                                        RegexOptions.IgnorePatternWhitespace);
 
         private static readonly Char[] StarSplitter             = new Char[] { '*' };
@@ -457,9 +445,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                String           Suffix)
 
             => ChargingPoolId.OperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),                           "*S", ChargingPoolId.Suffix, "*", Suffix)),
-                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "S", ChargingPoolId.Suffix,      Suffix)),
-                   _                           => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*S", ChargingPoolId.Suffix, "*", Suffix))
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),                           "*S", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
+                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "S", ChargingPoolId.Suffix, Suffix)),
+                   _                           => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*S", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
                };
 
         #endregion
@@ -798,8 +786,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => OperatorId.GetHashCode() ^
-               Suffix?.   GetHashCode() ?? 0;
+            => OperatorId.               GetHashCode() ^
+               Suffix?.Replace("*", "")?.GetHashCode() ?? 0;
 
         #endregion
 

@@ -70,6 +70,17 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean IsNotNullOrEmpty(this ChargingStationOperator_Id? ChargingStationOperatorId)
             => ChargingStationOperatorId.HasValue && ChargingStationOperatorId.Value.IsNotNullOrEmpty;
 
+        /// <summary>
+        /// Create a new charging pool identification
+        /// based on the given charging station operator identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
+        /// <param name="AdditionalSuffix">An optional additional charging pool suffix.</param>
+        public static ChargingPool_Id CreatePoolId(this ChargingStationOperator_Id  ChargingStationOperatorId,
+                                                   String?                          AdditionalSuffix   = null)
+
+            => ChargingPool_Id.Parse(ChargingStationOperatorId, AdditionalSuffix ?? "");
+
     }
 
 
