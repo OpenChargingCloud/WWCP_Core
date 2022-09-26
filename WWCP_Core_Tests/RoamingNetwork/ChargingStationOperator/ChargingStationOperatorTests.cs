@@ -63,9 +63,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperators.    Count());
                 Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperatorIds().Count());
 
+
                 Assert.IsTrue   (roamingNetwork.ContainsChargingStationOperator(ChargingStationOperator_Id.Parse("DE*GEF")));
                 Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById (ChargingStationOperator_Id.Parse("DE*GEF")));
-
 
             }
 

@@ -312,55 +312,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        #region Description
-
-        private I18NString _Description;
-
-        /// <summary>
-        /// An description of this EVSE.
-        /// </summary>
-        [Mandatory]
-        public I18NString Description
-        {
-
-            get
-            {
-
-                return _Description.IsNeitherNullNorEmpty()
-                           ? _Description
-                           : ChargingStation?.Description;
-
-            }
-
-            set
-            {
-
-                if (value != _Description && value != ChargingStation?.Description)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _Description);
-
-                    else
-                        SetProperty(ref _Description, value);
-
-                }
-
-            }
-
-        }
-
-        public I18NString SetDescription(Languages Language, String Text)
-            => _Description = I18NString.Create(Language, Text);
-
-        public I18NString SetDescription(I18NString I18NText)
-            => _Description = I18NText;
-
-        public I18NString AddDescription(Languages Language, String Text)
-            => _Description.Add(Language, Text);
-
-        #endregion
-
         #region Brands
 
         #region BrandAddition
@@ -1308,7 +1259,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingStation        = ChargingStation;
 
-            this._Description           = new I18NString();
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
             this._Brands                = new SpecialHashSet<EVSE, Brand_Id, Brand>(this);

@@ -1716,7 +1716,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     _ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
 
-                        var __EVSE = GetEVSEbyId(reservation.EVSEId.Value);
+                        var __EVSE = GetEVSEById(reservation.EVSEId.Value);
 
                         //__EVSE.Reservation = reservation;
 
@@ -1724,7 +1724,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     _ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
 
-                        var __EVSE = GetEVSEbyId(session.EVSEId.Value);
+                        var __EVSE = GetEVSEById(session.EVSEId.Value);
 
                         //__EVSE.ChargingSession = session;
 
@@ -1732,7 +1732,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     _ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
 
-                        var __EVSE = GetEVSEbyId(cdr.EVSEId.Value);
+                        var __EVSE = GetEVSEById(cdr.EVSEId.Value);
 
                         __EVSE.SendNewChargeDetailRecord(Timestamp.Now, this, cdr);
 
@@ -1749,7 +1749,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         => _ChargingStation.UpdateEVSEStatus(Timestamp,
                                                              EventTrackingId,
-                                                             GetEVSEbyId(EVSE.Id),
+                                                             GetEVSEById(EVSE.Id),
                                                              OldStatus,
                                                              NewStatus);
 
@@ -2244,9 +2244,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetEVSEbyId(EVSEId)
+        #region GetEVSEById(EVSEId)
 
-        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        public EVSE GetEVSEById(EVSE_Id EVSEId)
 
             => chargingStations.
                    SelectMany    (station => station.EVSEs).

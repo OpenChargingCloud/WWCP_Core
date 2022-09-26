@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         #region ChargingStation_Init_Test()
 
         /// <summary>
-        /// A test for creating a charging pool within a charging station operator.
+        /// A test for creating a charging station within a charging pool.
         /// </summary>
         [Test]
         public void ChargingStation_Init_Test()
@@ -58,14 +58,21 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual ("powered by GraphDefined Charging Stations GmbH",  DE_GEF_S0001_AAAA.Description.FirstText());
 
                 Assert.AreEqual (ChargingStationAdminStatusTypes.OutOfService,      DE_GEF_S0001_AAAA.AdminStatus);
-                Assert.AreEqual (1,                                              DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
+                Assert.AreEqual (1,                                                 DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 
                 Assert.AreEqual (ChargingStationStatusTypes.Offline,                DE_GEF_S0001_AAAA.Status);
-                Assert.AreEqual (1,                                              DE_GEF_S0001_AAAA.StatusSchedule().     Count());
+                Assert.AreEqual (1,                                                 DE_GEF_S0001_AAAA.StatusSchedule().     Count());
 
 
-                Assert.AreEqual (1,                                              DE_GEF.ChargingStations.    Count());
-                Assert.AreEqual (1,                                              DE_GEF.ChargingStationIds().Count());
+                Assert.AreEqual (1,                                                 roamingNetwork.ChargingStations.    Count());
+                Assert.AreEqual (1,                                                 roamingNetwork.ChargingStationIds().Count());
+
+                Assert.AreEqual (1,                                                 DE_GEF.        ChargingStations.    Count());
+                Assert.AreEqual (1,                                                 DE_GEF.        ChargingStationIds().Count());
+
+                Assert.AreEqual (1,                                                 DE_GEF_P0001.  ChargingStations.    Count());
+                Assert.AreEqual (1,                                                 DE_GEF_P0001.  ChargingStationIds().Count());
+
 
                 Assert.IsTrue   (roamingNetwork.ContainsChargingStation(ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
                 Assert.IsNotNull(roamingNetwork.GetChargingStationById (ChargingStation_Id.Parse("DE*GEF*S0001*AAAA")));
@@ -85,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         #region ChargingStation_Init_DefaultStatus_Test()
 
         /// <summary>
-        /// A test for creating a charging pool within a charging station operator.
+        /// A test for creating a charging station within a charging pool.
         /// </summary>
         [Test]
         public void ChargingStation_Init_DefaultStatus_Test()
@@ -101,9 +108,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
             {
 
                 var DE_GEF_S1234 = DE_GEF_P0001.CreateChargingStation(
-                                                    Id:                  ChargingStation_Id.Parse("DE*GEF*S1234"),
-                                                    Name:                I18NString.Create(Languages.de, "DE*GEF Station 1234"),
-                                                    Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH")
+                                                    Id:           ChargingStation_Id.Parse("DE*GEF*S1234"),
+                                                    Name:         I18NString.Create(Languages.de, "DE*GEF Station 1234"),
+                                                    Description:  I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH")
                                                 );
 
                 Assert.IsNotNull(DE_GEF_S1234);
@@ -147,8 +154,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
             Assert.IsNotNull(roamingNetwork);
             Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF);
+            Assert.IsNotNull(DE_GEF_P0001);
+            Assert.IsNotNull(DE_GEF_S0001_AAAA);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&
@@ -188,8 +195,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
             Assert.IsNotNull(roamingNetwork);
             Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF);
-            Assert.IsNotNull(DE_GEF);
+            Assert.IsNotNull(DE_GEF_P0001);
+            Assert.IsNotNull(DE_GEF_S0001_AAAA);
 
             if (roamingNetwork    is not null &&
                 DE_GEF            is not null &&

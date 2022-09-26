@@ -62,8 +62,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual (1,                                              DE_GEF_P0001.StatusSchedule().     Count());
 
 
-                Assert.AreEqual (1,                                              DE_GEF.ChargingPools.    Count());
-                Assert.AreEqual (1,                                              DE_GEF.ChargingPoolIds().Count());
+                Assert.AreEqual (1,                                              roamingNetwork.ChargingPools.    Count());
+                Assert.AreEqual (1,                                              roamingNetwork.ChargingPoolIds().Count());
+
+                Assert.AreEqual (1,                                              DE_GEF.        ChargingPools.    Count());
+                Assert.AreEqual (1,                                              DE_GEF.        ChargingPoolIds().Count());
+
 
                 Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P0001")));
                 Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));

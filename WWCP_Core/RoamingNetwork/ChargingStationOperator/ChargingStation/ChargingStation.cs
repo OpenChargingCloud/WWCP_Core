@@ -1976,7 +1976,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (evses.Any(evse => evse.Id == Id))
                 {
-                    if (OnError == null)
+                    if (OnError is null)
                         throw new EVSEAlreadyExistsInStation(this, Id);
                     else
                         OnError?.Invoke(this, Id);
@@ -2019,17 +2019,17 @@ namespace cloud.charging.open.protocols.WWCP
                     //                 new Timestamped<EVSEStatusTypes>(Now, EVSEStatusTypes.Unspecified),
                     //                 _EVSE.Status).Wait();
 
-                    if (RemoteChargingStation != null)
+                    if (RemoteChargingStation is not null)
                     {
 
-                        if (evse.RemoteEVSE != null)
+                        if (evse.RemoteEVSE is not null)
                             RemoteChargingStation.AddEVSE(evse.RemoteEVSE);
 
-                        OnAdminStatusChanged               += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.AdminStatus      = newstatus;
-                        OnStatusChanged                    += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.Status           = newstatus;
+                        OnAdminStatusChanged               += (Timestamp, EventTrackingId, station, oldstatus, newstatus) => { this.AdminStatus = newstatus; return Task.CompletedTask; };
+                        OnStatusChanged                    += (Timestamp, EventTrackingId, station, oldstatus, newstatus) => { this.Status      = newstatus; return Task.CompletedTask; };
 
-                        this.RemoteChargingStation.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => AdminStatus                 = NewStatus;
-                        this.RemoteChargingStation.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => Status                      = NewStatus;
+                        this.RemoteChargingStation.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => AdminStatus = NewStatus;
+                        this.RemoteChargingStation.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => Status      = NewStatus;
 
                         //RemoteConfigurator?.Invoke(_EVSE.RemoteEVSE);
 
@@ -2153,9 +2153,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetEVSEbyId(EVSEId)
+        #region GetEVSEById(EVSEId)
 
-        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        public EVSE GetEVSEById(EVSE_Id EVSEId)
 
             => evses.GetById(EVSEId);
 
