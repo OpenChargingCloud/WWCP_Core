@@ -88,9 +88,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
             {
 
                 var DE_XXX = roamingNetwork.CreateChargingStationOperator(
-                                                Id:                  ChargingStationOperator_Id.Parse("DE*XXX"),
-                                                Name:                I18NString.Create(Languages.de, "XXX CSO"),
-                                                Description:         I18NString.Create(Languages.de, "powered by XXX GmbH")
+                                                Id:           ChargingStationOperator_Id.Parse("DE*XXX"),
+                                                Name:         I18NString.Create(Languages.de, "XXX CSO"),
+                                                Description:  I18NString.Create(Languages.de, "powered by GraphDefined CSOs GmbH")
                                             );
 
                 Assert.IsNotNull(DE_XXX);
@@ -100,10 +100,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     Assert.AreEqual ("DE*XXX",                                             DE_XXX.Id.         ToString());
                     Assert.AreEqual ("XXX CSO",                                            DE_XXX.Name.       FirstText());
-                    Assert.AreEqual ("powered by XXX GmbH",                                DE_XXX.Description.FirstText());
+                    Assert.AreEqual ("powered by GraphDefined CSOs GmbH",                  DE_XXX.Description.FirstText());
 
                     Assert.AreEqual (ChargingStationOperatorAdminStatusTypes.Operational,  DE_XXX.AdminStatus);
                     Assert.AreEqual (ChargingStationOperatorStatusTypes.Available,         DE_XXX.Status);
+
+                    Assert.IsTrue   (roamingNetwork.ContainsChargingStationOperator(ChargingStationOperator_Id.Parse("DE*XXX")));
+                    Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById (ChargingStationOperator_Id.Parse("DE*XXX")));
 
                 }
 
