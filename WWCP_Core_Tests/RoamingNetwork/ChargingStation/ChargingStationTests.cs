@@ -178,6 +178,22 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual("Operational, InternalUse, OutOfService",     DE_GEF_S0001_AAAA.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                            DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 
+
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                    GenerateAdminStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateAdminStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_P0001.                                         GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF.                                               GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.             GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.                                       GenerateChargingStationAdminStatusReport().ToString());
+
+
+                var jsonStatusReport = DE_GEF_S0001_AAAA.GenerateAdminStatusReport().ToJSON();
+                jsonStatusReport.Remove("timestamp");
+
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationAdminStatusReport\",\"count\":1,\"report\":{\"Operational\":{\"count\":1,\"percentage\":100.0}}}",
+                                jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
+
             }
 
         }
@@ -218,6 +234,22 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(ChargingStationStatusTypes.Faulted,      DE_GEF_S0001_AAAA.Status);
                 Assert.AreEqual("Faulted, InDeployment, Offline",                DE_GEF_S0001_AAAA.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                               DE_GEF_S0001_AAAA.StatusSchedule().Count());
+
+
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_S0001_AAAA.                                    GenerateStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_P0001.                                         GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF.                                               GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.             GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", roamingNetwork.                                       GenerateChargingStationStatusReport().ToString());
+
+
+                var jsonStatusReport = DE_GEF_S0001_AAAA.GenerateStatusReport().ToJSON();
+                jsonStatusReport.Remove("timestamp");
+
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationStatusReport\",\"count\":1,\"report\":{\"Faulted\":{\"count\":1,\"percentage\":100.0}}}",
+                                jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
 

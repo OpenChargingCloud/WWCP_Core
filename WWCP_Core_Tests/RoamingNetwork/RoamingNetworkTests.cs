@@ -136,6 +136,16 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual("Operational, InternalUse, OutOfService",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
 
+
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.GenerateAdminStatusReport().ToString());
+
+
+                var jsonStatusReport = roamingNetwork.GenerateAdminStatusReport().ToJSON();
+                jsonStatusReport.Remove("timestamp");
+
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkAdminStatusReport\",\"count\":1,\"report\":{\"Operational\":{\"count\":1,\"percentage\":100.0}}}",
+                                jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
+
             }
 
         }
@@ -170,6 +180,16 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(RoamingNetworkStatusTypes.Available,  roamingNetwork.Status);
                 Assert.AreEqual("Available, Faulted, Offline",        roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                    roamingNetwork.StatusSchedule().Count());
+
+
+                Assert.AreEqual("1 entities; Available: 1 (100,00)", roamingNetwork.GenerateStatusReport().ToString());
+
+
+                var jsonStatusReport = roamingNetwork.GenerateStatusReport().ToJSON();
+                jsonStatusReport.Remove("timestamp");
+
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkStatusReport\",\"count\":1,\"report\":{\"Available\":{\"count\":1,\"percentage\":100.0}}}",
+                                jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
 

@@ -15,14 +15,48 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System.Collections.Generic;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for charging station operator admin status reports.
+    /// </summary>
+    public static class ChargingStationOperatorAdminStatusReportExtensions
+    {
+
+        /// <summary>
+        /// Generate a new charging station operator admin status report for the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        public static ChargingStationOperatorAdminStatusReport GenerateAdminStatusReport                       (this ChargingStationOperator               ChargingStationOperator,
+                                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (new ChargingStationOperator[] { ChargingStationOperator },
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station operator admin status report for the given charging station operators.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        public static ChargingStationOperatorAdminStatusReport GenerateAdminStatusReport                       (this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (ChargingStationOperators,
+                    Timestamp);
+
+
+        /// <summary>
+        /// Generate a new charging station operator admin status report for the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        public static ChargingStationOperatorAdminStatusReport GenerateChargingStationOperatorAdminStatusReport(this RoamingNetwork                        RoamingNetwork,
+                                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (RoamingNetwork.ChargingStationOperators,
+                    Timestamp);
+
+    }
+
 
     /// <summary>
     /// A charging station operator admin status report.
@@ -30,10 +64,18 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingStationOperatorAdminStatusReport : StatusReport<ChargingStationOperator, ChargingStationOperatorAdminStatusTypes>
     {
 
-        public ChargingStationOperatorAdminStatusReport(IEnumerable<ChargingStationOperator> ChargingStationOperators)
+        /// <summary>
+        /// Create a new charging station operator admin status report for the given charging station operators.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
+        public ChargingStationOperatorAdminStatusReport(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                                        DateTime?                             Timestamp = null)
 
             : base(ChargingStationOperators,
-                   csoperator => csoperator.AdminStatus.Value)
+                   chargingStationOperator => chargingStationOperator.AdminStatus.Value,
+                   Timestamp,
+                   "https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorAdminStatusReport")
 
         { }
 

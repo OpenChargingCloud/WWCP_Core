@@ -27,6 +27,29 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for Electric Vehicle Supply Equipment (EVSE) identifications.
+    /// </summary>
+    public static class EVSEIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this EVSE identification is null or empty.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        public static Boolean IsNullOrEmpty(this EVSE_Id? EVSEId)
+            => !EVSEId.HasValue || EVSEId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this EVSE identification is null or empty.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        public static Boolean IsNotNullOrEmpty(this EVSE_Id? EVSEId)
+            => EVSEId.HasValue && EVSEId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// How strictly to parse EVSE Ids.
     /// </summary>
     public enum EVSEIdParsingMode
@@ -112,6 +135,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.

@@ -15,14 +15,68 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System.Collections.Generic;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for charging pool admin status reports.
+    /// </summary>
+    public static class ChargingPoolAdminStatusReportExtensions
+    {
+
+        /// <summary>
+        /// Generate a new charging pool admin status report for the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        public static ChargingPoolAdminStatusReport GenerateAdminStatusReport            (this ChargingPool                          ChargingPool,
+                                                                                          DateTime?                                  Timestamp = null)
+
+            => new (new ChargingPool[] { ChargingPool },
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging pool admin status report for the given charging pools.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        public static ChargingPoolAdminStatusReport GenerateAdminStatusReport            (this IEnumerable<ChargingPool>             ChargingPools,
+                                                                                          DateTime?                                  Timestamp = null)
+
+            => new (ChargingPools,
+                    Timestamp);
+
+
+        /// <summary>
+        /// Generate a new charging pool admin status report for the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        public static ChargingPoolAdminStatusReport GenerateChargingPoolAdminStatusReport(this ChargingStationOperator               ChargingStationOperator,
+                                                                                          DateTime?                                  Timestamp = null)
+
+            => new (ChargingStationOperator.ChargingPools,
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging pool admin status report for the given charging station operators.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        public static ChargingPoolAdminStatusReport GenerateChargingPoolAdminStatusReport(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                                                                          DateTime?                                  Timestamp = null)
+
+            => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.ChargingPools),
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging pool admin status report for the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        public static ChargingPoolAdminStatusReport GenerateChargingPoolAdminStatusReport(this RoamingNetwork                        RoamingNetwork,
+                                                                                          DateTime?                                  Timestamp = null)
+
+            => new (RoamingNetwork.ChargingPools,
+                    Timestamp);
+
+    }
+
 
     /// <summary>
     /// A charging pool admin status report.
@@ -30,10 +84,18 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingPoolAdminStatusReport : StatusReport<ChargingPool, ChargingPoolAdminStatusTypes>
     {
 
-        public ChargingPoolAdminStatusReport(IEnumerable<ChargingPool> ChargingPools)
+        /// <summary>
+        /// Create a new charging pool admin status report for the given charging pools.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
+        public ChargingPoolAdminStatusReport(IEnumerable<ChargingPool>  ChargingPools,
+                                             DateTime?                  Timestamp = null)
 
             : base(ChargingPools,
-                   pool => pool.AdminStatus.Value)
+                   pool => pool.AdminStatus.Value,
+                   Timestamp,
+                   "https://open.charging.cloud/contexts/wwcp+json/chargingPoolAdminStatusReport")
 
         { }
 
