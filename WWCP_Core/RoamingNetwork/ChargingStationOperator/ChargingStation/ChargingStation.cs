@@ -3454,9 +3454,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                        new JArray(Brands.
                                                                                   OrderBy(brand => brand).
                                                                                   ToJSON (Embedded:                         true,
-                                                                                          ExpandChargingPoolIds:            InfoStatus.Hidden,
-                                                                                          ExpandChargingStationIds:         InfoStatus.Hidden,
-                                                                                          ExpandEVSEIds:                    InfoStatus.Hidden,
                                                                                           ExpandDataLicenses:               InfoStatus.ShowIdOnly))))
 
                              : null

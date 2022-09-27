@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         public static JArray ToJSON(this IEnumerable<IRoamingNetwork>                      RoamingNetworks,
                                     UInt64?                                                Skip                                      = null,
                                     UInt64?                                                Take                                      = null,

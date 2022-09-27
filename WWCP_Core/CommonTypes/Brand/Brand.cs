@@ -17,18 +17,12 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using System.Threading.Tasks;
-using System.Threading;
-using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -41,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
     public static class BrandExtensions
     {
 
-        #region ToJSON(this Brands, Skip = null, Take = null, Embedded = false, ...)
+        #region ToJSON(this Brands, Skip = null, Take = null, Embedded = false, ExpandDataLicenses = null)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of brands.
@@ -49,29 +43,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Brands">An enumeration of brands.</param>
         /// <param name="Skip">The optional number of charging station operators to skip.</param>
         /// <param name="Take">The optional number of charging station operators to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        public static JArray ToJSON(this IEnumerable<Brand>   Brands,
-                                    UInt64?                   Skip                       = null,
-                                    UInt64?                   Take                       = null,
-                                    Boolean                   Embedded                   = false,
-                                    InfoStatus                ExpandChargingPoolIds      = InfoStatus.Hidden,
-                                    InfoStatus                ExpandChargingStationIds   = InfoStatus.Hidden,
-                                    InfoStatus                ExpandEVSEIds              = InfoStatus.Hidden,
-                                    InfoStatus                ExpandDataLicenses         = InfoStatus.ShowIdOnly)
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
+        /// <param name="ExpandDataLicenses">Whether to expand data licenses.</param>
+        public static JArray ToJSON(this IEnumerable<Brand>  Brands,
+                                    UInt64?                  Skip                 = null,
+                                    UInt64?                  Take                 = null,
+                                    Boolean                  Embedded             = false,
+                                    InfoStatus?              ExpandDataLicenses   = null)
 
 
-            => Brands == null || !Brands.Any()
+            => Brands is null || !Brands.Any()
 
                    ? new JArray()
 
                    : new JArray(Brands.
-                                    Where         (brand => brand != null).
+                                    Where         (brand => brand is not null).
                                     OrderBy       (brand => brand.Id).
                                     SkipTakeFilter(Skip, Take).
                                     SafeSelect    (brand => brand.ToJSON(Embedded,
-                                                                         ExpandChargingPoolIds,
-                                                                         ExpandChargingStationIds,
-                                                                         ExpandEVSEIds,
                                                                          ExpandDataLicenses)));
 
         #endregion
@@ -91,35 +80,53 @@ namespace cloud.charging.open.protocols.WWCP
                          IComparable
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/brand";
+
+        #endregion
+
         #region Properties
 
         /// <summary>
         /// The unique identification of the brand.
         /// </summary>
-        public Brand_Id    Id          { get; }
+        public Brand_Id                  Id              { get; }
 
         /// <summary>
         /// The multi-language brand name.
         /// </summary>
-        public I18NString  Name        { get; }
+        public I18NString                Name            { get; }
 
         /// <summary>
-        /// The optional URI of the logo of this brand.
+        /// The optional URL of the logo of this brand.
         /// </summary>
         [Optional]
-        public String      LogoURI     { get; }
+        public URL?                      Logo            { get; }
 
         /// <summary>
         /// The homepage of this brand.
         /// </summary>
         [Optional]
-        public String      Homepage    { get; }
+        public URL?                      Homepage        { get; }
 
-        public ulong Length => Id.Length;
+        /// <summary>
+        /// The optional data licenses of this brand.
+        /// </summary>
+        [Optional]
+        public IEnumerable<DataLicense>  DataLicenses    { get; }
 
-        public bool IsNullOrEmpty => Id.IsNullOrEmpty;
+        public DateTime LastChange
+            => throw new NotImplementedException();
 
-        public DateTime LastChange => throw new NotImplementedException();
+        #endregion
+
+        #region Event
+
+        public event OnPropertyChangedDelegate?  OnPropertyChanged;
 
         #endregion
 
@@ -132,53 +139,76 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Name">The multi-language brand name.</param>
         /// <param name="Logo">An optional logo of this brand.</param>
         /// <param name="Homepage">An optional homepage of this brand.</param>
-        public Brand(Brand_Id    Id,
-                     I18NString  Name,
-                     String      Logo     = null,
-                     String      Homepage = null)
+        /// <param name="DataLicenses">The optional data licenses of this brand.</param>
+        public Brand(Brand_Id                   Id,
+                     I18NString                 Name,
+                     URL?                       Logo           = null,
+                     URL?                       Homepage       = null,
+                     IEnumerable<DataLicense>?  DataLicenses   = null)
         {
 
             #region Initial checks
 
-            if (Name.IsNullOrEmpty())
+            if (Name is null || Name.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Name), "The given brand name must not be null or empty!");
 
             #endregion
 
-            this.Id        = Id;
-            this.Name      = Name;
-            this.LogoURI   = Logo;
-            this.Homepage  = Homepage;
+            this.Id            = Id;
+            this.Name          = Name;
+            this.Logo          = Logo;
+            this.Homepage      = Homepage;
+            this.DataLicenses  = DataLicenses?.Distinct() ?? Array.Empty<DataLicense>();
 
         }
-
-        public event OnPropertyChangedDelegate OnPropertyChanged;
 
         #endregion
 
 
-        #region ToJSON()
+        #region ToJSON(Embedded = false, ExpandDataLicenses = InfoStatus.ShowIdOnly)
 
-        public JObject ToJSON(Boolean     Embedded                   = false,
-                              InfoStatus  ExpandChargingPoolIds      = InfoStatus.Hidden,
-                              InfoStatus  ExpandChargingStationIds   = InfoStatus.Hidden,
-                              InfoStatus  ExpandEVSEIds              = InfoStatus.Hidden,
-                              InfoStatus  ExpandDataLicenses         = InfoStatus.ShowIdOnly)
+        /// <summary>
+        /// Return a JSON representation of the given status report.
+        /// </summary>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
+        /// <param name="ExpandDataLicenses">Whether to expand the data licenses.</param>
+        /// <param name="CustomBrandSerializer">A delegate to serialize custom brand JSON elements.</param>
+        public JObject ToJSON(Boolean                                  Embedded                = false,
+                              InfoStatus?                              ExpandDataLicenses      = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<Brand>?  CustomBrandSerializer   = null)
+        {
 
-            => JSONObject.Create(
+            var json = JSONObject.Create(
 
-                   new JProperty("Id",    Id.  ToString()),
-                   new JProperty("Name",  Name.ToJSON()),
+                           Embedded
+                               ? new JProperty("@context",      JSONLDContext)
+                               : null,
 
-                   LogoURI.IsNotNullOrEmpty()
-                       ? new JProperty("LogoURI",   LogoURI)
-                       : null,
+                           new JProperty("id",                  Id.      ToString()),
+                           new JProperty("name",                Name.    ToJSON()),
 
-                   Homepage.IsNotNullOrEmpty()
-                       ? new JProperty("Homepage",  Homepage)
-                       : null
+                           Logo.IsNotNullOrEmpty()
+                               ? new JProperty("logo",          Logo.    ToString())
+                               : null,
 
-               );
+                           Homepage.IsNotNullOrEmpty()
+                               ? new JProperty("homepage",      Homepage.ToString())
+                               : null,
+
+                           DataLicenses.Any()
+                               ? new JProperty("dataLicenses",  ExpandDataLicenses.Switch(
+                                                                    () => new JArray(DataLicenses.Select(dataLicense => dataLicense.Id.ToString())),
+                                                                    () => new JArray(DataLicenses.Select(dataLicense => dataLicense.ToJSON()))
+                                                                ))
+                               : null
+
+                       );
+
+            return CustomBrandSerializer is not null
+                       ? CustomBrandSerializer(this, json)
+                       : json;
+
+        }
 
         #endregion
 
@@ -191,38 +221,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is a brand.
-            var Brand = Object as Brand;
-            if ((Object) Brand == null)
-                throw new ArgumentException("The given object is not a brand!");
-
-            return CompareTo(Brand);
-
-        }
-
-        #endregion
-
-        #region CompareTo(BrandId)
-
-        /// <summary>
-        /// Compares this brand to another brand identification.
-        /// </summary>
-        /// <param name="BrandId">Another brand identification to compare with.</param>
-        public Int32 CompareTo(Brand_Id BrandId)
-        {
-
-            if ((Object) BrandId == null)
-                throw new ArgumentNullException(nameof(BrandId),  "The given brand identification must not be null!");
-
-            return Id.CompareTo(BrandId);
-
-        }
+            => Object is Brand brand
+                   ? CompareTo(brand)
+                   : throw new ArgumentException("The given object is not a brand!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -232,13 +236,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Brand">Another brand to compare with.</param>
-        public Int32 CompareTo(Brand Brand)
+        public Int32 CompareTo(Brand? Brand)
         {
 
-            if ((Object) Brand == null)
-                throw new ArgumentNullException(nameof(Brand),  "The given brand must not be null!");
+            if (Brand is null)
+                throw new ArgumentNullException(nameof(Brand), "The given brand must not be null!");
 
-            return Id.CompareTo(Brand.Id);
+            var c = Id.CompareTo(Brand.Id);
+
+            //if (c == 0)
+            //    c = Name.CompareTo(Brand.Name);
+
+            if (c == 0)
+                c = Logo.HasValue && Brand.Logo.HasValue
+                        ? Logo.Value.CompareTo(Brand.Logo.Value)
+                        : 0;
+
+            if (c == 0)
+                c = Homepage.HasValue && Brand.Homepage.HasValue
+                    ? Homepage.Value.CompareTo(Brand.Homepage.Value)
+                    : 0;
+
+            return c;
 
         }
 
@@ -255,39 +274,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a brand.
-            var Brand = Object as Brand;
-            if ((Object) Brand == null)
-                return false;
-
-            return this.Equals(Brand);
-
-        }
-
-        #endregion
-
-        #region Equals(BrandId)
-
-        /// <summary>
-        /// Compares two this brand to another brand identification for equality.
-        /// </summary>
-        /// <param name="BrandId">An brand identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Brand_Id BrandId)
-        {
-
-            if ((Object) BrandId == null)
-                return false;
-
-            return Id.Equals(BrandId);
-
-        }
+            => Object is Brand brand &&
+                   Equals(brand);
 
         #endregion
 
@@ -298,15 +288,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Brand">An Brand to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Brand Brand)
-        {
+        public Boolean Equals(Brand? Brand)
 
-            if ((Object) Brand == null)
-                return false;
+            => Brand is not null &&
 
-            return Id.Equals(Brand.Id);
+               Id   == Brand.Id   &&
+               Name == Brand.Name &&
 
-        }
+               ((!Logo.    HasValue && !Brand.Logo.    HasValue) ||
+                ( Logo.    HasValue &&  Brand.Logo.    HasValue && Logo.    Equals(Brand.Logo))) &&
+
+               ((!Homepage.HasValue && !Brand.Homepage.HasValue) ||
+                ( Homepage.HasValue &&  Brand.Homepage.HasValue && Homepage.Equals(Brand.Homepage)));
 
         #endregion
 

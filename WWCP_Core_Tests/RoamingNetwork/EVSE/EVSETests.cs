@@ -20,6 +20,8 @@
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -154,6 +156,84 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
         }
 
         #endregion
+
+        #region EVSE_Init_AllProperties_Test()
+
+        /// <summary>
+        /// A test for creating an EVSE within a charging station having all properties.
+        /// </summary>
+        [Test]
+        public void EVSE_Init_AllProperties_Test()
+        {
+
+            Assert.IsNotNull(roamingNetwork);
+            Assert.IsNotNull(DE_GEF);
+            Assert.IsNotNull(DE_GEF_P0001);
+            Assert.IsNotNull(DE_GEF_S0001_AAAA);
+
+            if (roamingNetwork    is not null &&
+                DE_GEF            is not null &&
+                DE_GEF_P0001      is not null &&
+                DE_GEF_S0001_AAAA is not null)
+            {
+
+                var success = false;
+
+                var DE_GEF_E1234_5678_1 = DE_GEF_S0001_AAAA.CreateEVSE(
+                                                                Id:                  EVSE_Id.Parse("DE*GEF*E1234*5678*1"),
+                                                                Name:                I18NString.Create(Languages.de, "DE*GEF EVSE 1234*5678*1"),
+                                                                Description:         I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH"),
+                                                                InitialAdminStatus:  EVSEAdminStatusTypes.OutOfService,
+                                                                InitialStatus:       EVSEStatusTypes.Offline,
+                                                                OnSuccess:           evse => success = true,
+                                                                Configurator:        evse => {
+
+                                                                                         evse.Add(new Brand(
+                                                                                                      Id:            Brand_Id.Parse("openChargingCloud"),
+                                                                                                      Name:          I18NString.Create(Languages.de, "Open Charging Cloud"),
+                                                                                                      Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                                                                      Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                                                                      DataLicenses:  new DataLicense[] {
+                                                                                                                         DataLicense.CreativeCommons_BY_SA_4
+                                                                                                                     }
+                                                                                                  ));
+
+                                                                                     }
+                                                            );
+
+                Assert.IsNotNull(DE_GEF_E1234_5678_1);
+                Assert.IsTrue   (success);
+
+                if (DE_GEF_E1234_5678_1 is not null)
+                {
+
+                    Assert.AreEqual ("DE*GEF*E1234*5678*1",                 DE_GEF_E1234_5678_1.Id.         ToString());
+                    Assert.AreEqual ("DE*GEF EVSE 1234*5678*1",             DE_GEF_E1234_5678_1.Name.       FirstText());
+                    Assert.AreEqual ("powered by GraphDefined EVSEs GmbH",  DE_GEF_E1234_5678_1.Description.FirstText());
+
+                    Assert.AreEqual (EVSEAdminStatusTypes.OutOfService,     DE_GEF_E1234_5678_1.AdminStatus);
+                    Assert.AreEqual (EVSEStatusTypes.Offline,               DE_GEF_E1234_5678_1.Status);
+
+                    Assert.IsTrue   (roamingNetwork.   ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.IsNotNull(roamingNetwork.   GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+
+                    Assert.IsTrue   (DE_GEF.           ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.IsNotNull(DE_GEF.           GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+
+                    Assert.IsTrue   (DE_GEF_P0001.     ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.IsNotNull(DE_GEF_P0001.     GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+
+                    Assert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+                    Assert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
 
 
         #region EVSE_AdminStatus_Test()

@@ -33,6 +33,7 @@ using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.JSON;
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -623,7 +624,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            this._Brands                      = new SpecialHashSet<ChargingStationOperator, Brand_Id,                Brand>               (this);
+            this.brands                      = new SpecialHashSet<ChargingStationOperator, Brand_Id,                Brand>               (this);
 
             this.chargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
             this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
@@ -826,25 +827,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
-        public Brand CreateBrand(Brand_Id                                   Id,
-                                 I18NString                                 Name,
-                                 String                                     Logo        = null,
-                                 String                                     Homepage    = null,
+        public Brand? CreateBrand(Brand_Id                                    Id,
+                                  I18NString                                  Name,
+                                  URL?                                        Logo        = null,
+                                  URL?                                        Homepage    = null,
 
-                                 Action<ChargingStationOperator, Brand>     OnSuccess   = null,
-                                 Action<ChargingStationOperator, Brand_Id>  OnError     = null)
+                                  Action<ChargingStationOperator, Brand>?     OnSuccess   = null,
+                                  Action<ChargingStationOperator, Brand_Id>?  OnError     = null)
 
         {
 
-            lock (_Brands)
+            lock (brands)
             {
 
                 #region Initial checks
 
-                if (_Brands.ContainsId(Id))
+                if (brands.ContainsId(Id))
                 {
 
-                    if (OnError != null)
+                    if (OnError is not null)
                         OnError?.Invoke(this, Id);
 
                     else
@@ -857,25 +858,25 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                var _Brand = new Brand(Id,
-                                       Name,
-                                       Logo,
-                                       Homepage);
+                var brand = new Brand(Id,
+                                      Name,
+                                      Logo,
+                                      Homepage);
 
 
                 if (BrandAddition.SendVoting(Timestamp.Now,
                                              this,
-                                             _Brand) &&
-                    _Brands.TryAdd(_Brand))
+                                             brand) &&
+                    brands.TryAdd(brand))
                 {
 
-                    OnSuccess?.Invoke(this, _Brand);
+                    OnSuccess?.Invoke(this, brand);
 
                     BrandAddition.SendNotification(Timestamp.Now,
                                                    this,
-                                                   _Brand);
+                                                   brand);
 
-                    return _Brand;
+                    return brand;
 
                 }
 
@@ -900,17 +901,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
-        public Brand GetOrCreateBrand(Brand_Id                                   Id,
-                                      I18NString                                 Name,
-                                      String                                     Logo        = null,
-                                      String                                     Homepage    = null,
+        public Brand? GetOrCreateBrand(Brand_Id                                    Id,
+                                       I18NString                                  Name,
+                                       URL?                                        Logo        = null,
+                                       URL?                                        Homepage    = null,
 
-                                      Action<ChargingStationOperator, Brand>     OnSuccess   = null,
-                                      Action<ChargingStationOperator, Brand_Id>  OnError     = null)
+                                       Action<ChargingStationOperator, Brand>?     OnSuccess   = null,
+                                       Action<ChargingStationOperator, Brand_Id>?  OnError     = null)
 
         {
 
-            lock (_Brands)
+            lock (brands)
             {
 
                 #region Initial checks
@@ -920,8 +921,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (_Brands.TryGet(Id, out Brand _Brand))
-                    return _Brand;
+                if (brands.TryGet(Id, out Brand brand))
+                    return brand;
 
                 return CreateBrand(Id,
                                    Name,
@@ -941,13 +942,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Brands
 
-        private readonly SpecialHashSet<ChargingStationOperator, Brand_Id, Brand> _Brands;
+        private readonly SpecialHashSet<ChargingStationOperator, Brand_Id, Brand> brands;
 
         /// <summary>
         /// All brands registered within this charging station operator.
         /// </summary>
         public IEnumerable<Brand> Brands
-            => _Brands;
+            => brands;
 
         #endregion
 
@@ -957,7 +958,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brand identifications registered within this charging station operator.
         /// </summary>
         public IEnumerable<Brand_Id> BrandIds
-            => _Brands.Select(brand => brand.Id);
+            => brands.Select(brand => brand.Id);
 
         #endregion
 
@@ -971,7 +972,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetBrand(Brand_Id   Id,
                                    out Brand  Brand)
 
-            => _Brands.TryGet(Id, out Brand);
+            => brands.TryGet(Id, out Brand);
 
         #endregion
 
@@ -1002,14 +1003,14 @@ namespace cloud.charging.open.protocols.WWCP
                                  Action<ChargingStationOperator, Brand_Id>  OnError     = null)
         {
 
-            lock (_Brands)
+            lock (brands)
             {
 
-                if (_Brands.TryGet(BrandId, out Brand Brand) &&
+                if (brands.TryGet(BrandId, out Brand Brand) &&
                     BrandRemoval.SendVoting(Timestamp.Now,
                                             this,
                                             Brand) &&
-                    _Brands.TryRemove(BrandId, out Brand _Brand))
+                    brands.TryRemove(BrandId, out Brand _Brand))
                 {
 
                     OnSuccess?.Invoke(this, Brand);
@@ -1045,13 +1046,13 @@ namespace cloud.charging.open.protocols.WWCP
                                  Action<ChargingStationOperator, Brand>  OnError     = null)
         {
 
-            lock (_Brands)
+            lock (brands)
             {
 
                 if (BrandRemoval.SendVoting(Timestamp.Now,
                                             this,
                                             Brand) &&
-                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
+                    brands.TryRemove(Brand.Id, out Brand _Brand))
                 {
 
                     OnSuccess?.Invoke(this, _Brand);
@@ -5460,9 +5461,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                        new JArray(Brands.
                                                                                           OrderBy(brand => brand).
                                                                                           ToJSON (Embedded:                         true,
-                                                                                                  ExpandChargingPoolIds:            InfoStatus.Hidden,
-                                                                                                  ExpandChargingStationIds:         InfoStatus.Hidden,
-                                                                                                  ExpandEVSEIds:                    InfoStatus.Hidden,
                                                                                                   ExpandDataLicenses:               InfoStatus.ShowIdOnly))))
                              : null
 

@@ -943,7 +943,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return a JSON representation of the given charge detail record.
         /// </summary>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="IncludeCDR">Whether to include the embedded charge detail record.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
         /// <param name="CustomSendCDRResultSerializer">A custom send charge detail record result serializer.</param>

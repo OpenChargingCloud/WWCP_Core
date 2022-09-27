@@ -6038,7 +6038,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return a JSON representation of the given roaming network.
         /// </summary>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         public JObject ToJSON(Boolean                                                Embedded                                  = false,
                               InfoStatus                                             ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
                               InfoStatus                                             ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
