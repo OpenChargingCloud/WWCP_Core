@@ -28,7 +28,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class SpecialHashSet<THost, TId, T> : IEnumerable<T>
+    public class EntityHashSet<THost, TId, T> : IEnumerable<T>
 
         where T   : IEntity<TId>
         where TId : IId
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public SpecialHashSet(THost Host)
+        public EntityHashSet(THost Host)
         {
 
             this.host           = Host;

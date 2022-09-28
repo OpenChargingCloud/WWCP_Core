@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,18 +25,41 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for energy meter identifications.
+    /// </summary>
+    public static class EnergyMeterIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this energy meter identification is null or empty.
+        /// </summary>
+        /// <param name="EnergyMeterId">An energy meter identification.</param>
+        public static Boolean IsNullOrEmpty(this EnergyMeter_Id? EnergyMeterId)
+            => !EnergyMeterId.HasValue || EnergyMeterId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this energy meter identification is null or empty.
+        /// </summary>
+        /// <param name="EnergyMeterId">An energy meter identification.</param>
+        public static Boolean IsNotNullOrEmpty(this EnergyMeter_Id? EnergyMeterId)
+            => EnergyMeterId.HasValue && EnergyMeterId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The unique identification of an energy meter.
     /// </summary>
-    public struct EnergyMeter_Id : IId,
-                                   IEquatable <EnergyMeter_Id>,
-                                   IComparable<EnergyMeter_Id>
+    public readonly struct EnergyMeter_Id : IId,
+                                            IEquatable <EnergyMeter_Id>,
+                                            IComparable<EnergyMeter_Id>
 
     {
 
         #region Data
 
         /// <summary>
-        /// The internal identification.
+        /// The internal energy meter identification.
         /// </summary>
         private readonly String InternalId;
 
@@ -47,24 +68,29 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this energy meter identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this energy meter identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the energy meter identificator.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new energy meter identification.
-        /// based on the given string.
+        /// Create a new energy meter identification based on the given string.
         /// </summary>
         private EnergyMeter_Id(String Text)
         {
@@ -74,50 +100,81 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region New
+        #region (static) NewRandom  (Length = 15)
 
         /// <summary>
-        /// Returns a new energy meter identification.
+        /// Create a new random energy meter identification.
         /// </summary>
-        public static EnergyMeter_Id New
-            => Parse(Guid.NewGuid().ToString());
+        /// <param name="Length">The expected length of the random energy meter identification.</param>
+        public static EnergyMeter_Id NewRandom(Byte Length = 15)
+
+            => new (RandomExtensions.RandomString(Length).ToUpper());
 
         #endregion
 
-        #region Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as an energy meter identification.
         /// </summary>
-        /// <param name="Text">A text representation of an energy meter identification.</param>
+        /// <param name="Text">A text-representation of an energy meter identification.</param>
         public static EnergyMeter_Id Parse(String Text)
+        {
 
-            => new EnergyMeter_Id(Text);
+            if (TryParse(Text, out EnergyMeter_Id energyMeterId))
+                return energyMeterId;
+
+            throw new ArgumentException("Invalid text-representation of an energy meter identification: '" + Text + "'!",
+                                        nameof(Text));
+
+        }
 
         #endregion
 
-        #region TryParse(Text, out EnergyMeterId)
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Parse the given string as an energy meter identification.
+        /// Try to parse the given string as an energy meter identification.
         /// </summary>
-        /// <param name="Text">A text representation of an energy meter identification.</param>
+        /// <param name="Text">A text-representation of an energy meter identification.</param>
+        public static EnergyMeter_Id? TryParse(String? Text)
+        {
+
+            if (Text is not null && TryParse(Text, out EnergyMeter_Id energyMeterId))
+                return energyMeterId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out EnergyMeterId)
+
+        /// <summary>
+        /// Try to parse the given string as an energy meter identification.
+        /// </summary>
+        /// <param name="Text">A text-representation of an energy meter identification.</param>
         /// <param name="EnergyMeterId">The parsed energy meter identification.</param>
         public static Boolean TryParse(String Text, out EnergyMeter_Id EnergyMeterId)
         {
-            try
+
+            Text = Text.Trim();
+
+            if (Text.IsNotNullOrEmpty())
             {
-
-                EnergyMeterId = new EnergyMeter_Id(Text);
-
-                return true;
-
+                try
+                {
+                    EnergyMeterId = new EnergyMeter_Id(Text);
+                    return true;
+                }
+                catch
+                { }
             }
-            catch (Exception)
-            {
-                EnergyMeterId = default(EnergyMeter_Id);
-                return false;
-            }
+
+            EnergyMeterId = default;
+            return false;
+
         }
 
         #endregion
@@ -146,20 +203,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-        {
+        public static Boolean operator == (EnergyMeter_Id EnergyMeterId1,
+                                           EnergyMeter_Id EnergyMeterId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(EnergyMeterId1, EnergyMeterId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) EnergyMeterId1 == null) || ((Object) EnergyMeterId2 == null))
-                return false;
-
-            return EnergyMeterId1.Equals(EnergyMeterId2);
-
-        }
+            => EnergyMeterId1.Equals(EnergyMeterId2);
 
         #endregion
 
@@ -171,8 +218,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-            => !(EnergyMeterId1 == EnergyMeterId2);
+        public static Boolean operator != (EnergyMeter_Id EnergyMeterId1,
+                                           EnergyMeter_Id EnergyMeterId2)
+
+            => !EnergyMeterId1.Equals(EnergyMeterId2);
 
         #endregion
 
@@ -184,15 +233,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-        {
+        public static Boolean operator < (EnergyMeter_Id EnergyMeterId1,
+                                          EnergyMeter_Id EnergyMeterId2)
 
-            if ((Object) EnergyMeterId1 == null)
-                throw new ArgumentNullException(nameof(EnergyMeterId1), "The given EnergyMeterId1 must not be null!");
-
-            return EnergyMeterId1.CompareTo(EnergyMeterId2) < 0;
-
-        }
+            => EnergyMeterId1.CompareTo(EnergyMeterId2) < 0;
 
         #endregion
 
@@ -204,8 +248,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-            => !(EnergyMeterId1 > EnergyMeterId2);
+        public static Boolean operator <= (EnergyMeter_Id EnergyMeterId1,
+                                           EnergyMeter_Id EnergyMeterId2)
+
+            => EnergyMeterId1.CompareTo(EnergyMeterId2) <= 0;
 
         #endregion
 
@@ -217,15 +263,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-        {
+        public static Boolean operator > (EnergyMeter_Id EnergyMeterId1,
+                                          EnergyMeter_Id EnergyMeterId2)
 
-            if ((Object) EnergyMeterId1 == null)
-                throw new ArgumentNullException(nameof(EnergyMeterId1), "The given EnergyMeterId1 must not be null!");
-
-            return EnergyMeterId1.CompareTo(EnergyMeterId2) > 0;
-
-        }
+            => EnergyMeterId1.CompareTo(EnergyMeterId2) > 0;
 
         #endregion
 
@@ -237,14 +278,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-            => !(EnergyMeterId1 < EnergyMeterId2);
+        public static Boolean operator >= (EnergyMeter_Id EnergyMeterId1,
+                                           EnergyMeter_Id EnergyMeterId2)
+
+            => EnergyMeterId1.CompareTo(EnergyMeterId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<EnergyMeterId> Members
+        #region IComparable<EnergyMeter_Id> Members
 
         #region CompareTo(Object)
 
@@ -252,19 +295,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is EnergyMeter_Id))
-                throw new ArgumentException("The given object is not an energy meter identification!",
-                                            nameof(Object));
-
-            return CompareTo((EnergyMeter_Id) Object);
-
-        }
+            => Object is EnergyMeter_Id energyMeterId
+                   ? CompareTo(energyMeterId)
+                   : throw new ArgumentException("The given object is not an energy meter identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -275,26 +311,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EnergyMeterId">An object to compare with.</param>
         public Int32 CompareTo(EnergyMeter_Id EnergyMeterId)
-        {
 
-            if ((Object) EnergyMeterId == null)
-                throw new ArgumentNullException(nameof(EnergyMeterId),  "The given energy meter identification must not be null!");
-
-            // Compare the length of the EnergyMeterIds
-            var _Result = this.Length.CompareTo(EnergyMeterId.Length);
-
-            if (_Result == 0)
-                _Result = String.Compare(InternalId, EnergyMeterId.InternalId, StringComparison.Ordinal);
-
-            return _Result;
-
-        }
+            => String.Compare(InternalId,
+                              EnergyMeterId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<EnergyMeterId> Members
+        #region IEquatable<EnergyMeter_Id> Members
 
         #region Equals(Object)
 
@@ -303,37 +329,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is EnergyMeter_Id))
-                return false;
-
-            return Equals((EnergyMeter_Id) Object);
-
-        }
+            => Object is EnergyMeter_Id energyMeterId &&
+                   Equals(energyMeterId);
 
         #endregion
 
         #region Equals(EnergyMeterId)
 
         /// <summary>
-        /// Compares two EnergyMeterIds for equality.
+        /// Compares two energy meter identifications for equality.
         /// </summary>
-        /// <param name="EnergyMeterId">A EnergyMeterId to compare with.</param>
+        /// <param name="EnergyMeterId">An energy meter identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EnergyMeter_Id EnergyMeterId)
-        {
 
-            if ((Object) EnergyMeterId == null)
-                return false;
-
-            return InternalId.Equals(EnergyMeterId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             EnergyMeterId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -342,21 +356,23 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 

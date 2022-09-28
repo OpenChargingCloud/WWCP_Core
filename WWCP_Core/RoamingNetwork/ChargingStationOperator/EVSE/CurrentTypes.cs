@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -35,12 +27,12 @@ namespace cloud.charging.open.protocols.WWCP
         public static CurrentTypes Reduce(this IEnumerable<CurrentTypes> EnumerationOfCurrentTypes)
         {
 
-            var _CurrentTypes = CurrentTypes.Unspecified;
+            var currentTypes = CurrentTypes.Unspecified;
 
             foreach (var CurrentType in EnumerationOfCurrentTypes)
-                _CurrentTypes |= CurrentType;
+                currentTypes |= CurrentType;
 
-            return _CurrentTypes;
+            return currentTypes;
 
         }
 

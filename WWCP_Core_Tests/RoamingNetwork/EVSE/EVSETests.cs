@@ -189,8 +189,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 Configurator:        evse => {
 
                                                                                          evse.Brands.TryAdd(new Brand(
-                                                                                                                Id:            Brand_Id.Parse("openChargingCloud"),
-                                                                                                                Name:          I18NString.Create(Languages.de, "Open Charging Cloud"),
+                                                                                                                Id:            Brand_Id.Parse("openChargingCloudEVSE"),
+                                                                                                                Name:          I18NString.Create(Languages.de, "Open Charging Cloud EVSE"),
                                                                                                                 Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
                                                                                                                 Homepage:      URL.Parse("https://open.charging.cloud"),
                                                                                                                 DataLicenses:  new DataLicense[] {
@@ -245,6 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count());
 
 
+                    #region Setup DataChange listeners
 
                     var evseDataChanges = new List<String>();
 
@@ -315,8 +316,17 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     };
 
+                    #endregion
+
                     DE_GEF_E1234_5678_1.Name.       Add(Languages.it, "namelalala");
                     DE_GEF_E1234_5678_1.Description.Add(Languages.it, "desclalala");
+
+                    Assert.AreEqual(2, evseDataChanges.                       Count);
+                    Assert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
+                    Assert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
+                    Assert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
+                    Assert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
+
 
                     DE_GEF_E1234_5678_1.MaxPower           = 123.45m;
                     DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
@@ -324,11 +334,11 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 345.67m;
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
 
-                    DE_GEF_E1234_5678_1.MaxPowerPrognoses  = new Timestamped<Decimal>[] {
-                                                                 new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
-                                                                 new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
-                                                                 new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
-                                                             };
+                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
+                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
+                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
+                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                                                                  });
 
                     Assert.AreEqual(7, evseDataChanges.                       Count);
                     Assert.AreEqual(7, chargingStationEVSEDataChanges.        Count);

@@ -377,18 +377,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             => JSONObject.Create(
 
-                         Id.ToJSON("@id"),
+                         new JProperty("@id", Id.ToString()),
 
                          Embedded
                              ? null
                              : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingTariff"),
 
                          Name.       IsNeitherNullNorEmpty()
-                             ? Name.       ToJSON("name")
+                             ? new JProperty("name",        Name.ToJSON())
                              : null,
 
                          Description.IsNeitherNullNorEmpty()
-                             ? Description.ToJSON("description")
+                             ? new JProperty("description", Description.ToJSON())
                              : null,
 
                          Brand != null
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.WWCP
                              : null,
 
                          (DataSource is not null && (!Embedded || DataSource != Operator.DataSource))
-                             ? DataSource.ToJSON("dataSource")
+                             ? new JProperty("dataSource", DataSource)
                              : null,
 
                          //(!Embedded || DataLicenses != Operator.DataLicenses)

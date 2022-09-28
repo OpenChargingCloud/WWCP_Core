@@ -931,7 +931,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                           Id.ToJSON("@id"),
+                           new JProperty("@id", Id.ToString()),
 
                            Embedded
                                ? null

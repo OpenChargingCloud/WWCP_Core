@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Brands
 
-        private readonly SpecialHashSet<ChargingPool, Brand_Id, Brand> _Brands;
+        private readonly EntityHashSet<ChargingPool, Brand_Id, Brand> _Brands;
 
         /// <summary>
         /// All brands registered within this charging station pool.
@@ -1382,9 +1382,9 @@ namespace cloud.charging.open.protocols.WWCP
             InitialAdminStatus               = InitialAdminStatus != null ? InitialAdminStatus : new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
             InitialStatus                    = InitialStatus      != null ? InitialStatus      : new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
 
-            this._Brands                     = new SpecialHashSet<ChargingPool, Brand_Id, Brand>(this);
+            this._Brands                     = new EntityHashSet<ChargingPool, Brand_Id, Brand>(this);
 
-            this.chargingStations            = new SpecialHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
+            this.chargingStations            = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
 
             #endregion
 
@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStations
 
-        private readonly SpecialHashSet<ChargingPool, ChargingStation_Id, ChargingStation> chargingStations;
+        private readonly EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation> chargingStations;
 
         /// <summary>
         /// Return all charging stations registered within this charing pool.
@@ -3432,22 +3432,22 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                         Id.ToJSON("@id"),
+                         new JProperty("@id", Id.ToString()),
 
                          !Embedded
                              ? new JProperty("@context", JSONLDContext)
                              : null,
 
                          Name.       IsNeitherNullNorEmpty()
-                             ? Name.       ToJSON("name")
+                             ? new JProperty("name",        Name.ToJSON())
                              : null,
 
                          Description.IsNeitherNullNorEmpty()
-                             ? Description.ToJSON("description")
+                             ? new JProperty("description", Description.ToJSON())
                              : null,
 
                          ((!Embedded || DataSource != Operator.DataSource) && DataSource is not null)
-                             ? DataSource.ToJSON("dataSource")
+                             ? new JProperty("dataSource", DataSource)
                              : null,
 
                          ExpandDataLicenses.Switch(

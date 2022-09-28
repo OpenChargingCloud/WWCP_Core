@@ -420,7 +420,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                           SessionId.ToJSON("@id"),
+                           new JProperty("@id",       Id.       ToString()),
+                           new JProperty("sessionId", SessionId.ToString()),
 
                            Embedded
                                ? null
@@ -466,7 +467,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
 
-                           ChargingProduct != null
+                           ChargingProduct is not null
                                ? new JProperty("chargingProduct",             ChargingProduct.ToJSON())
                                : null
 
@@ -477,7 +478,7 @@ namespace cloud.charging.open.protocols.WWCP
                        //new JProperty("signature",      Signature)
                        );
 
-            return CustomChargeDetailRecordSerializer != null
+            return CustomChargeDetailRecordSerializer is not null
                        ? CustomChargeDetailRecordSerializer(this, JSON)
                        : JSON;
 

@@ -263,46 +263,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region LastChange
-
-        private DateTime lastChange;
-
-        /// <summary>
-        /// The timestamp of the last changes within this ChargingPool.
-        /// Can be used as a HTTP ETag.
-        /// </summary>
-        [Mandatory]
-        public DateTime          LastChange
-        {
-
-            get
-            {
-                return lastChange;
-            }
-
-            set
-            {
-                SetProperty(ref lastChange,
-                            value,
-                            EventTracking_Id.New);
-            }
-
-        }
-
-        #endregion
-
-
         public ulong Length => 0;
         public bool  IsNullOrEmpty => false;
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// An event called whenever a property of this entity changed.
-        /// </summary>
-        public event OnPropertyChangedDelegate? OnPropertyChanged;
 
         #endregion
 
@@ -313,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         /// 
-        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
+        /// <param name="InternalData">An optional dictionary of internal data.</param>
         public AEMobilityEntity(TId                         Id,
                                 I18NString?                 Name                         = null,
                                 I18NString?                 Description                  = null,
@@ -359,12 +321,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                   newValue) =>
             {
 
-                OnPropertyChanged?.Invoke(timestamp,
-                                          eventTrackingId,
-                                          sender,
-                                          "Name",
-                                          oldValue,
-                                          newValue);
+                PropertyChanged("Name",
+                                oldValue,
+                                newValue,
+                                eventTrackingId);
 
             };
 
@@ -382,12 +342,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                   newValue) =>
             {
 
-                OnPropertyChanged?.Invoke(timestamp,
-                                          eventTrackingId,
-                                          sender,
-                                          "Description",
-                                          oldValue,
-                                          newValue);
+                PropertyChanged("Description",
+                                oldValue,
+                                newValue,
+                                eventTrackingId);
 
             };
 
@@ -535,209 +493,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        // Properties
-
-        #region SetProperty<T>(ref FieldToChange, NewValue, EventTrackingId = null, [CallerMemberName])
-
-        /// <summary>
-        /// Change the given field and call the OnPropertyChanged event.
-        /// </summary>
-        /// <typeparam name="T">The type of the field to be changed.</typeparam>
-        /// <param name="FieldToChange">A reference to the field to be changed.</param>
-        /// <param name="NewValue">The new value of the field to be changed.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
-        public void SetProperty<T>(ref                T                  FieldToChange,
-                                                      T                  NewValue,
-                                                      EventTracking_Id?  EventTrackingId   = null,
-                                   [CallerMemberName] String             PropertyName      = "")
-        {
-
-            if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
-            {
-
-                var OldValue       = FieldToChange;
-                    FieldToChange  = NewValue;
-
-                PropertyChanged(PropertyName,
-                                OldValue,
-                                NewValue,
-                                EventTrackingId ?? EventTracking_Id.New);
-
-            }
-
-        }
-
-        #endregion
-
-        #region DeleteProperty<T>(ref FieldToChange, [CallerMemberName])
-
-        /// <summary>
-        /// Delete the given field and call the OnPropertyChanged event.
-        /// </summary>
-        /// <typeparam name="T">The type of the field to be deleted.</typeparam>
-        /// <param name="FieldToChange">A reference to the field to be deleted.</param>
-        /// <param name="PropertyName">The name of the property to be deleted (set by the compiler!)</param>
-        public void DeleteProperty<T>(ref                T       FieldToChange,
-                                      [CallerMemberName] String  PropertyName = "")
-        {
-
-            if (FieldToChange != null)
-            {
-
-                var OldValue       = FieldToChange;
-                    FieldToChange  = default(T);
-
-                PropertyChanged(PropertyName, OldValue, default(T));
-
-            }
-
-        }
-
-        #endregion
-
-        #region PropertyChanged<T>(PropertyName, OldValue, NewValue, EventTrackingId)
-
-        /// <summary>
-        /// Notify subscribers that a property has changed.
-        /// </summary>
-        /// <typeparam name="T">The type of the changed property.</typeparam>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public void PropertyChanged<T>(String             PropertyName,
-                                       T                  OldValue,
-                                       T                  NewValue,
-                                       EventTracking_Id?  EventTrackingId = null)
-        {
-
-            #region Initial checks
-
-            if (PropertyName is null)
-                throw new ArgumentNullException(nameof(PropertyName), "The given property name must not be null!");
-
-            #endregion
-
-            this.lastChange = Timestamp.Now;
-
-            //DebugX.Log(String.Concat("Property '", PropertyName, "' changed from '", OldValue?.ToString() ?? "", "' to '", NewValue?.ToString() ?? "", "'!"));
-
-            OnPropertyChanged?.Invoke(LastChange,
-                                      EventTrackingId,
-                                      this,
-                                      PropertyName,
-                                      OldValue,
-                                      NewValue);
-
-        }
-
-        #endregion
-
-
-        // User defined properties
-
-        //#region Set(Key, NewValue, OldValue = null)
-
-        //public SetPropertyResult Set(String  Key,
-        //                             Object  NewValue,
-        //                             Object  OldValue = null)
-
-        //    => _UserDefined.Set(Key, NewValue, OldValue);
-
-        //#endregion
-
-        //#region ContainsKey(Key)
-
-        //public Boolean ContainsKey(String  Key)
-
-        //    => _UserDefined.ContainsKey(Key);
-
-        //#endregion
-
-        //#region Contains(Key, Value)
-
-        //public Boolean Contains(String  Key,
-        //                        Object  Value)
-
-        //    => _UserDefined.Contains(Key, Value);
-
-        //#endregion
-
-        //#region Contains(KeyValuePair)
-
-        //public Boolean Contains(KeyValuePair<String, Object> KeyValuePair)
-
-        //    => _UserDefined.Contains(KeyValuePair);
-
-        //#endregion
-
-        //#region Get(Key)
-
-        //public Object Get(String  Key)
-
-        //    => _UserDefined.Get(Key);
-
-        //#endregion
-
-        //#region TryGet(Key, out Value)
-
-        //public Boolean TryGet(String      Key,
-        //                      out Object  Value)
-
-        //    => _UserDefined.TryGet(Key, out Value);
-
-        //#endregion
-
-        //#region AddJSON(Key)
-
-        //public JObject AddJSON(String Key)
-        //{
-        //    lock (_UserDefined)
-        //    {
-
-        //        if (ContainsKey(Key))
-        //            _UserDefined.Remove(Key);
-
-        //        var JSON = new JObject();
-        //        _UserDefined.Set(Key, JSON);
-        //        return JSON;
-
-        //    }
-        //}
-
-        //#endregion
-
-        //#region SetJSON(GroupKey, Key, Value)
-
-        //public JObject SetJSON(String GroupKey, String Key, Object Value)
-        //{
-        //    lock (_UserDefined)
-        //    {
-
-        //        if (_UserDefined.TryGet(GroupKey, out Object JValue))
-        //        {
-
-        //            if (JValue is JObject JSON)
-        //            {
-        //                JSON.Add(new JProperty(Key, Value));
-        //                return JSON;
-        //            }
-
-        //            return null;
-
-        //        }
-
-        //        var JSON2 = new JObject();
-        //        _UserDefined.Set(GroupKey, JSON2);
-        //        JSON2.Add(new JProperty(Key, Value));
-        //        return JSON2;
-
-        //    }
-        //}
-
-        //#endregion
 
         public abstract Int32 CompareTo(Object? obj);
 

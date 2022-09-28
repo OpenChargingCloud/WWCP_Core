@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityStations
 
-        private SpecialHashSet<ChargingStationOperator, eMobilityStation_Id, eMobilityStation> _eMobilityStations;
+        private EntityHashSet<ChargingStationOperator, eMobilityStation_Id, eMobilityStation> _eMobilityStations;
 
         public IEnumerable<eMobilityStation> eMobilityStations
 
@@ -918,7 +918,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicles
 
-        private readonly SpecialHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
+        private readonly EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
 
         public IEnumerable<eVehicle> eVehicles
 

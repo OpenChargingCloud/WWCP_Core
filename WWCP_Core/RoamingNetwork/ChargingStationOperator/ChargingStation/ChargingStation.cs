@@ -358,208 +358,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        #region Brands
-
-        #region BrandAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, Brand, Boolean> BrandAddition;
+        /// <summary>
+        /// All brands registered for this charging station.
+        /// </summary>
+        [Optional, SlowData]
+        public EntityHashSet<ChargingStation, Brand_Id, Brand>  Brands          { get; }
 
         /// <summary>
-        /// Called whenever a brand will be or was added.
+        /// The license of the EVSE data.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, Brand, Boolean> OnBrandAddition
+        [Mandatory, SlowData]
+        public ReactiveSet<DataLicense>                          DataLicenses    { get; }
 
-            => BrandAddition;
-
-        #endregion
-
-        #region Brands
-
-        private readonly SpecialHashSet<ChargingStation, Brand_Id, Brand> _Brands;
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        public IEnumerable<Brand> Brands
-            => _Brands;
-
-        #endregion
-
-        public void Add(Brand Brand)
-        {
-            _Brands.TryAdd(Brand);
-        }
-
-        #region BrandIds
-
-        /// <summary>
-        /// All brand identifications registered within this charging station.
-        /// </summary>
-        public IEnumerable<Brand_Id> BrandIds
-            => _Brands.Select(brand => brand.Id);
-
-        #endregion
-
-        #region TryGetBrand(Id, out Brand)
-
-        /// <summary>
-        /// Try to return the brand of the given brand identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the brand.</param>
-        /// <param name="Brand">The brand.</param>
-        public Boolean TryGetBrand(Brand_Id Id, out Brand Brand)
-            => _Brands.TryGet(Id, out Brand);
-
-        #endregion
-
-
-        #region BrandRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, Brand, Boolean> BrandRemoval;
-
-        /// <summary>
-        /// Called whenever a brand will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, Brand, Boolean> OnBrandRemoval
-
-            => BrandRemoval;
-
-        #endregion
-
-        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand_Id BrandId,
-                                 Action<ChargingStation, Brand> OnSuccess = null,
-                                 Action<ChargingStation, Brand_Id> OnError = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (_Brands.TryGet(BrandId, out Brand Brand) &&
-                    BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(BrandId, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, BrandId);
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        /// <param name="Brand">The brand to remove.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand Brand,
-                                 Action<ChargingStation, Brand> OnSuccess = null,
-                                 Action<ChargingStation, Brand> OnError = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, _Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, Brand);
-
-                return Brand;
-
-            }
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region DataLicense
-
-        private ReactiveSet<DataLicense> _DataLicenses;
-
-        /// <summary>
-        /// The license of the charging station data.
-        /// </summary>
-        [Mandatory]
-        public ReactiveSet<DataLicense> DataLicenses
-        {
-
-            get
-            {
-
-                return _DataLicenses != null && _DataLicenses.Any()
-                           ? _DataLicenses
-                           : ChargingPool?.DataLicenses;
-
-            }
-
-            set
-            {
-
-                if (value != _DataLicenses && value != ChargingPool?.DataLicenses)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _DataLicenses);
-
-                    else
-                    {
-
-                        if (_DataLicenses == null)
-                            SetProperty(ref _DataLicenses, value);
-
-                        else
-                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        #endregion
 
         #region Address
 
@@ -1265,13 +1075,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EnergyMix
 
-        private EnergyMix _EnergyMix;
+        private EnergyMix? _EnergyMix;
 
         /// <summary>
         /// The energy mix at the charging station.
         /// </summary>
         [Optional]
-        public EnergyMix EnergyMix
+        public EnergyMix? EnergyMix
         {
 
             get
@@ -1737,8 +1547,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingPool                = ChargingPool;
 
             this.openingTimes                = OpeningTimes.Open24Hours;
-            this._Brands                     = new SpecialHashSet<ChargingStation, Brand_Id, Brand>(this);
-            this.evses                       = new SpecialHashSet <ChargingStation, EVSE_Id,  EVSE> (this);
+            this.Brands                      = new EntityHashSet<ChargingStation, Brand_Id, Brand>(this);
+            this.evses                       = new EntityHashSet<ChargingStation, EVSE_Id,  EVSE> (this);
 
             #endregion
 
@@ -1882,7 +1692,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        private readonly SpecialHashSet<ChargingStation, EVSE_Id, EVSE> evses;
+        private readonly EntityHashSet<ChargingStation, EVSE_Id, EVSE> evses;
 
         /// <summary>
         /// All Electric Vehicle Supply Equipments (EVSE) present
@@ -3352,22 +3162,22 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                         Id.ToJSON("@id"),
+                         new JProperty("@id", Id.ToString()),
 
                          !Embedded
                              ? new JProperty("@context", JSONLDContext)
                              : null,
 
                          Name.       IsNeitherNullNorEmpty()
-                             ? Name.       ToJSON("name")
+                             ? new JProperty("name",        Name.ToJSON())
                              : null,
 
                          Description.IsNeitherNullNorEmpty()
-                             ? Description.ToJSON("description")
+                             ? new JProperty("description", Description.ToJSON())
                              : null,
 
                          (!Embedded || DataSource != ChargingPool.DataSource)
-                             ? DataSource.ToJSON("dataSource")
+                             ? new JProperty("dataSource", DataSource)
                              : null,
 
                          (!Embedded || DataLicenses != ChargingPool.DataLicenses)
@@ -3422,22 +3232,21 @@ namespace cloud.charging.open.protocols.WWCP
                              ? ExpandEVSEIds.Switch(
 
                                    () => new JProperty("EVSEIds",
-                                                       new JArray(EVSEIds().
-                                                                                  OrderBy(evseId => evseId).
-                                                                                  Select (evseId => evseId.ToString()))),
+                                                       new JArray(EVSEs.Select (evse   => evse.Id).
+                                                                        OrderBy(evseId => evseId).
+                                                                        Select (evseId => evseId.ToString()))),
 
                                    () => new JProperty("EVSEs",
-                                                       new JArray(EVSEs.
-                                                                                  OrderBy(evse   => evse).
-                                                                                  ToJSON (Embedded:                         true,
-                                                                                          ExpandRoamingNetworkId:           InfoStatus.Hidden,
-                                                                                          ExpandChargingStationOperatorId:  InfoStatus.Hidden,
-                                                                                          ExpandChargingPoolId:             InfoStatus.Hidden,
-                                                                                          ExpandChargingStationId:          InfoStatus.Hidden,
-                                                                                          ExpandBrandIds:                   InfoStatus.ShowIdOnly,
-                                                                                          ExpandDataLicenses:               InfoStatus.Hidden,
-                                                                                          CustomEVSESerializer:             CustomEVSESerializer).
-                                                                                  Where  (evse => evse != null))))
+                                                       new JArray(EVSEs.OrderBy(evse   => evse).
+                                                                        ToJSON (Embedded:                         true,
+                                                                                ExpandRoamingNetworkId:           InfoStatus.Hidden,
+                                                                                ExpandChargingStationOperatorId:  InfoStatus.Hidden,
+                                                                                ExpandChargingPoolId:             InfoStatus.Hidden,
+                                                                                ExpandChargingStationId:          InfoStatus.Hidden,
+                                                                                ExpandBrandIds:                   InfoStatus.ShowIdOnly,
+                                                                                ExpandDataLicenses:               InfoStatus.Hidden,
+                                                                                CustomEVSESerializer:             CustomEVSESerializer).
+                                                                        Where  (evse => evse != null))))
 
                              : null,
 
@@ -3446,15 +3255,14 @@ namespace cloud.charging.open.protocols.WWCP
                              ? ExpandBrandIds.Switch(
 
                                    () => new JProperty("brandIds",
-                                                       new JArray(BrandIds.
-                                                                                  OrderBy(brandId => brandId).
-                                                                                  Select (brandId => brandId.ToString()))),
+                                                       new JArray(Brands.Select (brand   => brand.Id).
+                                                                         OrderBy(brandId => brandId).
+                                                                         Select (brandId => brandId.ToString()))),
 
                                    () => new JProperty("brands",
-                                                       new JArray(Brands.
-                                                                                  OrderBy(brand => brand).
-                                                                                  ToJSON (Embedded:                         true,
-                                                                                          ExpandDataLicenses:               InfoStatus.ShowIdOnly))))
+                                                       new JArray(Brands.OrderBy(brand => brand).
+                                                                         ToJSON (Embedded:                         true,
+                                                                                 ExpandDataLicenses:               InfoStatus.ShowIdOnly))))
 
                              : null
 
@@ -3482,8 +3290,8 @@ namespace cloud.charging.open.protocols.WWCP
             Name.       Add(OtherChargingStation.Name);
             Description.Add(OtherChargingStation.Description);
 
-            _Brands.Clear();
-            _Brands.TryAdd(OtherChargingStation.Brands);
+            Brands.Clear();
+            Brands.TryAdd(OtherChargingStation.Brands);
 
             Address              = OtherChargingStation.Address;
             OSM_NodeId           = OtherChargingStation.OSM_NodeId;

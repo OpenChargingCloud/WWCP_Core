@@ -57,18 +57,18 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
                    : JSONObject.Create(
 
-                         EVSEGroup.Id.ToJSON("@id"),
+                         new JProperty("@id", EVSEGroup.Id.ToString()),
 
                          Embedded
                              ? null
                              : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/EVSEGroup"),
 
                          EVSEGroup.Name.       IsNeitherNullNorEmpty()
-                             ? EVSEGroup.Name.       ToJSON("name")
+                             ? new JProperty("name",        EVSEGroup.Name.ToJSON())
                              : null,
 
                          EVSEGroup.Description.IsNeitherNullNorEmpty()
-                             ? EVSEGroup.Description.ToJSON("description")
+                             ? new JProperty("description", EVSEGroup.Description.ToJSON())
                              : null,
 
                          EVSEGroup.Brand != null
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
                              : null,
 
                          (!Embedded || EVSEGroup.DataSource != EVSEGroup.Operator.DataSource)
-                             ? EVSEGroup.DataSource.ToJSON("dataSource")
+                             ? new JProperty("dataSource", EVSEGroup.DataSource)
                              : null,
 
                          (!Embedded || EVSEGroup.DataLicenses != EVSEGroup.Operator.DataLicenses)
