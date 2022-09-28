@@ -312,164 +312,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        #region Brands
-
-        #region BrandAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSE, Brand, Boolean> BrandAddition;
-
         /// <summary>
-        /// Called whenever a brand will be or was added.
+        /// All brands registered for this EVSE.
         /// </summary>
-        public IVotingSender<DateTime, EVSE, Brand, Boolean> OnBrandAddition
-
-            => BrandAddition;
-
-        #endregion
-
-        #region Brands
-
-        private readonly SpecialHashSet<EVSE, Brand_Id, Brand> _Brands;
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        public IEnumerable<Brand> Brands
-            => _Brands;
-
-        #endregion
-
-        public void Add(Brand Brand)
-        {
-            _Brands.TryAdd(Brand);
-        }
-
-        #region BrandIds
-
-        /// <summary>
-        /// All brand identifications registered within this charging station.
-        /// </summary>
-        public IEnumerable<Brand_Id> BrandIds
-            => _Brands.Select(brand => brand.Id);
-
-        #endregion
-
-        #region TryGetBrand(Id, out Brand)
-
-        /// <summary>
-        /// Try to return the brand of the given brand identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the brand.</param>
-        /// <param name="Brand">The brand.</param>
-        public Boolean TryGetBrand(Brand_Id Id, out Brand Brand)
-            => _Brands.TryGet(Id, out Brand);
-
-        #endregion
-
-
-        #region BrandRemoval
-
-        internal readonly IVotingNotificator<DateTime, EVSE, Brand, Boolean> BrandRemoval;
-
-        /// <summary>
-        /// Called whenever a brand will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, Brand, Boolean> OnBrandRemoval
-
-            => BrandRemoval;
-
-        #endregion
-
-        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand_Id                BrandId,
-                                 Action<EVSE, Brand>     OnSuccess  = null,
-                                 Action<EVSE, Brand_Id>  OnError    = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (_Brands.TryGet(BrandId, out Brand Brand) &&
-                    BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(BrandId, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, BrandId);
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        /// <param name="Brand">The brand to remove.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand                Brand,
-                                 Action<EVSE, Brand>  OnSuccess  = null,
-                                 Action<EVSE, Brand>  OnError    = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, _Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, Brand);
-
-                return Brand;
-
-            }
-
-        }
-
-        #endregion
-
-        #endregion
+        public SpecialHashSet<EVSE, Brand_Id, Brand> Brands { get; }
 
         #region DataLicense
 
-        private ReactiveSet<DataLicense> _DataLicenses;
+        private ReactiveSet<DataLicense> dataLicenses;
 
         /// <summary>
         /// The license of the EVSE data.
@@ -481,32 +331,32 @@ namespace cloud.charging.open.protocols.WWCP
             get
             {
 
-                return _DataLicenses != null && _DataLicenses.Any()
-                           ? _DataLicenses
-                           : ChargingPool?.DataLicenses;
+                return dataLicenses is not null && dataLicenses.Any()
+                           ? dataLicenses
+                           : ChargingStation?.DataLicenses;
 
             }
 
             set
             {
 
-                if (value != _DataLicenses && value != ChargingPool?.DataLicenses)
+                if (value != dataLicenses && value != ChargingPool?.DataLicenses)
                 {
 
                     if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _DataLicenses);
+                        DeleteProperty(ref dataLicenses);
 
                     else
                     {
 
-                        if (_DataLicenses == null)
-                            SetProperty(ref _DataLicenses,
+                        if (dataLicenses is null)
+                            SetProperty(ref dataLicenses,
                                         value,
                                         EventTracking_Id.New);
 
                         else
-                            SetProperty(ref _DataLicenses,
-                                        _DataLicenses.Set(value),
+                            SetProperty(ref dataLicenses,
+                                        dataLicenses.Set(value),
                                         EventTracking_Id.New);
 
                     }
@@ -747,7 +597,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region MaxPower
 
-        private Decimal? _MaxPower;
+        private Decimal? maxPower;
 
         /// <summary>
         /// The maximum power [kWatt].
@@ -758,27 +608,29 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _MaxPower;
+                return maxPower;
             }
 
             set
             {
 
-                if (value != null)
+                if (value is not null)
                 {
 
-                    if (!_MaxPower.HasValue)
-                        _MaxPower = value;
+                    if (!maxPower.HasValue)
+                        SetProperty(ref maxPower,
+                                    value,
+                                    EventTracking_Id.New);
 
-                    else if (Math.Abs(_MaxPower.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxPower,
+                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxPower,
                                     value,
                                     EventTracking_Id.New);
 
                 }
 
                 else
-                    DeleteProperty(ref _MaxPower);
+                    DeleteProperty(ref maxPower);
 
             }
 
@@ -788,7 +640,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region MaxPowerRealTime
 
-        private Timestamped<Decimal>? _MaxPowerRealTime;
+        private Timestamped<Decimal>? maxPowerRealTime;
 
         /// <summary>
         /// The real-time maximum power [kWatt].
@@ -799,19 +651,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _MaxPowerRealTime;
+                return maxPowerRealTime;
             }
 
             set
             {
 
-                if (value != null)
-                    SetProperty(ref _MaxPowerRealTime,
+                if (value is not null)
+                    SetProperty(ref maxPowerRealTime,
                                 value,
                                 EventTracking_Id.New);
 
                 else
-                    DeleteProperty(ref _MaxPowerRealTime);
+                    DeleteProperty(ref maxPowerRealTime);
 
             }
 
@@ -821,7 +673,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region MaxPowerPrognoses
 
-        private IEnumerable<Timestamped<Decimal>> _MaxPowerPrognoses;
+        private IEnumerable<Timestamped<Decimal>> maxPowerPrognoses;
 
         /// <summary>
         /// Prognoses on future values of the maximum power [kWatt].
@@ -832,19 +684,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _MaxPowerPrognoses;
+                return maxPowerPrognoses;
             }
 
             set
             {
 
-                if (value != null)
-                    SetProperty(ref _MaxPowerPrognoses,
+                if (value is not null)
+                    SetProperty(ref maxPowerPrognoses,
                                 value,
                                 EventTracking_Id.New);
 
                 else
-                    DeleteProperty(ref _MaxPowerPrognoses);
+                    DeleteProperty(ref maxPowerPrognoses);
 
             }
 
@@ -1179,31 +1031,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE?             RemoteEVSE        { get; }
+        public IRemoteEVSE?              RemoteEVSE         { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        public ChargingStation          ChargingStation   { get; }
+        public ChargingStation?          ChargingStation    { get; }
 
         /// <summary>
         /// The charging pool of this EVSE.
         /// </summary>
-        public ChargingPool             ChargingPool
+        public ChargingPool?             ChargingPool
             => ChargingStation?.ChargingPool;
 
         /// <summary>
         /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator  Operator
+        public ChargingStationOperator?  Operator
             => ChargingStation?.ChargingPool?.Operator;
 
         /// <summary>
         /// The roaming network of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork           RoamingNetwork
+        public IRoamingNetwork?          RoamingNetwork
             => ChargingStation?.ChargingPool?.Operator?.RoamingNetwork;
 
         #endregion
@@ -1261,7 +1113,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
-            this._Brands                = new SpecialHashSet<EVSE, Brand_Id, Brand>(this);
+            this.Brands                 = new SpecialHashSet<EVSE, Brand_Id, Brand>(this);
 
             #endregion
 
@@ -1315,7 +1167,11 @@ namespace cloud.charging.open.protocols.WWCP
         public EVSE UpdateWith(EVSE OtherEVSE)
         {
 
-            Description          = OtherEVSE.Description;
+            Name.       Add(OtherEVSE.Name);
+            Description.Add(OtherEVSE.Description);
+
+            Brands.Clear();
+            Brands.TryAdd(OtherEVSE.Brands);
 
             ChargingModes        = OtherEVSE.ChargingModes;
             AverageVoltage       = OtherEVSE.AverageVoltage;
@@ -1324,9 +1180,9 @@ namespace cloud.charging.open.protocols.WWCP
             MaxPower             = OtherEVSE.MaxPower;
             MaxCapacity          = OtherEVSE.MaxCapacity;
 
-            if (SocketOutlets == null && OtherEVSE.SocketOutlets != null)
+            if (SocketOutlets is null && OtherEVSE.SocketOutlets is not null)
                 SocketOutlets = new ReactiveSet<SocketOutlet>(OtherEVSE.SocketOutlets);
-            else if (SocketOutlets != null)
+            else if (SocketOutlets is not null)
                 SocketOutlets = OtherEVSE.SocketOutlets;
 
             EnergyMeterId        = OtherEVSE.EnergyMeterId;
@@ -1390,10 +1246,10 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal != null)
+            if (OnDataChangedLocal is not null)
                 await OnDataChangedLocal(Timestamp,
                                          EventTrackingId ?? EventTracking_Id.New,
-                                         Sender as EVSE,
+                                         this,
                                          PropertyName,
                                          OldValue,
                                          NewValue);
@@ -1418,7 +1274,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
+            if (OnAdminStatusChangedLocal is not null)
                 await OnAdminStatusChangedLocal(Timestamp,
                                                 EventTrackingId ?? EventTracking_Id.New,
                                                 this,
@@ -1445,7 +1301,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
+            if (OnStatusChangedLocal is not null)
                 await OnStatusChangedLocal(Timestamp,
                                            EventTrackingId ?? EventTracking_Id.New,
                                            this,

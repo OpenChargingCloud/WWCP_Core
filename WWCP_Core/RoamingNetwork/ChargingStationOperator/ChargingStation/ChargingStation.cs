@@ -1738,7 +1738,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.openingTimes                = OpeningTimes.Open24Hours;
             this._Brands                     = new SpecialHashSet<ChargingStation, Brand_Id, Brand>(this);
-            this.evses                       = new EntityHashSet <ChargingStation, EVSE_Id,  EVSE> (this);
+            this.evses                       = new SpecialHashSet <ChargingStation, EVSE_Id,  EVSE> (this);
 
             #endregion
 
@@ -1882,7 +1882,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        private readonly EntityHashSet<ChargingStation, EVSE_Id, EVSE> evses;
+        private readonly SpecialHashSet<ChargingStation, EVSE_Id, EVSE> evses;
 
         /// <summary>
         /// All Electric Vehicle Supply Equipments (EVSE) present
@@ -3479,10 +3479,12 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStation UpdateWith(ChargingStation OtherChargingStation)
         {
 
-            Name                 = OtherChargingStation.Name;
-            Description          = OtherChargingStation.Description;
+            Name.       Add(OtherChargingStation.Name);
+            Description.Add(OtherChargingStation.Description);
+
             _Brands.Clear();
             _Brands.TryAdd(OtherChargingStation.Brands);
+
             Address              = OtherChargingStation.Address;
             OSM_NodeId           = OtherChargingStation.OSM_NodeId;
             GeoLocation          = OtherChargingStation.GeoLocation;

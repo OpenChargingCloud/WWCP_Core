@@ -51,18 +51,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the admin status schedule/history.
         /// </summary>
-        public const  UInt16  DefaultMaxAdminStatusScheduleSize   = 50;
+        public const  UInt16  DefaultMaxAdminStatusScheduleSize    = 50;
 
         /// <summary>
         /// The default max size of the status schedule/history.
         /// </summary>
-        public const  UInt16  DefaultMaxStatusScheduleSize        = 50;
-
-
-        /// <summary>
-        /// A lookup for user-defined properties.
-        /// </summary>
-        protected readonly UserDefinedDictionary _UserDefined;
+        public const  UInt16  DefaultMaxStatusScheduleSize         = 50;
 
         #endregion
 
@@ -77,15 +71,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The multi-language name of this entity.
         /// </summary>
-        [Mandatory]
-        public I18NString              Name                     { get; protected set; }
+        [Optional]
+        public I18NString              Name                     { get; }
 
         /// <summary>
         /// The multi-language description of this entity.
         /// </summary>
-        [Mandatory]
-        public I18NString              Description              { get; protected set; }
-
+        [Optional]
+        public I18NString              Description              { get; }
 
 
         #region AdminStatus
@@ -204,30 +197,103 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region ETag
 
-
-        public ulong Length => 0;
-
-        public bool IsNullOrEmpty => false;
+        private String? eTag;
 
         /// <summary>
         /// A unique status identification of this entity.
         /// </summary>
         [Mandatory]
-        public String?           ETag           { get; }
+        public String?           ETag
+        {
+
+            get
+            {
+                return eTag;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref eTag,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref eTag);
+
+            }
+
+        }
+
+        #endregion
+
+        #region DataSource
+
+        private String? dataSource;
 
         /// <summary>
         /// The source of this information, e.g. the WWCP importer used.
         /// </summary>
         [Optional]
-        public String?           DataSource     { get; set; }
+        public String?           DataSource
+        {
+
+            get
+            {
+                return dataSource;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref dataSource,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref dataSource);
+
+            }
+
+        }
+
+        #endregion
+
+        #region LastChange
+
+        private DateTime lastChange;
 
         /// <summary>
         /// The timestamp of the last changes within this ChargingPool.
         /// Can be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime          LastChange     { get; set; }
+        public DateTime          LastChange
+        {
+
+            get
+            {
+                return lastChange;
+            }
+
+            set
+            {
+                SetProperty(ref lastChange,
+                            value,
+                            EventTracking_Id.New);
+            }
+
+        }
+
+        #endregion
+
+
+        public ulong Length => 0;
+        public bool  IsNullOrEmpty => false;
 
         #endregion
 
@@ -246,6 +312,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new abstract entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
+        /// 
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
         public AEMobilityEntity(TId                         Id,
                                 I18NString?                 Name                         = null,
@@ -275,26 +342,76 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
             this.Id                    = Id;
+            this.eTag                  = null;
+            this.DataSource            = DataSource;
+            this.LastChange            = LastChange ?? Timestamp.Now;
+
+
+            #region Name
+
             this.Name                  = Name        ?? I18NString.Empty;
+
+            this.Name.OnPropertyChanged += async (timestamp,
+                                                  eventTrackingId,
+                                                  sender,
+                                                  propertyName,
+                                                  oldValue,
+                                                  newValue) =>
+            {
+
+                OnPropertyChanged?.Invoke(timestamp,
+                                          eventTrackingId,
+                                          sender,
+                                          "Name",
+                                          oldValue,
+                                          newValue);
+
+            };
+
+            #endregion
+
+            #region Description
+
             this.Description           = Description ?? I18NString.Empty;
 
+            this.Name.OnPropertyChanged += async (timestamp,
+                                                  eventTrackingId,
+                                                  sender,
+                                                  propertyName,
+                                                  oldValue,
+                                                  newValue) =>
+            {
+
+                OnPropertyChanged?.Invoke(timestamp,
+                                          eventTrackingId,
+                                          sender,
+                                          "Description",
+                                          oldValue,
+                                          newValue);
+
+            };
+
+            #endregion
+
+
+            #region AdminStatusSchedule
+
             this.adminStatusSchedule   = new StatusSchedule<TAdminStatus>(MaxAdminStatusScheduleSize);
-            this.statusSchedule        = new StatusSchedule<TStatus>     (MaxStatusScheduleSize);
 
             if (InitialAdminStatus.HasValue)
                 this.adminStatusSchedule.Insert(InitialAdminStatus.Value);
 
+            #endregion
+
+            #region StatusSchedule
+
+            this.statusSchedule = new StatusSchedule<TStatus>(MaxStatusScheduleSize);
+
             if (InitialStatus.     HasValue)
                 this.statusSchedule.     Insert(InitialStatus.Value);
 
+            #endregion
 
-            this.DataSource      = DataSource;
-            this.LastChange      = LastChange ?? Timestamp.Now;
-
-            //this._UserDefined    = new UserDefinedDictionary();
-
-            //this._UserDefined.OnPropertyChanged += (timestamp, eventtrackingid, sender, key, oldValue, newValue)
-            //    => OnPropertyChanged?.Invoke(timestamp, eventtrackingid, sender, key, oldValue, newValue);
 
         }
 
@@ -431,10 +548,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the field to be changed.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
-        public void SetProperty<T>(ref                T                 FieldToChange,
-                                                      T                 NewValue,
-                                                      EventTracking_Id  EventTrackingId  = null,
-                                   [CallerMemberName] String            PropertyName     = "")
+        public void SetProperty<T>(ref                T                  FieldToChange,
+                                                      T                  NewValue,
+                                                      EventTracking_Id?  EventTrackingId   = null,
+                                   [CallerMemberName] String             PropertyName      = "")
         {
 
             if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
@@ -490,10 +607,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public void PropertyChanged<T>(String            PropertyName,
-                                       T                 OldValue,
-                                       T                 NewValue,
-                                       EventTracking_Id  EventTrackingId = null)
+        public void PropertyChanged<T>(String             PropertyName,
+                                       T                  OldValue,
+                                       T                  NewValue,
+                                       EventTracking_Id?  EventTrackingId = null)
         {
 
             #region Initial checks
@@ -503,7 +620,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            this.LastChange = Timestamp.Now;
+            this.lastChange = Timestamp.Now;
 
             //DebugX.Log(String.Concat("Property '", PropertyName, "' changed from '", OldValue?.ToString() ?? "", "' to '", NewValue?.ToString() ?? "", "'!"));
 
@@ -521,15 +638,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         // User defined properties
 
-        #region Set(Key, NewValue, OldValue = null)
+        //#region Set(Key, NewValue, OldValue = null)
 
-        public SetPropertyResult Set(String  Key,
-                                     Object  NewValue,
-                                     Object  OldValue = null)
+        //public SetPropertyResult Set(String  Key,
+        //                             Object  NewValue,
+        //                             Object  OldValue = null)
 
-            => _UserDefined.Set(Key, NewValue, OldValue);
+        //    => _UserDefined.Set(Key, NewValue, OldValue);
 
-        #endregion
+        //#endregion
 
         //#region ContainsKey(Key)
 

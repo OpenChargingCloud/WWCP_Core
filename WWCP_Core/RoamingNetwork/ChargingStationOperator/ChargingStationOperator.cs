@@ -626,12 +626,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.brands                      = new SpecialHashSet<ChargingStationOperator, Brand_Id,                Brand>               (this);
 
-            this.chargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
-            this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
-            this._EVSEGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
+            this.chargingPools               = new SpecialHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
+            this._ChargingStationGroups       = new SpecialHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
+            this._EVSEGroups                  = new SpecialHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
-            this._ChargingTariffs             = new EntityHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
-            this._ChargingTariffGroups        = new EntityHashSet <ChargingStationOperator, ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
+            this._ChargingTariffs             = new SpecialHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
+            this._ChargingTariffGroups        = new SpecialHashSet <ChargingStationOperator, ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
 
             //this._ChargingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
             //this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ChargingPool>();
@@ -1278,7 +1278,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPools
 
-        private EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> chargingPools;
+        private SpecialHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> chargingPools;
 
         public IEnumerable<ChargingPool> ChargingPools
 
@@ -2058,7 +2058,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationGroups
 
-        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
+        private readonly SpecialHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
 
         /// <summary>
         /// All charging station groups registered within this charging station operator.
@@ -3205,7 +3205,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEGroups
 
-        private readonly EntityHashSet<ChargingStationOperator, EVSEGroup_Id, EVSEGroup> _EVSEGroups;
+        private readonly SpecialHashSet<ChargingStationOperator, EVSEGroup_Id, EVSEGroup> _EVSEGroups;
 
         /// <summary>
         /// All EVSE groups registered within this charging station operator.
@@ -3696,7 +3696,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffs
 
-        private readonly EntityHashSet<ChargingStationOperator, ChargingTariff_Id, ChargingTariff> _ChargingTariffs;
+        private readonly SpecialHashSet<ChargingStationOperator, ChargingTariff_Id, ChargingTariff> _ChargingTariffs;
 
         /// <summary>
         /// All charging tariffs registered within this charging station operator.
@@ -4107,7 +4107,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffGroups
 
-        private readonly EntityHashSet<ChargingStationOperator, ChargingTariffGroup_Id, ChargingTariffGroup> _ChargingTariffGroups;
+        private readonly SpecialHashSet<ChargingStationOperator, ChargingTariffGroup_Id, ChargingTariffGroup> _ChargingTariffGroups;
 
         /// <summary>
         /// All charging tariff groups registered within this charging station operator.

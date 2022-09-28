@@ -183,12 +183,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.dataLicenses                                       = new ReactiveSet<DataLicense>();
 
-            this.chargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
-            this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
-            this._eMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProvider>      (this);
-            this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>         (this);
-            this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
-            this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
+            this.chargingStationOperators                          = new SpecialHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
+            this._ParkingOperators                                  = new SpecialHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
+            this._eMobilityProviders                                = new SpecialHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProvider>      (this);
+            this._SmartCities                                       = new SpecialHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>         (this);
+            this._NavigationProviders                               = new SpecialHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
+            this._GridOperators                                     = new SpecialHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
 
             this.chargingStationOperatorRoamingProviders            = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
             this._EMPRoamingProviders                               = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationOperators
 
-        private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> chargingStationOperators;
+        private readonly SpecialHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> chargingStationOperators;
 
         /// <summary>
         /// Return all charging station operators registered within this roaming network.
@@ -735,7 +735,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingOperators
 
-        private readonly EntityHashSet<RoamingNetwork, ParkingOperator_Id, ParkingOperator> _ParkingOperators;
+        private readonly SpecialHashSet<RoamingNetwork, ParkingOperator_Id, ParkingOperator> _ParkingOperators;
 
         /// <summary>
         /// Return all parking operators registered within this roaming network.
@@ -1083,7 +1083,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityProviders
 
-        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProvider> _eMobilityProviders;
+        private readonly SpecialHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProvider> _eMobilityProviders;
 
         /// <summary>
         /// Return all e-mobility providers registered within this roaming network.
@@ -1325,7 +1325,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SmartCities
 
-        private readonly EntityHashSet<RoamingNetwork, SmartCity_Id, SmartCityProxy> _SmartCities;
+        private readonly SpecialHashSet<RoamingNetwork, SmartCity_Id, SmartCityProxy> _SmartCities;
 
         /// <summary>
         /// Return all smart cities registered within this roaming network.
@@ -1542,7 +1542,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region NavigationProviders
 
-        private readonly EntityHashSet<RoamingNetwork, NavigationProvider_Id, NavigationProvider> _NavigationProviders;
+        private readonly SpecialHashSet<RoamingNetwork, NavigationProvider_Id, NavigationProvider> _NavigationProviders;
 
         /// <summary>
         /// Return all navigation providers registered within this roaming network.
@@ -1726,7 +1726,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GridOperators
 
-        private readonly EntityHashSet<RoamingNetwork, GridOperator_Id, GridOperator> _GridOperators;
+        private readonly SpecialHashSet<RoamingNetwork, GridOperator_Id, GridOperator> _GridOperators;
 
         /// <summary>
         /// Return all smart cities registered within this roaming network.

@@ -416,8 +416,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            this._ParkingGarages               = new EntityHashSet<ParkingOperator, ParkingGarage_Id,         ParkingGarage>(this);
-            //this._ParkingGarageGroups         = new EntityHashSet<ParkingOperator, ParkingGarageGroup_Id, ParkingGarageGroup>(this);
+            this._ParkingGarages               = new SpecialHashSet<ParkingOperator, ParkingGarage_Id,         ParkingGarage>(this);
+            //this._ParkingGarageGroups         = new SpecialHashSet<ParkingOperator, ParkingGarageGroup_Id, ParkingGarageGroup>(this);
             //this._ParkingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ParkingGarage>();
             //this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ParkingGarage>();
 
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingGarages
 
-        private EntityHashSet<ParkingOperator, ParkingGarage_Id, ParkingGarage> _ParkingGarages;
+        private SpecialHashSet<ParkingOperator, ParkingGarage_Id, ParkingGarage> _ParkingGarages;
 
         public IEnumerable<ParkingGarage> ParkingGarages
 
@@ -1361,7 +1361,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ParkingGarageGroups
 
-        //private readonly EntityHashSet<ParkingOperator, ParkingGarageGroup_Id, ParkingGarageGroup> _ParkingGarageGroups;
+        //private readonly SpecialHashSet<ParkingOperator, ParkingGarageGroup_Id, ParkingGarageGroup> _ParkingGarageGroups;
 
         ///// <summary>
         ///// All charging station groups registered within this Charging Station Operator.

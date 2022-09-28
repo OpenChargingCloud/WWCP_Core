@@ -188,15 +188,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 OnSuccess:           evse => success = true,
                                                                 Configurator:        evse => {
 
-                                                                                         evse.Add(new Brand(
-                                                                                                      Id:            Brand_Id.Parse("openChargingCloud"),
-                                                                                                      Name:          I18NString.Create(Languages.de, "Open Charging Cloud"),
-                                                                                                      Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
-                                                                                                      Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                                                                      DataLicenses:  new DataLicense[] {
-                                                                                                                         DataLicense.CreativeCommons_BY_SA_4
-                                                                                                                     }
-                                                                                                  ));
+                                                                                         evse.Brands.TryAdd(new Brand(
+                                                                                                                Id:            Brand_Id.Parse("openChargingCloud"),
+                                                                                                                Name:          I18NString.Create(Languages.de, "Open Charging Cloud"),
+                                                                                                                Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                                                                                Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                                                                                DataLicenses:  new DataLicense[] {
+                                                                                                                                   DataLicense.CreativeCommons_BY_SA_4
+                                                                                                                               }
+                                                                                                            ));
 
                                                                                      }
                                                             );
@@ -225,6 +225,117 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     Assert.IsTrue   (DE_GEF_S0001_AAAA.ContainsEVSE(EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
                     Assert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
+
+
+                    Assert.AreEqual(1, DE_GEF_E1234_5678_1.Brands.Count());
+
+
+
+                    DE_GEF_E1234_5678_1.Brands.TryAdd(new Brand(
+                                                          Id:            Brand_Id.Parse("openChargingCloud23"),
+                                                          Name:          I18NString.Create(Languages.de, "Open Charging Cloud 23"),
+                                                          Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                          Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                          DataLicenses:  new DataLicense[] {
+                                                                             DataLicense.CreativeCommons_BY_SA_4
+                                                                         }
+                                                      ));
+
+
+                    Assert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count());
+
+
+
+                    var evseDataChanges = new List<String>();
+
+                    DE_GEF_E1234_5678_1.OnDataChanged += async (Timestamp,
+                                                                EventTrackingId,
+                                                                EVSE,
+                                                                PropertyName,
+                                                                OldValue,
+                                                                NewValue) => {
+
+                        evseDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+
+                    var chargingStationEVSEDataChanges = new List<String>();
+
+                    DE_GEF_S0001_AAAA.OnEVSEDataChanged += async (Timestamp,
+                                                                  EventTrackingId,
+                                                                  EVSE,
+                                                                  PropertyName,
+                                                                  OldValue,
+                                                                  NewValue) => {
+
+                        chargingStationEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+
+                    var chargingPoolEVSEDataChanges = new List<String>();
+
+                    DE_GEF_P0001.OnEVSEDataChanged += async (Timestamp,
+                                                             EventTrackingId,
+                                                             EVSE,
+                                                             PropertyName,
+                                                             OldValue,
+                                                             NewValue) => {
+
+                        chargingPoolEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+
+                    var chargingStationOperatorEVSEDataChanges = new List<String>();
+
+                    DE_GEF.OnEVSEDataChanged += async (Timestamp,
+                                                             EventTrackingId,
+                                                             EVSE,
+                                                             PropertyName,
+                                                             OldValue,
+                                                             NewValue) => {
+
+                        chargingStationOperatorEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+
+                    var roamingNetworkEVSEDataChanges = new List<String>();
+
+                    roamingNetwork.OnEVSEDataChanged += async (Timestamp,
+                                                               EventTrackingId,
+                                                               EVSE,
+                                                               PropertyName,
+                                                               OldValue,
+                                                               NewValue) => {
+
+                        roamingNetworkEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+                    DE_GEF_E1234_5678_1.Name.       Add(Languages.it, "namelalala");
+                    DE_GEF_E1234_5678_1.Description.Add(Languages.it, "desclalala");
+
+                    DE_GEF_E1234_5678_1.MaxPower           = 123.45m;
+                    DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
+
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = 345.67m;
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
+
+                    DE_GEF_E1234_5678_1.MaxPowerPrognoses  = new Timestamped<Decimal>[] {
+                                                                 new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
+                                                                 new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
+                                                                 new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                                                             };
+
+                    Assert.AreEqual(7, evseDataChanges.                       Count);
+                    Assert.AreEqual(7, chargingStationEVSEDataChanges.        Count);
+                    Assert.AreEqual(7, chargingPoolEVSEDataChanges.           Count);
+                    Assert.AreEqual(7, chargingStationOperatorEVSEDataChanges.Count);
+                    Assert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
+
 
                 }
 

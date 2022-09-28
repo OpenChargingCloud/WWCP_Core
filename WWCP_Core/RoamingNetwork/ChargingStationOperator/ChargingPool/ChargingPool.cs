@@ -1384,7 +1384,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this._Brands                     = new SpecialHashSet<ChargingPool, Brand_Id, Brand>(this);
 
-            this.chargingStations            = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
+            this.chargingStations            = new SpecialHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
 
             #endregion
 
@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStations
 
-        private readonly EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation> chargingStations;
+        private readonly SpecialHashSet<ChargingPool, ChargingStation_Id, ChargingStation> chargingStations;
 
         /// <summary>
         /// Return all charging stations registered within this charing pool.
@@ -3576,10 +3576,12 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingPool UpdateWith(ChargingPool OtherChargingPool)
         {
 
-            Name                 = OtherChargingPool.Name;
-            Description          = OtherChargingPool.Description;
+            Name.       Add(OtherChargingPool.Name);
+            Description.Add(OtherChargingPool.Description);
+
             _Brands.Clear();
             _Brands.TryAdd(OtherChargingPool.Brands);
+
             LocationLanguage     = OtherChargingPool.LocationLanguage;
             Address              = OtherChargingPool.Address;
             GeoLocation          = OtherChargingPool.GeoLocation;
