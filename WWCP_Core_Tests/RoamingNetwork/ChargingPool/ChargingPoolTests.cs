@@ -181,8 +181,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual ("DE*GEF Pool 1234",                             DE_GEF_P1234.Name.       FirstText());
                     Assert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P1234.Description.FirstText());
 
-                    Assert.AreEqual (ChargingPoolAdminStatusTypes.Operational,       DE_GEF_P1234.AdminStatus);
-                    Assert.AreEqual (ChargingPoolStatusTypes.Available,              DE_GEF_P1234.Status);
+                    Assert.AreEqual (ChargingPoolAdminStatusTypes.OutOfService,      DE_GEF_P1234.AdminStatus);
+                    Assert.AreEqual (ChargingPoolStatusTypes.Offline,                DE_GEF_P1234.Status);
 
                     Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
                     Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
@@ -227,12 +227,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     var chargingStationOperatorChargingPoolDataChanges = new List<String>();
 
-                    DE_GEF.OnChargingStationDataChanged += async (Timestamp,
-                                                                  EventTrackingId,
-                                                                  ChargingPool,
-                                                                  PropertyName,
-                                                                  OldValue,
-                                                                  NewValue) => {
+                    DE_GEF.OnChargingPoolDataChanged += async (Timestamp,
+                                                               EventTrackingId,
+                                                               ChargingPool,
+                                                               PropertyName,
+                                                               OldValue,
+                                                               NewValue) => {
 
                         chargingStationOperatorChargingPoolDataChanges.Add(String.Concat(ChargingPool.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -241,12 +241,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     var roamingNetworkChargingPoolDataChanges = new List<String>();
 
-                    roamingNetwork.OnChargingStationDataChanged += async (Timestamp,
-                                                                          EventTrackingId,
-                                                                          ChargingPool,
-                                                                          PropertyName,
-                                                                          OldValue,
-                                                                          NewValue) => {
+                    roamingNetwork.OnChargingPoolDataChanged += async (Timestamp,
+                                                                       EventTrackingId,
+                                                                       ChargingPool,
+                                                                       PropertyName,
+                                                                       OldValue,
+                                                                       NewValue) => {
 
                         roamingNetworkChargingPoolDataChanges.Add(String.Concat(ChargingPool.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -262,21 +262,21 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual(2, roamingNetworkChargingPoolDataChanges.         Count);
 
 
-                    //DE_GEF_P1234.MaxPower           = 123.45m;
-                    //DE_GEF_P1234.MaxPower           = 234.56m;
+                    DE_GEF_P1234.MaxPower           = 123.45m;
+                    DE_GEF_P1234.MaxPower           = 234.56m;
 
-                    //DE_GEF_P1234.MaxPowerRealTime   = 345.67m;
-                    //DE_GEF_P1234.MaxPowerRealTime   = 456.78m;
+                    DE_GEF_P1234.MaxPowerRealTime   = 345.67m;
+                    DE_GEF_P1234.MaxPowerRealTime   = 456.78m;
 
-                    //DE_GEF_P1234.MaxPowerPrognoses  = new Timestamped<Decimal>[] {
-                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
-                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
-                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
-                    //                                  };
+                    DE_GEF_P1234.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
+                                                               new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
+                                                               new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
+                                                               new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                                                           });
 
-                    //Assert.AreEqual(7, chargingPoolDataChanges.                       Count);
-                    //Assert.AreEqual(7, chargingStationOperatorChargingPoolDataChanges.Count);
-                    //Assert.AreEqual(7, roamingNetworkChargingPoolDataChanges.         Count);
+                    Assert.AreEqual(7, chargingPoolDataChanges.                       Count);
+                    Assert.AreEqual(7, chargingStationOperatorChargingPoolDataChanges.Count);
+                    Assert.AreEqual(7, roamingNetworkChargingPoolDataChanges.         Count);
 
                 }
 

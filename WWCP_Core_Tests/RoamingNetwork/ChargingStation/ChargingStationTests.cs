@@ -295,22 +295,22 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual(2, roamingNetworkChargingStationDataChanges.         Count);
 
 
-                    //DE_GEF_S1234.MaxPower           = 123.45m;
-                    //DE_GEF_S1234.MaxPower           = 234.56m;
+                    DE_GEF_S1234.MaxPower           = 123.45m;
+                    DE_GEF_S1234.MaxPower           = 234.56m;
 
-                    //DE_GEF_S1234.MaxPowerRealTime   = 345.67m;
-                    //DE_GEF_S1234.MaxPowerRealTime   = 456.78m;
+                    DE_GEF_S1234.MaxPowerRealTime   = 345.67m;
+                    DE_GEF_S1234.MaxPowerRealTime   = 456.78m;
 
-                    //DE_GEF_S1234.MaxPowerPrognoses  = new Timestamped<Decimal>[] {
-                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
-                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
-                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
-                    //                                  };
+                    DE_GEF_S1234.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
+                                                               new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
+                                                               new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
+                                                               new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                                                           });
 
-                    //Assert.AreEqual(7, chargingStationDataChanges.                       Count);
-                    //Assert.AreEqual(7, chargingPoolChargingStationDataChanges.           Count);
-                    //Assert.AreEqual(7, chargingStationOperatorChargingStationDataChanges.Count);
-                    //Assert.AreEqual(7, roamingNetworkChargingStationDataChanges.         Count);
+                    Assert.AreEqual(7, chargingStationDataChanges.                       Count);
+                    Assert.AreEqual(7, chargingPoolChargingStationDataChanges.           Count);
+                    Assert.AreEqual(7, chargingStationOperatorChargingStationDataChanges.Count);
+                    Assert.AreEqual(7, roamingNetworkChargingStationDataChanges.         Count);
 
                 }
 

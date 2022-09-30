@@ -754,7 +754,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GridConnection
 
-        private GridConnectionTypes? _GridConnection;
+        private GridConnectionTypes? gridConnection;
 
         /// <summary>
         /// The grid connection of the charging station.
@@ -765,20 +765,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _GridConnection ?? ChargingPool?.GridConnection;
+                return gridConnection ?? ChargingPool?.GridConnection;
             }
 
             set
             {
 
-                if (value != _GridConnection && value != ChargingPool?.GridConnection)
+                if (value != gridConnection && value != ChargingPool?.GridConnection)
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _GridConnection);
+                    if (value is null)
+                        DeleteProperty(ref gridConnection);
 
                     else
-                        SetProperty(ref _GridConnection, value);
+                        SetProperty(ref gridConnection, value);
 
                 }
 
@@ -1520,7 +1520,7 @@ namespace cloud.charging.open.protocols.WWCP
             //this.evses.OnSetChanged               += (timestamp, reactiveSet, newItems, oldItems) =>
             //{
 
-            //    PropertyChanged("EnergyMixPrognoses",
+            //    PropertyChanged("EVSEs",
             //                    oldItems,
             //                    newItems);
 

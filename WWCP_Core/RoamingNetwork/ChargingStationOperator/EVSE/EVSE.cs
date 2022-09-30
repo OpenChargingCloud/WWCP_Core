@@ -601,17 +601,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        public event OnEVSEDataChangedDelegate? OnDataChanged;
+        public event OnEVSEDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate? OnAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
-        public event OnEVSEStatusChangedDelegate? OnStatusChanged;
+        public event OnEVSEStatusChangedDelegate?       OnStatusChanged;
 
         #endregion
 
@@ -620,33 +620,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a charging location is being reserved.
         /// </summary>
-        public event OnReserveRequestDelegate? OnReserveRequest;
+        public event OnReserveRequestDelegate?             OnReserveRequest;
 
         /// <summary>
         /// An event fired whenever a charging location was reserved.
         /// </summary>
-        public event OnReserveResponseDelegate? OnReserveResponse;
+        public event OnReserveResponseDelegate?            OnReserveResponse;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
-        public event OnNewReservationDelegate? OnNewReservation;
+        public event OnNewReservationDelegate?             OnNewReservation;
 
 
         /// <summary>
         /// An event fired whenever a charging reservation is being canceled.
         /// </summary>
-        public event OnCancelReservationRequestDelegate? OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnCancelReservationResponseDelegate? OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnReservationCanceledDelegate? OnReservationCanceled;
+        public event OnReservationCanceledDelegate?        OnReservationCanceled;
 
         #endregion
 
@@ -655,33 +655,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        public event OnRemoteStartRequestDelegate? OnRemoteStartRequest;
+        public event OnRemoteStartRequestDelegate?     OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        public event OnRemoteStartResponseDelegate? OnRemoteStartResponse;
+        public event OnRemoteStartResponseDelegate?    OnRemoteStartResponse;
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
-        public event OnNewChargingSessionDelegate? OnNewChargingSession;
+        public event OnNewChargingSessionDelegate?     OnNewChargingSession;
 
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopRequestDelegate? OnRemoteStopRequest;
+        public event OnRemoteStopRequestDelegate?      OnRemoteStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopResponseDelegate? OnRemoteStopResponse;
+        public event OnRemoteStopResponseDelegate?     OnRemoteStopResponse;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
         /// </summary>
-        public event OnNewChargeDetailRecordDelegate? OnNewChargeDetailRecord;
+        public event OnNewChargeDetailRecordDelegate?  OnNewChargeDetailRecord;
 
         #endregion
 
@@ -692,32 +692,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE? RemoteEVSE { get; }
+        public IRemoteEVSE?              RemoteEVSE         { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        public ChargingStation? ChargingStation { get; }
+        public ChargingStation?          ChargingStation    { get; }
 
         /// <summary>
         /// The charging pool of this EVSE.
         /// </summary>
-        public ChargingPool? ChargingPool
+        public ChargingPool?             ChargingPool
             => ChargingStation?.ChargingPool;
 
         /// <summary>
         /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator? Operator
-            => ChargingStation?.ChargingPool?.Operator;
+        public ChargingStationOperator?  Operator
+            => ChargingStation?.Operator;
 
         /// <summary>
         /// The roaming network of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork? RoamingNetwork
-            => ChargingStation?.ChargingPool?.Operator?.RoamingNetwork;
+        public IRoamingNetwork?          RoamingNetwork
+            => ChargingStation?.RoamingNetwork;
 
         #endregion
 
@@ -880,10 +880,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) =>
                 {
-                    RoamingNetwork.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
+                    RoamingNetwork?.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
                     //_ChargingSession       = ChargingSession;
                     //_ChargingSession.EVSE  = this;
-                    OnNewChargingSession.Invoke(Timestamp, this, ChargingSession);
+                    OnNewChargingSession?.Invoke(Timestamp, this, ChargingSession);
                 };
 
                 this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord) => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);

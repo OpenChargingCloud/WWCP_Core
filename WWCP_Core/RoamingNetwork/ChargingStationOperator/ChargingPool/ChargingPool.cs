@@ -616,9 +616,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         #region GridConnection
 
-        private GridConnectionTypes? _GridConnection;
+        private GridConnectionTypes? gridConnection;
 
         /// <summary>
         /// The grid connection of the charging pool.
@@ -629,20 +630,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _GridConnection;
+                return gridConnection;
             }
 
             set
             {
 
-                if (_GridConnection != value)
+                if (gridConnection != value)
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _GridConnection);
+                    if (value is null)
+                        DeleteProperty(ref gridConnection);
 
                     else
-                        SetProperty(ref _GridConnection, value);
+                        SetProperty(ref gridConnection, value);
 
                     // Delete inherited grid connections
                     chargingStations.ForEach(station => station.GridConnection = null);
@@ -655,33 +656,280 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EnergyMix
 
-        private EnergyMix _EnergyMix;
+        #region MaxCurrent
+
+        private Decimal? maxCurrent;
 
         /// <summary>
-        /// The energy mix at the charging pool.
+        /// The maximum current [Ampere].
         /// </summary>
-        [Optional]
-        public EnergyMix EnergyMix
+        [Mandatory, SlowData]
+        public Decimal? MaxCurrent
         {
 
             get
             {
-                return _EnergyMix;
+                return maxCurrent;
             }
 
             set
             {
 
-                if (_EnergyMix != value)
+                if (value is not null)
+                {
+
+                    if (!maxCurrent.HasValue)
+                        SetProperty(ref maxCurrent,
+                                    value,
+                                    EventTracking_Id.New);
+
+                    else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCurrent,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCurrent);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrentRealTime
+
+        private Timestamped<Decimal>? maxCurrentRealTime;
+
+        /// <summary>
+        /// The real-time maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxCurrentRealTime
+        {
+
+            get
+            {
+                return maxCurrentRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxCurrentRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref maxCurrentRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
+
+
+        #region MaxPower
+
+        private Decimal? maxPower;
+
+        /// <summary>
+        /// The maximum power [kWatt].
+        /// </summary>
+        [Optional, SlowData]
+        public Decimal? MaxPower
+        {
+
+            get
+            {
+                return maxPower;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxPower.HasValue)
+                        SetProperty(ref maxPower,
+                                    value,
+                                    EventTracking_Id.New);
+
+                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxPower,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxPower);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxPowerRealTime
+
+        private Timestamped<Decimal>? maxPowerRealTime;
+
+        /// <summary>
+        /// The real-time maximum power [kWatt].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxPowerRealTime
+        {
+
+            get
+            {
+                return maxPowerRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxPowerRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref maxPowerRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum power [kWatt].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses       { get; }
+
+
+        #region MaxCapacity
+
+        private Decimal? maxCapacity;
+
+        /// <summary>
+        /// The maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public Decimal? MaxCapacity
+        {
+
+            get
+            {
+                return maxCapacity;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxCapacity.HasValue)
+                        SetProperty(ref maxCapacity,
+                                    value,
+                                    EventTracking_Id.New);
+
+                    else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCapacity,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCapacity);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCapacityRealTime
+
+        private Timestamped<Decimal>? maxCapacityRealTime;
+
+        /// <summary>
+        /// The real-time maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public Timestamped<Decimal>? MaxCapacityRealTime
+        {
+
+            get
+            {
+                return maxCapacityRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxCapacityRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref maxCapacityRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses    { get; }
+
+
+        #region EnergyMix
+
+        private EnergyMix? energyMix;
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+        [Optional, SlowData]
+        public EnergyMix? EnergyMix
+        {
+
+            get
+            {
+                return energyMix;
+            }
+
+            set
+            {
+
+                if (value != energyMix)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _EnergyMix);
+                        DeleteProperty(ref energyMix);
 
                     else
-                        SetProperty(ref _EnergyMix, value);
+                        SetProperty(ref energyMix, value);
 
                 }
 
@@ -690,6 +938,46 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #region EnergyMixRealTime
+
+        private Timestamped<EnergyMix>? energyMixRealTime;
+
+        /// <summary>
+        /// The current energy mix.
+        /// </summary>
+        [Mandatory, FastData]
+        public Timestamped<EnergyMix>? EnergyMixRealTime
+        {
+
+            get
+            {
+                return energyMixRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref energyMixRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref energyMixRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the energy mix.
+        /// </summary>
+        [Mandatory, FastData]
+        public ReactiveSet<Timestamped<EnergyMix>>      EnergyMixPrognoses      { get; }
+
 
         #region ExitAddress
 
@@ -913,10 +1201,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.Operator                    = Operator;
+            this.Operator                          = Operator;
 
-            this.Brands                      = new EntityHashSet<ChargingPool, Brand_Id, Brand>(this);
-            //this.Brands.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+            this.Brands                            = new EntityHashSet<ChargingPool, Brand_Id, Brand>(this);
+            //this.Brands.OnSetChanged              += (timestamp, sender, newItems, oldItems) => {
 
             //    PropertyChanged("DataLicenses",
             //                    oldItems,
@@ -924,8 +1212,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             //};
 
-            this.DataLicenses                = new ReactiveSet<DataLicense>();
-            this.DataLicenses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            this.DataLicenses                       = new ReactiveSet<DataLicense>();
+            this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
                 PropertyChanged("DataLicenses",
@@ -934,9 +1222,56 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
+            this.MaxCurrentPrognoses                = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCurrentPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxPowerPrognoses                  = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxPowerPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxCapacityPrognoses               = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCapacityPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.EnergyMixPrognoses                 = new ReactiveSet<Timestamped<EnergyMix>>();
+            this.EnergyMixPrognoses.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("EnergyMixPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
 
 
             this.chargingStations            = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
+            //this.evses.OnSetChanged               += (timestamp, reactiveSet, newItems, oldItems) =>
+            //{
+
+            //    PropertyChanged("ChargingStations",
+            //                    oldItems,
+            //                    newItems);
+
+            //};
 
             #endregion
 
@@ -984,17 +1319,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        public event OnChargingPoolDataChangedDelegate         OnDataChanged;
+        public event OnChargingPoolDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status changed.
         /// </summary>
-        public event OnChargingPoolStatusChangedDelegate       OnStatusChanged;
+        public event OnChargingPoolStatusChangedDelegate?       OnStatusChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status changed.
         /// </summary>
-        public event OnChargingPoolAdminStatusChangedDelegate  OnAdminStatusChanged;
+        public event OnChargingPoolAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         #endregion
 
@@ -1019,7 +1354,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal != null)
+            if (OnDataChangedLocal is not null)
                 await OnDataChangedLocal(Timestamp,
                                          EventTrackingId,
                                          Sender as ChargingPool,
@@ -1047,7 +1382,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
+            if (OnAdminStatusChangedLocal is not null)
                 await OnAdminStatusChangedLocal(Timestamp,
                                                 EventTrackingId,
                                                 this,
@@ -1074,7 +1409,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
+            if (OnStatusChangedLocal is not null)
                 await OnStatusChangedLocal(Timestamp,
                                            EventTrackingId,
                                            this,
