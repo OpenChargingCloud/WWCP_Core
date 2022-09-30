@@ -941,19 +941,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveEVehicle(eVehicleId, out eVehicle)
 
-        public Boolean TryRemoveEVehicle(eVehicle_Id eVehicleId, out eVehicle eVehicle)
+        public Boolean TryRemoveEVehicle(eVehicle_Id eVehicleId, out eVehicle? eVehicle)
         {
 
             if (TryGetEVehicleById(eVehicleId, out eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(Timestamp.Now, this, eVehicle))
+                if (eVehicleRemoval.SendVoting(Timestamp.Now,
+                                               this,
+                                               eVehicle))
                 {
 
-                    if (_eVehicles.TryRemove(eVehicleId, out eVehicle))
+                    if (_eVehicles.TryRemove(eVehicleId, out _))
                     {
 
-                        eVehicleRemoval.SendNotification(Timestamp.Now, this, eVehicle);
+                        eVehicleRemoval.SendNotification(Timestamp.Now,
+                                                         this,
+                                                         eVehicle);
 
                         return true;
 
@@ -973,14 +977,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SeteVehicleAdminStatus(eVehicleId, NewStatus)
 
-        public void SeteVehicleAdminStatus(eVehicle_Id                           eVehicleId,
-                                               Timestamped<eVehicleAdminStatusTypes>  NewStatus,
-                                               Boolean                                   SendUpstream = false)
+        public void SeteVehicleAdminStatus(eVehicle_Id                            eVehicleId,
+                                           Timestamped<eVehicleAdminStatusTypes>  NewStatus,
+                                           Boolean                                SendUpstream = false)
         {
 
-            eVehicle _eVehicle = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(NewStatus);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.AdminStatus = NewStatus;
+            }
 
         }
 
@@ -988,14 +994,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
 
-        public void SetEVehicleAdminStatus(eVehicle_Id              eVehicleId,
+        public void SetEVehicleAdminStatus(eVehicle_Id               eVehicleId,
                                            eVehicleAdminStatusTypes  NewStatus,
-                                           DateTime                     Timestamp)
+                                           DateTime                  Timestamp)
         {
 
-            eVehicle _eVehicle  = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(NewStatus, Timestamp);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.AdminStatus = new Timestamped<eVehicleAdminStatusTypes>(Timestamp, NewStatus);
+            }
 
         }
 

@@ -750,14 +750,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus)
 
-        public void SetEMobilityStationAdminStatus(eMobilityStation_Id                           eMobilityStationId,
+        public void SetEMobilityStationAdminStatus(eMobilityStation_Id                            eMobilityStationId,
                                                    Timestamped<eMobilityStationAdminStatusTypes>  NewStatus,
-                                                   Boolean                                       SendUpstream = false)
+                                                   Boolean                                        SendUpstream = false)
         {
 
-            eMobilityStation _eMobilityStation = null;
-            if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
-                _eMobilityStation.SetAdminStatus(NewStatus);
+            if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
+                eMobilityStation is not null)
+            {
+                eMobilityStation.AdminStatus = NewStatus;
+            }
 
         }
 
@@ -765,14 +767,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus, Timestamp)
 
-        public void SetEMobilityStationAdminStatus(eMobilityStation_Id              eMobilityStationId,
+        public void SetEMobilityStationAdminStatus(eMobilityStation_Id               eMobilityStationId,
                                                    eMobilityStationAdminStatusTypes  NewStatus,
-                                                   DateTime                         Timestamp)
+                                                   DateTime                          Timestamp)
         {
 
-            eMobilityStation _eMobilityStation  = null;
-            if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
-                _eMobilityStation.SetAdminStatus(NewStatus, Timestamp);
+            if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
+                eMobilityStation is not null)
+            {
+                eMobilityStation.AdminStatus = new Timestamped<eMobilityStationAdminStatusTypes>(Timestamp, NewStatus);
+            }
 
         }
 
@@ -785,9 +789,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace)
         {
 
-            eMobilityStation _eMobilityStation  = null;
-            if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
-                _eMobilityStation.SetAdminStatus(StatusList, ChangeMethod);
+            if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
+                eMobilityStation is not null)
+            {
+                eMobilityStation.SetAdminStatus(StatusList, ChangeMethod);
+            }
 
             //if (SendUpstream)
             //{
@@ -1127,14 +1133,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SeteVehicleAdminStatus(eVehicleId, NewStatus)
 
-        public void SeteVehicleAdminStatus(eVehicle_Id                           eVehicleId,
-                                               Timestamped<eVehicleAdminStatusTypes>  NewStatus,
-                                               Boolean                                   SendUpstream = false)
+        public void SeteVehicleAdminStatus(eVehicle_Id                            eVehicleId,
+                                           Timestamped<eVehicleAdminStatusTypes>  NewStatus,
+                                           Boolean                                SendUpstream = false)
         {
 
-            eVehicle _eVehicle = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(NewStatus);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.AdminStatus = NewStatus;
+            }
 
         }
 
@@ -1142,14 +1150,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
 
-        public void SetEVehicleAdminStatus(eVehicle_Id              eVehicleId,
+        public void SetEVehicleAdminStatus(eVehicle_Id               eVehicleId,
                                            eVehicleAdminStatusTypes  NewStatus,
-                                           DateTime                     Timestamp)
+                                           DateTime                  Timestamp)
         {
 
-            eVehicle _eVehicle  = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(NewStatus, Timestamp);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.AdminStatus = new Timestamped<eVehicleAdminStatusTypes>(Timestamp, NewStatus);
+            }
 
         }
 
@@ -1162,9 +1172,11 @@ namespace cloud.charging.open.protocols.WWCP
                                            ChangeMethods                                      ChangeMethod  = ChangeMethods.Replace)
         {
 
-            eVehicle _eVehicle  = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(StatusList, ChangeMethod);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.SetAdminStatus(StatusList, ChangeMethod);
+            }
 
             //if (SendUpstream)
             //{

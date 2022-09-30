@@ -931,7 +931,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     newReservation != null)
                 {
 
-                    SetStatus(EVSEStatusTypes.Reserved);
+                    Status = EVSEStatusTypes.Reserved;
 
                     OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              this,
@@ -1100,7 +1100,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     !_Reservations.Any())
                     {
                         // Will send events!
-                        SetStatus(EVSEStatusTypes.Available);
+                        Status = EVSEStatusTypes.Available;
                     }
 
                     OnReservationCanceled?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
@@ -1186,7 +1186,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             !_Reservations.Any())
                         {
                             // Will send events!
-                            SetStatus(EVSEStatusTypes.Available);
+                            Status = EVSEStatusTypes.Available;
                         }
 
                         OnReservationCanceled?.Invoke(Timestamp.Now,
@@ -1273,14 +1273,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (_ChargingSession != null)
                     {
 
-                        SetStatus(EVSEStatusTypes.Charging);
+                        Status = EVSEStatusTypes.Charging;
 
                         OnNewChargingSession?.Invoke(Timestamp.Now, this, _ChargingSession);
 
                     }
 
                     else
-                        SetStatus(EVSEStatusTypes.Available);
+                        Status = EVSEStatusTypes.Available;
 
                 }
 
@@ -1480,7 +1480,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                             EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
-                            SetStatus(EVSEStatusTypes.Charging);
+                            Status = EVSEStatusTypes.Charging;
 
                             result = RemoteStartResult.Success(_ChargingSession);
                             break;
@@ -1533,7 +1533,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                 _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                                 EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
-                                SetStatus(EVSEStatusTypes.Charging);
+                                Status = EVSEStatusTypes.Charging;
 
                                 result = RemoteStartResult.Success(_ChargingSession);
 

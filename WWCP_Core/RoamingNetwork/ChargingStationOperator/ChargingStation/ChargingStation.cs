@@ -3308,10 +3308,10 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             if (OtherChargingStation.AdminStatus.Timestamp > AdminStatus.Timestamp)
-                SetAdminStatus(OtherChargingStation.AdminStatus);
+                AdminStatus = OtherChargingStation.AdminStatus;
 
             if (OtherChargingStation.Status.Timestamp > Status.Timestamp)
-                SetStatus(OtherChargingStation.Status);
+                Status      = OtherChargingStation.Status;
 
             return this;
 

@@ -924,10 +924,10 @@ namespace cloud.charging.open.protocols.WWCP
             EnergyMeter = OtherEVSE.EnergyMeter;
 
             if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
-                SetAdminStatus(OtherEVSE.AdminStatus);
+                AdminStatus = OtherEVSE.AdminStatus;
 
             if (OtherEVSE.Status.Timestamp > Status.Timestamp)
-                SetStatus(OtherEVSE.Status);
+                Status      = OtherEVSE.Status;
 
             return this;
 

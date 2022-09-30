@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
                 if (!adminStatusSchedule.CurrentValue.Equals(value.Value))
-                    SetAdminStatus(value);
+                    adminStatusSchedule.Insert(value);
             }
 
         }
@@ -113,26 +113,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging station admin status schedule.
         /// </summary>
         /// <param name="TimestampFilter">An optional admin status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional admin status value filter.</param>
+        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
         /// <param name="Skip">The number of admin status entries to skip.</param>
         /// <param name="Take">The number of admin status entries to return.</param>
-        public IEnumerable<Timestamped<TAdminStatus>> AdminStatusSchedule(Func<DateTime,     Boolean>?  TimestampFilter   = null,
-                                                                          Func<TAdminStatus, Boolean>?  StatusFilter      = null,
-                                                                          UInt64?                       Skip              = null,
-                                                                          UInt64?                       Take              = null)
+        public IEnumerable<Timestamped<TAdminStatus>> AdminStatusSchedule(Func<DateTime,     Boolean>?  TimestampFilter     = null,
+                                                                          Func<TAdminStatus, Boolean>?  AdminStatusFilter   = null,
+                                                                          UInt64?                       Skip                = null,
+                                                                          UInt64?                       Take                = null)
         {
 
-            TimestampFilter ??= timestamp => true;
-            StatusFilter    ??= status    => true;
+            TimestampFilter   ??= timestamp => true;
+            AdminStatusFilter ??= status    => true;
 
-            var filteredStatusSchedule = adminStatusSchedule.
-                                             Where(status => TimestampFilter(status.Timestamp)).
-                                             Where(status => StatusFilter   (status.Value)).
-                                             Skip (Skip ?? 0);
+            var filteredAdminStatusSchedule = adminStatusSchedule.
+                                                  Where(adminStatus => TimestampFilter  (adminStatus.Timestamp)).
+                                                  Where(adminStatus => AdminStatusFilter(adminStatus.Value)).
+                                                  Skip (Skip ?? 0);
 
             return Take.HasValue
-                       ? filteredStatusSchedule.Take(Take)
-                       : filteredStatusSchedule;
+                       ? filteredAdminStatusSchedule.Take(Take)
+                       : filteredAdminStatusSchedule;
 
         }
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
                 if (!statusSchedule.CurrentValue.Equals(value.Value))
-                    SetStatus(value);
+                    statusSchedule.Insert(value);
             }
 
         }
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// A unique status identification of this entity.
         /// </summary>
         [Mandatory]
-        public String?           ETag
+        public String? ETag
         {
 
             get
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The source of this information, e.g. the WWCP importer used.
         /// </summary>
         [Optional]
-        public String?           DataSource
+        public String? DataSource
         {
 
             get
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (Id.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(Id),  "The given Id must not be null or empty!");
+                throw new ArgumentNullException(nameof(Id),  "The given identification must not be null or empty!");
 
             #endregion
 
@@ -380,42 +380,42 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetAdminStatus(NewAdminStatus)
 
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(TAdminStatus  NewAdminStatus)
-        {
-            adminStatusSchedule.Insert(NewAdminStatus);
-        }
+        ///// <summary>
+        ///// Set the admin status.
+        ///// </summary>
+        ///// <param name="NewAdminStatus">A new timestamped admin status.</param>
+        //public void SetAdminStatus(TAdminStatus  NewAdminStatus)
+        //{
+        //    adminStatusSchedule.Insert(NewAdminStatus);
+        //}
 
         #endregion
 
         #region SetAdminStatus(NewTimestampedAdminStatus)
 
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<TAdminStatus>  NewTimestampedAdminStatus)
-        {
-            adminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
+        ///// <summary>
+        ///// Set the admin status.
+        ///// </summary>
+        ///// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
+        //public void SetAdminStatus(Timestamped<TAdminStatus>  NewTimestampedAdminStatus)
+        //{
+        //    adminStatusSchedule.Insert(NewTimestampedAdminStatus);
+        //}
 
         #endregion
 
         #region SetAdminStatus(NewAdminStatus, Timestamp)
 
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(TAdminStatus  NewAdminStatus,
-                                   DateTime      Timestamp)
-        {
-            adminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
+        ///// <summary>
+        ///// Set the admin status.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="NewAdminStatus">A new admin status.</param>
+        //public void SetAdminStatus(TAdminStatus  NewAdminStatus,
+        //                           DateTime      Timestamp)
+        //{
+        //    adminStatusSchedule.Insert(NewAdminStatus, Timestamp);
+        //}
 
         #endregion
 
@@ -437,42 +437,42 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetStatus(NewStatus)
 
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(TStatus  NewStatus)
-        {
-            statusSchedule.Insert(NewStatus);
-        }
+        ///// <summary>
+        ///// Set the current status.
+        ///// </summary>
+        ///// <param name="NewStatus">A new status.</param>
+        //public void SetStatus(TStatus  NewStatus)
+        //{
+        //    statusSchedule.Insert(NewStatus);
+        //}
 
         #endregion
 
         #region SetStatus(NewTimestampedStatus)
 
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<TStatus>  NewTimestampedStatus)
-        {
-            statusSchedule.Insert(NewTimestampedStatus);
-        }
+        ///// <summary>
+        ///// Set the current status.
+        ///// </summary>
+        ///// <param name="NewTimestampedStatus">A new timestamped status.</param>
+        //public void SetStatus(Timestamped<TStatus>  NewTimestampedStatus)
+        //{
+        //    statusSchedule.Insert(NewTimestampedStatus);
+        //}
 
         #endregion
 
         #region SetStatus(NewStatus, Timestamp)
 
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(TStatus   NewStatus,
-                              DateTime  Timestamp)
-        {
-            statusSchedule.Insert(NewStatus, Timestamp);
-        }
+        ///// <summary>
+        ///// Set the status.
+        ///// </summary>
+        ///// <param name="NewStatus">A new status.</param>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        //public void SetStatus(TStatus   NewStatus,
+        //                      DateTime  Timestamp)
+        //{
+        //    statusSchedule.Insert(NewStatus, Timestamp);
+        //}
 
         #endregion
 
