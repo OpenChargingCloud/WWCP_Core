@@ -21,305 +21,18 @@ using System.Diagnostics;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
-using org.GraphDefined.Vanaheimr.Hermod;
+
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
-
-    /// <summary>
-    /// WWCP JSON I/O charging station extentions.
-    /// </summary>
-    public static partial class ChargingPoolExtensions
-    {
-
-        #region ToJSON(this ChargingPools, Skip = null, Take = null, Embedded = false, ...)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of charging pools.
-        /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        /// <param name="Skip">The optional number of charging pools to skip.</param>
-        /// <param name="Take">The optional number of charging pools to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingPool>                    ChargingPools,
-                                    UInt64?                                           Skip                              = null,
-                                    UInt64?                                           Take                              = null,
-                                    Boolean                                           Embedded                          = false,
-                                    InfoStatus                                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                        ExpandChargingStationIds          = InfoStatus.Expanded,
-                                    InfoStatus                                        ExpandEVSEIds                     = InfoStatus.Hidden,
-                                    InfoStatus                                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                        ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJObjectSerializerDelegate<ChargingPool>     CustomChargingPoolSerializer      = null,
-                                    CustomJObjectSerializerDelegate<ChargingStation>  CustomChargingStationSerializer   = null,
-                                    CustomJObjectSerializerDelegate<EVSE>             CustomEVSESerializer              = null)
-
-
-            => ChargingPools?.SafeAny() == true
-
-                   ? new JArray(ChargingPools.
-                                    Where         (pool => pool is not null).
-                                    OrderBy       (pool => pool.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect    (pool => pool.ToJSON(Embedded,
-                                                                       ExpandRoamingNetworkId,
-                                                                       ExpandChargingStationOperatorId,
-                                                                       ExpandChargingStationIds,
-                                                                       ExpandEVSEIds,
-                                                                       ExpandBrandIds,
-                                                                       ExpandDataLicenses,
-                                                                       CustomChargingPoolSerializer,
-                                                                       CustomChargingStationSerializer,
-                                                                       CustomEVSESerializer)).
-                                    Where         (pool => pool is not null))
-
-                   : new JArray();
-
-
-        #endregion
-
-
-        #region ToJSON(this ChargingPoolAdminStatus,          Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<ChargingPoolAdminStatus>  ChargingPoolAdminStatus,
-                                     UInt64?                                    Skip  = null,
-                                     UInt64?                                    Take  = null)
-        {
-
-            #region Initial checks
-
-            if (ChargingPoolAdminStatus is null || !ChargingPoolAdminStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatus>();
-
-            foreach (var status in ChargingPoolAdminStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this ChargingPoolAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<ChargingPoolAdminStatusSchedule>  ChargingPoolAdminStatusSchedules,
-                                     UInt64?                                            Skip         = null,
-                                     UInt64?                                            Take         = null,
-                                     UInt64                                             HistorySize  = 1)
-        {
-
-            #region Initial checks
-
-            if (ChargingPoolAdminStatusSchedules is null || !ChargingPoolAdminStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatusSchedule>();
-
-            foreach (var status in ChargingPoolAdminStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
-
-        }
-
-        #endregion
-
-
-        #region ToJSON(this ChargingPoolStatus,               Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<ChargingPoolStatus>  ChargingPoolStatus,
-                                     UInt64?                               Skip  = null,
-                                     UInt64?                               Take  = null)
-        {
-
-            #region Initial checks
-
-            if (ChargingPoolStatus is null || !ChargingPoolStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatus>();
-
-            foreach (var status in ChargingPoolStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this ChargingPoolStatusSchedules,      Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<ChargingPoolStatusSchedule>  ChargingPoolStatusSchedules,
-                                     UInt64?                                       Skip         = null,
-                                     UInt64?                                       Take         = null,
-                                     UInt64                                        HistorySize  = 1)
-        {
-
-            #region Initial checks
-
-            if (ChargingPoolStatusSchedules is null || !ChargingPoolStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatusSchedule>();
-
-            foreach (var status in ChargingPoolStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
-
-        }
-
-        #endregion
-
-    }
-
-
-    public interface IChargingPool : IEquatable<ChargingPool>, IComparable<ChargingPool>, IComparable,
-                                     IEnumerable<ChargingStation>,
-                                     IStatus<ChargingPoolStatusTypes>,
-                                     IEntity<ChargingPool_Id>
-    {
-
-        /// <summary>
-        /// The roaming network of this charging pool.
-        /// </summary>
-        IRoamingNetwork         RoamingNetwork        { get; }
-
-        /// <summary>
-        /// The charging station operator of this charging pool.
-        /// </summary>
-        [Optional]
-        ChargingStationOperator Operator              { get; }
-
-        /// <summary>
-        /// The remote charging pool.
-        /// </summary>
-        [Optional]
-        IRemoteChargingPool     RemoteChargingPool    { get; }
-
-
-
-        I18NString Name         { get; }
-        I18NString Description  { get; }
-
-    }
 
     /// <summary>
     /// A pool of electric vehicle charging stations.
@@ -330,6 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingPool : AEMobilityEntity<ChargingPool_Id,
                                                  ChargingPoolAdminStatusTypes,
                                                  ChargingPoolStatusTypes>,
+                                IEquatable<ChargingPool>, IComparable<ChargingPool>,
                                 IChargingPool
     {
 
@@ -338,220 +52,42 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String JSONLDContext                   = "https://open.charging.cloud/contexts/wwcp+json/chargingPool";
+        public const            String    JSONLDContext                                    = "https://open.charging.cloud/contexts/wwcp+json/chargingPool";
 
+
+        private readonly        Decimal   EPSILON                                          = 0.01m;
 
         /// <summary>
         /// The default max size of the charging pool (aggregated charging station) status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
+        public const            UInt16    DefaultMaxChargingPoolStatusScheduleSize         = 15;
 
         /// <summary>
         /// The default max size of the charging pool admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
+        public const            UInt16    DefaultMaxChargingPoolAdminStatusScheduleSize    = 15;
+
+        /// <summary>
+        /// The maximum time span for a reservation.
+        /// </summary>
+        public static readonly  TimeSpan  DefaultMaxChargingPoolReservationDuration        = TimeSpan.FromMinutes(30);
 
         #endregion
 
         #region Properties
 
-        #region Brands
-
-        #region BrandAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, Brand, Boolean> BrandAddition;
-
         /// <summary>
-        /// Called whenever a brand will be or was added.
+        /// All brands registered for this charging pool.
         /// </summary>
-        public IVotingSender<DateTime, ChargingPool, Brand, Boolean> OnBrandAddition
-
-            => BrandAddition;
-
-        #endregion
-
-        #region Brands
-
-        private readonly EntityHashSet<ChargingPool, Brand_Id, Brand> _Brands;
-
-        /// <summary>
-        /// All brands registered within this charging station pool.
-        /// </summary>
-        public IEnumerable<Brand> Brands
-            => _Brands;
-
-        #endregion
-
-        #region BrandIds
-
-        /// <summary>
-        /// All brand identifications registered within this charging station pool.
-        /// </summary>
-        public IEnumerable<Brand_Id> BrandIds
-            => _Brands.Select(brand => brand.Id);
-
-        #endregion
-
-        #region TryGetBrand(Id, out Brand)
-
-        /// <summary>
-        /// Try to return the brand of the given brand identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the brand.</param>
-        /// <param name="Brand">The brand.</param>
-        public Boolean TryGetBrand(Brand_Id Id, out Brand Brand)
-            => _Brands.TryGet(Id, out Brand);
-
-        #endregion
-
-
-        #region BrandRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, Brand, Boolean> BrandRemoval;
-
-        /// <summary>
-        /// Called whenever a brand will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingPool, Brand, Boolean> OnBrandRemoval
-
-            => BrandRemoval;
-
-        #endregion
-
-        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station pool.
-        /// </summary>
-        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand_Id BrandId,
-                                 Action<ChargingPool, Brand> OnSuccess = null,
-                                 Action<ChargingPool, Brand_Id> OnError = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (_Brands.TryGet(BrandId, out Brand Brand) &&
-                    BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(BrandId, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, BrandId);
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station pool.
-        /// </summary>
-        /// <param name="Brand">The brand to remove.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand Brand,
-                                 Action<ChargingPool, Brand> OnSuccess = null,
-                                 Action<ChargingPool, Brand> OnError = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, _Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, Brand);
-
-                return Brand;
-
-            }
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region DataLicense
-
-        private ReactiveSet<DataLicense> _DataLicenses;
+        [Optional, SlowData]
+        public EntityHashSet<ChargingPool, Brand_Id, Brand>  Brands          { get; }
 
         /// <summary>
         /// The license of the charging pool data.
         /// </summary>
-        [Mandatory]
-        public ReactiveSet<DataLicense> DataLicenses
-        {
+        [Mandatory, SlowData]
+        public ReactiveSet<DataLicense>                      DataLicenses    { get; }
 
-            get
-            {
-
-                return _DataLicenses != null && _DataLicenses.Any()
-                           ? _DataLicenses
-                           : Operator?.DataLicenses;
-
-            }
-
-            set
-            {
-
-                if (value != _DataLicenses && value != Operator?.DataLicenses)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _DataLicenses);
-
-                    else
-                    {
-
-                        if (_DataLicenses == null)
-                            SetProperty(ref _DataLicenses, value);
-
-                        else
-                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        #endregion
 
         #region LocationLanguage
 
@@ -1379,10 +915,26 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Operator                    = Operator;
 
-            InitialAdminStatus               = InitialAdminStatus != null ? InitialAdminStatus : new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
-            InitialStatus                    = InitialStatus      != null ? InitialStatus      : new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
+            this.Brands                      = new EntityHashSet<ChargingPool, Brand_Id, Brand>(this);
+            //this.Brands.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
 
-            this._Brands                     = new EntityHashSet<ChargingPool, Brand_Id, Brand>(this);
+            //    PropertyChanged("DataLicenses",
+            //                    oldItems,
+            //                    newItems);
+
+            //};
+
+            this.DataLicenses                = new ReactiveSet<DataLicense>();
+            this.DataLicenses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("DataLicenses",
+                                oldItems,
+                                newItems);
+
+            };
+
+
 
             this.chargingStations            = new EntityHashSet<ChargingPool, ChargingStation_Id, ChargingStation>(this);
 
@@ -3544,15 +3096,14 @@ namespace cloud.charging.open.protocols.WWCP
                              ? ExpandBrandIds.Switch(
 
                                    () => new JProperty("brandIds",
-                                                       new JArray(BrandIds.
-                                                                               OrderBy(brandId => brandId).
-                                                                               Select (brandId => brandId.ToString()))),
+                                                       new JArray(Brands.Select (brand   => brand.Id).
+                                                                         OrderBy(brandId => brandId).
+                                                                         Select (brandId => brandId.ToString()))),
 
                                    () => new JProperty("brands",
-                                                       new JArray(Brands.
-                                                                               OrderBy(brand => brand).
-                                                                               ToJSON (Embedded:                  true,
-                                                                                       ExpandDataLicenses:        InfoStatus.ShowIdOnly))))
+                                                       new JArray(Brands.OrderBy(brand => brand).
+                                                                         ToJSON (Embedded:                         true,
+                                                                                 ExpandDataLicenses:               InfoStatus.ShowIdOnly))))
 
                              : null
 
@@ -3579,8 +3130,8 @@ namespace cloud.charging.open.protocols.WWCP
             Name.       Add(OtherChargingPool.Name);
             Description.Add(OtherChargingPool.Description);
 
-            _Brands.Clear();
-            _Brands.TryAdd(OtherChargingPool.Brands);
+            Brands.Clear();
+            Brands.TryAdd(OtherChargingPool.Brands);
 
             LocationLanguage     = OtherChargingPool.LocationLanguage;
             Address              = OtherChargingPool.Address;
@@ -3627,6 +3178,123 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region Operator overloading
+
+        #region Operator == (ChargingPool1, ChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingPool1">A charging pool.</param>
+        /// <param name="ChargingPool2">Another charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (ChargingPool ChargingPool1,
+                                           ChargingPool ChargingPool2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(ChargingPool1, ChargingPool2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (ChargingPool1 is null || ChargingPool2 is null)
+                return false;
+
+            return ChargingPool1.Equals(ChargingPool2);
+
+        }
+
+        #endregion
+
+        #region Operator != (ChargingPool1, ChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingPool1">A charging pool.</param>
+        /// <param name="ChargingPool2">Another charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (ChargingPool ChargingPool1,
+                                           ChargingPool ChargingPool2)
+
+            => !(ChargingPool1 == ChargingPool2);
+
+        #endregion
+
+        #region Operator <  (ChargingPool1, ChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingPool1">A charging pool.</param>
+        /// <param name="ChargingPool2">Another charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (ChargingPool ChargingPool1,
+                                          ChargingPool ChargingPool2)
+        {
+
+            if (ChargingPool1 is null)
+                throw new ArgumentNullException(nameof(ChargingPool1), "The given ChargingPool1 must not be null!");
+
+            return ChargingPool1.CompareTo(ChargingPool2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (ChargingPool1, ChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingPool1">A charging pool.</param>
+        /// <param name="ChargingPool2">Another charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (ChargingPool ChargingPool1,
+                                           ChargingPool ChargingPool2)
+
+            => !(ChargingPool1 > ChargingPool2);
+
+        #endregion
+
+        #region Operator >  (ChargingPool1, ChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingPool1">A charging pool.</param>
+        /// <param name="ChargingPool2">Another charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (ChargingPool ChargingPool1,
+                                          ChargingPool ChargingPool2)
+        {
+
+            if (ChargingPool1 is null)
+                throw new ArgumentNullException(nameof(ChargingPool1), "The given ChargingPool1 must not be null!");
+
+            return ChargingPool1.CompareTo(ChargingPool2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (ChargingPool1, ChargingPool2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingPool1">A charging pool.</param>
+        /// <param name="ChargingPool2">Another charging pool.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (ChargingPool ChargingPool1,
+                                           ChargingPool ChargingPool2)
+
+            => !(ChargingPool1 < ChargingPool2);
+
+        #endregion
+
+        #endregion
+
         #region IComparable<ChargingPool> Members
 
         #region CompareTo(Object)
@@ -3635,19 +3303,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        public override Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var ChargingPool = Object as ChargingPool;
-            if ((Object) ChargingPool == null)
-                throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
-
-            return CompareTo(ChargingPool);
-
-        }
+            => Object is ChargingPool chargingPool
+                   ? CompareTo(chargingPool)
+                   : throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
 
         #endregion
 
@@ -3656,16 +3316,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool object to compare with.</param>
-        public Int32 CompareTo(ChargingPool ChargingPool)
-        {
+        /// <param name="ChargingPool">An ChargingPool to compare with.</param>
+        public Int32 CompareTo(ChargingPool? ChargingPool)
 
-            if ((Object) ChargingPool == null)
-                throw new ArgumentNullException(nameof(Object), "The given charging pool must not be null!");
+            => ChargingPool is not null
+                   ? Id.CompareTo(ChargingPool.Id)
+                   : throw new ArgumentException("The given object is not a ChargingPool!", nameof(ChargingPool));
 
-            return Id.CompareTo(ChargingPool.Id);
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="IChargingPool">An IChargingPool to compare with.</param>
+        public Int32 CompareTo(IChargingPool? IChargingPool)
 
-        }
+            => IChargingPool is not null
+                   ? Id.CompareTo(IChargingPool.Id)
+                   : throw new ArgumentException("The given object is not a IChargingPool!", nameof(IChargingPool));
 
         #endregion
 
@@ -3680,19 +3346,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            var ChargingPool = Object as ChargingPool;
-            if ((Object) ChargingPool == null)
-                return false;
-
-            return Equals(ChargingPool);
-
-        }
+            => Object is ChargingPool chargingPool &&
+                   Equals(chargingPool);
 
         #endregion
 
@@ -3703,15 +3360,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool">A charging pool to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingPool ChargingPool)
-        {
+        public Boolean Equals(ChargingPool? ChargingPool)
 
-            if ((Object) ChargingPool == null)
-                return false;
+            => ChargingPool is not null &&
+               Id.Equals(ChargingPool.Id);
 
-            return Id.Equals(ChargingPool.Id);
+        /// <summary>
+        /// Compares two charging pools for equality.
+        /// </summary>
+        /// <param name="IChargingPool">A charging pool to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(IChargingPool? IChargingPool)
 
-        }
+            => IChargingPool is not null &&
+               Id.Equals(IChargingPool.Id);
 
         #endregion
 
@@ -3723,6 +3385,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
+
             => Id.GetHashCode();
 
         #endregion
@@ -3733,6 +3396,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Id.ToString();
 
         #endregion

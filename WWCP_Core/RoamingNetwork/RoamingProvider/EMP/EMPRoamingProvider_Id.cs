@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CSORoamingProviderId1">An charging station operator roaming provider identification.</param>
+        /// <param name="CSORoamingProviderId1">A charging station operator roaming provider identification.</param>
         /// <param name="CSORoamingProviderId2">Another charging station operator roaming provider identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EMPRoamingProvider_Id CSORoamingProviderId1, EMPRoamingProvider_Id CSORoamingProviderId2)
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two CSORoamingProviderIds for equality.
         /// </summary>
-        /// <param name="CSORoamingProviderId">An charging station operator roaming provider identification to compare with.</param>
+        /// <param name="CSORoamingProviderId">A charging station operator roaming provider identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EMPRoamingProvider_Id CSORoamingProviderId)
         {

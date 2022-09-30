@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
@@ -34,298 +35,12 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// WWCP JSON I/O charging station extentions.
-    /// </summary>
-    public static partial class ChargingStationExtensions
-    {
-
-        #region ToJSON(this ChargingStations, Skip = null, Take = null, Embedded = false, ...)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of charging stations.
-        /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// <param name="Skip">The optional number of charging stations to skip.</param>
-        /// <param name="Take">The optional number of charging stations to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingStation>                  ChargingStations,
-                                    UInt64?                                            Skip                              = null,
-                                    UInt64?                                            Take                              = null,
-                                    Boolean                                            Embedded                          = false,
-                                    InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
-                                    InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
-                                    CustomJObjectSerializerDelegate<EVSE>?             CustomEVSESerializer              = null)
-
-
-            => ChargingStations?.SafeAny() == true
-
-                   ? new JArray(ChargingStations.
-                                    Where         (station => station is not null).
-                                    OrderBy       (station => station.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect    (station => station.ToJSON(Embedded,
-                                                                             ExpandRoamingNetworkId,
-                                                                             ExpandChargingStationOperatorId,
-                                                                             ExpandChargingPoolId,
-                                                                             ExpandEVSEIds,
-                                                                             ExpandBrandIds,
-                                                                             ExpandDataLicenses,
-                                                                             CustomChargingStationSerializer,
-                                                                             CustomEVSESerializer)).
-                                    Where         (station => station is not null))
-
-                   : new JArray();
-
-        #endregion
-
-
-        #region ToJSON(this ChargingStationAdminStatus,          Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
-                                     UInt64?                                       Skip  = null,
-                                     UInt64?                                       Take  = null)
-        {
-
-            #region Initial checks
-
-            if (ChargingStationAdminStatus is null || !ChargingStationAdminStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatus>();
-
-            foreach (var status in ChargingStationAdminStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatusSchedule>  ChargingStationAdminStatusSchedules,
-                                     UInt64?                                               Skip         = null,
-                                     UInt64?                                               Take         = null,
-                                     UInt64                                                HistorySize  = 1)
-        {
-
-            #region Initial checks
-
-            if (ChargingStationAdminStatusSchedules is null || !ChargingStationAdminStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatusSchedule>();
-
-            foreach (var status in ChargingStationAdminStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
-
-        }
-
-        #endregion
-
-
-        #region ToJSON(this ChargingStationStatus,               Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<ChargingStationStatus>  ChargingStationStatus,
-                                     UInt64?                                  Skip  = null,
-                                     UInt64?                                  Take  = null)
-        {
-
-            #region Initial checks
-
-            if (ChargingStationStatus is null || !ChargingStationStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatus>();
-
-            foreach (var status in ChargingStationStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<ChargingStationStatusSchedule>  ChargingStationStatusSchedules,
-                                     UInt64?                                          Skip         = null,
-                                     UInt64?                                          Take         = null,
-                                     UInt64                                           HistorySize  = 1)
-        {
-
-            #region Initial checks
-
-            if (ChargingStationStatusSchedules is null || !ChargingStationStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatusSchedule>();
-
-            foreach (var status in ChargingStationStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
-                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
-
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
-
-        }
-
-        #endregion
-
-    }
-
-
-    public interface IChargingStation : IEquatable<ChargingStation>, IComparable<ChargingStation>, IComparable,
-                                        IEnumerable<EVSE>,
-                                        IStatus<ChargingStationStatusTypes>,
-                                        IEntity<ChargingStation_Id>
-    {
-
-
-        /// <summary>
-        /// The roaming network of this charging Station.
-        /// </summary>
-        IRoamingNetwork          RoamingNetwork           { get; }
-
-        /// <summary>
-        /// The charging station operator of this charging Station.
-        /// </summary>
-        [Optional]
-        ChargingStationOperator  Operator                 { get; }
-
-        /// <summary>
-        /// The remote charging Station.
-        /// </summary>
-        [Optional]
-        IRemoteChargingStation   RemoteChargingStation    { get; }
-
-
-
-        I18NString Name         { get; }
-        I18NString Description  { get; }
-
-    }
-
-
-    /// <summary>
     /// A charging station to charge an electric vehicle.
     /// </summary>
     public class ChargingStation : AEMobilityEntity<ChargingStation_Id,
                                                     ChargingStationAdminStatusTypes,
                                                     ChargingStationStatusTypes>,
+                                   IEquatable<ChargingStation>, IComparable<ChargingStation>,
                                    IChargingStation
     {
 
@@ -334,25 +49,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const String JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/chargingStation";
+        public const            String    JSONLDContext                                       = "https://open.charging.cloud/contexts/wwcp+json/chargingStation";
 
 
-        private readonly Double EPSILON = 0.01;
+        private readonly        Decimal   EPSILON                                             = 0.01m;
 
         /// <summary>
         /// The default max size of the charging station (aggregated EVSE) status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusScheduleSize         = 15;
+        public const            UInt16    DefaultMaxChargingStationStatusScheduleSize         = 15;
 
         /// <summary>
         /// The default max size of the charging station admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusScheduleSize    = 15;
+        public const            UInt16    DefaultMaxChargingStationAdminStatusScheduleSize    = 15;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly TimeSpan  DefaultMaxReservationDuration   = TimeSpan.FromMinutes(30);
+        public static readonly  TimeSpan  DefaultMaxChargingStationReservationDuration        = TimeSpan.FromMinutes(30);
 
         #endregion
 
@@ -365,10 +80,10 @@ namespace cloud.charging.open.protocols.WWCP
         public EntityHashSet<ChargingStation, Brand_Id, Brand>  Brands          { get; }
 
         /// <summary>
-        /// The license of the EVSE data.
+        /// The license of the charging station data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<DataLicense>                          DataLicenses    { get; }
+        public ReactiveSet<DataLicense>                         DataLicenses    { get; }
 
 
         #region Address
@@ -1073,33 +788,280 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EnergyMix
 
-        private EnergyMix? _EnergyMix;
+        #region MaxCurrent
+
+        private Decimal? maxCurrent;
 
         /// <summary>
-        /// The energy mix at the charging station.
+        /// The maximum current [Ampere].
         /// </summary>
-        [Optional]
+        [Mandatory, SlowData]
+        public Decimal? MaxCurrent
+        {
+
+            get
+            {
+                return maxCurrent;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxCurrent.HasValue)
+                        SetProperty(ref maxCurrent,
+                                    value,
+                                    EventTracking_Id.New);
+
+                    else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCurrent,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCurrent);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrentRealTime
+
+        private Timestamped<Decimal>? maxCurrentRealTime;
+
+        /// <summary>
+        /// The real-time maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxCurrentRealTime
+        {
+
+            get
+            {
+                return maxCurrentRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxCurrentRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref maxCurrentRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
+
+
+        #region MaxPower
+
+        private Decimal? maxPower;
+
+        /// <summary>
+        /// The maximum power [kWatt].
+        /// </summary>
+        [Optional, SlowData]
+        public Decimal? MaxPower
+        {
+
+            get
+            {
+                return maxPower;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxPower.HasValue)
+                        SetProperty(ref maxPower,
+                                    value,
+                                    EventTracking_Id.New);
+
+                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxPower,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxPower);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxPowerRealTime
+
+        private Timestamped<Decimal>? maxPowerRealTime;
+
+        /// <summary>
+        /// The real-time maximum power [kWatt].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxPowerRealTime
+        {
+
+            get
+            {
+                return maxPowerRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxPowerRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref maxPowerRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum power [kWatt].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses       { get; }
+
+
+        #region MaxCapacity
+
+        private Decimal? maxCapacity;
+
+        /// <summary>
+        /// The maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public Decimal? MaxCapacity
+        {
+
+            get
+            {
+                return maxCapacity;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxCapacity.HasValue)
+                        SetProperty(ref maxCapacity,
+                                    value,
+                                    EventTracking_Id.New);
+
+                    else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCapacity,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCapacity);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCapacityRealTime
+
+        private Timestamped<Decimal>? maxCapacityRealTime;
+
+        /// <summary>
+        /// The real-time maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public Timestamped<Decimal>? MaxCapacityRealTime
+        {
+
+            get
+            {
+                return maxCapacityRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxCapacityRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref maxCapacityRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses    { get; }
+
+
+        #region EnergyMix
+
+        private EnergyMix? energyMix;
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+        [Optional, SlowData]
         public EnergyMix? EnergyMix
         {
 
             get
             {
-                return _EnergyMix ?? ChargingPool?.EnergyMix;
+                return energyMix ?? ChargingPool?.EnergyMix;
             }
 
             set
             {
 
-                if (value != _EnergyMix && value != ChargingPool?.EnergyMix)
+                if (value != energyMix && value != ChargingPool?.EnergyMix)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _EnergyMix);
+                        DeleteProperty(ref energyMix);
 
                     else
-                        SetProperty(ref _EnergyMix, value);
+                        SetProperty(ref energyMix, value);
 
                 }
 
@@ -1109,149 +1071,97 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region MaxCurrent
+        #region EnergyMixRealTime
 
-        private Single? _MaxCurrent;
+        private Timestamped<EnergyMix>? energyMixRealTime;
 
         /// <summary>
-        /// The maximum current of the grid connector of the charging station [Ampere].
+        /// The current energy mix.
         /// </summary>
-        [Mandatory]
-        public Single? MaxCurrent
+        [Mandatory, FastData]
+        public Timestamped<EnergyMix>? EnergyMixRealTime
         {
 
             get
             {
-                return _MaxCurrent;
+                return energyMixRealTime;
             }
 
             set
             {
 
-                if (value != null)
-                {
-
-                    if (!_MaxCurrent.HasValue)
-                        _MaxCurrent = value;
-
-                    else if (Math.Abs(_MaxCurrent.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxCurrent, value);
-
-                }
+                if (value is not null)
+                    SetProperty(ref energyMixRealTime,
+                                value,
+                                EventTracking_Id.New);
 
                 else
-                    DeleteProperty(ref _MaxCurrent);
+                    DeleteProperty(ref energyMixRealTime);
 
             }
 
         }
 
         #endregion
-
-        #region MaxPower
-
-        private Single? _MaxPower;
 
         /// <summary>
-        /// The maximum power of the grid connector of the charging station [kWatt].
+        /// Prognoses on future values of the energy mix.
         /// </summary>
-        [Optional]
-        public Single? MaxPower
-        {
+        [Mandatory, FastData]
+        public ReactiveSet<Timestamped<EnergyMix>>      EnergyMixPrognoses      { get; }
 
-            get
-            {
-                return _MaxPower;
-            }
 
-            set
-            {
 
-                if (value != null)
-                {
-
-                    if (!_MaxPower.HasValue)
-                        _MaxPower = value;
-
-                    else if (Math.Abs(_MaxPower.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxPower, value);
-
-                }
-
-                else
-                    DeleteProperty(ref _MaxPower);
-
-            }
-
-        }
-
-        #endregion
-
-        #region MaxCapacity
-
-        private Single? _MaxCapacity;
-
-        /// <summary>
-        /// The maximum capacity of the grid connector of the charging station [kWh].
-        /// </summary>
-        [Mandatory]
-        public Single? MaxCapacity
-        {
-
-            get
-            {
-                return _MaxCapacity;
-            }
-
-            set
-            {
-
-                if (value != null)
-                {
-
-                    if (!_MaxCapacity.HasValue)
-                        _MaxCapacity = value;
-
-                    else if (Math.Abs(_MaxCapacity.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxCapacity, value);
-
-                }
-
-                else
-                    DeleteProperty(ref _MaxCapacity);
-
-            }
-
-        }
-
-        #endregion
 
 
         #region MaxReservationDuration
 
-        private TimeSpan _MaxReservationDuration;
+        private TimeSpan maxReservationDuration;
 
         /// <summary>
-        /// The maximum reservation time.
+        /// The maximum reservation time at this EVSE.
         /// </summary>
-        [Optional]
+        [Optional, SlowData]
         public TimeSpan MaxReservationDuration
         {
 
             get
             {
-                return _MaxReservationDuration;
+                return maxReservationDuration;
             }
 
             set
             {
+                SetProperty(ref maxReservationDuration,
+                            value,
+                            EventTracking_Id.New);
+            }
 
-                if (value != null)
-                    SetProperty(ref _MaxReservationDuration, value);
+        }
 
-                else
-                    DeleteProperty(ref _MaxReservationDuration);
+        #endregion
 
+        #region IsFreeOfCharge
+
+        private Boolean isFreeOfCharge;
+
+        /// <summary>
+        /// Charging at this EVSE is ALWAYS free of charge.
+        /// </summary>
+        [Optional, SlowData]
+        public Boolean IsFreeOfCharge
+        {
+
+            get
+            {
+                return isFreeOfCharge;
+            }
+
+            set
+            {
+                SetProperty(ref isFreeOfCharge,
+                            value,
+                            EventTracking_Id.New);
             }
 
         }
@@ -1531,10 +1441,10 @@ namespace cloud.charging.open.protocols.WWCP
             : base(Id,
                    Name,
                    Description,
-                   InitialAdminStatus         ?? new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational),
-                   InitialStatus              ?? new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available),
-                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
-                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
+                   InitialAdminStatus         ?? ChargingStationAdminStatusTypes.Operational,
+                   InitialStatus              ?? ChargingStationStatusTypes.     Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxChargingStationAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxChargingStationStatusScheduleSize,
                    DataSource,
                    LastChange,
                    CustomData,
@@ -1546,8 +1456,80 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingPool                = ChargingPool;
 
-            this.openingTimes                = OpeningTimes.Open24Hours;
             this.Brands                      = new EntityHashSet<ChargingStation, Brand_Id, Brand>(this);
+            //this.Brands.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+
+            //    PropertyChanged("DataLicenses",
+            //                    oldItems,
+            //                    newItems);
+
+            //};
+
+            this.DataLicenses                = new ReactiveSet<DataLicense>();
+            this.DataLicenses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("DataLicenses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxCurrentPrognoses                = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCurrentPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxPowerPrognoses                  = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxPowerPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxCapacityPrognoses               = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCapacityPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.EnergyMixPrognoses                 = new ReactiveSet<Timestamped<EnergyMix>>();
+            this.EnergyMixPrognoses.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("EnergyMixPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+
+            this.evses                             = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
+            //this.evses.OnSetChanged               += (timestamp, reactiveSet, newItems, oldItems) =>
+            //{
+
+            //    PropertyChanged("EnergyMixPrognoses",
+            //                    oldItems,
+            //                    newItems);
+
+            //};
+
+
+
+
+            this.openingTimes                = OpeningTimes.Open24Hours;
             this.evses                       = new EntityHashSet<ChargingStation, EVSE_Id,  EVSE> (this);
 
             #endregion
@@ -3132,8 +3114,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (ParkingSpaces is not null)
             {
 
-                if (_ParkingSpaces is null)
-                    _ParkingSpaces = new ReactiveSet<ParkingSpace>();
+                _ParkingSpaces ??= new ReactiveSet<ParkingSpace>();
 
                 _ParkingSpaces.Add(ParkingSpaces);
 
@@ -3349,7 +3330,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation1">A charging station.</param>
         /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        public static Boolean operator == (ChargingStation ChargingStation1,
+                                           ChargingStation ChargingStation2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -3357,7 +3339,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingStation1 == null) || ((Object) ChargingStation2 == null))
+            if (ChargingStation1 is null || ChargingStation2 is null)
                 return false;
 
             return ChargingStation1.Equals(ChargingStation2);
@@ -3374,7 +3356,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation1">A charging station.</param>
         /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        public static Boolean operator != (ChargingStation ChargingStation1,
+                                           ChargingStation ChargingStation2)
+
             => !(ChargingStation1 == ChargingStation2);
 
         #endregion
@@ -3387,10 +3371,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation1">A charging station.</param>
         /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        public static Boolean operator < (ChargingStation ChargingStation1,
+                                          ChargingStation ChargingStation2)
         {
 
-            if ((Object) ChargingStation1 == null)
+            if (ChargingStation1 is null)
                 throw new ArgumentNullException(nameof(ChargingStation1), "The given ChargingStation1 must not be null!");
 
             return ChargingStation1.CompareTo(ChargingStation2) < 0;
@@ -3407,7 +3392,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation1">A charging station.</param>
         /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        public static Boolean operator <= (ChargingStation ChargingStation1,
+                                           ChargingStation ChargingStation2)
+
             => !(ChargingStation1 > ChargingStation2);
 
         #endregion
@@ -3420,10 +3407,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation1">A charging station.</param>
         /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        public static Boolean operator > (ChargingStation ChargingStation1,
+                                          ChargingStation ChargingStation2)
         {
 
-            if ((Object) ChargingStation1 == null)
+            if (ChargingStation1 is null)
                 throw new ArgumentNullException(nameof(ChargingStation1), "The given ChargingStation1 must not be null!");
 
             return ChargingStation1.CompareTo(ChargingStation2) > 0;
@@ -3440,7 +3428,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation1">A charging station.</param>
         /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        public static Boolean operator >= (ChargingStation ChargingStation1,
+                                           ChargingStation ChargingStation2)
+
             => !(ChargingStation1 < ChargingStation2);
 
         #endregion
@@ -3455,20 +3445,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        public override Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is a charging station.
-            var ChargingStation = Object as ChargingStation;
-            if ((Object) ChargingStation == null)
-                throw new ArgumentException("The given object is not a charging station!");
-
-            return CompareTo(ChargingStation);
-
-        }
+            => Object is ChargingStation chargingStation
+                   ? CompareTo(chargingStation)
+                   : throw new ArgumentException("The given object is not a charging station!", nameof(Object));
 
         #endregion
 
@@ -3477,16 +3458,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStation">A charging station object to compare with.</param>
-        public Int32 CompareTo(ChargingStation ChargingStation)
-        {
+        /// <param name="ChargingStation">An ChargingStation to compare with.</param>
+        public Int32 CompareTo(ChargingStation? ChargingStation)
 
-            if ((Object) ChargingStation == null)
-                throw new ArgumentNullException("The given charging station must not be null!");
+            => ChargingStation is not null
+                   ? Id.CompareTo(ChargingStation.Id)
+                   : throw new ArgumentException("The given object is not a ChargingStation!", nameof(ChargingStation));
 
-            return Id.CompareTo(ChargingStation.Id);
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="IChargingStation">An IChargingStation to compare with.</param>
+        public Int32 CompareTo(IChargingStation? IChargingStation)
 
-        }
+            => IChargingStation is not null
+                   ? Id.CompareTo(IChargingStation.Id)
+                   : throw new ArgumentException("The given object is not a IChargingStation!", nameof(IChargingStation));
 
         #endregion
 
@@ -3501,20 +3488,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a charging station.
-            var ChargingStation = Object as ChargingStation;
-            if ((Object) ChargingStation == null)
-                return false;
-
-            return this.Equals(ChargingStation);
-
-        }
+            => Object is ChargingStation chargingStation &&
+                   Equals(chargingStation);
 
         #endregion
 
@@ -3525,15 +3502,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStation">A charging station to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStation ChargingStation)
-        {
+        public Boolean Equals(ChargingStation? ChargingStation)
 
-            if ((Object) ChargingStation == null)
-                return false;
+            => ChargingStation is not null &&
+               Id.Equals(ChargingStation.Id);
 
-            return Id.Equals(ChargingStation.Id);
+        /// <summary>
+        /// Compares two charging stations for equality.
+        /// </summary>
+        /// <param name="IChargingStation">A charging station to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(IChargingStation? IChargingStation)
 
-        }
+            => IChargingStation is not null &&
+               Id.Equals(IChargingStation.Id);
 
         #endregion
 
@@ -3545,6 +3527,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
+
             => Id.GetHashCode();
 
         #endregion
@@ -3555,6 +3538,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => Id.ToString();
 
         #endregion

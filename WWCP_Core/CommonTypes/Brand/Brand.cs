@@ -102,6 +102,11 @@ namespace cloud.charging.open.protocols.WWCP
         public I18NString                Name            { get; }
 
         /// <summary>
+        /// The multi-language brand description.
+        /// </summary>
+        public I18NString                Description     { get; }
+
+        /// <summary>
         /// The optional URL of the logo of this brand.
         /// </summary>
         [Optional]
@@ -142,6 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DataLicenses">The optional data licenses of this brand.</param>
         public Brand(Brand_Id                   Id,
                      I18NString                 Name,
+                     I18NString?                Description    = null,
                      URL?                       Logo           = null,
                      URL?                       Homepage       = null,
                      IEnumerable<DataLicense>?  DataLicenses   = null)
@@ -156,6 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Id            = Id;
             this.Name          = Name;
+            this.Description   = Description ?? I18NString.Empty;
             this.Logo          = Logo;
             this.Homepage      = Homepage;
             this.DataLicenses  = DataLicenses?.Distinct() ?? Array.Empty<DataLicense>();
@@ -184,15 +191,19 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("@context",      JSONLDContext)
                                : null,
 
-                           new JProperty("id",                  Id.      ToString()),
-                           new JProperty("name",                Name.    ToJSON()),
+                           new JProperty("id",                  Id.         ToString()),
+                           new JProperty("name",                Name.       ToJSON()),
+
+                           Description.IsNeitherNullNorEmpty()
+                               ? new JProperty("description",   Description.ToJSON())
+                               : null,
 
                            Logo.IsNotNullOrEmpty()
-                               ? new JProperty("logo",          Logo.    ToString())
+                               ? new JProperty("logo",          Logo.       ToString())
                                : null,
 
                            Homepage.IsNotNullOrEmpty()
-                               ? new JProperty("homepage",      Homepage.ToString())
+                               ? new JProperty("homepage",      Homepage.   ToString())
                                : null,
 
                            DataLicenses.Any()

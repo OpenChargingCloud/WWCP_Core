@@ -31,242 +31,7 @@ using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    /// <summary>
-    /// Extension methods for Electric Vehicle Supply Equipments (EVSEs).
-    /// </summary>
-    public static class EVSEExtensions
-    {
 
-        #region ToJSON(this EVSEs, Skip = null, Take = null, Embedded = false, ...)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// <param name="Skip">The optional number of EVSEs to skip.</param>
-        /// <param name="Take">The optional number of EVSEs to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public static JArray ToJSON(this IEnumerable<EVSE>                  EVSEs,
-                                    UInt64?                                 Skip                              = null,
-                                    UInt64?                                 Take                              = null,
-                                    Boolean                                 Embedded                          = false,
-                                    InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
-
-
-            => EVSEs?.Any() == true
-
-                   ? new JArray(EVSEs.Where         (evse => evse is not null).
-                                      OrderBy       (evse => evse.Id).
-                                      SkipTakeFilter(Skip, Take).
-                                      SafeSelect    (evse => evse.ToJSON(Embedded,
-                                                                         ExpandRoamingNetworkId,
-                                                                         ExpandChargingStationOperatorId,
-                                                                         ExpandChargingPoolId,
-                                                                         ExpandChargingStationId,
-                                                                         ExpandBrandIds,
-                                                                         ExpandDataLicenses,
-                                                                         CustomEVSESerializer)).
-                                      Where         (json => json is not null))
-
-                   : new JArray();
-
-        #endregion
-
-
-        #region ToJSON(this EVSEAdminStatus,          Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
-                                     UInt64?                            Skip  = null,
-                                     UInt64?                            Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEAdminStatus is null || !EVSEAdminStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatus>();
-
-            foreach (var status in EVSEAdminStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this EVSEAdminStatusSchedules, Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEAdminStatusSchedule>  EVSEAdminStatusSchedules,
-                                     UInt64?                                    Skip  = null,
-                                     UInt64?                                    Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEAdminStatusSchedules is null || !EVSEAdminStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatusSchedule>();
-
-            foreach (var status in EVSEAdminStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-                                                                                 // Filter multiple status having the exact same ISO 8601 timestamp!
-                                                                                 GroupBy(status => status.Timestamp.ToIso8601()).
-                                                                                 Select (group => new JProperty(group.First().Timestamp.ToIso8601(),
-                                                                                                                group.Select(status => status.Value.ToString()).AggregateWith(",")))
-                                                              ))));
-
-        }
-
-        #endregion
-
-
-        #region ToJSON(this EVSEStatus,               Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
-                                     UInt64?                       Skip  = null,
-                                     UInt64?                       Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEStatus is null || !EVSEStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
-
-            foreach (var status in EVSEStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this EVSEStatusSchedules,      Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEStatusSchedule>  EVSEStatusSchedules,
-                                     UInt64?                               Skip  = null,
-                                     UInt64?                               Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEStatusSchedules is null || !EVSEStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatusSchedule>();
-
-            foreach (var status in EVSEStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select (kvp    => new JProperty(kvp.Key.ToString(),
-                                                                   new JObject(
-                                                                       kvp.Value.StatusSchedule.
-                                                                                     // Filter multiple status having the exact same ISO 8601 timestamp!
-                                                                                     GroupBy(status => status.Timestamp.ToIso8601()).
-                                                                                     Select (group => new JProperty(group.First().Timestamp.ToIso8601(),
-                                                                                                                    group.Select(status => status.Value.ToString()).AggregateWith(",")))
-                                                                  ))));
-
-        }
-
-        #endregion
-
-    }
 
 
     /// <summary>
@@ -277,9 +42,8 @@ namespace cloud.charging.open.protocols.WWCP
     public class EVSE : AEMobilityEntity<EVSE_Id,
                                          EVSEAdminStatusTypes,
                                          EVSEStatusTypes>,
-                        IEquatable<EVSE>, IComparable<EVSE>, IComparable,
-                        IEnumerable<SocketOutlet>
-
+                        IEquatable<EVSE>, IComparable<EVSE>,
+                        IEVSE
     {
 
         #region Data
@@ -287,25 +51,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const           String    JSONLDContext                           = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
+        public const            String    JSONLDContext                            = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
 
 
-        private readonly       Decimal   EPSILON                                 = 0.01m;
+        private readonly        Decimal   EPSILON                                  = 0.01m;
 
         /// <summary>
         /// The default max size of the EVSE admin status schedule/history.
         /// </summary>
-        public const           UInt16    DefaultMaxEVSEAdminStatusScheduleSize   = 50;
+        public const            UInt16    DefaultMaxEVSEAdminStatusScheduleSize    = 50;
 
         /// <summary>
         /// The default max size of the EVSE status schedule/history.
         /// </summary>
-        public const           UInt16    DefaultMaxEVSEStatusScheduleSize        = 50;
+        public const            UInt16    DefaultMaxEVSEStatusScheduleSize         = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly TimeSpan  DefaultMaxReservationDuration           = TimeSpan.FromMinutes(15);
+        public static readonly  TimeSpan  DefaultMaxReservationDuration            = TimeSpan.FromMinutes(15);
 
         #endregion
 
@@ -315,25 +79,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brands registered for this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public EntityHashSet<EVSE, Brand_Id, Brand>  Brands                  { get; }
+        public EntityHashSet<EVSE, Brand_Id, Brand>     Brands                  { get; }
 
         /// <summary>
         /// The license of the EVSE data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<DataLicense>               DataLicenses            { get; }
+        public ReactiveSet<DataLicense>                 DataLicenses            { get; }
 
         /// <summary>
         /// The charging modes.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<ChargingModes>             ChargingModes           { get; }
+        public ReactiveSet<ChargingModes>               ChargingModes           { get; }
 
         /// <summary>
         /// The power socket outlets.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<SocketOutlet>              SocketOutlets           { get; }
+        public ReactiveSet<SocketOutlet>                SocketOutlets           { get; }
 
 
         #region CurrentType
@@ -486,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Prognoses on future values of the maximum current [Ampere].
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>      MaxCurrentPrognoses     { get; }
+        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
 
 
         #region MaxPower
@@ -568,7 +332,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Prognoses on future values of the maximum power [kWatt].
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>      MaxPowerPrognoses       { get; }
+        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses       { get; }
 
 
         #region MaxCapacity
@@ -650,7 +414,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Prognoses on future values of the maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public ReactiveSet<Timestamped<Decimal>>      MaxCapacityPrognoses    { get; }
+        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses    { get; }
 
 
         #region EnergyMix
@@ -726,7 +490,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Prognoses on future values of the energy mix.
         /// </summary>
         [Mandatory, FastData]
-        public ReactiveSet<Timestamped<EnergyMix>>    EnergyMixPrognoses    { get; }
+        public ReactiveSet<Timestamped<EnergyMix>>      EnergyMixPrognoses      { get; }
 
 
         #region MaxReservationDuration
@@ -822,11 +586,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// The current charging session, if available.
         /// </summary>
         [InternalUseOnly]
-        public ChargingSession?                       ChargingSession       { get; internal set; }
+        public ChargingSession? ChargingSession { get; internal set; }
 
 
 
-        public DateTime?                              LastStatusUpdate      { get; set; }
+        public DateTime? LastStatusUpdate { get; set; }
 
         #endregion
 
@@ -837,17 +601,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        public event OnEVSEDataChangedDelegate?         OnDataChanged;
+        public event OnEVSEDataChangedDelegate? OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate?  OnAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate? OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
-        public event OnEVSEStatusChangedDelegate?       OnStatusChanged;
+        public event OnEVSEStatusChangedDelegate? OnStatusChanged;
 
         #endregion
 
@@ -856,33 +620,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a charging location is being reserved.
         /// </summary>
-        public event OnReserveRequestDelegate?             OnReserveRequest;
+        public event OnReserveRequestDelegate? OnReserveRequest;
 
         /// <summary>
         /// An event fired whenever a charging location was reserved.
         /// </summary>
-        public event OnReserveResponseDelegate?            OnReserveResponse;
+        public event OnReserveResponseDelegate? OnReserveResponse;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
-        public event OnNewReservationDelegate?             OnNewReservation;
+        public event OnNewReservationDelegate? OnNewReservation;
 
 
         /// <summary>
         /// An event fired whenever a charging reservation is being canceled.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate? OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate? OnCancelReservationResponse;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnReservationCanceledDelegate?        OnReservationCanceled;
+        public event OnReservationCanceledDelegate? OnReservationCanceled;
 
         #endregion
 
@@ -891,33 +655,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        public event OnRemoteStartRequestDelegate?     OnRemoteStartRequest;
+        public event OnRemoteStartRequestDelegate? OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        public event OnRemoteStartResponseDelegate?    OnRemoteStartResponse;
+        public event OnRemoteStartResponseDelegate? OnRemoteStartResponse;
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
-        public event OnNewChargingSessionDelegate?     OnNewChargingSession;
+        public event OnNewChargingSessionDelegate? OnNewChargingSession;
 
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopRequestDelegate?      OnRemoteStopRequest;
+        public event OnRemoteStopRequestDelegate? OnRemoteStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopResponseDelegate?     OnRemoteStopResponse;
+        public event OnRemoteStopResponseDelegate? OnRemoteStopResponse;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
         /// </summary>
-        public event OnNewChargeDetailRecordDelegate?  OnNewChargeDetailRecord;
+        public event OnNewChargeDetailRecordDelegate? OnNewChargeDetailRecord;
 
         #endregion
 
@@ -928,31 +692,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE?              RemoteEVSE         { get; }
+        public IRemoteEVSE? RemoteEVSE { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        public ChargingStation?          ChargingStation    { get; }
+        public ChargingStation? ChargingStation { get; }
 
         /// <summary>
         /// The charging pool of this EVSE.
         /// </summary>
-        public ChargingPool?             ChargingPool
+        public ChargingPool? ChargingPool
             => ChargingStation?.ChargingPool;
 
         /// <summary>
         /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator?  Operator
+        public ChargingStationOperator? Operator
             => ChargingStation?.ChargingPool?.Operator;
 
         /// <summary>
         /// The roaming network of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork?          RoamingNetwork
+        public IRoamingNetwork? RoamingNetwork
             => ChargingStation?.ChargingPool?.Operator?.RoamingNetwork;
 
         #endregion
@@ -973,22 +737,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">An optional dictionary of internal data.</param>
-        public EVSE(EVSE_Id                               Id,
-                    ChargingStation                       ChargingStation,
-                    I18NString?                           Name                         = null,
-                    I18NString?                           Description                  = null,
-                    Action<EVSE>?                         Configurator                 = null,
-                    RemoteEVSECreatorDelegate?            RemoteEVSECreator            = null,
-                    Timestamped<EVSEAdminStatusTypes>?    InitialAdminStatus           = null,
-                    Timestamped<EVSEStatusTypes>?         InitialStatus                = null,
-                    UInt16?                               MaxAdminStatusScheduleSize   = null,
-                    UInt16?                               MaxStatusScheduleSize        = null,
+        public EVSE(EVSE_Id                             Id,
+                    ChargingStation                     ChargingStation,
+                    I18NString?                         Name                         = null,
+                    I18NString?                         Description                  = null,
+                    Action<EVSE>?                       Configurator                 = null,
+                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                    Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                    UInt16?                             MaxAdminStatusScheduleSize   = null,
+                    UInt16?                             MaxStatusScheduleSize        = null,
 
-                    String?                               DataSource                   = null,
-                    DateTime?                             LastChange                   = null,
+                    String?                             DataSource                   = null,
+                    DateTime?                           LastChange                   = null,
 
-                    JObject?                              CustomData                   = null,
-                    UserDefinedDictionary?                InternalData                 = null)
+                    JObject?                            CustomData                   = null,
+                    UserDefinedDictionary?              InternalData                 = null)
 
             : base(Id,
                    Name,
@@ -1006,10 +770,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.ChargingStation        = ChargingStation;
+            this.ChargingStation = ChargingStation;
 
-            this.Brands                 = new EntityHashSet<EVSE, Brand_Id, Brand>(this);
-            //this.Brands.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+            this.Brands                             = new EntityHashSet<EVSE, Brand_Id, Brand>(this);
+            //this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
 
             //    PropertyChanged("DataLicenses",
             //                    oldItems,
@@ -1017,8 +781,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             //};
 
-            this.DataLicenses           = new ReactiveSet<DataLicense>();
-            this.DataLicenses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) => {
+            this.DataLicenses                       = new ReactiveSet<DataLicense>();
+            this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
 
                 PropertyChanged("DataLicenses",
                                 oldItems,
@@ -1026,8 +791,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.ChargingModes          = new ReactiveSet<ChargingModes>();
-            this.ChargingModes.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) => {
+            this.ChargingModes                      = new ReactiveSet<ChargingModes>();
+            this.ChargingModes.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
 
                 PropertyChanged("ChargingModes",
                                 oldItems,
@@ -1035,17 +801,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.SocketOutlets          = new ReactiveSet<SocketOutlet>();
-            this.SocketOutlets.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) => {
-
-                PropertyChanged("SocketOutlets",
-                                oldItems,
-                                newItems);
-
-            };
-
-            this.MaxCurrentPrognoses    = new ReactiveSet<Timestamped<Decimal>>();
-            this.MaxCurrentPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) => {
+            this.MaxCurrentPrognoses                = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
 
                 PropertyChanged("MaxCurrentPrognoses",
                                 oldItems,
@@ -1053,8 +811,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.MaxPowerPrognoses      = new ReactiveSet<Timestamped<Decimal>>();
-            this.MaxPowerPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) => {
+            this.MaxPowerPrognoses                  = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
 
                 PropertyChanged("MaxPowerPrognoses",
                                 oldItems,
@@ -1062,8 +821,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.MaxCapacityPrognoses   = new ReactiveSet<Timestamped<Decimal>>();
-            this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) => {
+            this.MaxCapacityPrognoses               = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
 
                 PropertyChanged("MaxCapacityPrognoses",
                                 oldItems,
@@ -1071,10 +831,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.EnergyMixPrognoses     = new ReactiveSet<Timestamped<EnergyMix>>();
-            this.EnergyMixPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) => {
+            this.EnergyMixPrognoses                 = new ReactiveSet<Timestamped<EnergyMix>>();
+            this.EnergyMixPrognoses.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
 
                 PropertyChanged("EnergyMixPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.SocketOutlets                      = new ReactiveSet<SocketOutlet>();
+            this.SocketOutlets.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("SocketOutlets",
                                 oldItems,
                                 newItems);
 
@@ -1088,11 +859,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
-            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.adminStatusSchedule.OnStatusChanged    += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                            => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.statusSchedule.OnStatusChanged         += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                            => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
 
@@ -1101,20 +872,21 @@ namespace cloud.charging.open.protocols.WWCP
             if (this.RemoteEVSE is not null)
             {
 
-                this.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => { AdminStatus = NewStatus; return Task.CompletedTask; };
-                this.RemoteEVSE.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => { Status      = NewStatus; return Task.CompletedTask; };
+                this.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => { AdminStatus = NewStatus; return Task.CompletedTask; };
+                this.RemoteEVSE.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => { Status = NewStatus; return Task.CompletedTask; };
 
-                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)                            => OnNewReservation.        Invoke(Timestamp, RemoteEVSE, Reservation);
-                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason)                    => OnReservationCanceled.   Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
+                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation) => OnNewReservation.Invoke(Timestamp, RemoteEVSE, Reservation);
+                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
-                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)                        => {
+                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) =>
+                {
                     RoamingNetwork.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
                     //_ChargingSession       = ChargingSession;
                     //_ChargingSession.EVSE  = this;
                     OnNewChargingSession.Invoke(Timestamp, this, ChargingSession);
                 };
 
-                this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)                     => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
+                this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord) => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
 
             }
 
@@ -1132,7 +904,7 @@ namespace cloud.charging.open.protocols.WWCP
         public EVSE UpdateWith(EVSE OtherEVSE)
         {
 
-            Name.       Add(OtherEVSE.Name);
+            Name.Add(OtherEVSE.Name);
             Description.Add(OtherEVSE.Description);
 
             Brands.Clear();
@@ -1144,12 +916,12 @@ namespace cloud.charging.open.protocols.WWCP
             SocketOutlets.Clear();
             SocketOutlets.Add(OtherEVSE.SocketOutlets);
 
-            AverageVoltage       = OtherEVSE.AverageVoltage;
-            CurrentType          = OtherEVSE.CurrentType;
-            MaxCurrent           = OtherEVSE.MaxCurrent;
-            MaxPower             = OtherEVSE.MaxPower;
-            MaxCapacity          = OtherEVSE.MaxCapacity;
-            EnergyMeter          = OtherEVSE.EnergyMeter;
+            AverageVoltage = OtherEVSE.AverageVoltage;
+            CurrentType = OtherEVSE.CurrentType;
+            MaxCurrent = OtherEVSE.MaxCurrent;
+            MaxPower = OtherEVSE.MaxPower;
+            MaxCapacity = OtherEVSE.MaxCapacity;
+            EnergyMeter = OtherEVSE.EnergyMeter;
 
             if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
                 SetAdminStatus(OtherEVSE.AdminStatus);
@@ -1200,12 +972,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime          Timestamp,
-                                       EventTracking_Id  EventTrackingId,
-                                       Object            Sender,
-                                       String            PropertyName,
-                                       Object            OldValue,
-                                       Object            NewValue)
+        internal async Task UpdateData(DateTime Timestamp,
+                                       EventTracking_Id EventTrackingId,
+                                       Object Sender,
+                                       String PropertyName,
+                                       Object OldValue,
+                                       Object NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
@@ -1230,10 +1002,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                           Timestamp,
-                                              EventTracking_Id                   EventTrackingId,
-                                              Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                              Timestamped<EVSEAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime Timestamp,
+                                              EventTracking_Id EventTrackingId,
+                                              Timestamped<EVSEAdminStatusTypes> OldStatus,
+                                              Timestamped<EVSEAdminStatusTypes> NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
@@ -1257,10 +1029,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                      Timestamp,
-                                         EventTracking_Id              EventTrackingId,
-                                         Timestamped<EVSEStatusTypes>  OldStatus,
-                                         Timestamped<EVSEStatusTypes>  NewStatus)
+        internal async Task UpdateStatus(DateTime Timestamp,
+                                         EventTracking_Id EventTrackingId,
+                                         Timestamped<EVSEStatusTypes> OldStatus,
+                                         Timestamped<EVSEStatusTypes> NewStatus)
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
@@ -1286,9 +1058,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<ChargingReservation> Reservations
 
-            => RoamingNetwork?.ReservationsStore.Where (reservationCollection => reservationCollection.EVSEId == Id).
+            => RoamingNetwork?.ReservationsStore.Where(reservationCollection => reservationCollection.EVSEId == Id).
                                                  Select(reservationCollection => reservationCollection.LastOrDefault()).
-                                                 Where (result                => result is not null).
+                                                 Where(result => result is not null).
                                                  Cast<ChargingReservation>()
 
                    ?? Array.Empty<ChargingReservation>();
@@ -1340,20 +1112,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<ReservationResult>
 
-            Reserve(DateTime?                          StartTime              = null,
-                    TimeSpan?                          Duration               = null,
-                    ChargingReservation_Id?            ReservationId          = null,
-                    eMobilityProvider_Id?              ProviderId             = null,
-                    RemoteAuthentication?              RemoteAuthentication   = null,
-                    ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>?           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
-                    IEnumerable<UInt32>?               PINs                   = null,
+            Reserve(DateTime? StartTime = null,
+                    TimeSpan? Duration = null,
+                    ChargingReservation_Id? ReservationId = null,
+                    eMobilityProvider_Id? ProviderId = null,
+                    RemoteAuthentication? RemoteAuthentication = null,
+                    ChargingProduct? ChargingProduct = null,
+                    IEnumerable<Auth_Token>? AuthTokens = null,
+                    IEnumerable<eMobilityAccount_Id>? eMAIds = null,
+                    IEnumerable<UInt32>? PINs = null,
 
-                    DateTime?                          Timestamp              = null,
-                    CancellationToken?                 CancellationToken      = null,
-                    EventTracking_Id?                  EventTrackingId        = null,
-                    TimeSpan?                          RequestTimeout         = null)
+                    DateTime? Timestamp = null,
+                    CancellationToken? CancellationToken = null,
+                    EventTracking_Id? EventTrackingId = null,
+                    TimeSpan? RequestTimeout = null)
 
 
                 => Reserve(ChargingLocation.FromEVSEId(Id),
@@ -1398,22 +1170,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingLocation                   ChargingLocation,
-                    ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                          ReservationStartTime   = null,
-                    TimeSpan?                          Duration               = null,
-                    ChargingReservation_Id?            ReservationId          = null,
-                    eMobilityProvider_Id?              ProviderId             = null,
-                    RemoteAuthentication?              RemoteAuthentication   = null,
-                    ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>?           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
-                    IEnumerable<UInt32>?               PINs                   = null,
+            Reserve(ChargingLocation ChargingLocation,
+                    ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE,
+                    DateTime? ReservationStartTime = null,
+                    TimeSpan? Duration = null,
+                    ChargingReservation_Id? ReservationId = null,
+                    eMobilityProvider_Id? ProviderId = null,
+                    RemoteAuthentication? RemoteAuthentication = null,
+                    ChargingProduct? ChargingProduct = null,
+                    IEnumerable<Auth_Token>? AuthTokens = null,
+                    IEnumerable<eMobilityAccount_Id>? eMAIds = null,
+                    IEnumerable<UInt32>? PINs = null,
 
-                    DateTime?                          Timestamp              = null,
-                    CancellationToken?                 CancellationToken      = null,
-                    EventTracking_Id?                  EventTrackingId        = null,
-                    TimeSpan?                          RequestTimeout         = null)
+                    DateTime? Timestamp = null,
+                    CancellationToken? CancellationToken = null,
+                    EventTracking_Id? EventTrackingId = null,
+                    TimeSpan? RequestTimeout = null)
 
         {
 
@@ -1586,13 +1358,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult>
 
-            CancelReservation(ChargingReservation_Id                 ReservationId,
-                              ChargingReservationCancellationReason  Reason,
+            CancelReservation(ChargingReservation_Id ReservationId,
+                              ChargingReservationCancellationReason Reason,
 
-                              DateTime?                              Timestamp          = null,
-                              CancellationToken?                     CancellationToken  = null,
-                              EventTracking_Id?                      EventTrackingId    = null,
-                              TimeSpan?                              RequestTimeout     = null)
+                              DateTime? Timestamp = null,
+                              CancellationToken? CancellationToken = null,
+                              EventTracking_Id? EventTrackingId = null,
+                              TimeSpan? RequestTimeout = null)
 
         {
 
@@ -1607,8 +1379,8 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
 
-            ChargingReservation?      canceledReservation   = null;
-            CancelReservationResult?  result                = null;
+            ChargingReservation? canceledReservation = null;
+            CancelReservationResult? result = null;
 
             #endregion
 
@@ -1775,16 +1547,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<RemoteStartResult>
 
-            RemoteStart(ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
+            RemoteStart(ChargingProduct? ChargingProduct = null,
+                        ChargingReservation_Id? ReservationId = null,
+                        ChargingSession_Id? SessionId = null,
+                        eMobilityProvider_Id? ProviderId = null,
+                        RemoteAuthentication? RemoteAuthentication = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+                        DateTime? Timestamp = null,
+                        CancellationToken? CancellationToken = null,
+                        EventTracking_Id? EventTrackingId = null,
+                        TimeSpan? RequestTimeout = null)
 
 
                 => RemoteStart(ChargingLocation.FromEVSEId(Id),
@@ -1819,17 +1591,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartResult>
 
-            RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
+            RemoteStart(ChargingLocation ChargingLocation,
+                        ChargingProduct? ChargingProduct = null,
+                        ChargingReservation_Id? ReservationId = null,
+                        ChargingSession_Id? SessionId = null,
+                        eMobilityProvider_Id? ProviderId = null,
+                        RemoteAuthentication? RemoteAuthentication = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+                        DateTime? Timestamp = null,
+                        CancellationToken? CancellationToken = null,
+                        EventTracking_Id? EventTrackingId = null,
+                        TimeSpan? RequestTimeout = null)
         {
 
             #region Initial checks
@@ -2009,8 +1781,8 @@ namespace cloud.charging.open.protocols.WWCP
                        (result?.Result == RemoteStartResultTypes.Success ||
                         result?.Result == RemoteStartResultTypes.AsyncOperation))
                     {
-                        ChargingSession      = result.Session;
-                        result.Session.EVSE  = this;
+                        ChargingSession = result.Session;
+                        result.Session.EVSE = this;
                     }
 
                 }
@@ -2090,15 +1862,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       eMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication?  RemoteAuthentication   = null,
+            RemoteStop(ChargingSession_Id SessionId,
+                       ReservationHandling? ReservationHandling = null,
+                       eMobilityProvider_Id? ProviderId = null,
+                       RemoteAuthentication? RemoteAuthentication = null,
 
-                       DateTime?              Timestamp              = null,
-                       CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id?      EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null)
+                       DateTime? Timestamp = null,
+                       CancellationToken? CancellationToken = null,
+                       EventTracking_Id? EventTrackingId = null,
+                       TimeSpan? RequestTimeout = null)
         {
 
             #region Initial checks
@@ -2346,9 +2118,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
-        internal void SendNewChargingSession(DateTime         Timestamp,
-                                             Object           Sender,
-                                             ChargingSession  Session)
+        internal void SendNewChargingSession(DateTime Timestamp,
+                                             Object Sender,
+                                             ChargingSession Session)
         {
 
             if (Session is not null)
@@ -2356,8 +2128,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (Session.EVSE is null)
                 {
-                    Session.EVSE    = this;
-                    Session.EVSEId  = Id;
+                    Session.EVSE = this;
+                    Session.EVSEId = Id;
                 }
 
                 OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
@@ -2370,9 +2142,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
-        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
-                                                Object              Sender,
-                                                ChargeDetailRecord  ChargeDetailRecord)
+        internal void SendNewChargeDetailRecord(DateTime Timestamp,
+                                                Object Sender,
+                                                ChargeDetailRecord ChargeDetailRecord)
         {
 
             if (ChargeDetailRecord is not null)
@@ -2391,14 +2163,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of the given EVSE.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public JObject ToJSON(Boolean                                 Embedded                          = false,
-                              InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean Embedded = false,
+                              InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandChargingPoolId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandChargingStationId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
 
         {
 
@@ -2407,7 +2179,7 @@ namespace cloud.charging.open.protocols.WWCP
                            new JProperty("@id", Id.ToString()),
 
                            !Embedded
-                               ? new JProperty("@context",  JSONLDContext)
+                               ? new JProperty("@context", JSONLDContext)
                                : null,
 
                            Description.IsNeitherNullNorEmpty()
@@ -2416,8 +2188,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                            Brands.SafeAny()
                                  ? ExpandBrandIds.Switch(
-                                       () => new JProperty("brandId",      Brands.Select(brand => brand.Id.ToString())),
-                                       () => new JProperty("brand",        Brands.ToJSON()))
+                                       () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
+                                       () => new JProperty("brand", Brands.ToJSON()))
                                  : null,
 
                            (!Embedded || DataSource != ChargingStation.DataSource)
@@ -2426,84 +2198,84 @@ namespace cloud.charging.open.protocols.WWCP
 
                            (!Embedded || DataLicenses != ChargingStation.DataLicenses)
                                ? ExpandDataLicenses.Switch(
-                                     () => new JProperty("dataLicenseIds",  new JArray(DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                                     () => new JProperty("dataLicenses",    DataLicenses.ToJSON()))
+                                     () => new JProperty("dataLicenseIds", new JArray(DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                     () => new JProperty("dataLicenses", DataLicenses.ToJSON()))
                                : null,
 
                            ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork != null
                                ? ExpandRoamingNetworkId.Switch(
-                                     () => new JProperty("roamingNetworkId",                  RoamingNetwork.Id. ToString()),
-                                     () => new JProperty("roamingNetwork",                    RoamingNetwork.    ToJSON(Embedded:                          true,
-                                                                                                                        ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
-                                                                                                                        ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                        ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                        ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                        ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                        ExpandDataLicenses:                InfoStatus.Hidden)))
+                                     () => new JProperty("roamingNetworkId", RoamingNetwork.Id.ToString()),
+                                     () => new JProperty("roamingNetwork", RoamingNetwork.ToJSON(Embedded: true,
+                                                                                                                        ExpandChargingStationOperatorIds: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingPoolIds: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationIds: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
                                : null,
 
                            ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator != null
                                ? ExpandChargingStationOperatorId.Switch(
-                                     () => new JProperty("chargingStationOperatorperatorId",  Operator.Id.       ToString()),
-                                     () => new JProperty("chargingStationOperatorperator",    Operator.          ToJSON(Embedded:                          true,
-                                                                                                                        ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                        ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                        ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                        ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                        ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                        ExpandDataLicenses:                InfoStatus.Hidden)))
+                                     () => new JProperty("chargingStationOperatorperatorId", Operator.Id.ToString()),
+                                     () => new JProperty("chargingStationOperatorperator", Operator.ToJSON(Embedded: true,
+                                                                                                                        ExpandRoamingNetworkId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingPoolIds: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationIds: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
                                : null,
 
                            ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool != null
                                ? ExpandChargingPoolId.Switch(
-                                     () => new JProperty("chargingPoolId",                    ChargingPool.Id.   ToString()),
-                                     () => new JProperty("chargingPool",                      ChargingPool.      ToJSON(Embedded:                          true,
-                                                                                                                        ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                        ExpandChargingStationOperatorId:   InfoStatus.Hidden,
-                                                                                                                        ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                        ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                        ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                        ExpandDataLicenses:                InfoStatus.Hidden)))
+                                     () => new JProperty("chargingPoolId", ChargingPool.Id.ToString()),
+                                     () => new JProperty("chargingPool", ChargingPool.ToJSON(Embedded: true,
+                                                                                                                        ExpandRoamingNetworkId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationOperatorId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationIds: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
                                : null,
 
                            ExpandChargingStationId != InfoStatus.Hidden && ChargingStation != null
                                ? ExpandChargingStationId.Switch(
-                                     () => new JProperty("chargingStationId",                 ChargingStation.Id.ToString()),
-                                     () => new JProperty("chargingStation",                   ChargingStation.   ToJSON(Embedded:                          true,
-                                                                                                                        ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                        ExpandChargingStationOperatorId:   InfoStatus.Hidden,
-                                                                                                                        ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                        ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                        ExpandDataLicenses:                InfoStatus.Hidden)))
+                                     () => new JProperty("chargingStationId", ChargingStation.Id.ToString()),
+                                     () => new JProperty("chargingStation", ChargingStation.ToJSON(Embedded: true,
+                                                                                                                        ExpandRoamingNetworkId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationOperatorId: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
                                : null,
 
-                           !Embedded ? new JProperty("geoLocation",         ChargingStation.GeoLocation.Value.  ToJSON()) : null,
-                           !Embedded ? new JProperty("address",             ChargingStation.Address.            ToJSON()) : null,
+                           !Embedded ? new JProperty("geoLocation", ChargingStation.GeoLocation.Value.ToJSON()) : null,
+                           !Embedded ? new JProperty("address", ChargingStation.Address.ToJSON()) : null,
                            !Embedded ? new JProperty("authenticationModes", ChargingStation.AuthenticationModes.ToJSON()) : null,
 
                            ChargingModes.SafeAny()
-                               ? new JProperty("chargingModes",  new JArray(ChargingModes.SafeSelect(mode => mode.ToText())))
+                               ? new JProperty("chargingModes", new JArray(ChargingModes.SafeSelect(mode => mode.ToText())))
                                : null,
 
-                           CurrentType.HasValue  && CurrentType.Value  != CurrentTypes.Unspecified
-                               ? new JProperty("currentTypes",   new JArray(CurrentType. Value.ToText()))
+                           CurrentType.HasValue && CurrentType.Value != CurrentTypes.Unspecified
+                               ? new JProperty("currentTypes", new JArray(CurrentType.Value.ToText()))
                                : null,
 
-                           AverageVoltage.HasValue && AverageVoltage > 0     ? new JProperty("averageVoltage",  Math.Round(AverageVoltage.Value, 2)) : null,
-                           MaxCurrent.    HasValue && MaxCurrent     > 0     ? new JProperty("maxCurrent",      Math.Round(MaxCurrent.    Value, 2)) : null,
-                           MaxPower.      HasValue && MaxPower.     HasValue ? new JProperty("maxPower",        Math.Round(MaxPower.      Value, 2)) : null,
-                           MaxCapacity.   HasValue && MaxCapacity.  HasValue ? new JProperty("maxCapacity",     Math.Round(MaxCapacity.   Value, 2)) : null,
+                           AverageVoltage.HasValue && AverageVoltage > 0 ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value, 2)) : null,
+                           MaxCurrent.HasValue && MaxCurrent > 0 ? new JProperty("maxCurrent", Math.Round(MaxCurrent.Value, 2)) : null,
+                           MaxPower.HasValue && MaxPower.HasValue ? new JProperty("maxPower", Math.Round(MaxPower.Value, 2)) : null,
+                           MaxCapacity.HasValue && MaxCapacity.HasValue ? new JProperty("maxCapacity", Math.Round(MaxCapacity.Value, 2)) : null,
 
                            SocketOutlets.Count > 0
-                               ? new JProperty("socketOutlets",  new JArray(SocketOutlets.ToJSON()))
+                               ? new JProperty("socketOutlets", new JArray(SocketOutlets.ToJSON()))
                                : null,
 
                            EnergyMeter is not null
-                               ? new JProperty("energyMeter",  EnergyMeter.ToJSON())
+                               ? new JProperty("energyMeter", EnergyMeter.ToJSON())
                                : null,
 
                            !Embedded && ChargingStation?.OpeningTimes is not null
-                               ? new JProperty("openingTimes",   ChargingStation.OpeningTimes.ToJSON())
+                               ? new JProperty("openingTimes", ChargingStation.OpeningTimes.ToJSON())
                                : null
 
                      );
@@ -2543,7 +2315,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator ==(EVSE EVSE1, EVSE EVSE2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -2568,7 +2340,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator !=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 == EVSE2);
 
         #endregion
@@ -2581,7 +2353,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator <(EVSE EVSE1, EVSE EVSE2)
         {
 
             if (EVSE1 is null)
@@ -2601,7 +2373,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator <=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 > EVSE2);
 
         #endregion
@@ -2614,7 +2386,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator >(EVSE EVSE1, EVSE EVSE2)
         {
 
             if (EVSE1 is null)
@@ -2634,7 +2406,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator >=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 < EVSE2);
 
         #endregion
@@ -2667,7 +2439,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             => EVSE is not null
                    ? Id.CompareTo(EVSE.Id)
-                   : throw new ArgumentException("The given object is not an EVSE!", nameof(Object));
+                   : throw new ArgumentException("The given object is not an EVSE!", nameof(EVSE));
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="IEVSE">An IEVSE to compare with.</param>
+        public Int32 CompareTo(IEVSE? IEVSE)
+
+            => IEVSE is not null
+                   ? Id.CompareTo(IEVSE.Id)
+                   : throw new ArgumentException("The given object is not an IEVSE!", nameof(IEVSE));
 
         #endregion
 
@@ -2699,7 +2481,17 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(EVSE? EVSE)
 
             => EVSE is not null &&
-                   Id.Equals(EVSE.Id);
+               Id.Equals(EVSE.Id);
+
+        /// <summary>
+        /// Compares two EVSEs for equality.
+        /// </summary>
+        /// <param name="IEVSE">An EVSE to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(IEVSE? IEVSE)
+
+            => IEVSE is not null &&
+               Id.Equals(IEVSE.Id);
 
         #endregion
 

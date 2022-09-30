@@ -435,7 +435,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two charging reservation identifications for equality.
         /// </summary>
-        /// <param name="ReservationId">An charging reservation identification to compare with.</param>
+        /// <param name="ReservationId">A charging reservation identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingReservation_Id ReservationId)
         {

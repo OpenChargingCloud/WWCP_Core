@@ -58,13 +58,13 @@ namespace cloud.charging.open.protocols.WWCP
     #region ChargingStationOperatorException
 
     /// <summary>
-    /// An charging station operator exception.
+    /// A charging station operator exception.
     /// </summary>
     public class ChargingStationOperatorException : RoamingNetworkException
     {
 
         /// <summary>
-        /// An charging station operator exception within the given roaming network.
+        /// A charging station operator exception within the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
         { }
 
         /// <summary>
-        /// An charging station operator exception within the given roaming network.
+        /// A charging station operator exception within the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>

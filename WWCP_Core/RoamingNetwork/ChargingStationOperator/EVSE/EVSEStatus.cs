@@ -27,6 +27,88 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for the EVSE status.
+    /// </summary>
+    public static class EVSEStatusExtensions
+    {
+
+        #region ToJSON(this EVSEStatus, Skip = null, Take = null)
+
+        public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
+                                     UInt64?                       Skip  = null,
+                                     UInt64?                       Take  = null)
+        {
+
+            #region Initial checks
+
+            if (EVSEStatus is null || !EVSEStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
+
+            foreach (var status in EVSEStatus)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region Contains(this EVSEStatus, Id, Status)
+
+        /// <summary>
+        /// Check if the given enumeration of EVSEs and their current status
+        /// contains the given pair of EVSE identification and status.
+        /// </summary>
+        /// <param name="EVSEStatus">An enumeration of EVSEs and their current status.</param>
+        /// <param name="Id">A EVSE identification.</param>
+        /// <param name="Status">A EVSE status.</param>
+        public static Boolean Contains(this IEnumerable<EVSEStatus>  EVSEStatus,
+                                       EVSE_Id                       Id,
+                                       EVSEStatusTypes               Status)
+        {
+
+            foreach (var status in EVSEStatus)
+            {
+                if (status.Id     == Id &&
+                    status.Status == Status)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// The current timestamped status of an EVSE.
     /// </summary>
     public class EVSEStatus : AInternalData,

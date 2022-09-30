@@ -27,6 +27,88 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for the EVSE admin status.
+    /// </summary>
+    public static class EVSEAdminStatusExtensions
+    {
+
+        #region ToJSON(this EVSEAdminStatus, Skip = null, Take = null)
+
+        public static JObject ToJSON(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
+                                     UInt64?                            Skip  = null,
+                                     UInt64?                            Take  = null)
+        {
+
+            #region Initial checks
+
+            if (EVSEAdminStatus is null || !EVSEAdminStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatus>();
+
+            foreach (var status in EVSEAdminStatus)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region Contains(this EVSEAdminStatus, Id, Status)
+
+        /// <summary>
+        /// Check if the given enumeration of EVSEs and their current admin status
+        /// contains the given pair of EVSE identification and admin status.
+        /// </summary>
+        /// <param name="EVSEAdminStatus">An enumeration of EVSEs and their current admin status.</param>
+        /// <param name="Id">A EVSE identification.</param>
+        /// <param name="Status">A EVSE admin status.</param>
+        public static Boolean Contains(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
+                                       EVSE_Id                            Id,
+                                       EVSEAdminStatusTypes               Status)
+        {
+
+            foreach (var adminStatus in EVSEAdminStatus)
+            {
+                if (adminStatus.Id     == Id &&
+                    adminStatus.Status == Status)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// The current admin status of an EVSE.
     /// </summary>
     public class EVSEAdminStatus : AInternalData,

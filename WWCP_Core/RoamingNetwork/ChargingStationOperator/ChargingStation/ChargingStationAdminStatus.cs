@@ -27,6 +27,88 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for the charging station admin status.
+    /// </summary>
+    public static class ChargingStationAdminStatusExtensions
+    {
+
+        #region ToJSON(this ChargingStationAdminStatus, Skip = null, Take = null)
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
+                                     UInt64?                                       Skip  = null,
+                                     UInt64?                                       Take  = null)
+        {
+
+            #region Initial checks
+
+            if (ChargingStationAdminStatus is null || !ChargingStationAdminStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatus>();
+
+            foreach (var status in ChargingStationAdminStatus)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region Contains(this ChargingStationAdminStatus, Id, Status)
+
+        /// <summary>
+        /// Check if the given enumeration of charging stations and their current admin status
+        /// contains the given pair of charging station identification and admin status.
+        /// </summary>
+        /// <param name="ChargingStationAdminStatus">An enumeration of charging stations and their current admin status.</param>
+        /// <param name="Id">A charging station identification.</param>
+        /// <param name="Status">A charging station admin status.</param>
+        public static Boolean Contains(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
+                                       ChargingStation_Id                            Id,
+                                       ChargingStationAdminStatusTypes               Status)
+        {
+
+            foreach (var adminStatus in ChargingStationAdminStatus)
+            {
+                if (adminStatus.Id     == Id &&
+                    adminStatus.Status == Status)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// The current admin status of a charging station.
     /// </summary>
     public class ChargingStationAdminStatus : AInternalData,

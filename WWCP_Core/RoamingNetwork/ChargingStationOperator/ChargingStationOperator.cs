@@ -829,11 +829,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
         public Brand? CreateBrand(Brand_Id                                    Id,
                                   I18NString                                  Name,
-                                  URL?                                        Logo        = null,
-                                  URL?                                        Homepage    = null,
+                                  I18NString?                                 Description   = null,
+                                  URL?                                        Logo          = null,
+                                  URL?                                        Homepage      = null,
 
-                                  Action<ChargingStationOperator, Brand>?     OnSuccess   = null,
-                                  Action<ChargingStationOperator, Brand_Id>?  OnError     = null)
+                                  Action<ChargingStationOperator, Brand>?     OnSuccess     = null,
+                                  Action<ChargingStationOperator, Brand_Id>?  OnError       = null)
 
         {
 
@@ -860,6 +861,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var brand = new Brand(Id,
                                       Name,
+                                      Description,
                                       Logo,
                                       Homepage);
 
@@ -903,11 +905,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
         public Brand? GetOrCreateBrand(Brand_Id                                    Id,
                                        I18NString                                  Name,
-                                       URL?                                        Logo        = null,
-                                       URL?                                        Homepage    = null,
+                                       I18NString?                                 Description   = null,
+                                       URL?                                        Logo          = null,
+                                       URL?                                        Homepage      = null,
 
-                                       Action<ChargingStationOperator, Brand>?     OnSuccess   = null,
-                                       Action<ChargingStationOperator, Brand_Id>?  OnError     = null)
+                                       Action<ChargingStationOperator, Brand>?     OnSuccess     = null,
+                                       Action<ChargingStationOperator, Brand_Id>?  OnError       = null)
 
         {
 
@@ -921,11 +924,12 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (brands.TryGet(Id, out Brand brand))
+                if (brands.TryGet(Id, out Brand? brand))
                     return brand;
 
                 return CreateBrand(Id,
                                    Name,
+                                   Description,
                                    Logo,
                                    Homepage,
 

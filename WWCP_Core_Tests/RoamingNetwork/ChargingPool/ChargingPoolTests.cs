@@ -20,6 +20,8 @@
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -120,6 +122,161 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     Assert.IsTrue   (DE_GEF.        ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
                     Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingPool_Init_AllProperties_Test()
+
+        /// <summary>
+        /// A test for creating a charging pool within a charging station having all properties.
+        /// </summary>
+        [Test]
+        public void ChargingPool_Init_AllProperties_Test()
+        {
+
+            Assert.IsNotNull(roamingNetwork);
+            Assert.IsNotNull(DE_GEF);
+
+            if (roamingNetwork is not null &&
+                DE_GEF         is not null)
+            {
+
+                var success = false;
+
+                var DE_GEF_P1234 = DE_GEF.CreateChargingPool(
+                                              Id:                  ChargingPool_Id.Parse("DE*GEF*P1234"),
+                                              Name:                I18NString.Create(Languages.de, "DE*GEF Pool 1234"),
+                                              Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Pools GmbH"),
+                                              InitialAdminStatus:  ChargingPoolAdminStatusTypes.OutOfService,
+                                              InitialStatus:       ChargingPoolStatusTypes.Offline,
+                                              OnSuccess:           chargingPool => success = true,
+                                              Configurator:        chargingPool => {
+
+                                                                       chargingPool.Brands.TryAdd(new Brand(
+                                                                                                      Id:            Brand_Id.Parse("openChargingCloudChargingPool"),
+                                                                                                      Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Pool"),
+                                                                                                      Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                                                                      Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                                                                      DataLicenses:  new DataLicense[] {
+                                                                                                                         DataLicense.CreativeCommons_BY_SA_4
+                                                                                                                     }
+                                                                                                  ));
+
+                                                                   }
+                                          );
+
+                Assert.IsNotNull(DE_GEF_P1234);
+                Assert.IsTrue   (success);
+
+                if (DE_GEF_P1234 is not null)
+                {
+
+                    Assert.AreEqual ("DE*GEF*P1234",                                 DE_GEF_P1234.Id.         ToString());
+                    Assert.AreEqual ("DE*GEF Pool 1234",                             DE_GEF_P1234.Name.       FirstText());
+                    Assert.AreEqual ("powered by GraphDefined Charging Pools GmbH",  DE_GEF_P1234.Description.FirstText());
+
+                    Assert.AreEqual (ChargingPoolAdminStatusTypes.Operational,       DE_GEF_P1234.AdminStatus);
+                    Assert.AreEqual (ChargingPoolStatusTypes.Available,              DE_GEF_P1234.Status);
+
+                    Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+
+                    Assert.IsTrue   (DE_GEF.        ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
+
+
+                    Assert.AreEqual(1, DE_GEF_P1234.Brands.Count());
+
+
+
+                    DE_GEF_P1234.Brands.TryAdd(new Brand(
+                                                   Id:            Brand_Id.Parse("openChargingCloud3223"),
+                                                   Name:          I18NString.Create(Languages.de, "Open Charging Cloud 3223"),
+                                                   Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                   Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                   DataLicenses:  new DataLicense[] {
+                                                                      DataLicense.CreativeCommons_BY_SA_4
+                                                                  }
+                                               ));
+
+
+                    Assert.AreEqual(2, DE_GEF_P1234.Brands.Count());
+
+
+                    #region Setup DataChange listeners
+
+                    var chargingPoolDataChanges = new List<String>();
+
+                    DE_GEF_P1234.OnDataChanged += async (Timestamp,
+                                                         EventTrackingId,
+                                                         ChargingPool,
+                                                         PropertyName,
+                                                         OldValue,
+                                                         NewValue) => {
+
+                        chargingPoolDataChanges.Add(String.Concat(ChargingPool.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+
+                    var chargingStationOperatorChargingPoolDataChanges = new List<String>();
+
+                    DE_GEF.OnChargingStationDataChanged += async (Timestamp,
+                                                                  EventTrackingId,
+                                                                  ChargingPool,
+                                                                  PropertyName,
+                                                                  OldValue,
+                                                                  NewValue) => {
+
+                        chargingStationOperatorChargingPoolDataChanges.Add(String.Concat(ChargingPool.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+
+                    var roamingNetworkChargingPoolDataChanges = new List<String>();
+
+                    roamingNetwork.OnChargingStationDataChanged += async (Timestamp,
+                                                                          EventTrackingId,
+                                                                          ChargingPool,
+                                                                          PropertyName,
+                                                                          OldValue,
+                                                                          NewValue) => {
+
+                        roamingNetworkChargingPoolDataChanges.Add(String.Concat(ChargingPool.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                    };
+
+                    #endregion
+
+                    DE_GEF_P1234.Name.       Add(Languages.it, "namelalala");
+                    DE_GEF_P1234.Description.Add(Languages.it, "desclalala");
+
+                    Assert.AreEqual(2, chargingPoolDataChanges.                       Count);
+                    Assert.AreEqual(2, chargingStationOperatorChargingPoolDataChanges.Count);
+                    Assert.AreEqual(2, roamingNetworkChargingPoolDataChanges.         Count);
+
+
+                    //DE_GEF_P1234.MaxPower           = 123.45m;
+                    //DE_GEF_P1234.MaxPower           = 234.56m;
+
+                    //DE_GEF_P1234.MaxPowerRealTime   = 345.67m;
+                    //DE_GEF_P1234.MaxPowerRealTime   = 456.78m;
+
+                    //DE_GEF_P1234.MaxPowerPrognoses  = new Timestamped<Decimal>[] {
+                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
+                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
+                    //                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                    //                                  };
+
+                    //Assert.AreEqual(7, chargingPoolDataChanges.                       Count);
+                    //Assert.AreEqual(7, chargingStationOperatorChargingPoolDataChanges.Count);
+                    //Assert.AreEqual(7, roamingNetworkChargingPoolDataChanges.         Count);
 
                 }
 
