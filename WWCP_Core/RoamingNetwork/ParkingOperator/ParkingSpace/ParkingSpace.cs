@@ -28,13 +28,15 @@ using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
     /// A parking space.
     /// </summary>
-    public class ParkingSpace : AEMobilityEntity<ParkingSpace_Id>,
+    public class ParkingSpace : AEMobilityEntity<ParkingSpace_Id,
+                                                 ParkingSpaceAdminStatusTypes,
+                                                 ParkingSpaceStatusTypes>,
                                 IEquatable<ParkingSpace>, IComparable<ParkingSpace>, IComparable
     {
 

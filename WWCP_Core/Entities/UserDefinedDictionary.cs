@@ -1,253 +1,250 @@
-﻿/*
- * Copyright (c) 2014-2022 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
- *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.gnu.org/licenses/agpl.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿///*
+// * Copyright (c) 2014-2022 GraphDefined GmbH <achim.friedland@graphdefined.com>
+// * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
+// *
+// * Licensed under the Affero GPL license, Version 3.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.gnu.org/licenses/agpl.html
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
 
-#region Usings
+//#region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
+//using System.Collections;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections;
+//using org.GraphDefined.Vanaheimr.Illias;
 
-#endregion
+//#endregion
 
-namespace org.GraphDefined.WWCP
-{
+//namespace cloud.charging.open.protocols.WWCP
+//{
 
-    /// <summary>
-    /// Results of the UserDefinedDictionary SET method.
-    /// </summary>
-    public enum SetPropertyResult
-    {
+//    /// <summary>
+//    /// Results of the UserDefinedDictionary SET method.
+//    /// </summary>
+//    public enum SetPropertyResult
+//    {
 
-        /// <summary>
-        /// A new property was added.
-        /// </summary>
-        Added    = 0,
+//        /// <summary>
+//        /// A new property was added.
+//        /// </summary>
+//        Added    = 0,
 
-        /// <summary>
-        /// An existing property value was updated.
-        /// </summary>
-        Changed  = 1,
+//        /// <summary>
+//        /// An existing property value was updated.
+//        /// </summary>
+//        Changed  = 1,
 
-        /// <summary>
-        /// The property could not be updated.
-        /// </summary>
-        Conflict = 2,
+//        /// <summary>
+//        /// The property could not be updated.
+//        /// </summary>
+//        Conflict = 2,
 
-        /// <summary>
-        /// The property was removed.
-        /// </summary>
-        Removed  = 3
+//        /// <summary>
+//        /// The property was removed.
+//        /// </summary>
+//        Removed  = 3
 
-    }
+//    }
 
-    public class UserDefinedDictionary : IEnumerable<KeyValuePair<String, Object>>
-    {
+//    public class UserDefinedDictionary : IEnumerable<KeyValuePair<String, Object>>
+//    {
 
-        #region Data
+//        #region Data
 
-        private Dictionary<String, Object> _Dictionary;
+//        private Dictionary<String, Object> _Dictionary;
 
-        #endregion
+//        #endregion
 
-        #region Events
+//        #region Events
 
-        /// <summary>
-        /// An event called whenever a property of this entity changed.
-        /// </summary>
-        public event OnPropertyChangedDelegate OnPropertyChanged;
+//        /// <summary>
+//        /// An event called whenever a property of this entity changed.
+//        /// </summary>
+//        public event OnPropertyChangedDelegate OnPropertyChanged;
 
-        #endregion
+//        #endregion
 
-        #region Constructor(s)
+//        #region Constructor(s)
 
-        public UserDefinedDictionary()
-        {
-            _Dictionary = new Dictionary<String, Object>();
-        }
+//        public UserDefinedDictionary()
+//        {
+//            _Dictionary = new Dictionary<String, Object>();
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region Set(Key, NewValue, OldValue = null, EventTrackingId = null)
+//        #region Set(Key, NewValue, OldValue = null, EventTrackingId = null)
 
-        public SetPropertyResult Set(String             Key,
-                                     Object             NewValue,
-                                     Object?            OldValue          = null,
-                                     EventTracking_Id?  EventTrackingId   = null)
-        {
 
-            // Locks are shit, but ConcurrentDictionary does not compare values correctly!
-            lock (_Dictionary)
-            {
+//        public SetPropertyResult Set(String            Key,
+//                                     Object            NewValue,
+//                                     Object            OldValue         = null,
+//                                     EventTracking_Id  EventTrackingId  = null)
+//        {
 
-                Object _CurrentValue;
+//            // Locks are shit, but ConcurrentDictionary does not compare values correctly!
+//            lock (_Dictionary)
+//            {
 
-                if (!_Dictionary.TryGetValue(Key, out _CurrentValue))
-                {
+//                Object _CurrentValue;
 
-                    _Dictionary.Add(Key, NewValue);
+//                if (!_Dictionary.TryGetValue(Key, out _CurrentValue))
+//                {
 
-                    OnPropertyChanged?.Invoke(Timestamp.Now,
-                                              EventTrackingId,
-                                              this,
-                                              Key,
-                                              OldValue,
-                                              NewValue);
+//                    _Dictionary.Add(Key, NewValue);
 
-                    return SetPropertyResult.Added;
+//                    OnPropertyChanged?.Invoke(Timestamp.Now,
+//                                              EventTrackingId,
+//                                              this,
+//                                              Key,
+//                                              OldValue,
+//                                              NewValue);
 
-                }
+//                    return SetPropertyResult.Added;
 
-                if (_CurrentValue.ToString() != OldValue.ToString())
-                    return SetPropertyResult.Conflict;
+//                }
 
-                if (NewValue != null)
-                {
+//                if (_CurrentValue.ToString() != OldValue.ToString())
+//                    return SetPropertyResult.Conflict;
 
-                    _Dictionary[Key] = NewValue;
+//                if (NewValue != null)
+//                {
 
-                    OnPropertyChanged?.Invoke(Timestamp.Now,
-                                              EventTrackingId,
-                                              this,
-                                              Key,
-                                              OldValue,
-                                              NewValue);
+//                    _Dictionary[Key] = NewValue;
 
-                    return SetPropertyResult.Changed;
+//                    OnPropertyChanged?.Invoke(Timestamp.Now,
+//                                              EventTrackingId,
+//                                              this,
+//                                              Key,
+//                                              OldValue,
+//                                              NewValue);
 
-                }
+//                    return SetPropertyResult.Changed;
 
+//                }
 
-                _Dictionary.Remove(Key);
 
-                OnPropertyChanged?.Invoke(Timestamp.Now,
-                                          EventTrackingId,
-                                          this,
-                                          Key,
-                                          OldValue,
-                                          null);
+//                _Dictionary.Remove(Key);
 
-                return SetPropertyResult.Removed;
+//                OnPropertyChanged?.Invoke(Timestamp.Now,
+//                                          EventTrackingId,
+//                                          this,
+//                                          Key,
+//                                          OldValue,
+//                                          null);
 
-            }
+//                return SetPropertyResult.Removed;
 
-        }
+//            }
 
-        #endregion
+//        }
 
-        #region ContainsKey(Key)
+//        #endregion
 
-        public Boolean ContainsKey(String Key)
+//        #region ContainsKey(Key)
 
-            => _Dictionary.ContainsKey(Key);
+//        public Boolean ContainsKey(String Key)
 
-        #endregion
+//            => _Dictionary.ContainsKey(Key);
 
-        #region Contains(Key, Value)
+//        #endregion
 
-        public Boolean Contains(String  Key,
-                                Object  Value)
-        {
+//        #region Contains(Key, Value)
 
-            Object CurrentValue;
+//        public Boolean Contains(String  Key,
+//                                Object  Value)
+//        {
 
-            if (!_Dictionary.TryGetValue(Key, out CurrentValue))
-                return false;
+//            Object CurrentValue;
 
-            return CurrentValue.ToString() == Value.ToString();
+//            if (!_Dictionary.TryGetValue(Key, out CurrentValue))
+//                return false;
 
-        }
+//            return CurrentValue.ToString() == Value.ToString();
 
-        #endregion
+//        }
 
-        #region Contains(KeyValuePair)
+//        #endregion
 
-        public Boolean Contains(KeyValuePair<String, Object>  KeyValuePair)
+//        #region Contains(KeyValuePair)
 
-            => Contains(KeyValuePair.Key, KeyValuePair.Value);
+//        public Boolean Contains(KeyValuePair<String, Object>  KeyValuePair)
 
-        #endregion
+//            => Contains(KeyValuePair.Key, KeyValuePair.Value);
 
-        #region Get(Key)
+//        #endregion
 
-        public Object Get(String Key)
-        {
+//        #region Get(Key)
 
-            lock (_Dictionary)
-            {
+//        public Object Get(String Key)
+//        {
 
-                Object _CurrentValue;
+//            lock (_Dictionary)
+//            {
 
-                if (_Dictionary.TryGetValue(Key, out _CurrentValue))
-                    return _CurrentValue;
+//                Object _CurrentValue;
 
-                return null;
+//                if (_Dictionary.TryGetValue(Key, out _CurrentValue))
+//                    return _CurrentValue;
 
-            }
+//                return null;
 
-        }
+//            }
 
-        #endregion
+//        }
 
-        #region TryGet(Key, out Value)
+//        #endregion
 
-        public Boolean TryGet(String Key, out Object Value)
+//        #region TryGet(Key, out Value)
 
-            => _Dictionary.TryGetValue(Key, out Value);
+//        public Boolean TryGet(String Key, out Object Value)
 
-        #endregion
+//            => _Dictionary.TryGetValue(Key, out Value);
 
-        #region Remove(Key)
+//        #endregion
 
-        public Object Remove(String Key)
-        {
+//        #region Remove(Key)
 
-            lock (_Dictionary)
-            {
+//        public Object Remove(String Key)
+//        {
 
-                if (_Dictionary.TryGetValue(Key, out Object currentValue))
-                {
-                    _Dictionary.Remove(Key);
-                    return currentValue;
-                }
+//            lock (_Dictionary)
+//            {
 
-                return null;
+//                if (_Dictionary.TryGetValue(Key, out Object currentValue))
+//                {
+//                    _Dictionary.Remove(Key);
+//                    return currentValue;
+//                }
 
-            }
+//                return null;
 
-        }
+//            }
 
-        #endregion
+//        }
 
+//        #endregion
 
-        #region GetEnumerator()
 
-        public IEnumerator<KeyValuePair<String, Object>> GetEnumerator()
-            => _Dictionary.GetEnumerator();
+//        #region GetEnumerator()
 
-        IEnumerator IEnumerable.GetEnumerator()
-            => _Dictionary.GetEnumerator();
+//        public IEnumerator<KeyValuePair<String, Object>> GetEnumerator()
+//            => _Dictionary.GetEnumerator();d
 
-        #endregion
+//        IEnumerator IEnumerable.GetEnumerator()
+//            => _Dictionary.GetEnumerator();
 
-    }
+//        #endregion
 
-}
+//    }
+
+//}

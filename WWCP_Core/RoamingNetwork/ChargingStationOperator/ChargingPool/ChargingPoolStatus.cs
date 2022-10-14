@@ -17,16 +17,96 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for the charging pool status.
+    /// </summary>
+    public static class ChargingPoolStatusExtensions
+    {
+
+        #region ToJSON(this ChargingPoolStatus, Skip = null, Take = null)
+
+        public static JObject ToJSON(this IEnumerable<ChargingPoolStatus>  ChargingPoolStatus,
+                                     UInt64?                               Skip  = null,
+                                     UInt64?                               Take  = null)
+        {
+
+            #region Initial checks
+
+            if (ChargingPoolStatus is null || !ChargingPoolStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging pool identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatus>();
+
+            foreach (var status in ChargingPoolStatus)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region Contains(this ChargingPoolStatus, Id, Status)
+
+        /// <summary>
+        /// Check if the given enumeration of charging pools and their current status
+        /// contains the given pair of charging pool identification and status.
+        /// </summary>
+        /// <param name="ChargingPoolStatus">An enumeration of charging pools and their current status.</param>
+        /// <param name="Id">A charging pool identification.</param>
+        /// <param name="Status">A charging pool status.</param>
+        public static Boolean Contains(this IEnumerable<ChargingPoolStatus>  ChargingPoolStatus,
+                                       ChargingPool_Id                       Id,
+                                       ChargingPoolStatusTypes               Status)
+        {
+
+            foreach (var status in ChargingPoolStatus)
+            {
+                if (status.Id     == Id &&
+                    status.Status == Status)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The current status of a charging pool.
@@ -41,12 +121,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id                       Id       { get; }
+        public ChargingPool_Id                       Id        { get; }
 
         /// <summary>
         /// The current status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolStatusTypes>  Status   { get; }
+        public Timestamped<ChargingPoolStatusTypes>  Status    { get; }
 
         #endregion
 
@@ -60,10 +140,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingPoolStatus(ChargingPool_Id                       Id,
                                   Timestamped<ChargingPoolStatusTypes>  Status,
-                                  IReadOnlyDictionary<String, Object>   CustomData  = null)
+                                  JObject?                              CustomData     = null,
+                                  UserDefinedDictionary?                InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

@@ -22,38 +22,44 @@ using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
     /// An abstract e-mobility entity having crypto capabilities.
     /// </summary>
-    public abstract class ACryptoEMobilityEntity<TId> : AEMobilityEntity<TId>,
-                                                        ICryptoEntity<TId>
+    public abstract class ACryptoEMobilityEntity<TId,
+                                                 TAdminStatus,
+                                                 TStatus> : AEMobilityEntity<TId,
+                                                                             TAdminStatus,
+                                                                             TStatus>,
+                                                            ICryptoEntity<TId>
 
-        where TId : IId
+        where TId          : IId
+        where TAdminStatus : IComparable
+        where TStatus      : IComparable
 
     {
 
         #region Properties
 
-        public I18NString              Name                     { get; }
-        public IRoamingNetwork         RoamingNetwork           { get; }
+        public IRoamingNetwork          RoamingNetwork           { get; }
 
-        public String                  EllipticCurve            { get; }
-        public X9ECParameters          ECP                      { get; }
-        public ECDomainParameters      ECSpec                   { get; }
-        public FpCurve                 C                        { get; }
-        public ECPrivateKeyParameters  PrivateKey               { get; protected set; }
-        public PublicKeyCertificates   PublicKeyCertificates    { get; protected set; }
+        public String                   EllipticCurve            { get; }
+        public X9ECParameters?          ECP                      { get; }
+        public ECDomainParameters?      ECSpec                   { get; }
+        public FpCurve?                 C                        { get; }
+        public ECPrivateKeyParameters?  PrivateKey               { get; protected set; }
+        public PublicKeyCertificates?   PublicKeyCertificates    { get; protected set; }
 
         /// <summary>
         /// The cryptographical signature of this entity.
         /// </summary>
-        public Signature?              Signature                { get; protected set; }
+        public Signature?               Signature                { get; protected set; }
 
         #endregion
 
@@ -63,22 +69,43 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
-        protected ACryptoEMobilityEntity(TId                                  Id,
-                                         I18NString                           Name,
-                                         IRoamingNetwork                      RoamingNetwork,
-                                         String                               EllipticCurve           = "P-256",
-                                         ECPrivateKeyParameters               PrivateKey              = null,
-                                         PublicKeyCertificates                PublicKeyCertificates   = null,
-                                         IReadOnlyDictionary<String, Object>  InternalData            = null)
+        protected ACryptoEMobilityEntity(TId                         Id,
+                                         IRoamingNetwork             RoamingNetwork,
+
+                                         I18NString?                 Name                         = null,
+                                         I18NString?                 Description                  = null,
+
+                                         String?                     EllipticCurve                = "P-256",
+                                         ECPrivateKeyParameters?     PrivateKey                   = null,
+                                         PublicKeyCertificates?      PublicKeyCertificates        = null,
+
+                                         Timestamped<TAdminStatus>?  InitialAdminStatus           = null,
+                                         Timestamped<TStatus>?       InitialStatus                = null,
+                                         UInt16                      MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
+                                         UInt16                      MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize,
+
+                                         String?                     DataSource                   = null,
+                                         DateTime?                   LastChange                   = null,
+
+                                         JObject?                    CustomData                   = null,
+                                         UserDefinedDictionary?      InternalData                 = null)
 
             : base(Id,
+                   Name,
+                   Description,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
                    InternalData)
 
         {
 
-            this.Name                   = Name;
-            this.RoamingNetwork         = RoamingNetwork;
-            this.EllipticCurve          = EllipticCurve ?? "P-256";
+            this.RoamingNetwork         = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The roaming network must not be null!");
+            this.EllipticCurve          = EllipticCurve  ?? "P-256";
             this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
             this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());
             this.C                      = (FpCurve) ECSpec.Curve;

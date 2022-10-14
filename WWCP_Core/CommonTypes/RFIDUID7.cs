@@ -17,14 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -169,8 +166,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public RFIDUID7 Clone
 
-            => new RFIDUID7(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
@@ -184,7 +181,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RFIDUID7">A 7-byte RFID UID.</param>
         public static implicit operator Auth_Token(RFIDUID7 RFIDUID7)
 
-            => new Auth_Token(RFIDUID7.InternalId);
+            => new (RFIDUID7.InternalId);
 
         #endregion
 

@@ -17,15 +17,96 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for the EVSE status.
+    /// </summary>
+    public static class EVSEStatusExtensions
+    {
+
+        #region ToJSON(this EVSEStatus, Skip = null, Take = null)
+
+        public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
+                                     UInt64?                       Skip  = null,
+                                     UInt64?                       Take  = null)
+        {
+
+            #region Initial checks
+
+            if (EVSEStatus is null || !EVSEStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
+
+            foreach (var status in EVSEStatus)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region Contains(this EVSEStatus, Id, Status)
+
+        /// <summary>
+        /// Check if the given enumeration of EVSEs and their current status
+        /// contains the given pair of EVSE identification and status.
+        /// </summary>
+        /// <param name="EVSEStatus">An enumeration of EVSEs and their current status.</param>
+        /// <param name="Id">A EVSE identification.</param>
+        /// <param name="Status">A EVSE status.</param>
+        public static Boolean Contains(this IEnumerable<EVSEStatus>  EVSEStatus,
+                                       EVSE_Id                       Id,
+                                       EVSEStatusTypes               Status)
+        {
+
+            foreach (var status in EVSEStatus)
+            {
+                if (status.Id     == Id &&
+                    status.Status == Status)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The current timestamped status of an EVSE.
@@ -40,18 +121,18 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                       Id       { get; }
+        public EVSE_Id                       Id        { get; }
 
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>  Status   { get; }
+        public Timestamped<EVSEStatusTypes>  Status    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region EVSEStatus(Id, Status,            CustomData = null)
+        #region EVSEStatus(Id, Status,            CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new EVSE status.
@@ -59,12 +140,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current timestamped status of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public EVSEStatus(EVSE_Id                                    Id,
-                          Timestamped<EVSEStatusTypes>               Status,
-                          IEnumerable<KeyValuePair<String, Object>>  CustomData  = null)
+        public EVSEStatus(EVSE_Id                       Id,
+                          Timestamped<EVSEStatusTypes>  Status,
+                          JObject?                      CustomData     = null,
+                          UserDefinedDictionary?        InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 
@@ -75,7 +157,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEStatus(Id, Status, Timestamp, CustomData = null)
+        #region EVSEStatus(Id, Status, Timestamp, CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new EVSE status.
@@ -84,14 +166,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public EVSEStatus(EVSE_Id                                    Id,
-                          EVSEStatusTypes                            Status,
-                          DateTime                                   Timestamp,
-                          IEnumerable<KeyValuePair<String, Object>>  CustomData  = null)
+        public EVSEStatus(EVSE_Id                 Id,
+                          EVSEStatusTypes         Status,
+                          DateTime                Timestamp,
+                          JObject?                CustomData     = null,
+                          UserDefinedDictionary?  InternalData   = null)
 
             : this(Id,
                    new Timestamped<EVSEStatusTypes>(Timestamp, Status),
-                   CustomData)
+                   CustomData,
+                   InternalData)
 
         { }
 

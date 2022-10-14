@@ -26,7 +26,7 @@ using System.Security.Cryptography.X509Certificates;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Networking
+namespace cloud.charging.open.protocols.WWCP.Networking
 {
 
     /// <summary>

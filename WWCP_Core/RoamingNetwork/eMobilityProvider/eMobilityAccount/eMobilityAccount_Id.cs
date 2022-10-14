@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -563,9 +563,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public eMobilityAccount_Id Clone
 
-            => new eMobilityAccount_Id(new String(InternalId.ToCharArray()),
-                                       ProviderId.Clone,
-                                       Suffix);
+            => new (
+                   new String(InternalId?.ToCharArray()),
+                   ProviderId.Clone,
+                   new String(Suffix?.ToCharArray())
+               );
 
         #endregion
 

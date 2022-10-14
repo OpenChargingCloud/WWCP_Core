@@ -26,7 +26,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public class TimestampedMap<TKey, TValue>

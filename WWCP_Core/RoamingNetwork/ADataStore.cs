@@ -17,24 +17,20 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Collections;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
+using cloud.charging.open.protocols.WWCP.Networking;
+
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -133,18 +129,18 @@ namespace org.GraphDefined.WWCP
         /// Create a generic data store.
         /// </summary>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ADataStore(Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>  CommandProcessor       = null,
+        public ADataStore(Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>?  CommandProcessor       = null,
 
-                          Boolean                                                                    DisableLogfiles        = false,
-                          Func<RoamingNetwork_Id?, String>                                           LogFilePathCreator     = null,
-                          Func<RoamingNetwork_Id?, String>                                           LogFileNameCreator     = null,
-                          Boolean                                                                    ReloadDataOnStart      = true,
-                          Func<RoamingNetwork_Id?, String>                                           LogfileSearchPattern   = null,
+                          Boolean                                                                     DisableLogfiles        = false,
+                          Func<RoamingNetwork_Id?, String>?                                           LogFilePathCreator     = null,
+                          Func<RoamingNetwork_Id?, String>?                                           LogFileNameCreator     = null,
+                          Boolean                                                                     ReloadDataOnStart      = true,
+                          Func<RoamingNetwork_Id?, String>?                                           LogfileSearchPattern   = null,
 
-                          RoamingNetwork_Id?                                                         RoamingNetworkId       = null,
-                          IEnumerable<RoamingNetworkInfo>                                            RoamingNetworkInfos    = null,
-                          Boolean                                                                    DisableNetworkSync     = false,
-                          DNSClient                                                                  DNSClient              = null)
+                          RoamingNetwork_Id?                                                          RoamingNetworkId       = null,
+                          IEnumerable<RoamingNetworkInfo>?                                            RoamingNetworkInfos    = null,
+                          Boolean                                                                     DisableNetworkSync     = false,
+                          DNSClient?                                                                  DNSClient              = null)
 
         {
 
@@ -180,7 +176,7 @@ namespace org.GraphDefined.WWCP
             this.DNSClient                     = DNSClient ?? new DNSClient(SearchForIPv4DNSServers: true,
                                                                             SearchForIPv6DNSServers: false);
 
-            if (RoamingNetworkInfo != null)
+            if (RoamingNetworkInfo is not null)
             {
 
                 this.Server = new TCPServer(Port:               RoamingNetworkInfo.port,

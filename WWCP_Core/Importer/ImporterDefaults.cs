@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP.Importer
+namespace cloud.charging.open.protocols.WWCP.Importer
 {
     public static class Defaults
     {

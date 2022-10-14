@@ -30,7 +30,7 @@
 
 //#endregion
 
-//namespace org.GraphDefined.WWCP.Networking
+//namespace cloud.charging.open.protocols.WWCP.Networking
 //{
 
 //    /// <summary>

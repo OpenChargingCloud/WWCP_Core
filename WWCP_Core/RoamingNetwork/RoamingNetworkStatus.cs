@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -41,12 +39,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id                       Id       { get; }
+        public RoamingNetwork_Id                       Id        { get; }
 
         /// <summary>
         /// The current timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusTypes>  Status   { get; }
+        public Timestamped<RoamingNetworkStatusTypes>  Status    { get; }
 
         #endregion
 
@@ -60,10 +58,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public RoamingNetworkStatus(RoamingNetwork_Id                       Id,
                                     Timestamped<RoamingNetworkStatusTypes>  Status,
-                                    IReadOnlyDictionary<String, Object>     CustomData  = null)
+                                    JObject?                                CustomData     = null,
+                                    UserDefinedDictionary?                  InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

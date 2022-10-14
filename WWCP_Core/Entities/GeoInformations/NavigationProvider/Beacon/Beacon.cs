@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace org.GraphDefined.WWCP.Core.Entities.Beacon
+namespace cloud.charging.open.protocols.WWCP.Core.Entities.Beacon
 {
 
     public class Beacon

@@ -15,14 +15,88 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System.Collections.Generic;
-
-#endregion
-
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for charging station admin status reports.
+    /// </summary>
+    public static class ChargingStationAdminStatusReportExtensions
+    {
+
+        /// <summary>
+        /// Generate a new charging station admin status report for the given charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        public static ChargingStationAdminStatusReport GenerateAdminStatusReport               (this ChargingStation                       ChargingStation,
+                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (new ChargingStation[] { ChargingStation },
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station admin status report for the given charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        public static ChargingStationAdminStatusReport GenerateAdminStatusReport               (this IEnumerable<ChargingStation>          ChargingStations,
+                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (ChargingStations,
+                    Timestamp);
+
+
+        /// <summary>
+        /// Generate a new charging station admin status report for the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this ChargingPool                          ChargingPool,
+                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (ChargingPool.ChargingStations,
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station admin status report for the given charging pools.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IEnumerable<ChargingPool>             ChargingPools,
+                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (ChargingPools.SelectMany(chargingPool => chargingPool.ChargingStations),
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station admin status report for the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this ChargingStationOperator               ChargingStationOperator,
+                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (ChargingStationOperator.ChargingStations,
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station admin status report for the given charging station operators.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.ChargingStations),
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station admin status report for the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this RoamingNetwork                        RoamingNetwork,
+                                                                                                DateTime?                                  Timestamp = null)
+
+            => new (RoamingNetwork.ChargingStations,
+                    Timestamp);
+
+    }
+
 
     /// <summary>
     /// A charging station admin status report.
@@ -30,10 +104,18 @@ namespace org.GraphDefined.WWCP
     public class ChargingStationAdminStatusReport : StatusReport<ChargingStation, ChargingStationAdminStatusTypes>
     {
 
-        public ChargingStationAdminStatusReport(IEnumerable<ChargingStation> ChargingStations)
+        /// <summary>
+        /// Create a new charging station admin status report for the given charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
+        public ChargingStationAdminStatusReport(IEnumerable<ChargingStation>  ChargingStations,
+                                                DateTime?                     Timestamp = null)
 
             : base(ChargingStations,
-                   station => station.AdminStatus.Value)
+                   station => station.AdminStatus.Value,
+                   Timestamp,
+                   "https://open.charging.cloud/contexts/wwcp+json/chargingStationAdminStatusReport")
 
         { }
 

@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -187,8 +187,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargeDetailRecord_Id Clone
 
-            => new ChargeDetailRecord_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

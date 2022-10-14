@@ -28,13 +28,16 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
     /// The interface of a remote EVSE.
     /// </summary>
-    public interface IRemoteEVSE : ILocalReserveRemoteStartStop
+    public interface IRemoteEVSE : ILocalReserveRemoteStartStop,
+                                   IAdminStatus<EVSEAdminStatusTypes>,
+                                   IStatus<EVSEStatusTypes>
+
     {
 
         #region Properties
@@ -117,29 +120,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
-
-        #region (Admin-)Status
-
-        void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus);
-        void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus);
-        void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
-        void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus, DateTime Timestamp);
-
-        Timestamped<EVSEAdminStatusTypes>              AdminStatus         { get; set; }
-        IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule { get; }
-
-
-        void SetStatus(EVSEStatusTypes NewStatus);
-        void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus);
-        void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>> NewStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
-        void SetStatus(EVSEStatusTypes NewStatus, DateTime Timestamp);
-
-        Timestamped<EVSEStatusTypes>              Status         { get; set; }
-        IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule { get; }
-
-        #endregion
-
 
 
         //Task CheckIfReservationIsExpired();

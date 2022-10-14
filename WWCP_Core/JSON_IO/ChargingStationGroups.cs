@@ -29,7 +29,7 @@ using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Net.IO.JSON
+namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 {
 
     /// <summary>
@@ -45,14 +45,14 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// </summary>
         /// <param name="ChargingStationGroup">A charging station group.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
-        public static JObject ToJSON(this ChargingStationGroup  ChargingStationGroup,
-                                     Boolean                    Embedded                          = false,
-                                     InfoStatus                 ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                     InfoStatus                 ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                     InfoStatus                 ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                     InfoStatus                 ExpandEVSEIds                     = InfoStatus.Expanded,
-                                     InfoStatus                 ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                     InfoStatus                 ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+        public static JObject? ToJSON(this ChargingStationGroup  ChargingStationGroup,
+                                      Boolean                    Embedded                          = false,
+                                      InfoStatus                 ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                      InfoStatus                 ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                      InfoStatus                 ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                      InfoStatus                 ExpandEVSEIds                     = InfoStatus.Expanded,
+                                      InfoStatus                 ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                      InfoStatus                 ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
 
             => ChargingStationGroup is null
@@ -61,18 +61,18 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                    : JSONObject.Create(
 
-                         ChargingStationGroup.Id.ToJSON("@id"),
+                         new JProperty("@id", ChargingStationGroup.Id.ToString()),
 
                          Embedded
                              ? null
                              : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingStationGroup"),
 
                          ChargingStationGroup.Name.       IsNeitherNullNorEmpty()
-                             ? ChargingStationGroup.Name.       ToJSON("name")
+                             ? new JProperty("name",        ChargingStationGroup.Name.ToJSON())
                              : null,
 
                          ChargingStationGroup.Description.IsNeitherNullNorEmpty()
-                             ? ChargingStationGroup.Description.ToJSON("description")
+                             ? new JProperty("description", ChargingStationGroup.Description.ToJSON())
                              : null,
 
                          ChargingStationGroup.Brand != null
@@ -82,7 +82,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                              : null,
 
                          (!Embedded || ChargingStationGroup.DataSource != ChargingStationGroup.Operator.DataSource)
-                             ? ChargingStationGroup.DataSource.ToJSON("dataSource")
+                             ? new JProperty("dataSource", ChargingStationGroup.DataSource)
                              : null,
 
                          (!Embedded || ChargingStationGroup.DataLicenses != ChargingStationGroup.Operator.DataLicenses)

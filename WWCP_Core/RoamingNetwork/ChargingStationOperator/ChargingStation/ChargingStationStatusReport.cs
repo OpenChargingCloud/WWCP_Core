@@ -15,14 +15,88 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System.Collections.Generic;
-
-#endregion
-
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for charging station status reports.
+    /// </summary>
+    public static class ChargingStationStatusReportExtensions
+    {
+
+        /// <summary>
+        /// Generate a new charging station status report for the given charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        public static ChargingStationStatusReport GenerateStatusReport               (this ChargingStation                       ChargingStation,
+                                                                                      DateTime?                                  Timestamp = null)
+
+            => new (new ChargingStation[] { ChargingStation },
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station status report for the given charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        public static ChargingStationStatusReport GenerateStatusReport               (this IEnumerable<ChargingStation>          ChargingStations,
+                                                                                      DateTime?                                  Timestamp = null)
+
+            => new (ChargingStations,
+                    Timestamp);
+
+
+        /// <summary>
+        /// Generate a new charging station status report for the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        public static ChargingStationStatusReport GenerateChargingStationStatusReport(this ChargingPool                          ChargingPool,
+                                                                                      DateTime?                                  Timestamp = null)
+
+            => new (ChargingPool.ChargingStations,
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station status report for the given charging pools.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        public static ChargingStationStatusReport GenerateChargingStationStatusReport(this IEnumerable<ChargingPool>             ChargingPools,
+                                                                                      DateTime?                                  Timestamp = null)
+
+            => new (ChargingPools.SelectMany(chargingPool => chargingPool.ChargingStations),
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station status report for the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        public static ChargingStationStatusReport GenerateChargingStationStatusReport(this ChargingStationOperator               ChargingStationOperator,
+                                                                                      DateTime?                                  Timestamp = null)
+
+            => new (ChargingStationOperator.ChargingStations,
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station status report for the given charging station operators.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        public static ChargingStationStatusReport GenerateChargingStationStatusReport(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                                                                      DateTime?                                  Timestamp = null)
+
+            => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.ChargingStations),
+                    Timestamp);
+
+        /// <summary>
+        /// Generate a new charging station status report for the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        public static ChargingStationStatusReport GenerateChargingStationStatusReport(this RoamingNetwork                        RoamingNetwork,
+                                                                                      DateTime?                                  Timestamp = null)
+
+            => new (RoamingNetwork.ChargingStations,
+                    Timestamp);
+
+    }
+
 
     /// <summary>
     /// A charging station status report.
@@ -30,10 +104,18 @@ namespace org.GraphDefined.WWCP
     public class ChargingStationStatusReport : StatusReport<ChargingStation, ChargingStationStatusTypes>
     {
 
-        public ChargingStationStatusReport(IEnumerable<ChargingStation> ChargingStations)
+        /// <summary>
+        /// Create a new charging station status report for the given charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
+        public ChargingStationStatusReport(IEnumerable<ChargingStation>  ChargingStations,
+                                           DateTime?                     Timestamp = null)
 
             : base(ChargingStations,
-                   station => station.Status.Value)
+                   station => station.Status.Value,
+                   Timestamp,
+                   "https://open.charging.cloud/contexts/wwcp+json/chargingStationStatusReport")
 
         { }
 

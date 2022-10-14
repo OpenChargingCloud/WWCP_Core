@@ -17,22 +17,17 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using Newtonsoft.Json.Linq;
+
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Bcpg;
-using System.IO;
-using System.Text.RegularExpressions;
 using Org.BouncyCastle.Crypto.Parameters;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -45,7 +40,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A charge detail record for a charging session.
     /// </summary>
-    public class ChargeDetailRecord : AEMobilityEntity<ChargeDetailRecord_Id>,
+    public class ChargeDetailRecord : AInternalData,
+                                      IHasId<ChargeDetailRecord_Id>,
                                       IEquatable<ChargeDetailRecord>,
                                       IComparable<ChargeDetailRecord>,
                                       IComparable
@@ -61,6 +57,12 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The unique charge detail record identification.
+        /// </summary>
+        [Mandatory]
+        public ChargeDetailRecord_Id    Id              { get; }
 
         #region Session
 
@@ -342,16 +344,18 @@ namespace org.GraphDefined.WWCP
                                   IEnumerable<SignedMeteringValue<Decimal>>?  SignedMeteringValues        = null,
                                   Decimal?                                    ConsumedEnergy              = null,
 
-                                  IReadOnlyDictionary<String, Object>?        CustomData                  = null,
+                                  JObject?                                    CustomData                  = null,
+                                  UserDefinedDictionary?                      InternalData                = null,
 
                                   ECPublicKeyParameters?                      PublicKey                   = null,
                                   IEnumerable<String>?                        Signatures                  = null)
 
-            : base(Id,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 
+            this.Id                          = Id;
             this.SessionId                   = SessionId;
             this.SessionTime                 = SessionTime;
             this.Duration                    = Duration;
@@ -408,7 +412,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return a JSON representation of the given charge detail record.
         /// </summary>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
         public JObject ToJSON(Boolean                                           Embedded                             = false,
                               CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null)
@@ -416,7 +420,8 @@ namespace org.GraphDefined.WWCP
 
             var JSON = JSONObject.Create(
 
-                           SessionId.ToJSON("@id"),
+                           new JProperty("@id",       Id.       ToString()),
+                           new JProperty("sessionId", SessionId.ToString()),
 
                            Embedded
                                ? null
@@ -462,7 +467,7 @@ namespace org.GraphDefined.WWCP
                                : null,
 
 
-                           ChargingProduct != null
+                           ChargingProduct is not null
                                ? new JProperty("chargingProduct",             ChargingProduct.ToJSON())
                                : null
 
@@ -473,7 +478,7 @@ namespace org.GraphDefined.WWCP
                        //new JProperty("signature",      Signature)
                        );
 
-            return CustomChargeDetailRecordSerializer != null
+            return CustomChargeDetailRecordSerializer is not null
                        ? CustomChargeDetailRecordSerializer(this, JSON)
                        : JSON;
 
@@ -526,12 +531,13 @@ namespace org.GraphDefined.WWCP
         #region Operator == (ChargeDetailRecord1, ChargeDetailRecord2)
 
         /// <summary>
-        /// Compares two charge detail records for equality.
+        /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecord1">An charge detail record.</param>
+        /// <param name="ChargeDetailRecord1">A charge detail record.</param>
         /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChargeDetailRecord ChargeDetailRecord1, ChargeDetailRecord ChargeDetailRecord2)
+        /// <returns>true|false</returns>
+        public static Boolean operator == (ChargeDetailRecord ChargeDetailRecord1,
+                                           ChargeDetailRecord ChargeDetailRecord2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -539,7 +545,7 @@ namespace org.GraphDefined.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargeDetailRecord1 == null) || ((Object) ChargeDetailRecord2 == null))
+            if (ChargeDetailRecord1 is null || ChargeDetailRecord2 is null)
                 return false;
 
             return ChargeDetailRecord1.Equals(ChargeDetailRecord2);
@@ -551,14 +557,87 @@ namespace org.GraphDefined.WWCP
         #region Operator != (ChargeDetailRecord1, ChargeDetailRecord2)
 
         /// <summary>
-        /// Compares two charge detail records for inequality.
+        /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecord1">An charge detail record.</param>
+        /// <param name="ChargeDetailRecord1">A charge detail record.</param>
         /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
-        /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChargeDetailRecord ChargeDetailRecord1, ChargeDetailRecord ChargeDetailRecord2)
+        /// <returns>true|false</returns>
+        public static Boolean operator != (ChargeDetailRecord ChargeDetailRecord1,
+                                           ChargeDetailRecord ChargeDetailRecord2)
 
             => !(ChargeDetailRecord1 == ChargeDetailRecord2);
+
+        #endregion
+
+        #region Operator <  (ChargeDetailRecord1, ChargeDetailRecord2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargeDetailRecord1">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (ChargeDetailRecord ChargeDetailRecord1,
+                                          ChargeDetailRecord ChargeDetailRecord2)
+        {
+
+            if (ChargeDetailRecord1 is null)
+                throw new ArgumentNullException(nameof(ChargeDetailRecord1), "The given charge detail record must not be null!");
+
+            return ChargeDetailRecord1.CompareTo(ChargeDetailRecord2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (ChargeDetailRecord1, ChargeDetailRecord2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargeDetailRecord1">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (ChargeDetailRecord ChargeDetailRecord1,
+                                           ChargeDetailRecord ChargeDetailRecord2)
+
+            => !(ChargeDetailRecord1 > ChargeDetailRecord2);
+
+        #endregion
+
+        #region Operator >  (ChargeDetailRecord1, ChargeDetailRecord2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargeDetailRecord1">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (ChargeDetailRecord ChargeDetailRecord1,
+                                          ChargeDetailRecord ChargeDetailRecord2)
+        {
+
+            if (ChargeDetailRecord1 is null)
+                throw new ArgumentNullException(nameof(ChargeDetailRecord1), "The given charge detail record must not be null!");
+
+            return ChargeDetailRecord1.CompareTo(ChargeDetailRecord2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (ChargeDetailRecord1, ChargeDetailRecord2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargeDetailRecord1">A charge detail record.</param>
+        /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (ChargeDetailRecord ChargeDetailRecord1,
+                                           ChargeDetailRecord ChargeDetailRecord2)
+
+            => !(ChargeDetailRecord1 < ChargeDetailRecord2);
 
         #endregion
 
@@ -572,20 +651,12 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is a charge detail record.
-            var ChargeDetailRecord = Object as ChargeDetailRecord;
-            if ((Object) ChargeDetailRecord == null)
-                throw new ArgumentException("The given object is not a charge detail record!");
-
-            return CompareTo(ChargeDetailRecord);
-
-        }
+            => Object is ChargeDetailRecord chargeDetailRecord
+                   ? CompareTo(chargeDetailRecord)
+                   : throw new ArgumentException("The given object is not a charge detail record!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -595,13 +666,68 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record object to compare with.</param>
-        public Int32 CompareTo(ChargeDetailRecord ChargeDetailRecord)
+        public Int32 CompareTo(ChargeDetailRecord? ChargeDetailRecord)
         {
 
-            if ((Object) ChargeDetailRecord == null)
-                throw new ArgumentNullException("The given charge detail record must not be null!");
+            if (ChargeDetailRecord is null)
+                throw new ArgumentNullException(nameof(ChargeDetailRecord), "The given charge detail record must not be null!");
 
-            return SessionId.CompareTo(ChargeDetailRecord.SessionId);
+            var c = Id.       CompareTo(ChargeDetailRecord.Id);
+
+            if (c == 0)
+                c = SessionId.CompareTo(ChargeDetailRecord.SessionId);
+
+            //if (c == 0)
+            //    c = EVSEId.        CompareTo(ChargeDetailRecord.EVSEId);
+
+            //if (c == 0)
+            //    c = Identification.CompareTo(ChargeDetailRecord.Identification);
+
+            //if (c == 0)
+            //    c = SessionStart.  CompareTo(ChargeDetailRecord.SessionStart);
+
+            //if (c == 0)
+            //    c = SessionEnd.    CompareTo(ChargeDetailRecord.SessionEnd);
+
+            //if (c == 0)
+            //    c = ChargingStart. CompareTo(ChargeDetailRecord.ChargingStart);
+
+            //if (c == 0)
+            //    c = ChargingEnd.   CompareTo(ChargeDetailRecord.ChargingEnd);
+
+            //if (c == 0)
+            //    c = ConsumedEnergy.CompareTo(ChargeDetailRecord.ConsumedEnergy);
+
+
+            //if (c == 0 && PartnerProductId.   HasValue && ChargeDetailRecord.PartnerProductId.   HasValue)
+            //    c = PartnerProductId.   Value.CompareTo(ChargeDetailRecord.PartnerProductId.   Value);
+
+            //if (c == 0 && CPOPartnerSessionId.HasValue && ChargeDetailRecord.CPOPartnerSessionId.HasValue)
+            //    c = CPOPartnerSessionId.Value.CompareTo(ChargeDetailRecord.CPOPartnerSessionId.Value);
+
+            //if (c == 0 && EMPPartnerSessionId.HasValue && ChargeDetailRecord.EMPPartnerSessionId.HasValue)
+            //    c = EMPPartnerSessionId.Value.CompareTo(ChargeDetailRecord.EMPPartnerSessionId.Value);
+
+            //if (c == 0 && MeterValueStart.    HasValue && ChargeDetailRecord.MeterValueStart.    HasValue)
+            //    c = MeterValueStart.    Value.CompareTo(ChargeDetailRecord.MeterValueStart.    Value);
+
+            //if (c == 0 && MeterValueEnd.      HasValue && ChargeDetailRecord.MeterValueEnd.      HasValue)
+            //    c = MeterValueEnd.      Value.CompareTo(ChargeDetailRecord.MeterValueEnd.      Value);
+
+            //// MeterValuesInBetween
+
+            //// SignedMeteringValues
+
+            //if (c == 0 && CalibrationLawVerificationInfo is not null && ChargeDetailRecord.CalibrationLawVerificationInfo is not null)
+            //    c = CalibrationLawVerificationInfo.CompareTo(ChargeDetailRecord.CalibrationLawVerificationInfo);
+
+            //if (c == 0 && HubOperatorId.HasValue && ChargeDetailRecord.HubOperatorId.HasValue)
+            //    c = HubOperatorId.Value.CompareTo(ChargeDetailRecord.HubOperatorId.Value);
+
+            //if (c == 0 && HubProviderId.HasValue && ChargeDetailRecord.HubProviderId.HasValue)
+            //    c = HubProviderId.Value.CompareTo(ChargeDetailRecord.HubProviderId.Value);
+
+            return c;
 
         }
 
@@ -618,20 +744,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a charge detail record.
-            var ChargeDetailRecord = Object as ChargeDetailRecord;
-            if ((Object) ChargeDetailRecord == null)
-                return false;
-
-            return this.Equals(ChargeDetailRecord);
-
-        }
+            => Object is ChargeDetailRecord chargeDetailRecord &&
+                   Equals(chargeDetailRecord);
 
         #endregion
 
@@ -642,15 +758,52 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargeDetailRecord ChargeDetailRecord)
-        {
+        public Boolean Equals(ChargeDetailRecord? ChargeDetailRecord)
 
-            if ((Object) ChargeDetailRecord == null)
-                return false;
+            => ChargeDetailRecord is not null &&
 
-            return SessionId.Equals(ChargeDetailRecord.SessionId);
+               Id.            Equals(ChargeDetailRecord.Id);
+             //  SessionId.     Equals(ChargeDetailRecord.SessionId)      &&
+             //  EVSEId.        Equals(ChargeDetailRecord.EVSEId)         &&
+             //  Identification.Equals(ChargeDetailRecord.Identification) &&
+             //  SessionStart.  Equals(ChargeDetailRecord.SessionStart)   &&
+             //  SessionEnd.    Equals(ChargeDetailRecord.SessionEnd)     &&
+             //  ChargingStart. Equals(ChargeDetailRecord.ChargingStart)  &&
+             //  ChargingEnd.   Equals(ChargeDetailRecord.ChargingEnd)    &&
+             //  ConsumedEnergy.Equals(ChargeDetailRecord.ConsumedEnergy) &&
 
-        }
+             //((!PartnerProductId.   HasValue && !ChargeDetailRecord.PartnerProductId.   HasValue) ||
+             //  (PartnerProductId.   HasValue &&  ChargeDetailRecord.PartnerProductId.   HasValue && PartnerProductId.   Value.Equals(ChargeDetailRecord.PartnerProductId.   Value))) &&
+
+             //((!CPOPartnerSessionId.HasValue && !ChargeDetailRecord.CPOPartnerSessionId.HasValue) ||
+             //  (CPOPartnerSessionId.HasValue &&  ChargeDetailRecord.CPOPartnerSessionId.HasValue && CPOPartnerSessionId.Value.Equals(ChargeDetailRecord.CPOPartnerSessionId.Value))) &&
+
+             //((!EMPPartnerSessionId.HasValue && !ChargeDetailRecord.EMPPartnerSessionId.HasValue) ||
+             //  (EMPPartnerSessionId.HasValue &&  ChargeDetailRecord.EMPPartnerSessionId.HasValue && EMPPartnerSessionId.Value.Equals(ChargeDetailRecord.EMPPartnerSessionId.Value))) &&
+
+             //((!MeterValueStart.    HasValue && !ChargeDetailRecord.MeterValueStart.    HasValue) ||
+             //  (MeterValueStart.    HasValue &&  ChargeDetailRecord.MeterValueStart.    HasValue && MeterValueStart.    Value.Equals(ChargeDetailRecord.MeterValueStart.    Value))) &&
+
+             //((!MeterValueEnd.      HasValue && !ChargeDetailRecord.MeterValueEnd.      HasValue) ||
+             //  (MeterValueEnd.      HasValue &&  ChargeDetailRecord.MeterValueEnd.      HasValue && MeterValueEnd.      Value.Equals(ChargeDetailRecord.MeterValueEnd.      Value))) &&
+
+             // ((MeterValuesInBetween is     null && ChargeDetailRecord.MeterValuesInBetween is     null) ||
+             //  (MeterValuesInBetween is not null && ChargeDetailRecord.MeterValuesInBetween is not null &&
+             //   MeterValuesInBetween.Count().Equals(ChargeDetailRecord.MeterValuesInBetween.Count()) &&
+             //   MeterValuesInBetween.All(meterValue => ChargeDetailRecord.MeterValuesInBetween.Contains(meterValue)))) &&
+
+             // ((SignedMeteringValues is     null  &&  ChargeDetailRecord.SignedMeteringValues is     null) ||
+             //  (SignedMeteringValues is not null  &&  ChargeDetailRecord.SignedMeteringValues is not null  && SignedMeteringValues.    Equals(ChargeDetailRecord.SignedMeteringValues))) &&
+
+             // ((CalibrationLawVerificationInfo is     null && ChargeDetailRecord.CalibrationLawVerificationInfo is     null) ||
+             //  (CalibrationLawVerificationInfo is not null && ChargeDetailRecord.CalibrationLawVerificationInfo is not null &&
+             //   CalibrationLawVerificationInfo.CompareTo(ChargeDetailRecord.CalibrationLawVerificationInfo) != 0)) &&
+
+             //((!HubOperatorId.      HasValue && !ChargeDetailRecord.HubOperatorId.      HasValue) ||
+             //  (HubOperatorId.      HasValue &&  ChargeDetailRecord.HubOperatorId.      HasValue && HubOperatorId.      Value.Equals(ChargeDetailRecord.HubOperatorId.      Value))) &&
+
+             //((!HubProviderId.      HasValue && !ChargeDetailRecord.HubProviderId.      HasValue) ||
+             //  (HubProviderId.      HasValue &&  ChargeDetailRecord.HubProviderId.      HasValue && HubProviderId.      Value.Equals(ChargeDetailRecord.HubProviderId.      Value)));
 
         #endregion
 
@@ -662,7 +815,8 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => SessionId.GetHashCode();
+
+            => Id.GetHashCode();
 
         #endregion
 
@@ -672,7 +826,8 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => SessionId.ToString();
+
+            => Id.ToString();
 
         #endregion
 

@@ -17,20 +17,15 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -44,7 +39,9 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class SmartCityProxy : ACryptoEMobilityEntity<SmartCity_Id>,
+    public class SmartCityProxy : ACryptoEMobilityEntity<SmartCity_Id,
+                                                         SmartCityAdminStatusTypes,
+                                                         SmartCityStatusTypes>,
                                   ISend2RemoteSmartCity,
                                   IEquatable <SmartCityProxy>,
                                   IComparable<SmartCityProxy>,
@@ -56,49 +53,18 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default max size of the admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 15;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
 
         /// <summary>
         /// The default max size of the status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize        = 15;
+        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
 
         #endregion
 
         #region Properties
 
         //public Authorizator_Id AuthorizatorId { get; }
-
-        #region Description
-
-        private I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of the EVSE Operator.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Description != value)
-                    SetProperty(ref _Description, value);
-
-            }
-
-        }
-
-        #endregion
 
         #region Logo
 
@@ -306,61 +272,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<SmartCityAdminStatusType> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<SmartCityAdminStatusType> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<SmartCityAdminStatusType>> AdminStatusSchedule
-
-            => _AdminStatusSchedule;
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<SmartCityStatusType> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<SmartCityStatusType> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<SmartCityStatusType>> StatusSchedule
-
-            => _StatusSchedule;
-
-        #endregion
-
-
         public SmartCityPriority Priority { get; set; }
 
 
@@ -508,21 +419,39 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique smart city identification.</param>
         /// <param name="Name">The offical (multi-language) name of the smart city.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal SmartCityProxy(SmartCity_Id                    Id,
-                                I18NString                      Name,
-                                RoamingNetwork                  RoamingNetwork,
-                                I18NString                      Description              = null,
-                                Action<SmartCityProxy>          Configurator             = null,
-                                RemoteSmartCityCreatorDelegate  RemoteSmartCityCreator   = null,
-                                SmartCityPriority               Priority                 = null,
-                                SmartCityAdminStatusType        AdminStatus              = SmartCityAdminStatusType.Available,
-                                SmartCityStatusType             Status                   = SmartCityStatusType.Available,
-                                UInt16                          MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                UInt16                          MaxStatusListSize        = DefaultMaxStatusListSize)
+        internal SmartCityProxy(SmartCity_Id                     Id,
+                                RoamingNetwork                   RoamingNetwork,
+                                I18NString?                      Name                         = null,
+                                I18NString?                      Description                  = null,
+                                Action<SmartCityProxy>?          Configurator                 = null,
+                                RemoteSmartCityCreatorDelegate?  RemoteSmartCityCreator       = null,
+                                SmartCityPriority?               Priority                     = null,
+                                SmartCityAdminStatusTypes?       InitialAdminStatus           = null,
+                                SmartCityStatusTypes?            InitialStatus                = null,
+                                UInt16?                          MaxAdminStatusScheduleSize   = null,
+                                UInt16?                          MaxStatusScheduleSize        = null,
+
+                                String?                          DataSource                   = null,
+                                DateTime?                        LastChange                   = null,
+
+                                JObject?                         CustomData                   = null,
+                                UserDefinedDictionary?           InternalData                 = null)
 
             : base(Id,
+                   RoamingNetwork,
                    Name,
-                   RoamingNetwork)
+                   Description,
+                   null,
+                   null,
+                   null,
+                   InitialAdminStatus         ?? SmartCityAdminStatusTypes.Available,
+                   InitialStatus              ?? SmartCityStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
+                   InternalData)
 
         {
 
@@ -535,16 +464,9 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new List<DataLicense>();
 
             this.Priority                     = Priority    ?? new SmartCityPriority(0);
-
-            this._AdminStatusSchedule         = new StatusSchedule<SmartCityAdminStatusType>();
-            this._AdminStatusSchedule.Insert(AdminStatus);
-
-            this._StatusSchedule              = new StatusSchedule<SmartCityStatusType>();
-            this._StatusSchedule.Insert(Status);
 
             #endregion
 

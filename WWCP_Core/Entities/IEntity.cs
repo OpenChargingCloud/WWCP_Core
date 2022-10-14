@@ -17,14 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -33,10 +30,14 @@ namespace org.GraphDefined.WWCP
     public interface IEntity
     {
 
+        I18NString                       Name           { get; }
+
+        I18NString                       Description    { get; }
+
         /// <summary>
         /// The timestamp of the last change of this entity.
         /// </summary>
-        DateTime                         LastChange  { get; }
+        DateTime                         LastChange     { get; }
 
 
         /// <summary>

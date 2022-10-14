@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.WWCP.Networking;
+using cloud.charging.open.protocols.WWCP.Networking;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -31,7 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public class SessionStopRequest
@@ -133,7 +133,7 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly Action<ChargeDetailRecord> AddChargeDetailRecordAction;
+        private readonly Action<ChargeDetailRecord>? AddChargeDetailRecordAction;
 
         public ChargingSession_Id Id => throw new NotImplementedException();
 
@@ -148,17 +148,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a new charging session was registered.
         /// </summary>
-        public event OnNewChargingSessionDelegate           OnNewChargingSession;
+        public event OnNewChargingSessionDelegate?           OnNewChargingSession;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was registered.
         /// </summary>
-        public event OnNewChargeDetailRecordDelegate        OnNewChargeDetailRecord;
+        public event OnNewChargeDetailRecordDelegate?        OnNewChargeDetailRecord;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was sent.
         /// </summary>
-        public event OnNewChargeDetailRecordResultDelegate  OnNewChargeDetailRecordResult;
+        public event OnNewChargeDetailRecordResultDelegate?  OnNewChargeDetailRecordResult;
 
         #endregion
 
@@ -175,15 +175,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetworkInfos"></param>
         /// <param name="DisableNetworkSync"></param>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ChargingSessionsStore(RoamingNetwork                   RoamingNetwork,
+        public ChargingSessionsStore(RoamingNetwork                    RoamingNetwork,
 
-                                     Boolean                          DisableLogfiles       = false,
-                                     Boolean                          ReloadDataOnStart     = true,
+                                     Boolean                           DisableLogfiles       = false,
+                                     Boolean                           ReloadDataOnStart     = true,
 
-                                     IEnumerable<RoamingNetworkInfo>  RoamingNetworkInfos   = null,
-                                     Boolean                          DisableNetworkSync    = false,
-                                     String?                          LoggingPath           = null,
-                                     DNSClient                        DNSClient             = null)
+                                     IEnumerable<RoamingNetworkInfo>?  RoamingNetworkInfos   = null,
+                                     Boolean                           DisableNetworkSync    = false,
+                                     String?                           LoggingPath           = null,
+                                     DNSClient?                        DNSClient             = null)
 
             : base(RoamingNetworkId:       RoamingNetwork.Id,
 

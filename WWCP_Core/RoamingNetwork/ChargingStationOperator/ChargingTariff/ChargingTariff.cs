@@ -30,11 +30,11 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.WWCP.Net.IO.JSON;
+using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -200,7 +200,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A charging tariff to charge an electric vehicle.
     /// </summary>
-    public class ChargingTariff : AEMobilityEntity<ChargingTariff_Id>,
+    public class ChargingTariff : AEMobilityEntity<ChargingTariff_Id,
+                                                   ChargingTariffAdminStatusTypes,
+                                                   ChargingTariffStatusTypes>,
                                   IEquatable<ChargingTariff>,
                                   IComparable<ChargingTariff>,
                                   IComparable
@@ -209,40 +211,40 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The offical (multi-language) name of this charging tariff.
+        /// An optional (multi-language) name of this charging tariff.
         /// </summary>
-        [Mandatory]
-        public I18NString  Name           { get; }
+        [Optional]
+        public I18NString                          Name              { get; }
 
         /// <summary>
         /// An optional (multi-language) description of this charging tariff.
         /// </summary>
         [Optional]
-        public I18NString  Description    { get; }
+        public I18NString                          Description       { get; }
 
         /// <summary>
         /// An optional brand for this charging tariff.
         /// </summary>
         [Optional]
-        public Brand       Brand          { get; }
+        public Brand                               Brand             { get; }
 
         /// <summary>
         /// An URI for more information about this tariff.
         /// </summary>
         [Optional]
-        public Uri         TariffURI      { get; }
+        public Uri                                 TariffURI         { get; }
 
         /// <summary>
         /// ISO 4217 code of the currency used for this tariff.
         /// </summary>
         [Mandatory]
-        public Currency    Currency       { get; }
+        public Currency                            Currency          { get; }
 
         /// <summary>
         /// The energy mix.
         /// </summary>
         [Optional]
-        public EnergyMix   EnergyMix      { get;  }
+        public EnergyMix                           EnergyMix         { get;  }
 
                 /// <summary>
         /// An enumeration of tariff elements.
@@ -255,10 +257,10 @@ namespace org.GraphDefined.WWCP
         /// The charging tariff operator of this charging tariff.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator  Operator       { get; }
+        public ChargingStationOperator             Operator          { get; }
 
 
-        public ChargingTariffGroup      TariffGroup    { get; }
+        public ChargingTariffGroup?                TariffGroup       { get; }
 
         #endregion
 
@@ -290,10 +292,10 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Operator == null)
+            if (Operator is null)
                 throw new ArgumentNullException(nameof(Operator),        "The given charging station operator must not be null!");
 
-            if (TariffElements == null || !TariffElements.Any())
+            if (TariffElements is null || !TariffElements.Any())
                 throw new ArgumentNullException(nameof(TariffElements),  "The given enumeration of tariff elements must not be null or empty!");
 
             #endregion
@@ -375,18 +377,18 @@ namespace org.GraphDefined.WWCP
 
             => JSONObject.Create(
 
-                         Id.ToJSON("@id"),
+                         new JProperty("@id", Id.ToString()),
 
                          Embedded
                              ? null
                              : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingTariff"),
 
                          Name.       IsNeitherNullNorEmpty()
-                             ? Name.       ToJSON("name")
+                             ? new JProperty("name",        Name.ToJSON())
                              : null,
 
                          Description.IsNeitherNullNorEmpty()
-                             ? Description.ToJSON("description")
+                             ? new JProperty("description", Description.ToJSON())
                              : null,
 
                          Brand != null
@@ -395,8 +397,8 @@ namespace org.GraphDefined.WWCP
                                    () => new JProperty("brand",    Brand.   ToJSON()))
                              : null,
 
-                         (!Embedded || DataSource != Operator.DataSource)
-                             ? DataSource.ToJSON("dataSource")
+                         (DataSource is not null && (!Embedded || DataSource != Operator.DataSource))
+                             ? new JProperty("dataSource", DataSource)
                              : null,
 
                          //(!Embedded || DataLicenses != Operator.DataLicenses)
@@ -408,7 +410,7 @@ namespace org.GraphDefined.WWCP
 
                          new JProperty("currency", Currency.ISOCode),
 
-                         TariffURI != null
+                         TariffURI is not null
                              ? new JProperty("URI", TariffURI.ToString())
                              : null,
 
@@ -416,7 +418,7 @@ namespace org.GraphDefined.WWCP
                              ? new JProperty("elements", new JArray(TariffElements.Select(TariffElement => TariffElement.ToJSON())))
                              : null,
 
-                         EnergyMix != null
+                         EnergyMix is not null
                              ? new JProperty("energy_mix", EnergyMix.ToJSON())
                              : null,
 
@@ -605,7 +607,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
+        public override Int32 CompareTo(Object? Object)
         {
 
             if (Object == null)

@@ -17,20 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -47,9 +38,14 @@ namespace org.GraphDefined.WWCP
         ChargingPool_Id             Id                      { get; }
 
         /// <summary>
-        /// An description of this charging pool.
+        /// The multi-language name of this charging pool.
         /// </summary>
-        I18NString                  Description             { get; set; }
+        I18NString                  Name                    { get; }
+
+        /// <summary>
+        /// The multi-language description of this charging pool.
+        /// </summary>
+        I18NString                  Description             { get; }
 
         #endregion
 

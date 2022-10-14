@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     #region SmartCityAlreadyExists

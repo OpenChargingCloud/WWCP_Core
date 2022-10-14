@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
 
         eVehicle_Id Id          { get; }
 
-        Timestamped<eVehicleAdminStatusType> AdminStatus { get; set; }
+        Timestamped<eVehicleAdminStatusTypes> AdminStatus { get; set; }
 
         #region OnEVSEData/(Admin)StatusChanged
 

@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -44,7 +44,9 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class NavigationProvider : AEMobilityEntity<NavigationProvider_Id>,
+    public class NavigationProvider : AEMobilityEntity<NavigationProvider_Id,
+                                                       NavigationProviderAdminStatusType,
+                                                       NavigationProviderStatusType>,
                                       IRemoteNavigationProvider,
                                       IEquatable <NavigationProvider>,
                                       IComparable<NavigationProvider>,
@@ -337,61 +339,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<NavigationProviderAdminStatusType> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<NavigationProviderAdminStatusType> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<NavigationProviderAdminStatusType>> AdminStatusSchedule
-
-            => _AdminStatusSchedule;
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<NavigationProviderStatusType> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<NavigationProviderStatusType> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<NavigationProviderStatusType>> StatusSchedule
-
-            => _StatusSchedule;
-
-        #endregion
-
-
         public NavigationProviderPriority Priority { get; set; }
 
         #endregion
@@ -452,16 +399,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal NavigationProvider(NavigationProvider_Id                    Id,
-                                   RoamingNetwork                          RoamingNetwork,
-                                   Action<NavigationProvider>               Configurator                    = null,
-                                   RemoteNavigationProviderCreatorDelegate  RemoteNavigationProviderCreator  = null,
-                                   I18NString                              Name                            = null,
-                                   I18NString                              Description                     = null,
-                                   NavigationProviderPriority               Priority                        = null,
-                                   NavigationProviderAdminStatusType        AdminStatus                     = NavigationProviderAdminStatusType.Available,
-                                   NavigationProviderStatusType             Status                          = NavigationProviderStatusType.Available,
-                                   UInt16                                  MaxAdminStatusListSize          = DefaultMaxAdminStatusListSize,
-                                   UInt16                                  MaxStatusListSize               = DefaultMaxStatusListSize)
+                                    RoamingNetwork                           RoamingNetwork,
+                                    Action<NavigationProvider>               Configurator                      = null,
+                                    RemoteNavigationProviderCreatorDelegate  RemoteNavigationProviderCreator   = null,
+                                    I18NString                               Name                              = null,
+                                    I18NString                               Description                       = null,
+                                    NavigationProviderPriority               Priority                          = null,
+                                    NavigationProviderAdminStatusType        AdminStatus                       = NavigationProviderAdminStatusType.Available,
+                                    NavigationProviderStatusType             Status                            = NavigationProviderStatusType.Available,
+                                    UInt16                                   MaxAdminStatusListSize            = DefaultMaxAdminStatusListSize,
+                                    UInt16                                   MaxStatusListSize                 = DefaultMaxStatusListSize)
 
             : base(Id)
 
@@ -483,12 +430,6 @@ namespace org.GraphDefined.WWCP
             this._DataLicenses                = new List<DataLicense>();
 
             this.Priority                     = Priority    ?? new NavigationProviderPriority(0);
-
-            this._AdminStatusSchedule         = new StatusSchedule<NavigationProviderAdminStatusType>();
-            this._AdminStatusSchedule.Insert(AdminStatus);
-
-            this._StatusSchedule              = new StatusSchedule<NavigationProviderStatusType>();
-            this._StatusSchedule.Insert(Status);
 
             #endregion
 

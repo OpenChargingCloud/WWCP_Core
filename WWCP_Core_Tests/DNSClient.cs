@@ -1,4 +1,4 @@
-﻿namespace org.GraphDefined.WWCP.UnitTests
+﻿namespace cloud.charging.open.protocols.WWCP.UnitTests
 {
     internal class DNSClient
     {

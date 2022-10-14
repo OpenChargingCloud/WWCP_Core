@@ -15,19 +15,23 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
-    public interface IStatus<TType>
+    /// <summary>
+    /// Annotate a struct, class or property as 'SlowData'.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property,
+                    AllowMultiple = false,
+                    Inherited = true)]
+    public class SlowDataAttribute : Attribute
     {
 
-        Timestamped<TType> Status { get; }
+        /// <summary>
+        /// Create a new 'SlowData' attribute.
+        /// </summary>
+        public SlowDataAttribute()
+        { }
 
     }
 

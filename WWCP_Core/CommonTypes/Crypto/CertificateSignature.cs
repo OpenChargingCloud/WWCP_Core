@@ -26,7 +26,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public class CertificateSignature

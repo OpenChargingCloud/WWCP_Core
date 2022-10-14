@@ -4,6 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>cloud.charging.open.protocols.WWCP.tests</AssemblyName>
+    <RootNamespace>cloud.charging.open.protocols.WWCP.tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

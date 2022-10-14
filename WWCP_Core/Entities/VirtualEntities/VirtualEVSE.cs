@@ -36,30 +36,32 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Virtual
+namespace cloud.charging.open.protocols.WWCP.Virtual
 {
 
     /// <summary>
     /// A virtual EVSE.
     /// </summary>
-    public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id>,
+    public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id,
+                                                      EVSEAdminStatusTypes,
+                                                      EVSEStatusTypes>,
                                IEquatable<VirtualEVSE>, IComparable<VirtualEVSE>, IComparable,
                                IEnumerable<SocketOutlet>,
-                               IStatus<EVSEStatusTypes>,
                                IRemoteEVSE
     {
 
         #region Data
 
         /// <summary>
+        /// The default max size of the admin status history.
+        /// </summary>
+        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
+
+        /// <summary>
         /// The default max size of the status history.
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize        = 50;
 
-        /// <summary>
-        /// The default max size of the admin status history.
-        /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
@@ -339,118 +341,6 @@ namespace org.GraphDefined.WWCP.Virtual
         #endregion
 
 
-        #region Status
-
-        /// <summary>
-        /// The current EVSE status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEStatusTypes> Status
-        {
-
-            get
-            {
-
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
-                {
-                    return _StatusSchedule.CurrentStatus;
-                }
-
-                else
-                {
-
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            return new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService);
-
-                    }
-
-                }
-
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_StatusSchedule.CurrentValue != value.Value)
-                    SetStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<EVSEStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The EVSE status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule
-        {
-            get
-            {
-                return _StatusSchedule;
-            }
-        }
-
-        #endregion
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current EVSE admin status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_AdminStatusSchedule.CurrentValue != value.Value)
-                    SetAdminStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The EVSE admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
-
-        #endregion
-
-
         /// <summary>
         /// The time span between self checks.
         /// </summary>
@@ -500,26 +390,31 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="Id">The unique identification of this EVSE.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
         /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
-        internal VirtualEVSE(EVSE_Id                 Id,
-                             I18NString              Name,
-                             IRoamingNetwork         RoamingNetwork,
-                             I18NString              Description              = null,
-                             EVSEAdminStatusTypes    InitialAdminStatus       = EVSEAdminStatusTypes.Operational,
-                             EVSEStatusTypes         InitialStatus            = EVSEStatusTypes.Available,
-                             EnergyMeter_Id?         EnergyMeterId            = null,
-                             String                  EllipticCurve            = "P-256",
-                             ECPrivateKeyParameters  PrivateKey               = null,
-                             PublicKeyCertificates   PublicKeyCertificates    = null,
-                             TimeSpan?               SelfCheckTimeSpan        = null,
-                             UInt16                  MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                             UInt16                  MaxStatusListSize        = DefaultMaxStatusListSize)
+        internal VirtualEVSE(EVSE_Id                  Id,
+                             IRoamingNetwork          RoamingNetwork,
+                             I18NString?              Name                     = null,
+                             I18NString?              Description              = null,
+                             EVSEAdminStatusTypes?    InitialAdminStatus       = null,
+                             EVSEStatusTypes?         InitialStatus            = null,
+                             EnergyMeter_Id?          EnergyMeterId            = null,
+                             String?                  EllipticCurve            = null,
+                             ECPrivateKeyParameters?  PrivateKey               = null,
+                             PublicKeyCertificates?   PublicKeyCertificates    = null,
+                             TimeSpan?                SelfCheckTimeSpan        = null,
+                             UInt16?                  MaxAdminStatusListSize   = null,
+                             UInt16?                  MaxStatusListSize        = null)
 
             : base(Id,
-                   Name,
                    RoamingNetwork,
+                   Name,
+                   Description,
                    EllipticCurve,
                    PrivateKey,
-                   PublicKeyCertificates)
+                   PublicKeyCertificates,
+                   InitialAdminStatus     ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus          ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusListSize ?? DefaultMaxAdminStatusListSize,
+                   MaxStatusListSize      ?? DefaultMaxStatusListSize)
 
         {
 
@@ -532,12 +427,6 @@ namespace org.GraphDefined.WWCP.Virtual
             this.EnergyMeterId          = EnergyMeterId;
 
             this.SelfCheckTimeSpan      = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
-
-            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus);
-
-            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.     Insert(InitialStatus);
 
             this._Reservations          = new Dictionary<ChargingReservation_Id, ChargingReservation>();
 
@@ -577,10 +466,10 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Link events
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
@@ -652,120 +541,6 @@ namespace org.GraphDefined.WWCP.Virtual
         /// An event fired whenever the admin status of the EVSE changed.
         /// </summary>
         public event OnRemoteEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
-
-        #endregion
-
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus)
-        {
-            _StatusSchedule.Insert(NewStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewTimestampedStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
-        {
-            _StatusSchedule.Insert(NewTimestampedStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatus, Timestamp)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus,
-                              DateTime        Timestamp)
-        {
-            _StatusSchedule.Insert(NewStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
-                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
-        {
-            _StatusSchedule.Set(NewStatusList, ChangeMethod);
-        }
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes  NewAdminStatus,
-                                   DateTime             Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                  ChangeMethod = ChangeMethods.Replace)
-        {
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-        }
 
         #endregion
 
@@ -988,7 +763,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1004,7 +779,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1061,7 +836,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                               Timestamp.Value,
                                                                               oldReservation.StartTime,
                                                                               Duration ?? MaxReservationDuration,
-                                                                              (ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                                              (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                                               oldReservation.ConsumedReservationTime + oldReservation.Duration - oldReservation.TimeLeft,
                                                                               ReservationLevel,
                                                                               ProviderId,
@@ -1076,7 +851,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                                                               eMAIds,
                                                                               PINs);
 
-                            OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now, this, updatedReservation);
+                            OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, this, updatedReservation);
 
                             result = ReservationResult.Success(updatedReservation);
 
@@ -1102,9 +877,9 @@ namespace org.GraphDefined.WWCP.Virtual
 
                                     newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                              Timestamp:               Timestamp.Value,
-                                                                             StartTime:               ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now,
+                                                                             StartTime:               ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                              Duration:                Duration  ?? MaxReservationDuration,
-                                                                             EndTime:                 (ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                                             EndTime:                 (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                                              ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                              ReservationLevel:        ReservationLevel,
                                                                              ProviderId:              ProviderId,
@@ -1156,9 +931,9 @@ namespace org.GraphDefined.WWCP.Virtual
                     newReservation != null)
                 {
 
-                    SetStatus(EVSEStatusTypes.Reserved);
+                    Status = EVSEStatusTypes.Reserved;
 
-                    OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now,
+                    OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              this,
                                              newReservation);
 
@@ -1173,7 +948,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1238,7 +1013,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1254,7 +1029,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1325,10 +1100,10 @@ namespace org.GraphDefined.WWCP.Virtual
                     !_Reservations.Any())
                     {
                         // Will send events!
-                        SetStatus(EVSEStatusTypes.Available);
+                        Status = EVSEStatusTypes.Available;
                     }
 
-                    OnReservationCanceled?.Invoke(Vanaheimr.Illias.Timestamp.Now,
+                    OnReservationCanceled?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                   this,
                                                   canceledReservation,
                                                   Reason);
@@ -1347,7 +1122,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1411,7 +1186,7 @@ namespace org.GraphDefined.WWCP.Virtual
                             !_Reservations.Any())
                         {
                             // Will send events!
-                            SetStatus(EVSEStatusTypes.Available);
+                            Status = EVSEStatusTypes.Available;
                         }
 
                         OnReservationCanceled?.Invoke(Timestamp.Now,
@@ -1498,14 +1273,14 @@ namespace org.GraphDefined.WWCP.Virtual
                     if (_ChargingSession != null)
                     {
 
-                        SetStatus(EVSEStatusTypes.Charging);
+                        Status = EVSEStatusTypes.Charging;
 
                         OnNewChargingSession?.Invoke(Timestamp.Now, this, _ChargingSession);
 
                     }
 
                     else
-                        SetStatus(EVSEStatusTypes.Available);
+                        Status = EVSEStatusTypes.Available;
 
                 }
 
@@ -1627,7 +1402,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1642,7 +1417,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1692,7 +1467,7 @@ namespace org.GraphDefined.WWCP.Virtual
                         case EVSEStatusTypes.Available:
                         case EVSEStatusTypes.DoorNotClosed:
 
-                            _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.New) {
+                            _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.NewRandom) {
                                 EventTrackingId      = EventTrackingId,
                                 ReservationId        = ReservationId,
                                 Reservation          = _Reservations.Values.FirstOrDefault(reservation => reservation.Id == ReservationId),
@@ -1702,10 +1477,10 @@ namespace org.GraphDefined.WWCP.Virtual
                                 AuthenticationStart  = RemoteAuthentication
                             };
 
-                            _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Vanaheimr.Illias.Timestamp.Now, 0));
+                            _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                             EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
-                            SetStatus(EVSEStatusTypes.Charging);
+                            Status = EVSEStatusTypes.Charging;
 
                             result = RemoteStartResult.Success(_ChargingSession);
                             break;
@@ -1743,7 +1518,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                 firstReservation.AddToConsumedReservationTime(firstReservation.Duration - firstReservation.TimeLeft);
 
                                 // Will also set the status -> EVSEStatusType.Charging;
-                                _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.New) {
+                                _ChargingSession = new ChargingSession(SessionId ?? ChargingSession_Id.NewRandom) {
                                     EventTrackingId      = EventTrackingId,
                                     ReservationId        = ReservationId,
                                     Reservation          = firstReservation,
@@ -1755,10 +1530,10 @@ namespace org.GraphDefined.WWCP.Virtual
 
                                 firstReservation.ChargingSession = ChargingSession;
 
-                                _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Vanaheimr.Illias.Timestamp.Now, 0));
+                                _ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                                 EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
-                                SetStatus(EVSEStatusTypes.Charging);
+                                Status = EVSEStatusTypes.Charging;
 
                                 result = RemoteStartResult.Success(_ChargingSession);
 
@@ -1825,7 +1600,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1892,10 +1667,10 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1910,7 +1685,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1974,7 +1749,7 @@ namespace org.GraphDefined.WWCP.Virtual
                                 EnergyMeterTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                                 var __ChargingSession    = _ChargingSession;
-                                var Now                  = Vanaheimr.Illias.Timestamp.Now;
+                                var Now                  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
                                 var SessionTime          = __ChargingSession.SessionTime;
                                 SessionTime.EndTime = Now;
                                 __ChargingSession.SessionTime.EndTime = Now;
@@ -2109,7 +1884,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {

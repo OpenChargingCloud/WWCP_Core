@@ -25,7 +25,7 @@ using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public delegate IRemoteEVehicle RemoteEVehicleCreatorDelegate(eVehicle eVehicle);
@@ -60,8 +60,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnEVehicleAdminStatusChangedDelegate(DateTime                              Timestamp,
                                                               EventTracking_Id                      EventTrackingId,
                                                               eVehicle                              eVehicle,
-                                                              Timestamped<eVehicleAdminStatusType>  OldStatus,
-                                                              Timestamped<eVehicleAdminStatusType>  NewStatus);
+                                                              Timestamped<eVehicleAdminStatusTypes>  OldStatus,
+                                                              Timestamped<eVehicleAdminStatusTypes>  NewStatus);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the electric vehicle changed.
@@ -74,8 +74,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnEVehicleStatusChangedDelegate(DateTime                         Timestamp,
                                                          EventTracking_Id                 EventTrackingId,
                                                          eVehicle                         eVehicle,
-                                                         Timestamped<eVehicleStatusType>  OldStatus,
-                                                         Timestamped<eVehicleStatusType>  NewStatus);
+                                                         Timestamped<eVehicleStatusTypes>  OldStatus,
+                                                         Timestamped<eVehicleStatusTypes>  NewStatus);
 
     /// <summary>
     /// A delegate called whenever the geo coordinate of the electric vehicle changed.

@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -99,13 +99,15 @@ namespace org.GraphDefined.WWCP
 
     }
 
+
     /// <summary>
     /// A pool of electric vehicle charging stations.
     /// The geo locations of these charging stations will be close together and the charging session
     /// might provide a shared network access to aggregate and optimize communication
     /// with the EVSE Operator backend.
     /// </summary>
-    public class ChargingSession : AEMobilityEntity<ChargingSession_Id>,
+    public class ChargingSession : AInternalData,
+                                   IHasId<ChargingSession_Id>,
                                    IEquatable<ChargingSession>,
                                    IComparable<ChargingSession>,
                                    IComparable
@@ -121,6 +123,14 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The unique charging session identification.
+        /// </summary>
+        [Mandatory]
+        public ChargingSession_Id       Id       { get; }
+
+
 
         public EventTracking_Id  EventTrackingId    { get; set; }
 
@@ -873,14 +883,18 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
         /// <param name="Timestamp">The timestamp of the session creation.</param>
-        public ChargingSession(ChargingSession_Id  Id,
-                               DateTime?           Timestamp = null)
+        public ChargingSession(ChargingSession_Id      Id,
+                               DateTime?               Timestamp      = null,
+                               JObject?                CustomData     = null,
+                               UserDefinedDictionary?  InternalData   = null)
 
-            : base(Id)
+            : base(CustomData,
+                   InternalData)
 
         {
 
-            this.SessionTime         = new StartEndDateTime(Timestamp ?? Vanaheimr.Illias.Timestamp.Now);
+            this.Id                  = Id;
+            this.SessionTime         = new StartEndDateTime(Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
             this._EnergyMeterValues  = new List<Timestamped<Decimal>>();
             this._StopRequests       = new List<SessionStopRequest>();
 
@@ -917,7 +931,7 @@ namespace org.GraphDefined.WWCP
 
             var JSON = JSONObject.Create(
 
-                           Id.ToJSON("@id"),
+                           new JProperty("@id", Id.ToString()),
 
                            Embedded
                                ? null
@@ -1072,12 +1086,12 @@ namespace org.GraphDefined.WWCP
                                                                                                            new JProperty("value",     meterValue.Value)
                                                                                                        ))
                                                                               ))
-                               : null,
-
-                           _UserDefined.Any()
-                               ? new JProperty("userDefined",    new JObject(_UserDefined.Where(kkvp => kkvp.Value is JObject).
-                                                                                          Select(kkvp => new JProperty(kkvp.Key, kkvp.Value as JObject))))
                                : null
+
+                           //_UserDefined.Any()
+                           //    ? new JProperty("userDefined",    new JObject(_UserDefined.Where(kkvp => kkvp.Value is JObject).
+                           //                                                               Select(kkvp => new JProperty(kkvp.Key, kkvp.Value as JObject))))
+                           //    : null
 
                 );
 
@@ -1243,20 +1257,12 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is a charging session.
-            var ChargingSession = Object as ChargingSession;
-            if ((Object) ChargingSession == null)
-                throw new ArgumentException("The given object is not a charging session!");
-
-            return CompareTo(ChargingSession);
-
-        }
+            => Object is ChargingSession chargingSession
+                   ? CompareTo(chargingSession)
+                   : throw new ArgumentException("The given object is not a charging session!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -1266,13 +1272,18 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="ChargingSession">A charging session object to compare with.</param>
-        public Int32 CompareTo(ChargingSession ChargingSession)
+        public Int32 CompareTo(ChargingSession? ChargingSession)
         {
 
-            if ((Object) ChargingSession == null)
-                throw new ArgumentNullException("The given charging session must not be null!");
+            if (ChargingSession is null)
+                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
 
-            return Id.CompareTo(ChargingSession.Id);
+            var c = Id.CompareTo(ChargingSession.Id);
+
+            //if (c == 0)
+            //    c = SessionId.CompareTo(ChargingSession.SessionId);
+
+            return c;
 
         }
 
@@ -1289,20 +1300,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a charging session.
-            var ChargingSession = Object as ChargingSession;
-            if ((Object) ChargingSession == null)
-                return false;
-
-            return this.Equals(ChargingSession);
-
-        }
+            => Object is ChargingSession chargingSession &&
+                   Equals(chargingSession);
 
         #endregion
 
@@ -1313,15 +1314,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingSession">A charging session to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingSession ChargingSession)
-        {
+        public Boolean Equals(ChargingSession? ChargingSession)
 
-            if ((Object) ChargingSession == null)
-                return false;
+            => ChargingSession is not null &&
 
-            return Id.Equals(ChargingSession.Id);
-
-        }
+               Id.Equals(ChargingSession.Id);
 
         #endregion
 
@@ -1333,9 +1330,8 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+
+            => Id.GetHashCode();
 
         #endregion
 
@@ -1345,9 +1341,8 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return Id.ToString();
-        }
+
+            => Id.ToString();
 
         #endregion
 

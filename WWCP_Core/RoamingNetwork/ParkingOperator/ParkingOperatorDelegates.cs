@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     public delegate IRemoteParkingOperator RemoteParkingOperatorCreatorDelegate(ParkingOperator ParkingOperator);
@@ -55,8 +55,8 @@ namespace org.GraphDefined.WWCP
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
     public delegate Task OnParkingOperatorAdminStatusChangedDelegate(DateTime                                     Timestamp,
                                                                      ParkingOperator                              ParkingOperator,
-                                                                     Timestamped<ParkingOperatorAdminStatusType>  OldStatus,
-                                                                     Timestamped<ParkingOperatorAdminStatusType>  NewStatus);
+                                                                     Timestamped<ParkingOperatorAdminStatusTypes>  OldStatus,
+                                                                     Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus);
 
 
     /// <summary>
@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
     public delegate Task OnParkingOperatorStatusChangedDelegate(DateTime                                Timestamp,
                                                                 ParkingOperator                         ParkingOperator,
-                                                                Timestamped<ParkingOperatorStatusType>  OldStatus,
-                                                                Timestamped<ParkingOperatorStatusType>  NewStatus);
+                                                                Timestamped<ParkingOperatorStatusTypes>  OldStatus,
+                                                                Timestamped<ParkingOperatorStatusTypes>  NewStatus);
 
 }

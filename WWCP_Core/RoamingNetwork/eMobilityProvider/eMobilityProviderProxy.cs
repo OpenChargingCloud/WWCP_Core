@@ -27,10 +27,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -44,7 +45,9 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class eMobilityProvider : ACryptoEMobilityEntity<eMobilityProvider_Id>,
+    public class eMobilityProvider : ACryptoEMobilityEntity<eMobilityProvider_Id,
+                                                            eMobilityProviderAdminStatusTypes,
+                                                            eMobilityProviderStatusTypes>,
                                      //IRemoteAuthorizeStartStop,
                                      ISend2RemoteEMobilityProvider,
                                      IEquatable <eMobilityProvider>,
@@ -73,37 +76,6 @@ namespace org.GraphDefined.WWCP
 
         IId ISendChargeDetailRecords.Id
             => Id;
-
-        #region Description
-
-        private I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of the EVSE Operator.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Description != value)
-                    SetProperty(ref _Description, value);
-
-            }
-
-        }
-
-        #endregion
 
         #region Logo
 
@@ -346,60 +318,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region AdminStatus
-
-        /// <summary>
-        /// The current admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<eMobilityProviderAdminStatusTypes> AdminStatus
-
-            => _AdminStatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<eMobilityProviderAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The admin status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>> AdminStatusSchedule
-
-            => _AdminStatusSchedule;
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current status.
-        /// </summary>
-        [Optional]
-        public Timestamped<eMobilityProviderStatusTypes> Status
-
-            => _StatusSchedule.CurrentStatus;
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<eMobilityProviderStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<eMobilityProviderStatusTypes>> StatusSchedule
-
-            => _StatusSchedule;
-
-        #endregion
-
-
         public TimeSpan? RequestTimeout { get; }
 
 
@@ -544,43 +462,53 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal eMobilityProvider(eMobilityProvider_Id                    Id,
-                                   RoamingNetwork                          RoamingNetwork,
-                                   Action<eMobilityProvider>               Configurator                     = null,
-                                   RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator   = null,
-                                   I18NString                              Name                             = null,
-                                   I18NString                              Description                      = null,
-                                   eMobilityProviderPriority               Priority                         = null,
-                                   eMobilityProviderAdminStatusTypes       AdminStatus                      = eMobilityProviderAdminStatusTypes.Operational,
-                                   eMobilityProviderStatusTypes            Status                           = eMobilityProviderStatusTypes.Available,
-                                   UInt16                                  MaxAdminStatusListSize           = DefaultMaxAdminStatusListSize,
-                                   UInt16                                  MaxStatusListSize                = DefaultMaxStatusListSize)
+        internal eMobilityProvider(eMobilityProvider_Id                     Id,
+                                   RoamingNetwork                           RoamingNetwork,
+
+                                   I18NString?                              Name                             = null,
+                                   I18NString?                              Description                      = null,
+                                   Action<eMobilityProvider>?               Configurator                     = null,
+                                   RemoteEMobilityProviderCreatorDelegate?  RemoteEMobilityProviderCreator   = null,
+                                   eMobilityProviderPriority?               Priority                         = null,
+                                   eMobilityProviderAdminStatusTypes?       InitialAdminStatus               = null,
+                                   eMobilityProviderStatusTypes?            InitialStatus                    = null,
+                                   UInt16?                                  MaxAdminStatusScheduleSize       = null,
+                                   UInt16?                                  MaxStatusScheduleSize            = null,
+
+                                   String?                                  DataSource                       = null,
+                                   DateTime?                                LastChange                       = null,
+
+                                   JObject?                                 CustomData                       = null,
+                                   UserDefinedDictionary?                   InternalData                     = null)
 
             : base(Id,
+                   RoamingNetwork,
                    Name,
-                   RoamingNetwork)
+                   Description,
+                   null,
+                   null,
+                   null,
+                   InitialAdminStatus         ?? eMobilityProviderAdminStatusTypes.Operational,
+                   InitialStatus              ?? eMobilityProviderStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
+                   InternalData)
 
         {
 
             #region Initial checks
 
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(eMobilityProvider),  "The roaming network must not be null!");
 
             #endregion
 
             #region Init data and properties
 
-            this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new ReactiveSet<DataLicense>();
 
             this.Priority                     = Priority    ?? new eMobilityProviderPriority(0);
-
-            this._AdminStatusSchedule         = new StatusSchedule<eMobilityProviderAdminStatusTypes>();
-            this._AdminStatusSchedule.Insert(AdminStatus);
-
-            this._StatusSchedule              = new StatusSchedule<eMobilityProviderStatusTypes>();
-            this._StatusSchedule.Insert(Status);
 
             this.ChargeDetailRecordFilter     = ChargeDetailRecordFilter ?? (cdr => ChargeDetailRecordFilters.forward);
 
@@ -636,11 +564,11 @@ namespace org.GraphDefined.WWCP
 
         #region eMobilityStationAdminStatus
 
-        public IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusType>> eMobilityStationAdminStatus
+        public IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>> eMobilityStationAdminStatus
 
             => _eMobilityStations.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusType>(vehicle.Id, vehicle.AdminStatus.Value));
+                   Select (vehicle => new KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
         #endregion
 
@@ -658,7 +586,7 @@ namespace org.GraphDefined.WWCP
         public eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id                             eMobilityStationId             = null,
                                                           Action<eMobilityStation>                        Configurator                   = null,
                                                           RemoteEMobilityStationCreatorDelegate           RemoteeMobilityStationCreator  = null,
-                                                          eMobilityStationAdminStatusType                 AdminStatus                    = eMobilityStationAdminStatusType.Operational,
+                                                          eMobilityStationAdminStatusTypes                 AdminStatus                    = eMobilityStationAdminStatusTypes.Operational,
                                                           Action<eMobilityStation>                        OnSuccess                      = null,
                                                           Action<eMobilityProvider, eMobilityStation_Id>  OnError                        = null)
 
@@ -822,14 +750,16 @@ namespace org.GraphDefined.WWCP
 
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus)
 
-        public void SetEMobilityStationAdminStatus(eMobilityStation_Id                           eMobilityStationId,
-                                                   Timestamped<eMobilityStationAdminStatusType>  NewStatus,
-                                                   Boolean                                       SendUpstream = false)
+        public void SetEMobilityStationAdminStatus(eMobilityStation_Id                            eMobilityStationId,
+                                                   Timestamped<eMobilityStationAdminStatusTypes>  NewStatus,
+                                                   Boolean                                        SendUpstream = false)
         {
 
-            eMobilityStation _eMobilityStation = null;
-            if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
-                _eMobilityStation.SetAdminStatus(NewStatus);
+            if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
+                eMobilityStation is not null)
+            {
+                eMobilityStation.AdminStatus = NewStatus;
+            }
 
         }
 
@@ -837,14 +767,16 @@ namespace org.GraphDefined.WWCP
 
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus, Timestamp)
 
-        public void SetEMobilityStationAdminStatus(eMobilityStation_Id              eMobilityStationId,
-                                                   eMobilityStationAdminStatusType  NewStatus,
-                                                   DateTime                         Timestamp)
+        public void SetEMobilityStationAdminStatus(eMobilityStation_Id               eMobilityStationId,
+                                                   eMobilityStationAdminStatusTypes  NewStatus,
+                                                   DateTime                          Timestamp)
         {
 
-            eMobilityStation _eMobilityStation  = null;
-            if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
-                _eMobilityStation.SetAdminStatus(NewStatus, Timestamp);
+            if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
+                eMobilityStation is not null)
+            {
+                eMobilityStation.AdminStatus = new Timestamped<eMobilityStationAdminStatusTypes>(Timestamp, NewStatus);
+            }
 
         }
 
@@ -853,13 +785,15 @@ namespace org.GraphDefined.WWCP
         #region SetEMobilityStationAdminStatus(eMobilityStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEMobilityStationAdminStatus(eMobilityStation_Id                                        eMobilityStationId,
-                                                   IEnumerable<Timestamped<eMobilityStationAdminStatusType>>  StatusList,
+                                                   IEnumerable<Timestamped<eMobilityStationAdminStatusTypes>>  StatusList,
                                                    ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace)
         {
 
-            eMobilityStation _eMobilityStation  = null;
-            if (TryGeteMobilityStationById(eMobilityStationId, out _eMobilityStation))
-                _eMobilityStation.SetAdminStatus(StatusList, ChangeMethod);
+            if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
+                eMobilityStation is not null)
+            {
+                eMobilityStation.SetAdminStatus(StatusList, ChangeMethod);
+            }
 
             //if (SendUpstream)
             //{
@@ -941,8 +875,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateeMobilityStationAdminStatus(DateTime                                      Timestamp,
                                                               EventTracking_Id                              EventTrackingId,
                                                               eMobilityStation                              eMobilityStation,
-                                                              Timestamped<eMobilityStationAdminStatusType>  OldStatus,
-                                                              Timestamped<eMobilityStationAdminStatusType>  NewStatus)
+                                                              Timestamped<eMobilityStationAdminStatusTypes>  OldStatus,
+                                                              Timestamped<eMobilityStationAdminStatusTypes>  NewStatus)
         {
 
             var OnEMobilityStationAdminStatusChangedLocal = OnEMobilityStationAdminStatusChanged;
@@ -990,7 +924,7 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicles
 
-        private EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
+        private readonly EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
 
         public IEnumerable<eVehicle> eVehicles
 
@@ -1000,21 +934,21 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicleAdminStatus
 
-        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>> eVehicleAdminStatus
+        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>> eVehicleAdminStatus
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>(vehicle.Id, vehicle.AdminStatus.Value));
+                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
         #endregion
 
         #region eVehicleStatus
 
-        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleStatusType>> eVehicleStatus
+        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleStatusTypes>> eVehicleStatus
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusType>(vehicle.Id, vehicle.Status.Value));
+                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusTypes>(vehicle.Id, vehicle.Status.Value));
 
         #endregion
 
@@ -1032,8 +966,8 @@ namespace org.GraphDefined.WWCP
         public eVehicle CreateNeweVehicle(eVehicle_Id                             eVehicleId             = null,
                                           Action<eVehicle>                        Configurator           = null,
                                           RemoteEVehicleCreatorDelegate           RemoteeVehicleCreator  = null,
-                                          eVehicleAdminStatusType                 AdminStatus            = eVehicleAdminStatusType.Operational,
-                                          eVehicleStatusType                      Status                 = eVehicleStatusType.Available,
+                                          eVehicleAdminStatusTypes                 AdminStatus            = eVehicleAdminStatusTypes.Operational,
+                                          eVehicleStatusTypes                      Status                 = eVehicleStatusTypes.Available,
                                           Action<eVehicle>                        OnSuccess              = null,
                                           Action<eMobilityProvider, eVehicle_Id>  OnError                = null)
 
@@ -1199,14 +1133,16 @@ namespace org.GraphDefined.WWCP
 
         #region SeteVehicleAdminStatus(eVehicleId, NewStatus)
 
-        public void SeteVehicleAdminStatus(eVehicle_Id                           eVehicleId,
-                                               Timestamped<eVehicleAdminStatusType>  NewStatus,
-                                               Boolean                                   SendUpstream = false)
+        public void SeteVehicleAdminStatus(eVehicle_Id                            eVehicleId,
+                                           Timestamped<eVehicleAdminStatusTypes>  NewStatus,
+                                           Boolean                                SendUpstream = false)
         {
 
-            eVehicle _eVehicle = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(NewStatus);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.AdminStatus = NewStatus;
+            }
 
         }
 
@@ -1214,14 +1150,16 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
 
-        public void SetEVehicleAdminStatus(eVehicle_Id              eVehicleId,
-                                           eVehicleAdminStatusType  NewStatus,
-                                           DateTime                     Timestamp)
+        public void SetEVehicleAdminStatus(eVehicle_Id               eVehicleId,
+                                           eVehicleAdminStatusTypes  NewStatus,
+                                           DateTime                  Timestamp)
         {
 
-            eVehicle _eVehicle  = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(NewStatus, Timestamp);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.AdminStatus = new Timestamped<eVehicleAdminStatusTypes>(Timestamp, NewStatus);
+            }
 
         }
 
@@ -1230,13 +1168,15 @@ namespace org.GraphDefined.WWCP
         #region SetEVehicleAdminStatus(eVehicleId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEVehicleAdminStatus(eVehicle_Id                                        eVehicleId,
-                                           IEnumerable<Timestamped<eVehicleAdminStatusType>>  StatusList,
+                                           IEnumerable<Timestamped<eVehicleAdminStatusTypes>>  StatusList,
                                            ChangeMethods                                      ChangeMethod  = ChangeMethods.Replace)
         {
 
-            eVehicle _eVehicle  = null;
-            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
-                _eVehicle.SetAdminStatus(StatusList, ChangeMethod);
+            if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
+                eVehicle is not null)
+            {
+                eVehicle.SetAdminStatus(StatusList, ChangeMethod);
+            }
 
             //if (SendUpstream)
             //{
@@ -1325,8 +1265,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVehicleAdminStatus(DateTime                                  Timestamp,
             EventTracking_Id  EventTrackingId,
                                                           eVehicle                              eVehicle,
-                                                          Timestamped<eVehicleAdminStatusType>  OldStatus,
-                                                          Timestamped<eVehicleAdminStatusType>  NewStatus)
+                                                          Timestamped<eVehicleAdminStatusTypes>  OldStatus,
+                                                          Timestamped<eVehicleAdminStatusTypes>  NewStatus)
         {
 
             var OnEVehicleAdminStatusChangedLocal = OnEVehicleAdminStatusChanged;
@@ -1349,8 +1289,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVehicleStatus(DateTime                             Timestamp,
             EventTracking_Id  EventTrackingId,
                                                      eVehicle                         eVehicle,
-                                                     Timestamped<eVehicleStatusType>  OldStatus,
-                                                     Timestamped<eVehicleStatusType>  NewStatus)
+                                                     Timestamped<eVehicleStatusTypes>  OldStatus,
+                                                     Timestamped<eVehicleStatusTypes>  NewStatus)
         {
 
             var OnEVehicleStatusChangedLocal = OnEVehicleStatusChanged;
@@ -2649,7 +2589,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2667,7 +2607,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStartRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2717,7 +2657,7 @@ namespace org.GraphDefined.WWCP
                                                       SessionId,
                                                       Runtime: TimeSpan.Zero);
 
-            var Endtime  = Vanaheimr.Illias.Timestamp.Now;
+            var Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             var Runtime  = Endtime - StartTime;
 
 
@@ -2800,7 +2740,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2818,7 +2758,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStopRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2865,7 +2805,7 @@ namespace org.GraphDefined.WWCP
                                                      SessionId,
                                                      Runtime: TimeSpan.Zero);
 
-            var Endtime  = Vanaheimr.Illias.Timestamp.Now;
+            var Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             var Runtime  = Endtime - StartTime;
 
 
@@ -2938,7 +2878,7 @@ namespace org.GraphDefined.WWCP
                                                                              EventTrackingId,
                                                                              RequestTimeout);
 
-            return SendCDRsResult.OutOfService(Vanaheimr.Illias.Timestamp.Now,
+            return SendCDRsResult.OutOfService(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                Id,
                                                this,
                                                ChargeDetailRecords);
@@ -3059,7 +2999,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3074,7 +3014,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3136,7 +3076,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3203,7 +3143,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3219,7 +3159,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3276,7 +3216,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3428,7 +3368,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3443,7 +3383,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3498,7 +3438,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3563,7 +3503,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3578,7 +3518,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -3629,7 +3569,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {

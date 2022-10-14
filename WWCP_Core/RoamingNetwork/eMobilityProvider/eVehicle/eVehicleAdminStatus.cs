@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current status of a e-mobility station.
         /// </summary>
-        public eVehicleAdminStatusType  Status      { get; }
+        public eVehicleAdminStatusTypes  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the e-mobility station.
@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current status of a e-mobility station.</param>
         /// <param name="Timestamp">The timestamp of the current status of the e-mobility station.</param>
         public eVehicleAdminStatus(eVehicle_Id              Id,
-                                           eVehicleAdminStatusType  Status,
+                                           eVehicleAdminStatusTypes  Status,
                                            DateTime                         Timestamp)
 
         {

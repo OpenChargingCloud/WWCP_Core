@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Importer
+namespace cloud.charging.open.protocols.WWCP.Importer
 {
 
     public class ImporterForwardingInfo

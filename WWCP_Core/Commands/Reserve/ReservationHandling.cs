@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -63,13 +63,13 @@ namespace org.GraphDefined.WWCP
             if (KeepAliveTime.TotalSeconds > 0)
             {
                 this.KeepAliveTime  = KeepAliveTime;
-                this.EndTime        = Vanaheimr.Illias.Timestamp.Now + KeepAliveTime;
+                this.EndTime        = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now + KeepAliveTime;
             }
 
             else
             {
                 this.KeepAliveTime  = null;
-                this.EndTime        = Vanaheimr.Illias.Timestamp.Now;
+                this.EndTime        = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             }
 
         }

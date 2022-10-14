@@ -17,23 +17,18 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
     /// A electric vehicle charging service plan (EVCSP).
     /// </summary>
-    public class ChargingServicePlan : AEMobilityEntity<ChargingServicePlan_Id>,
+    public class ChargingServicePlan : AInternalData,
+                                       IHasId<ChargingServicePlan_Id>,
                                        IEquatable<ChargingServicePlan>, IComparable<ChargingServicePlan>, IComparable
     {
 
@@ -43,55 +38,23 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Name
-
-        private I18NString _Name;
-
         /// <summary>
-        /// The offical (multi-language) name of the ChargingPool.
+        /// The unique electric vehicle charging service plan identification.
         /// </summary>
         [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _Name, value);
-            }
-
-        }
-
-        #endregion
-
-        #region Description
-
-        private I18NString _Description;
+        public ChargingServicePlan_Id  Id             { get; }
 
         /// <summary>
-        /// An optional additional (multi-language) description of the ChargingPool.
+        /// The (multi-language) name of the electric vehicle charging service plan identification.
+        /// </summary>
+        [Mandatory]
+        public I18NString              Name           { get; }
+
+        /// <summary>
+        /// The optional (multi-language) description of the electric vehicle charging service plan identification.
         /// </summary>
         [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _Description, value);
-            }
-
-        }
-
-        #endregion
+        public I18NString?             Description    { get; }
 
         #endregion
 
@@ -101,44 +64,27 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) ChargingServicePlan()
-
-        /// <summary>
-        /// Create a new electric vehicle charging service plan having a random identification.
-        /// </summary>
-        internal ChargingServicePlan()
-            : this(ChargingServicePlan_Id.New)
-        { }
-
-        #endregion
-
-        #region (internal) ChargingServicePlan(Id)
-
         /// <summary>
         /// Create a new electric vehicle charging service plan having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the service plan.</param>
-        internal ChargingServicePlan(ChargingServicePlan_Id  Id)
-            : base(Id)
+        /// <param name="Name">The (multi-language) name of the electric vehicle charging service plan identification.</param>
+        /// <param name="Description">An optional (multi-language) description of the electric vehicle charging service plan identification.</param>
+        internal ChargingServicePlan(ChargingServicePlan_Id?  Id            = null,
+                                     I18NString?              Name          = null,
+                                     I18NString?              Description   = null)
+
+            : base(null,
+                   null)
+
         {
 
-            #region Initial checks
-
-            if (Id == null)
-                throw new ArgumentNullException("Id", "The unique identification of the service plan must not be null!");
-
-            #endregion
-
-            #region Init data and properties
-
-            this.Name         = new I18NString(Languages.en, Id.ToString());
-            this.Description  = new I18NString();
-
-            #endregion
+            this.Id           = Id   ?? ChargingServicePlan_Id.NewRandom;
+            this.Name         = Name ?? new I18NString(Languages.en,
+                                                       "Charging Service Plan " + this.Id.ToString());
+            this.Description  = Description;
 
         }
-
-        #endregion
 
         #endregion
 
@@ -151,7 +97,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object Object)
         {
 
             if (Object == null)

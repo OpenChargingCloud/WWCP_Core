@@ -28,7 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Net.IO.JSON
+namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 {
 
     /// <summary>
@@ -44,11 +44,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// </summary>
         /// <param name="eMobilityProvider">An e-mobility provider.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
-        public static JObject ToJSON(this eMobilityProvider  eMobilityProvider,
-                                     Boolean                 Embedded                 = false,
-                                     InfoStatus              ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
-                                     InfoStatus              ExpandBrandIds           = InfoStatus.ShowIdOnly,
-                                     InfoStatus              ExpandDataLicenses       = InfoStatus.ShowIdOnly)
+        public static JObject? ToJSON(this eMobilityProvider  eMobilityProvider,
+                                      Boolean                 Embedded                 = false,
+                                      InfoStatus              ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
+                                      InfoStatus              ExpandBrandIds           = InfoStatus.ShowIdOnly,
+                                      InfoStatus              ExpandDataLicenses       = InfoStatus.ShowIdOnly)
 
 
             => eMobilityProvider == null
@@ -66,10 +66,10 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          new JProperty("name",  eMobilityProvider.Name.ToJSON()),
 
                          eMobilityProvider.Description.IsNeitherNullNorEmpty()
-                             ? eMobilityProvider.Description.ToJSON("description")
+                             ? new JProperty("description", eMobilityProvider.Description.ToJSON())
                              : null,
 
-                         eMobilityProvider.DataSource.  ToJSON("DataSource"),
+                         //eMobilityProvider.DataSource.  ToJSON("DataSource"),
 
                          ExpandDataLicenses.Switch(
                              () => new JProperty("dataLicenseIds",  new JArray(eMobilityProvider.DataLicenses.SafeSelect(license => license.Id.ToString()))),

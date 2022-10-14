@@ -17,16 +17,96 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for the charging pool admin status.
+    /// </summary>
+    public static class ChargingPoolAdminStatusExtensions
+    {
+
+        #region ToJSON(this ChargingPoolAdminStatus, Skip = null, Take = null)
+
+        public static JObject ToJSON(this IEnumerable<ChargingPoolAdminStatus>  ChargingPoolAdminStatus,
+                                     UInt64?                                    Skip  = null,
+                                     UInt64?                                    Take  = null)
+        {
+
+            #region Initial checks
+
+            if (ChargingPoolAdminStatus is null || !ChargingPoolAdminStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging pool identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatus>();
+
+            foreach (var status in ChargingPoolAdminStatus)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region Contains(this ChargingPoolAdminStatus, Id, Status)
+
+        /// <summary>
+        /// Check if the given enumeration of charging pools and their current admin status
+        /// contains the given pair of charging pool identification and admin status.
+        /// </summary>
+        /// <param name="ChargingPoolAdminStatus">An enumeration of charging pools and their current admin status.</param>
+        /// <param name="Id">A charging pool identification.</param>
+        /// <param name="Status">A charging pool admin status.</param>
+        public static Boolean Contains(this IEnumerable<ChargingPoolAdminStatus>  ChargingPoolAdminStatus,
+                                       ChargingPool_Id                            Id,
+                                       ChargingPoolAdminStatusTypes               Status)
+        {
+
+            foreach (var adminStatus in ChargingPoolAdminStatus)
+            {
+                if (adminStatus.Id     == Id &&
+                    adminStatus.Status == Status)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The current admin status of a charging pool.
@@ -60,10 +140,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingPoolAdminStatus(ChargingPool_Id                            Id,
                                        Timestamped<ChargingPoolAdminStatusTypes>  Status,
-                                       IReadOnlyDictionary<String, Object>        CustomData  = null)
+                                       JObject?                                   CustomData     = null,
+                                       UserDefinedDictionary?                     InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

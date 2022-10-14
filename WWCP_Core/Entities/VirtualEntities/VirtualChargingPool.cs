@@ -35,15 +35,16 @@ using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.Virtual
+namespace cloud.charging.open.protocols.WWCP.Virtual
 {
 
     /// <summary>
     /// A virtual charging pool.
     /// </summary>
-    public class VirtualChargingPool : ACryptoEMobilityEntity<ChargingPool_Id>,
+    public class VirtualChargingPool : ACryptoEMobilityEntity<ChargingPool_Id,
+                                                              ChargingPoolAdminStatusTypes,
+                                                              ChargingPoolStatusTypes>,
                                        IEquatable<VirtualChargingPool>, IComparable<VirtualChargingPool>, IComparable,
-                                       IStatus<ChargingPoolStatusTypes>,
                                        IRemoteChargingPool
     {
 
@@ -75,131 +76,6 @@ namespace org.GraphDefined.WWCP.Virtual
         public ChargingStationOperator_Id OperatorId
             => Id.OperatorId;
 
-        #region Description
-
-        internal I18NString _Description;
-
-        /// <summary>
-        /// An optional (multi-language) description of this charging pool.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-
-                return _Description;
-
-            }
-
-            set
-            {
-
-                if (value == _Description)
-                    return;
-
-                _Description = value;
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current charging station admin status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<ChargingPoolAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_AdminStatusSchedule.CurrentValue != value.Value)
-                    SetAdminStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<ChargingPoolAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The charging station admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
-
-        #endregion
-
-        #region Status
-
-        /// <summary>
-        /// The current charging station status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<ChargingPoolStatusTypes> Status
-        {
-
-            get
-            {
-                return _StatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_StatusSchedule.CurrentValue != value.Value)
-                    SetStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<ChargingPoolStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The charging station status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingPoolStatusTypes>> StatusSchedule
-        {
-            get
-            {
-                return _StatusSchedule;
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
@@ -208,44 +84,52 @@ namespace org.GraphDefined.WWCP.Virtual
         /// Create a new virtual charging pool.
         /// </summary>
         public VirtualChargingPool(ChargingPool_Id               Id,
-                                   I18NString                    Name,
                                    IRoamingNetwork               RoamingNetwork,
-                                   I18NString                    Description              = null,
-                                   ChargingPoolAdminStatusTypes  InitialAdminStatus       = ChargingPoolAdminStatusTypes.Operational,
-                                   ChargingPoolStatusTypes       InitialStatus            = ChargingPoolStatusTypes.Available,
-                                   String                        EllipticCurve            = "P-256",
-                                   ECPrivateKeyParameters        PrivateKey               = null,
-                                   PublicKeyCertificates         PublicKeyCertificates    = null,
-                                   TimeSpan?                     SelfCheckTimeSpan        = null,
-                                   UInt16                        MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                                   UInt16                        MaxStatusListSize        = DefaultMaxStatusListSize)
+                                   I18NString?                   Name                         = null,
+                                   I18NString?                   Description                  = null,
+                                   ChargingPoolAdminStatusTypes  InitialAdminStatus           = ChargingPoolAdminStatusTypes.Operational,
+                                   ChargingPoolStatusTypes       InitialStatus                = ChargingPoolStatusTypes.Available,
+                                   String                        EllipticCurve                = "P-256",
+                                   ECPrivateKeyParameters?       PrivateKey                   = null,
+                                   PublicKeyCertificates?        PublicKeyCertificates        = null,
+                                   TimeSpan?                     SelfCheckTimeSpan            = null,
+                                   UInt16?                       MaxAdminStatusScheduleSize   = null,
+                                   UInt16?                       MaxStatusScheduleSize        = null,
+
+                                   String?                       DataSource                   = null,
+                                   DateTime?                     LastChange                   = null,
+
+                                   JObject?                      CustomData                   = null,
+                                   UserDefinedDictionary?        InternalData                 = null)
 
             : base(Id,
-                   Name,
                    RoamingNetwork,
+                   Name,
+                   Description,
                    EllipticCurve,
                    PrivateKey,
-                   PublicKeyCertificates)
+                   PublicKeyCertificates,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusListSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusListSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
+                   InternalData)
 
         {
 
             #region Init data and properties
 
-            this._Description          = Description ?? I18NString.Empty;
-
-            this._ChargingStations     = new HashSet<IRemoteChargingStation>();
-
-            this._AdminStatusSchedule  = new StatusSchedule<ChargingPoolAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus);
-
-            this._StatusSchedule       = new StatusSchedule<ChargingPoolStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.Insert(InitialStatus);
+            this.chargingStations     = new HashSet<IRemoteChargingStation>();
 
             #endregion
 
             #region Setup crypto
 
-            if (PrivateKey == null && PublicKeyCertificates == null)
+            if (PrivateKey            is null &&
+                PublicKeyCertificates is null)
             {
 
                 var generator = GeneratorUtilities.GetKeyPairGenerator("ECDH");
@@ -277,10 +161,10 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Link events
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
@@ -297,7 +181,7 @@ namespace org.GraphDefined.WWCP.Virtual
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE RemoteEVSE)
         {
 
-            foreach (var station in _ChargingStations)
+            foreach (var station in chargingStations)
             {
 
                 if (station.TryGetEVSEById(EVSEId, out RemoteEVSE))
@@ -318,13 +202,13 @@ namespace org.GraphDefined.WWCP.Virtual
 
         #region Stations
 
-        private readonly HashSet<IRemoteChargingStation> _ChargingStations;
+        private readonly HashSet<IRemoteChargingStation> chargingStations;
 
         /// <summary>
         /// All registered charging stations.
         /// </summary>
         public IEnumerable<IRemoteChargingStation> ChargingStations
-            => _ChargingStations;
+            => chargingStations;
 
         #endregion
 
@@ -338,25 +222,25 @@ namespace org.GraphDefined.WWCP.Virtual
         /// <param name="Configurator">An optional delegate to configure the new charging station after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the charging station.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                                  ChargingStationId,
-                                                           I18NString                                          Name,
-                                                           I18NString                                          Description              = null,
-                                                           ChargingStationAdminStatusTypes                     InitialAdminStatus       = ChargingStationAdminStatusTypes.Operational,
-                                                           ChargingStationStatusTypes                          InitialStatus            = ChargingStationStatusTypes.Available,
-                                                           String                                              EllipticCurve            = "P-256",
-                                                           ECPrivateKeyParameters                              PrivateKey               = null,
-                                                           PublicKeyCertificates                               PublicKeyCertificates    = null,
-                                                           TimeSpan?                                           SelfCheckTimeSpan        = null,
-                                                           Action<VirtualChargingStation>                      Configurator             = null,
-                                                           Action<VirtualChargingStation>                      OnSuccess                = null,
-                                                           Action<VirtualChargingStation, ChargingStation_Id>  OnError                  = null,
-                                                           UInt16                                              MaxAdminStatusListSize   = VirtualChargingStation.DefaultMaxAdminStatusListSize,
-                                                           UInt16                                              MaxStatusListSize        = VirtualChargingStation.DefaultMaxStatusListSize)
+        public VirtualChargingStation CreateVirtualStation(ChargingStation_Id                                   ChargingStationId,
+                                                           I18NString?                                          Name                         = null,
+                                                           I18NString?                                          Description                  = null,
+                                                           ChargingStationAdminStatusTypes?                     InitialAdminStatus           = null,
+                                                           ChargingStationStatusTypes?                          InitialStatus                = null,
+                                                           String?                                              EllipticCurve                = null,
+                                                           ECPrivateKeyParameters?                              PrivateKey                   = null,
+                                                           PublicKeyCertificates?                               PublicKeyCertificates        = null,
+                                                           TimeSpan?                                            SelfCheckTimeSpan            = null,
+                                                           Action<VirtualChargingStation>?                      Configurator                 = null,
+                                                           Action<VirtualChargingStation>?                      OnSuccess                    = null,
+                                                           Action<VirtualChargingStation, ChargingStation_Id>?  OnError                      = null,
+                                                           UInt16?                                              MaxAdminStatusScheduleSize   = null,
+                                                           UInt16?                                              MaxStatusScheduleSize        = null)
         {
 
             #region Initial checks
 
-            if (_ChargingStations.Any(station => station.Id == ChargingStationId))
+            if (chargingStations.Any(station => station.Id == ChargingStationId))
             {
                 throw new Exception("StationAlreadyExistsInPool");
                 //if (OnError == null)
@@ -369,21 +253,21 @@ namespace org.GraphDefined.WWCP.Virtual
 
             var Now              = Timestamp.Now;
             var _VirtualStation  = new VirtualChargingStation(ChargingStationId,
-                                                              Name,
                                                               RoamingNetwork,
+                                                              Name,
                                                               Description,
-                                                              InitialAdminStatus,
-                                                              InitialStatus,
+                                                              InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                              InitialStatus      ?? ChargingStationStatusTypes.     Available,
                                                               EllipticCurve,
                                                               PrivateKey,
                                                               PublicKeyCertificates,
                                                               SelfCheckTimeSpan,
-                                                              MaxAdminStatusListSize,
-                                                              MaxStatusListSize);
+                                                              MaxAdminStatusScheduleSize,
+                                                              MaxStatusScheduleSize);
 
             Configurator?.Invoke(_VirtualStation);
 
-            if (_ChargingStations.Add(_VirtualStation))
+            if (chargingStations.Add(_VirtualStation))
             {
 
                 //_VirtualEVSE.OnPropertyChanged        += (Timestamp, Sender, PropertyName, OldValue, NewValue)
@@ -415,14 +299,14 @@ namespace org.GraphDefined.WWCP.Virtual
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of an ChargingStation.</param>
         public Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId)
-            => _ChargingStations.Any(evse => evse.Id == ChargingStationId);
+            => chargingStations.Any(evse => evse.Id == ChargingStationId);
 
         #endregion
 
         #region GetChargingStationById(ChargingStationId)
 
         public IRemoteChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
-            => _ChargingStations.FirstOrDefault(evse => evse.Id == ChargingStationId);
+            => chargingStations.FirstOrDefault(evse => evse.Id == ChargingStationId);
 
         #endregion
 
@@ -445,7 +329,7 @@ namespace org.GraphDefined.WWCP.Virtual
         public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IRemoteChargingStation RemoteChargingStation)
         {
 
-            foreach (var station in _ChargingStations)
+            foreach (var station in chargingStations)
             {
 
                 if (station.TryGetEVSEById(EVSEId, out IRemoteEVSE RemoteEVSE))
@@ -484,120 +368,6 @@ namespace org.GraphDefined.WWCP.Virtual
         /// An event fired whenever the dynamic status of the charging station changed.
         /// </summary>
         public event OnRemoteChargingPoolStatusChangedDelegate       OnStatusChanged;
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes  NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingPoolAdminStatusTypes  NewAdminStatus,
-                                   DateTime                         Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                              ChangeMethod = ChangeMethods.Replace)
-        {
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-        }
-
-        #endregion
-
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(ChargingPoolStatusTypes  NewStatus)
-        {
-            _StatusSchedule.Insert(NewStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewTimestampedStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<ChargingPoolStatusTypes> NewTimestampedStatus)
-        {
-            _StatusSchedule.Insert(NewTimestampedStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatus, Timestamp)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(ChargingPoolStatusTypes  NewStatus,
-                              DateTime                   Timestamp)
-        {
-            _StatusSchedule.Insert(NewStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<ChargingPoolStatusTypes>>  NewStatusList,
-                              ChangeMethods                                        ChangeMethod = ChangeMethods.Replace)
-        {
-            _StatusSchedule.Set(NewStatusList, ChangeMethod);
-        }
 
         #endregion
 
@@ -815,7 +585,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -831,7 +601,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -905,7 +675,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
                         var results = new List<ReservationResult>();
 
-                        foreach (var remoteStation2 in _ChargingStations)
+                        foreach (var remoteStation2 in chargingStations)
                         {
 
                             results.Add(await remoteStation2.
@@ -937,9 +707,9 @@ namespace org.GraphDefined.WWCP.Virtual
 
                             newReservation = new ChargingReservation(Id:                      ReservationId ?? ChargingReservation_Id.Random(OperatorId),
                                                                      Timestamp:               Timestamp.Value,
-                                                                     StartTime:               ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now,
+                                                                     StartTime:               ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                      Duration:                Duration  ?? MaxReservationDuration,
-                                                                     EndTime:                 (ReservationStartTime ?? Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
+                                                                     EndTime:                 (ReservationStartTime ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now) + (Duration ?? MaxReservationDuration),
                                                                      ConsumedReservationTime: TimeSpan.FromSeconds(0),
                                                                      ReservationLevel:        ReservationLevel,
                                                                      ProviderId:              ProviderId,
@@ -994,7 +764,7 @@ namespace org.GraphDefined.WWCP.Virtual
                     foreach (var subReservation in newReservation.SubReservations)
                         _Reservations.Add(subReservation.Id, subReservation);
 
-                    OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now,
+                    OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              this,
                                              newReservation);
 
@@ -1009,7 +779,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnReserveResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1074,7 +844,7 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1090,7 +860,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1141,7 +911,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
                     }
 
-                    foreach (var chargingStation in _ChargingStations)
+                    foreach (var chargingStation in chargingStations)
                     {
 
                         result = await chargingStation.CancelReservation(ReservationId,
@@ -1184,7 +954,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1381,10 +1151,10 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1399,7 +1169,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1484,7 +1254,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1551,10 +1321,10 @@ namespace org.GraphDefined.WWCP.Virtual
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -1569,7 +1339,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -1606,7 +1376,7 @@ namespace org.GraphDefined.WWCP.Virtual
                     if (!TryGetChargingSessionById(SessionId, out ChargingSession chargingSession))
                     {
 
-                        foreach (var remoteStation in _ChargingStations)
+                        foreach (var remoteStation in chargingStations)
                         {
 
                             result = await remoteStation.
@@ -1690,7 +1460,7 @@ namespace org.GraphDefined.WWCP.Virtual
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {

@@ -15,51 +15,60 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The admin status of a charging station.
+    /// The current status of a parking space.
     /// </summary>
-    public enum eMobilityStationAdminStatusType
+    public enum ParkingSpaceGroupAdminStatusTypes
     {
 
         /// <summary>
-        /// Unclear or unknown admin status of the charging station.
+        /// Unclear or unknown status of the parking space.
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The charging station is planned for the future.
+        /// The parking space is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The charging station is currently in deployment, but not fully operational yet.
+        /// The parking space is currently in deployment.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
+        /// The parking space is currently blocked.
+        /// </summary>
+        Blocked             = 3,
+
+        /// <summary>
+        /// The parking space is available.
+        /// </summary>
+        Available           = 4,
+
+        /// <summary>
+        /// The parking space was reserved.
+        /// </summary>
+        Reserved            = 5,
+
+        /// <summary>
+        /// The parking space is currently in use.
+        /// </summary>
+        InUse               = 6,
+
+        /// <summary>
         /// Private or internal use.
         /// </summary>
-        InternalUse         = 3,
+        Other               = 7,
 
         /// <summary>
-        /// The charging station is not ready for charging because it is under maintenance.
-        /// </summary>
-        OutOfService        = 4,
-
-        /// <summary>
-        /// The charging station is ready to charge.
-        /// </summary>
-        Operational         = 5,
-
-
-        /// <summary>
-        /// The charging station was not found!
+        /// The parking space was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownStation      = 7
+        UnknownParkingSpace  = 8
 
     }
 

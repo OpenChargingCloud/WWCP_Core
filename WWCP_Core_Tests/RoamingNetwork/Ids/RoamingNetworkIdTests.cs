@@ -17,70 +17,86 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
-
-using org.GraphDefined.WWCP;
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.UnitTests
+namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork.Ids
 {
 
     /// <summary>
-    /// Unit tests for the EVSP_Id class.
+    /// Unit tests for roaming network identifications.
     /// </summary>
     [TestFixture]
-    public class EVSP_IdTests
+    public class RoamingNetworkIdTests
     {
 
-        #region EVSP_IdEmptyConstructorTest()
+        #region Parse_Test()
 
         /// <summary>
-        /// A test for an empty EVSP_Id constructor.
+        /// A test for parsing roaming network identifications.
         /// </summary>
         [Test]
-        public void EVSP_IdEmptyConstructorTest()
+        public void Parse_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("");
-            Assert.IsTrue(_EVSP_Id1.Length > 0);
-            Assert.IsTrue(_EVSP_Id2.Length > 0);
-            Assert.AreNotEqual(_EVSP_Id1, _EVSP_Id2);
+            var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
+            Assert.AreEqual("TEST", roamingNetworkId.ToString());
+            Assert.AreEqual(4,      roamingNetworkId.Length);
         }
 
         #endregion
 
-        #region EVSP_IdStringConstructorTest()
+        #region TryParse_Test()
 
         /// <summary>
-        /// A test for the EVSP_Id string constructor.
+        /// A test for parsing roaming network identifications.
         /// </summary>
         [Test]
-        public void EVSP_IdStringConstructorTest()
+        public void TryParse_Test()
         {
-            var _EVSP_Id = eMobilityProvider_Id.Parse("123");
-            Assert.AreEqual("123", _EVSP_Id.ToString());
-            Assert.AreEqual(3,     _EVSP_Id.Length);
+
+            var roamingNetworkId = RoamingNetwork_Id.TryParse("TEST");
+            Assert.IsNotNull(roamingNetworkId);
+
+            if (roamingNetworkId is not null)
+            {
+                Assert.AreEqual("TEST", roamingNetworkId.Value.ToString());
+                Assert.AreEqual(4,      roamingNetworkId.Value.Length);
+            }
+
+        }
+
+        #endregion
+
+        #region TryParseOut_Test()
+
+        /// <summary>
+        /// A test for parsing roaming network identifications.
+        /// </summary>
+        [Test]
+        public void TryParseOut_Test()
+        {
+            Assert.IsTrue(RoamingNetwork_Id.TryParse("TEST", out var roamingNetworkId));
+            Assert.AreEqual("TEST", roamingNetworkId.ToString());
+            Assert.AreEqual(4,      roamingNetworkId.Length);
         }
 
         #endregion
 
 
-        #region NewEVSP_IdMethodTest()
+        #region Clone_Test()
 
         /// <summary>
-        /// A test for the static newEVSP_Id method.
+        /// A test for cloning charging station operator identifications.
         /// </summary>
         [Test]
-        public void NewEVSP_IdMethodTest()
+        public void Clone_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse(Country.Germany, RandomExtensions.RandomString(3));
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse(Country.Germany, RandomExtensions.RandomString(3));
-            Assert.AreNotEqual(_EVSP_Id1, _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
+            var roamingNetworkId2 = roamingNetworkId1.Clone;
+            Assert.AreEqual(roamingNetworkId1.ToString(), roamingNetworkId2.ToString());
+            Assert.AreEqual(roamingNetworkId1.Length,     roamingNetworkId2.Length);
+            Assert.AreEqual(roamingNetworkId1,            roamingNetworkId2);
         }
 
         #endregion
@@ -92,12 +108,12 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the equality operator same reference.
         /// </summary>
         [Test]
-        
+
         public void op_Equality_SameReference_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("");
+            var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            Assert.IsTrue(_EVSP_Id1 == _EVSP_Id1);
+            Assert.IsTrue(roamingNetworkId == roamingNetworkId);
             #pragma warning restore
         }
 
@@ -111,9 +127,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1 == _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
+            Assert.IsTrue(roamingNetworkId1 == roamingNetworkId2);
         }
 
         #endregion
@@ -126,9 +142,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsFalse(_EVSP_Id1 == _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("234");
+            Assert.IsFalse(roamingNetworkId1 == roamingNetworkId2);
         }
 
         #endregion
@@ -142,9 +158,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("");
+            var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            Assert.IsFalse(_EVSP_Id1 != _EVSP_Id1);
+            Assert.IsFalse(roamingNetworkId != roamingNetworkId);
             #pragma warning restore
         }
 
@@ -158,9 +174,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsFalse(_EVSP_Id1 != _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
+            Assert.IsFalse(roamingNetworkId1 != roamingNetworkId2);
         }
 
         #endregion
@@ -173,9 +189,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsTrue(_EVSP_Id1 != _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
+            Assert.IsTrue(roamingNetworkId1 != roamingNetworkId2);
         }
 
         #endregion
@@ -188,9 +204,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("5");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("23");
-            Assert.IsTrue(_EVSP_Id1 != _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
+            Assert.IsTrue(roamingNetworkId1 != roamingNetworkId2);
         }
 
         #endregion
@@ -204,9 +220,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("");
+            var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            Assert.IsFalse(_EVSP_Id1 < _EVSP_Id1);
+            Assert.IsFalse(roamingNetworkId < roamingNetworkId);
             #pragma warning restore
         }
 
@@ -220,9 +236,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsFalse(_EVSP_Id1 < _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsFalse(roamingNetworkId1 < roamingNetworkId2);
         }
 
         #endregion
@@ -235,9 +251,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsTrue(_EVSP_Id1 < _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
+            Assert.IsTrue(roamingNetworkId1 < roamingNetworkId2);
         }
 
         #endregion
@@ -250,9 +266,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("5");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("23");
-            Assert.IsTrue(_EVSP_Id1 < _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
+            Assert.IsTrue(roamingNetworkId1 < roamingNetworkId2);
         }
 
         #endregion
@@ -265,9 +281,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("2");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsFalse(_EVSP_Id1 < _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsFalse(roamingNetworkId1 < roamingNetworkId2);
         }
 
         #endregion
@@ -280,9 +296,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("23");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("5");
-            Assert.IsFalse(_EVSP_Id1 < _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
+            Assert.IsFalse(roamingNetworkId1 < roamingNetworkId2);
         }
 
         #endregion
@@ -296,9 +312,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("");
+            var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id1);
+            Assert.IsTrue(roamingNetworkId <= roamingNetworkId);
             #pragma warning restore
         }
 
@@ -312,9 +328,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
+            Assert.IsTrue(roamingNetworkId1 <= roamingNetworkId2);
         }
 
         #endregion
@@ -327,9 +343,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
+            Assert.IsTrue(roamingNetworkId1 <= roamingNetworkId2);
         }
 
         #endregion
@@ -342,9 +358,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("5");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("23");
-            Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
+            Assert.IsTrue(roamingNetworkId1 <= roamingNetworkId2);
         }
 
         #endregion
@@ -357,9 +373,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("2");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsFalse(_EVSP_Id1 <= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsFalse(roamingNetworkId1 <= roamingNetworkId2);
         }
 
         #endregion
@@ -372,9 +388,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("23");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("5");
-            Assert.IsFalse(_EVSP_Id1 <= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
+            Assert.IsFalse(roamingNetworkId1 <= roamingNetworkId2);
         }
 
         #endregion
@@ -388,9 +404,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("");
+            var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            Assert.IsFalse(_EVSP_Id1 > _EVSP_Id1);
+            Assert.IsFalse(roamingNetworkId > roamingNetworkId);
             #pragma warning restore
         }
 
@@ -404,9 +420,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsFalse(_EVSP_Id1 > _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsFalse(roamingNetworkId1 > roamingNetworkId2);
         }
 
         #endregion
@@ -419,9 +435,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsFalse(_EVSP_Id1 > _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
+            Assert.IsFalse(roamingNetworkId1 > roamingNetworkId2);
         }
 
         #endregion
@@ -434,9 +450,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("5");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("23");
-            Assert.IsFalse(_EVSP_Id1 > _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
+            Assert.IsFalse(roamingNetworkId1 > roamingNetworkId2);
         }
 
         #endregion
@@ -449,9 +465,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("2");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1 > _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsTrue(roamingNetworkId1 > roamingNetworkId2);
         }
 
         #endregion
@@ -464,9 +480,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("23");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("5");
-            Assert.IsTrue(_EVSP_Id1 > _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
+            Assert.IsTrue(roamingNetworkId1 > roamingNetworkId2);
         }
 
         #endregion
@@ -480,9 +496,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("");
+            var roamingNetworkId = RoamingNetwork_Id.Parse("TEST");
             #pragma warning disable
-            Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id1);
+            Assert.IsTrue(roamingNetworkId >= roamingNetworkId);
             #pragma warning restore
         }
 
@@ -496,9 +512,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("TEST");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("TEST");
+            Assert.IsTrue(roamingNetworkId1 >= roamingNetworkId2);
         }
 
         #endregion
@@ -511,9 +527,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsFalse(_EVSP_Id1 >= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
+            Assert.IsFalse(roamingNetworkId1 >= roamingNetworkId2);
         }
 
         #endregion
@@ -526,9 +542,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("5");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("23");
-            Assert.IsFalse(_EVSP_Id1 >= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
+            Assert.IsFalse(roamingNetworkId1 >= roamingNetworkId2);
         }
 
         #endregion
@@ -541,9 +557,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("2");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsTrue(roamingNetworkId1 >= roamingNetworkId2);
         }
 
         #endregion
@@ -556,27 +572,27 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("23");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("5");
-            Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id2);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("023");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("005");
+            Assert.IsTrue(roamingNetworkId1 >= roamingNetworkId2);
         }
 
         #endregion
 
 
-        #region CompareToNonEVSP_IdTest()
+        #region CompareToNonRoamingNetworkIdTest()
 
         /// <summary>
-        /// A test for CompareTo a non-EVSP_Id.
+        /// A test for CompareTo a non-RoamingNetworkId.
         /// </summary>
         [Test]
-        public void CompareToNonEVSP_IdTest()
+        public void CompareToNonRoamingNetworkIdTest()
         {
 
-            var _EVSP_Id  = eMobilityProvider_Id.Parse(Country.Germany, RandomExtensions.RandomString(3));
-            var _Object   = "123";
+            var roamingNetworkId  = RoamingNetwork_Id.Parse("TEST");
+            var text              = "TEST";
 
-            Assert.Throws<ArgumentException>(() => _EVSP_Id.CompareTo(_Object));
+            Assert.Throws<ArgumentException>(() => { var x = roamingNetworkId.CompareTo(text); });
 
         }
 
@@ -590,9 +606,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) < 0);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
+            Assert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) < 0);
         }
 
         #endregion
@@ -605,9 +621,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("5");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("23");
-            Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) < 0);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("005");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("023");
+            Assert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) < 0);
         }
 
         #endregion
@@ -620,9 +636,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) == 0);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) == 0);
         }
 
         #endregion
@@ -635,25 +651,25 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("2");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) > 0);
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("222");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsTrue(roamingNetworkId1.CompareTo(roamingNetworkId2) > 0);
         }
 
         #endregion
 
 
-        #region EqualsNonEVSP_IdTest()
+        #region EqualsNonRoamingNetworkIdTest()
 
         /// <summary>
-        /// A test for equals a non-EVSP_Id.
+        /// A test for equals a non-RoamingNetworkId.
         /// </summary>
         [Test]
-        public void EqualsNonEVSP_IdTest()
+        public void EqualsNonRoamingNetworkIdTest()
         {
-            var _EVSP_Id  = eMobilityProvider_Id.Parse(Country.Germany, RandomExtensions.RandomString(3));
-            var _Object   = "123";
-            Assert.IsFalse(_EVSP_Id.Equals(_Object));
+            var roamingNetworkId  = RoamingNetwork_Id.Parse("TEST");
+            var text              = "TEST";
+            Assert.IsFalse(roamingNetworkId.Equals(text));
         }
 
         #endregion
@@ -666,9 +682,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("1");
-            Assert.IsTrue(_EVSP_Id1.Equals(_EVSP_Id2));
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("111");
+            Assert.IsTrue(roamingNetworkId1.Equals(roamingNetworkId2));
         }
 
         #endregion
@@ -681,9 +697,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse("1");
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse("2");
-            Assert.IsFalse(_EVSP_Id1.Equals(_EVSP_Id2));
+            var roamingNetworkId1 = RoamingNetwork_Id.Parse("111");
+            var roamingNetworkId2 = RoamingNetwork_Id.Parse("222");
+            Assert.IsFalse(roamingNetworkId1.Equals(roamingNetworkId2));
         }
 
         #endregion
@@ -697,9 +713,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = eMobilityProvider_Id.Parse("5").GetHashCode();
-            var _SensorHashCode2 = eMobilityProvider_Id.Parse("5").GetHashCode();
-            Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
+            var hashCode1 = RoamingNetwork_Id.Parse("TEST").GetHashCode();
+            var hashCode2 = RoamingNetwork_Id.Parse("TEST").GetHashCode();
+            Assert.AreEqual(hashCode1, hashCode2);
         }
 
         #endregion
@@ -712,26 +728,26 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = eMobilityProvider_Id.Parse("1").GetHashCode();
-            var _SensorHashCode2 = eMobilityProvider_Id.Parse("2").GetHashCode();
-            Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
+            var hashCode1 = RoamingNetwork_Id.Parse("TEST1").GetHashCode();
+            var hashCode2 = RoamingNetwork_Id.Parse("TEST2").GetHashCode();
+            Assert.AreNotEqual(hashCode1, hashCode2);
         }
 
         #endregion
 
 
-        #region EVSP_IdsAndNUnitTest()
+        #region RoamingNetworkIdsAndNUnitTest()
 
         /// <summary>
-        /// Tests EVSP_Ids in combination with NUnit.
+        /// Tests RoamingNetworkIds in combination with NUnit.
         /// </summary>
         [Test]
-        public void EVSP_IdsAndNUnitTest()
+        public void RoamingNetworkIdsAndNUnitTest()
         {
 
-            var a = eMobilityProvider_Id.Parse("1");
-            var b = eMobilityProvider_Id.Parse("2");
-            var c = eMobilityProvider_Id.Parse("1");
+            var a = RoamingNetwork_Id.Parse("111");
+            var b = RoamingNetwork_Id.Parse("222");
+            var c = RoamingNetwork_Id.Parse("111");
 
             Assert.AreEqual(a, a);
             Assert.AreEqual(b, b);
@@ -745,20 +761,20 @@ namespace org.GraphDefined.WWCP.UnitTests
 
         #endregion
 
-        #region EVSP_IdsInHashSetTest()
+        #region RoamingNetworkIdsInHashSetTest()
 
         /// <summary>
-        /// Test EVSP_Ids within a HashSet.
+        /// Test RoamingNetworkIds within a HashSet.
         /// </summary>
         [Test]
-        public void EVSP_IdsInHashSetTest()
+        public void RoamingNetworkIdsInHashSetTest()
         {
 
-            var a = eMobilityProvider_Id.Parse("1");
-            var b = eMobilityProvider_Id.Parse("2");
-            var c = eMobilityProvider_Id.Parse("1");
+            var a = RoamingNetwork_Id.Parse("111");
+            var b = RoamingNetwork_Id.Parse("222");
+            var c = RoamingNetwork_Id.Parse("111");
 
-            var _HashSet = new HashSet<eMobilityProvider_Id>();
+            var _HashSet = new HashSet<RoamingNetwork_Id>();
             Assert.AreEqual(0, _HashSet.Count);
 
             _HashSet.Add(a);
@@ -773,6 +789,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         }
 
         #endregion
+
 
     }
 

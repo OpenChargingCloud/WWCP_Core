@@ -17,14 +17,13 @@
 
 #region Usings
 
-using System;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -52,11 +51,45 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
+    /// Extension methods for charging station operator identifications.
+    /// </summary>
+    public static class ChargingStationOperatorIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this charging station operator identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingStationOperator_Id? ChargingStationOperatorId)
+            => !ChargingStationOperatorId.HasValue || ChargingStationOperatorId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging station operator identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingStationOperator_Id? ChargingStationOperatorId)
+            => ChargingStationOperatorId.HasValue && ChargingStationOperatorId.Value.IsNotNullOrEmpty;
+
+        /// <summary>
+        /// Create a new charging pool identification
+        /// based on the given charging station operator identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
+        /// <param name="AdditionalSuffix">An optional additional charging pool suffix.</param>
+        public static ChargingPool_Id CreatePoolId(this ChargingStationOperator_Id  ChargingStationOperatorId,
+                                                   String?                          AdditionalSuffix   = null)
+
+            => ChargingPool_Id.Parse(ChargingStationOperatorId, AdditionalSuffix ?? "");
+
+    }
+
+
+    /// <summary>
     /// The unique identification of a charging station operator (CSO).
     /// </summary>
-    public struct ChargingStationOperator_Id : IId,
-                                               IEquatable<ChargingStationOperator_Id>,
-                                               IComparable<ChargingStationOperator_Id>
+    public readonly struct ChargingStationOperator_Id : IId,
+                                                        IEquatable<ChargingStationOperator_Id>,
+                                                        IComparable<ChargingStationOperator_Id>
 
     {
 
@@ -96,29 +129,21 @@ namespace org.GraphDefined.WWCP
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
+
+        /// <summary>
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
 
-                switch (Format)
-                {
-
-                    case OperatorIdFormats.DIN:
-                        return (UInt64) (CountryCode.TelefonCode.ToString().Length + 1 + Suffix.Length);
-
-                    case OperatorIdFormats.ISO_STAR:
-                        return (UInt64) (CountryCode.Alpha2Code.Length             + 1 + Suffix.Length);
-
-                    default:  // ISO
-                        return (UInt64) (CountryCode.Alpha2Code.Length                 + Suffix.Length);
-
-                }
-
-            }
-        }
+            => Format switch {
+                   OperatorIdFormats.DIN       => (UInt64) (CountryCode.TelefonCode.ToString().Length + 1 + Suffix.Length),
+                   OperatorIdFormats.ISO_STAR  => (UInt64) (CountryCode.Alpha2Code.Length             + 1 + Suffix.Length),
+                   _                           => (UInt64) (CountryCode.Alpha2Code.Length             +     Suffix.Length),
+               };
 
         #endregion
 
@@ -135,15 +160,8 @@ namespace org.GraphDefined.WWCP
                                            OperatorIdFormats  Format = OperatorIdFormats.ISO)
         {
 
-            #region Initial checks
-
-            if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix),  "The charging station operator identification suffix must not be null or empty!");
-
-            #endregion
-
             this.CountryCode  = CountryCode;
-            this.Suffix       = Suffix;
+            this.Suffix       = Suffix.Trim();
             this.Format       = Format;
 
         }
@@ -151,7 +169,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given text representation of a charging station operator identification.
@@ -160,41 +178,17 @@ namespace org.GraphDefined.WWCP
         public static ChargingStationOperator_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out ChargingStationOperator_Id chargingStationOperatorId))
+                return chargingStationOperatorId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station operator identification must not be null or empty!");
-
-            #endregion
-
-            var matchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
-
-            if (matchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging station operator identification: '" + Text + "'!",
-                                            nameof(Text));
-
-            // DE...
-            if (Country.TryParseAlpha2Code(matchCollection[0]. Groups[1].Value.ToUpper(), out Country _CountryCode))
-                return new ChargingStationOperator_Id(_CountryCode,
-                                                      matchCollection[0].Groups[3].Value,
-                                                      matchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
-
-            // +49*...
-            if (Country.TryParseTelefonCode(matchCollection[0].Groups[4].Value.ToUpper(), out _CountryCode))
-                return new ChargingStationOperator_Id(_CountryCode,
-                                                      matchCollection[0].Groups[5].Value,
-                                                      OperatorIdFormats.DIN);
-
-            // Just e.g. "822"...
-            return new ChargingStationOperator_Id(Country.Germany,
-                                                  matchCollection[0].Groups[6].Value,
-                                                  OperatorIdFormats.DIN);
+            throw new ArgumentException("Invalid text-representation of a charging station operator identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region Parse(CountryCode, Suffix, IdFormat = IdFormatType.ISO)
+        #region (static) Parse   (CountryCode, Suffix, IdFormat = ISO_STAR)
 
         /// <summary>
         /// Parse the given string as an charging station operator identification.
@@ -204,38 +198,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="IdFormat">The format of the charging station operator identification [old|new].</param>
         public static ChargingStationOperator_Id Parse(Country            CountryCode,
                                                        String             Suffix,
-                                                       OperatorIdFormats  IdFormat = OperatorIdFormats.ISO)
-        {
+                                                       OperatorIdFormats  IdFormat = OperatorIdFormats.ISO_STAR)
 
-            #region Initial checks
-
-            if (CountryCode == null)
-                throw new ArgumentNullException(nameof(CountryCode),  "The given country must not be null!");
-
-            if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix),       "The given charging station operator identification suffix must not be null or empty!");
-
-            #endregion
-
-            switch (IdFormat)
-            {
-
-                case OperatorIdFormats.ISO:
-                    return Parse(CountryCode.Alpha2Code + Suffix);
-
-                case OperatorIdFormats.ISO_STAR:
-                    return Parse(CountryCode.Alpha2Code + "*" + Suffix);
-
-                default: // DIN:
-                    return Parse("+" + CountryCode.TelefonCode.ToString() + "*" + Suffix);
-
-            }
-
-        }
+            => IdFormat switch {
+                   OperatorIdFormats.ISO       => Parse(String.Concat(     CountryCode.Alpha2Code,                  Suffix.Trim())),
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(     CountryCode.Alpha2Code,             "*", Suffix.Trim())),
+                   _                           => Parse(String.Concat("+", CountryCode.TelefonCode.ToString(), "*", Suffix.Trim()))
+               };
 
         #endregion
 
-        #region TryParse(Text)
+        #region (static) TryParse(Text)
 
         /// <summary>
         /// Try to parse the given text representation of a charging station operator identification.
@@ -244,18 +217,34 @@ namespace org.GraphDefined.WWCP
         public static ChargingStationOperator_Id? TryParse(String Text)
         {
 
-            ChargingStationOperator_Id _OperatorId;
+            if (TryParse(Text, out ChargingStationOperator_Id chargingStationOperatorId))
+                return chargingStationOperatorId;
 
-            if (TryParse(Text, out _OperatorId))
-                return _OperatorId;
-
-            return new ChargingStationOperator_Id?();
+            return null;
 
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingStationOperatorId)
+        #region (static) TryParse(CountryCode, Suffix, IdFormat = ISO_STAR)
+
+        /// <summary>
+        /// Try to parse the given text representation of a charging station operator identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging station operator identification.</param>
+        public static ChargingStationOperator_Id? TryParse(Country            CountryCode,
+                                                           String             Suffix,
+                                                           OperatorIdFormats  IdFormat   = OperatorIdFormats.ISO_STAR)
+
+            => IdFormat switch {
+                OperatorIdFormats.ISO       => TryParse(String.Concat(     CountryCode.Alpha2Code,                  Suffix.Trim())),
+                OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(     CountryCode.Alpha2Code,             "*", Suffix.Trim())),
+                _                           => TryParse(String.Concat("+", CountryCode.TelefonCode.ToString(), "*", Suffix.Trim()))
+            };
+
+        #endregion
+
+        #region (static) TryParse(Text, out ChargingStationOperatorId)
 
         /// <summary>
         /// Try to parse the given text representation of a charging station operator identification.
@@ -268,43 +257,44 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Text.IsNullOrEmpty())
-            {
-                ChargingStationOperatorId = default(ChargingStationOperator_Id);
+            ChargingStationOperatorId = default;
+
+            if (Text is null)
                 return false;
-            }
+
+            Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+                return false;
 
             #endregion
 
             try
             {
 
-                var MatchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
+                var matchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
 
-                if (MatchCollection.Count != 1)
-                {
-                    ChargingStationOperatorId = default(ChargingStationOperator_Id);
+                if (matchCollection.Count != 1)
                     return false;
-                }
 
                 // DE...
-                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out Country _CountryCode))
+                if (Country.TryParseAlpha2Code(matchCollection[0].Groups[1].Value, out Country countryCode))
                 {
 
-                    ChargingStationOperatorId = new ChargingStationOperator_Id(_CountryCode,
-                                                                               MatchCollection[0].Groups[3].Value,
-                                                                               MatchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
+                    ChargingStationOperatorId = new ChargingStationOperator_Id(countryCode,
+                                                                               matchCollection[0].Groups[3].Value,
+                                                                               matchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
 
                     return true;
 
                 }
 
                 // +49*...
-                if (Country.TryParseTelefonCode(MatchCollection[0].Groups[4].Value, out _CountryCode))
+                if (Country.TryParseTelefonCode(matchCollection[0].Groups[4].Value, out countryCode))
                 {
 
-                    ChargingStationOperatorId = new ChargingStationOperator_Id(_CountryCode,
-                                                                               MatchCollection[0].Groups[5].Value,
+                    ChargingStationOperatorId = new ChargingStationOperator_Id(countryCode,
+                                                                               matchCollection[0].Groups[5].Value,
                                                                                OperatorIdFormats.DIN);
 
                     return true;
@@ -314,24 +304,39 @@ namespace org.GraphDefined.WWCP
 
                 // Just e.g. "822"...
                 ChargingStationOperatorId = new ChargingStationOperator_Id(Country.Germany,
-                                                                           MatchCollection[0].Groups[6].Value,
+                                                                           matchCollection[0].Groups[6].Value,
                                                                            OperatorIdFormats.DIN);
 
                 return true;
 
             }
 
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            ChargingStationOperatorId = default(ChargingStationOperator_Id);
             return false;
 
         }
+
+        #endregion
+
+        #region (static) TryParse(CountryCode, Suffix, out ChargingStationOperatorId)
+
+        /// <summary>
+        /// Try to parse the given text representation of a charging station operator identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging station operator identification.</param>
+        /// <param name="ChargingStationOperatorId">The parsed charging station operator identification.</param>
+        public static Boolean TryParse(Country                         CountryCode,
+                                       String                          Suffix,
+                                       out ChargingStationOperator_Id  ChargingStationOperatorId,
+                                       OperatorIdFormats               IdFormat   = OperatorIdFormats.ISO_STAR)
+
+            => IdFormat switch {
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(     CountryCode.Alpha2Code,                  Suffix.Trim()), out ChargingStationOperatorId),
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(     CountryCode.Alpha2Code,             "*", Suffix.Trim()), out ChargingStationOperatorId),
+                   _                           => TryParse(String.Concat("+", CountryCode.TelefonCode.ToString(), "*", Suffix.Trim()), out ChargingStationOperatorId)
+               };
 
         #endregion
 
@@ -343,9 +348,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewFormat">The new charging station operator identification format.</param>
         public ChargingStationOperator_Id ChangeFormat(OperatorIdFormats NewFormat)
 
-            => new ChargingStationOperator_Id(CountryCode,
-                                              Suffix,
-                                              NewFormat);
+            => new (CountryCode,
+                    Suffix,
+                    NewFormat);
 
         #endregion
 
@@ -356,9 +361,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingStationOperator_Id Clone
 
-            => new ChargingStationOperator_Id(CountryCode,
-                                              Suffix,
-                                              Format);
+            => new (CountryCode,
+                    new String((Suffix ?? "").ToCharArray()),
+                    Format);
 
         #endregion
 
@@ -373,20 +378,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
+        public static Boolean operator == (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingStationOperatorId1, ChargingStationOperatorId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingStationOperatorId1 == null) || ((Object) ChargingStationOperatorId2 == null))
-                return false;
-
-            return ChargingStationOperatorId1.Equals(ChargingStationOperatorId2);
-
-        }
+            => ChargingStationOperatorId1.Equals(ChargingStationOperatorId2);
 
         #endregion
 
@@ -398,8 +393,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-            => !(ChargingStationOperatorId1 == ChargingStationOperatorId2);
+        public static Boolean operator != (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
+
+            => !ChargingStationOperatorId1.Equals(ChargingStationOperatorId2);
 
         #endregion
 
@@ -411,15 +408,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
+        public static Boolean operator < (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                          ChargingStationOperator_Id ChargingStationOperatorId2)
 
-            if ((Object) ChargingStationOperatorId1 == null)
-                throw new ArgumentNullException("The given ChargingStationOperatorId1 must not be null!");
-
-            return ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) < 0;
-
-        }
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) < 0;
 
         #endregion
 
@@ -431,8 +423,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-            => !(ChargingStationOperatorId1 > ChargingStationOperatorId2);
+        public static Boolean operator <= (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
+
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) <= 0;
 
         #endregion
 
@@ -444,15 +438,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
+        public static Boolean operator > (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                          ChargingStationOperator_Id ChargingStationOperatorId2)
 
-            if ((Object) ChargingStationOperatorId1 == null)
-                throw new ArgumentNullException("The given ChargingStationOperatorId1 must not be null!");
-
-            return ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) > 0;
-
-        }
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) > 0;
 
         #endregion
 
@@ -464,8 +453,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId1">A charging station operator identification.</param>
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-            => !(ChargingStationOperatorId1 < ChargingStationOperatorId2);
+        public static Boolean operator >= (ChargingStationOperator_Id ChargingStationOperatorId1,
+                                           ChargingStationOperator_Id ChargingStationOperatorId2)
+
+            => ChargingStationOperatorId1.CompareTo(ChargingStationOperatorId2) >= 0;
 
         #endregion
 
@@ -479,18 +470,12 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingStationOperator_Id))
-                throw new ArgumentException("The given object is not a charging station operator identification!", nameof(Object));
-
-            return CompareTo((ChargingStationOperator_Id) Object);
-
-        }
+            => Object is ChargingStationOperator_Id chargingStationOperatorId
+                   ? CompareTo(chargingStationOperatorId)
+                   : throw new ArgumentException("The given object is not a charging station operator identification!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -503,21 +488,14 @@ namespace org.GraphDefined.WWCP
         public Int32 CompareTo(ChargingStationOperator_Id ChargingStationOperatorId)
         {
 
-            if ((Object) ChargingStationOperatorId == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperatorId), "The given charging station operator identification must not be null!");
+            var c = CountryCode.CompareTo(ChargingStationOperatorId.CountryCode);
 
-            // Compare the length of the ChargingStationOperatorIds
-            var _Result = Length.CompareTo(ChargingStationOperatorId.Length);
+            if (c == 0)
+                c = String.Compare(Suffix,
+                                   ChargingStationOperatorId.Suffix,
+                                   StringComparison.OrdinalIgnoreCase);
 
-            // If equal: Compare country codes
-            if (_Result == 0)
-                _Result = CountryCode.CompareTo(ChargingStationOperatorId.CountryCode);
-
-            // If equal: Compare operator ids
-            if (_Result == 0)
-                _Result = String.Compare(Suffix, ChargingStationOperatorId.Suffix, StringComparison.Ordinal);
-
-            return _Result;
+            return c;
 
         }
 
@@ -534,18 +512,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingStationOperator_Id))
-                return false;
-
-            return this.Equals((ChargingStationOperator_Id) Object);
-
-        }
+            => Object is ChargingStationOperator_Id chargingStationOperatorId &&
+                   Equals(chargingStationOperatorId);
 
         #endregion
 
@@ -557,15 +527,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId">A ChargingStationOperatorId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStationOperator_Id ChargingStationOperatorId)
-        {
 
-            if ((Object) ChargingStationOperatorId == null)
-                return false;
+            => CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&
 
-            return CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&
-                   Suffix.     Equals(ChargingStationOperatorId.Suffix);
-
-        }
+               String.Equals(Suffix,
+                             ChargingStationOperatorId.Suffix,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -580,7 +547,7 @@ namespace org.GraphDefined.WWCP
         public override Int32 GetHashCode()
 
             => CountryCode.GetHashCode() ^
-               Suffix.     GetHashCode();
+              (Suffix?.    GetHashCode() ?? 0);
 
         #endregion
 
@@ -590,23 +557,8 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            switch (Format)
-            {
-
-                case OperatorIdFormats.DIN:
-                    return "+" + CountryCode.TelefonCode.ToString() + "*" + Suffix;
-
-                case OperatorIdFormats.ISO_STAR:
-                    return CountryCode.Alpha2Code + "*" + Suffix;
-
-                default: // ISO
-                    return CountryCode.Alpha2Code       + Suffix;
-
-            }
-
-        }
+            => ToString(Format);
 
         #endregion
 
@@ -617,29 +569,12 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Format">The format of the identification.</param>
         public String ToString(OperatorIdFormats Format)
-        {
 
-            switch (Format)
-            {
-
-                case OperatorIdFormats.ISO:
-                    return String.Concat(CountryCode.Alpha2Code,
-                                         Suffix);
-
-                case OperatorIdFormats.ISO_STAR:
-                    return String.Concat(CountryCode.Alpha2Code,
-                                         "*",
-                                         Suffix);
-
-                default: // DIN
-                    return String.Concat("+",
-                                         CountryCode.TelefonCode,
-                                         "*",
-                                         Suffix);
-
-            }
-
-        }
+            => Format switch {
+                   OperatorIdFormats.DIN       => String.Concat("+", CountryCode.TelefonCode.ToString(), "*", Suffix ?? ""),
+                   OperatorIdFormats.ISO_STAR  => String.Concat(     CountryCode.Alpha2Code,             "*", Suffix ?? ""),
+                   _                           => String.Concat(     CountryCode.Alpha2Code,                  Suffix ?? "")
+               };
 
         #endregion
 

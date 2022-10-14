@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -39,12 +37,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id                               Id               { get; }
+        public RoamingNetwork_Id                          Id                { get; }
 
         /// <summary>
         /// The timestamped status of the roaming network.
         /// </summary>
-        public StatusSchedule<RoamingNetworkStatusTypes>  StatusSchedule   { get; }
+        public StatusSchedule<RoamingNetworkStatusTypes>  StatusSchedule    { get; }
 
         #endregion
 
@@ -56,12 +54,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="StatusSchedule">The timestamped status of the roaming network.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public RoamingNetworkStatusSchedule(RoamingNetwork_Id                               Id,
-                                                 StatusSchedule<RoamingNetworkStatusTypes>  StatusSchedule,
-                                                 IReadOnlyDictionary<String, Object>             CustomData  = null)
+        public RoamingNetworkStatusSchedule(RoamingNetwork_Id                          Id,
+                                            StatusSchedule<RoamingNetworkStatusTypes>  StatusSchedule,
+                                            JObject?                                   CustomData     = null,
+                                            UserDefinedDictionary?                     InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

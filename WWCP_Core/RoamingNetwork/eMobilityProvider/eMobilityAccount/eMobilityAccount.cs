@@ -17,24 +17,18 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
     /// A electric mobility account.
     /// </summary>
-    public class eMobilityAccount : AEMobilityEntity<eMobilityAccount_Id>,
+    public class eMobilityAccount : AInternalData,
+                                    IHasId<eMobilityAccount_Id>,
                                     IEquatable<eMobilityAccount>, IComparable<eMobilityAccount>, IComparable
     {
 
@@ -44,66 +38,39 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Name
-
-        private I18NString _Name;
+        /// <summary>
+        /// The unique electric mobility account identification.
+        /// </summary>
+        [Mandatory]
+        public eMobilityAccount_Id  Id      { get; }
 
         /// <summary>
         /// The offical (multi-language) name of the e-mobility account.
         /// </summary>
         [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _Name, value);
-            }
-
-        }
-
-        #endregion
-
-
-        #endregion
-
-        #region Events
+        public I18NString           Name    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region (internal) eMobilityAccount(Id)
-
         /// <summary>
         /// Create a new parking sensor having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the parking sensor.</param>
-        internal eMobilityAccount(eMobilityAccount_Id  Id)
-            : base(Id)
+        internal eMobilityAccount(eMobilityAccount_Id  Id,
+                                  I18NString?          Name   = null)
+
+            : base(null,
+                   null)
+
         {
 
-            #region Initial checks
 
-            if (Id == null)
-                throw new ArgumentNullException(nameof(Id), "The unique identification of the e-mobility account must not be null!");
-
-            #endregion
-
-            #region Init data and properties
-
-            this._Name              = new I18NString(Languages.en, Id.ToString());
-
-            #endregion
+            this.Id    = Id;
+            this.Name  = Name ?? new I18NString(Languages.en, Id.ToString());
 
         }
-
-        #endregion
 
         #endregion
 
@@ -116,7 +83,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
         {
 
             if (Object == null)

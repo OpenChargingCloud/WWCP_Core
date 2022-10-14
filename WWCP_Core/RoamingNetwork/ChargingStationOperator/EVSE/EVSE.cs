@@ -24,250 +24,14 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using org.GraphDefined.WWCP.Net.IO.JSON;
+using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
 
-    /// <summary>
-    /// WWCP JSON I/O EVSE extentions.
-    /// </summary>
-    public static partial class EVSEExtensions
-    {
-
-        #region ToJSON(this EVSEs, Skip = null, Take = null, Embedded = false, ...)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// <param name="Skip">The optional number of EVSEs to skip.</param>
-        /// <param name="Take">The optional number of EVSEs to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public static JArray ToJSON(this IEnumerable<EVSE>                  EVSEs,
-                                    UInt64?                                 Skip                              = null,
-                                    UInt64?                                 Take                              = null,
-                                    Boolean                                 Embedded                          = false,
-                                    InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                                    CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
-
-
-            => EVSEs?.Any() == true
-
-                   ? new JArray(EVSEs.Where         (evse => evse is not null).
-                                      OrderBy       (evse => evse.Id).
-                                      SkipTakeFilter(Skip, Take).
-                                      SafeSelect    (evse => evse.ToJSON(Embedded,
-                                                                         ExpandRoamingNetworkId,
-                                                                         ExpandChargingStationOperatorId,
-                                                                         ExpandChargingPoolId,
-                                                                         ExpandChargingStationId,
-                                                                         ExpandBrandIds,
-                                                                         ExpandDataLicenses,
-                                                                         CustomEVSESerializer)).
-                                      Where         (evse => evse is not null))
-
-                   : new JArray();
-
-        #endregion
-
-
-        #region ToJSON(this EVSEAdminStatus,          Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
-                                     UInt64?                            Skip  = null,
-                                     UInt64?                            Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEAdminStatus is null || !EVSEAdminStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatus>();
-
-            foreach (var status in EVSEAdminStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this EVSEAdminStatusSchedules, Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEAdminStatusSchedule>  EVSEAdminStatusSchedules,
-                                     UInt64?                                    Skip  = null,
-                                     UInt64?                                    Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEAdminStatusSchedules is null || !EVSEAdminStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatusSchedule>();
-
-            foreach (var status in EVSEAdminStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-                                                                                 // Filter multiple status having the exact same ISO 8601 timestamp!
-                                                                                 GroupBy(status => status.Timestamp.ToIso8601()).
-                                                                                 Select (group => new JProperty(group.First().Timestamp.ToIso8601(),
-                                                                                                                group.Select(status => status.Value.ToString()).AggregateWith(",")))
-                                                              ))));
-
-        }
-
-        #endregion
-
-
-        #region ToJSON(this EVSEStatus,               Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
-                                     UInt64?                       Skip  = null,
-                                     UInt64?                       Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEStatus is null || !EVSEStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
-
-            foreach (var status in EVSEStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this EVSEStatusSchedules,      Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<EVSEStatusSchedule>  EVSEStatusSchedules,
-                                     UInt64?                               Skip  = null,
-                                     UInt64?                               Take  = null)
-        {
-
-            #region Initial checks
-
-            if (EVSEStatusSchedules is null || !EVSEStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatusSchedule>();
-
-            foreach (var status in EVSEStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select (kvp    => new JProperty(kvp.Key.ToString(),
-                                                                   new JObject(
-                                                                       kvp.Value.StatusSchedule.
-                                                                                     // Filter multiple status having the exact same ISO 8601 timestamp!
-                                                                                     GroupBy(status => status.Timestamp.ToIso8601()).
-                                                                                     Select (group => new JProperty(group.First().Timestamp.ToIso8601(),
-                                                                                                                    group.Select(status => status.Value.ToString()).AggregateWith(",")))
-                                                                  ))));
-
-        }
-
-        #endregion
-
-    }
 
 
     /// <summary>
@@ -275,11 +39,11 @@ namespace org.GraphDefined.WWCP
     /// This is meant to be one electrical circuit which can charge a electric vehicle
     /// independently. Thus there could be multiple interdependent power sockets.
     /// </summary>
-    public class EVSE : AEMobilityEntity<EVSE_Id>,
-                        IEquatable<EVSE>, IComparable<EVSE>, IComparable,
-                        IEnumerable<SocketOutlet>,
-                        IStatus<EVSEStatusTypes>
-
+    public class EVSE : AEMobilityEntity<EVSE_Id,
+                                         EVSEAdminStatusTypes,
+                                         EVSEStatusTypes>,
+                        IEquatable<EVSE>, IComparable<EVSE>,
+                        IEVSE
     {
 
         #region Data
@@ -287,351 +51,76 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const           String    JSONLDContext = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
+        public const            String    JSONLDContext                            = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
 
 
-        private readonly       Decimal   EPSILON = 0.01m;
-
-        /// <summary>
-        /// The default max size of the EVSE status history.
-        /// </summary>
-        public const           UInt16    DefaultMaxEVSEStatusListSize    = 50;
+        private readonly        Decimal   EPSILON                                  = 0.01m;
 
         /// <summary>
-        /// The default max size of the EVSE admin status history.
+        /// The default max size of the EVSE admin status schedule/history.
         /// </summary>
-        public const           UInt16    DefaultMaxAdminStatusListSize   = 50;
+        public const            UInt16    DefaultMaxEVSEAdminStatusScheduleSize    = 50;
+
+        /// <summary>
+        /// The default max size of the EVSE status schedule/history.
+        /// </summary>
+        public const            UInt16    DefaultMaxEVSEStatusScheduleSize         = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly TimeSpan  DefaultMaxReservationDuration   = TimeSpan.FromMinutes(15);
+        public static readonly  TimeSpan  DefaultMaxReservationDuration            = TimeSpan.FromMinutes(15);
 
         #endregion
 
         #region Properties
 
-        #region Description
-
-        private I18NString _Description;
-
         /// <summary>
-        /// An description of this EVSE.
+        /// All brands registered for this EVSE.
         /// </summary>
-        [Mandatory]
-        public I18NString Description
-        {
-
-            get
-            {
-
-                return _Description.IsNeitherNullNorEmpty()
-                           ? _Description
-                           : ChargingStation?.Description;
-
-            }
-
-            set
-            {
-
-                if (value != _Description && value != ChargingStation?.Description)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _Description);
-
-                    else
-                        SetProperty(ref _Description, value);
-
-                }
-
-            }
-
-        }
-
-        public I18NString SetDescription(Languages Language, String Text)
-            => _Description = I18NString.Create(Language, Text);
-
-        public I18NString SetDescription(I18NString I18NText)
-            => _Description = I18NText;
-
-        public I18NString AddDescription(Languages Language, String Text)
-            => _Description.Add(Language, Text);
-
-        #endregion
-
-        #region Brands
-
-        #region BrandAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSE, Brand, Boolean> BrandAddition;
-
-        /// <summary>
-        /// Called whenever a brand will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, Brand, Boolean> OnBrandAddition
-
-            => BrandAddition;
-
-        #endregion
-
-        #region Brands
-
-        private readonly SpecialHashSet<EVSE, Brand_Id, Brand> _Brands;
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        public IEnumerable<Brand> Brands
-            => _Brands;
-
-        #endregion
-
-        public void Add(Brand Brand)
-        {
-            _Brands.TryAdd(Brand);
-        }
-
-        #region BrandIds
-
-        /// <summary>
-        /// All brand identifications registered within this charging station.
-        /// </summary>
-        public IEnumerable<Brand_Id> BrandIds
-            => _Brands.Select(brand => brand.Id);
-
-        #endregion
-
-        #region TryGetBrand(Id, out Brand)
-
-        /// <summary>
-        /// Try to return the brand of the given brand identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the brand.</param>
-        /// <param name="Brand">The brand.</param>
-        public Boolean TryGetBrand(Brand_Id Id, out Brand Brand)
-            => _Brands.TryGet(Id, out Brand);
-
-        #endregion
-
-
-        #region BrandRemoval
-
-        internal readonly IVotingNotificator<DateTime, EVSE, Brand, Boolean> BrandRemoval;
-
-        /// <summary>
-        /// Called whenever a brand will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, Brand, Boolean> OnBrandRemoval
-
-            => BrandRemoval;
-
-        #endregion
-
-        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand_Id                BrandId,
-                                 Action<EVSE, Brand>     OnSuccess  = null,
-                                 Action<EVSE, Brand_Id>  OnError    = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (_Brands.TryGet(BrandId, out Brand Brand) &&
-                    BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(BrandId, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, BrandId);
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station.
-        /// </summary>
-        /// <param name="Brand">The brand to remove.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand                Brand,
-                                 Action<EVSE, Brand>  OnSuccess  = null,
-                                 Action<EVSE, Brand>  OnError    = null)
-        {
-
-            lock (_Brands)
-            {
-
-                if (BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, _Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, Brand);
-
-                return Brand;
-
-            }
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region DataLicense
-
-        private ReactiveSet<DataLicense> _DataLicenses;
+        [Optional, SlowData]
+        public EntityHashSet<EVSE, Brand_Id, Brand>     Brands                  { get; }
 
         /// <summary>
         /// The license of the EVSE data.
         /// </summary>
-        [Mandatory]
-        public ReactiveSet<DataLicense> DataLicenses
-        {
-
-            get
-            {
-
-                return _DataLicenses != null && _DataLicenses.Any()
-                           ? _DataLicenses
-                           : ChargingPool?.DataLicenses;
-
-            }
-
-            set
-            {
-
-                if (value != _DataLicenses && value != ChargingPool?.DataLicenses)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _DataLicenses);
-
-                    else
-                    {
-
-                        if (_DataLicenses == null)
-                            SetProperty(ref _DataLicenses,
-                                        value,
-                                        EventTracking_Id.New);
-
-                        else
-                            SetProperty(ref _DataLicenses,
-                                        _DataLicenses.Set(value),
-                                        EventTracking_Id.New);
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region ChargingModes
-
-        private ReactiveSet<ChargingModes> _ChargingModes;
+        [Mandatory, SlowData]
+        public ReactiveSet<DataLicense>                 DataLicenses            { get; }
 
         /// <summary>
-        /// Charging modes.
+        /// The charging modes.
         /// </summary>
-        [Mandatory]
-        public ReactiveSet<ChargingModes> ChargingModes
-        {
+        [Mandatory, SlowData]
+        public ReactiveSet<ChargingModes>               ChargingModes           { get; }
 
-            get
-            {
-                return _ChargingModes;
-            }
+        /// <summary>
+        /// The power socket outlets.
+        /// </summary>
+        [Mandatory, SlowData]
+        public ReactiveSet<SocketOutlet>                SocketOutlets           { get; }
 
-            set
-            {
-
-                if (value.IsNullOrEmpty())
-                    DeleteProperty(ref _ChargingModes);
-
-                else
-                {
-
-                    if (_ChargingModes == null)
-                        SetProperty(ref _ChargingModes,
-                                    value,
-                                    EventTracking_Id.New);
-
-                    else
-                        SetProperty(ref _ChargingModes,
-                                    _ChargingModes.Set(value),
-                                    EventTracking_Id.New);
-
-                }
-
-            }
-
-        }
-
-        #endregion
 
         #region CurrentType
 
-        private CurrentTypes? _CurrentType;
+        private CurrentTypes? currentType;
 
         /// <summary>
         /// The type of the current.
         /// </summary>
-        [Mandatory]
+        [Mandatory, SlowData]
         public CurrentTypes? CurrentType
         {
 
             get
             {
-                return _CurrentType;
+                return currentType;
             }
 
             set
             {
 
-                if (_CurrentType != value)
-                    SetProperty(ref _CurrentType,
+                if (currentType != value)
+                    SetProperty(ref currentType,
                                 value,
                                 EventTracking_Id.New);
 
@@ -643,38 +132,37 @@ namespace org.GraphDefined.WWCP
 
         #region AverageVoltage
 
-        private Decimal? _AverageVoltage;
+        private Decimal? averageVoltage;
 
         /// <summary>
         /// The average voltage.
         /// </summary>
-        [Mandatory]
+        [Optional, SlowData]
         public Decimal? AverageVoltage
         {
 
             get
             {
-                return _AverageVoltage;
+                return averageVoltage;
             }
 
             set
             {
 
-                if (value != null)
+                if (value is not null)
                 {
 
-                    if (!_AverageVoltage.HasValue)
-                        _AverageVoltage = value;
+                    if (!averageVoltage.HasValue)
+                        averageVoltage = value;
 
-                    else if (Math.Abs(_AverageVoltage.Value - value.Value) > EPSILON)
-                        SetProperty(ref _AverageVoltage,
+                    else if (Math.Abs(averageVoltage.Value - value.Value) > EPSILON)
+                        SetProperty(ref averageVoltage,
                                     value,
                                     EventTracking_Id.New);
 
                 }
-
                 else
-                    DeleteProperty(ref _AverageVoltage);
+                    DeleteProperty(ref averageVoltage);
 
             }
 
@@ -685,40 +173,39 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCurrent
 
-        private Decimal? _MaxCurrent;
+        private Decimal? maxCurrent;
 
         /// <summary>
         /// The maximum current [Ampere].
         /// </summary>
-        [Mandatory]
+        [Mandatory, SlowData]
         public Decimal? MaxCurrent
         {
 
             get
             {
-                return _MaxCurrent;
+                return maxCurrent;
             }
 
             set
             {
 
-                if (value != null)
+                if (value is not null)
                 {
 
-                    if (!_MaxCurrent.HasValue)
-                        SetProperty(ref _MaxCurrent,
+                    if (!maxCurrent.HasValue)
+                        SetProperty(ref maxCurrent,
                                     value,
                                     EventTracking_Id.New);
 
-                    else if (Math.Abs(_MaxCurrent.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxCurrent,
+                    else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCurrent,
                                     value,
                                     EventTracking_Id.New);
 
                 }
-
                 else
-                    DeleteProperty(ref _MaxCurrent);
+                    DeleteProperty(ref maxCurrent);
 
             }
 
@@ -728,105 +215,79 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCurrentRealTime
 
-        private Timestamped<Decimal>? _MaxCurrentRealTime;
+        private Timestamped<Decimal>? maxCurrentRealTime;
 
         /// <summary>
         /// The real-time maximum current [Ampere].
         /// </summary>
-        [Mandatory]
+        [Optional, FastData]
         public Timestamped<Decimal>? MaxCurrentRealTime
         {
 
             get
             {
-                return _MaxCurrentRealTime;
+                return maxCurrentRealTime;
             }
 
             set
             {
 
-                if (value != null)
-                    SetProperty(ref _MaxCurrentRealTime,
+                if (value is not null)
+                    SetProperty(ref maxCurrentRealTime,
                                 value,
                                 EventTracking_Id.New);
 
                 else
-                    DeleteProperty(ref _MaxCurrentRealTime);
+                    DeleteProperty(ref maxCurrentRealTime);
 
             }
 
         }
 
         #endregion
-
-        #region MaxCurrentPrognoses
-
-        private IEnumerable<Timestamped<Decimal>> _MaxCurrentPrognoses;
 
         /// <summary>
         /// Prognoses on future values of the maximum current [Ampere].
         /// </summary>
-        [Mandatory]
-        public IEnumerable<Timestamped<Decimal>> MaxCurrentPrognoses
-        {
-
-            get
-            {
-                return _MaxCurrentPrognoses;
-            }
-
-            set
-            {
-
-                if (value != null)
-                    SetProperty(ref _MaxCurrentPrognoses,
-                                value,
-                                EventTracking_Id.New);
-
-                else
-                    DeleteProperty(ref _MaxCurrentPrognoses);
-
-            }
-
-        }
-
-        #endregion
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
 
 
         #region MaxPower
 
-        private Decimal? _MaxPower;
+        private Decimal? maxPower;
 
         /// <summary>
         /// The maximum power [kWatt].
         /// </summary>
-        [Optional]
+        [Optional, SlowData]
         public Decimal? MaxPower
         {
 
             get
             {
-                return _MaxPower;
+                return maxPower;
             }
 
             set
             {
 
-                if (value != null)
+                if (value is not null)
                 {
 
-                    if (!_MaxPower.HasValue)
-                        _MaxPower = value;
+                    if (!maxPower.HasValue)
+                        SetProperty(ref maxPower,
+                                    value,
+                                    EventTracking_Id.New);
 
-                    else if (Math.Abs(_MaxPower.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxPower,
+                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxPower,
                                     value,
                                     EventTracking_Id.New);
 
                 }
-
                 else
-                    DeleteProperty(ref _MaxPower);
+                    DeleteProperty(ref maxPower);
 
             }
 
@@ -836,74 +297,47 @@ namespace org.GraphDefined.WWCP
 
         #region MaxPowerRealTime
 
-        private Timestamped<Decimal>? _MaxPowerRealTime;
+        private Timestamped<Decimal>? maxPowerRealTime;
 
         /// <summary>
         /// The real-time maximum power [kWatt].
         /// </summary>
-        [Mandatory]
+        [Optional, FastData]
         public Timestamped<Decimal>? MaxPowerRealTime
         {
 
             get
             {
-                return _MaxPowerRealTime;
+                return maxPowerRealTime;
             }
 
             set
             {
 
-                if (value != null)
-                    SetProperty(ref _MaxPowerRealTime,
+                if (value is not null)
+                    SetProperty(ref maxPowerRealTime,
                                 value,
                                 EventTracking_Id.New);
 
                 else
-                    DeleteProperty(ref _MaxPowerRealTime);
+                    DeleteProperty(ref maxPowerRealTime);
 
             }
 
         }
 
         #endregion
-
-        #region MaxPowerPrognoses
-
-        private IEnumerable<Timestamped<Decimal>> _MaxPowerPrognoses;
 
         /// <summary>
         /// Prognoses on future values of the maximum power [kWatt].
         /// </summary>
-        [Mandatory]
-        public IEnumerable<Timestamped<Decimal>> MaxPowerPrognoses
-        {
-
-            get
-            {
-                return _MaxPowerPrognoses;
-            }
-
-            set
-            {
-
-                if (value != null)
-                    SetProperty(ref _MaxPowerPrognoses,
-                                value,
-                                EventTracking_Id.New);
-
-                else
-                    DeleteProperty(ref _MaxPowerPrognoses);
-
-            }
-
-        }
-
-        #endregion
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses       { get; }
 
 
         #region MaxCapacity
 
-        private Decimal? _MaxCapacity;
+        private Decimal? maxCapacity;
 
         /// <summary>
         /// The maximum capacity [kWh].
@@ -914,27 +348,28 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _MaxCapacity;
+                return maxCapacity;
             }
 
             set
             {
 
-                if (value != null)
+                if (value is not null)
                 {
 
-                    if (!_MaxCapacity.HasValue)
-                        _MaxCapacity = value;
+                    if (!maxCapacity.HasValue)
+                        SetProperty(ref maxCapacity,
+                                    value,
+                                    EventTracking_Id.New);
 
-                    else if (Math.Abs(_MaxCapacity.Value - value.Value) > EPSILON)
-                        SetProperty(ref _MaxCapacity,
+                    else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCapacity,
                                     value,
                                     EventTracking_Id.New);
 
                 }
-
                 else
-                    DeleteProperty(ref _MaxCapacity);
+                    DeleteProperty(ref maxCapacity);
 
             }
 
@@ -944,7 +379,7 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCapacityRealTime
 
-        private Timestamped<Decimal>? _MaxCapacityRealTime;
+        private Timestamped<Decimal>? maxCapacityRealTime;
 
         /// <summary>
         /// The real-time maximum capacity [kWh].
@@ -955,118 +390,60 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _MaxCapacityRealTime;
+                return maxCapacityRealTime;
             }
 
             set
             {
 
-                if (value != null)
-                    SetProperty(ref _MaxCapacityRealTime,
+                if (value is not null)
+                    SetProperty(ref maxCapacityRealTime,
                                 value,
                                 EventTracking_Id.New);
 
                 else
-                    DeleteProperty(ref _MaxCapacityRealTime);
+                    DeleteProperty(ref maxCapacityRealTime);
 
             }
 
         }
 
         #endregion
-
-        #region MaxCapacityPrognoses
-
-        private IEnumerable<Timestamped<Decimal>> _MaxCapacityPrognoses;
 
         /// <summary>
         /// Prognoses on future values of the maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public IEnumerable<Timestamped<Decimal>> MaxCapacityPrognoses
-        {
+        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses    { get; }
 
-            get
-            {
-                return _MaxCapacityPrognoses;
-            }
-
-            set
-            {
-
-                if (value != null)
-                    SetProperty(ref _MaxCapacityPrognoses,
-                                value,
-                                EventTracking_Id.New);
-
-                else
-                    DeleteProperty(ref _MaxCapacityPrognoses);
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region EnergyMeterId
-
-        private EnergyMeter_Id? _EnergyMeterId;
-
-        /// <summary>
-        /// The energy meter identification.
-        /// </summary>
-        [Optional]
-        public EnergyMeter_Id? EnergyMeterId
-        {
-
-            get
-            {
-                return _EnergyMeterId;
-            }
-
-            set
-            {
-
-                if (value != null)
-                    SetProperty(ref _EnergyMeterId, value);
-
-                else
-                    DeleteProperty(ref _EnergyMeterId);
-
-            }
-
-        }
-
-        #endregion
 
         #region EnergyMix
 
-        private EnergyMix _EnergyMix;
+        private EnergyMix? energyMix;
 
         /// <summary>
-        /// The energy mix at the EVSE.
+        /// The energy mix.
         /// </summary>
-        [Optional]
-        public EnergyMix EnergyMix
+        [Optional, SlowData]
+        public EnergyMix? EnergyMix
         {
 
             get
             {
-                return _EnergyMix ?? ChargingStation?.EnergyMix;
+                return energyMix ?? ChargingStation?.EnergyMix;
             }
 
             set
             {
 
-                if (value != _EnergyMix && value != ChargingStation?.EnergyMix)
+                if (value != energyMix && value != ChargingStation?.EnergyMix)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _EnergyMix);
+                        DeleteProperty(ref energyMix);
 
                     else
-                        SetProperty(ref _EnergyMix, value);
+                        SetProperty(ref energyMix, value);
 
                 }
 
@@ -1076,23 +453,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SocketOutlets
+        #region EnergyMixRealTime
 
-        private ReactiveSet<SocketOutlet> _SocketOutlets;
+        private Timestamped<EnergyMix>? energyMixRealTime;
 
-        public ReactiveSet<SocketOutlet> SocketOutlets
+        /// <summary>
+        /// The current energy mix.
+        /// </summary>
+        [Mandatory, FastData]
+        public Timestamped<EnergyMix>? EnergyMixRealTime
         {
 
             get
             {
-                return _SocketOutlets;
+                return energyMixRealTime;
             }
 
             set
             {
 
-                if (_SocketOutlets != value)
-                    SetProperty(ref _SocketOutlets, value);
+                if (value is not null)
+                    SetProperty(ref energyMixRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref energyMixRealTime);
 
             }
 
@@ -1100,60 +486,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        /// <summary>
+        /// Prognoses on future values of the energy mix.
+        /// </summary>
+        [Mandatory, FastData]
+        public ReactiveSet<Timestamped<EnergyMix>>      EnergyMixPrognoses      { get; }
+
 
         #region MaxReservationDuration
 
-        private TimeSpan _MaxReservationDuration;
+        private TimeSpan maxReservationDuration;
 
         /// <summary>
-        /// The maximum reservation time.
+        /// The maximum reservation time at this EVSE.
         /// </summary>
-        [Optional]
+        [Optional, SlowData]
         public TimeSpan MaxReservationDuration
         {
 
             get
             {
-                return _MaxReservationDuration;
+                return maxReservationDuration;
             }
 
             set
             {
-
-                if (value != null)
-                    SetProperty(ref _MaxReservationDuration,
-                                value,
-                                EventTracking_Id.New);
-
-                else
-                    DeleteProperty(ref _MaxReservationDuration);
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region IsFreeOfCharge
-
-        private Boolean _IsFreeOfCharge;
-
-        /// <summary>
-        /// Charging at this EVSE is free of charge.
-        /// </summary>
-        [Optional]
-        public Boolean IsFreeOfCharge
-        {
-
-            get
-            {
-                return _IsFreeOfCharge;
-            }
-
-            set
-            {
-                SetProperty(ref _IsFreeOfCharge,
+                SetProperty(ref maxReservationDuration,
                             value,
                             EventTracking_Id.New);
             }
@@ -1162,32 +520,58 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EnergyMeterPublicKey
+        #region IsFreeOfCharge
 
-        private String _EnergyMeterPublicKey;
+        private Boolean isFreeOfCharge;
 
         /// <summary>
-        /// The public key of the energy meter.
+        /// Charging at this EVSE is ALWAYS free of charge.
         /// </summary>
-        [Optional]
-        public String EnergyMeterPublicKey
+        [Optional, SlowData]
+        public Boolean IsFreeOfCharge
         {
 
             get
             {
-                return _EnergyMeterPublicKey;
+                return isFreeOfCharge;
+            }
+
+            set
+            {
+                SetProperty(ref isFreeOfCharge,
+                            value,
+                            EventTracking_Id.New);
+            }
+
+        }
+
+        #endregion
+
+
+        #region EnergyMeter
+
+        private EnergyMeter? energyMeter;
+
+        /// <summary>
+        /// The smart energy meter attached to this EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public EnergyMeter? EnergyMeter
+        {
+
+            get
+            {
+                return energyMeter;
             }
 
             set
             {
 
-                if (value != null)
-                    SetProperty(ref _EnergyMeterPublicKey,
-                                     value,
-                                     EventTracking_Id.New);
+                if (value is not null)
+                    SetProperty(ref energyMeter, value);
 
                 else
-                    DeleteProperty(ref _EnergyMeterPublicKey);
+                    DeleteProperty(ref energyMeter);
 
             }
 
@@ -1196,182 +580,17 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region AdminStatus
+
 
         /// <summary>
-        /// The current EVSE admin status.
+        /// The current charging session, if available.
         /// </summary>
         [InternalUseOnly]
-        public Timestamped<EVSEAdminStatusTypes> AdminStatus
-        {
+        public ChargingSession? ChargingSession { get; internal set; }
 
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_AdminStatusSchedule.CurrentValue != value.Value)
-                    SetAdminStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule(HistorySize = null)
-
-        private readonly StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The EVSE admin status schedule.
-        /// </summary>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the status history.</param>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(Func<DateTime,             Boolean> TimestampFilter  = null,
-                                                                                  Func<EVSEAdminStatusTypes, Boolean> StatusFilter     = null,
-                                                                                  UInt64?                             HistorySize      = null)
-        {
-
-            if (TimestampFilter == null)
-                TimestampFilter = timestamp => true;
-
-            if (StatusFilter    == null)
-                StatusFilter    = status    => true;
-
-            var filteredStatusSchedule = _AdminStatusSchedule.
-                                             Where(status => TimestampFilter(status.Timestamp)).
-                                             Where(status => StatusFilter   (status.Value));
-
-            return HistorySize.HasValue
-                       ? filteredStatusSchedule.Take(HistorySize)
-                       : filteredStatusSchedule;
-
-        }
-
-        #endregion
-
-
-        #region Status
-
-        /// <summary>
-        /// The current EVSE status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEStatusTypes> Status
-        {
-
-            get
-            {
-
-                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
-                {
-
-                    return _StatusSchedule.CurrentStatus;
-
-                }
-
-                else
-                {
-
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            return new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService);
-
-                    }
-
-                }
-
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_StatusSchedule.CurrentValue != value.Value)
-                    SetStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region StatusSchedule(HistorySize = null)
-
-        private readonly StatusSchedule<EVSEStatusTypes> _StatusSchedule;
-
-        /// <summary>
-        /// The EVSE status schedule.
-        /// </summary>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the status history.</param>
-        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(Func<DateTime,        Boolean> TimestampFilter  = null,
-                                                                        Func<EVSEStatusTypes, Boolean> StatusFilter     = null,
-                                                                        UInt64?                        HistorySize      = null)
-        {
-
-             if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
-                 AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
-             {
-
-                if (TimestampFilter == null)
-                    TimestampFilter = timestamp => true;
-
-                if (StatusFilter    == null)
-                    StatusFilter    = status    => true;
-
-                var filteredStatusSchedule = _StatusSchedule.
-                                                 Where(status => TimestampFilter(status.Timestamp)).
-                                                 Where(status => StatusFilter   (status.Value));
-
-                return HistorySize.HasValue
-                           ? filteredStatusSchedule.Take(HistorySize)
-                           : filteredStatusSchedule;
-
-            }
-
-             else
-             {
-
-                 switch (AdminStatus.Value)
-                 {
-
-                     default:
-                         return new Timestamped<EVSEStatusTypes>[] {
-                                    new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService)
-                                };
-
-                 }
-
-             }
-
-        }
-
-        #endregion
 
 
         public DateTime? LastStatusUpdate { get; set; }
-
-
-        /// <summary>
-        /// Optional custom data, e.g. in combination with custom parsers and serializers.
-        /// </summary>
-        [Optional]
-        public JObject  CustomData    { get; }
 
         #endregion
 
@@ -1382,17 +601,87 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        public event OnEVSEDataChangedDelegate         OnDataChanged;
+        public event OnEVSEDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnStatusChanged;
+        public event OnEVSEStatusChangedDelegate?       OnStatusChanged;
+
+        #endregion
+
+        #region Reservations
+
+        /// <summary>
+        /// An event fired whenever a charging location is being reserved.
+        /// </summary>
+        public event OnReserveRequestDelegate?             OnReserveRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging location was reserved.
+        /// </summary>
+        public event OnReserveResponseDelegate?            OnReserveResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charging reservation was created.
+        /// </summary>
+        public event OnNewReservationDelegate?             OnNewReservation;
+
+
+        /// <summary>
+        /// An event fired whenever a charging reservation is being canceled.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was canceled.
+        /// </summary>
+        public event OnReservationCanceledDelegate?        OnReservationCanceled;
+
+        #endregion
+
+        #region RemoteStart/-Stop
+
+        /// <summary>
+        /// An event fired whenever a remote start command was received.
+        /// </summary>
+        public event OnRemoteStartRequestDelegate?     OnRemoteStartRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote start command completed.
+        /// </summary>
+        public event OnRemoteStartResponseDelegate?    OnRemoteStartResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate?     OnNewChargingSession;
+
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopRequestDelegate?      OnRemoteStopRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        public event OnRemoteStopResponseDelegate?     OnRemoteStopResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was created.
+        /// </summary>
+        public event OnNewChargeDetailRecordDelegate?  OnNewChargeDetailRecord;
 
         #endregion
 
@@ -1403,32 +692,32 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE?             RemoteEVSE        { get; }
+        public IRemoteEVSE?              RemoteEVSE         { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        public ChargingStation          ChargingStation   { get; }
+        public ChargingStation?          ChargingStation    { get; }
 
         /// <summary>
         /// The charging pool of this EVSE.
         /// </summary>
-        public ChargingPool             ChargingPool
+        public ChargingPool?             ChargingPool
             => ChargingStation?.ChargingPool;
 
         /// <summary>
         /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator  Operator
-            => ChargingStation?.ChargingPool?.Operator;
+        public ChargingStationOperator?  Operator
+            => ChargingStation?.Operator;
 
         /// <summary>
         /// The roaming network of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork           RoamingNetwork
-            => ChargingStation?.ChargingPool?.Operator?.RoamingNetwork;
+        public IRoamingNetwork?          RoamingNetwork
+            => ChargingStation?.RoamingNetwork;
 
         #endregion
 
@@ -1443,47 +732,124 @@ namespace org.GraphDefined.WWCP
         /// <param name="RemoteEVSECreator">A delegate to attach a remote EVSE.</param>
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
-        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">An optional max length of the admin staus schedule.</param>
+        /// <param name="MaxStatusScheduleSize">An optional max length of the staus schedule.</param>
         /// 
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
-        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        public EVSE(EVSE_Id                               Id,
-                    ChargingStation                       ChargingStation,
-                    Action<EVSE>?                         Configurator             = null,
-                    RemoteEVSECreatorDelegate?            RemoteEVSECreator        = null,
-                    Timestamped<EVSEAdminStatusTypes>?    InitialAdminStatus       = null,
-                    Timestamped<EVSEStatusTypes>?         InitialStatus            = null,
-                    UInt16                                MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
-                    UInt16                                MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+        /// <param name="InternalData">An optional dictionary of internal data.</param>
+        public EVSE(EVSE_Id                             Id,
+                    ChargingStation                     ChargingStation,
+                    I18NString?                         Name                         = null,
+                    I18NString?                         Description                  = null,
+                    Action<EVSE>?                       Configurator                 = null,
+                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                    Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                    UInt16?                             MaxAdminStatusScheduleSize   = null,
+                    UInt16?                             MaxStatusScheduleSize        = null,
 
-                    JObject?                              CustomData               = null,
-                    IReadOnlyDictionary<String, Object>?  InternalData             = null)
+                    String?                             DataSource                   = null,
+                    DateTime?                           LastChange                   = null,
+
+                    JObject?                            CustomData                   = null,
+                    UserDefinedDictionary?              InternalData                 = null)
 
             : base(Id,
+                   Name,
+                   Description,
+                   InitialAdminStatus         ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus              ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxEVSEAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxEVSEStatusScheduleSize,
+                   DataSource,
+                   LastChange,
+                   CustomData,
                    InternalData)
 
         {
 
             #region Init data and properties
 
-            this.ChargingStation        = ChargingStation;
+            this.ChargingStation = ChargingStation;
 
-            InitialAdminStatus          ??= new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
-            InitialStatus               ??= new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
+            this.Brands                             = new EntityHashSet<EVSE, Brand_Id, Brand>(this);
+            //this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
 
-            this._Description           = new I18NString();
-            this._ChargingModes         = new ReactiveSet<ChargingModes>();
-            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
-            this._Brands                = new SpecialHashSet<EVSE, Brand_Id, Brand>(this);
+            //    PropertyChanged("DataLicenses",
+            //                    oldItems,
+            //                    newItems);
 
-            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
+            //};
 
-            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.     Insert(InitialStatus.Value);
+            this.DataLicenses                       = new ReactiveSet<DataLicense>();
+            this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
 
-            this.CustomData             = CustomData ?? new JObject();
+                PropertyChanged("DataLicenses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.ChargingModes                      = new ReactiveSet<ChargingModes>();
+            this.ChargingModes.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("ChargingModes",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxCurrentPrognoses                = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCurrentPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxPowerPrognoses                  = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxPowerPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.MaxCapacityPrognoses               = new ReactiveSet<Timestamped<Decimal>>();
+            this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCapacityPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.EnergyMixPrognoses                 = new ReactiveSet<Timestamped<EnergyMix>>();
+            this.EnergyMixPrognoses.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("EnergyMixPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.SocketOutlets                      = new ReactiveSet<SocketOutlet>();
+            this.SocketOutlets.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("SocketOutlets",
+                                oldItems,
+                                newItems);
+
+            };
 
             #endregion
 
@@ -1493,33 +859,34 @@ namespace org.GraphDefined.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.adminStatusSchedule.OnStatusChanged    += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                            => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.statusSchedule.OnStatusChanged         += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                            => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
 
             this.RemoteEVSE = RemoteEVSECreator?.Invoke(this);
 
-            if (this.RemoteEVSE != null)
+            if (this.RemoteEVSE is not null)
             {
 
-                this.RemoteEVSE.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => AdminStatus                 = NewStatus;
-                this.RemoteEVSE.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => Status                      = NewStatus;
+                this.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => { AdminStatus = NewStatus; return Task.CompletedTask; };
+                this.RemoteEVSE.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => { Status = NewStatus; return Task.CompletedTask; };
 
-                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)                                  => OnNewReservation.        Invoke(Timestamp, RemoteEVSE, Reservation);
-                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason)                          => OnReservationCanceled.   Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
+                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation) => OnNewReservation.Invoke(Timestamp, RemoteEVSE, Reservation);
+                this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
-                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)                              => {
-                    RoamingNetwork.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
+                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) =>
+                {
+                    RoamingNetwork?.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
                     //_ChargingSession       = ChargingSession;
                     //_ChargingSession.EVSE  = this;
-                    OnNewChargingSession.Invoke(Timestamp, this, ChargingSession);
+                    OnNewChargingSession?.Invoke(Timestamp, this, ChargingSession);
                 };
 
-                this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)                           => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
+                this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord) => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
 
             }
 
@@ -1537,28 +904,30 @@ namespace org.GraphDefined.WWCP
         public EVSE UpdateWith(EVSE OtherEVSE)
         {
 
-            Description          = OtherEVSE.Description;
+            Name.Add(OtherEVSE.Name);
+            Description.Add(OtherEVSE.Description);
 
-            ChargingModes        = OtherEVSE.ChargingModes;
-            AverageVoltage       = OtherEVSE.AverageVoltage;
-            CurrentType          = OtherEVSE.CurrentType;
-            MaxCurrent           = OtherEVSE.MaxCurrent;
-            MaxPower             = OtherEVSE.MaxPower;
-            MaxCapacity          = OtherEVSE.MaxCapacity;
+            Brands.Clear();
+            Brands.TryAdd(OtherEVSE.Brands);
 
-            if (SocketOutlets == null && OtherEVSE.SocketOutlets != null)
-                SocketOutlets = new ReactiveSet<SocketOutlet>(OtherEVSE.SocketOutlets);
-            else if (SocketOutlets != null)
-                SocketOutlets = OtherEVSE.SocketOutlets;
+            ChargingModes.Clear();
+            ChargingModes.Add(OtherEVSE.ChargingModes);
 
-            EnergyMeterId        = OtherEVSE.EnergyMeterId;
+            SocketOutlets.Clear();
+            SocketOutlets.Add(OtherEVSE.SocketOutlets);
 
+            AverageVoltage = OtherEVSE.AverageVoltage;
+            CurrentType = OtherEVSE.CurrentType;
+            MaxCurrent = OtherEVSE.MaxCurrent;
+            MaxPower = OtherEVSE.MaxPower;
+            MaxCapacity = OtherEVSE.MaxCapacity;
+            EnergyMeter = OtherEVSE.EnergyMeter;
 
             if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
-                SetAdminStatus(OtherEVSE.AdminStatus);
+                AdminStatus = OtherEVSE.AdminStatus;
 
             if (OtherEVSE.Status.Timestamp > Status.Timestamp)
-                SetStatus(OtherEVSE.Status);
+                Status      = OtherEVSE.Status;
 
             return this;
 
@@ -1581,130 +950,16 @@ namespace org.GraphDefined.WWCP
         public void AddCurrentType(CurrentTypes CurrentType)
         {
 
-            if (!_CurrentType.HasValue)
-                _CurrentType = CurrentType;
+            if (!currentType.HasValue)
+                currentType = CurrentType;
 
             else
-                _CurrentType |= CurrentType;
+                currentType |= CurrentType;
 
         }
 
 
         #region Data/(Admin-)Status
-
-        #region SetStatus(NewStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(EVSEStatusTypes NewStatus)
-        {
-            _StatusSchedule.Insert(NewStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewTimestampedStatus)
-
-        /// <summary>
-        /// Set the current status.
-        /// </summary>
-        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
-        {
-            _StatusSchedule.Insert(NewTimestampedStatus);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatus, Timestamp)
-
-        /// <summary>
-        /// Set the status.
-        /// </summary>
-        /// <param name="NewStatus">A new status.</param>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(EVSEStatusTypes  NewStatus,
-                              DateTime        Timestamp)
-        {
-            _StatusSchedule.Insert(NewStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetStatus(NewStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped status.
-        /// </summary>
-        /// <param name="NewStatusList">A list of new timestamped status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
-                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
-        {
-            _StatusSchedule.Set(NewStatusList, ChangeMethod);
-        }
-
-        #endregion
-
-
-        #region SetAdminStatus(NewAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewTimestampedAdminStatus)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus)
-        {
-            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatus, Timestamp)
-
-        /// <summary>
-        /// Set the admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusTypes  NewAdminStatus,
-                                   DateTime             Timestamp)
-        {
-            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
-        }
-
-        #endregion
-
-        #region SetAdminStatus(NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        /// <summary>
-        /// Set the timestamped admin status.
-        /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
-        /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                   ChangeMethod = ChangeMethods.Replace)
-        {
-            _AdminStatusSchedule.Set(NewAdminStatusList, ChangeMethod);
-        }
-
-        #endregion
-
 
         #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
@@ -1717,19 +972,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime          Timestamp,
-                                       EventTracking_Id  EventTrackingId,
-                                       Object            Sender,
-                                       String            PropertyName,
-                                       Object            OldValue,
-                                       Object            NewValue)
+        internal async Task UpdateData(DateTime Timestamp,
+                                       EventTracking_Id EventTrackingId,
+                                       Object Sender,
+                                       String PropertyName,
+                                       Object OldValue,
+                                       Object NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal != null)
+            if (OnDataChangedLocal is not null)
                 await OnDataChangedLocal(Timestamp,
                                          EventTrackingId ?? EventTracking_Id.New,
-                                         Sender as EVSE,
+                                         this,
                                          PropertyName,
                                          OldValue,
                                          NewValue);
@@ -1747,14 +1002,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                           Timestamp,
-                                              EventTracking_Id                   EventTrackingId,
-                                              Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                              Timestamped<EVSEAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime Timestamp,
+                                              EventTracking_Id EventTrackingId,
+                                              Timestamped<EVSEAdminStatusTypes> OldStatus,
+                                              Timestamped<EVSEAdminStatusTypes> NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
+            if (OnAdminStatusChangedLocal is not null)
                 await OnAdminStatusChangedLocal(Timestamp,
                                                 EventTrackingId ?? EventTracking_Id.New,
                                                 this,
@@ -1774,14 +1029,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                      Timestamp,
-                                         EventTracking_Id              EventTrackingId,
-                                         Timestamped<EVSEStatusTypes>  OldStatus,
-                                         Timestamped<EVSEStatusTypes>  NewStatus)
+        internal async Task UpdateStatus(DateTime Timestamp,
+                                         EventTracking_Id EventTrackingId,
+                                         Timestamped<EVSEStatusTypes> OldStatus,
+                                         Timestamped<EVSEStatusTypes> NewStatus)
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
+            if (OnStatusChangedLocal is not null)
                 await OnStatusChangedLocal(Timestamp,
                                            EventTrackingId ?? EventTracking_Id.New,
                                            this,
@@ -1802,8 +1057,13 @@ namespace org.GraphDefined.WWCP
         /// All current charging reservations.
         /// </summary>
         public IEnumerable<ChargingReservation> Reservations
-            => RoamingNetwork.ReservationsStore.Where (reservationCollection => reservationCollection.EVSEId == Id).
-                                                Select(reservationCollection => reservationCollection.LastOrDefault());
+
+            => RoamingNetwork?.ReservationsStore.Where(reservationCollection => reservationCollection.EVSEId == Id).
+                                                 Select(reservationCollection => reservationCollection.LastOrDefault()).
+                                                 Where(result => result is not null).
+                                                 Cast<ChargingReservation>()
+
+                   ?? Array.Empty<ChargingReservation>();
 
         #region TryGetReservationById(ReservationId, out Reservation)
 
@@ -1812,56 +1072,22 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ReservationId">The charging reservation identification.</param>
         /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? ChargingReservation)
         {
 
-            if (RoamingNetwork.ReservationsStore.TryGet(ReservationId, out ChargingReservationCollection ReservationCollection))
+            if (RoamingNetwork is not null &&
+                RoamingNetwork.ReservationsStore.TryGet(ReservationId, out ChargingReservationCollection ReservationCollection))
             {
-                Reservation = ReservationCollection.LastOrDefault();
+                ChargingReservation = ReservationCollection.LastOrDefault();
                 return true;
             }
 
-            Reservation = null;
+            ChargingReservation = null;
             return false;
 
         }
 
         #endregion
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// An event fired whenever a charging location is being reserved.
-        /// </summary>
-        public event OnReserveRequestDelegate             OnReserveRequest;
-
-        /// <summary>
-        /// An event fired whenever a charging location was reserved.
-        /// </summary>
-        public event OnReserveResponseDelegate            OnReserveResponse;
-
-        /// <summary>
-        /// An event fired whenever a new charging reservation was created.
-        /// </summary>
-        public event OnNewReservationDelegate             OnNewReservation;
-
-
-        /// <summary>
-        /// An event fired whenever a charging reservation is being canceled.
-        /// </summary>
-        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
-
-        /// <summary>
-        /// An event fired whenever a charging reservation was canceled.
-        /// </summary>
-        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
-
-        /// <summary>
-        /// An event fired whenever a charging reservation was canceled.
-        /// </summary>
-        public event OnReservationCanceledDelegate        OnReservationCanceled;
 
         #endregion
 
@@ -1886,20 +1112,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<ReservationResult>
 
-            Reserve(DateTime?                         StartTime              = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
+            Reserve(DateTime? StartTime = null,
+                    TimeSpan? Duration = null,
+                    ChargingReservation_Id? ReservationId = null,
+                    eMobilityProvider_Id? ProviderId = null,
+                    RemoteAuthentication? RemoteAuthentication = null,
+                    ChargingProduct? ChargingProduct = null,
+                    IEnumerable<Auth_Token>? AuthTokens = null,
+                    IEnumerable<eMobilityAccount_Id>? eMAIds = null,
+                    IEnumerable<UInt32>? PINs = null,
 
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
+                    DateTime? Timestamp = null,
+                    CancellationToken? CancellationToken = null,
+                    EventTracking_Id? EventTrackingId = null,
+                    TimeSpan? RequestTimeout = null)
 
 
                 => Reserve(ChargingLocation.FromEVSEId(Id),
@@ -1944,49 +1170,48 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingLocation                  ChargingLocation,
-                    ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                         ReservationStartTime   = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
+            Reserve(ChargingLocation ChargingLocation,
+                    ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE,
+                    DateTime? ReservationStartTime = null,
+                    TimeSpan? Duration = null,
+                    ChargingReservation_Id? ReservationId = null,
+                    eMobilityProvider_Id? ProviderId = null,
+                    RemoteAuthentication? RemoteAuthentication = null,
+                    ChargingProduct? ChargingProduct = null,
+                    IEnumerable<Auth_Token>? AuthTokens = null,
+                    IEnumerable<eMobilityAccount_Id>? eMAIds = null,
+                    IEnumerable<UInt32>? PINs = null,
 
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
+                    DateTime? Timestamp = null,
+                    CancellationToken? CancellationToken = null,
+                    EventTracking_Id? EventTrackingId = null,
+                    TimeSpan? RequestTimeout = null)
 
         {
 
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            ReservationResult result = null;
+            ReservationResult? result = null;
 
             #endregion
 
             #region Send OnReserveRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnReserveRequest?.Invoke(StartTime,
+                OnReserveRequest?.Invoke(startTime,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
@@ -2046,7 +1271,7 @@ namespace org.GraphDefined.WWCP
                         if (result.Result == ReservationResultType.Success)
                         {
 
-                            OnNewReservation?.Invoke(Vanaheimr.Illias.Timestamp.Now,
+                            OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                      this,
                                                      result.Reservation);
 
@@ -2081,12 +1306,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnReserveResponse?.Invoke(EndTime,
+                OnReserveResponse?.Invoke(endTime,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
@@ -2102,7 +1327,7 @@ namespace org.GraphDefined.WWCP
                                           eMAIds,
                                           PINs,
                                           result,
-                                          EndTime - StartTime,
+                                          endTime - startTime,
                                           RequestTimeout);
 
             }
@@ -2133,41 +1358,40 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult>
 
-            CancelReservation(ChargingReservation_Id                 ReservationId,
-                              ChargingReservationCancellationReason  Reason,
+            CancelReservation(ChargingReservation_Id ReservationId,
+                              ChargingReservationCancellationReason Reason,
 
-                              DateTime?                              Timestamp          = null,
-                              CancellationToken?                     CancellationToken  = null,
-                              EventTracking_Id                       EventTrackingId    = null,
-                              TimeSpan?                              RequestTimeout     = null)
+                              DateTime? Timestamp = null,
+                              CancellationToken? CancellationToken = null,
+                              EventTracking_Id? EventTrackingId = null,
+                              TimeSpan? RequestTimeout = null)
 
         {
 
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            ChargingReservation     canceledReservation  = null;
-            CancelReservationResult result                = null;
+            ChargingReservation? canceledReservation = null;
+            CancelReservationResult? result = null;
 
             #endregion
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnCancelReservationRequest?.Invoke(StartTime,
+                OnCancelReservationRequest?.Invoke(startTime,
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
@@ -2239,12 +1463,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnCancelReservationResponse?.Invoke(EndTime,
+                OnCancelReservationResponse?.Invoke(endTime,
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
@@ -2253,7 +1477,7 @@ namespace org.GraphDefined.WWCP
                                                     canceledReservation,
                                                     Reason,
                                                     result,
-                                                    EndTime - StartTime,
+                                                    endTime - startTime,
                                                     RequestTimeout);
 
             }
@@ -2276,17 +1500,10 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        /// <summary>
-        /// The current charging session, if available.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingSession ChargingSession { get; internal set; }
-
-
         public IEnumerable<ChargingSession> ChargingSessions
-            => ChargingSession != null
+            => ChargingSession is not null
                    ? new ChargingSession[] { ChargingSession }
-                   : new ChargingSession[0];
+                   : Array.Empty<ChargingSession>();
 
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
@@ -2295,7 +1512,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The charging session identification.</param>
         /// <param name="ChargingSession">The charging session.</param>
-        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession chargingSession)
+        public Boolean TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession? chargingSession)
         {
 
             if (SessionId == ChargingSession.Id)
@@ -2310,41 +1527,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// An event fired whenever a remote start command was received.
-        /// </summary>
-        public event OnRemoteStartRequestDelegate     OnRemoteStartRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote start command completed.
-        /// </summary>
-        public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate     OnNewChargingSession;
-
-
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopRequestDelegate      OnRemoteStopRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote stop command completed.
-        /// </summary>
-        public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
-
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        public event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
 
         #endregion
 
@@ -2365,16 +1547,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<RemoteStartResult>
 
-            RemoteStart(ChargingProduct          ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+            RemoteStart(ChargingProduct? ChargingProduct = null,
+                        ChargingReservation_Id? ReservationId = null,
+                        ChargingSession_Id? SessionId = null,
+                        eMobilityProvider_Id? ProviderId = null,
+                        RemoteAuthentication? RemoteAuthentication = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+                        DateTime? Timestamp = null,
+                        CancellationToken? CancellationToken = null,
+                        EventTracking_Id? EventTrackingId = null,
+                        TimeSpan? RequestTimeout = null)
 
 
                 => RemoteStart(ChargingLocation.FromEVSEId(Id),
@@ -2409,23 +1591,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartResult>
 
-            RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct          ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+            RemoteStart(ChargingLocation ChargingLocation,
+                        ChargingProduct? ChargingProduct = null,
+                        ChargingReservation_Id? ReservationId = null,
+                        ChargingSession_Id? SessionId = null,
+                        eMobilityProvider_Id? ProviderId = null,
+                        RemoteAuthentication? RemoteAuthentication = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+                        DateTime? Timestamp = null,
+                        CancellationToken? CancellationToken = null,
+                        EventTracking_Id? EventTrackingId = null,
+                        TimeSpan? RequestTimeout = null)
         {
 
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2440,7 +1622,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2599,8 +1781,8 @@ namespace org.GraphDefined.WWCP
                        (result?.Result == RemoteStartResultTypes.Success ||
                         result?.Result == RemoteStartResultTypes.AsyncOperation))
                     {
-                        ChargingSession      = result.Session;
-                        result.Session.EVSE  = this;
+                        ChargingSession = result.Session;
+                        result.Session.EVSE = this;
                     }
 
                 }
@@ -2628,7 +1810,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2680,24 +1862,24 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       eMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication   RemoteAuthentication   = null,
+            RemoteStop(ChargingSession_Id SessionId,
+                       ReservationHandling? ReservationHandling = null,
+                       eMobilityProvider_Id? ProviderId = null,
+                       RemoteAuthentication? RemoteAuthentication = null,
 
-                       DateTime?              Timestamp              = null,
-                       CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id       EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null)
+                       DateTime? Timestamp = null,
+                       CancellationToken? CancellationToken = null,
+                       EventTracking_Id? EventTrackingId = null,
+                       TimeSpan? RequestTimeout = null)
         {
 
             #region Initial checks
 
             if (SessionId == null)
-                SessionId = ChargingSession_Id.New;
+                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
-                Timestamp = Vanaheimr.Illias.Timestamp.Now;
+                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2712,7 +1894,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = Vanaheimr.Illias.Timestamp.Now;
+            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2899,7 +2081,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = Vanaheimr.Illias.Timestamp.Now;
+            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
@@ -2936,18 +2118,18 @@ namespace org.GraphDefined.WWCP
 
         #region (internal) SendNewChargingSession   (Timestamp, Sender, Session)
 
-        internal void SendNewChargingSession(DateTime         Timestamp,
-                                             Object           Sender,
-                                             ChargingSession  Session)
+        internal void SendNewChargingSession(DateTime Timestamp,
+                                             Object Sender,
+                                             ChargingSession Session)
         {
 
-            if (Session != null)
+            if (Session is not null)
             {
 
-                if (Session.EVSE == null)
+                if (Session.EVSE is null)
                 {
-                    Session.EVSE    = this;
-                    Session.EVSEId  = Id;
+                    Session.EVSE = this;
+                    Session.EVSEId = Id;
                 }
 
                 OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
@@ -2960,38 +2142,17 @@ namespace org.GraphDefined.WWCP
 
         #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
-        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
-                                                Object              Sender,
-                                                ChargeDetailRecord  ChargeDetailRecord)
+        internal void SendNewChargeDetailRecord(DateTime Timestamp,
+                                                Object Sender,
+                                                ChargeDetailRecord ChargeDetailRecord)
         {
 
-            if (ChargeDetailRecord != null)
+            if (ChargeDetailRecord is not null)
                 OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
 
         #endregion
-
-        #endregion
-
-
-        #region IEnumerable<SocketOutlet> Members
-
-        /// <summary>
-        /// Return a socket outlet enumerator.
-        /// </summary>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _SocketOutlets.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Return a socket outlet enumerator.
-        /// </summary>
-        public IEnumerator<SocketOutlet> GetEnumerator()
-        {
-            return _SocketOutlets.GetEnumerator();
-        }
 
         #endregion
 
@@ -3002,141 +2163,147 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of the given EVSE.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public JObject ToJSON(Boolean                                 Embedded                          = false,
-                              InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean Embedded = false,
+                              InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandChargingPoolId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandChargingStationId = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly,
+                              InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
 
         {
 
-            try
-            {
+            var JSON = JSONObject.Create(
 
-                var JSON = JSONObject.Create(
+                           new JProperty("@id", Id.ToString()),
 
-                               Id.ToJSON("@id"),
+                           !Embedded
+                               ? new JProperty("@context", JSONLDContext)
+                               : null,
 
-                               !Embedded
-                                   ? new JProperty("@context",  JSONLDContext)
-                                   : null,
+                           Description.IsNeitherNullNorEmpty()
+                               ? new JProperty("description", Description.ToJSON())
+                               : null,
 
-                               Description.IsNeitherNullNorEmpty()
-                                   ? Description.ToJSON("description")
-                                   : null,
+                           Brands.SafeAny()
+                                 ? ExpandBrandIds.Switch(
+                                       () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
+                                       () => new JProperty("brand", Brands.ToJSON()))
+                                 : null,
 
-                               Brands.SafeAny()
-                                     ? ExpandBrandIds.Switch(
-                                           () => new JProperty("brandId",      Brands.Select(brand => brand.Id.ToString())),
-                                           () => new JProperty("brand",        Brands.ToJSON()))
-                                     : null,
+                           (!Embedded || DataSource != ChargingStation.DataSource)
+                               ? new JProperty("dataSource", DataSource)
+                               : null,
 
-                               (!Embedded || DataSource != ChargingStation.DataSource)
-                                   ? DataSource.ToJSON("dataSource")
-                                   : null,
+                           (!Embedded || DataLicenses != ChargingStation.DataLicenses)
+                               ? ExpandDataLicenses.Switch(
+                                     () => new JProperty("dataLicenseIds", new JArray(DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                     () => new JProperty("dataLicenses", DataLicenses.ToJSON()))
+                               : null,
 
-                               (!Embedded || DataLicenses != ChargingStation.DataLicenses)
-                                   ? ExpandDataLicenses.Switch(
-                                         () => new JProperty("dataLicenseIds",  new JArray(DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                                         () => new JProperty("dataLicenses",    DataLicenses.ToJSON()))
-                                   : null,
+                           ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork != null
+                               ? ExpandRoamingNetworkId.Switch(
+                                     () => new JProperty("roamingNetworkId", RoamingNetwork.Id.ToString()),
+                                     () => new JProperty("roamingNetwork", RoamingNetwork.ToJSON(Embedded: true,
+                                                                                                                        ExpandChargingStationOperatorIds: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingPoolIds: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationIds: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
+                               : null,
 
-                               ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork != null
-                                   ? ExpandRoamingNetworkId.Switch(
-                                         () => new JProperty("roamingNetworkId",                  RoamingNetwork.Id. ToString()),
-                                         () => new JProperty("roamingNetwork",                    RoamingNetwork.    ToJSON(Embedded:                          true,
-                                                                                                                            ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
-                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden)))
-                                   : null,
+                           ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator != null
+                               ? ExpandChargingStationOperatorId.Switch(
+                                     () => new JProperty("chargingStationOperatorperatorId", Operator.Id.ToString()),
+                                     () => new JProperty("chargingStationOperatorperator", Operator.ToJSON(Embedded: true,
+                                                                                                                        ExpandRoamingNetworkId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingPoolIds: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationIds: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
+                               : null,
 
-                               ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator != null
-                                   ? ExpandChargingStationOperatorId.Switch(
-                                         () => new JProperty("chargingStationOperatorperatorId",  Operator.Id.       ToString()),
-                                         () => new JProperty("chargingStationOperatorperator",    Operator.          ToJSON(Embedded:                          true,
-                                                                                                                            ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
-                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden)))
-                                   : null,
+                           ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool != null
+                               ? ExpandChargingPoolId.Switch(
+                                     () => new JProperty("chargingPoolId", ChargingPool.Id.ToString()),
+                                     () => new JProperty("chargingPool", ChargingPool.ToJSON(Embedded: true,
+                                                                                                                        ExpandRoamingNetworkId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationOperatorId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationIds: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
+                               : null,
 
-                               ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool != null
-                                   ? ExpandChargingPoolId.Switch(
-                                         () => new JProperty("chargingPoolId",                    ChargingPool.Id.   ToString()),
-                                         () => new JProperty("chargingPool",                      ChargingPool.      ToJSON(Embedded:                          true,
-                                                                                                                            ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                            ExpandChargingStationOperatorId:   InfoStatus.Hidden,
-                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
-                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden)))
-                                   : null,
+                           ExpandChargingStationId != InfoStatus.Hidden && ChargingStation != null
+                               ? ExpandChargingStationId.Switch(
+                                     () => new JProperty("chargingStationId", ChargingStation.Id.ToString()),
+                                     () => new JProperty("chargingStation", ChargingStation.ToJSON(Embedded: true,
+                                                                                                                        ExpandRoamingNetworkId: InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationOperatorId: InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds: InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds: InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses: InfoStatus.Hidden)))
+                               : null,
 
-                               ExpandChargingStationId != InfoStatus.Hidden && ChargingStation != null
-                                   ? ExpandChargingStationId.Switch(
-                                         () => new JProperty("chargingStationId",                 ChargingStation.Id.ToString()),
-                                         () => new JProperty("chargingStation",                   ChargingStation.   ToJSON(Embedded:                          true,
-                                                                                                                            ExpandRoamingNetworkId:            InfoStatus.Hidden,
-                                                                                                                            ExpandChargingStationOperatorId:   InfoStatus.Hidden,
-                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
-                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden)))
-                                   : null,
+                           !Embedded ? new JProperty("geoLocation", ChargingStation.GeoLocation.Value.ToJSON()) : null,
+                           !Embedded ? new JProperty("address", ChargingStation.Address.ToJSON()) : null,
+                           !Embedded ? new JProperty("authenticationModes", ChargingStation.AuthenticationModes.ToJSON()) : null,
 
-                               !Embedded ? new JProperty("geoLocation",         ChargingStation.GeoLocation.Value.  ToJSON()) : null,
-                               !Embedded ? new JProperty("address",             ChargingStation.Address.            ToJSON()) : null,
-                               !Embedded ? new JProperty("authenticationModes", ChargingStation.AuthenticationModes.ToJSON()) : null,
+                           ChargingModes.SafeAny()
+                               ? new JProperty("chargingModes", new JArray(ChargingModes.SafeSelect(mode => mode.ToText())))
+                               : null,
 
-                               ChargingModes.SafeAny()
-                                   ? new JProperty("chargingModes",  new JArray(ChargingModes.SafeSelect(mode => mode.ToText())))
-                                   : null,
+                           CurrentType.HasValue && CurrentType.Value != CurrentTypes.Unspecified
+                               ? new JProperty("currentTypes", new JArray(CurrentType.Value.ToText()))
+                               : null,
 
-                               CurrentType.HasValue  && CurrentType.Value  != CurrentTypes.Unspecified
-                                   ? new JProperty("currentTypes",   new JArray(CurrentType. Value.ToText()))
-                                   : null,
+                           AverageVoltage.HasValue && AverageVoltage > 0 ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value, 2)) : null,
+                           MaxCurrent.HasValue && MaxCurrent > 0 ? new JProperty("maxCurrent", Math.Round(MaxCurrent.Value, 2)) : null,
+                           MaxPower.HasValue && MaxPower.HasValue ? new JProperty("maxPower", Math.Round(MaxPower.Value, 2)) : null,
+                           MaxCapacity.HasValue && MaxCapacity.HasValue ? new JProperty("maxCapacity", Math.Round(MaxCapacity.Value, 2)) : null,
 
-                               AverageVoltage.HasValue && AverageVoltage > 0     ? new JProperty("averageVoltage",  Math.Round(AverageVoltage.Value, 2)) : null,
-                               MaxCurrent.    HasValue && MaxCurrent     > 0     ? new JProperty("maxCurrent",      Math.Round(MaxCurrent.    Value, 2)) : null,
-                               MaxPower.      HasValue && MaxPower.     HasValue ? new JProperty("maxPower",        Math.Round(MaxPower.      Value, 2)) : null,
-                               MaxCapacity.   HasValue && MaxCapacity.  HasValue ? new JProperty("maxCapacity",     Math.Round(MaxCapacity.   Value, 2)) : null,
+                           SocketOutlets.Count > 0
+                               ? new JProperty("socketOutlets", new JArray(SocketOutlets.ToJSON()))
+                               : null,
 
-                               SocketOutlets.Count > 0
-                                   ? new JProperty("socketOutlets",  new JArray(SocketOutlets.ToJSON()))
-                                   : null,
+                           EnergyMeter is not null
+                               ? new JProperty("energyMeter", EnergyMeter.ToJSON())
+                               : null,
 
-                               EnergyMeterId.HasValue
-                                   ? new JProperty("energyMeterId",  EnergyMeterId)
-                                   : null,
+                           !Embedded && ChargingStation?.OpeningTimes is not null
+                               ? new JProperty("openingTimes", ChargingStation.OpeningTimes.ToJSON())
+                               : null
 
-                               !Embedded && ChargingStation?.OpeningTimes is not null
-                                   ? new JProperty("openingTimes",   ChargingStation.OpeningTimes.ToJSON())
-                                   : null
+                     );
 
-                         );
-
-                return CustomEVSESerializer is not null
-                           ? CustomEVSESerializer(this, JSON)
-                           : JSON;
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log("evse.ToJSON(...) failed (Id: " + Id.ToString() + ")!");
-                return null;
-            }
+            return CustomEVSESerializer is not null
+                       ? CustomEVSESerializer(this, JSON)
+                       : JSON;
 
         }
 
         #endregion
 
+
+        #region IEnumerable<SocketOutlet> Members
+
+        /// <summary>
+        /// Return a socket outlet enumerator.
+        /// </summary>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            => SocketOutlets.GetEnumerator();
+
+        /// <summary>
+        /// Return a socket outlet enumerator.
+        /// </summary>
+        public IEnumerator<SocketOutlet> GetEnumerator()
+            => SocketOutlets.GetEnumerator();
+
+        #endregion
 
         #region Operator overloading
 
@@ -3148,7 +2315,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator ==(EVSE EVSE1, EVSE EVSE2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -3156,7 +2323,7 @@ namespace org.GraphDefined.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSE1 == null) || ((Object) EVSE2 == null))
+            if (EVSE1 is null || EVSE2 is null)
                 return false;
 
             return EVSE1.Equals(EVSE2);
@@ -3173,7 +2340,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator !=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 == EVSE2);
 
         #endregion
@@ -3186,11 +2353,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator <(EVSE EVSE1, EVSE EVSE2)
         {
 
-            if ((Object) EVSE1 == null)
-                throw new ArgumentNullException("The given EVSE1 must not be null!");
+            if (EVSE1 is null)
+                throw new ArgumentNullException(nameof(EVSE1), "The given EVSE1 must not be null!");
 
             return EVSE1.CompareTo(EVSE2) < 0;
 
@@ -3206,7 +2373,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator <=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 > EVSE2);
 
         #endregion
@@ -3219,11 +2386,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator >(EVSE EVSE1, EVSE EVSE2)
         {
 
-            if ((Object) EVSE1 == null)
-                throw new ArgumentNullException("The given EVSE1 must not be null!");
+            if (EVSE1 is null)
+                throw new ArgumentNullException(nameof(EVSE1), "The given EVSE1 must not be null!");
 
             return EVSE1.CompareTo(EVSE2) > 0;
 
@@ -3239,7 +2406,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE1">An EVSE.</param>
         /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator >=(EVSE EVSE1, EVSE EVSE2)
             => !(EVSE1 < EVSE2);
 
         #endregion
@@ -3254,19 +2421,11 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        public override Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var EVSE = Object as EVSE;
-            if ((Object) EVSE == null)
-                throw new ArgumentException("The given object is not an EVSE!");
-
-            return CompareTo(EVSE);
-
-        }
+            => Object is EVSE evse
+                   ? CompareTo(evse)
+                   : throw new ArgumentException("The given object is not an evse!", nameof(Object));
 
         #endregion
 
@@ -3276,15 +2435,21 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSE">An EVSE to compare with.</param>
-        public Int32 CompareTo(EVSE EVSE)
-        {
+        public Int32 CompareTo(EVSE? EVSE)
 
-            if ((Object) EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE),  "The given EVSE must not be null!");
+            => EVSE is not null
+                   ? Id.CompareTo(EVSE.Id)
+                   : throw new ArgumentException("The given object is not an EVSE!", nameof(EVSE));
 
-            return Id.CompareTo(EVSE.Id);
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="IEVSE">An IEVSE to compare with.</param>
+        public Int32 CompareTo(IEVSE? IEVSE)
 
-        }
+            => IEVSE is not null
+                   ? Id.CompareTo(IEVSE.Id)
+                   : throw new ArgumentException("The given object is not an IEVSE!", nameof(IEVSE));
 
         #endregion
 
@@ -3299,19 +2464,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            var EVSE = Object as EVSE;
-            if ((Object) EVSE == null)
-                return false;
-
-            return Equals(EVSE);
-
-        }
+            => Object is EVSE evse &&
+                  Equals(evse);
 
         #endregion
 
@@ -3322,15 +2478,20 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE">An EVSE to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSE EVSE)
-        {
+        public Boolean Equals(EVSE? EVSE)
 
-            if ((Object) EVSE == null)
-                return false;
+            => EVSE is not null &&
+               Id.Equals(EVSE.Id);
 
-            return Id.Equals(EVSE.Id);
+        /// <summary>
+        /// Compares two EVSEs for equality.
+        /// </summary>
+        /// <param name="IEVSE">An EVSE to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(IEVSE? IEVSE)
 
-        }
+            => IEVSE is not null &&
+               Id.Equals(IEVSE.Id);
 
         #endregion
 

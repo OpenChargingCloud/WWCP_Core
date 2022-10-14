@@ -17,15 +17,79 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for the EVSE status schedule.
+    /// </summary>
+    public static class EVSEStatusScheduleExtensions
+    {
+
+        #region ToJSON(this EVSEStatusSchedules, Skip = null, Take = null, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<EVSEStatusSchedule>  EVSEStatusSchedules,
+                                     UInt64?                                          Skip         = null,
+                                     UInt64?                                          Take         = null,
+                                     UInt64                                           HistorySize  = 1)
+        {
+
+            #region Initial checks
+
+            if (EVSEStatusSchedules is null || !EVSEStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<EVSE_Id, EVSEStatusSchedule>();
+
+            foreach (var status in EVSEStatusSchedules)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple EVSE status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// The status schedule of an EVSE.
@@ -38,12 +102,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                                    Id               { get; }
+        public EVSE_Id                                    Id                { get; }
 
         /// <summary>
         /// The timestamped status of the EVSE.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusTypes>>  StatusSchedule   { get; }
+        public IEnumerable<Timestamped<EVSEStatusTypes>>  StatusSchedule    { get; }
 
         #endregion
 
@@ -57,10 +121,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EVSEStatusSchedule(EVSE_Id                                    Id,
                                   IEnumerable<Timestamped<EVSEStatusTypes>>  StatusSchedule,
-                                  IReadOnlyDictionary<String, Object>        CustomData  = null)
+                                  JObject?                                   CustomData     = null,
+                                  UserDefinedDictionary?                     InternalData   = null)
 
-            : base(null,
-                   CustomData)
+            : base(CustomData,
+                   InternalData)
 
         {
 

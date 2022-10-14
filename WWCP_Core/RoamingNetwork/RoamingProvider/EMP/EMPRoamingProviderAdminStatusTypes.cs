@@ -15,46 +15,41 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The current admin status of a parking garage.
+    /// The admin status of a roaming network.
     /// </summary>
-    public enum ParkingGarageAdminStatusType
+    public enum EMPRoamingProviderAdminStatusTypes
     {
 
         /// <summary>
-        /// Unclear or unknown status of the parking sensor.
+        /// Unclear or unknown admin status of the roaming network.
         /// </summary>
-        Unspecified         = 0,
+        Unspecified             = 0,
 
         /// <summary>
-        /// The parking sensor is planned for the future.
+        /// The roaming network is under maintenance.
         /// </summary>
-        Planned             = 1,
+        OutOfService            = 1,
 
         /// <summary>
-        /// The parking sensor is currently in deployment.
+        /// The roaming network is operational.
         /// </summary>
-        InDeployment        = 2,
+        Operational             = 2,
 
         /// <summary>
-        /// The parking sensor is currently blocked.
+        /// Private or internal use.
         /// </summary>
-        Blocked             = 3,
-
-        /// <summary>
-        /// The parking sensor is available.
-        /// </summary>
-        Available           = 4,
+        InternalUse             = 3,
 
 
         /// <summary>
-        /// The parking sensor was not found!
+        /// The roaming network was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownParkingSensor  = 8
+        UnknownRoamingNetwork   = 4
 
     }
 

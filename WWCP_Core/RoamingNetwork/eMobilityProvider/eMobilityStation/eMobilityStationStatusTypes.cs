@@ -15,46 +15,51 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The current status of a parking sensor.
+    /// The status of a charging station.
     /// </summary>
-    public enum ParkingSensorStatusType
+    public enum eMobilityStationStatusTypes
     {
 
         /// <summary>
-        /// Unclear or unknown status of the parking sensor.
+        /// Unclear or unknown admin status of the charging station.
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The parking sensor is planned for the future.
+        /// The charging station is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The parking sensor is currently in deployment.
+        /// The charging station is currently in deployment, but not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// The parking sensor is currently blocked.
+        /// Private or internal use.
         /// </summary>
-        Blocked             = 3,
+        InternalUse         = 3,
 
         /// <summary>
-        /// The parking sensor is available.
+        /// The charging station is not ready for charging because it is under maintenance.
         /// </summary>
-        Available           = 4,
+        OutOfService        = 4,
+
+        /// <summary>
+        /// The charging station is ready to charge.
+        /// </summary>
+        Operational         = 5,
 
 
         /// <summary>
-        /// The parking sensor was not found!
+        /// The charging station was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownParkingSensor  = 8
+        UnknownStation      = 7
 
     }
 

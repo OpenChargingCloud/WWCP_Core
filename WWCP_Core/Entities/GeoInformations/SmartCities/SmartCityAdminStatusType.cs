@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
     /// The admin status of an e-mobility provider.
     /// </summary>
-    public enum SmartCityAdminStatusType
+    public enum SmartCityAdminStatusTypes
     {
 
         /// <summary>

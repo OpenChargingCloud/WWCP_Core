@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP
+namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
@@ -35,9 +35,9 @@ namespace org.GraphDefined.WWCP
         OutOfService                    = 1,
 
         /// <summary>
-        /// The charging station operator is operational.
+        /// The charging station operator is in deployment.
         /// </summary>
-        Operational                     = 2,
+        InDeployment                    = 2,
 
         /// <summary>
         /// Private or internal use.
@@ -45,10 +45,15 @@ namespace org.GraphDefined.WWCP
         InternalUse                     = 3,
 
         /// <summary>
-        /// The charging station operator was not found!
-        /// (Only valid within batch-processing)
+        /// The charging station operator is operational.
         /// </summary>
-        UnknownChargingStationOperator  = 4
+        Operational                     = 4
+
+        ///// <summary>
+        ///// The charging station operator was not found!
+        ///// (Only valid within batch-processing)
+        ///// </summary>
+        //UnknownChargingStationOperator  = 4
 
     }
 
