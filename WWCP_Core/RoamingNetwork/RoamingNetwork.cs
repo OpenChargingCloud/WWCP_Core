@@ -2080,54 +2080,54 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create and register a new electric vehicle roaming provider having the given
         /// unique electric vehicle roaming provider identification.
         /// </summary>
-        /// <param name="_EMPRoamingProvider">A e-mobility roaming service.</param>
+        /// <param name="EMPRoamingProvider">A e-mobility roaming service.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider          _EMPRoamingProvider,
-                                                            Action<IEMPRoamingProvider>  Configurator = null)
+        public IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider           EMPRoamingProvider,
+                                                            Action<IEMPRoamingProvider>?  Configurator = null)
         {
 
             #region Initial checks
 
-            if (_EMPRoamingProvider.Id == null)
-                throw new ArgumentNullException(nameof(_EMPRoamingProvider) + ".Id",    "The given roaming provider identification must not be null!");
+            if (EMPRoamingProvider.Id == null)
+                throw new ArgumentNullException(nameof(EMPRoamingProvider) + ".Id",    "The given roaming provider identification must not be null!");
 
-            if (IEnumerableExtensions.IsNullOrEmpty(_EMPRoamingProvider.Name))
-                throw new ArgumentNullException(nameof(_EMPRoamingProvider) + ".Name",  "The given roaming provider name must not be null or empty!");
+            if (IEnumerableExtensions.IsNullOrEmpty(EMPRoamingProvider.Name))
+                throw new ArgumentNullException(nameof(EMPRoamingProvider) + ".Name",  "The given roaming provider name must not be null or empty!");
 
-            if (_EMPRoamingProviders.ContainsKey(_EMPRoamingProvider.Id))
-                throw new EMPRoamingProviderAlreadyExists(this, _EMPRoamingProvider.Id);
+            if (_EMPRoamingProviders.ContainsKey(EMPRoamingProvider.Id))
+                throw new EMPRoamingProviderAlreadyExists(this, EMPRoamingProvider.Id);
 
-            if (_EMPRoamingProvider.RoamingNetwork.Id != this.Id)
-                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(_EMPRoamingProvider));
+            if (EMPRoamingProvider.RoamingNetwork.Id != this.Id)
+                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(EMPRoamingProvider));
 
             #endregion
 
-            Configurator?.Invoke(_EMPRoamingProvider);
+            Configurator?.Invoke(EMPRoamingProvider);
 
-            if (EMPRoamingProviderAddition.SendVoting(this, _EMPRoamingProvider))
+            if (EMPRoamingProviderAddition.SendVoting(this, EMPRoamingProvider))
             {
-                if (_EMPRoamingProviders.TryAdd(_EMPRoamingProvider.Id, _EMPRoamingProvider))
+                if (_EMPRoamingProviders.TryAdd(EMPRoamingProvider.Id, EMPRoamingProvider))
                 {
 
-                    _ISendData.Add                     (_EMPRoamingProvider);
-                    _ISendAdminStatus.Add              (_EMPRoamingProvider);
-                    _ISendStatus.Add                   (_EMPRoamingProvider);
-                    _ISend2RemoteAuthorizeStartStop.Add(_EMPRoamingProvider);
-                    _IRemoteSendChargeDetailRecord.Add (_EMPRoamingProvider);
+                    _ISendData.Add                     (EMPRoamingProvider);
+                    _ISendAdminStatus.Add              (EMPRoamingProvider);
+                    _ISendStatus.Add                   (EMPRoamingProvider);
+                    _ISend2RemoteAuthorizeStartStop.Add(EMPRoamingProvider);
+                    _IRemoteSendChargeDetailRecord.Add (EMPRoamingProvider);
 
-                    EMPRoamingProviderAddition.SendNotification(this, _EMPRoamingProvider);
+                    EMPRoamingProviderAddition.SendNotification(this, EMPRoamingProvider);
 
-                    SetRoamingProviderPriority(_EMPRoamingProvider,
+                    SetRoamingProviderPriority(EMPRoamingProvider,
                                                _eMobilityRoamingServices.Count > 0
                                                    ? _eMobilityRoamingServices.Keys.Max() + 1
                                                    : 10);
 
-                    return _EMPRoamingProvider;
+                    return EMPRoamingProvider;
 
                 }
             }
 
-            throw new Exception("Could not create new roaming provider '" + _EMPRoamingProvider.Id + "'!");
+            throw new Exception("Could not create new roaming provider '" + EMPRoamingProvider.Id + "'!");
 
         }
 
@@ -4835,6 +4835,7 @@ namespace cloud.charging.open.protocols.WWCP
                     result = AuthStartResult.Authorized(result.AuthorizatorId,
                                                         result.ISendAuthorizeStartStop,
                                                         ChargingSession_Id.NewRandom,
+                                                        result.EMPPartnerSessionId,
                                                         result.ContractId,
                                                         result.PrintedNumber,
                                                         result.ExpiryDate,

@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -52,8 +48,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                           EMPRoamingProvider_Id?                 CSORoamingProviderId,
                                                           ChargingStationOperator_Id?            OperatorId,
                                                           LocalAuthentication                    LocalAuthentication,
-                                                          ChargingLocation                       ChargingLocation,
-                                                          ChargingProduct                        ChargingProduct,
+                                                          ChargingLocation?                      ChargingLocation,
+                                                          ChargingProduct?                       ChargingProduct,
                                                           ChargingSession_Id?                    SessionId,
                                                           ChargingSession_Id?                    CPOPartnerSessionId,
                                                           IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
@@ -86,8 +82,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                           EMPRoamingProvider_Id?                 CSORoamingProviderId,
                                                           ChargingStationOperator_Id?            OperatorId,
                                                           LocalAuthentication                    LocalAuthentication,
-                                                          ChargingLocation                       ChargingLocation,
-                                                          ChargingProduct                        ChargingProduct,
+                                                          ChargingLocation?                      ChargingLocation,
+                                                          ChargingProduct?                       ChargingProduct,
                                                           ChargingSession_Id?                    SessionId,
                                                           ChargingSession_Id?                    CPOPartnerSessionId,
                                                           IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,

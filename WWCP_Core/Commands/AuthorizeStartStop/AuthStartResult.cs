@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -45,12 +42,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The entity asking for an authorization.
         /// </summary>
-        public ISendAuthorizeStartStop      ISendAuthorizeStartStop       { get; }
+        public ISendAuthorizeStartStop?     ISendAuthorizeStartStop       { get; }
 
         /// <summary>
         /// The entity giving an authorization.
         /// </summary>
-        public IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop    { get; }
+        public IReceiveAuthorizeStartStop?  IReceiveAuthorizeStartStop    { get; }
 
         /// <summary>
         /// The result of the authorize start request.
@@ -63,14 +60,19 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingSession_Id?          SessionId                     { get; }
 
         /// <summary>
+        /// The optional EMP partner charging session identification, when the authorize start operation was successful.
+        /// </summary>
+        public ChargingSession_Id?          EMPPartnerSessionId           { get; }
+
+        /// <summary>
         /// An optional contract identification.
         /// </summary>
-        public String                       ContractId                    { get; }
+        public String?                      ContractId                    { get; }
 
         /// <summary>
         /// An optional printed number.
         /// </summary>
-        public String                       PrintedNumber                 { get; }
+        public String?                      PrintedNumber                 { get; }
 
         /// <summary>
         /// The timestamp when this authorization expires.
@@ -163,50 +165,52 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private AuthStartResult(IId                          AuthorizatorId,
-                                AuthStartResultTypes         Result,
-                                ISendAuthorizeStartStop      ISendAuthorizeStartStop      = null,
-                                IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop   = null,
+        private AuthStartResult(IId                           AuthorizatorId,
+                                AuthStartResultTypes          Result,
+                                ISendAuthorizeStartStop?      ISendAuthorizeStartStop      = null,
+                                IReceiveAuthorizeStartStop?   IReceiveAuthorizeStartStop   = null,
 
-                                ChargingSession_Id?          SessionId                    = null,
-                                String                       ContractId                   = null,
-                                String                       PrintedNumber                = null,
-                                DateTime?                    ExpiryDate                   = null,
-                                Single?                      MaxkW                        = null,
-                                Single?                      MaxkWh                       = null,
-                                TimeSpan?                    MaxDuration                  = null,
-                                IEnumerable<ChargingTariff>  ChargingTariffs              = null,
-                                IEnumerable<Auth_Token>      ListOfAuthStopTokens         = null,
-                                IEnumerable<UInt32>          ListOfAuthStopPINs           = null,
+                                ChargingSession_Id?           SessionId                    = null,
+                                ChargingSession_Id?           EMPPartnerSessionId          = null,
+                                String?                       ContractId                   = null,
+                                String?                       PrintedNumber                = null,
+                                DateTime?                     ExpiryDate                   = null,
+                                Single?                       MaxkW                        = null,
+                                Single?                       MaxkWh                       = null,
+                                TimeSpan?                     MaxDuration                  = null,
+                                IEnumerable<ChargingTariff>?  ChargingTariffs              = null,
+                                IEnumerable<Auth_Token>?      ListOfAuthStopTokens         = null,
+                                IEnumerable<UInt32>?          ListOfAuthStopPINs           = null,
 
-                                eMobilityProvider_Id?        ProviderId                   = null,
-                                I18NString                   Description                  = null,
-                                I18NString                   AdditionalInfo               = null,
-                                Byte                         NumberOfRetries              = 0,
-                                TimeSpan?                    Runtime                      = null)
+                                eMobilityProvider_Id?         ProviderId                   = null,
+                                I18NString?                   Description                  = null,
+                                I18NString?                   AdditionalInfo               = null,
+                                Byte                          NumberOfRetries              = 0,
+                                TimeSpan?                     Runtime                      = null)
 
         {
 
-            this.AuthorizatorId              = AuthorizatorId ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+            this.AuthorizatorId              = AuthorizatorId       ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
             this.ISendAuthorizeStartStop     = ISendAuthorizeStartStop;
             this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
             this.Result                      = Result;
             this.SessionId                   = SessionId;
+            this.EMPPartnerSessionId         = EMPPartnerSessionId;
             this.ContractId                  = ContractId;
             this.PrintedNumber               = PrintedNumber;
             this.ExpiryDate                  = ExpiryDate;
             this.MaxkW                       = MaxkW;
             this.MaxkWh                      = MaxkWh;
             this.MaxDuration                 = MaxDuration;
-            this.ChargingTariffs             = ChargingTariffs;
-            this.ListOfAuthStopTokens        = ListOfAuthStopTokens;
-            this.ListOfAuthStopPINs          = ListOfAuthStopPINs;
+            this.ChargingTariffs             = ChargingTariffs      ?? Array.Empty<ChargingTariff>();
+            this.ListOfAuthStopTokens        = ListOfAuthStopTokens ?? Array.Empty<Auth_Token>();
+            this.ListOfAuthStopPINs          = ListOfAuthStopPINs   ?? Array.Empty<UInt32>();
 
-            this.ProviderId                  = ProviderId     ?? new eMobilityProvider_Id?();
-            this.Description                 = Description;
-            this.AdditionalInfo              = AdditionalInfo;
+            this.ProviderId                  = ProviderId           ?? new eMobilityProvider_Id?();
+            this.Description                 = Description          ?? I18NString.Empty;
+            this.AdditionalInfo              = AdditionalInfo       ?? I18NString.Empty;
             this.NumberOfRetries             = NumberOfRetries;
-            this.Runtime                     = Runtime        ?? TimeSpan.FromSeconds(0);
+            this.Runtime                     = Runtime              ?? TimeSpan.FromSeconds(0);
 
         }
 
@@ -236,31 +240,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        protected AuthStartResult(IId                          AuthorizatorId,
-                                  ISendAuthorizeStartStop      ISendAuthorizeStartStop,
-                                  AuthStartResultTypes         Result,
-                                  ChargingSession_Id?          SessionId              = null,
-                                  String                       ContractId             = null,
-                                  String                       PrintedNumber          = null,
-                                  DateTime?                    ExpiryDate             = null,
-                                  Single?                      MaxkW                  = null,
-                                  Single?                      MaxkWh                 = null,
-                                  TimeSpan?                    MaxDuration            = null,
-                                  IEnumerable<ChargingTariff>  ChargingTariffs        = null,
-                                  IEnumerable<Auth_Token>      ListOfAuthStopTokens   = null,
-                                  IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
+        protected AuthStartResult(IId                           AuthorizatorId,
+                                  ISendAuthorizeStartStop       ISendAuthorizeStartStop,
+                                  AuthStartResultTypes          Result,
+                                  ChargingSession_Id?           SessionId              = null,
+                                  ChargingSession_Id?           EMPPartnerSessionId    = null,
+                                  String?                       ContractId             = null,
+                                  String?                       PrintedNumber          = null,
+                                  DateTime?                     ExpiryDate             = null,
+                                  Single?                       MaxkW                  = null,
+                                  Single?                       MaxkWh                 = null,
+                                  TimeSpan?                     MaxDuration            = null,
+                                  IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
+                                  IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                                  IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                                  eMobilityProvider_Id?        ProviderId             = null,
-                                  I18NString                   Description            = null,
-                                  I18NString                   AdditionalInfo         = null,
-                                  Byte                         NumberOfRetries        = 0,
-                                  TimeSpan?                    Runtime                = null)
+                                  eMobilityProvider_Id?         ProviderId             = null,
+                                  I18NString?                   Description            = null,
+                                  I18NString?                   AdditionalInfo         = null,
+                                  Byte                          NumberOfRetries        = 0,
+                                  TimeSpan?                     Runtime                = null)
 
             : this(AuthorizatorId,
                    Result,
                    ISendAuthorizeStartStop,
                    null,
                    SessionId,
+                   EMPPartnerSessionId,
                    ContractId,
                    PrintedNumber,
                    ExpiryDate,
@@ -305,31 +311,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        protected AuthStartResult(IId                          AuthorizatorId,
-                                  IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop,
-                                  AuthStartResultTypes         Result,
-                                  ChargingSession_Id?          SessionId              = null,
-                                  String                       ContractId             = null,
-                                  String                       PrintedNumber          = null,
-                                  DateTime?                    ExpiryDate             = null,
-                                  Single?                      MaxkW                  = null,
-                                  Single?                      MaxkWh                 = null,
-                                  TimeSpan?                    MaxDuration            = null,
-                                  IEnumerable<ChargingTariff>  ChargingTariffs        = null,
-                                  IEnumerable<Auth_Token>      ListOfAuthStopTokens   = null,
-                                  IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
+        protected AuthStartResult(IId                           AuthorizatorId,
+                                  IReceiveAuthorizeStartStop    IReceiveAuthorizeStartStop,
+                                  AuthStartResultTypes          Result,
+                                  ChargingSession_Id?           SessionId              = null,
+                                  ChargingSession_Id?           EMPPartnerSessionId    = null,
+                                  String?                       ContractId             = null,
+                                  String?                       PrintedNumber          = null,
+                                  DateTime?                     ExpiryDate             = null,
+                                  Single?                       MaxkW                  = null,
+                                  Single?                       MaxkWh                 = null,
+                                  TimeSpan?                     MaxDuration            = null,
+                                  IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
+                                  IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                                  IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                                  eMobilityProvider_Id?        ProviderId             = null,
-                                  I18NString                   Description            = null,
-                                  I18NString                   AdditionalInfo         = null,
-                                  Byte                         NumberOfRetries        = 0,
-                                  TimeSpan?                    Runtime                = null)
+                                  eMobilityProvider_Id?         ProviderId             = null,
+                                  I18NString?                   Description            = null,
+                                  I18NString?                   AdditionalInfo         = null,
+                                  Byte                          NumberOfRetries        = 0,
+                                  TimeSpan?                     Runtime                = null)
 
             : this(AuthorizatorId,
                    Result,
                    null,
                    IReceiveAuthorizeStartStop,
                    SessionId,
+                   EMPPartnerSessionId,
                    ContractId,
                    PrintedNumber,
                    ExpiryDate,
@@ -760,47 +768,49 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
-            Authorized(IId                          AuthorizatorId,
-                       ISendAuthorizeStartStop      ISendAuthorizeStartStop,
-                       ChargingSession_Id?          SessionId              = null,
-                       String                       ContractId             = null,
-                       String                       PrintedNumber          = null,
-                       DateTime?                    ExpiryDate             = null,
-                       Single?                      MaxkW                  = null,
-                       Single?                      MaxkWh                 = null,
-                       TimeSpan?                    MaxDuration            = null,
-                       IEnumerable<ChargingTariff>  ChargingTariffs        = null,
-                       IEnumerable<Auth_Token>      ListOfAuthStopTokens   = null,
-                       IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
+            Authorized(IId                           AuthorizatorId,
+                       ISendAuthorizeStartStop       ISendAuthorizeStartStop,
+                       ChargingSession_Id?           SessionId              = null,
+                       ChargingSession_Id?           EMPPartnerSessionId    = null,
+                       String?                       ContractId             = null,
+                       String?                       PrintedNumber          = null,
+                       DateTime?                     ExpiryDate             = null,
+                       Single?                       MaxkW                  = null,
+                       Single?                       MaxkWh                 = null,
+                       TimeSpan?                     MaxDuration            = null,
+                       IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
+                       IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                       IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                       eMobilityProvider_Id?        ProviderId             = null,
-                       I18NString                   Description            = null,
-                       I18NString                   AdditionalInfo         = null,
-                       Byte                         NumberOfRetries        = 0,
-                       TimeSpan?                    Runtime                = null)
+                       eMobilityProvider_Id?         ProviderId             = null,
+                       I18NString?                   Description            = null,
+                       I18NString?                   AdditionalInfo         = null,
+                       Byte                          NumberOfRetries        = 0,
+                       TimeSpan?                     Runtime                = null)
 
 
-                => new AuthStartResult(AuthorizatorId,
-                                       AuthStartResultTypes.Authorized,
-                                       ISendAuthorizeStartStop,
-                                       null,
+                => new (AuthorizatorId,
+                        AuthStartResultTypes.Authorized,
+                        ISendAuthorizeStartStop,
+                        null,
 
-                                       SessionId,
-                                       ContractId,
-                                       PrintedNumber,
-                                       ExpiryDate,
-                                       MaxkW,
-                                       MaxkWh,
-                                       MaxDuration,
-                                       ChargingTariffs,
-                                       ListOfAuthStopTokens,
-                                       ListOfAuthStopPINs,
+                        SessionId,
+                        EMPPartnerSessionId,
+                        ContractId,
+                        PrintedNumber,
+                        ExpiryDate,
+                        MaxkW,
+                        MaxkWh,
+                        MaxDuration,
+                        ChargingTariffs,
+                        ListOfAuthStopTokens,
+                        ListOfAuthStopPINs,
 
-                                       ProviderId,
-                                       Description ?? I18NString.Create(Languages.en, "Success!"),
-                                       AdditionalInfo,
-                                       NumberOfRetries,
-                                       Runtime);
+                        ProviderId,
+                        Description ?? I18NString.Create(Languages.en, "Success!"),
+                        AdditionalInfo,
+                        NumberOfRetries,
+                        Runtime);
 
 
 
@@ -827,45 +837,47 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
-            Authorized(IId                          AuthorizatorId,
-                       IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop,
-                       ChargingSession_Id?          SessionId              = null,
-                       String                       ContractId             = null,
-                       String                       PrintedNumber          = null,
-                       DateTime?                    ExpiryDate             = null,
-                       Single?                      MaxkW                  = null,
-                       Single?                      MaxkWh                 = null,
-                       TimeSpan?                    MaxDuration            = null,
-                       IEnumerable<ChargingTariff>  ChargingTariffs        = null,
-                       IEnumerable<Auth_Token>      ListOfAuthStopTokens   = null,
-                       IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
+            Authorized(IId                           AuthorizatorId,
+                       IReceiveAuthorizeStartStop    IReceiveAuthorizeStartStop,
+                       ChargingSession_Id?           SessionId              = null,
+                       ChargingSession_Id?           EMPPartnerSessionId    = null,
+                       String?                       ContractId             = null,
+                       String?                       PrintedNumber          = null,
+                       DateTime?                     ExpiryDate             = null,
+                       Single?                       MaxkW                  = null,
+                       Single?                       MaxkWh                 = null,
+                       TimeSpan?                     MaxDuration            = null,
+                       IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
+                       IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                       IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                       eMobilityProvider_Id?        ProviderId             = null,
-                       I18NString                   Description            = null,
-                       I18NString                   AdditionalInfo         = null,
-                       Byte                         NumberOfRetries        = 0,
-                       TimeSpan?                    Runtime                = null)
+                       eMobilityProvider_Id?         ProviderId             = null,
+                       I18NString?                   Description            = null,
+                       I18NString?                   AdditionalInfo         = null,
+                       Byte                          NumberOfRetries        = 0,
+                       TimeSpan?                     Runtime                = null)
 
 
-                => new AuthStartResult(AuthorizatorId,
-                                       IReceiveAuthorizeStartStop,
-                                       AuthStartResultTypes.Authorized,
-                                       SessionId,
-                                       ContractId,
-                                       PrintedNumber,
-                                       ExpiryDate,
-                                       MaxkW,
-                                       MaxkWh,
-                                       MaxDuration,
-                                       ChargingTariffs,
-                                       ListOfAuthStopTokens,
-                                       ListOfAuthStopPINs,
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStartResultTypes.Authorized,
+                        SessionId,
+                        EMPPartnerSessionId,
+                        ContractId,
+                        PrintedNumber,
+                        ExpiryDate,
+                        MaxkW,
+                        MaxkWh,
+                        MaxDuration,
+                        ChargingTariffs,
+                        ListOfAuthStopTokens,
+                        ListOfAuthStopPINs,
 
-                                       ProviderId,
-                                       Description ?? I18NString.Create(Languages.en, "Success!"),
-                                       AdditionalInfo,
-                                       NumberOfRetries,
-                                       Runtime);
+                        ProviderId,
+                        Description ?? I18NString.Create(Languages.en, "Success!"),
+                        AdditionalInfo,
+                        NumberOfRetries,
+                        Runtime);
 
         #endregion
 

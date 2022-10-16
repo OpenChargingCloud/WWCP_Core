@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -48,7 +45,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         CSORoamingProvider_Id?        EMPRoamingProviderId,
                                                         EMPRoamingProvider_Id?        CSORoamingProviderId,
                                                         ChargingStationOperator_Id?   OperatorId,
-                                                        ChargingLocation              ChargingLocation,
+                                                        ChargingLocation?             ChargingLocation,
                                                         ChargingSession_Id?           SessionId,
                                                         ChargingSession_Id?           CPOPartnerSessionId,
                                                         LocalAuthentication           LocalAuthentication,
@@ -76,7 +73,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          CSORoamingProvider_Id?        EMPRoamingProviderId,
                                                          EMPRoamingProvider_Id?        CSORoamingProviderId,
                                                          ChargingStationOperator_Id?   OperatorId,
-                                                         ChargingLocation              ChargingLocation,
+                                                         ChargingLocation?             ChargingLocation,
                                                          ChargingSession_Id?           SessionId,
                                                          ChargingSession_Id?           CPOPartnerSessionId,
                                                          LocalAuthentication           LocalAuthentication,
