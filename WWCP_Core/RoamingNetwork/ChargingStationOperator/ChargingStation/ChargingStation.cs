@@ -313,12 +313,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region OpeningTimes
 
-        private OpeningTimes? openingTimes;
+        private OpeningTimes openingTimes;
 
         /// <summary>
         /// The opening times of this charging station (non recursive).
         /// </summary>
-        public OpeningTimes? _OpeningTimes
+        public OpeningTimes OpeningTimes
         {
 
             get
@@ -328,47 +328,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-
                 if (value != openingTimes)
                 {
-
-                    if (value is null)
-                        DeleteProperty(ref openingTimes);
-
-                    else
-                        SetProperty(ref openingTimes, value);
-
+                    SetProperty(ref openingTimes, value);
                 }
-
-            }
-
-        }
-
-        /// <summary>
-        /// The opening times of this charging station (or the charging pool).
-        /// </summary>
-        public OpeningTimes? OpeningTimes
-        {
-
-            get
-            {
-                return openingTimes ?? ChargingPool?.OpeningTimes;
-            }
-
-            set
-            {
-
-                if (value != openingTimes && value != ChargingPool?.OpeningTimes)
-                {
-
-                    if (value is null)
-                        DeleteProperty(ref openingTimes);
-
-                    else
-                        SetProperty(ref openingTimes, value);
-
-                }
-
             }
 
         }

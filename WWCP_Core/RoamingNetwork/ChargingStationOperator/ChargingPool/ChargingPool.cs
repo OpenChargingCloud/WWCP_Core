@@ -343,23 +343,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-
-                //if (value == null)
-                //    value = OpeningTimes.Open24Hours;
-
-                if (openingTimes != value)
+                if (value != openingTimes)
                 {
-
-                    // Can not be deleted!
-                    // Will always be at least 'Open24Hours'!
-
                     SetProperty(ref openingTimes, value);
-
-                    // Delete inherited opening times
-                    chargingStations.ForEach(station => station.OpeningTimes = null);
-
                 }
-
             }
 
         }
