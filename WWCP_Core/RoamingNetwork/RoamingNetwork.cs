@@ -1946,8 +1946,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// unique electric vehicle roaming provider identification.
         /// </summary>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider          chargingStationOperatorRoamingProvider,
-                                                            Action<ICSORoamingProvider>  Configurator  = null)
+        public ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider           chargingStationOperatorRoamingProvider,
+                                                            Action<ICSORoamingProvider>?  Configurator   = null)
         {
 
             #region Initial checks
@@ -4049,15 +4049,15 @@ namespace cloud.charging.open.protocols.WWCP
         public Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation          ChargingLocation,
-                        ChargingProduct           ChargingProduct            = null,
+                        ChargingProduct?          ChargingProduct            = null,
                         ChargingReservation_Id?   ReservationId              = null,
                         ChargingSession_Id?       SessionId                  = null,
                         eMobilityProvider_Id?     ProviderId                 = null,
-                        RemoteAuthentication      RemoteAuthentication       = null,
+                        RemoteAuthentication?     RemoteAuthentication       = null,
 
                         DateTime?                 Timestamp                  = null,
                         CancellationToken?        CancellationToken          = null,
-                        EventTracking_Id          EventTrackingId            = null,
+                        EventTracking_Id?         EventTrackingId            = null,
                         TimeSpan?                 RequestTimeout             = null)
 
                 => RemoteStart(null,
@@ -4092,15 +4092,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             RemoteStart(IEMPRoamingProvider      EMPRoamingProvider,
                         ChargingLocation         ChargingLocation,
-                        ChargingProduct          ChargingProduct        = null,
+                        ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
                         eMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
                         CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
+                        EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
 
         {
@@ -4339,11 +4339,11 @@ namespace cloud.charging.open.protocols.WWCP
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        eMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication   RemoteAuthentication   = null,
+                       RemoteAuthentication?  RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,
                        CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id       EventTrackingId        = null,
+                       EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null)
 
                 => RemoteStop(null,
@@ -4376,11 +4376,11 @@ namespace cloud.charging.open.protocols.WWCP
                        ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        eMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication   RemoteAuthentication   = null,
+                       RemoteAuthentication?  RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,
                        CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id       EventTrackingId        = null,
+                       EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null)
 
         {

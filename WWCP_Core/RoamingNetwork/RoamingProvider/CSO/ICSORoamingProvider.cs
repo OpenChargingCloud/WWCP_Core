@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                    DateTime?              Timestamp           = null,
                                    CancellationToken?     CancellationToken   = null,
-                                   EventTracking_Id       EventTrackingId     = null,
+                                   EventTracking_Id?      EventTrackingId     = null,
                                    TimeSpan?              RequestTimeout      = null);
 
         #endregion
