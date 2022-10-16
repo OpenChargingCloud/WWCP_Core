@@ -40,7 +40,8 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingStation : AEMobilityEntity<ChargingStation_Id,
                                                     ChargingStationAdminStatusTypes,
                                                     ChargingStationStatusTypes>,
-                                   IEquatable<ChargingStation>, IComparable<ChargingStation>,
+                                   IEquatable <ChargingStation>,
+                                   IComparable<ChargingStation>,
                                    IChargingStation
     {
 
@@ -88,32 +89,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Address
 
-        private Address _Address;
+        private Address? address;
 
         /// <summary>
         /// The address of this charging station.
         /// </summary>
         [Optional]
-        public Address Address
+        public Address? Address
         {
 
             get
             {
-                return _Address ?? ChargingPool?.Address;
+                return address;
             }
 
             set
             {
 
-                if (value != _Address && value != ChargingPool?.Address)
+                if (value is null)
+                    DeleteProperty(ref address);
+
+                else if (value != address &&
+                         value != ChargingPool?.Address)
                 {
-
-                    if (value == null)
-                        DeleteProperty(ref _Address);
-
-                    else
-                        SetProperty(ref _Address, value);
-
+                    SetProperty(ref address, value);
                 }
 
             }
@@ -122,30 +121,32 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region OSM_NodeId
+        #region OpenStreetMap NodeId
 
-        private String _OSM_NodeId;
+        private String? openStreetMapNodeId;
 
         /// <summary>
-        /// OSM Node Id.
+        /// OpenStreetMap Node Id.
         /// </summary>
         [Optional]
-        public String OSM_NodeId
+        public String? OpenStreetMapNodeId
         {
 
             get
             {
-                return _OSM_NodeId;
+                return openStreetMapNodeId;
             }
 
             set
             {
 
-                if (value != null)
-                    SetProperty(ref _OSM_NodeId, value);
+                if (value is null)
+                    DeleteProperty(ref openStreetMapNodeId);
 
-                else
-                    DeleteProperty(ref _OSM_NodeId);
+                else if (value != openStreetMapNodeId)
+                {
+                    SetProperty(ref openStreetMapNodeId, value);
+                }
 
             }
 
@@ -155,7 +156,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GeoLocation
 
-        private GeoCoordinate? _GeoLocation;
+        private GeoCoordinate? geoLocation;
 
         /// <summary>
         /// The geographical location of this charging station.
@@ -166,25 +167,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-
-                return _GeoLocation.HasValue
-                           ? _GeoLocation
-                           : ChargingPool?.GeoLocation;
-
+                return geoLocation;
             }
 
             set
             {
 
-                if (value != _GeoLocation && value != ChargingPool?.GeoLocation)
+                if (value is null)
+                    DeleteProperty(ref geoLocation);
+
+                else if (value != geoLocation &&
+                         value != ChargingPool?.GeoLocation)
                 {
-
-                    if (value == null)
-                        DeleteProperty(ref _GeoLocation);
-
-                    else
-                        SetProperty(ref _GeoLocation, value);
-
+                    SetProperty(ref geoLocation, value);
                 }
 
             }
@@ -195,33 +190,31 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EntranceAddress
 
-        internal Address _EntranceAddress;
+        private Address? entranceAddress;
 
         /// <summary>
         /// The address of the entrance to this charging station.
         /// (If different from 'Address').
         /// </summary>
         [Optional]
-        public Address EntranceAddress
+        public Address? EntranceAddress
         {
 
             get
             {
-                return _EntranceAddress ?? ChargingPool?.EntranceAddress;
+                return entranceAddress;
             }
 
             set
             {
 
-                if (value != _EntranceAddress && value != ChargingPool?.EntranceAddress)
+                if (value is null)
+                    DeleteProperty(ref entranceAddress);
+
+                else if (value != entranceAddress &&
+                         value != ChargingPool?.EntranceAddress)
                 {
-
-                    if (value == null)
-                        DeleteProperty(ref _EntranceAddress);
-
-                    else
-                        SetProperty(ref _EntranceAddress, value);
-
+                    SetProperty(ref entranceAddress, value);
                 }
 
             }
@@ -232,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EntranceLocation
 
-        internal GeoCoordinate? _EntranceLocation;
+        internal GeoCoordinate? entranceLocation;
 
         /// <summary>
         /// The geographical location of the entrance to this charging station.
@@ -244,25 +237,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-
-                return _EntranceLocation.HasValue
-                           ? _EntranceLocation
-                           : ChargingPool?.EntranceLocation;
-
+                return entranceLocation;
             }
 
             set
             {
 
-                if (value != _EntranceLocation && value != ChargingPool?.EntranceLocation)
+                if (value is null)
+                    DeleteProperty(ref entranceLocation);
+
+                else if (value != entranceLocation &&
+                         value != ChargingPool?.EntranceLocation)
                 {
-
-                    if (value == null)
-                        DeleteProperty(ref _EntranceLocation);
-
-                    else
-                        SetProperty(ref _EntranceLocation, value);
-
+                    SetProperty(ref entranceLocation, value);
                 }
 
             }
@@ -273,10 +260,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ArrivalInstructions
 
-        private I18NString _ArrivalInstructions;
+        private I18NString arrivalInstructions;
 
         /// <summary>
-        /// An optional (multi-language) description of how to find the charging pool.
+        /// An optional (multi-language) description of how to find the charging station.
         /// </summary>
         [Optional]
         public I18NString ArrivalInstructions
@@ -284,25 +271,19 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-
-                return _ArrivalInstructions.IsNeitherNullNorEmpty()
-                           ? _ArrivalInstructions
-                           : ChargingPool?.ArrivalInstructions;
-
+                return arrivalInstructions;
             }
 
             set
             {
 
-                if (value != _ArrivalInstructions && value != ChargingPool?.ArrivalInstructions)
+                if (value is null)
+                    DeleteProperty(ref arrivalInstructions);
+
+                else if (value != arrivalInstructions &&
+                         value != ChargingPool?.ArrivalInstructions)
                 {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _ArrivalInstructions);
-
-                    else
-                        SetProperty(ref _ArrivalInstructions, value);
-
+                    SetProperty(ref arrivalInstructions, value);
                 }
 
             }
@@ -1656,9 +1637,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// present within this charging station.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate?  IncludeEVSEs   = null)
 
-            => IncludeEVSEs == null
+            => IncludeEVSEs is null
 
                    ? evses.
                          Select(evse => evse.Id)
@@ -1675,10 +1656,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
 
             => evses.
-                   Where (evse => IncludeEVSEs(evse)).
+                   Where (evse => IncludeEVSEs?.Invoke(evse) ?? true).
                    Select(evse => new EVSEAdminStatus(evse.Id,
                                                       evse.AdminStatus));
 
@@ -1690,10 +1671,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
 
             => evses.
-                   Where (evse => IncludeEVSEs(evse)).
+                   Where (evse => IncludeEVSEs?.Invoke(evse) ?? true).
                    Select(evse => new EVSEStatus(evse.Id,
                                                  evse.Status));
 
@@ -3238,7 +3219,7 @@ namespace cloud.charging.open.protocols.WWCP
             Brands.TryAdd(OtherChargingStation.Brands);
 
             Address              = OtherChargingStation.Address;
-            OSM_NodeId           = OtherChargingStation.OSM_NodeId;
+            OpenStreetMapNodeId           = OtherChargingStation.OpenStreetMapNodeId;
             GeoLocation          = OtherChargingStation.GeoLocation;
             EntranceAddress      = OtherChargingStation.EntranceAddress;
             EntranceLocation     = OtherChargingStation.EntranceLocation;

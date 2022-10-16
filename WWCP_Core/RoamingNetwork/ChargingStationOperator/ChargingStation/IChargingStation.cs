@@ -94,19 +94,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The roaming network of this charging Station.
         /// </summary>
-        IRoamingNetwork          RoamingNetwork           { get; }
+        IRoamingNetwork?          RoamingNetwork           { get; }
 
         /// <summary>
         /// The charging station operator of this charging Station.
         /// </summary>
         [Optional]
-        ChargingStationOperator  Operator                 { get; }
+        ChargingStationOperator?  Operator                 { get; }
 
         /// <summary>
         /// The remote charging Station.
         /// </summary>
         [Optional]
-        IRemoteChargingStation   RemoteChargingStation    { get; }
+        IRemoteChargingStation?   RemoteChargingStation    { get; }
 
 
         /// <summary>

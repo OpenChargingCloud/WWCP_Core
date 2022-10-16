@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ArrivalInstructions
 
-        private I18NString _ArrivalInstructions;
+        private I18NString arrivalInstructions;
 
         /// <summary>
         /// An optional (multi-language) description of how to find the charging pool.
@@ -296,27 +296,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ArrivalInstructions;
+                return arrivalInstructions;
             }
 
             set
             {
 
-                if (value == null)
-                    value = new I18NString();
+                if (value is null)
+                    DeleteProperty(ref arrivalInstructions);
 
-                if (_ArrivalInstructions != value)
+                else if (value != arrivalInstructions)
                 {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _ArrivalInstructions);
-
-                    else
-                        SetProperty(ref _ArrivalInstructions, value);
-
-                    // Delete inherited arrival instructions
-                    chargingStations.ForEach(station => station.ArrivalInstructions = null);
-
+                    SetProperty(ref arrivalInstructions, value);
                 }
 
             }
