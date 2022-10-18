@@ -365,8 +365,8 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null);
         ChargingStationOperator GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId);
         ChargingStationOperator CreateChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, I18NString Name = null, I18NString Description = null, Action<ChargingStationOperator> Configurator = null, RemoteChargingStationOperatorCreatorDelegate RemoteChargingStationOperatorCreator = null, ChargingStationOperatorAdminStatusTypes AdminStatus = ChargingStationOperatorAdminStatusTypes.Operational, ChargingStationOperatorStatusTypes Status = ChargingStationOperatorStatusTypes.Available, Action<ChargingStationOperator> OnSuccess = null, Action<RoamingNetwork, ChargingStationOperator_Id> OnError = null);
-        bool TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator);
-        bool TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator);
+        bool TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
+        bool TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
 
 
         IEnumerable<ChargingPool> ChargingPools { get; }

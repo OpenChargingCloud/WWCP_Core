@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  PullOperatorInfos_IsDisabled    { get; set; }
+        Boolean  PullEVSEData_IsDisabled    { get; set; }
 
 
         // Push data directly...
