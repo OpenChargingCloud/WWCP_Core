@@ -3111,7 +3111,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  () => new JProperty("dataLicenses",    DataLicenses.ToJSON()))
                              : null,
 
-                         ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork != null
+                         ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork is not null
                              ? ExpandRoamingNetworkId.Switch(
                                    () => new JProperty("roamingNetworkId",                  RoamingNetwork.Id. ToString()),
                                    () => new JProperty("roamingNetwork",                    RoamingNetwork.    ToJSON(Embedded:                          true,
@@ -3123,7 +3123,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                    ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator != null
+                         ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator is not null
                              ? ExpandChargingStationOperatorId.Switch(
                                    () => new JProperty("chargingStationOperatorperatorId",  Operator.Id.       ToString()),
                                    () => new JProperty("chargingStationOperatorperator",    Operator.          ToJSON(Embedded:                          true,
@@ -3135,7 +3135,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                    ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool != null
+                         ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool is not null
                              ? ExpandChargingPoolId.Switch(
                                    () => new JProperty("chargingPoolId",             ChargingPool.Id.   ToString()),
                                    () => new JProperty("chargingPool",               ChargingPool.      ToJSON(Embedded:                          true,
@@ -3147,8 +3147,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                                ExpandDataLicenses:                InfoStatus.Hidden)))
                              : null,
 
-                         (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          GeoLocation.Value.  ToJSON()) : null,
-                         (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              Address.            ToJSON()) : null,
+                         (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          (GeoLocation ?? ChargingPool.GeoLocation).Value.  ToJSON()) : null,
+                         (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              (Address     ?? ChargingPool.Address).            ToJSON()) : null,
                          (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? new JProperty("authenticationModes",  AuthenticationModes.ToJSON()) : null,
                          (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON()) : null,
                          (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? new JProperty("openingTimes",         OpeningTimes.       ToJSON()) : null,
