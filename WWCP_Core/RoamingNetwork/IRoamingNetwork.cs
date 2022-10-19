@@ -17,17 +17,10 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -356,79 +349,96 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean TryGetCSORoamingProviderById(CSORoamingProvider_Id Id, out ICSORoamingProvider CSORoamingProvider);
         ICSORoamingProvider GetCSORoamingProviderById(CSORoamingProvider_Id Id);
 
+        #region ChargingStationOperators
 
         IEnumerable<ChargingStationOperator> ChargingStationOperators { get; }
         IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null);
-        bool ContainsChargingStationOperator(ChargingStationOperator ChargingStationOperator);
-        bool ContainsChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId);
+        Boolean ContainsChargingStationOperator(ChargingStationOperator ChargingStationOperator);
+        Boolean ContainsChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId);
         IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>> ChargingStationOperatorAdminStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null);
-        IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null);
+        IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>>      ChargingStationOperatorStatus     (IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null);
         ChargingStationOperator GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId);
-        ChargingStationOperator CreateChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, I18NString Name = null, I18NString Description = null, Action<ChargingStationOperator> Configurator = null, RemoteChargingStationOperatorCreatorDelegate RemoteChargingStationOperatorCreator = null, ChargingStationOperatorAdminStatusTypes AdminStatus = ChargingStationOperatorAdminStatusTypes.Operational, ChargingStationOperatorStatusTypes Status = ChargingStationOperatorStatusTypes.Available, Action<ChargingStationOperator> OnSuccess = null, Action<RoamingNetwork, ChargingStationOperator_Id> OnError = null);
-        bool TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
-        bool TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
+        ChargingStationOperator CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
+                                                              I18NString?                                          Name                                   = null,
+                                                              I18NString?                                          Description                            = null,
+                                                              Action<ChargingStationOperator>?                     Configurator                           = null,
+                                                              RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
+                                                              ChargingStationOperatorAdminStatusTypes              InitialAdminStatus                     = ChargingStationOperatorAdminStatusTypes.Operational,
+                                                              ChargingStationOperatorStatusTypes                   InitialStatus                          = ChargingStationOperatorStatusTypes.Available,
+                                                              Action<ChargingStationOperator>?                     OnSuccess                              = null,
+                                                              Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null);
+        Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
+        Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
 
+        #endregion
+
+        #region ChargingPools
 
         IEnumerable<ChargingPool> ChargingPools { get; }
-        bool ContainsChargingPool(ChargingPool ChargingPool);
-        bool ContainsChargingPool(ChargingPool_Id ChargingPoolId);
-        ChargingPool GetChargingPoolById(ChargingPool_Id ChargingPoolId);
-        bool TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool);
-        IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate IncludePools = null);
-        IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate IncludePools = null);
-        IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate IncludePools = null);
+        Boolean ContainsChargingPool(ChargingPool ChargingPool);
+        Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId);
+        ChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId);
+        Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool);
+        IEnumerable<ChargingPool_Id>             ChargingPoolIds            (IncludeChargingPoolDelegate? IncludePools = null);
+        IEnumerable<ChargingPoolAdminStatus>     ChargingPoolAdminStatus    (IncludeChargingPoolDelegate? IncludePools = null);
+        IEnumerable<ChargingPoolStatus>          ChargingPoolStatus         (IncludeChargingPoolDelegate? IncludePools = null);
+
+        #endregion
+
+        #region ChargingStations
 
         IEnumerable<ChargingStation> ChargingStations { get; }
-        bool ContainsChargingStation(ChargingStation ChargingStation);
-        bool ContainsChargingStation(ChargingStation_Id ChargingStationId);
-        ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId);
-        bool TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation);
-        IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null);
-        IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null);
-        IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null);
+        Boolean ContainsChargingStation(ChargingStation ChargingStation);
+        Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId);
+        ChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId);
+        Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation);
+        IEnumerable<ChargingStation_Id>          ChargingStationIds          (IncludeChargingStationDelegate? IncludeStations = null);
+        IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus  (IncludeChargingStationDelegate? IncludeStations = null);
+        IEnumerable<ChargingStationStatus>       ChargingStationStatus       (IncludeChargingStationDelegate? IncludeStations = null);
 
+        #endregion
 
         #region EVSEs
 
         IEnumerable<EVSE>                    EVSEs { get; }
 
-        Boolean                              ContainsEVSE           (EVSE                                 EVSE);
+        Boolean                              ContainsEVSE           (EVSE                                  EVSE);
 
-        Boolean                              ContainsEVSE           (EVSE_Id                              EVSEId);
+        Boolean                              ContainsEVSE           (EVSE_Id                               EVSEId);
 
-        EVSE                                 GetEVSEById            (EVSE_Id                              EVSEId);
+        EVSE                                 GetEVSEById            (EVSE_Id                               EVSEId);
 
-        Boolean                              TryGetEVSEById         (EVSE_Id                              EVSEId, out EVSE EVSE);
+        Boolean                              TryGetEVSEById         (EVSE_Id                               EVSEId, out EVSE EVSE);
 
-        IEnumerable<EVSE_Id>                 EVSEIds                (IncludeEVSEDelegate                  IncludeEVSEs      = null);
+        IEnumerable<EVSE_Id>                 EVSEIds                (IncludeEVSEDelegate?                  IncludeEVSEs      = null);
 
-        IEnumerable<EVSEAdminStatus>         EVSEAdminStatus        (IncludeEVSEDelegate                  IncludeEVSEs      = null);
+        IEnumerable<EVSEAdminStatus>         EVSEAdminStatus        (IncludeEVSEDelegate?                  IncludeEVSEs      = null);
 
-        IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate                  IncludeEVSEs      = null,
-                                                                     Func<DateTime,             Boolean>  TimestampFilter   = null,
-                                                                     Func<EVSEAdminStatusTypes, Boolean>  StatusFilter      = null,
-                                                                     UInt64?                              HistorySize       = null);
+        IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
+                                                                     Func<DateTime,             Boolean>?  TimestampFilter   = null,
+                                                                     Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                                                     UInt64?                               HistorySize       = null);
 
-        IEnumerable<EVSEStatus>              EVSEStatus             (IncludeEVSEDelegate                  IncludeEVSEs      = null);
+        IEnumerable<EVSEStatus>              EVSEStatus             (IncludeEVSEDelegate?                  IncludeEVSEs      = null);
 
-        IEnumerable<EVSEStatusSchedule>      EVSEStatusSchedule     (IncludeEVSEDelegate                  IncludeEVSEs      = null,
-                                                                     Func<DateTime,        Boolean>       TimestampFilter   = null,
-                                                                     Func<EVSEStatusTypes, Boolean>       StatusFilter      = null,
-                                                                     UInt64?                              HistorySize       = null);
+        IEnumerable<EVSEStatusSchedule>      EVSEStatusSchedule     (IncludeEVSEDelegate?                  IncludeEVSEs      = null,
+                                                                     Func<DateTime,        Boolean>?       TimestampFilter   = null,
+                                                                     Func<EVSEStatusTypes, Boolean>?       StatusFilter      = null,
+                                                                     UInt64?                               HistorySize       = null);
 
         #endregion
 
-        bool ContainsEMobilityProvider(eMobilityProvider EMobilityProvider);
-        bool ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId);
+        Boolean            ContainsEMobilityProvider(eMobilityProvider    EMobilityProvider);
+        Boolean            ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId);
 
-        eMobilityProvider GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId);
+        eMobilityProvider  GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId);
 
 
 
-        IEnumerable<eMobilityProvider> eMobilityProviders { get; }
-        IEnumerable<eMobilityProvider_Id> eMobilityProviderIds { get; }
-        IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus { get; }
-        IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus { get; }
+        IEnumerable<eMobilityProvider>                                                                                eMobilityProviders              { get; }
+        IEnumerable<eMobilityProvider_Id>                                                                             eMobilityProviderIds            { get; }
+        IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>>  eMobilityProviderAdminStatus    { get; }
+        IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>>       eMobilityProviderStatus         { get; }
 
         eMobilityProvider?  CreateEMobilityProvider(eMobilityProvider_Id                           ProviderId,
                                                     I18NString?                                    Name                             = null,
@@ -442,8 +452,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                     Action<RoamingNetwork, eMobilityProvider_Id>?  OnError                          = null);
 
 
-        IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider _CPORoamingProvider, Action<IEMPRoamingProvider> Configurator = null);
-        ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider eMobilityRoamingService, Action<ICSORoamingProvider> Configurator = null);
+        IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider?          _CPORoamingProvider,
+                                                     Action<IEMPRoamingProvider>?  Configurator   = null);
+        ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider           eMobilityRoamingService,
+                                                     Action<ICSORoamingProvider>?  Configurator   = null);
 
 
 
@@ -468,35 +480,35 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStartResult>
 
-            RemoteStart(IEMPRoamingProvider       ICSORoamingProvider,
-                        ChargingLocation          ChargingLocation,
-                        ChargingProduct           ChargingProduct            = null,
-                        ChargingReservation_Id?   ReservationId              = null,
-                        ChargingSession_Id?       SessionId                  = null,
-                        eMobilityProvider_Id?     ProviderId                 = null,
-                        RemoteAuthentication      RemoteAuthentication       = null,
+            RemoteStart(IEMPRoamingProvider      ICSORoamingProvider,
+                        ChargingLocation         ChargingLocation,
+                        ChargingProduct?         ChargingProduct        = null,
+                        ChargingReservation_Id?  ReservationId          = null,
+                        ChargingSession_Id?      SessionId              = null,
+                        eMobilityProvider_Id?    ProviderId             = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
-                        DateTime?                 Timestamp                  = null,
-                        CancellationToken?        CancellationToken          = null,
-                        EventTracking_Id          EventTrackingId            = null,
-                        TimeSpan?                 RequestTimeout             = null);
+                        DateTime?                Timestamp              = null,
+                        CancellationToken?       CancellationToken      = null,
+                        EventTracking_Id?        EventTrackingId        = null,
+                        TimeSpan?                RequestTimeout         = null);
 
         #endregion
 
 
-        JObject ToJSON(Boolean                                                   Embedded                                  = false,
-                       InfoStatus                                                ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
-                       CustomJObjectSerializerDelegate<RoamingNetwork>           CustomRoamingNetworkSerializer            = null,
-                       CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                       CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                       CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                       CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null);
+        JObject ToJSON(Boolean                                                    Embedded                                  = false,
+                       InfoStatus                                                 ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                 ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                 ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                 ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                 ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                 ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                 ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+                       CustomJObjectSerializerDelegate<RoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
+                       CustomJObjectSerializerDelegate<ChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
+                       CustomJObjectSerializerDelegate<ChargingPool>?             CustomChargingPoolSerializer              = null,
+                       CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
+                       CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null);
 
     }
 
