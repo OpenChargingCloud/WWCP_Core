@@ -42,67 +42,47 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
-        public static JArray ToJSON(this IEnumerable<IRoamingNetwork>                      RoamingNetworks,
-                                    UInt64?                                                Skip                                      = null,
-                                    UInt64?                                                Take                                      = null,
-                                    Boolean                                                Embedded                                  = false,
-                                    InfoStatus                                             ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                             ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+        public static JArray ToJSON(this IEnumerable<IRoamingNetwork>                          RoamingNetworks,
+                                    UInt64?                                                    Skip                                      = null,
+                                    UInt64?                                                    Take                                      = null,
+                                    Boolean                                                    Embedded                                  = false,
+                                    InfoStatus                                                 ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
 
-                                    InfoStatus                                             ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
 
-                                    CustomJObjectSerializerDelegate<RoamingNetwork>           CustomRoamingNetworkSerializer            = null,
-                                    CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                                    CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                                    CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                                    CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
+                                    CustomJObjectSerializerDelegate<RoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
+                                    CustomJObjectSerializerDelegate<ChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
+                                    CustomJObjectSerializerDelegate<ChargingPool>?             CustomChargingPoolSerializer              = null,
+                                    CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
+                                    CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null)
 
 
-        => RoamingNetworks == null || !RoamingNetworks.Any()
+        => RoamingNetworks is null || !RoamingNetworks.Any()
 
                    ? new JArray()
 
                    : new JArray(RoamingNetworks.
-                                    Where     (roamingnetwork => roamingnetwork != null).
-                                    OrderBy   (roamingnetwork => roamingnetwork.Id).
+                                    Where         (roamingnetwork => roamingnetwork != null).
+                                    OrderBy       (roamingnetwork => roamingnetwork.Id).
                                     SkipTakeFilter(Skip, Take).
-                                    SafeSelect(roamingnetwork => roamingnetwork.ToJSON(Embedded,
-                                                                                       ExpandChargingStationOperatorIds,
-                                                                                       ExpandRoamingNetworkIds,
-                                                                                       ExpandChargingStationIds,
-                                                                                       ExpandEVSEIds,
-                                                                                       ExpandBrandIds,
-                                                                                       ExpandDataLicenses,
-                                                                                       ExpandEMobilityProviderId,
-                                                                                       CustomRoamingNetworkSerializer,
-                                                                                       CustomChargingStationOperatorSerializer,
-                                                                                       CustomChargingPoolSerializer,
-                                                                                       CustomChargingStationSerializer,
-                                                                                       CustomEVSESerializer)));
-
-        #endregion
-
-        #region ToJSON(this RoamingNetworks, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<IRoamingNetwork> RoamingNetworks, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
-
-            #endregion
-
-            return RoamingNetworks?.Any() == true
-                       ? new JProperty(JPropertyKey, RoamingNetworks.ToJSON())
-                       : null;
-
-        }
+                                    SafeSelect    (roamingnetwork => roamingnetwork.ToJSON(Embedded,
+                                                                                           ExpandChargingStationOperatorIds,
+                                                                                           ExpandRoamingNetworkIds,
+                                                                                           ExpandChargingStationIds,
+                                                                                           ExpandEVSEIds,
+                                                                                           ExpandBrandIds,
+                                                                                           ExpandDataLicenses,
+                                                                                           ExpandEMobilityProviderId,
+                                                                                           CustomRoamingNetworkSerializer,
+                                                                                           CustomChargingStationOperatorSerializer,
+                                                                                           CustomChargingPoolSerializer,
+                                                                                           CustomChargingStationSerializer,
+                                                                                           CustomEVSESerializer)));
 
         #endregion
 
@@ -315,7 +295,6 @@ namespace cloud.charging.open.protocols.WWCP
     /// The common interface of all roaming networks.
     /// </summary>
     public interface IRoamingNetwork : IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
-                                       IEnumerable<IEntity>,
                                        IAdminStatus<RoamingNetworkAdminStatusTypes>,
                                        IStatus<RoamingNetworkStatusTypes>,
                                        ISendAuthorizeStartStop,
@@ -346,9 +325,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         IEnumerable<IEMPRoamingProvider>                 EMPRoamingProviders { get; }
 
-        IEMPRoamingProvider                              GetEMPRoamingProviderById   (EMPRoamingProvider_Id Id);
-        Boolean                                          TryGetEMPRoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider? EMPRoamingProvider);
-
+        Boolean                                          ContainsEMPRoamingProvider  (IEMPRoamingProvider     EMPRoamingProvider);
+        Boolean                                          ContainsEMPRoamingProvider  (EMPRoamingProvider_Id   EMPRoamingProviderId);
+        IEMPRoamingProvider?                             GetEMPRoamingProviderById   (EMPRoamingProvider_Id   EMPRoamingProviderId);
+        IEMPRoamingProvider?                             GetEMPRoamingProviderById   (EMPRoamingProvider_Id?  EMPRoamingProviderId);
+        Boolean                                          TryGetEMPRoamingProviderById(EMPRoamingProvider_Id   Id, out IEMPRoamingProvider? EMPRoamingProvider);
+        Boolean                                          TryGetEMPRoamingProviderById(EMPRoamingProvider_Id?  Id, out IEMPRoamingProvider? EMPRoamingProvider);
+        IEMPRoamingProvider?                             RemoveEMPRoamingProvider    (EMPRoamingProvider_Id   EMPRoamingProviderId);
+        IEMPRoamingProvider?                             RemoveEMPRoamingProvider    (EMPRoamingProvider_Id?  EMPRoamingProviderId);
+        Boolean                                          TryRemoveEMPRoamingProvider (EMPRoamingProvider_Id   EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider);
+        Boolean                                          TryRemoveEMPRoamingProvider (EMPRoamingProvider_Id?  EMPRoamingProviderId, out IEMPRoamingProvider? EMPRoamingProvider);
 
         IEMPRoamingProvider                              CreateNewRoamingProvider    (IEMPRoamingProvider           EMPRoamingProvider,
                                                                                       Action<IEMPRoamingProvider>?  Configurator = null);
@@ -396,11 +382,15 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean                                          ContainsCSORoamingProvider  (CSORoamingProvider_Id   CSORoamingProviderId);
         ICSORoamingProvider?                             GetCSORoamingProviderById   (CSORoamingProvider_Id   CSORoamingProviderId);
         ICSORoamingProvider?                             GetCSORoamingProviderById   (CSORoamingProvider_Id?  CSORoamingProviderId);
-        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id  Id, out ICSORoamingProvider? CSORoamingProvider);
-        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id? Id, out ICSORoamingProvider? CSORoamingProvider);
+        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id   Id, out ICSORoamingProvider? CSORoamingProvider);
+        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id?  Id, out ICSORoamingProvider? CSORoamingProvider);
+        ICSORoamingProvider?                             RemoveCSORoamingProvider    (CSORoamingProvider_Id   CSORoamingProviderId);
+        ICSORoamingProvider?                             RemoveCSORoamingProvider    (CSORoamingProvider_Id?  CSORoamingProviderId);
+        Boolean                                          TryRemoveCSORoamingProvider (CSORoamingProvider_Id   CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider);
+        Boolean                                          TryRemoveCSORoamingProvider (CSORoamingProvider_Id?  CSORoamingProviderId, out ICSORoamingProvider? CSORoamingProvider);
 
 
-        ICSORoamingProvider                              CreateNewRoamingProvider    (ICSORoamingProvider           CSORoamingProvider,
+        ICSORoamingProvider                              CreateCSORoamingProvider    (ICSORoamingProvider           CSORoamingProvider,
                                                                                       Action<ICSORoamingProvider>?  Configurator = null);
 
         #endregion

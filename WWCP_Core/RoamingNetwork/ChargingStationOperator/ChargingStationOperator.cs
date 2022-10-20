@@ -5710,36 +5710,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        public override Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as ChargingStationOperator;
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentException("The given object is not an EVSE_Operator!");
-
-            return CompareTo(EVSE_Operator);
-
-        }
+            => Object is ChargingStationOperator chargingStationOperator
+                   ? CompareTo(chargingStationOperator)
+                   : throw new ArgumentException("The given object is not a charging station operator!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(Operator)
+        #region CompareTo(ChargingStationOperator)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Operator">An Charging Station Operator object to compare with.</param>
-        public Int32 CompareTo(ChargingStationOperator Operator)
+        /// <param name="ChargingStationOperator">A charging station operator object to compare with.</param>
+        public Int32 CompareTo(ChargingStationOperator? ChargingStationOperator)
         {
 
-            if ((Object) Operator == null)
+            if (ChargingStationOperator is null)
                 throw new ArgumentNullException("The given Charging Station Operator must not be null!");
 
-            return Id.CompareTo(Operator.Id);
+            return Id.CompareTo(ChargingStationOperator.Id);
 
         }
 
@@ -5756,20 +5748,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an ChargingStationOperator.
-            var EVSE_Operator = Object as ChargingStationOperator;
-            if ((Object) EVSE_Operator == null)
-                return false;
-
-            return this.Equals(EVSE_Operator);
-
-        }
+            => Object is ChargingStationOperator chargingStationOperator &&
+                   Equals(chargingStationOperator);
 
         #endregion
 
@@ -5780,15 +5762,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Operator">An Charging Station Operator to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStationOperator Operator)
-        {
+        public Boolean Equals(ChargingStationOperator? ChargingStationOperator)
 
-            if ((Object) Operator == null)
-                return false;
-
-            return Id.Equals(Operator.Id);
-
-        }
+            => ChargingStationOperator is not null &&
+               Id.Equals(ChargingStationOperator.Id);
 
         #endregion
 
