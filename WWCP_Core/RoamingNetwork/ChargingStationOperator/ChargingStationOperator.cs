@@ -1096,6 +1096,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         #region CreateChargingPool        (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
@@ -1284,70 +1285,140 @@ namespace cloud.charging.open.protocols.WWCP
 
         private readonly EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> chargingPools;
 
+        /// <summary>
+        /// Return an enumeration of all charging pools.
+        /// </summary>
         public IEnumerable<ChargingPool> ChargingPools
 
             => chargingPools;
 
         #endregion
 
-        #region ChargingPoolIds        (IncludeChargingPool = null)
+        #region ChargingPoolIds                (IncludeChargingPools = null)
 
         /// <summary>
         /// Return an enumeration of all charging pool identifications.
         /// </summary>
-        /// <param name="IncludeChargingPool">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate? IncludeChargingPool = null)
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+        {
 
-            => IncludeChargingPool is null
+            IncludeChargingPools ??= (chargingPool => true);
 
-                   ? chargingPools.
-                         Select(chargingPool => chargingPool.Id)
+            return chargingPools.
+                       Where (chargingPool => IncludeChargingPools(chargingPool)).
+                       Select(chargingPool => chargingPool.Id);
 
-                   : chargingPools.
-                         Where (chargingPool => IncludeChargingPool(chargingPool)).
-                         Select(chargingPool => chargingPool.Id);
+        }
 
         #endregion
 
-        #region ChargingPoolAdminStatus(IncludePools = null)
+        #region ChargingPoolAdminStatus        (IncludeChargingPools = null)
 
         /// <summary>
         /// Return an enumeration of all charging pool admin status.
         /// </summary>
-        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate? IncludePools = null)
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+        {
 
-            => IncludePools is null
+            IncludeChargingPools ??= (chargingPool => true);
 
-                   ? chargingPools.
-                         Select(chargingPool => new ChargingPoolAdminStatus(chargingPool.Id,
-                                                                            chargingPool.AdminStatus))
-
-                   : chargingPools.
-                         Where (chargingPool => IncludePools(chargingPool)).
-                         Select(chargingPool => new ChargingPoolAdminStatus(chargingPool.Id,
-                                                                            chargingPool.AdminStatus));
+            return chargingPools.
+                       Where (chargingPool => IncludeChargingPools(chargingPool)).
+                       Select(chargingPool => new ChargingPoolAdminStatus(chargingPool.Id,
+                                                                          chargingPool.AdminStatus));
+        }
 
         #endregion
 
-        #region ChargingPoolStatus     (IncludePools = null)
+        #region ChargingPoolAdminStatusSchedule(IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of admin status entries per pool to skip.</param>
+        /// <param name="Take">The number of admin status entries per pool to return.</param>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
+
+            ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
+                                            Func<DateTime,                     Boolean>?  TimestampFilter        = null,
+                                            Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
+                                            UInt64?                                       Skip                   = null,
+                                            UInt64?                                       Take                   = null)
+
+        {
+
+            IncludeChargingPools ??= (chargingPool => true);
+
+            return chargingPools.
+                         Where (chargingPool => IncludeChargingPools(chargingPool)).
+                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>(
+                                                    chargingPool.Id,
+                                                    chargingPool.AdminStatusSchedule(TimestampFilter,
+                                                                                     AdminStatusFilter,
+                                                                                     Skip,
+                                                                                     Take)));
+
+        }
+
+        #endregion
+
+        #region ChargingPoolStatus             (IncludeChargingPools = null)
 
         /// <summary>
         /// Return an enumeration of all charging pool status.
         /// </summary>
-        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate? IncludePools = null)
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+        {
 
-            => IncludePools is null
+            IncludeChargingPools ??= (chargingPool => true);
 
-                   ? chargingPools.
-                         Select(chargingPool => new ChargingPoolStatus(chargingPool.Id,
-                                                                       chargingPool.Status))
+            return chargingPools.
+                       Where (chargingPool => IncludeChargingPools  (chargingPool)).
+                       Select(chargingPool => new ChargingPoolStatus(chargingPool.Id,
+                                                                     chargingPool.Status));
 
-                   : chargingPools.
-                         Where (chargingPool => IncludePools(chargingPool)).
-                         Select(chargingPool => new ChargingPoolStatus(chargingPool.Id,
-                                                                       chargingPool.Status));
+        }
+
+        #endregion
+
+        #region ChargingPoolStatusSchedule     (IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of status entries per pool to skip.</param>
+        /// <param name="Take">The number of status entries per pool to return.</param>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
+
+            ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?             IncludeChargingPools   = null,
+                                       Func<DateTime,                Boolean>?  TimestampFilter        = null,
+                                       Func<ChargingPoolStatusTypes, Boolean>?  StatusFilter           = null,
+                                       UInt64?                                  Skip                   = null,
+                                       UInt64?                                  Take                   = null)
+
+        {
+
+            IncludeChargingPools ??= (chargingPool => true);
+
+            return chargingPools.
+                         Where (chargingPool => IncludeChargingPools(chargingPool)).
+                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>(
+                                                    chargingPool.Id,
+                                                    chargingPool.StatusSchedule(TimestampFilter,
+                                                                                StatusFilter,
+                                                                                Skip,
+                                                                                Take)));
+
+        }
 
         #endregion
 
@@ -1389,6 +1460,27 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool? ChargingPool)
 
             => chargingPools.TryGet(ChargingPoolId, out ChargingPool);
+
+        #endregion
+
+        #region TryGetChargingPoolByStationId(ChargingStationId, out ChargingPool)
+
+        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out ChargingPool? ChargingPool)
+        {
+
+            foreach (var chargingPool in chargingPools)
+            {
+                if (chargingPool.TryGetChargingStationById(ChargingStationId, out var chargingStation))
+                {
+                    ChargingPool = chargingPool;
+                    return true;
+                }
+            }
+
+            ChargingPool = null;
+            return false;
+
+        }
 
         #endregion
 
@@ -1694,69 +1786,137 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ChargingStationIds        (IncludeStations = null)
+        #region ChargingStationIds                (IncludeChargingStations = null)
 
         /// <summary>
         /// Return an enumeration of all charging station identifications.
         /// </summary>
-        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate? IncludeStations = null)
+        /// <param name="IncludeChargingStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate? IncludeChargingStations = null)
+        {
 
-            => IncludeStations is null
+            IncludeChargingStations ??= (chargingStation => true);
 
-                   ? ChargingStations.
-                         Select(chargingStation => chargingStation.Id)
+            return ChargingStations.
+                       Where (chargingStation => IncludeChargingStations(chargingStation)).
+                       Select(chargingStation => chargingStation.Id);
 
-                   : ChargingStations.
-                         Where (chargingStation => IncludeStations(chargingStation)).
-                         Select(chargingStation => chargingStation.Id);
+        }
 
         #endregion
 
-        #region ChargingStationAdminStatus(IncludeStations = null)
+        #region ChargingStationAdminStatus        (IncludeChargingStations = null)
 
         /// <summary>
         /// Return an enumeration of all charging station admin status.
         /// </summary>
-        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate? IncludeStations = null)
+        /// <param name="IncludeChargingStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate? IncludeChargingStations = null)
+        {
 
-            => IncludeStations is null
+            IncludeChargingStations ??= (chargingStation => true);
 
-                   ? ChargingStations.
-                         Select(station => new ChargingStationAdminStatus(station.Id,
-                                                                          station.AdminStatus))
+            return ChargingStations.
+                       Where (chargingStation => IncludeChargingStations(chargingStation)).
+                       Select(chargingStation => new ChargingStationAdminStatus(chargingStation.Id,
+                                                                                chargingStation.AdminStatus));
 
-                   : ChargingStations.
-                         Where (station => IncludeStations(station)).
-                         Select(station => new ChargingStationAdminStatus(station.Id,
-                                                                          station.AdminStatus));
+        }
 
         #endregion
 
-        #region ChargingStationStatus     (IncludeStations = null)
+        #region ChargingStationAdminStatusSchedule(IncludeChargingStations = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+
+        /// <summary>
+        /// Return the admin status of all charging stations registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingStations">An optional delegate for filtering charging stations.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of admin status entries per station to skip.</param>
+        /// <param name="Take">The number of admin status entries per station to return.</param>
+        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
+
+            ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
+                                               Func<DateTime,                        Boolean>?  TimestampFilter           = null,
+                                               Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
+                                               UInt64?                                          Skip                      = null,
+                                               UInt64?                                          Take                      = null)
+
+        {
+
+            IncludeChargingStations ??= (chargingStation => true);
+
+            return ChargingStations.
+                         Where (chargingStation => IncludeChargingStations(chargingStation)).
+                         Select(chargingStation => new Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
+                                                       chargingStation.Id,
+                                                       chargingStation.AdminStatusSchedule(TimestampFilter,
+                                                                                           AdminStatusFilter,
+                                                                                           Skip,
+                                                                                           Take)));
+
+        }
+
+        #endregion
+
+        #region ChargingStationStatus             (IncludeChargingStations = null)
 
         /// <summary>
         /// Return an enumeration of all charging station status.
         /// </summary>
-        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate? IncludeStations = null)
+        /// <param name="IncludeChargingStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate? IncludeChargingStations = null)
+        {
 
-            => IncludeStations is null
+            IncludeChargingStations ??= (chargingStation => true);
 
-                   ? ChargingStations.
-                         Select(chargingStation => new ChargingStationStatus(chargingStation.Id,
-                                                                             chargingStation.Status))
+            return ChargingStations.
+                       Where (chargingStation => IncludeChargingStations  (chargingStation)).
+                       Select(chargingStation => new ChargingStationStatus(chargingStation.Id,
+                                                                           chargingStation.Status));
 
-                   : ChargingStations.
-                         Where (chargingStation => IncludeStations(chargingStation)).
-                         Select(chargingStation => new ChargingStationStatus(chargingStation.Id,
-                                                                             chargingStation.Status));
+        }
+
+        #endregion
+
+        #region ChargingStationStatusSchedule     (IncludeChargingStations = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+
+        /// <summary>
+        /// Return the admin status of all charging stations registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingStations">An optional delegate for filtering charging stations.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of status entries per station to skip.</param>
+        /// <param name="Take">The number of status entries per station to return.</param>
+        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>
+
+            ChargingStationStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
+                                               Func<DateTime,                   Boolean>?  TimestampFilter           = null,
+                                               Func<ChargingStationStatusTypes, Boolean>?  StatusFilter              = null,
+                                               UInt64?                                     Skip                      = null,
+                                               UInt64?                                     Take                      = null)
+
+        {
+
+            IncludeChargingStations ??= (chargingStation => true);
+
+            return ChargingStations.
+                         Where (chargingStation => IncludeChargingStations(chargingStation)).
+                         Select(chargingStation => new Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>(
+                                                       chargingStation.Id,
+                                                       chargingStation.StatusSchedule(TimestampFilter,
+                                                                                      StatusFilter,
+                                                                                      Skip,
+                                                                                      Take)));
+
+        }
 
         #endregion
 
 
-        #region ContainsChargingStation(ChargingStation)
+        #region ContainsChargingStation      (ChargingStation)
 
         /// <summary>
         /// Check if the given ChargingStation is already present within the Charging Station Operator.
@@ -1768,7 +1928,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ContainsChargingStation(ChargingStationId)
+        #region ContainsChargingStation      (ChargingStationId)
 
         /// <summary>
         /// Check if the given ChargingStation identification is already present within the Charging Station Operator.
@@ -1780,7 +1940,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetChargingStationById(ChargingStationId)
+        #region GetChargingStationById       (ChargingStationId)
 
         public ChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
 
@@ -1788,7 +1948,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetChargingStationById(ChargingStationId, out ChargingStation ChargingStation)
+        #region TryGetChargingStationById    (ChargingStationId, out ChargingStation ChargingStation)
 
         public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation? ChargingStation)
         {
@@ -1801,22 +1961,84 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetChargingPoolByStationId(ChargingStationId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out ChargingPool? ChargingPool)
+
+        #region SetChargingStationAdminStatus(ChargingStationId, NewAdminStatus)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+                                                  ChargingStationAdminStatusTypes  NewAdminStatus)
         {
 
-            foreach (var chargingPool in chargingPools)
+            if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
+                chargingStation is not null)
             {
-                if (chargingPool.TryGetChargingStationById(ChargingStationId, out ChargingStation? chargingStation))
-                {
-                    ChargingPool = chargingPool;
-                    return true;
-                }
+                chargingStation.AdminStatus = NewAdminStatus;
             }
 
-            ChargingPool = null;
-            return false;
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, NewTimestampedAdminStatus)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
+                                                  Timestamped<ChargingStationAdminStatusTypes>  NewTimestampedAdminStatus)
+        {
+
+            if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
+                chargingStation is not null)
+            {
+                chargingStation.AdminStatus = NewTimestampedAdminStatus;
+            }
+
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, NewAdminStatus, Timestamp)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
+                                                  ChargingStationAdminStatusTypes  NewAdminStatus,
+                                                  DateTime                         Timestamp)
+        {
+
+            if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
+                chargingStation is not null)
+            {
+                chargingStation.AdminStatus = new Timestamped<ChargingStationAdminStatusTypes>(Timestamp, NewAdminStatus);
+            }
+
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
+                                                  IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  AdminStatusList,
+                                                  ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
+                chargingStation is not null)
+            {
+                chargingStation.SetAdminStatus(AdminStatusList, ChangeMethod);
+            }
+
+            //if (SendUpstream)
+            //{
+            //
+            //    RoamingNetwork.
+            //        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(Timestamp.Now,
+            //                                               ChargingStationOperatorId:    Id,
+            //                                               ChargingStationOperatorName:  Name,
+            //                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
+            //                                               ChangedStatus:     new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>() {
+            //                                                                          new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>(ChargingStationId, NewStatus.Value)
+            //                                                                      },
+            //                                               RemovedIds:        new List<ChargingStation_Id>()));
+            //
+            //}
 
         }
 
@@ -1855,79 +2077,46 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region SetChargingStationStatus(ChargingStationId, NewStatus, Timestamp)
 
-        #region SetChargingStationAdminStatus(ChargingStationId, NewStatus)
-
-        public void SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
-                                                  ChargingStationAdminStatusTypes  NewStatus)
+        public void SetChargingStationStatus(ChargingStation_Id          ChargingStationId,
+                                             ChargingStationStatusTypes  NewStatus,
+                                             DateTime                    Timestamp)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
                 chargingStation is not null)
             {
-                chargingStation.AdminStatus = NewStatus;
+                chargingStation.Status = new Timestamped<ChargingStationStatusTypes>(Timestamp, NewStatus);
             }
 
         }
 
         #endregion
 
-        #region SetChargingStationAdminStatus(ChargingStationId, NewTimestampedStatus)
+        #region SetChargingStationStatus(ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusTypes>  NewTimestampedStatus)
+        public void SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
+                                             IEnumerable<Timestamped<ChargingStationStatusTypes>>  StatusList,
+                                             ChangeMethods                                         ChangeMethod  = ChangeMethods.Replace)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
                 chargingStation is not null)
             {
-                chargingStation.AdminStatus = NewTimestampedStatus;
-            }
-
-        }
-
-        #endregion
-
-        #region SetChargingStationAdminStatus(ChargingStationId, NewStatus, Timestamp)
-
-        public void SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
-                                                  ChargingStationAdminStatusTypes  NewStatus,
-                                                  DateTime                         Timestamp)
-        {
-
-            if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
-                chargingStation is not null)
-            {
-                chargingStation.AdminStatus = new Timestamped<ChargingStationAdminStatusTypes>(Timestamp, NewStatus);
-            }
-
-        }
-
-        #endregion
-
-        #region SetChargingStationAdminStatus(ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
-
-        public void SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
-                                                  IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  StatusList,
-                                                  ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace)
-        {
-
-            if (TryGetChargingStationById(ChargingStationId, out var chargingStation) &&
-                chargingStation is not null)
-            {
-                chargingStation.SetAdminStatus(StatusList, ChangeMethod);
+                chargingStation.SetStatus(StatusList, ChangeMethod);
             }
 
             //if (SendUpstream)
             //{
             //
             //    RoamingNetwork.
-            //        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(Timestamp.Now,
+            //        SendChargingStationStatusDiff(new ChargingStationStatusDiff(Timestamp.Now,
             //                                               ChargingStationOperatorId:    Id,
             //                                               ChargingStationOperatorName:  Name,
-            //                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
-            //                                               ChangedStatus:     new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>() {
-            //                                                                          new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>(ChargingStationId, NewStatus.Value)
+            //                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationStatusType>>(),
+            //                                               ChangedStatus:     new List<KeyValuePair<ChargingStation_Id, ChargingStationStatusType>>() {
+            //                                                                          new KeyValuePair<ChargingStation_Id, ChargingStationStatusType>(ChargingStationId, NewStatus.Value)
             //                                                                      },
             //                                               RemovedIds:        new List<ChargingStation_Id>()));
             //
@@ -2541,10 +2730,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         #region EVSEs
 
         /// <summary>
-        /// All EVSEs.
+        /// Return an enumeration of all EVSEs.
         /// </summary>
         public IEnumerable<EVSE> EVSEs
 
@@ -2559,13 +2749,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate? IncludeEVSEs = null)
+        {
 
-            => IncludeEVSEs is null
+            IncludeEVSEs ??= (evse => true);
 
-                   ? EVSEs.Select(evse => evse.Id)
+            return EVSEs.
+                       Where (evse => IncludeEVSEs(evse)).
+                       Select(evse => evse.Id);
 
-                   : EVSEs.Where (evse => IncludeEVSEs(evse)).
-                           Select(evse => evse.Id);
+        }
 
         #endregion
 
@@ -2576,44 +2768,48 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
+        {
 
-            => IncludeEVSEs is null
+            IncludeEVSEs ??= (evse => true);
 
-                   ? EVSEs.
-                         Select(evse => new EVSEAdminStatus(evse.Id,
-                                                            evse.AdminStatus))
-
-                   : EVSEs.
-                         Where (evse => IncludeEVSEs(evse)).
-                         Select(evse => new EVSEAdminStatus(evse.Id,
-                                                            evse.AdminStatus));
+            return EVSEs.
+                       Where (evse => IncludeEVSEs(evse)).
+                       Select(evse => new EVSEAdminStatus(evse.Id,
+                                                          evse.AdminStatus));
+        }
 
         #endregion
 
         #region EVSEAdminStatusSchedule(IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
 
         /// <summary>
-        /// Return an enumeration of all EVSE admin status.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        /// <param name="TimestampFilter">An optional admin status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
-                                                                            Func<DateTime,             Boolean>?  TimestampFilter   = null,
-                                                                            Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
-                                                                            UInt64?                               HistorySize       = null)
-{
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of admin status entries per pool to skip.</param>
+        /// <param name="Take">The number of admin status entries per pool to return.</param>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
 
-            if (IncludeEVSEs is null)
-                IncludeEVSEs = evse => true;
+            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs        = null,
+                                    Func<DateTime,             Boolean>?  TimestampFilter     = null,
+                                    Func<EVSEAdminStatusTypes, Boolean>?  AdminStatusFilter   = null,
+                                    UInt64?                               Skip                = null,
+                                    UInt64?                               Take                = null)
 
-            return EVSEs.Where (evse           => IncludeEVSEs(evse)).
-                         Select(evse           => new EVSEAdminStatusSchedule(evse.Id,
-                                                                              evse.AdminStatusSchedule(TimestampFilter,
-                                                                                                       StatusFilter,
-                                                                                                       HistorySize))).
-                         Where (statusSchedule => statusSchedule.StatusSchedule.Any());
+        {
+
+            IncludeEVSEs ??= (evse => true);
+
+            return EVSEs.
+                       Where (evse => IncludeEVSEs(evse)).
+                       Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
+                                          evse.Id,
+                                          evse.AdminStatusSchedule(TimestampFilter,
+                                                                   AdminStatusFilter,
+                                                                   Skip,
+                                                                   Take)));
 
         }
 
@@ -2626,42 +2822,49 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
+        {
 
-            => IncludeEVSEs is null
+            IncludeEVSEs ??= (evse => true);
 
-                   ? EVSEs.Select(evse => new EVSEStatus(evse.Id,
-                                                         evse.Status))
+            return EVSEs.
+                       Where (evse => IncludeEVSEs  (evse)).
+                       Select(evse => new EVSEStatus(evse.Id,
+                                                     evse.Status));
 
-                   : EVSEs.Where (evse => IncludeEVSEs(evse)).
-                           Select(evse => new EVSEStatus(evse.Id,
-                                                         evse.Status));
+        }
 
         #endregion
 
         #region EVSEStatusSchedule     (IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
 
         /// <summary>
-        /// Return an enumeration of all EVSE status.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
         /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<EVSEStatusSchedule> EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
-                                                                  Func<DateTime,        Boolean>?  TimestampFilter   = null,
-                                                                  Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
-                                                                  UInt64?                          HistorySize       = null)
+        /// <param name="StatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of status entries per pool to skip.</param>
+        /// <param name="Take">The number of status entries per pool to return.</param>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+
+            EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
+                               Func<DateTime,        Boolean>?  TimestampFilter   = null,
+                               Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
+                               UInt64?                          Skip              = null,
+                               UInt64?                          Take              = null)
+
         {
 
-            if (IncludeEVSEs is null)
-                IncludeEVSEs = evse => true;
+            IncludeEVSEs ??= (evse => true);
 
-            return EVSEs.Where (evse           => IncludeEVSEs(evse)).
-                         Select(evse           => new EVSEStatusSchedule(evse.Id,
-                                                                         evse.StatusSchedule(TimestampFilter,
-                                                                                             StatusFilter,
-                                                                                             HistorySize))).
-                         Where (statusSchedule => statusSchedule.StatusSchedule.Any());
+            return EVSEs.
+                       Where (evse => IncludeEVSEs(evse)).
+                       Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
+                                          evse.Id,
+                                          evse.StatusSchedule(TimestampFilter,
+                                                              StatusFilter,
+                                                              Skip,
+                                                              Take)));
 
         }
 

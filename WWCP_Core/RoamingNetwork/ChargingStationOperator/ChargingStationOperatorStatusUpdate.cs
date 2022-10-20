@@ -92,8 +92,8 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.Id         = Id;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
+            this.OldStatus  = OldStatus.TimestampedStatus;
+            this.NewStatus  = NewStatus.TimestampedStatus;
 
         }
 

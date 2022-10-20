@@ -314,6 +314,250 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        #region eMobility Providers...
+
+        #region eMobilityProviders
+
+        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProvider> _eMobilityProviders;
+
+        /// <summary>
+        /// Return all e-mobility providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<eMobilityProvider> eMobilityProviders
+
+            => _eMobilityProviders;
+
+        /// <summary>
+        /// Return all e-mobility providers identifications registered within this roaming network.
+        /// </summary>
+        public IEnumerable<eMobilityProvider_Id> eMobilityProviderIds
+
+            => _eMobilityProviders.SafeSelect(emp => emp.Id);
+
+
+        public eMobilityProvider Get(eMobilityProvider_Id Id)
+        {
+
+            if (_eMobilityProviders.TryGet(Id, out eMobilityProvider eMobilityProvider))
+                return eMobilityProvider;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region eMobilityProviderAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all e-mobility providerss registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus
+
+            => _eMobilityProviders.
+                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>(emp.Id,
+                                                                                                                                         emp.AdminStatusSchedule()));
+
+        #endregion
+
+        #region eMobilityProviderStatus
+
+        /// <summary>
+        /// Return the status of all e-mobility providerss registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus
+
+            => _eMobilityProviders.
+                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>(emp.Id,
+                                                                                                                                     emp.StatusSchedule()));
+
+        #endregion
+
+
+        #region OnEMobilityProviderAddition
+
+        /// <summary>
+        /// Called whenever an e-mobility provider will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderAddition
+            => _eMobilityProviders.OnAddition;
+
+        #endregion
+
+        #region OnEMobilityProviderRemoval
+
+        /// <summary>
+        /// Called whenever an e-mobility provider will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderRemoval
+            => _eMobilityProviders.OnRemoval;
+
+        #endregion
+
+
+        #region CreateNewEMobilityProvider(EMobilityProviderId, Configurator = null)
+
+        /// <summary>
+        /// Create and register a new e-mobility (service) provider having the given
+        /// unique e-mobility provider identification.
+        /// </summary>
+        /// <param name="ProviderId">The unique identification of the new e-mobility provider.</param>
+        /// <param name="Name">The offical (multi-language) name of the e-mobility provider.</param>
+        /// <param name="Description">An optional (multi-language) description of the e-mobility provider.</param>
+        /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
+        public eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id                           ProviderId,
+                                                         I18NString?                                    Name                             = null,
+                                                         I18NString?                                    Description                      = null,
+                                                         eMobilityProviderPriority?                     Priority                         = null,
+                                                         Action<eMobilityProvider>?                     Configurator                     = null,
+                                                         RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
+                                                         eMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
+                                                         eMobilityProviderStatusTypes?                  InitialStatus                    = null,
+                                                         Action<eMobilityProvider>?                     OnSuccess                        = null,
+                                                         Action<RoamingNetwork, eMobilityProvider_Id>?  OnError                          = null)
+        {
+
+            lock (chargingStationOperators)
+            {
+
+                var eMobilityProviderProxy = new eMobilityProvider(ProviderId,
+                                                                   this,
+                                                                   Name,
+                                                                   Description,
+                                                                   Configurator,
+                                                                   RemoteEMobilityProviderCreator,
+                                                                   Priority,
+                                                                   InitialAdminStatus ?? eMobilityProviderAdminStatusTypes.Operational,
+                                                                   InitialStatus      ?? eMobilityProviderStatusTypes.Available);
+
+
+                if (_eMobilityProviders.TryAdd(eMobilityProviderProxy, OnSuccess))
+                {
+
+                    // _eMobilityProviders.OnDataChanged         += UpdateData;
+                    // _eMobilityProviders.OnStatusChanged       += UpdateStatus;
+                    // _eMobilityProviders.OnAdminStatusChanged  += UpdateAdminStatus;
+
+                    //_EMobilityProvider.OnEMobilityStationAddition
+
+                    //AddIRemotePushData               (_EMobilityProvider);
+                    _ISendAdminStatus.Add              (eMobilityProviderProxy);
+                    _ISendStatus.Add                   (eMobilityProviderProxy);
+                    _ISend2RemoteAuthorizeStartStop.Add(eMobilityProviderProxy);
+                    _IRemoteSendChargeDetailRecord.Add (eMobilityProviderProxy);
+
+
+                    // Link events!
+
+                    return eMobilityProviderProxy;
+
+                }
+
+                throw new eMobilityProviderAlreadyExists(this,
+                                                         ProviderId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region RegistereMobilityProvider(Priority, eMobilityServiceProvider)
+
+        ///// <summary>
+        ///// Register the given e-Mobility (service) provider.
+        ///// </summary>
+        ///// <param name="Priority">The priority of the service provider.</param>
+        ///// <param name="eMobilityServiceProvider">An e-Mobility service provider.</param>
+        //public Boolean RegistereMobilityProvider(UInt32                     Priority,
+        //                                         IeMobilityServiceProvider  eMobilityServiceProvider)
+        //{
+
+        //    var result = _IeMobilityServiceProviders.TryAdd(Priority, eMobilityServiceProvider);
+
+        //    if (result)
+        //    {
+
+        //        this.OnChargingStationRemoval.OnNotification += eMobilityServiceProvider.RemoveChargingStations;
+
+        //    }
+
+        //    return result;
+
+        //}
+
+        #endregion
+
+        #region ContainsEMobilityProvider(EMobilityProvider)
+
+        /// <summary>
+        /// Check if the given EMobilityProvider is already present within the roaming network.
+        /// </summary>
+        /// <param name="EMobilityProvider">An Charging Station Operator.</param>
+        public Boolean ContainsEMobilityProvider(eMobilityProvider EMobilityProvider)
+
+            => _eMobilityProviders.ContainsId(EMobilityProvider.Id);
+
+        #endregion
+
+        #region ContainsEMobilityProvider(EMobilityProviderId)
+
+        /// <summary>
+        /// Check if the given EMobilityProvider identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="EMobilityProviderId">The unique identification of the Charging Station Operator.</param>
+        public Boolean ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
+
+            => _eMobilityProviders.ContainsId(EMobilityProviderId);
+
+        #endregion
+
+        #region GetEMobilityProviderById(EMobilityProviderId)
+
+        public eMobilityProvider GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
+
+            => _eMobilityProviders.GetById(EMobilityProviderId);
+
+        #endregion
+
+        #region TryGetEMobilityProviderById(EMobilityProviderId, out EMobilityProvider)
+
+        public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
+
+            => _eMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
+
+        #endregion
+
+        #region RemoveEMobilityProvider(EMobilityProviderId)
+
+        public eMobilityProvider RemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
+        {
+
+            eMobilityProvider _EMobilityProvider = null;
+
+            if (_eMobilityProviders.TryRemove(EMobilityProviderId, out _EMobilityProvider))
+                return _EMobilityProvider;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveEMobilityProvider(RemoveEMobilityProviderId, out RemoveEMobilityProvider)
+
+        public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
+
+            => _eMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
+
+        #endregion
+
+        #endregion
+
+
         #region Charging Station Operators...
 
         #region ChargingStationOperators
@@ -354,18 +598,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the admin status of all charging station operators registered within this roaming network.
         /// </summary>
         /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>> ChargingStationOperatorAdminStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
+        public IEnumerable<ChargingStationOperatorAdminStatus> ChargingStationOperatorAdminStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
 
-            => IncludeChargingStationOperator is null
+        {
 
-                   ? chargingStationOperators.
-                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
-                                                                                                                                                       cso.AdminStatusSchedule()))
+            IncludeChargingStationOperator ??= (chargingStationOperator => true);
 
-                   : chargingStationOperators.
-                         Where (cso => IncludeChargingStationOperator(cso)).
-                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
-                                                                                                                                                       cso.AdminStatusSchedule()));
+            return chargingStationOperators.
+                         Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
+                         Select(chargingStationOperator => new ChargingStationOperatorAdminStatus(chargingStationOperator.Id,
+                                                                                                  chargingStationOperator.AdminStatus));
+
+        }
 
         #endregion
 
@@ -375,18 +619,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the status of all charging station operators registered within this roaming network.
         /// </summary>
         /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
+        public IEnumerable<ChargingStationOperatorStatus> ChargingStationOperatorStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
 
-            => IncludeChargingStationOperator is null
+        {
 
-                   ? chargingStationOperators.
-                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
-                                                                                                                                                  cso.StatusSchedule()))
+            IncludeChargingStationOperator ??= (chargingStationOperator => true);
 
-                   : chargingStationOperators.
-                         Where (cso => IncludeChargingStationOperator(cso)).
-                         Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
-                                                                                                                                                  cso.StatusSchedule()));
+            return chargingStationOperators.
+                         Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
+                         Select(chargingStationOperator => new ChargingStationOperatorStatus(chargingStationOperator.Id,
+                                                                                             chargingStationOperator.Status));
+
+        }
 
         #endregion
 
@@ -730,6 +974,1375 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
+
+        #region ChargingPools...
+
+        #region ChargingPools
+
+        /// <summary>
+        /// Return all charging pools registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingPool> ChargingPools
+
+            => chargingStationOperators.SelectMany(cso => cso.ChargingPools);
+
+        #endregion
+
+        #region ChargingPoolIds                (IncludeChargingPools = null)
+
+        /// <summary>
+        /// Return all charging pool identifications registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingPoolIds(IncludeChargingPools));
+
+        #endregion
+
+        #region ChargingPoolAdminStatus        (IncludeChargingPools = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingPoolAdminStatus(IncludeChargingPools));
+
+        #endregion
+
+        #region ChargingPoolAdminStatusSchedule(IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, Skip = null, Take = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
+
+            ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
+                                            Func<DateTime,                     Boolean>?  TimestampFilter        = null,
+                                            Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
+                                            UInt64?                                       Skip                   = null,
+                                            UInt64?                                       Take                   = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingPoolAdminStatusSchedule(IncludeChargingPools,
+                                                                         TimestampFilter,
+                                                                         AdminStatusFilter,
+                                                                         Skip,
+                                                                         Take));
+
+        #endregion
+
+        #region ChargingPoolStatus             (IncludeChargingPools = null)
+
+        /// <summary>
+        /// Return the status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingPoolStatus(IncludeChargingPools));
+
+        #endregion
+
+        #region ChargingPoolStatusSchedule     (IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, Skip = null, Take = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
+
+            ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?             IncludeChargingPools   = null,
+                                       Func<DateTime,                Boolean>?  TimestampFilter        = null,
+                                       Func<ChargingPoolStatusTypes, Boolean>?  StatusFilter           = null,
+                                       UInt64?                                  Skip                   = null,
+                                       UInt64?                                  Take                   = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingPoolStatusSchedule(IncludeChargingPools,
+                                                                    TimestampFilter,
+                                                                    StatusFilter,
+                                                                    Skip,
+                                                                    Take));
+
+        #endregion
+
+
+        #region ContainsChargingPool(ChargingPool)
+
+        /// <summary>
+        /// Check if the given charging pool is already present within the roaming network.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        public Boolean ContainsChargingPool(ChargingPool ChargingPool)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingPool.Operator.Id, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                return chargingStationOperator.ContainsChargingPool(ChargingPool.Id);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ContainsChargingPool(ChargingPoolId)
+
+        /// <summary>
+        /// Check if the given charging pool identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="ChargingPoolId">A charging pool identification.</param>
+        public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                return chargingStationOperator.ContainsChargingPool(ChargingPoolId);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region GetChargingPoolbyId(ChargingPoolId)
+
+        public ChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId,   out var chargingStationOperator) &&
+                chargingStationOperator is not null                                                             &&
+                chargingStationOperator.TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
+            {
+                return chargingPool;
+            }
+
+            return null;
+
+        }
+
+        public ChargingPool? GetChargingPoolById(ChargingPool_Id? ChargingPoolId)
+        {
+
+            if (ChargingPoolId.HasValue &&
+                TryGetChargingStationOperatorById(ChargingPoolId.Value.OperatorId,   out var chargingStationOperator) &&
+                chargingStationOperator is not null                                                                   &&
+                chargingStationOperator.TryGetChargingPoolById(ChargingPoolId.Value, out var chargingPool))
+            {
+                return chargingPool;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
+
+        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool? ChargingPool)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                return chargingStationOperator.TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
+            }
+
+            ChargingPool = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList)
+
+        public void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
+                                               IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                chargingStationOperator.SetChargingPoolAdminStatus(ChargingPoolId, StatusList);
+            }
+
+        }
+
+        #endregion
+
+
+        #region SendChargingPoolAdminStatusDiff(StatusDiff)
+
+        internal void SendChargingPoolAdminStatusDiff(ChargingPoolAdminStatusDiff StatusDiff)
+        {
+            OnChargingPoolAdminDiff?.Invoke(StatusDiff);
+        }
+
+        #endregion
+
+
+        #region OnChargingPoolData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated charging pool changed.
+        /// </summary>
+        public event OnChargingPoolDataChangedDelegate         OnChargingPoolDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated charging pool changed.
+        /// </summary>
+        public event OnChargingPoolAdminStatusChangedDelegate  OnChargingPoolAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
+        /// </summary>
+        public event OnChargingPoolStatusChangedDelegate       OnChargingPoolStatusChanged;
+
+        #endregion
+
+        #region OnChargingPoolAdminDiff
+
+        public delegate void OnChargingPoolAdminDiffDelegate(ChargingPoolAdminStatusDiff StatusDiff);
+
+        /// <summary>
+        /// An event fired whenever a charging station admin status diff was received.
+        /// </summary>
+        public event OnChargingPoolAdminDiffDelegate OnChargingPoolAdminDiff;
+
+        #endregion
+
+        #region ChargingPoolAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolAddition;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolAddition
+
+            => ChargingPoolAddition;
+
+        #endregion
+
+        #region ChargingPoolRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+
+            => ChargingPoolRemoval;
+
+        #endregion
+
+
+        #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// Update the data of an charging pool.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingPool">The changed charging pool.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal async Task UpdateChargingPoolData(DateTime          Timestamp,
+                                                   EventTracking_Id  EventTrackingId,
+                                                   ChargingPool      ChargingPool,
+                                                   String            PropertyName,
+                                                   Object            OldValue,
+                                                   Object            NewValue)
+        {
+
+            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              UpdateStaticData(ChargingPool,
+                                                                               PropertyName,
+                                                                               OldValue,
+                                                                               NewValue));
+
+            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
+            if (OnChargingPoolDataChangedLocal != null)
+                await OnChargingPoolDataChangedLocal(Timestamp,
+                                                     EventTrackingId ?? EventTracking_Id.New,
+                                                     ChargingPool,
+                                                     PropertyName,
+                                                     OldValue,
+                                                     NewValue);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingPoolAdminStatus(Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update a charging pool admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old aggregated charging pool status.</param>
+        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        internal async Task UpdateChargingPoolAdminStatus(DateTime                                  Timestamp,
+                                                          EventTracking_Id                          EventTrackingId,
+                                                          ChargingPool                              ChargingPool,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
+        {
+
+            var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
+            if (OnChargingPoolAdminStatusChangedLocal != null)
+                await OnChargingPoolAdminStatusChangedLocal(Timestamp,
+                                                            EventTrackingId ?? EventTracking_Id.New,
+                                                            ChargingPool,
+                                                            OldStatus,
+                                                            NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingPoolStatus     (Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update a charging pool status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old aggregated charging pool status.</param>
+        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        internal async Task UpdateChargingPoolStatus(DateTime                             Timestamp,
+                                                     EventTracking_Id                     EventTrackingId,
+                                                     ChargingPool                         ChargingPool,
+                                                     Timestamped<ChargingPoolStatusTypes>  OldStatus,
+                                                     Timestamped<ChargingPoolStatusTypes>  NewStatus)
+        {
+
+            var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
+            if (OnChargingPoolStatusChangedLocal != null)
+                await OnChargingPoolStatusChangedLocal(Timestamp,
+                                                       EventTrackingId ?? EventTracking_Id.New,
+                                                       ChargingPool,
+                                                       OldStatus,
+                                                       NewStatus);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region ChargingStations...
+
+        #region ChargingStations
+
+        /// <summary>
+        /// Return all charging stations registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingStation> ChargingStations
+
+            => chargingStationOperators.SelectMany(cso => cso.ChargingStations);
+
+        #endregion
+
+        #region ChargingStationIds                (IncludeStations = null)
+
+        /// <summary>
+        /// Return all charging station identifications registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate? IncludeStations = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingStationIds(IncludeStations));
+
+        #endregion
+
+        #region ChargingStationAdminStatus        (IncludeStations = null)
+
+        /// <summary>
+        /// Return the admin status of all charging stations registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate? IncludeStations = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingStationAdminStatus(IncludeStations));
+
+        #endregion
+
+        #region ChargingStationAdminStatusSchedule(IncludeChargingStations = null, TimestampFilter  = null, StatusFilter = null, Skip = null, Take = null)
+
+        /// <summary>
+        /// Return the admin status of all charging stations registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingStations">An optional delegate for filtering charging stations.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
+
+            ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
+                                               Func<DateTime,                        Boolean>?  TimestampFilter           = null,
+                                               Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
+                                               UInt64?                                          Skip                      = null,
+                                               UInt64?                                          Take                      = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingStationAdminStatusSchedule(IncludeChargingStations,
+                                                                            TimestampFilter,
+                                                                            AdminStatusFilter,
+                                                                            Skip,
+                                                                            Take));
+
+        #endregion
+
+        #region ChargingStationStatus             (IncludeStations = null)
+
+        /// <summary>
+        /// Return the status of all charging stations registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate? IncludeStations = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingStationStatus(IncludeStations));
+
+        #endregion
+
+        #region ChargingStationStatusSchedule     (IncludeChargingStations = null, TimestampFilter  = null, StatusFilter = null, Skip = null, Take = null)
+
+        /// <summary>
+        /// Return the admin status of all charging stations registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingStations">An optional delegate for filtering charging stations.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>
+
+            ChargingStationStatusSchedule(IncludeChargingStationDelegate?             IncludeChargingStations   = null,
+                                          Func<DateTime,                   Boolean>?  TimestampFilter           = null,
+                                          Func<ChargingStationStatusTypes, Boolean>?  StatusFilter              = null,
+                                          UInt64?                                     Skip                      = null,
+                                          UInt64?                                     Take                      = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.ChargingStationStatusSchedule(IncludeChargingStations,
+                                                                       TimestampFilter,
+                                                                       StatusFilter,
+                                                                       Skip,
+                                                                       Take));
+
+        #endregion
+
+
+        #region ContainsChargingStation      (ChargingStation)
+
+        /// <summary>
+        /// Check if the given charging station is already present within the roaming network.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        public Boolean ContainsChargingStation(ChargingStation ChargingStation)
+        {
+
+            if (ChargingStation.Operator is not null &&
+                TryGetChargingStationOperatorById(ChargingStation.Operator.Id, out var chargingStationOperator))
+            {
+                return chargingStationOperator.ContainsChargingStation(ChargingStation.Id);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ContainsChargingStation      (ChargingStationId)
+
+        /// <summary>
+        /// Check if the given charging station identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="ChargingStationId">A charging station identification.</param>
+        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator))
+                return chargingStationOperator.ContainsChargingStation(ChargingStationId);
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region GetChargingStationbyId       (ChargingStationId)
+
+        public ChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId,      out var chargingStationOperator) &&
+                chargingStationOperator is not null                                                                   &&
+                chargingStationOperator.TryGetChargingStationById(ChargingStationId, out var chargingStation))
+            {
+                return chargingStation;
+            }
+
+            return null;
+
+        }
+
+        public ChargingStation? GetChargingStationById(ChargingStation_Id? ChargingStationId)
+        {
+
+            if (ChargingStationId.HasValue &&
+                TryGetChargingStationOperatorById(ChargingStationId.Value.OperatorId,      out var chargingStationOperator) &&
+                chargingStationOperator is not null                                                                         &&
+                chargingStationOperator.TryGetChargingStationById(ChargingStationId.Value, out var chargingStation))
+            {
+                return chargingStation;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingStationbyId    (ChargingStationId, out ChargingStation)
+
+        public Boolean TryGetChargingStationById(ChargingStation_Id    ChargingStationId,
+                                                 out ChargingStation?  ChargingStation)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                return chargingStationOperator.TryGetChargingStationById(ChargingStationId, out ChargingStation);
+            }
+
+            ChargingStation = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, CurrentAdminStatus)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
+                                                  Timestamped<ChargingStationAdminStatusTypes>  CurrentAdminStatus)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                chargingStationOperator.SetChargingStationAdminStatus(ChargingStationId,
+                                                                      CurrentAdminStatus);
+            }
+
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, CurrentAdminStatusList)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
+                                                  IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  CurrentAdminStatusList)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                chargingStationOperator.SetChargingStationAdminStatus(ChargingStationId,
+                                                                      CurrentAdminStatusList);
+            }
+
+        }
+
+        #endregion
+
+        #region SetChargingStationStatus     (ChargingStationId, CurrentStatus)
+
+        public void SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
+                                             Timestamped<ChargingStationStatusTypes>  CurrentStatus)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                chargingStationOperator.SetChargingStationStatus(ChargingStationId,
+                                                                 CurrentStatus);
+            }
+
+        }
+
+        #endregion
+
+        #region SetChargingStationStatus     (ChargingStationId, CurrentStatusList)
+
+        public void SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
+                                             IEnumerable<Timestamped<ChargingStationStatusTypes>>  CurrentStatusList)
+        {
+
+            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                chargingStationOperator.SetChargingStationStatus(ChargingStationId,
+                                                                 CurrentStatusList);
+            }
+
+        }
+
+        #endregion
+
+
+        #region SendChargingStationAdminStatusDiff(StatusDiff)
+
+        internal void SendChargingStationAdminStatusDiff(ChargingStationAdminStatusDiff StatusDiff)
+        {
+            OnChargingStationAdminDiff?.Invoke(StatusDiff);
+        }
+
+        #endregion
+
+
+        #region OnChargingStationData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated charging station changed.
+        /// </summary>
+        public event OnChargingStationDataChangedDelegate         OnChargingStationDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated ChargingStation changed.
+        /// </summary>
+        public event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
+        /// </summary>
+        public event OnChargingStationStatusChangedDelegate       OnChargingStationStatusChanged;
+
+        #endregion
+
+        #region OnChargingStationAdminDiff
+
+        public delegate void OnChargingStationAdminDiffDelegate(ChargingStationAdminStatusDiff StatusDiff);
+
+        /// <summary>
+        /// An event fired whenever a charging station admin status diff was received.
+        /// </summary>
+        public event OnChargingStationAdminDiffDelegate OnChargingStationAdminDiff;
+
+        #endregion
+
+        #region ChargingStationAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
+
+            => ChargingStationAddition;
+
+        #endregion
+
+        #region ChargingStationRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+
+            => ChargingStationRemoval;
+
+        #endregion
+
+
+        #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// Update the data of a charging station.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingStation">The changed charging station.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal async Task UpdateChargingStationData(DateTime          Timestamp,
+                                                      EventTracking_Id  EventTrackingId,
+                                                      ChargingStation   ChargingStation,
+                                                      String            PropertyName,
+                                                      Object            OldValue,
+                                                      Object            NewValue)
+        {
+
+            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              UpdateStaticData(ChargingStation,
+                                                                               PropertyName,
+                                                                               OldValue,
+                                                                               NewValue));
+
+            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
+            if (OnChargingStationDataChangedLocal != null)
+                await OnChargingStationDataChangedLocal(Timestamp,
+                                                        EventTrackingId ?? EventTracking_Id.New,
+                                                        ChargingStation,
+                                                        PropertyName,
+                                                        OldValue,
+                                                        NewValue);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingStationAdminStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current charging station admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old aggreagted charging station status.</param>
+        /// <param name="NewStatus">The new aggreagted charging station status.</param>
+        internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
+                                                             EventTracking_Id                              EventTrackingId,
+                                                             ChargingStation                               ChargingStation,
+                                                             Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
+                                                             Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
+        {
+
+            var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
+            if (OnChargingStationAdminStatusChangedLocal != null)
+                await OnChargingStationAdminStatusChangedLocal(Timestamp,
+                                                               EventTrackingId ?? EventTracking_Id.New,
+                                                               ChargingStation,
+                                                               OldStatus,
+                                                               NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingStationStatus     (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update a charging pool admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old aggregated charging pool status.</param>
+        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
+                                                        EventTracking_Id                         EventTrackingId,
+                                                        ChargingStation                          ChargingStation,
+                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
+        {
+
+            var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
+            if (OnChargingStationStatusChangedLocal != null)
+                await OnChargingStationStatusChangedLocal(Timestamp,
+                                                          EventTrackingId ?? EventTracking_Id.New,
+                                                          ChargingStation,
+                                                          OldStatus,
+                                                          NewStatus);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region EVSEs...
+
+        #region EVSEs
+
+        /// <summary>
+        /// Return all EVSEs registered within this roaming network.
+        /// </summary>
+        public IEnumerable<EVSE> EVSEs
+
+            => chargingStationOperators.SelectMany(cso => cso.EVSEs);
+
+        #endregion
+
+        #region EVSEIds                (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return all EVSE identifications registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate? IncludeEVSEs = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.EVSEIds(IncludeEVSEs));
+
+        #endregion
+
+        #region EVSEAdminStatus        (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.EVSEAdminStatus(IncludeEVSEs));
+
+        #endregion
+
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, Skip = null, Take = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
+
+            EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs      = null,
+                                    Func<DateTime,             Boolean>?  TimestampFilter   = null,
+                                    Func<EVSEAdminStatusTypes, Boolean>?  StatusFilter      = null,
+                                    UInt64?                               Skip              = null,
+                                    UInt64?                               Take              = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.EVSEAdminStatusSchedule(IncludeEVSEs,
+                                                                 TimestampFilter,
+                                                                 StatusFilter,
+                                                                 Skip,
+                                                                 Take));
+
+        #endregion
+
+        #region EVSEStatus             (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.EVSEStatus(IncludeEVSEs));
+
+        #endregion
+
+        #region EVSEStatusSchedule     (IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, Skip = null, Take = null)
+
+        /// <summary>
+        /// Return the status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional status value filter.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
+
+            EVSEStatusSchedule(IncludeEVSEDelegate?             IncludeEVSEs      = null,
+                               Func<DateTime,        Boolean>?  TimestampFilter   = null,
+                               Func<EVSEStatusTypes, Boolean>?  StatusFilter      = null,
+                               UInt64?                          Skip              = null,
+                               UInt64?                          Take              = null)
+
+            => chargingStationOperators.
+                   SelectMany(cso => cso.EVSEStatusSchedule(IncludeEVSEs,
+                                                            TimestampFilter,
+                                                            StatusFilter,
+                                                            Skip,
+                                                            Take));
+
+        #endregion
+
+
+        #region ContainsEVSE(EVSE)
+
+        /// <summary>
+        /// Check if the given EVSE is already present within the roaming network.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public Boolean ContainsEVSE(EVSE EVSE)
+        {
+
+            if (EVSE.Operator is not null &&
+                TryGetChargingStationOperatorById(EVSE.Operator.Id, out var chargingStationOperator))
+            {
+                return chargingStationOperator.ContainsEVSE(EVSE.Id);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ContainsEVSE(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        public Boolean ContainsEVSE(EVSE_Id EVSEId)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
+                return chargingStationOperator.ContainsEVSE(EVSEId);
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region GetEVSEById(EVSEId)
+
+        public EVSE? GetEVSEById(EVSE_Id EVSEId)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator.TryGetEVSEById(EVSEId, out var evse))
+            {
+                return evse;
+            }
+
+            return null;
+
+        }
+
+        public EVSE? GetEVSEById(EVSE_Id? EVSEId)
+        {
+
+            if (EVSEId.HasValue &&
+                TryGetChargingStationOperatorById(EVSEId.Value.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator.TryGetEVSEById(EVSEId.Value, out var evse))
+            {
+                return evse;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetEVSEbyId(EVSEId, out EVSE)
+
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE? EVSE)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator))
+            {
+                return chargingStationOperator.TryGetEVSEById(EVSEId, out EVSE);
+            }
+
+            EVSE = null;
+            return false;
+
+        }
+
+        public Boolean TryGetEVSEById(EVSE_Id? EVSEId, out EVSE? EVSE)
+        {
+
+            if (EVSEId.HasValue &&
+                TryGetChargingStationOperatorById(EVSEId.Value.OperatorId, out var chargingStationOperator))
+            {
+                return chargingStationOperator.TryGetEVSEById(EVSEId.Value, out EVSE);
+            }
+
+            EVSE = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region SetEVSEStatus(EVSEStatusList)
+
+        public void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList)
+        {
+
+            if (EVSEStatusList != null)
+            {
+                foreach (var evseStatus in EVSEStatusList)
+                {
+                    if (TryGetChargingStationOperatorById(evseStatus.Id.OperatorId, out ChargingStationOperator cso))
+                        cso.SetEVSEStatus(evseStatus);
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region SetEVSEStatus(EVSEId, NewStatus)
+
+        public void SetEVSEStatus(EVSE_Id                       EVSEId,
+                                  Timestamped<EVSEStatusTypes>  NewStatus)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
+                cso.SetEVSEStatus(EVSEId, NewStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEStatus(EVSEId, Timestamp, NewStatus)
+
+        public void SetEVSEStatus(EVSE_Id          EVSEId,
+                                  DateTime         Timestamp,
+                                  EVSEStatusTypes  NewStatus)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
+                cso.SetEVSEStatus(EVSEId, new Timestamped<EVSEStatusTypes>(Timestamp, NewStatus));
+
+        }
+
+        #endregion
+
+        #region SetEVSEStatus(EVSEId, StatusList)
+
+        public void SetEVSEStatus(EVSE_Id                                    EVSEId,
+                                  IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
+                                  ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
+                cso.SetEVSEStatus(EVSEId, StatusList, ChangeMethod);
+
+        }
+
+        #endregion
+
+
+        #region SetEVSEAdminStatus(EVSEId, NewStatus)
+
+        public void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
+                                       Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
+                cso.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, Timestamp, NewAdminStatus)
+
+        public void SetEVSEAdminStatus(EVSE_Id               EVSEId,
+                                       DateTime              Timestamp,
+                                       EVSEAdminStatusTypes  NewAdminStatus)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
+                cso.SetEVSEAdminStatus(EVSEId, new Timestamped<EVSEAdminStatusTypes>(Timestamp, NewAdminStatus));
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, AdminStatusList)
+
+        public void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
+                                       IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
+                                       ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
+                cso.SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod);
+
+        }
+
+        #endregion
+
+
+        #region SendEVSEStatusDiff(StatusDiff)
+
+        internal void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
+        {
+            OnEVSEStatusDiff?.Invoke(StatusDiff);
+        }
+
+        #endregion
+
+
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+
+            => EVSEAddition;
+
+        private void SendEVSEAdded(DateTime         Timestamp,
+                                   ChargingStation  ChargingStation,
+                                   EVSE             EVSE)
+        {
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              SetStaticData(EVSE));
+
+        }
+
+        #endregion
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+
+            => EVSERemoval;
+
+        private void SendEVSERemoved(DateTime         Timestamp,
+                                     ChargingStation  ChargingStation,
+                                     EVSE             EVSE)
+        {
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              DeleteStaticData(EVSE));
+
+            EVSERemoval.SendNotification(Timestamp, ChargingStation, EVSE);
+
+        }
+
+        #endregion
+
+        #region OnEVSEData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
+
+        #endregion
+
+        #region OnEVSEStatusDiff
+
+        public delegate void OnEVSEStatusDiffDelegate(EVSEStatusDiff StatusDiff);
+
+        /// <summary>
+        /// An event fired whenever a EVSE status diff was received.
+        /// </summary>
+        public event OnEVSEStatusDiffDelegate OnEVSEStatusDiff;
+
+        #endregion
+
+
+        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the data of an EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="EVSE">The changed EVSE.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal async Task UpdateEVSEData(DateTime          Timestamp,
+                                           EventTracking_Id  EventTrackingId,
+                                           EVSE              EVSE,
+                                           String            PropertyName,
+                                           Object            OldValue,
+                                           Object            NewValue)
+        {
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              UpdateStaticData(EVSE,
+                                                                               PropertyName,
+                                                                               OldValue,
+                                                                               NewValue,
+                                                                               EventTrackingId: EventTrackingId));
+
+            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
+            if (OnEVSEDataChangedLocal != null)
+                await OnEVSEDataChangedLocal(Timestamp,
+                                             EventTrackingId ?? EventTracking_Id.New,
+                                             EVSE,
+                                             PropertyName,
+                                             OldValue,
+                                             NewValue);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update an EVSE admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  EVSE                               EVSE,
+                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
+        {
+
+            var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.
+                                                                            UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
+                                                                                                  new EVSEAdminStatusUpdate(EVSE,
+                                                                                                                            OldStatus,
+                                                                                                                            NewStatus)
+                                                                                              },
+                                                                                              EventTrackingId: EventTrackingId));
+
+            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
+            if (OnEVSEAdminStatusChangedLocal != null)
+                await OnEVSEAdminStatusChangedLocal(Timestamp,
+                                                    EventTrackingId ?? EventTracking_Id.New,
+                                                    EVSE,
+                                                    OldStatus,
+                                                    NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update an EVSE status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
+                                             EventTracking_Id              EventTrackingId,
+                                             EVSE                          EVSE,
+                                             Timestamped<EVSEStatusTypes>  OldStatus,
+                                             Timestamped<EVSEStatusTypes>  NewStatus)
+        {
+
+            var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
+                                                                  UpdateStatus(new EVSEStatusUpdate[] {
+                                                                                   new EVSEStatusUpdate(EVSE,
+                                                                                                        OldStatus,
+                                                                                                        NewStatus)
+                                                                               },
+                                                                               EventTrackingId: EventTrackingId));
+
+            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
+            if (OnEVSEStatusChangedLocal != null)
+                await OnEVSEStatusChangedLocal(Timestamp,
+                                               EventTrackingId ?? EventTracking_Id.New,
+                                               EVSE,
+                                               OldStatus,
+                                               NewStatus);
+
+        }
+
+        #endregion
+
+        #endregion
+
 
         #region Parking Operators...
 
@@ -1079,247 +2692,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region eMobility Providers...
-
-        #region eMobilityProviders
-
-        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProvider> _eMobilityProviders;
-
-        /// <summary>
-        /// Return all e-mobility providers registered within this roaming network.
-        /// </summary>
-        public IEnumerable<eMobilityProvider> eMobilityProviders
-
-            => _eMobilityProviders;
-
-        /// <summary>
-        /// Return all e-mobility providers identifications registered within this roaming network.
-        /// </summary>
-        public IEnumerable<eMobilityProvider_Id> eMobilityProviderIds
-
-            => _eMobilityProviders.SafeSelect(emp => emp.Id);
-
-
-        public eMobilityProvider Get(eMobilityProvider_Id Id)
-        {
-
-            if (_eMobilityProviders.TryGet(Id, out eMobilityProvider eMobilityProvider))
-                return eMobilityProvider;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region eMobilityProviderAdminStatus
-
-        /// <summary>
-        /// Return the admin status of all e-mobility providerss registered within this roaming network.
-        /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus
-
-            => _eMobilityProviders.
-                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>(emp.Id,
-                                                                                                                                         emp.AdminStatusSchedule()));
-
-        #endregion
-
-        #region eMobilityProviderStatus
-
-        /// <summary>
-        /// Return the status of all e-mobility providerss registered within this roaming network.
-        /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus
-
-            => _eMobilityProviders.
-                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>(emp.Id,
-                                                                                                                                     emp.StatusSchedule()));
-
-        #endregion
-
-
-        #region OnEMobilityProviderAddition
-
-        /// <summary>
-        /// Called whenever an e-mobility provider will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderAddition
-            => _eMobilityProviders.OnAddition;
-
-        #endregion
-
-        #region OnEMobilityProviderRemoval
-
-        /// <summary>
-        /// Called whenever an e-mobility provider will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderRemoval
-            => _eMobilityProviders.OnRemoval;
-
-        #endregion
-
-
-        #region CreateNewEMobilityProvider(EMobilityProviderId, Configurator = null)
-
-        /// <summary>
-        /// Create and register a new e-mobility (service) provider having the given
-        /// unique e-mobility provider identification.
-        /// </summary>
-        /// <param name="ProviderId">The unique identification of the new e-mobility provider.</param>
-        /// <param name="Name">The offical (multi-language) name of the e-mobility provider.</param>
-        /// <param name="Description">An optional (multi-language) description of the e-mobility provider.</param>
-        /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
-        public eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id                           ProviderId,
-                                                         I18NString?                                    Name                             = null,
-                                                         I18NString?                                    Description                      = null,
-                                                         eMobilityProviderPriority?                     Priority                         = null,
-                                                         Action<eMobilityProvider>?                     Configurator                     = null,
-                                                         RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
-                                                         eMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
-                                                         eMobilityProviderStatusTypes?                  InitialStatus                    = null,
-                                                         Action<eMobilityProvider>?                     OnSuccess                        = null,
-                                                         Action<RoamingNetwork, eMobilityProvider_Id>?  OnError                          = null)
-        {
-
-            lock (chargingStationOperators)
-            {
-
-                var eMobilityProviderProxy = new eMobilityProvider(ProviderId,
-                                                                   this,
-                                                                   Name,
-                                                                   Description,
-                                                                   Configurator,
-                                                                   RemoteEMobilityProviderCreator,
-                                                                   Priority,
-                                                                   InitialAdminStatus ?? eMobilityProviderAdminStatusTypes.Operational,
-                                                                   InitialStatus      ?? eMobilityProviderStatusTypes.Available);
-
-
-                if (_eMobilityProviders.TryAdd(eMobilityProviderProxy, OnSuccess))
-                {
-
-                    // _eMobilityProviders.OnDataChanged         += UpdateData;
-                    // _eMobilityProviders.OnStatusChanged       += UpdateStatus;
-                    // _eMobilityProviders.OnAdminStatusChanged  += UpdateAdminStatus;
-
-                    //_EMobilityProvider.OnEMobilityStationAddition
-
-                    //AddIRemotePushData               (_EMobilityProvider);
-                    _ISendAdminStatus.Add              (eMobilityProviderProxy);
-                    _ISendStatus.Add                   (eMobilityProviderProxy);
-                    _ISend2RemoteAuthorizeStartStop.Add(eMobilityProviderProxy);
-                    _IRemoteSendChargeDetailRecord.Add (eMobilityProviderProxy);
-
-
-                    // Link events!
-
-                    return eMobilityProviderProxy;
-
-                }
-
-                throw new eMobilityProviderAlreadyExists(this,
-                                                         ProviderId);
-
-            }
-
-        }
-
-        #endregion
-
-        #region RegistereMobilityProvider(Priority, eMobilityServiceProvider)
-
-        ///// <summary>
-        ///// Register the given e-Mobility (service) provider.
-        ///// </summary>
-        ///// <param name="Priority">The priority of the service provider.</param>
-        ///// <param name="eMobilityServiceProvider">An e-Mobility service provider.</param>
-        //public Boolean RegistereMobilityProvider(UInt32                     Priority,
-        //                                         IeMobilityServiceProvider  eMobilityServiceProvider)
-        //{
-
-        //    var result = _IeMobilityServiceProviders.TryAdd(Priority, eMobilityServiceProvider);
-
-        //    if (result)
-        //    {
-
-        //        this.OnChargingStationRemoval.OnNotification += eMobilityServiceProvider.RemoveChargingStations;
-
-        //    }
-
-        //    return result;
-
-        //}
-
-        #endregion
-
-        #region ContainsEMobilityProvider(EMobilityProvider)
-
-        /// <summary>
-        /// Check if the given EMobilityProvider is already present within the roaming network.
-        /// </summary>
-        /// <param name="EMobilityProvider">An Charging Station Operator.</param>
-        public Boolean ContainsEMobilityProvider(eMobilityProvider EMobilityProvider)
-
-            => _eMobilityProviders.ContainsId(EMobilityProvider.Id);
-
-        #endregion
-
-        #region ContainsEMobilityProvider(EMobilityProviderId)
-
-        /// <summary>
-        /// Check if the given EMobilityProvider identification is already present within the roaming network.
-        /// </summary>
-        /// <param name="EMobilityProviderId">The unique identification of the Charging Station Operator.</param>
-        public Boolean ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
-
-            => _eMobilityProviders.ContainsId(EMobilityProviderId);
-
-        #endregion
-
-        #region GetEMobilityProviderById(EMobilityProviderId)
-
-        public eMobilityProvider GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
-
-            => _eMobilityProviders.GetById(EMobilityProviderId);
-
-        #endregion
-
-        #region TryGetEMobilityProviderById(EMobilityProviderId, out EMobilityProvider)
-
-        public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
-
-            => _eMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
-
-        #endregion
-
-        #region RemoveEMobilityProvider(EMobilityProviderId)
-
-        public eMobilityProvider RemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
-        {
-
-            eMobilityProvider _EMobilityProvider = null;
-
-            if (_eMobilityProviders.TryRemove(EMobilityProviderId, out _EMobilityProvider))
-                return _EMobilityProvider;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryRemoveEMobilityProvider(RemoveEMobilityProviderId, out RemoveEMobilityProvider)
-
-        public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
-
-            => _eMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
-
-        #endregion
-
-        #endregion
 
         #region Smart Cities...
 
@@ -2200,1210 +3572,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region ChargingPools...
-
-        #region ChargingPools
-
-        /// <summary>
-        /// Return all charging pools registered within this roaming network.
-        /// </summary>
-        public IEnumerable<ChargingPool> ChargingPools
-
-            => chargingStationOperators.SelectMany(cso => cso.ChargingPools);
-
-        #endregion
-
-        #region ChargingPoolIds        (IncludePools = null)
-
-        /// <summary>
-        /// Return all charging pool identifications registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate IncludePools = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.ChargingPoolIds(IncludePools));
-
-        #endregion
-
-        #region ChargingPoolAdminStatus(IncludePools = null)
-
-        /// <summary>
-        /// Return the admin status of all charging pools registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate IncludePools = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.ChargingPoolAdminStatus(IncludePools));
-
-        #endregion
-
-        #region ChargingPoolStatus     (IncludePools = null)
-
-        /// <summary>
-        /// Return the status of all charging pools registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate IncludePools = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.ChargingPoolStatus(IncludePools));
-
-        #endregion
-
-
-        #region ContainsChargingPool(ChargingPool)
-
-        /// <summary>
-        /// Check if the given charging pool is already present within the roaming network.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        public Boolean ContainsChargingPool(ChargingPool ChargingPool)
-        {
-
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(ChargingPool.Operator.Id, out _ChargingStationOperator))
-                return _ChargingStationOperator.ContainsChargingPool(ChargingPool.Id);
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region ContainsChargingPool(ChargingPoolId)
-
-        /// <summary>
-        /// Check if the given charging pool identification is already present within the roaming network.
-        /// </summary>
-        /// <param name="ChargingPoolId">A charging pool identification.</param>
-        public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
-        {
-
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator))
-                return _ChargingStationOperator.ContainsChargingPool(ChargingPoolId);
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region GetChargingPoolbyId(ChargingPoolId)
-
-        public ChargingPool GetChargingPoolById(ChargingPool_Id ChargingPoolId)
-        {
-
-            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out ChargingStationOperator cso) &&
-                cso.TryGetChargingPoolById(ChargingPoolId, out ChargingPool chargingPool))
-            {
-                return chargingPool;
-            }
-
-            return null;
-
-        }
-
-        public ChargingPool GetChargingPoolById(ChargingPool_Id? ChargingPoolId)
-        {
-
-            if (ChargingPoolId.HasValue &&
-                TryGetChargingStationOperatorById(ChargingPoolId.Value.OperatorId, out ChargingStationOperator cso) &&
-                cso.TryGetChargingPoolById(ChargingPoolId.Value, out ChargingPool chargingPool))
-            {
-                return chargingPool;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
-
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
-        {
-
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator))
-                return _ChargingStationOperator.TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
-
-            ChargingPool = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList)
-
-        public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
-                                               IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList)
-        {
-
-            if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out ChargingStationOperator cso))
-                cso.SetChargingPoolAdminStatus(ChargingPoolId, StatusList);
-
-        }
-
-        #endregion
-
-
-        #region SendChargingPoolAdminStatusDiff(StatusDiff)
-
-        internal void SendChargingPoolAdminStatusDiff(ChargingPoolAdminStatusDiff StatusDiff)
-        {
-
-            var OnChargingPoolAdminDiffLocal = OnChargingPoolAdminDiff;
-            if (OnChargingPoolAdminDiffLocal != null)
-                OnChargingPoolAdminDiffLocal(StatusDiff);
-
-        }
-
-        #endregion
-
-
-        #region OnChargingPoolData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolDataChangedDelegate         OnChargingPoolDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolAdminStatusChangedDelegate  OnChargingPoolAdminStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolStatusChangedDelegate       OnChargingPoolStatusChanged;
-
-        #endregion
-
-        #region OnChargingPoolAdminDiff
-
-        public delegate void OnChargingPoolAdminDiffDelegate(ChargingPoolAdminStatusDiff StatusDiff);
-
-        /// <summary>
-        /// An event fired whenever a charging station admin status diff was received.
-        /// </summary>
-        public event OnChargingPoolAdminDiffDelegate OnChargingPoolAdminDiff;
-
-        #endregion
-
-        #region ChargingPoolAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolAddition;
-
-        /// <summary>
-        /// Called whenever an EVS pool will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolAddition
-
-            => ChargingPoolAddition;
-
-        #endregion
-
-        #region ChargingPoolRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
-
-        /// <summary>
-        /// Called whenever an EVS pool will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
-
-            => ChargingPoolRemoval;
-
-        #endregion
-
-
-        #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, OldValue, NewValue)
-
-        /// <summary>
-        /// Update the data of an charging pool.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingPool">The changed charging pool.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateChargingPoolData(DateTime          Timestamp,
-                                                   EventTracking_Id  EventTrackingId,
-                                                   ChargingPool      ChargingPool,
-                                                   String            PropertyName,
-                                                   Object            OldValue,
-                                                   Object            NewValue)
-        {
-
-            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              UpdateStaticData(ChargingPool,
-                                                                               PropertyName,
-                                                                               OldValue,
-                                                                               NewValue));
-
-            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-            var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
-            if (OnChargingPoolDataChangedLocal != null)
-                await OnChargingPoolDataChangedLocal(Timestamp,
-                                                     EventTrackingId ?? EventTracking_Id.New,
-                                                     ChargingPool,
-                                                     PropertyName,
-                                                     OldValue,
-                                                     NewValue);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingPoolAdminStatus(Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update a charging pool admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
-        internal async Task UpdateChargingPoolAdminStatus(DateTime                                  Timestamp,
-                                                          EventTracking_Id                          EventTrackingId,
-                                                          ChargingPool                              ChargingPool,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
-        {
-
-            var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
-            if (OnChargingPoolAdminStatusChangedLocal != null)
-                await OnChargingPoolAdminStatusChangedLocal(Timestamp,
-                                                            EventTrackingId ?? EventTracking_Id.New,
-                                                            ChargingPool,
-                                                            OldStatus,
-                                                            NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingPoolStatus     (Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update a charging pool status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
-        internal async Task UpdateChargingPoolStatus(DateTime                             Timestamp,
-                                                     EventTracking_Id                     EventTrackingId,
-                                                     ChargingPool                         ChargingPool,
-                                                     Timestamped<ChargingPoolStatusTypes>  OldStatus,
-                                                     Timestamped<ChargingPoolStatusTypes>  NewStatus)
-        {
-
-            var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
-            if (OnChargingPoolStatusChangedLocal != null)
-                await OnChargingPoolStatusChangedLocal(Timestamp,
-                                                       EventTrackingId ?? EventTracking_Id.New,
-                                                       ChargingPool,
-                                                       OldStatus,
-                                                       NewStatus);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region ChargingStations...
-
-        #region ChargingStations
-
-        /// <summary>
-        /// Return all charging stations registered within this roaming network.
-        /// </summary>
-        public IEnumerable<ChargingStation> ChargingStations
-
-            => chargingStationOperators.SelectMany(cso => cso.ChargingStations);
-
-        #endregion
-
-        #region ChargingStationIds        (IncludeStations = null)
-
-        /// <summary>
-        /// Return all charging station identifications registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.ChargingStationIds(IncludeStations));
-
-        #endregion
-
-        #region ChargingStationAdminStatus(IncludeStations = null)
-
-        /// <summary>
-        /// Return the admin status of all charging stations registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.ChargingStationAdminStatus(IncludeStations));
-
-        #endregion
-
-        #region ChargingStationStatus     (IncludeStations = null)
-
-        /// <summary>
-        /// Return the status of all charging stations registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.ChargingStationStatus(IncludeStations));
-
-        #endregion
-
-
-        #region ContainsChargingStation(ChargingStation)
-
-        /// <summary>
-        /// Check if the given charging station is already present within the roaming network.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        public Boolean ContainsChargingStation(ChargingStation ChargingStation)
-        {
-
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(ChargingStation.Operator.Id, out _ChargingStationOperator))
-                return _ChargingStationOperator.ContainsChargingStation(ChargingStation.Id);
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region ContainsChargingStation(ChargingStationId)
-
-        /// <summary>
-        /// Check if the given charging station identification is already present within the roaming network.
-        /// </summary>
-        /// <param name="ChargingStationId">A charging station identification.</param>
-        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
-        {
-
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
-                return _ChargingStationOperator.ContainsChargingStation(ChargingStationId);
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region GetChargingStationbyId(ChargingStationId)
-
-        public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
-        {
-
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out ChargingStationOperator cso) &&
-                cso.TryGetChargingStationById(ChargingStationId, out ChargingStation chargingStation))
-            {
-                return chargingStation;
-            }
-
-            return null;
-
-        }
-
-        public ChargingStation GetChargingStationById(ChargingStation_Id? ChargingStationId)
-        {
-
-            if (ChargingStationId.HasValue &&
-                TryGetChargingStationOperatorById(ChargingStationId.Value.OperatorId, out ChargingStationOperator cso) &&
-                cso.TryGetChargingStationById(ChargingStationId.Value, out ChargingStation chargingStation))
-            {
-                return chargingStation;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation)
-
-        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
-        {
-
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
-                return _ChargingStationOperator.TryGetChargingStationById(ChargingStationId, out ChargingStation);
-
-            ChargingStation = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region SetChargingStationStatus(ChargingStationId, CurrentStatus)
-
-        public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
-                                             Timestamped<ChargingStationStatusTypes>  CurrentStatus)
-        {
-
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out ChargingStationOperator cso))
-                cso.SetChargingStationStatus(ChargingStationId, CurrentStatus);
-
-        }
-
-        #endregion
-
-        #region SetChargingStationAdminStatus(ChargingStationId, CurrentStatus)
-
-        public void SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusTypes>  CurrentStatus)
-        {
-
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out ChargingStationOperator cso))
-                cso.SetChargingStationAdminStatus(ChargingStationId, CurrentStatus);
-
-        }
-
-        #endregion
-
-        #region SetChargingStationAdminStatus(ChargingStationId, StatusList)
-
-        public void SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
-                                                  IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  StatusList)
-        {
-
-            if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out ChargingStationOperator cso))
-                cso.SetChargingStationAdminStatus(ChargingStationId, StatusList);
-
-        }
-
-        #endregion
-
-
-        #region SendChargingStationAdminStatusDiff(StatusDiff)
-
-        internal void SendChargingStationAdminStatusDiff(ChargingStationAdminStatusDiff StatusDiff)
-        {
-
-            var OnChargingStationAdminDiffLocal = OnChargingStationAdminDiff;
-            if (OnChargingStationAdminDiffLocal != null)
-                OnChargingStationAdminDiffLocal(StatusDiff);
-
-        }
-
-        #endregion
-
-
-        #region OnChargingStationData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated charging station changed.
-        /// </summary>
-        public event OnChargingStationDataChangedDelegate         OnChargingStationDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated ChargingStation changed.
-        /// </summary>
-        public event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
-        /// </summary>
-        public event OnChargingStationStatusChangedDelegate       OnChargingStationStatusChanged;
-
-        #endregion
-
-        #region OnChargingStationAdminDiff
-
-        public delegate void OnChargingStationAdminDiffDelegate(ChargingStationAdminStatusDiff StatusDiff);
-
-        /// <summary>
-        /// An event fired whenever a charging station admin status diff was received.
-        /// </summary>
-        public event OnChargingStationAdminDiffDelegate OnChargingStationAdminDiff;
-
-        #endregion
-
-        #region ChargingStationAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
-
-            => ChargingStationAddition;
-
-        #endregion
-
-        #region ChargingStationRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
-
-            => ChargingStationRemoval;
-
-        #endregion
-
-
-        #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
-
-        /// <summary>
-        /// Update the data of a charging station.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingStation">The changed charging station.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateChargingStationData(DateTime          Timestamp,
-                                                      EventTracking_Id  EventTrackingId,
-                                                      ChargingStation   ChargingStation,
-                                                      String            PropertyName,
-                                                      Object            OldValue,
-                                                      Object            NewValue)
-        {
-
-            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              UpdateStaticData(ChargingStation,
-                                                                               PropertyName,
-                                                                               OldValue,
-                                                                               NewValue));
-
-            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-            var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
-            if (OnChargingStationDataChangedLocal != null)
-                await OnChargingStationDataChangedLocal(Timestamp,
-                                                        EventTrackingId ?? EventTracking_Id.New,
-                                                        ChargingStation,
-                                                        PropertyName,
-                                                        OldValue,
-                                                        NewValue);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingStationAdminStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current charging station admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingStation">The updated charging station.</param>
-        /// <param name="OldStatus">The old aggreagted charging station status.</param>
-        /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
-                                                             EventTracking_Id                              EventTrackingId,
-                                                             ChargingStation                               ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
-        {
-
-            var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
-            if (OnChargingStationAdminStatusChangedLocal != null)
-                await OnChargingStationAdminStatusChangedLocal(Timestamp,
-                                                               EventTrackingId ?? EventTracking_Id.New,
-                                                               ChargingStation,
-                                                               OldStatus,
-                                                               NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingStationStatus     (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update a charging pool admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
-        internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
-                                                        EventTracking_Id                         EventTrackingId,
-                                                        ChargingStation                          ChargingStation,
-                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
-        {
-
-            var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
-            if (OnChargingStationStatusChangedLocal != null)
-                await OnChargingStationStatusChangedLocal(Timestamp,
-                                                          EventTrackingId ?? EventTracking_Id.New,
-                                                          ChargingStation,
-                                                          OldStatus,
-                                                          NewStatus);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region EVSEs...
-
-        #region EVSEs
-
-        /// <summary>
-        /// Return all EVSEs registered within this roaming network.
-        /// </summary>
-        public IEnumerable<EVSE> EVSEs
-
-            => chargingStationOperators.SelectMany(cso => cso.EVSEs);
-
-        #endregion
-
-        #region EVSEIds                (IncludeEVSEs = null)
-
-        /// <summary>
-        /// Return all EVSE identifications registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.EVSEIds(IncludeEVSEs));
-
-        #endregion
-
-        #region EVSEAdminStatus        (IncludeEVSEs = null)
-
-        /// <summary>
-        /// Return the admin status of all EVSEs registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.EVSEAdminStatus(IncludeEVSEs));
-
-        #endregion
-
-        #region EVSEAdminStatusSchedule(IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
-
-        /// <summary>
-        /// Return the admin status of all EVSEs registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate                  IncludeEVSEs      = null,
-                                                                            Func<DateTime,             Boolean>  TimestampFilter   = null,
-                                                                            Func<EVSEAdminStatusTypes, Boolean>  StatusFilter      = null,
-                                                                            UInt64?                              HistorySize       = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.EVSEAdminStatusSchedule(IncludeEVSEs,
-                                                                 TimestampFilter,
-                                                                 StatusFilter,
-                                                                 HistorySize));
-
-        #endregion
-
-        #region EVSEStatus             (IncludeEVSEs = null)
-
-        /// <summary>
-        /// Return the status of all EVSEs registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.EVSEStatus(IncludeEVSEs));
-
-        #endregion
-
-        #region EVSEStatusSchedule     (IncludeEVSEs = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
-
-        /// <summary>
-        /// Return the status of all EVSEs registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional status value filter.</param>
-        /// <param name="HistorySize">The size of the history.</param>
-        public IEnumerable<EVSEStatusSchedule> EVSEStatusSchedule(IncludeEVSEDelegate             IncludeEVSEs      = null,
-                                                                  Func<DateTime,        Boolean>  TimestampFilter   = null,
-                                                                  Func<EVSEStatusTypes, Boolean>  StatusFilter      = null,
-                                                                  UInt64?                         HistorySize       = null)
-
-            => chargingStationOperators.
-                   SelectMany(cso => cso.EVSEStatusSchedule(IncludeEVSEs,
-                                                            TimestampFilter,
-                                                            StatusFilter,
-                                                            HistorySize));
-
-        #endregion
-
-
-        #region ContainsEVSE(EVSE)
-
-        /// <summary>
-        /// Check if the given EVSE is already present within the roaming network.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        public Boolean ContainsEVSE(EVSE EVSE)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSE.Operator.Id, out ChargingStationOperator _ChargingStationOperator))
-                return _ChargingStationOperator.ContainsEVSE(EVSE.Id);
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region ContainsEVSE(EVSEId)
-
-        /// <summary>
-        /// Check if the given EVSE identification is already present within the roaming network.
-        /// </summary>
-        /// <param name="EVSEId">An EVSE identification.</param>
-        public Boolean ContainsEVSE(EVSE_Id EVSEId)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
-                return _ChargingStationOperator.ContainsEVSE(EVSEId);
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region GetEVSEById(EVSEId)
-
-        public EVSE GetEVSEById(EVSE_Id EVSEId)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso) &&
-                cso.TryGetEVSEById(EVSEId, out EVSE evse))
-            {
-                return evse;
-            }
-
-            return null;
-
-        }
-
-        public EVSE GetEVSEById(EVSE_Id? EVSEId)
-        {
-
-            if (EVSEId.HasValue &&
-                TryGetChargingStationOperatorById(EVSEId.Value.OperatorId, out ChargingStationOperator cso) &&
-                cso.TryGetEVSEById(EVSEId.Value, out EVSE evse))
-            {
-                return evse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryGetEVSEbyId(EVSEId, out EVSE)
-
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
-                return _ChargingStationOperator.TryGetEVSEById(EVSEId, out EVSE);
-
-            EVSE = null;
-            return false;
-
-        }
-
-        #endregion
-
-
-        #region SetEVSEStatus(EVSEStatusList)
-
-        public void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList)
-        {
-
-            if (EVSEStatusList != null)
-            {
-                foreach (var evseStatus in EVSEStatusList)
-                {
-                    if (TryGetChargingStationOperatorById(evseStatus.Id.OperatorId, out ChargingStationOperator cso))
-                        cso.SetEVSEStatus(evseStatus);
-                }
-            }
-
-        }
-
-        #endregion
-
-        #region SetEVSEStatus(EVSEId, NewStatus)
-
-        public void SetEVSEStatus(EVSE_Id                       EVSEId,
-                                  Timestamped<EVSEStatusTypes>  NewStatus)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
-                cso.SetEVSEStatus(EVSEId, NewStatus);
-
-        }
-
-        #endregion
-
-        #region SetEVSEStatus(EVSEId, Timestamp, NewStatus)
-
-        public void SetEVSEStatus(EVSE_Id          EVSEId,
-                                  DateTime         Timestamp,
-                                  EVSEStatusTypes  NewStatus)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
-                cso.SetEVSEStatus(EVSEId, new Timestamped<EVSEStatusTypes>(Timestamp, NewStatus));
-
-        }
-
-        #endregion
-
-        #region SetEVSEStatus(EVSEId, StatusList)
-
-        public void SetEVSEStatus(EVSE_Id                                    EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
-                                  ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
-                cso.SetEVSEStatus(EVSEId, StatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
-
-        #region SetEVSEAdminStatus(EVSEId, NewStatus)
-
-        public void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
-                                       Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
-                cso.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
-
-        }
-
-        #endregion
-
-        #region SetEVSEAdminStatus(EVSEId, Timestamp, NewAdminStatus)
-
-        public void SetEVSEAdminStatus(EVSE_Id               EVSEId,
-                                       DateTime              Timestamp,
-                                       EVSEAdminStatusTypes  NewAdminStatus)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
-                cso.SetEVSEAdminStatus(EVSEId, new Timestamped<EVSEAdminStatusTypes>(Timestamp, NewAdminStatus));
-
-        }
-
-        #endregion
-
-        #region SetEVSEAdminStatus(EVSEId, AdminStatusList)
-
-        public void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
-                                       ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
-        {
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator cso))
-                cso.SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
-
-        #region SendEVSEStatusDiff(StatusDiff)
-
-        internal void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
-        {
-            OnEVSEStatusDiff?.Invoke(StatusDiff);
-        }
-
-        #endregion
-
-
-        #region EVSEAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
-
-            => EVSEAddition;
-
-        private void SendEVSEAdded(DateTime         Timestamp,
-                                   ChargingStation  ChargingStation,
-                                   EVSE             EVSE)
-        {
-
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              SetStaticData(EVSE));
-
-        }
-
-        #endregion
-
-        #region EVSERemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
-
-        private void SendEVSERemoved(DateTime         Timestamp,
-                                     ChargingStation  ChargingStation,
-                                     EVSE             EVSE)
-        {
-
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              DeleteStaticData(EVSE));
-
-            EVSERemoval.SendNotification(Timestamp, ChargingStation, EVSE);
-
-        }
-
-        #endregion
-
-        #region OnEVSEData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated EVSE changed.
-        /// </summary>
-        public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated EVSE changed.
-        /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
-
-        #endregion
-
-        #region OnEVSEStatusDiff
-
-        public delegate void OnEVSEStatusDiffDelegate(EVSEStatusDiff StatusDiff);
-
-        /// <summary>
-        /// An event fired whenever a EVSE status diff was received.
-        /// </summary>
-        public event OnEVSEStatusDiffDelegate OnEVSEStatusDiff;
-
-        #endregion
-
-
-        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the data of an EVSE.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSE">The changed EVSE.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVSEData(DateTime          Timestamp,
-                                           EventTracking_Id  EventTrackingId,
-                                           EVSE              EVSE,
-                                           String            PropertyName,
-                                           Object            OldValue,
-                                           Object            NewValue)
-        {
-
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              UpdateStaticData(EVSE,
-                                                                               PropertyName,
-                                                                               OldValue,
-                                                                               NewValue,
-                                                                               EventTrackingId: EventTrackingId));
-
-            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
-            if (OnEVSEDataChangedLocal != null)
-                await OnEVSEDataChangedLocal(Timestamp,
-                                             EventTrackingId ?? EventTracking_Id.New,
-                                             EVSE,
-                                             PropertyName,
-                                             OldValue,
-                                             NewValue);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update an EVSE admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
-                                                  EventTracking_Id                   EventTrackingId,
-                                                  EVSE                               EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
-        {
-
-            var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.
-                                                                            UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
-                                                                                                  new EVSEAdminStatusUpdate(EVSE,
-                                                                                                                            OldStatus,
-                                                                                                                            NewStatus)
-                                                                                              },
-                                                                                              EventTrackingId: EventTrackingId));
-
-            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-            if (OnEVSEAdminStatusChangedLocal != null)
-                await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId ?? EventTracking_Id.New,
-                                                    EVSE,
-                                                    OldStatus,
-                                                    NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update an EVSE status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
-                                             EventTracking_Id              EventTrackingId,
-                                             EVSE                          EVSE,
-                                             Timestamped<EVSEStatusTypes>  OldStatus,
-                                             Timestamped<EVSEStatusTypes>  NewStatus)
-        {
-
-            var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
-                                                                  UpdateStatus(new EVSEStatusUpdate[] {
-                                                                                   new EVSEStatusUpdate(EVSE,
-                                                                                                        OldStatus,
-                                                                                                        NewStatus)
-                                                                               },
-                                                                               EventTrackingId: EventTrackingId));
-
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal != null)
-                await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId ?? EventTracking_Id.New,
-                                               EVSE,
-                                               OldStatus,
-                                               NewStatus);
-
-        }
-
-        #endregion
-
-        #endregion
 
 
         public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(15);

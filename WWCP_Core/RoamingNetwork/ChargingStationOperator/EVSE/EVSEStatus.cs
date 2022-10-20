@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!filteredStatus.ContainsKey(status.Id))
                     filteredStatus.Add(status.Id, status);
 
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                else if (filteredStatus[status.Id].Timestamp >= status.Timestamp)
                     filteredStatus[status.Id] = status;
 
             }
@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.WWCP
                                               : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
+                                                               new JArray(kvp.Value.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.   ToString())
                                                               )));
 
         }
@@ -121,12 +121,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                       Id        { get; }
+        public EVSE_Id          Id           { get; }
 
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>  Status    { get; }
+        public EVSEStatusTypes  Status       { get; }
+
+        /// <summary>
+        /// The timestamp of the current status of the EVSE.
+        /// </summary>
+        public DateTime         Timestamp    { get; }
+
+        /// <summary>
+        /// The timestamped status of the EVSE.
+        /// </summary>
+        public Timestamped<EVSEStatusTypes> TimestampedStatus
+            => new (Timestamp, Status);
+
 
         #endregion
 
@@ -150,8 +162,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.Id      = Id;
-            this.Status  = Status;
+            this.Id         = Id;
+            this.Status     = Status.Value;
+            this.Timestamp  = Status.Timestamp;
 
         }
 
@@ -172,12 +185,16 @@ namespace cloud.charging.open.protocols.WWCP
                           JObject?                CustomData     = null,
                           UserDefinedDictionary?  InternalData   = null)
 
-            : this(Id,
-                   new Timestamped<EVSEStatusTypes>(Timestamp, Status),
-                   CustomData,
+            : base(CustomData,
                    InternalData)
 
-        { }
+        {
+
+            this.Id         = Id;
+            this.Status     = Status;
+            this.Timestamp  = Timestamp;
+
+        }
 
         #endregion
 
@@ -208,7 +225,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        public static Boolean operator == (EVSEStatus EVSEStatus1,
+                                           EVSEStatus EVSEStatus2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -216,7 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSEStatus1 == null) || ((Object) EVSEStatus2 == null))
+            if (EVSEStatus1 is null || EVSEStatus2 is null)
                 return false;
 
             return EVSEStatus1.Equals(EVSEStatus2);
@@ -233,7 +251,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        public static Boolean operator != (EVSEStatus EVSEStatus1,
+                                           EVSEStatus EVSEStatus2)
+
             => !(EVSEStatus1 == EVSEStatus2);
 
         #endregion
@@ -246,10 +266,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        public static Boolean operator < (EVSEStatus EVSEStatus1,
+                                          EVSEStatus EVSEStatus2)
         {
 
-            if ((Object) EVSEStatus1 == null)
+            if (EVSEStatus1 is null)
                 throw new ArgumentNullException(nameof(EVSEStatus1), "The given EVSEStatus1 must not be null!");
 
             return EVSEStatus1.CompareTo(EVSEStatus2) < 0;
@@ -266,7 +287,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        public static Boolean operator <= (EVSEStatus EVSEStatus1,
+                                           EVSEStatus EVSEStatus2)
+
             => !(EVSEStatus1 > EVSEStatus2);
 
         #endregion
@@ -279,10 +302,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        public static Boolean operator > (EVSEStatus EVSEStatus1,
+                                          EVSEStatus EVSEStatus2)
         {
 
-            if ((Object) EVSEStatus1 == null)
+            if (EVSEStatus1 is null)
                 throw new ArgumentNullException(nameof(EVSEStatus1), "The given EVSEStatus1 must not be null!");
 
             return EVSEStatus1.CompareTo(EVSEStatus2) > 0;
@@ -299,7 +323,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEStatus1">An EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        public static Boolean operator >= (EVSEStatus EVSEStatus1,
+                                           EVSEStatus EVSEStatus2)
+
             => !(EVSEStatus1 < EVSEStatus2);
 
         #endregion
@@ -314,19 +340,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is EVSEStatus))
-                throw new ArgumentException("The given object is not a EVSEStatus!",
-                                            nameof(Object));
-
-            return CompareTo((EVSEStatus) Object);
-
-        }
+            => Object is EVSEStatus evseStatus
+                   ? CompareTo(evseStatus)
+                   : throw new ArgumentException("The given object is not an EVSE status!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -336,20 +355,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSEStatus">An object to compare with.</param>
-        public Int32 CompareTo(EVSEStatus EVSEStatus)
+        public Int32 CompareTo(EVSEStatus? EVSEStatus)
         {
 
-            if ((Object) EVSEStatus == null)
-                throw new ArgumentNullException(nameof(EVSEStatus), "The given EVSEStatus must not be null!");
+            if (EVSEStatus is null)
+                throw new ArgumentNullException(nameof(EVSEStatus), "The given EVSE status must not be null!");
 
-            // Compare EVSE Ids
-            var _Result = Id.CompareTo(EVSEStatus.Id);
+            var c = Id.       CompareTo(EVSEStatus.Id);
 
-            // If equal: Compare EVSE status
-            if (_Result == 0)
-                _Result = Status.CompareTo(EVSEStatus.Status);
+            if (c == 0)
+                c = Status.   CompareTo(EVSEStatus.Status);
 
-            return _Result;
+            if (c == 0)
+                c = Timestamp.CompareTo(EVSEStatus.Timestamp);
+
+            return c;
 
         }
 
@@ -366,18 +386,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is EVSEStatus))
-                return false;
-
-            return Equals((EVSEStatus) Object);
-
-        }
+            => Object is EVSEStatus evseStatus &&
+                   Equals(evseStatus);
 
         #endregion
 
@@ -388,16 +400,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEStatus">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSEStatus EVSEStatus)
-        {
+        public Boolean Equals(EVSEStatus? EVSEStatus)
 
-            if ((Object) EVSEStatus == null)
-                return false;
-
-            return Id.    Equals(EVSEStatus.Id) &&
-                   Status.Equals(EVSEStatus.Status);
-
-        }
+            => EVSEStatus is not null              &&
+               Id.       Equals(EVSEStatus.Id)     &&
+               Status.   Equals(EVSEStatus.Status) &&
+               Timestamp.Equals(EVSEStatus.Timestamp);
 
         #endregion
 
@@ -414,8 +422,9 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.    GetHashCode() * 5 ^
-                       Status.GetHashCode();
+                return Id.       GetHashCode() * 5 ^
+                       Status.   GetHashCode() * 3 ^
+                       Timestamp.GetHashCode();
 
             }
         }
@@ -430,9 +439,9 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             Status.Value,
+                             Status,
                              " since ",
-                             Status.Timestamp.ToIso8601());
+                             Timestamp.ToIso8601());
 
         #endregion
 

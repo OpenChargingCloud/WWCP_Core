@@ -92,8 +92,8 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.EVSE       = EVSE;
-            this.OldStatus  = OldStatus.Status;
-            this.NewStatus  = NewStatus.Status;
+            this.OldStatus  = OldStatus.AdminStatus;
+            this.NewStatus  = NewStatus.AdminStatus;
 
         }
 
