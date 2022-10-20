@@ -2977,24 +2977,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region ValidEVSEIds
-
-        //private readonly ReactiveSet<EVSE_Id> _ValidEVSEIds;
-
-        ///// <summary>
-        ///// A list of valid EVSE Ids. All others will be filtered.
-        ///// </summary>
-        //public ReactiveSet<EVSE_Id> ValidEVSEIds
-        //{
-        //    get
-        //    {
-        //        return _ValidEVSEIds;
-        //    }
-        //}
-
-        #endregion
-
         #region InvalidEVSEIds
 
         /// <summary>
@@ -3005,14 +2987,32 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
+        #region SetEVSEAdminStatus(NewAdminStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id               EVSEId,
-                                       EVSEAdminStatusTypes  NewAdminStatus)
+        public void SetEVSEAdminStatus(EVSEAdminStatus NewAdminStatus)
         {
 
-            if (TryGetEVSEById(EVSEId, out var evse))
+            if (TryGetEVSEById(NewAdminStatus.Id, out var evse) &&
+                evse is not null)
+            {
+                evse.AdminStatus = NewAdminStatus.TimestampedStatus;
+            }
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
+
+        public void SetEVSEAdminStatus(EVSE_Id EVSEId,
+                                       EVSEAdminStatusTypes NewAdminStatus)
+        {
+
+            if (TryGetEVSEById(EVSEId, out var evse) &&
+                evse is not null)
+            {
                 evse.AdminStatus = NewAdminStatus;
+            }
 
         }
 

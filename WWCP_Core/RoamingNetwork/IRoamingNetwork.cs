@@ -342,13 +342,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviders
 
-        Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider EMPRoamingProvider);
-        IEMPRoamingProvider GetEMPRoamingProviderById(EMPRoamingProvider_Id Id);
+        // EMPRoamingProviders provide access to other e-mobility operators via a roaming network
 
-        IEnumerable<IEMPRoamingProvider> EMPRoamingProviders { get; }
+        IEnumerable<IEMPRoamingProvider>                 EMPRoamingProviders { get; }
 
-        IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider? _CPORoamingProvider,
-                                                     Action<IEMPRoamingProvider>? Configurator = null);
+        IEMPRoamingProvider                              GetEMPRoamingProviderById   (EMPRoamingProvider_Id Id);
+        Boolean                                          TryGetEMPRoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider? EMPRoamingProvider);
+
+
+        IEMPRoamingProvider                              CreateNewRoamingProvider    (IEMPRoamingProvider           EMPRoamingProvider,
+                                                                                      Action<IEMPRoamingProvider>?  Configurator = null);
 
         #endregion
 
@@ -386,14 +389,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CSORoamingProviders
 
-        ICSORoamingProvider?  GetCSORoamingProviderById   (CSORoamingProvider_Id   CSORoamingProviderId);
-        ICSORoamingProvider?  GetCSORoamingProviderById   (CSORoamingProvider_Id?  CSORoamingProviderId);
-        Boolean               TryGetCSORoamingProviderById(CSORoamingProvider_Id  Id, out ICSORoamingProvider? CSORoamingProvider);
-        Boolean               TryGetCSORoamingProviderById(CSORoamingProvider_Id? Id, out ICSORoamingProvider? CSORoamingProvider);
+        // CSORoamingProviders provide access to other charging station operators via a roaming network
+
+        IEnumerable<ICSORoamingProvider>                 CSORoamingProviders { get; }
+        Boolean                                          ContainsCSORoamingProvider  (ICSORoamingProvider     CSORoamingProvider);
+        Boolean                                          ContainsCSORoamingProvider  (CSORoamingProvider_Id   CSORoamingProviderId);
+        ICSORoamingProvider?                             GetCSORoamingProviderById   (CSORoamingProvider_Id   CSORoamingProviderId);
+        ICSORoamingProvider?                             GetCSORoamingProviderById   (CSORoamingProvider_Id?  CSORoamingProviderId);
+        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id  Id, out ICSORoamingProvider? CSORoamingProvider);
+        Boolean                                          TryGetCSORoamingProviderById(CSORoamingProvider_Id? Id, out ICSORoamingProvider? CSORoamingProvider);
 
 
-        ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider eMobilityRoamingService,
-                                                     Action<ICSORoamingProvider>? Configurator = null);
+        ICSORoamingProvider                              CreateNewRoamingProvider    (ICSORoamingProvider           CSORoamingProvider,
+                                                                                      Action<ICSORoamingProvider>?  Configurator = null);
 
         #endregion
 
