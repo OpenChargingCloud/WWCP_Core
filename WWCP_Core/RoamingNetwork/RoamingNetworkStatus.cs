@@ -27,11 +27,93 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for the roaming network status.
+    /// </summary>
+    public static class RoamingNetworkStatusExtensions
+    {
+
+        #region ToJSON(this RoamingNetworkStatus, Skip = null, Take = null)
+
+        public static JObject ToJSON(this IEnumerable<RoamingNetworkStatus>  RoamingNetworkStatus,
+                                     UInt64?                                 Skip   = null,
+                                     UInt64?                                 Take   = null)
+        {
+
+            #region Initial checks
+
+            if (RoamingNetworkStatus is null || !RoamingNetworkStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate RoamingNetwork identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkStatus>();
+
+            foreach (var status in RoamingNetworkStatus)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].Timestamp >= status.Timestamp)
+                    filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take.HasValue ? filteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Timestamp.  ToIso8601(),
+                                                                          kvp.Value.Status.ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region Contains(this RoamingNetworkStatus, Id, Status)
+
+        /// <summary>
+        /// Check if the given enumeration of roaming networks and their current status
+        /// contains the given pair of roaming network identification and status.
+        /// </summary>
+        /// <param name="RoamingNetworkStatus">An enumeration of roaming networks and their current status.</param>
+        /// <param name="Id">A roaming network identification.</param>
+        /// <param name="Status">A roaming network status.</param>
+        public static Boolean Contains(this IEnumerable<RoamingNetworkStatus>  RoamingNetworkStatus,
+                                       RoamingNetwork_Id                       Id,
+                                       RoamingNetworkStatusTypes               Status)
+        {
+
+            foreach (var status in RoamingNetworkStatus)
+            {
+                if (status.Id          == Id &&
+                    status.Status == Status)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// The current status of a roaming network.
     /// </summary>
     public class RoamingNetworkStatus : AInternalData,
-                                        IEquatable <RoamingNetworkStatus>,
-                                        IComparable<RoamingNetworkStatus>
+                                                 IEquatable <RoamingNetworkStatus>,
+                                                 IComparable<RoamingNetworkStatus>
     {
 
         #region Properties
@@ -39,16 +121,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id                       Id        { get; }
+        public RoamingNetwork_Id          Id           { get; }
 
         /// <summary>
-        /// The current timestamped status of the roaming network.
+        /// The current status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusTypes>  Status    { get; }
+        public RoamingNetworkStatusTypes  Status       { get; }
+
+        /// <summary>
+        /// The timestamp of the current status of the roaming network.
+        /// </summary>
+        public DateTime                   Timestamp    { get; }
+
+        /// <summary>
+        /// The timestamped status of the roaming network.
+        /// </summary>
+        public Timestamped<RoamingNetworkStatusTypes> TimestampedStatus
+            => new (Timestamp, Status);
 
         #endregion
 
         #region Constructor(s)
+
+        #region RoamingNetworkStatus(Id, Status,            CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new roaming network status.
@@ -67,9 +162,40 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             this.Id         = Id;
-            this.Status     = Status;
+            this.Status     = Status.Value;
+            this.Timestamp  = Status.Timestamp;
 
         }
+
+        #endregion
+
+        #region RoamingNetworkStatus(Id, Status, Timestamp, CustomData = null, InternalData = null)
+
+        /// <summary>
+        /// Create a new roaming network status.
+        /// </summary>
+        /// <param name="Id">The unique identification of the roaming network.</param>
+        /// <param name="Status">The current status of the roaming network.</param>
+        /// <param name="Timestamp">The timestamp of the status change of the roaming network.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public RoamingNetworkStatus(RoamingNetwork_Id          Id,
+                                    RoamingNetworkStatusTypes  Status,
+                                    DateTime                   Timestamp,
+                                    JObject?                   CustomData     = null,
+                                    UserDefinedDictionary?     InternalData   = null)
+
+            : base(CustomData,
+                   InternalData)
+
+        {
+
+            this.Id         = Id;
+            this.Status     = Status;
+            this.Timestamp  = Timestamp;
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -82,8 +208,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetwork">A roaming network.</param>
         public static RoamingNetworkStatus Snapshot(RoamingNetwork RoamingNetwork)
 
-            => new RoamingNetworkStatus(RoamingNetwork.Id,
-                                        RoamingNetwork.Status.Value);
+            => new (RoamingNetwork.Id,
+                    RoamingNetwork.Status);
 
         #endregion
 
@@ -98,7 +224,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatus1">A roaming network status.</param>
         /// <param name="RoamingNetworkStatus2">Another roaming network status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingNetworkStatus RoamingNetworkStatus1, RoamingNetworkStatus RoamingNetworkStatus2)
+        public static Boolean operator == (RoamingNetworkStatus RoamingNetworkStatus1,
+                                           RoamingNetworkStatus RoamingNetworkStatus2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -106,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RoamingNetworkStatus1 == null) || ((Object) RoamingNetworkStatus2 == null))
+            if (RoamingNetworkStatus1 is null || RoamingNetworkStatus2 is null)
                 return false;
 
             return RoamingNetworkStatus1.Equals(RoamingNetworkStatus2);
@@ -123,7 +250,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatus1">A roaming network status.</param>
         /// <param name="RoamingNetworkStatus2">Another roaming network status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingNetworkStatus RoamingNetworkStatus1, RoamingNetworkStatus RoamingNetworkStatus2)
+        public static Boolean operator != (RoamingNetworkStatus RoamingNetworkStatus1,
+                                           RoamingNetworkStatus RoamingNetworkStatus2)
+
             => !(RoamingNetworkStatus1 == RoamingNetworkStatus2);
 
         #endregion
@@ -136,10 +265,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatus1">A roaming network status.</param>
         /// <param name="RoamingNetworkStatus2">Another roaming network status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingNetworkStatus RoamingNetworkStatus1, RoamingNetworkStatus RoamingNetworkStatus2)
+        public static Boolean operator < (RoamingNetworkStatus RoamingNetworkStatus1,
+                                          RoamingNetworkStatus RoamingNetworkStatus2)
         {
 
-            if ((Object) RoamingNetworkStatus1 == null)
+            if (RoamingNetworkStatus1 is null)
                 throw new ArgumentNullException(nameof(RoamingNetworkStatus1), "The given RoamingNetworkStatus1 must not be null!");
 
             return RoamingNetworkStatus1.CompareTo(RoamingNetworkStatus2) < 0;
@@ -156,7 +286,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatus1">A roaming network status.</param>
         /// <param name="RoamingNetworkStatus2">Another roaming network status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingNetworkStatus RoamingNetworkStatus1, RoamingNetworkStatus RoamingNetworkStatus2)
+        public static Boolean operator <= (RoamingNetworkStatus RoamingNetworkStatus1,
+                                           RoamingNetworkStatus RoamingNetworkStatus2)
+
             => !(RoamingNetworkStatus1 > RoamingNetworkStatus2);
 
         #endregion
@@ -169,10 +301,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatus1">A roaming network status.</param>
         /// <param name="RoamingNetworkStatus2">Another roaming network status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingNetworkStatus RoamingNetworkStatus1, RoamingNetworkStatus RoamingNetworkStatus2)
+        public static Boolean operator > (RoamingNetworkStatus RoamingNetworkStatus1,
+                                          RoamingNetworkStatus RoamingNetworkStatus2)
         {
 
-            if ((Object) RoamingNetworkStatus1 == null)
+            if (RoamingNetworkStatus1 is null)
                 throw new ArgumentNullException(nameof(RoamingNetworkStatus1), "The given RoamingNetworkStatus1 must not be null!");
 
             return RoamingNetworkStatus1.CompareTo(RoamingNetworkStatus2) > 0;
@@ -189,7 +322,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatus1">A roaming network status.</param>
         /// <param name="RoamingNetworkStatus2">Another roaming network status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingNetworkStatus RoamingNetworkStatus1, RoamingNetworkStatus RoamingNetworkStatus2)
+        public static Boolean operator >= (RoamingNetworkStatus RoamingNetworkStatus1,
+                                           RoamingNetworkStatus RoamingNetworkStatus2)
+
             => !(RoamingNetworkStatus1 < RoamingNetworkStatus2);
 
         #endregion
@@ -204,19 +339,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is RoamingNetworkStatus))
-                throw new ArgumentException("The given object is not a RoamingNetworkStatus!",
-                                            nameof(Object));
-
-            return CompareTo((RoamingNetworkStatus) Object);
-
-        }
+            => Object is RoamingNetworkStatus chargingStationOperatorStatus
+                   ? CompareTo(chargingStationOperatorStatus)
+                   : throw new ArgumentException("The given object is not a roaming network status!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -226,20 +354,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RoamingNetworkStatus">An object to compare with.</param>
-        public Int32 CompareTo(RoamingNetworkStatus RoamingNetworkStatus)
+        public Int32 CompareTo(RoamingNetworkStatus? RoamingNetworkStatus)
         {
 
-            if ((Object) RoamingNetworkStatus == null)
-                throw new ArgumentNullException(nameof(RoamingNetworkStatus), "The given RoamingNetworkStatus must not be null!");
+            if (RoamingNetworkStatus is null)
+                throw new ArgumentNullException(nameof(RoamingNetworkStatus), "The given roaming network status must not be null!");
 
-            // Compare RoamingNetwork Ids
-            var _Result = Id.CompareTo(RoamingNetworkStatus.Id);
+            var c = Id.       CompareTo(RoamingNetworkStatus.Id);
 
-            // If equal: Compare RoamingNetwork status
-            if (_Result == 0)
-                _Result = Status.CompareTo(RoamingNetworkStatus.Status);
+            if (c == 0)
+                c = Status.   CompareTo(RoamingNetworkStatus.Status);
 
-            return _Result;
+            if (c == 0)
+                c = Timestamp.CompareTo(RoamingNetworkStatus.Timestamp);
+
+            return c;
 
         }
 
@@ -256,18 +385,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is RoamingNetworkStatus))
-                return false;
-
-            return Equals((RoamingNetworkStatus) Object);
-
-        }
+            => Object is RoamingNetworkStatus chargingStationOperatorStatus &&
+                   Equals(chargingStationOperatorStatus);
 
         #endregion
 
@@ -278,16 +399,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworkStatus">A roaming network identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingNetworkStatus RoamingNetworkStatus)
-        {
+        public Boolean Equals(RoamingNetworkStatus? RoamingNetworkStatus)
 
-            if ((Object) RoamingNetworkStatus == null)
-                return false;
-
-            return Id.       Equals(RoamingNetworkStatus.Id) &&
-                   Status.   Equals(RoamingNetworkStatus.Status);
-
-        }
+            => RoamingNetworkStatus is not null              &&
+               Id.       Equals(RoamingNetworkStatus.Id)     &&
+               Status.   Equals(RoamingNetworkStatus.Status) &&
+               Timestamp.Equals(RoamingNetworkStatus.Timestamp);
 
         #endregion
 
@@ -304,8 +421,9 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.    GetHashCode() * 5 ^
-                       Status.GetHashCode();
+                return Id.       GetHashCode() * 5 ^
+                       Status.   GetHashCode() * 3 ^
+                       Timestamp.GetHashCode();
 
             }
         }
@@ -320,9 +438,9 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             Status.Value,
+                             Status,
                              " since ",
-                             Status.Timestamp.ToIso8601());
+                             Timestamp.ToIso8601());
 
         #endregion
 

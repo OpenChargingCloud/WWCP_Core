@@ -64,72 +64,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         => RoamingNetworks is null || !RoamingNetworks.Any()
 
-                   ? new JArray()
+               ? new JArray()
 
-                   : new JArray(RoamingNetworks.
-                                    Where         (roamingnetwork => roamingnetwork != null).
-                                    OrderBy       (roamingnetwork => roamingnetwork.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect    (roamingnetwork => roamingnetwork.ToJSON(Embedded,
-                                                                                           ExpandChargingStationOperatorIds,
-                                                                                           ExpandRoamingNetworkIds,
-                                                                                           ExpandChargingStationIds,
-                                                                                           ExpandEVSEIds,
-                                                                                           ExpandBrandIds,
-                                                                                           ExpandDataLicenses,
-                                                                                           ExpandEMobilityProviderId,
-                                                                                           CustomRoamingNetworkSerializer,
-                                                                                           CustomChargingStationOperatorSerializer,
-                                                                                           CustomChargingPoolSerializer,
-                                                                                           CustomChargingStationSerializer,
-                                                                                           CustomEVSESerializer)));
-
-        #endregion
-
-
-        #region ToJSON(this RoamingNetworkAdminStatus,          Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<RoamingNetworkAdminStatus>  RoamingNetworkAdminStatus,
-                                     UInt64?                                      Skip  = null,
-                                     UInt64?                                      Take  = null)
-        {
-
-            #region Initial checks
-
-            if (RoamingNetworkAdminStatus is null || !RoamingNetworkAdminStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkAdminStatus>();
-
-            foreach (var status in RoamingNetworkAdminStatus)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
-                                                              )));
-
-        }
+               : new JArray(RoamingNetworks.
+                                Where         (roamingNetwork => roamingNetwork is not null).
+                                OrderBy       (roamingNetwork => roamingNetwork.Id).
+                                SkipTakeFilter(Skip, Take).
+                                SafeSelect    (roamingNetwork => roamingNetwork.ToJSON(Embedded,
+                                                                                       ExpandChargingStationOperatorIds,
+                                                                                       ExpandRoamingNetworkIds,
+                                                                                       ExpandChargingStationIds,
+                                                                                       ExpandEVSEIds,
+                                                                                       ExpandBrandIds,
+                                                                                       ExpandDataLicenses,
+                                                                                       ExpandEMobilityProviderId,
+                                                                                       CustomRoamingNetworkSerializer,
+                                                                                       CustomChargingStationOperatorSerializer,
+                                                                                       CustomChargingPoolSerializer,
+                                                                                       CustomChargingStationSerializer,
+                                                                                       CustomEVSESerializer)));
 
         #endregion
+
 
         #region ToJSON(this RoamingNetworkAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
 
@@ -181,51 +137,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
                                                                                                                       tsv.Value.    ToString())))
 
-                                                              )));
-
-        }
-
-        #endregion
-
-
-        #region ToJSON(this RoamingNetworkStatus,               Skip = null, Take = null)
-
-        public static JObject ToJSON(this IEnumerable<RoamingNetworkStatus>  RoamingNetworkStatus,
-                                     UInt64?                                 Skip  = null,
-                                     UInt64?                                 Take  = null)
-        {
-
-            #region Initial checks
-
-            if (RoamingNetworkStatus == null || !RoamingNetworkStatus.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var _FilteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkStatus>();
-
-            foreach (var status in RoamingNetworkStatus)
-            {
-
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
-
-                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
-                    _FilteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(_FilteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
                                                               )));
 
         }
