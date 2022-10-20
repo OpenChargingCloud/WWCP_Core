@@ -38,6 +38,40 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
+    /// Extension methods for charge detail records.
+    /// </summary>
+    public static partial class ChargeDetailRecordExtensions
+    {
+
+        #region ToJSON(this ChargeDetailRecords, Embedded = false, ...)
+
+        public static JArray ToJSON(this IEnumerable<ChargeDetailRecord>                  ChargeDetailRecords,
+                                    Boolean                                               Embedded                             = false,
+                                    CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
+                                    UInt64?                                               Skip                                 = null,
+                                    UInt64?                                               Take                                 = null)
+        {
+
+            #region Initial checks
+
+            if (ChargeDetailRecords is null || !ChargeDetailRecords.Any())
+                return new JArray();
+
+            #endregion
+
+            return new JArray(ChargeDetailRecords.
+                                  SkipTakeFilter(Skip, Take).
+                                  Select        (chargeDetailRecord => chargeDetailRecord.ToJSON(Embedded,
+                                                                                                 CustomChargeDetailRecordSerializer)));
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// A charge detail record for a charging session.
     /// </summary>
     public class ChargeDetailRecord : AInternalData,
@@ -414,8 +448,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
-        public JObject ToJSON(Boolean                                           Embedded                             = false,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null)
+        public JObject ToJSON(Boolean                                               Embedded                             = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -427,7 +461,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? null
                                : new JProperty("@context",                    JSONLDContext),
 
-                           SessionTime != null
+                           SessionTime is not null
                                ? new JProperty("sessionTime",                 JSONObject.Create(
                                      new JProperty("start",                   SessionTime.StartTime.ToIso8601()),
                                      SessionTime.EndTime.HasValue
@@ -440,10 +474,54 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("duration",                    Duration.Value.TotalSeconds)
                                : null,
 
+                           Reservation is not null
+                               ? new JProperty("reservation", JSONObject.Create(
+                                                                  new JProperty("reservationId",  Reservation.Id.ToString()),
+                                                                  new JProperty("startTime",      Reservation.StartTime.ToIso8601()),
+                                                                  new JProperty("duration",       Reservation.ConsumedReservationTime.TotalSeconds)
+                                                              ))
+                               : ReservationId is not null
+                                     ? new JProperty("reservationId",    ReservationId.ToString())
+                                     : null,
 
-                           //new JProperty("meterId",                           MeterId.ToString()),
+                           ProviderIdStart.HasValue
+                               ? new JProperty("providerIdStart",        ProviderIdStart.ToString())
+                               : null,
 
-                           EnergyMeteringValues.SafeAny()
+                           ProviderIdStop.HasValue
+                               ? new JProperty("providerIdStop",         ProviderIdStop.ToString())
+                               : null,
+
+                           ChargingProduct is not null
+                               ? new JProperty("chargingProduct",     JSONObject.Create(
+                                     new JProperty("@id",                             ChargingProduct.Id.ToString()),
+                                     ChargingProduct.MinDuration.HasValue
+                                         ? new JProperty("minDuration",               ChargingProduct.MinDuration.Value.TotalSeconds)
+                                         : null,
+                                     ChargingProduct.StopChargingAfterTime.HasValue
+                                         ? new JProperty("stopChargingAfterTime",     ChargingProduct.StopChargingAfterTime.Value.TotalSeconds)
+                                         : null,
+                                     ChargingProduct.MinPower.HasValue
+                                         ? new JProperty("minPower",                  ChargingProduct.MinPower.Value)
+                                         : null,
+                                     ChargingProduct.MaxPower.HasValue
+                                         ? new JProperty("maxPower",                  ChargingProduct.MaxPower.Value)
+                                         : null,
+                                     ChargingProduct.MinEnergy.HasValue
+                                         ? new JProperty("minEnergy",                 ChargingProduct.MinEnergy.Value)
+                                         : null,
+                                     ChargingProduct.StopChargingAfterKWh.HasValue
+                                         ? new JProperty("stopChargingAfterKWh",      ChargingProduct.StopChargingAfterKWh.Value)
+                                         : null
+                                    ))
+                               : null,
+
+
+                           EnergyMeterId.HasValue
+                               ? new JProperty("EnergyMeterId", EnergyMeterId.ToString())
+                               : null,
+
+                           EnergyMeteringValues is not null && EnergyMeteringValues.Any()
                                ? new JProperty("meterValues", JSONArray.Create(
                                        EnergyMeteringValues.Select(meterValue => JSONObject.Create(
                                            new JProperty("timestamp",  meterValue.Timestamp.ToIso8601()),

@@ -17,12 +17,31 @@
 
 #region Usings
 
-using System;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for user interface features.
+    /// </summary>
+    public static partial class UIFeaturesExtensions
+    {
+
+        #region ToJSON(this ChargingStationUIFeatures, JPropertyKey)
+
+        public static JProperty ToJSON(this UIFeatures ChargingStationUIFeatures, String JPropertyKey)
+
+            => new JProperty(JPropertyKey,
+                             ChargingStationUIFeatures.ToString());
+
+        #endregion
+
+    }
+
+
 
     /// <summary>
     /// User interface features, e.g. of a charging station.

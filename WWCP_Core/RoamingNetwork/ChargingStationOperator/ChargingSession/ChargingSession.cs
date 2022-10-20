@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -36,62 +32,30 @@ namespace cloud.charging.open.protocols.WWCP
     public static class ChargingSessionExtensions
     {
 
-        #region ToJSON(this ChargingSession, JPropertyKey)
+        #region ToJSON(this ChargeDetailRecords, Embedded = false, ...)
 
-        public static JProperty ToJSON(this ChargingSession ChargingSession, String JPropertyKey)
+        public static JArray ToJSON(this IEnumerable<ChargingSession>                     ChargingSessions,
+                                    Boolean                                               Embedded                             = false,
+                                    CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
+                                    CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null,
+                                    CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer      = null,
+                                    UInt64?                                               Skip                                 = null,
+                                    UInt64?                                               Take                                 = null)
         {
 
             #region Initial checks
 
-            if (ChargingSession == null)
-                throw new ArgumentNullException(nameof(ChargingSession),  "The given charging session must not be null!");
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey),     "The given json property key must not be null or empty!");
+            if (ChargingSessions is null || !ChargingSessions.Any())
+                return new JArray();
 
             #endregion
 
-            return new JProperty(JPropertyKey,
-                                 ChargingSession.ToJSON());
-
-        }
-
-        #endregion
-
-        #region ToJSON(this ChargingSessions)
-
-        public static JArray ToJSON(this IEnumerable<ChargingSession>  ChargingSessions,
-                                    UInt64?                            Skip       = null,
-                                    UInt64?                            Take       = null,
-                                    Boolean                            Embedded   = false)
-
-            => ChargingSessions == null || !ChargingSessions.Any()
-
-                   ? new JArray()
-
-                   : new JArray(ChargingSessions.
-                                    Where         (session => session != null).
-                                    OrderBy       (session => session.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect    (session => session.ToJSON(Embedded)));
-
-        #endregion
-
-        #region ToJSON(this ChargingSessions, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<ChargingSession> ChargingSessions, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
-
-            #endregion
-
-            return ChargingSessions != null
-                       ? new JProperty(JPropertyKey, ChargingSessions.ToJSON())
-                       : new JProperty(JPropertyKey, new JArray());
+            return new JArray(ChargingSessions.
+                                  SkipTakeFilter(Skip, Take).
+                                  Select        (chargingSession => chargingSession.ToJSON(Embedded,
+                                                                                           CustomChargeDetailRecordSerializer,
+                                                                                           CustomSendCDRResultSerializer,
+                                                                                           CustomChargingSessionSerializer)));
 
         }
 
@@ -922,10 +886,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(Embedded, ...)
 
-        public JObject ToJSON(Boolean                                              Embedded                             = false,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
-                              CustomJObjectSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null,
-                              CustomJObjectSerializerDelegate<ChargingSession>     CustomChargingSessionSerializer      = null)
+        public JObject ToJSON(Boolean                                               Embedded                             = false,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
+                              CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null,
+                              CustomJObjectSerializerDelegate<ChargingSession>?     CustomChargingSessionSerializer      = null)
 
         {
 
@@ -942,14 +906,13 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
 
-                           Reservation != null
+                           Reservation is not null
                                ? new JProperty("reservation", new JObject(
                                                                   new JProperty("reservationId",  Reservation.Id.ToString()),
                                                                   new JProperty("start",          Reservation.StartTime.ToIso8601()),
-                                                                  new JProperty("duration",       Reservation.Duration.TotalSeconds)
-                                                                  )
+                                                                  new JProperty("duration",       Reservation.Duration.TotalSeconds))
                                                               )
-                               : ReservationId != null
+                               : ReservationId is not null
                                      ? new JProperty("reservationId",         ReservationId.ToString())
                                      : null,
 
@@ -971,7 +934,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          ? new JProperty("EMPRoamingProviderId",  EMPRoamingProviderIdStart.ToString())
                                          : null,
 
-                                     ProviderIdStart != null
+                                     ProviderIdStart is not null
                                          ? new JProperty("providerId",            ProviderIdStart.          ToString())
                                          : null,
 
@@ -983,7 +946,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
 
-                           SessionTime != null
+                           SessionTime is not null
                                ? new JProperty("duration",                    Duration.TotalSeconds)
                                : null,
 
@@ -1030,12 +993,12 @@ namespace cloud.charging.open.protocols.WWCP
                                          ? new JProperty("systemId",              SystemIdCDR.       ToString())
                                          : null,
 
-                                     CDR != null
+                                     CDR is not null
                                          ? new JProperty("cdr",                   CDR.               ToJSON(Embedded:                           true,
                                                                                                             CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer))
                                          : null,
 
-                                     CDRResult != null
+                                     CDRResult is not null
                                          ? new JProperty("result",                CDRResult.         ToJSON(Embedded:                           true,
                                                                                                             IncludeCDR:                         false,
                                                                                                             CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer,
@@ -1070,7 +1033,7 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("EVSEId",                      EVSEId.                   ToString())
                                : null,
 
-                           ChargingProduct != null
+                           ChargingProduct is not null
                                ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
                                : null,
 
@@ -1095,7 +1058,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 );
 
-            return CustomChargingSessionSerializer != null
+            return CustomChargingSessionSerializer is not null
                        ? CustomChargingSessionSerializer(this, JSON)
                        : JSON;
 
@@ -1317,7 +1280,6 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingSession? ChargingSession)
 
             => ChargingSession is not null &&
-
                Id.Equals(ChargingSession.Id);
 
         #endregion

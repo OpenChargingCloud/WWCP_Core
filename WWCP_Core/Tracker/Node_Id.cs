@@ -25,16 +25,42 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 {
 
     /// <summary>
+    /// Extension methods for node identifications.
+    /// </summary>
+    public static class NodeIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this node identification is null or empty.
+        /// </summary>
+        /// <param name="NodeId">A node identification.</param>
+        public static Boolean IsNullOrEmpty(this Node_Id? NodeId)
+            => !NodeId.HasValue || NodeId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this node identification is null or empty.
+        /// </summary>
+        /// <param name="NodeId">A node identification.</param>
+        public static Boolean IsNotNullOrEmpty(this Node_Id? NodeId)
+            => NodeId.HasValue && NodeId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The unique identification of a node.
     /// </summary>
-    public class Node_Id : IId,
-                           IEquatable<Node_Id>,
-                           IComparable<Node_Id>
+    public readonly struct Node_Id : IId,
+                                               IEquatable <Node_Id>,
+                                               IComparable<Node_Id>
 
     {
 
         #region Data
 
+        /// <summary>
+        /// The internal identification.
+        /// </summary>
         private readonly String InternalId;
 
         #endregion
@@ -48,7 +74,13 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the node identificator.
         /// </summary>
         public UInt64 Length
             => (UInt64) InternalId.Length;
@@ -58,222 +90,193 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Node identification based on the given string.
+        /// Create a new node identification.
+        /// based on the given string.
         /// </summary>
-        private Node_Id(String  Text)
+        private Node_Id(String Text)
         {
-
-            #region Initial checks
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text),  "The given text must not be null or empty!");
-
-            #endregion
-
-            this.InternalId = Text;
-
+            InternalId = Text;
         }
 
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a charging station identification (EVCS Id).
+        /// Parse the given string as a node identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station identification.</param>
+        /// <param name="Text">A text representation of a node identification.</param>
         public static Node_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out Node_Id nodeId))
+                return nodeId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text must not be null or empty!");
-
-            #endregion
-
-            return new Node_Id(Text);
+            throw new ArgumentException("Invalid text-representation of a node identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingStationId)
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Parse the given string as a charging station identification (EVCS Id).
+        /// Try to parse the given string as a node identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station identification.</param>
-        /// <param name="ChargingStationId">The parsed charging station identification.</param>
-        public static Boolean TryParse(String Text, out Node_Id ChargingStationId)
+        /// <param name="Text">A text representation of a node identification.</param>
+        public static Node_Id? TryParse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out Node_Id nodeId))
+                return nodeId;
 
-            if (Text.IsNullOrEmpty())
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out NodeId)
+
+        /// <summary>
+        /// Parse the given string as a node identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a node identification.</param>
+        /// <param name="NodeId">The parsed node identification.</param>
+        public static Boolean TryParse(String Text, out Node_Id NodeId)
+        {
+
+            Text = Text.Trim();
+
+            if (Text.IsNotNullOrEmpty())
             {
-                ChargingStationId = null;
-                return false;
+                try
+                {
+                    NodeId = new Node_Id(Text);
+                    return true;
+                }
+                catch
+                { }
             }
 
-            #endregion
-
-            try
-            {
-
-                ChargingStationId = new Node_Id(Text);
-
-                return true;
-
-            }
-            catch (Exception)
-            { }
-
-            ChargingStationId = null;
+            NodeId = default;
             return false;
 
         }
 
         #endregion
 
-        #region Random
-
-        /// <summary>
-        /// Generate a new unique identification of a Node.
-        /// </summary>
-        public static Node_Id Random
-
-            => new (RandomExtensions.RandomString(23));
-
-        #endregion
-
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Charging Station identification.
+        /// Clone this node identification.
         /// </summary>
         public Node_Id Clone
-            => new Node_Id(InternalId);
+
+            => new (
+                   new String(InternalId?.ToCharArray())
+               );
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (WWCPNodeClientId1, WWCPNodeClientId2)
+        #region Operator == (NodeId1, NodeId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPNodeClientId1">A WWCPNodeClient_Id.</param>
-        /// <param name="WWCPNodeClientId2">Another WWCPNodeClient_Id.</param>
+        /// <param name="NodeId1">A node identification.</param>
+        /// <param name="NodeId2">Another node identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Node_Id WWCPNodeClientId1, Node_Id WWCPNodeClientId2)
-        {
+        public static Boolean operator == (Node_Id NodeId1,
+                                           Node_Id NodeId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(WWCPNodeClientId1, WWCPNodeClientId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) WWCPNodeClientId1 == null) || ((Object) WWCPNodeClientId2 == null))
-                return false;
-
-            return WWCPNodeClientId1.Equals(WWCPNodeClientId2);
-
-        }
+            => NodeId1.Equals(NodeId2);
 
         #endregion
 
-        #region Operator != (WWCPNodeClientId1, WWCPNodeClientId2)
+        #region Operator != (NodeId1, NodeId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPNodeClientId1">A WWCPNodeClient_Id.</param>
-        /// <param name="WWCPNodeClientId2">Another WWCPNodeClient_Id.</param>
+        /// <param name="NodeId1">A node identification.</param>
+        /// <param name="NodeId2">Another node identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Node_Id WWCPNodeClientId1, Node_Id WWCPNodeClientId2)
-        {
-            return !(WWCPNodeClientId1 == WWCPNodeClientId2);
-        }
+        public static Boolean operator != (Node_Id NodeId1,
+                                           Node_Id NodeId2)
+
+            => !NodeId1.Equals(NodeId2);
 
         #endregion
 
-        #region Operator <  (WWCPNodeClientId1, WWCPNodeClientId2)
+        #region Operator <  (NodeId1, NodeId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPNodeClientId1">A WWCPNodeClient_Id.</param>
-        /// <param name="WWCPNodeClientId2">Another WWCPNodeClient_Id.</param>
+        /// <param name="NodeId1">A node identification.</param>
+        /// <param name="NodeId2">Another node identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Node_Id WWCPNodeClientId1, Node_Id WWCPNodeClientId2)
-        {
+        public static Boolean operator < (Node_Id NodeId1,
+                                          Node_Id NodeId2)
 
-            if ((Object) WWCPNodeClientId1 == null)
-                throw new ArgumentNullException("The given WWCPNodeClientId1 must not be null!");
-
-            return WWCPNodeClientId1.CompareTo(WWCPNodeClientId2) < 0;
-
-        }
+            => NodeId1.CompareTo(NodeId2) < 0;
 
         #endregion
 
-        #region Operator <= (WWCPNodeClientId1, WWCPNodeClientId2)
+        #region Operator <= (NodeId1, NodeId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPNodeClientId1">A WWCPNodeClient_Id.</param>
-        /// <param name="WWCPNodeClientId2">Another WWCPNodeClient_Id.</param>
+        /// <param name="NodeId1">A node identification.</param>
+        /// <param name="NodeId2">Another node identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Node_Id WWCPNodeClientId1, Node_Id WWCPNodeClientId2)
-        {
-            return !(WWCPNodeClientId1 > WWCPNodeClientId2);
-        }
+        public static Boolean operator <= (Node_Id NodeId1,
+                                           Node_Id NodeId2)
+
+            => NodeId1.CompareTo(NodeId2) <= 0;
 
         #endregion
 
-        #region Operator >  (WWCPNodeClientId1, WWCPNodeClientId2)
+        #region Operator >  (NodeId1, NodeId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPNodeClientId1">A WWCPNodeClient_Id.</param>
-        /// <param name="WWCPNodeClientId2">Another WWCPNodeClient_Id.</param>
+        /// <param name="NodeId1">A node identification.</param>
+        /// <param name="NodeId2">Another node identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Node_Id WWCPNodeClientId1, Node_Id WWCPNodeClientId2)
-        {
+        public static Boolean operator > (Node_Id NodeId1,
+                                          Node_Id NodeId2)
 
-            if ((Object) WWCPNodeClientId1 == null)
-                throw new ArgumentNullException("The given WWCPNodeClientId1 must not be null!");
-
-            return WWCPNodeClientId1.CompareTo(WWCPNodeClientId2) > 0;
-
-        }
+            => NodeId1.CompareTo(NodeId2) > 0;
 
         #endregion
 
-        #region Operator >= (WWCPNodeClientId1, WWCPNodeClientId2)
+        #region Operator >= (NodeId1, NodeId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPNodeClientId1">A WWCPNodeClient_Id.</param>
-        /// <param name="WWCPNodeClientId2">Another WWCPNodeClient_Id.</param>
+        /// <param name="NodeId1">A node identification.</param>
+        /// <param name="NodeId2">Another node identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Node_Id WWCPNodeClientId1, Node_Id WWCPNodeClientId2)
-        {
-            return !(WWCPNodeClientId1 < WWCPNodeClientId2);
-        }
+        public static Boolean operator >= (Node_Id NodeId1,
+                                           Node_Id NodeId2)
+
+            => NodeId1.CompareTo(NodeId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<WWCPNodeClient_Id> Members
+        #region IComparable<Node_Id> Members
 
         #region CompareTo(Object)
 
@@ -281,44 +284,32 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is an WWCPNodeClientId.
-            var WWCPNodeClientId = Object as Node_Id;
-            if ((Object) WWCPNodeClientId == null)
-                throw new ArgumentException("The given object is not a WWCPNodeClientId!");
-
-            return CompareTo(WWCPNodeClientId);
-
-        }
+            => Object is Node_Id nodeId
+                   ? CompareTo(nodeId)
+                   : throw new ArgumentException("The given object is not a node identification!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(WWCPNodeClientId)
+        #region CompareTo(NodeId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPNodeClientId">An object to compare with.</param>
-        public Int32 CompareTo(Node_Id WWCPNodeClientId)
-        {
+        /// <param name="NodeId">An object to compare with.</param>
+        public Int32 CompareTo(Node_Id NodeId)
 
-            if ((Object) WWCPNodeClientId == null)
-                throw new ArgumentNullException("The given WWCPNodeClientId must not be null!");
-
-            return InternalId.CompareTo(WWCPNodeClientId.InternalId);
-
-        }
+            => String.Compare(InternalId,
+                              NodeId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<WWCPNodeClient_Id> Members
+        #region IEquatable<Node_Id> Members
 
         #region Equals(Object)
 
@@ -327,39 +318,25 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an WWCPNodeClientId.
-            var WWCPNodeClientId = Object as Node_Id;
-            if ((Object) WWCPNodeClientId == null)
-                return false;
-
-            return this.Equals(WWCPNodeClientId);
-
-        }
+            => Object is Node_Id nodeId &&
+                   Equals(nodeId);
 
         #endregion
 
-        #region Equals(WWCPNodeClientId)
+        #region Equals(NodeId)
 
         /// <summary>
-        /// Compares two WWCPNodeClientIds for equality.
+        /// Compares two node identifications for equality.
         /// </summary>
-        /// <param name="WWCPNodeClientId">A WWCPNodeClientId to compare with.</param>
+        /// <param name="NodeId">A node identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Node_Id WWCPNodeClientId)
-        {
+        public Boolean Equals(Node_Id NodeId)
 
-            if ((Object) WWCPNodeClientId == null)
-                return false;
-
-            return InternalId.Equals(WWCPNodeClientId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             NodeId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -368,21 +345,23 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 

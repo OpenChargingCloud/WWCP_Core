@@ -25,16 +25,42 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 {
 
     /// <summary>
+    /// Extension methods for tracker identifications.
+    /// </summary>
+    public static class TrackerIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this tracker identification is null or empty.
+        /// </summary>
+        /// <param name="TrackerId">A tracker identification.</param>
+        public static Boolean IsNullOrEmpty(this Tracker_Id? TrackerId)
+            => !TrackerId.HasValue || TrackerId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this tracker identification is null or empty.
+        /// </summary>
+        /// <param name="TrackerId">A tracker identification.</param>
+        public static Boolean IsNotNullOrEmpty(this Tracker_Id? TrackerId)
+            => TrackerId.HasValue && TrackerId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// The unique identification of a tracker.
     /// </summary>
-    public class Tracker_Id : IId,
-                              IEquatable<Tracker_Id>,
-                              IComparable<Tracker_Id>
+    public readonly struct Tracker_Id : IId,
+                                               IEquatable <Tracker_Id>,
+                                               IComparable<Tracker_Id>
 
     {
 
         #region Data
 
+        /// <summary>
+        /// The internal identification.
+        /// </summary>
         private readonly String InternalId;
 
         #endregion
@@ -48,7 +74,13 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the tracker identificator.
         /// </summary>
         public UInt64 Length
             => (UInt64) InternalId.Length;
@@ -58,222 +90,193 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new tracker identification based on the given string.
+        /// Create a new tracker identification.
+        /// based on the given string.
         /// </summary>
-        private Tracker_Id(String  Text)
+        private Tracker_Id(String Text)
         {
-
-            #region Initial checks
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text),  "The given text must not be null or empty!");
-
-            #endregion
-
-            this.InternalId = Text;
-
+            InternalId = Text;
         }
 
         #endregion
 
 
-        #region Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a charging station identification (EVCS Id).
+        /// Parse the given string as a tracker identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station identification.</param>
+        /// <param name="Text">A text representation of a tracker identification.</param>
         public static Tracker_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out Tracker_Id trackerId))
+                return trackerId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text must not be null or empty!");
-
-            #endregion
-
-            return new Tracker_Id(Text);
+            throw new ArgumentException("Invalid text-representation of a tracker identification: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingStationId)
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Parse the given string as a charging station identification (EVCS Id).
+        /// Try to parse the given string as a tracker identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station identification.</param>
-        /// <param name="ChargingStationId">The parsed charging station identification.</param>
-        public static Boolean TryParse(String Text, out Tracker_Id ChargingStationId)
+        /// <param name="Text">A text representation of a tracker identification.</param>
+        public static Tracker_Id? TryParse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out Tracker_Id trackerId))
+                return trackerId;
 
-            if (Text.IsNullOrEmpty())
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out TrackerId)
+
+        /// <summary>
+        /// Parse the given string as a tracker identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a tracker identification.</param>
+        /// <param name="TrackerId">The parsed tracker identification.</param>
+        public static Boolean TryParse(String Text, out Tracker_Id TrackerId)
+        {
+
+            Text = Text.Trim();
+
+            if (Text.IsNotNullOrEmpty())
             {
-                ChargingStationId = null;
-                return false;
+                try
+                {
+                    TrackerId = new Tracker_Id(Text);
+                    return true;
+                }
+                catch
+                { }
             }
 
-            #endregion
-
-            try
-            {
-
-                ChargingStationId = new Tracker_Id(Text);
-
-                return true;
-
-            }
-            catch (Exception)
-            { }
-
-            ChargingStationId = null;
+            TrackerId = default;
             return false;
 
         }
 
         #endregion
 
-        #region Random
-
-        /// <summary>
-        /// Generate a new unique identification of a tracker.
-        /// </summary>
-        public static Tracker_Id Random
-
-            => new (RandomExtensions.RandomString(23));
-
-        #endregion
-
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Charging Station identification.
+        /// Clone this tracker identification.
         /// </summary>
         public Tracker_Id Clone
-            => new Tracker_Id(InternalId);
+
+            => new (
+                   new String(InternalId?.ToCharArray())
+               );
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (WWCPTrackerClientId1, WWCPTrackerClientId2)
+        #region Operator == (TrackerId1, TrackerId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPTrackerClientId1">A WWCPTrackerClient_Id.</param>
-        /// <param name="WWCPTrackerClientId2">Another WWCPTrackerClient_Id.</param>
+        /// <param name="TrackerId1">A tracker identification.</param>
+        /// <param name="TrackerId2">Another tracker identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Tracker_Id WWCPTrackerClientId1, Tracker_Id WWCPTrackerClientId2)
-        {
+        public static Boolean operator == (Tracker_Id TrackerId1,
+                                           Tracker_Id TrackerId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(WWCPTrackerClientId1, WWCPTrackerClientId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) WWCPTrackerClientId1 == null) || ((Object) WWCPTrackerClientId2 == null))
-                return false;
-
-            return WWCPTrackerClientId1.Equals(WWCPTrackerClientId2);
-
-        }
+            => TrackerId1.Equals(TrackerId2);
 
         #endregion
 
-        #region Operator != (WWCPTrackerClientId1, WWCPTrackerClientId2)
+        #region Operator != (TrackerId1, TrackerId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPTrackerClientId1">A WWCPTrackerClient_Id.</param>
-        /// <param name="WWCPTrackerClientId2">Another WWCPTrackerClient_Id.</param>
+        /// <param name="TrackerId1">A tracker identification.</param>
+        /// <param name="TrackerId2">Another tracker identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Tracker_Id WWCPTrackerClientId1, Tracker_Id WWCPTrackerClientId2)
-        {
-            return !(WWCPTrackerClientId1 == WWCPTrackerClientId2);
-        }
+        public static Boolean operator != (Tracker_Id TrackerId1,
+                                           Tracker_Id TrackerId2)
+
+            => !TrackerId1.Equals(TrackerId2);
 
         #endregion
 
-        #region Operator <  (WWCPTrackerClientId1, WWCPTrackerClientId2)
+        #region Operator <  (TrackerId1, TrackerId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPTrackerClientId1">A WWCPTrackerClient_Id.</param>
-        /// <param name="WWCPTrackerClientId2">Another WWCPTrackerClient_Id.</param>
+        /// <param name="TrackerId1">A tracker identification.</param>
+        /// <param name="TrackerId2">Another tracker identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Tracker_Id WWCPTrackerClientId1, Tracker_Id WWCPTrackerClientId2)
-        {
+        public static Boolean operator < (Tracker_Id TrackerId1,
+                                          Tracker_Id TrackerId2)
 
-            if ((Object) WWCPTrackerClientId1 == null)
-                throw new ArgumentNullException("The given WWCPTrackerClientId1 must not be null!");
-
-            return WWCPTrackerClientId1.CompareTo(WWCPTrackerClientId2) < 0;
-
-        }
+            => TrackerId1.CompareTo(TrackerId2) < 0;
 
         #endregion
 
-        #region Operator <= (WWCPTrackerClientId1, WWCPTrackerClientId2)
+        #region Operator <= (TrackerId1, TrackerId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPTrackerClientId1">A WWCPTrackerClient_Id.</param>
-        /// <param name="WWCPTrackerClientId2">Another WWCPTrackerClient_Id.</param>
+        /// <param name="TrackerId1">A tracker identification.</param>
+        /// <param name="TrackerId2">Another tracker identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Tracker_Id WWCPTrackerClientId1, Tracker_Id WWCPTrackerClientId2)
-        {
-            return !(WWCPTrackerClientId1 > WWCPTrackerClientId2);
-        }
+        public static Boolean operator <= (Tracker_Id TrackerId1,
+                                           Tracker_Id TrackerId2)
+
+            => TrackerId1.CompareTo(TrackerId2) <= 0;
 
         #endregion
 
-        #region Operator >  (WWCPTrackerClientId1, WWCPTrackerClientId2)
+        #region Operator >  (TrackerId1, TrackerId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPTrackerClientId1">A WWCPTrackerClient_Id.</param>
-        /// <param name="WWCPTrackerClientId2">Another WWCPTrackerClient_Id.</param>
+        /// <param name="TrackerId1">A tracker identification.</param>
+        /// <param name="TrackerId2">Another tracker identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Tracker_Id WWCPTrackerClientId1, Tracker_Id WWCPTrackerClientId2)
-        {
+        public static Boolean operator > (Tracker_Id TrackerId1,
+                                          Tracker_Id TrackerId2)
 
-            if ((Object) WWCPTrackerClientId1 == null)
-                throw new ArgumentNullException("The given WWCPTrackerClientId1 must not be null!");
-
-            return WWCPTrackerClientId1.CompareTo(WWCPTrackerClientId2) > 0;
-
-        }
+            => TrackerId1.CompareTo(TrackerId2) > 0;
 
         #endregion
 
-        #region Operator >= (WWCPTrackerClientId1, WWCPTrackerClientId2)
+        #region Operator >= (TrackerId1, TrackerId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPTrackerClientId1">A WWCPTrackerClient_Id.</param>
-        /// <param name="WWCPTrackerClientId2">Another WWCPTrackerClient_Id.</param>
+        /// <param name="TrackerId1">A tracker identification.</param>
+        /// <param name="TrackerId2">Another tracker identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Tracker_Id WWCPTrackerClientId1, Tracker_Id WWCPTrackerClientId2)
-        {
-            return !(WWCPTrackerClientId1 < WWCPTrackerClientId2);
-        }
+        public static Boolean operator >= (Tracker_Id TrackerId1,
+                                           Tracker_Id TrackerId2)
+
+            => TrackerId1.CompareTo(TrackerId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<WWCPTrackerClient_Id> Members
+        #region IComparable<Tracker_Id> Members
 
         #region CompareTo(Object)
 
@@ -281,44 +284,32 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is an WWCPTrackerClientId.
-            var WWCPTrackerClientId = Object as Tracker_Id;
-            if ((Object) WWCPTrackerClientId == null)
-                throw new ArgumentException("The given object is not a WWCPTrackerClientId!");
-
-            return CompareTo(WWCPTrackerClientId);
-
-        }
+            => Object is Tracker_Id trackerId
+                   ? CompareTo(trackerId)
+                   : throw new ArgumentException("The given object is not a tracker identification!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(WWCPTrackerClientId)
+        #region CompareTo(TrackerId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="WWCPTrackerClientId">An object to compare with.</param>
-        public Int32 CompareTo(Tracker_Id WWCPTrackerClientId)
-        {
+        /// <param name="TrackerId">An object to compare with.</param>
+        public Int32 CompareTo(Tracker_Id TrackerId)
 
-            if ((Object) WWCPTrackerClientId == null)
-                throw new ArgumentNullException("The given WWCPTrackerClientId must not be null!");
-
-            return InternalId.CompareTo(WWCPTrackerClientId.InternalId);
-
-        }
+            => String.Compare(InternalId,
+                              TrackerId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<WWCPTrackerClient_Id> Members
+        #region IEquatable<Tracker_Id> Members
 
         #region Equals(Object)
 
@@ -327,39 +318,25 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an WWCPTrackerClientId.
-            var WWCPTrackerClientId = Object as Tracker_Id;
-            if ((Object) WWCPTrackerClientId == null)
-                return false;
-
-            return this.Equals(WWCPTrackerClientId);
-
-        }
+            => Object is Tracker_Id trackerId &&
+                   Equals(trackerId);
 
         #endregion
 
-        #region Equals(WWCPTrackerClientId)
+        #region Equals(TrackerId)
 
         /// <summary>
-        /// Compares two WWCPTrackerClientIds for equality.
+        /// Compares two tracker identifications for equality.
         /// </summary>
-        /// <param name="WWCPTrackerClientId">A WWCPTrackerClientId to compare with.</param>
+        /// <param name="TrackerId">A tracker identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Tracker_Id WWCPTrackerClientId)
-        {
+        public Boolean Equals(Tracker_Id TrackerId)
 
-            if ((Object) WWCPTrackerClientId == null)
-                return false;
-
-            return InternalId.Equals(WWCPTrackerClientId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             TrackerId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -368,21 +345,23 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 

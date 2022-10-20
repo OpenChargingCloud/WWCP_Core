@@ -17,20 +17,13 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using Newtonsoft.Json.Linq;
-using cloud.charging.open.protocols.WWCP.Net;
 
 #endregion
 
@@ -96,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         /// <summary>
         /// The common URI prefix of the HTTP server of the WWCP tracker.
         /// </summary>
-        public HTTPPath                                      URLPrefix       { get; }
+        public HTTPPath                                     URLPrefix       { get; }
 
         /// <summary>
         /// The DNS client used by the tracker.
@@ -153,10 +146,10 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                              var JSON  = _LocalRoamingNetworks.
                                                              Select (kvp => {
 
-                                                                var LocalRoamingNetwork = kvp.Value.First(rni => rni != null)?.RoamingNetwork;
+                                                                var LocalRoamingNetwork = kvp.Value.First(rni => rni is not null)?.RoamingNetwork;
 
                                                                 return JSONObject.Create(new JProperty("id",                kvp.Key.  ToString()),
-                                                                                         LocalRoamingNetwork != null
+                                                                                         LocalRoamingNetwork is not null
                                                                                             ? new JProperty("description",  LocalRoamingNetwork?.Description?.ToJSON())
                                                                                             : null,
                                                                                          new JProperty("rendezvousPoints",  JSONArray.Create(
@@ -170,11 +163,11 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                                                                                    new JProperty("URLPrefix",     rni.URLPrefix),
                                                                                                                    new JProperty("contentType",   rni.contentType. ToString()),
                                                                                                                    new JProperty("protocol",      rni.protocolType.ToString()),
-                                                                                                                   new JProperty("expiresAfter",  rni.ExpiredAfter.ToIso8601()),
+                                                                                                                   new JProperty("expiresAfter",  rni.NotAfter.ToIso8601()),
                                                                                                                    new JProperty("publicKeys",    new JArray()),
                                                                                                                    new JProperty("signature",     "...")
                                                                                                                )))),
-                                                                                         LocalRoamingNetwork != null
+                                                                                         LocalRoamingNetwork is not null
                                                                                              ? new JProperty("statistics",        JSONObject.Create(
                                                                                                    new JProperty("EVSEOperators",                 LocalRoamingNetwork?.ChargingStationOperators.Count()),
                                                                                                    new JProperty("EVServiceProviders",            LocalRoamingNetwork?.EMobilityProviders.Count()),
@@ -350,13 +343,11 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             foreach (var roamingnetworkinfo in RoamingNetworkInfos)
             {
 
-                List<RoamingNetworkInfo> RoamingNetworkList;
-
-                if (_LocalRoamingNetworks.TryGetValue(roamingnetworkinfo.RoamingNetworkId, out RoamingNetworkList))
+                if (_LocalRoamingNetworks.TryGetValue(roamingnetworkinfo.RoamingNetworkId, out var roamingNetworkList))
                 {
-                    lock (RoamingNetworkList)
+                    lock (roamingNetworkList)
                     {
-                        RoamingNetworkList.Add(roamingnetworkinfo);
+                        roamingNetworkList.Add(roamingnetworkinfo);
                     }
                 }
 
@@ -390,7 +381,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
             #region Initial checks
 
-            if (RoamingNetwork == null)
+            if (RoamingNetwork is null)
                 throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
 
             #endregion
@@ -410,13 +401,6 @@ namespace cloud.charging.open.protocols.WWCP.Networking
 
         public Tracker RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
         {
-
-            #region Initial checks
-
-            if (RoamingNetworkId == null)
-                throw new ArgumentNullException(nameof(RoamingNetworkId), "The given roaming network identification must not be null!");
-
-            #endregion
 
             //RoamingNetwork _RoamingNetwork = null;
 

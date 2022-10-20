@@ -17,19 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -66,7 +55,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public static RoamingNetworkInfo Create(this RoamingNetwork   RoamingNetwork,
                                                 Tracker_Id            TrackerId,
                                                 Node_Id               NodeId,
-                                                DateTime              ExpiredAfter,
+                                                DateTime              NotBefore,
+                                                DateTime              NotAfter,
 
                                                 Byte                  priority,
                                                 Byte                  weight,
@@ -83,7 +73,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             return new RoamingNetworkInfo(TrackerId,
                                           NodeId,
                                           "",
-                                          ExpiredAfter,
+                                          NotBefore,
+                                          NotAfter,
                                           RoamingNetwork.Id,
 
                                           priority,
@@ -121,9 +112,14 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public String               IncomingURL         { get; }
 
         /// <summary>
+        /// When this information becomes valid.
+        /// </summary>
+        public DateTime             NotBefore           { get; }
+
+        /// <summary>
         /// When this information expires.
         /// </summary>
-        public DateTime             ExpiredAfter        { get; }
+        public DateTime             NotAfter            { get; }
 
 
 
@@ -174,7 +170,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
                                   Node_Id               NodeId,
                                   String                IncomingURL,
-                                  DateTime              ExpiredAfter,
+                                  DateTime              NotBefore,
+                                  DateTime              NotAfter,
 
                                   RoamingNetwork_Id     RoamingNetworkId,
                                   Byte                  priority,
@@ -192,7 +189,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             this.TrackerId         = TrackerId;
             this.NodeId            = NodeId;
             this.IncomingURL       = IncomingURL;
-            this.ExpiredAfter      = ExpiredAfter;
+            this.NotBefore         = NotBefore;
+            this.NotAfter          = NotAfter;
 
             this.RoamingNetworkId  = RoamingNetworkId;
 
@@ -218,7 +216,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         public RoamingNetworkInfo(Tracker_Id            TrackerId,
                                   Node_Id               NodeId,
                                   String                IncomingURL,
-                                  DateTime              ExpiredAfter,
+                                  DateTime              NotBefore,
+                                  DateTime              NotAfter,
 
                                   RoamingNetwork        RoamingNetwork,
                                   Byte                  priority,
@@ -235,7 +234,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             : this(TrackerId,
                    NodeId,
                    IncomingURL,
-                   ExpiredAfter,
+                   NotBefore,
+                   NotAfter,
 
                    RoamingNetwork.Id,
                    priority,

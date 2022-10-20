@@ -53,7 +53,6 @@ namespace cloud.charging.open.protocols.WWCP
     public readonly struct ChargingSession_Id : IId,
                                                 IEquatable<ChargingSession_Id>,
                                                 IComparable<ChargingSession_Id>
-
     {
 
         #region Data
@@ -372,7 +371,6 @@ namespace cloud.charging.open.protocols.WWCP
             => InternalId ?? "";
 
         #endregion
-
 
     }
 

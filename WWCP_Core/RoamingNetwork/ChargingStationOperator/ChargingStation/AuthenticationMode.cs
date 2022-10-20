@@ -35,6 +35,26 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
+
+    /// <summary>
+    /// Extension methods for authentication modes.
+    /// </summary>
+    public static class AuthenticationModesExtensions
+    {
+
+        #region ToJSON(this AuthenticationModes)
+
+        public static JArray? ToJSON(this IEnumerable<AuthenticationModes> AuthenticationModes)
+
+            => AuthenticationModes is not null
+                   ? new JArray(AuthenticationModes.SafeSelect(authenticationMode => authenticationMode.ToJSON()))
+                   : null;
+
+        #endregion
+
+    }
+
+
     public class AuthenticationModes : IEquatable<AuthenticationModes>,
                                        IComparable<AuthenticationModes>,
                                        IComparable
@@ -250,14 +270,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             public override JObject ToJSON()
 
-                => new JObject(
+                => JSONObject.Create(
 
                        new JProperty("type",    Type),
                        new JProperty("Number",  Number),
 
-                       StationCode.IsNotNullOrEmpty()
+                       StationCode is not null && StationCode.IsNotNullOrEmpty()
                            ? new JProperty("StationCode",  StationCode)
                            : null
+
                    );
 
             public override String ToString()

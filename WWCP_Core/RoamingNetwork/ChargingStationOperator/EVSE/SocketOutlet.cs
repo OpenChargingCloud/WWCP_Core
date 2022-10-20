@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -28,6 +28,48 @@ namespace cloud.charging.open.protocols.WWCP
 
     public static class SocketOutletExtetions
     {
+
+        #region ToJSON(this SocketOutlet, IncludeParentIds = true)
+
+        public static JObject ToJSON(this SocketOutlet  SocketOutlet,
+                                     Boolean            IncludeParentIds = true)
+
+            => JSONObject.Create(
+
+                   new JProperty("Plug", SocketOutlet.Plug.ToString()),
+
+                   SocketOutlet.CableAttached.HasValue
+                       ? new JProperty("CableAttached", SocketOutlet.CableAttached.ToString())
+                       : null,
+
+                   SocketOutlet.CableLength > 0
+                       ? new JProperty("CableLength",   SocketOutlet.CableLength.  ToString())
+                       : null
+               );
+
+        #endregion
+
+        #region ToJSON(this SocketOutlets, IncludeParentIds = true)
+
+        public static JArray ToJSON(this IEnumerable<SocketOutlet>  SocketOutlets,
+                                    Boolean                         IncludeParentIds = true)
+        {
+
+            #region Initial checks
+
+            if (SocketOutlets == null)
+                return new JArray();
+
+            #endregion
+
+            return SocketOutlets != null && SocketOutlets.Any()
+                       ? new JArray(SocketOutlets.SafeSelect(socket => socket.ToJSON(IncludeParentIds)))
+                       : new JArray();
+
+        }
+
+        #endregion
+
 
         public static Boolean IsDC(this SocketOutlet socketOutlet)
         {

@@ -35,6 +35,68 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for the roaming networks.
+    /// </summary>
+    public static class RoamingNetworkExtensions
+    {
+
+        #region ToJSON(this RoamingNetworks, Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation for the given roaming networks collection.
+        /// </summary>
+        /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
+        /// <param name="Skip">The optional number of roaming networks to skip.</param>
+        /// <param name="Take">The optional number of roaming networks to return.</param>
+        public static JArray ToJSON(this IEnumerable<RoamingNetwork>                           RoamingNetworks,
+                                    Boolean                                                    Embedded                                  = false,
+                                    InfoStatus                                                 ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                 ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+                                    CustomJObjectSerializerDelegate<RoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
+                                    CustomJObjectSerializerDelegate<ChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
+                                    CustomJObjectSerializerDelegate<ChargingPool>?             CustomChargingPoolSerializer              = null,
+                                    CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
+                                    CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null,
+                                    UInt64?                                                    Skip                                      = null,
+                                    UInt64?                                                    Take                                      = null)
+        {
+
+            #region Initial checks
+
+            if (RoamingNetworks is null || !RoamingNetworks.Any())
+                return new JArray();
+
+            #endregion
+
+            return new JArray(RoamingNetworks.
+                                  SkipTakeFilter(Skip, Take).
+                                  Select        (roamingNetwork => roamingNetwork.ToJSON(Embedded,
+                                                                                         ExpandChargingStationOperatorIds,
+                                                                                         ExpandChargingPoolIds,
+                                                                                         ExpandChargingStationIds,
+                                                                                         ExpandEVSEIds,
+                                                                                         ExpandBrandIds,
+                                                                                         ExpandDataLicenses,
+                                                                                         ExpandEMobilityProviderId,
+                                                                                         CustomRoamingNetworkSerializer,
+                                                                                         CustomChargingStationOperatorSerializer,
+                                                                                         CustomChargingPoolSerializer,
+                                                                                         CustomChargingStationSerializer,
+                                                                                         CustomEVSESerializer)));
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// A Electric Vehicle Roaming Network is a service abstraction to allow multiple
     /// independent roaming services to be delivered over the same infrastructure.
     /// This can e.g. be a differentation of service levels (premiun, basic,

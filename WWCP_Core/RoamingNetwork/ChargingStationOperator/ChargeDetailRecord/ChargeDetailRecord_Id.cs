@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -55,7 +53,6 @@ namespace cloud.charging.open.protocols.WWCP
     public readonly struct ChargeDetailRecord_Id : IId,
                                                    IEquatable<ChargeDetailRecord_Id>,
                                                    IComparable<ChargeDetailRecord_Id>
-
     {
 
         #region Data

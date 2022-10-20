@@ -15,8 +15,33 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using Newtonsoft.Json.Linq;
+
+#endregion
+
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// WWCP JSON I/O.
+    /// </summary>
+    public static partial class JSON_IO
+    {
+
+        #region ToJSON(this PaymentOptions)
+
+        public static JArray? ToJSON(this IEnumerable<PaymentOptions> PaymentOptions)
+
+            => PaymentOptions is not null
+                   ? new JArray(PaymentOptions.Select(paymentOption => paymentOption.ToString()))
+                   : null;
+
+        #endregion
+
+    }
+
 
     public enum PaymentOptions
     {

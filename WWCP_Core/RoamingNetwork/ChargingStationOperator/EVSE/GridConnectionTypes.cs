@@ -17,12 +17,31 @@
 
 #region Usings
 
-using System;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// Extension methods for grid connection types.
+    /// </summary>
+    public static class GridConnectionTypesExtensions
+    {
+
+        #region ToJSON(this GridConnection, JPropertyKey)
+
+        public static JProperty ToJSON(this GridConnectionTypes GridConnection, String JPropertyKey)
+
+            => GridConnection != GridConnectionTypes.Unknown
+                   ? new JProperty(JPropertyKey,
+                                   GridConnection.ToString())
+                   : null;
+
+        #endregion
+
+    }
 
     public enum GridConnectionTypes
     {
