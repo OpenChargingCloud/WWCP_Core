@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
             PullEVSEData(DateTime?                                LastCall            = null,
                          GeoCoordinate?                           SearchCenter        = null,
                          Single                                   DistanceKM          = 0f,
-                         eMobilityProvider_Id?                    ProviderId          = null,
+                         EMobilityProvider_Id?                    ProviderId          = null,
                          IEnumerable<ChargingStationOperator_Id>  OperatorIdFilter    = null,
                          IEnumerable<Country>                     CountryCodeFilter   = null,
 

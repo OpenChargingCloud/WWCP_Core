@@ -35,6 +35,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering charging stations.
+    /// </summary>
+    /// <param name="ChargingStation">A charging station to include.</param>
+    public delegate Boolean IncludeChargingStationDelegate(ChargingStation ChargingStation);
+
+
+    /// <summary>
     /// A charging station to charge an electric vehicle.
     /// </summary>
     public class ChargingStation : AEMobilityEntity<ChargingStation_Id,
@@ -2150,7 +2157,7 @@ namespace cloud.charging.open.protocols.WWCP
             Reserve(DateTime?                         StartTime              = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
+                    EMobilityProvider_Id?             ProviderId             = null,
                     RemoteAuthentication              RemoteAuthentication   = null,
                     ChargingProduct                   ChargingProduct        = null,
                     IEnumerable<Auth_Token>           AuthTokens             = null,
@@ -2210,7 +2217,7 @@ namespace cloud.charging.open.protocols.WWCP
                     DateTime?                         ReservationStartTime   = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
+                    EMobilityProvider_Id?             ProviderId             = null,
                     RemoteAuthentication              RemoteAuthentication   = null,
                     ChargingProduct                   ChargingProduct        = null,
                     IEnumerable<Auth_Token>           AuthTokens             = null,
@@ -2641,7 +2648,7 @@ namespace cloud.charging.open.protocols.WWCP
             RemoteStart(ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
+                        EMobilityProvider_Id?    ProviderId             = null,
                         RemoteAuthentication     RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
@@ -2686,7 +2693,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
+                        EMobilityProvider_Id?    ProviderId             = null,
                         RemoteAuthentication     RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
@@ -2864,7 +2871,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
-                       eMobilityProvider_Id?  ProviderId             = null,
+                       EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication   RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,

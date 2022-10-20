@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
         public System_Id               SystemId                { get; }
         public CSORoamingProvider_Id?  CSORoamingProviderId    { get; }
         public EMPRoamingProvider_Id?  EMPRoamingProviderId    { get; }
-        public eMobilityProvider_Id?   ProviderId              { get; }
+        public EMobilityProvider_Id?   ProviderId              { get; }
         public AAuthentication         Authentication          { get; }
 
         public RemoteStopResult        RemoteStopResult        { get; }
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   System_Id               SystemId,
                                   CSORoamingProvider_Id?  CSORoamingProviderId,
                                   EMPRoamingProvider_Id?  EMPRoamingProviderId,
-                                  eMobilityProvider_Id?   ProviderId,
+                                  EMobilityProvider_Id?   ProviderId,
                                   AAuthentication         Authentication,
                                   RemoteStopResult        RemoteStopResult)
         {
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           System_Id.Parse(JSON["systemId"]?.Value<String>()),
                                           JSON["CSORoamingProviderId"] != null                        ? CSORoamingProvider_Id.Parse(JSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?(),
                                           JSON["EMPRoamingProviderId"] != null                        ? EMPRoamingProvider_Id.Parse(JSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?(),
-                                          JSON["providerId"]           != null                        ? eMobilityProvider_Id. Parse(JSON["providerId"]?.Value<String>())           : new eMobilityProvider_Id?(),
+                                          JSON["providerId"]           != null                        ? EMobilityProvider_Id. Parse(JSON["providerId"]?.Value<String>())           : new EMobilityProvider_Id?(),
                                           JSON["authentication"]       is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                           : null,
                                           JSON["remoteStopResult"]     is JObject remoteStopResult    ? RemoteStopResult.     Parse(remoteStopResult)                              : null);
 
@@ -522,7 +522,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean RemoteStop(ChargingSession_Id     Id,
                                   AAuthentication        Authentication,
-                                  eMobilityProvider_Id?  ProviderId,
+                                  EMobilityProvider_Id?  ProviderId,
                                   IEMPRoamingProvider    EMPRoamingProvider,
                                   RemoteStopResult       Result)
         {
@@ -615,7 +615,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean AuthStop(ChargingSession_Id    Id,
                                 AAuthentication       Authentication,
-                                eMobilityProvider_Id  ProviderId,
+                                EMobilityProvider_Id  ProviderId,
                                 IEMPRoamingProvider   CSORoamingProvider  = null)
         {
 

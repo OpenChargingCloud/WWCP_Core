@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the e-mobility service provider.
         /// </summary>
-        eMobilityProvider_Id Id { get; }
+        EMobilityProvider_Id Id { get; }
 
     }
 
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the e-mobility service provider.
         /// </summary>
-        eMobilityProvider_Id  Id            { get; }
+        EMobilityProvider_Id  Id            { get; }
 
         //  Authorizator_Id AuthorizatorId { get; }
 

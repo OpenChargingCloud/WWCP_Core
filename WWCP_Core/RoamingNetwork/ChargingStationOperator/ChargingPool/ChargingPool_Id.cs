@@ -30,6 +30,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering charging pool identifications.
+    /// </summary>
+    /// <param name="ChargingPoolId">A charging pool identification to include.</param>
+    public delegate Boolean IncludeChargingPoolIdDelegate(ChargingPool_Id ChargingPoolId);
+
+
+    /// <summary>
     /// Extension methods for charging pool identifications.
     /// </summary>
     public static class ChargingPoolIdExtensions

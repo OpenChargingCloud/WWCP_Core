@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         [Optional]
-        public eMobilityProvider_Id?  ProviderId          { get; }
+        public EMobilityProvider_Id?  ProviderId          { get; }
 
         [Optional]
         public eMobilityAccount_Id?   eMAId               { get; }
@@ -276,7 +276,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   TimeSpan                          ConsumedReservationTime,
                                   ParkingReservationLevel           ReservationLevel,
 
-                                  eMobilityProvider_Id?             ProviderId          = null,
+                                  EMobilityProvider_Id?             ProviderId          = null,
                                   eMobilityAccount_Id?              eMAId               = null,
 
                                   RoamingNetwork                    RoamingNetwork      = null,

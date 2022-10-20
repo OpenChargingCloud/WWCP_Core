@@ -578,7 +578,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The e-mobility station Operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public eMobilityProvider Provider { get; }
+        public EMobilityProvider Provider { get; }
 
         #endregion
 
@@ -590,7 +590,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the e-mobility station pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal eMobilityStation(eMobilityStation_Id                    Id,
-                                  eMobilityProvider                      Provider,
+                                  EMobilityProvider                      Provider,
                                   Action<eMobilityStation>               Configurator                   = null,
                                   RemoteEMobilityStationCreatorDelegate  RemoteeMobilityStationCreator  = null,
                                   eMobilityStationAdminStatusTypes        AdminStatus                    = eMobilityStationAdminStatusTypes.Operational,

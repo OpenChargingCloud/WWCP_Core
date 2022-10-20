@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The status of an e-mobility provider.
     /// </summary>
-    public enum eMobilityProviderStatusTypes
+    public enum EMobilityProviderStatusTypes
     {
 
         /// <summary>

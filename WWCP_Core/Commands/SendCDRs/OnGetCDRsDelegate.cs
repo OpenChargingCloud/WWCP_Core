@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    RoamingNetwork_Id                RoamingNetworkId,
                                                    DateTime                         From,
                                                    DateTime?                        To,
-                                                   eMobilityProvider_Id?            ProviderId,
+                                                   EMobilityProvider_Id?            ProviderId,
                                                    TimeSpan?                        RequestTimeout);
 
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    RoamingNetwork_Id                RoamingNetworkId,
                                                    DateTime                         From,
                                                    DateTime?                        To,
-                                                   eMobilityProvider_Id?            ProviderId,
+                                                   EMobilityProvider_Id?            ProviderId,
                                                    TimeSpan?                        RequestTimeout,
                                                    IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                                                    TimeSpan                         Runtime);

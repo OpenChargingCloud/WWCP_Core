@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -30,63 +24,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="OperatorId">An operator identification to be mapped.</param>
     public delegate String  CustomOperatorIdMapperDelegate  (String              OperatorId);
 
-
-    /// <summary>
-    /// A delegate for filtering EVSE identifications.
-    /// </summary>
-    /// <param name="EVSEId">An EVSE identification to include.</param>
-    public delegate Boolean IncludeEVSEIdDelegate           (EVSE_Id             EVSEId);
-
-    /// <summary>
-    /// A delegate for filtering EVSEs.
-    /// </summary>
-    /// <param name="EVSE">An EVSE to include.</param>
-    public delegate Boolean IncludeEVSEDelegate             (EVSE                EVSE);
-
     /// <summary>
     /// A delegate for mapping EVSE Ids.
     /// </summary>
     /// <param name="EVSEId">An EVSE to be mapped.</param>
     public delegate String  CustomEVSEIdMapperDelegate      (String              EVSEId);
-
-
-    /// <summary>
-    /// A delegate for filtering charging station identifications.
-    /// </summary>
-    /// <param name="ChargingStationId">A charging station identification to include.</param>
-    public delegate Boolean IncludeChargingStationIdDelegate(ChargingStation_Id  ChargingStationId);
-
-    /// <summary>
-    /// A delegate for filtering charging stations.
-    /// </summary>
-    /// <param name="ChargingStation">A charging station to include.</param>
-    public delegate Boolean IncludeChargingStationDelegate  (ChargingStation     ChargingStation);
-
-
-    /// <summary>
-    /// A delegate for filtering charging pool identifications.
-    /// </summary>
-    /// <param name="ChargingPoolId">A charging pool identification to include.</param>
-    public delegate Boolean IncludeChargingPoolIdDelegate   (ChargingPool_Id     ChargingPoolId);
-
-    /// <summary>
-    /// A delegate for filtering charging pools.
-    /// </summary>
-    /// <param name="ChargingPool">A charging pool to include.</param>
-    public delegate Boolean IncludeChargingPoolDelegate     (ChargingPool        ChargingPool);
-
-
-    /// <summary>
-    /// A delegate for filtering charging station operator identifications.
-    /// </summary>
-    /// <param name="ChargingStationOperatorId">A charging station operator identification to include.</param>
-    public delegate Boolean IncludeChargingStationOperatorIdDelegate   (ChargingStationOperator_Id ChargingStationOperatorId);
-
-    /// <summary>
-    /// A delegate for filtering charging station operators.
-    /// </summary>
-    /// <param name="ChargingStationOperator">A charging station operator to include.</param>
-    public delegate Boolean IncludeChargingStationOperatorDelegate(ChargingStationOperator ChargingStationOperator);
-
 
 }

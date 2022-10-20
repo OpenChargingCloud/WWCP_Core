@@ -35,6 +35,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering charging pools.
+    /// </summary>
+    /// <param name="ChargingPool">A charging pool to include.</param>
+    public delegate Boolean IncludeChargingPoolDelegate(ChargingPool ChargingPool);
+
+
+    /// <summary>
     /// A pool of electric vehicle charging stations.
     /// The geo locations of these charging stations will be close together and the charging pool
     /// might provide a shared network access to aggregate and optimize communication
@@ -2374,7 +2381,7 @@ namespace cloud.charging.open.protocols.WWCP
             Reserve(DateTime?                         StartTime              = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
+                    EMobilityProvider_Id?             ProviderId             = null,
                     RemoteAuthentication              RemoteAuthentication   = null,
                     ChargingProduct                   ChargingProduct        = null,
                     IEnumerable<Auth_Token>           AuthTokens             = null,
@@ -2434,7 +2441,7 @@ namespace cloud.charging.open.protocols.WWCP
                     DateTime?                         ReservationStartTime   = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
+                    EMobilityProvider_Id?             ProviderId             = null,
                     RemoteAuthentication              RemoteAuthentication   = null,
                     ChargingProduct                   ChargingProduct        = null,
                     IEnumerable<Auth_Token>           AuthTokens             = null,
@@ -2623,7 +2630,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId         = null,
+                              EMobilityProvider_Id?                  ProviderId         = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
@@ -2865,7 +2872,7 @@ namespace cloud.charging.open.protocols.WWCP
             RemoteStart(ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
+                        EMobilityProvider_Id?    ProviderId             = null,
                         RemoteAuthentication     RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
@@ -2910,7 +2917,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
+                        EMobilityProvider_Id?    ProviderId             = null,
                         RemoteAuthentication     RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
@@ -3089,7 +3096,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
-                       eMobilityProvider_Id?  ProviderId             = null,
+                       EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication   RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,

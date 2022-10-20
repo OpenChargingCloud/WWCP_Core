@@ -17,14 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Threading;
 
 #endregion
 
@@ -141,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             GetChargeDetailRecords(DateTime               From,
                                    DateTime?              To                  = null,
-                                   eMobilityProvider_Id?  ProviderId          = null,
+                                   EMobilityProvider_Id?  ProviderId          = null,
 
                                    DateTime?              Timestamp           = null,
                                    CancellationToken?     CancellationToken   = null,

@@ -542,13 +542,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ProviderStart
 
-        private eMobilityProvider_Id? _ProviderIdStart;
+        private EMobilityProvider_Id? _ProviderIdStart;
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id? ProviderIdStart
+        public EMobilityProvider_Id? ProviderIdStart
         {
 
             get
@@ -564,9 +564,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        private eMobilityProvider _ProviderStart;
+        private EMobilityProvider _ProviderStart;
 
-        public eMobilityProvider ProviderStart
+        public EMobilityProvider ProviderStart
         {
 
             get
@@ -586,13 +586,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ProviderStop
 
-        private eMobilityProvider_Id? _ProviderIdStop;
+        private EMobilityProvider_Id? _ProviderIdStop;
 
         /// <summary>
         /// The identification of the e-mobility provider used for stopping this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id? ProviderIdStop
+        public EMobilityProvider_Id? ProviderIdStop
         {
 
             get
@@ -608,9 +608,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        private eMobilityProvider _ProviderStop;
+        private EMobilityProvider _ProviderStop;
 
-        public eMobilityProvider ProviderStop
+        public EMobilityProvider ProviderStop
         {
 
             get
@@ -1184,7 +1184,7 @@ namespace cloud.charging.open.protocols.WWCP
                     session.SystemIdStart              = sessionStartJSON["systemId"]             != null                  ? System_Id.            Parse(sessionStartJSON["systemId"]?.            Value<String>()) : new System_Id?();
                     session.EMPRoamingProviderIdStart  = sessionStartJSON["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStartJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
                     session.CSORoamingProviderIdStart  = sessionStartJSON["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStartJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                    session.ProviderIdStart            = sessionStartJSON["providerId"]           != null                  ? eMobilityProvider_Id. Parse(sessionStartJSON["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                    session.ProviderIdStart            = sessionStartJSON["providerId"]           != null                  ? EMobilityProvider_Id. Parse(sessionStartJSON["providerId"]?.Value<String>())           : new EMobilityProvider_Id?();
                     session.AuthenticationStart        = sessionStartJSON["authentication"] is JObject authenticationStart ? RemoteAuthentication. Parse(authenticationStart)                                       : null;
 
                 }
@@ -1202,7 +1202,7 @@ namespace cloud.charging.open.protocols.WWCP
                         session.SystemIdStop               = sessionStopJSON["systemId"]             != null                  ? System_Id.            Parse(sessionStopJSON["systemId"]?.            Value<String>()) : new System_Id?();
                         session.EMPRoamingProviderIdStop   = sessionStopJSON["EMPRoamingProviderId"] != null                  ? EMPRoamingProvider_Id.Parse(sessionStopJSON["EMPRoamingProviderId"]?.Value<String>()) : new EMPRoamingProvider_Id?();
                         session.CSORoamingProviderIdStop   = sessionStopJSON["CSORoamingProviderId"] != null                  ? CSORoamingProvider_Id.Parse(sessionStopJSON["CSORoamingProviderId"]?.Value<String>()) : new CSORoamingProvider_Id?();
-                        session.ProviderIdStop             = sessionStopJSON["providerId"]           != null                  ? eMobilityProvider_Id. Parse(sessionStopJSON["providerId"]?.Value<String>())           : new eMobilityProvider_Id?();
+                        session.ProviderIdStop             = sessionStopJSON["providerId"]           != null                  ? EMobilityProvider_Id. Parse(sessionStopJSON["providerId"]?.Value<String>())           : new EMobilityProvider_Id?();
                         session.AuthenticationStop         = sessionStopJSON["authentication"] is JObject authenticationStop  ? LocalAuthentication.  Parse(authenticationStop)                                       : null;
 
                     }

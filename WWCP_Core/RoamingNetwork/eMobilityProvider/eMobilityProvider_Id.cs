@@ -67,9 +67,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of an e-mobility provider.
     /// </summary>
-    public struct eMobilityProvider_Id : IId,
-                                         IEquatable<eMobilityProvider_Id>,
-                                         IComparable<eMobilityProvider_Id>
+    public struct EMobilityProvider_Id : IId,
+                                         IEquatable<EMobilityProvider_Id>,
+                                         IComparable<EMobilityProvider_Id>
 
     {
 
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CountryCode">The country code.</param>
         /// <param name="Suffix">The suffix of the e-mobility provider identification.</param>
         /// <param name="Format">The format of the e-mobility provider identification.</param>
-        private eMobilityProvider_Id(Country            CountryCode,
+        private EMobilityProvider_Id(Country            CountryCode,
                                      String             Suffix,
                                      ProviderIdFormats  Format = ProviderIdFormats.ISO_HYPHEN)
         {
@@ -168,10 +168,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given text representation of an e-mobility provider identification.
         /// </summary>
         /// <param name="Text">A text representation of an e-mobility provider identification.</param>
-        public static eMobilityProvider_Id Parse(String Text)
+        public static EMobilityProvider_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out eMobilityProvider_Id providerId))
+            if (TryParse(Text, out EMobilityProvider_Id providerId))
                 return providerId;
 
             throw new ArgumentException("Unknown country code in the given text representation of an e-mobility provider identification: '" + Text + "'!",
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CountryCode">A country code.</param>
         /// <param name="Suffix">The suffix of an e-mobility provider identification.</param>
         /// <param name="IdFormat">The optional format of the e-mobility provider identification.</param>
-        public static eMobilityProvider_Id Parse(Country            CountryCode,
+        public static EMobilityProvider_Id Parse(Country            CountryCode,
                                                  String             Suffix,
                                                  ProviderIdFormats  IdFormat = ProviderIdFormats.ISO_HYPHEN)
         {
@@ -235,10 +235,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Try to parse the given text representation of an e-mobility provider identification.
         /// </summary>
         /// <param name="Text">A text representation of an e-mobility provider identification.</param>
-        public static eMobilityProvider_Id? TryParse(String Text)
+        public static EMobilityProvider_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out eMobilityProvider_Id providerId))
+            if (TryParse(Text, out EMobilityProvider_Id providerId))
                 return providerId;
 
             return default;
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Text">A text representation of an e-mobility provider identification.</param>
         /// <param name="ProviderId">The parsed e-mobility provider identification.</param>
         public static Boolean TryParse(String                    Text,
-                                       out eMobilityProvider_Id  ProviderId)
+                                       out EMobilityProvider_Id  ProviderId)
         {
 
             #region Initial checks
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out Country countryCode))
                 {
 
-                    ProviderId = new eMobilityProvider_Id(countryCode,
+                    ProviderId = new EMobilityProvider_Id(countryCode,
                                                           MatchCollection[0].Groups[3].Value,
                                                           MatchCollection[0].Groups[2].Value switch {
                                                               "-" => ProviderIdFormats.ISO_HYPHEN,
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IdFormat">The optional format of the e-mobility provider identification.</param>
         public static Boolean TryParse(Country                   CountryCode,
                                        String                    Suffix,
-                                       out eMobilityProvider_Id  ProviderId,
+                                       out EMobilityProvider_Id  ProviderId,
                                        ProviderIdFormats         IdFormat = ProviderIdFormats.ISO_HYPHEN)
         {
 
@@ -355,9 +355,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a new e-mobility provider identification in the given format.
         /// </summary>
         /// <param name="NewFormat">The new e-mobility provider identification format.</param>
-        public eMobilityProvider_Id ChangeFormat(ProviderIdFormats NewFormat)
+        public EMobilityProvider_Id ChangeFormat(ProviderIdFormats NewFormat)
 
-            => new eMobilityProvider_Id(CountryCode,
+            => new EMobilityProvider_Id(CountryCode,
                                         Suffix,
                                         NewFormat);
 
@@ -368,9 +368,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this e-mobility provider identification.
         /// </summary>
-        public eMobilityProvider_Id Clone
+        public EMobilityProvider_Id Clone
 
-            => new eMobilityProvider_Id(CountryCode,
+            => new EMobilityProvider_Id(CountryCode,
                                         new String(Suffix.ToCharArray()),
                                         Format);
 
@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId1">An e-mobility provider identification.</param>
         /// <param name="ProviderId2">Another e-mobility provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eMobilityProvider_Id ProviderId1, eMobilityProvider_Id ProviderId2)
+        public static Boolean operator == (EMobilityProvider_Id ProviderId1, EMobilityProvider_Id ProviderId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId1">An e-mobility provider identification.</param>
         /// <param name="ProviderId2">Another e-mobility provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eMobilityProvider_Id ProviderId1, eMobilityProvider_Id ProviderId2)
+        public static Boolean operator != (EMobilityProvider_Id ProviderId1, EMobilityProvider_Id ProviderId2)
             => !(ProviderId1 == ProviderId2);
 
         #endregion
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId1">An e-mobility provider identification.</param>
         /// <param name="ProviderId2">Another e-mobility provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMobilityProvider_Id ProviderId1, eMobilityProvider_Id ProviderId2)
+        public static Boolean operator < (EMobilityProvider_Id ProviderId1, EMobilityProvider_Id ProviderId2)
         {
 
             if ((Object) ProviderId1 == null)
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId1">An e-mobility provider identification.</param>
         /// <param name="ProviderId2">Another e-mobility provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMobilityProvider_Id ProviderId1, eMobilityProvider_Id ProviderId2)
+        public static Boolean operator <= (EMobilityProvider_Id ProviderId1, EMobilityProvider_Id ProviderId2)
             => !(ProviderId1 > ProviderId2);
 
         #endregion
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId1">An e-mobility provider identification.</param>
         /// <param name="ProviderId2">Another e-mobility provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMobilityProvider_Id ProviderId1, eMobilityProvider_Id ProviderId2)
+        public static Boolean operator > (EMobilityProvider_Id ProviderId1, EMobilityProvider_Id ProviderId2)
         {
 
             if ((Object) ProviderId1 == null)
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId1">An e-mobility provider identification.</param>
         /// <param name="ProviderId2">Another e-mobility provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMobilityProvider_Id ProviderId1, eMobilityProvider_Id ProviderId2)
+        public static Boolean operator >= (EMobilityProvider_Id ProviderId1, EMobilityProvider_Id ProviderId2)
             => !(ProviderId1 < ProviderId2);
 
         #endregion
@@ -499,10 +499,10 @@ namespace cloud.charging.open.protocols.WWCP
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            if (!(Object is eMobilityProvider_Id))
+            if (!(Object is EMobilityProvider_Id))
                 throw new ArgumentException("The given object is not an e-mobility provider identification!", nameof(Object));
 
-            return CompareTo((eMobilityProvider_Id) Object);
+            return CompareTo((EMobilityProvider_Id) Object);
 
         }
 
@@ -514,7 +514,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="ProviderId">An object to compare with.</param>
-        public Int32 CompareTo(eMobilityProvider_Id ProviderId)
+        public Int32 CompareTo(EMobilityProvider_Id ProviderId)
         {
 
             if ((Object) ProviderId == null)
@@ -554,10 +554,10 @@ namespace cloud.charging.open.protocols.WWCP
             if (Object == null)
                 return false;
 
-            if (!(Object is eMobilityProvider_Id))
+            if (!(Object is EMobilityProvider_Id))
                 return false;
 
-            return Equals((eMobilityProvider_Id) Object);
+            return Equals((EMobilityProvider_Id) Object);
 
         }
 
@@ -570,7 +570,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ProviderId">An e-mobility provider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMobilityProvider_Id ProviderId)
+        public Boolean Equals(EMobilityProvider_Id ProviderId)
         {
 
             if ((Object) ProviderId == null)

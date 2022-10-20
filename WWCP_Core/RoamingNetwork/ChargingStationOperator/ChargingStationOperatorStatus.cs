@@ -209,8 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingStationOperatorStatus Snapshot(ChargingStationOperator ChargingStationOperator)
 
             => new (ChargingStationOperator.Id,
-                    ChargingStationOperator.Status.Value,
-                    ChargingStationOperator.Status.Timestamp);
+                    ChargingStationOperator.Status);
 
         #endregion
 
@@ -225,7 +224,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationOperatorStatus1">A charging station operator status.</param>
         /// <param name="ChargingStationOperatorStatus2">Another charging station operator status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStationOperatorStatus ChargingStationOperatorStatus1, ChargingStationOperatorStatus ChargingStationOperatorStatus2)
+        public static Boolean operator == (ChargingStationOperatorStatus ChargingStationOperatorStatus1,
+                                           ChargingStationOperatorStatus ChargingStationOperatorStatus2)
         {
 
             // If both are null, or both are same instance, return true.

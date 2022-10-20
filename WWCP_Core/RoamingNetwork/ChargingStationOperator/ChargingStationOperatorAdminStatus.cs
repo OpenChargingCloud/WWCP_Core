@@ -209,8 +209,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingStationOperatorAdminStatus Snapshot(ChargingStationOperator ChargingStationOperator)
 
             => new (ChargingStationOperator.Id,
-                    ChargingStationOperator.AdminStatus.Value,
-                    ChargingStationOperator.AdminStatus.Timestamp);
+                    ChargingStationOperator.AdminStatus);
 
         #endregion
 

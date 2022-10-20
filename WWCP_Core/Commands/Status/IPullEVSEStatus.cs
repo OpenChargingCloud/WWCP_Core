@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
                            GeoCoordinate?         SearchCenter        = null,
                            Single                 DistanceKM          = 0f,
                            EVSEStatusTypes?       EVSEStatusFilter    = null,
-                           eMobilityProvider_Id?  ProviderId          = null,
+                           EMobilityProvider_Id?  ProviderId          = null,
 
                            DateTime?              Timestamp           = null,
                            CancellationToken?     CancellationToken   = null,

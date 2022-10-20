@@ -180,13 +180,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// The identification of the e-mobility provider used for starting this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id?            ProviderIdStart        { get; }
+        public EMobilityProvider_Id?            ProviderIdStart        { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for stopping this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id?            ProviderIdStop         { get; }
+        public EMobilityProvider_Id?            ProviderIdStop         { get; }
 
         #endregion
 
@@ -328,8 +328,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                   AAuthentication?                            AuthenticationStart         = null,
                                   AAuthentication?                            AuthenticationStop          = null,
-                                  eMobilityProvider_Id?                       ProviderIdStart             = null,
-                                  eMobilityProvider_Id?                       ProviderIdStop              = null,
+                                  EMobilityProvider_Id?                       ProviderIdStart             = null,
+                                  EMobilityProvider_Id?                       ProviderIdStop              = null,
 
                                   ChargingReservation?                        Reservation                 = null,
                                   ChargingReservation_Id?                     ReservationId               = null,

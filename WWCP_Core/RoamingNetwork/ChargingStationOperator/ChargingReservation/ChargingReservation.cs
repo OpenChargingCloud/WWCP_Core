@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingReservationLevel  ReservationLevel           { get; }
 
         [Optional]
-        public eMobilityProvider_Id?     ProviderId                 { get; }
+        public EMobilityProvider_Id?     ProviderId                 { get; }
 
         public EMPRoamingProvider_Id?    EMPRoamingProviderId       { get; internal set; }
 
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    TimeSpan                          ConsumedReservationTime,
                                    ChargingReservationLevel          ReservationLevel,
 
-                                   eMobilityProvider_Id?             ProviderId                  = null,
+                                   EMobilityProvider_Id?             ProviderId                  = null,
                                    RemoteAuthentication              StartAuthentication         = null,
 
                                    RoamingNetwork_Id?                RoamingNetworkId            = null,

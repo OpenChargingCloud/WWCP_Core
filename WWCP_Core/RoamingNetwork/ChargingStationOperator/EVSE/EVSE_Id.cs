@@ -27,6 +27,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering EVSE identifications.
+    /// </summary>
+    /// <param name="EVSEId">An EVSE identification to include.</param>
+    public delegate Boolean IncludeEVSEIdDelegate(EVSE_Id EVSEId);
+
+
+    /// <summary>
     /// Extension methods for Electric Vehicle Supply Equipment (EVSE) identifications.
     /// </summary>
     public static class EVSEIdExtensions

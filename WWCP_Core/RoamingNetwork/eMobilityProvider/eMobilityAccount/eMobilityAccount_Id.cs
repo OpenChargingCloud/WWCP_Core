@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The e-mobility provider identification.
         /// </summary>
-        public eMobilityProvider_Id  ProviderId    { get; }
+        public EMobilityProvider_Id  ProviderId    { get; }
 
         /// <summary>
         /// The suffix of the identification.
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Suffix">The suffix of the electric mobility account identification.</param>
         /// <param name="CheckDigit">An optional check digit of the electric mobility account identification.</param>
         private eMobilityAccount_Id(String                InternalId,
-                                    eMobilityProvider_Id  ProviderId,
+                                    EMobilityProvider_Id  ProviderId,
                                     String                Suffix,
                                     Char?                 CheckDigit = null)
         {
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
         /// <param name="Suffix">The suffix of the electric vehicle contract identification.</param>
-        public static eMobilityAccount_Id Parse(eMobilityProvider_Id  ProviderId,
+        public static eMobilityAccount_Id Parse(EMobilityProvider_Id  ProviderId,
                                     String       Suffix)
         {
 
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 // ISO: DE-GDF-C12022187-X, DEGDFC12022187X
-                if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out eMobilityProvider_Id providerId))
+                if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out EMobilityProvider_Id providerId))
                 {
 
                     eMobilityAccountId = new eMobilityAccount_Id(Text,
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 // DIN: DE*GDF*0010LY*3, DE-GDF-0010LY-3, DEGDF0010LY3
-                if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[4].Value,  out providerId))
+                if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[4].Value,  out providerId))
                 {
 
                     if (providerId.Format == ProviderIdFormats.ISO_HYPHEN)

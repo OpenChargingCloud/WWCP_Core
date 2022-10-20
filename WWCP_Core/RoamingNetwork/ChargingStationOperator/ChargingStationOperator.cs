@@ -17,28 +17,36 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
 using System.Collections;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
-using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
+using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// A delegate for filtering charging station operator identifications.
+    /// </summary>
+    /// <param name="ChargingStationOperatorId">A charging station operator identification to include.</param>
+    public delegate Boolean IncludeChargingStationOperatorIdDelegate(ChargingStationOperator_Id  ChargingStationOperatorId);
+
+    /// <summary>
+    /// A delegate for filtering charging station operators.
+    /// </summary>
+    /// <param name="ChargingStationOperator">A charging station operator to include.</param>
+    public delegate Boolean IncludeChargingStationOperatorDelegate  (ChargingStationOperator     ChargingStationOperator);
+
 
     /// <summary>
     /// WWCP JSON I/O charging station extentions.
@@ -4665,7 +4673,7 @@ namespace cloud.charging.open.protocols.WWCP
             Reserve(DateTime?                         StartTime              = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
+                    EMobilityProvider_Id?             ProviderId             = null,
                     RemoteAuthentication              RemoteAuthentication   = null,
                     ChargingProduct                   ChargingProduct        = null,
                     IEnumerable<Auth_Token>           AuthTokens             = null,
@@ -4725,7 +4733,7 @@ namespace cloud.charging.open.protocols.WWCP
                     DateTime?                         ReservationStartTime   = null,
                     TimeSpan?                         Duration               = null,
                     ChargingReservation_Id?           ReservationId          = null,
-                    eMobilityProvider_Id?             ProviderId             = null,
+                    EMobilityProvider_Id?             ProviderId             = null,
                     RemoteAuthentication              RemoteAuthentication   = null,
                     ChargingProduct                   ChargingProduct        = null,
                     IEnumerable<Auth_Token>           AuthTokens             = null,
@@ -5150,7 +5158,7 @@ namespace cloud.charging.open.protocols.WWCP
                         ChargingProduct          ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
-                        eMobilityProvider_Id?    ProviderId             = null,
+                        EMobilityProvider_Id?    ProviderId             = null,
                         RemoteAuthentication     RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
@@ -5317,7 +5325,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
-                       eMobilityProvider_Id?  ProviderId             = null,
+                       EMobilityProvider_Id?  ProviderId             = null,
                        RemoteAuthentication   RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,

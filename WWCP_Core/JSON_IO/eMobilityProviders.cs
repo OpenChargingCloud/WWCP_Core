@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
         /// </summary>
         /// <param name="eMobilityProvider">An e-mobility provider.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
-        public static JObject? ToJSON(this eMobilityProvider  eMobilityProvider,
+        public static JObject? ToJSON(this EMobilityProvider  eMobilityProvider,
                                       Boolean                 Embedded                 = false,
                                       InfoStatus              ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
                                       InfoStatus              ExpandBrandIds           = InfoStatus.ShowIdOnly,
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
         /// <param name="eMobilityProviders">An enumeration of e-mobility providers.</param>
         /// <param name="Skip">The optional number of e-mobility providers to skip.</param>
         /// <param name="Take">The optional number of e-mobility providers to return.</param>
-        public static JArray ToJSON(this IEnumerable<eMobilityProvider>  eMobilityProviders,
+        public static JArray ToJSON(this IEnumerable<EMobilityProvider>  eMobilityProviders,
                                     UInt64?                              Skip                     = null,
                                     UInt64?                              Take                     = null,
                                     Boolean                              Embedded                 = false,
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this eMobilityProviderAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>>  eMobilityProviderAdminStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusTypes>>>>  eMobilityProviderAdminStatus,
                                      UInt64?                                                                                                            Skip         = null,
                                      UInt64?                                                                                                            Take         = null,
                                      UInt64                                                                                                             HistorySize  = 1)
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
             if (eMobilityProviderAdminStatus == null || !eMobilityProviderAdminStatus.Any())
                 return new JObject();
 
-            var _eMobilityProviderAdminStatus = new Dictionary<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>();
+            var _eMobilityProviderAdminStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusTypes>>>();
 
             #endregion
 
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
 
         #region ToJSON(this eMobilityProviderStatus,      Skip = null, Take = null, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>>  eMobilityProviderStatus,
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusTypes>>>>  eMobilityProviderStatus,
                                      UInt64?                                                                                                       Skip         = null,
                                      UInt64?                                                                                                       Take         = null,
                                      UInt64?                                                                                                       HistorySize  = 1)
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
             if (eMobilityProviderStatus == null || !eMobilityProviderStatus.Any())
                 return new JObject();
 
-            var _eMobilityProviderStatus = new Dictionary<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>();
+            var _eMobilityProviderStatus = new Dictionary<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusTypes>>>();
 
             #endregion
 

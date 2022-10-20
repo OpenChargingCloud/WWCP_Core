@@ -177,9 +177,9 @@ namespace cloud.charging.open.protocols.WWCP.Networking
                                                                                          LocalRoamingNetwork != null
                                                                                              ? new JProperty("statistics",        JSONObject.Create(
                                                                                                    new JProperty("EVSEOperators",                 LocalRoamingNetwork?.ChargingStationOperators.Count()),
-                                                                                                   new JProperty("EVServiceProviders",            LocalRoamingNetwork?.eMobilityProviders.Count()),
+                                                                                                   new JProperty("EVServiceProviders",            LocalRoamingNetwork?.EMobilityProviders.Count()),
                                                                                                    new JProperty("EMPRoamingProviders",           LocalRoamingNetwork?.EMPRoamingProviders.Count()),
-                                                                                                   new JProperty("EVSEOperatorRoamingProviders",  LocalRoamingNetwork?.ChargingStationOperatorRoamingProviders.Count()),
+                                                                                                   new JProperty("EVSEOperatorRoamingProviders",  LocalRoamingNetwork?.CSORoamingProviders.Count()),
                                                                                                    new JProperty("chargingPools",                 LocalRoamingNetwork?.ChargingPools.   Count()),
                                                                                                    new JProperty("chargingStations",              LocalRoamingNetwork?.ChargingStations.Count()),
                                                                                                    new JProperty("EVSEs",                         LocalRoamingNetwork?.EVSEs.           Count())

@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the e-mobility provider.
         /// </summary>
-        public eMobilityProvider_Id?        ProviderId                    { get; }
+        public EMobilityProvider_Id?        ProviderId                    { get; }
 
         /// <summary>
         /// A optional description of the authorize start result, e.g. in case of an error.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 IEnumerable<Auth_Token>?      ListOfAuthStopTokens         = null,
                                 IEnumerable<UInt32>?          ListOfAuthStopPINs           = null,
 
-                                eMobilityProvider_Id?         ProviderId                   = null,
+                                EMobilityProvider_Id?         ProviderId                   = null,
                                 I18NString?                   Description                  = null,
                                 I18NString?                   AdditionalInfo               = null,
                                 Byte                          NumberOfRetries              = 0,
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ListOfAuthStopTokens        = ListOfAuthStopTokens ?? Array.Empty<Auth_Token>();
             this.ListOfAuthStopPINs          = ListOfAuthStopPINs   ?? Array.Empty<UInt32>();
 
-            this.ProviderId                  = ProviderId           ?? new eMobilityProvider_Id?();
+            this.ProviderId                  = ProviderId           ?? new EMobilityProvider_Id?();
             this.Description                 = Description          ?? I18NString.Empty;
             this.AdditionalInfo              = AdditionalInfo       ?? I18NString.Empty;
             this.NumberOfRetries             = NumberOfRetries;
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
                                   IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                                  eMobilityProvider_Id?         ProviderId             = null,
+                                  EMobilityProvider_Id?         ProviderId             = null,
                                   I18NString?                   Description            = null,
                                   I18NString?                   AdditionalInfo         = null,
                                   Byte                          NumberOfRetries        = 0,
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
                                   IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                                  eMobilityProvider_Id?         ProviderId             = null,
+                                  EMobilityProvider_Id?         ProviderId             = null,
                                   I18NString?                   Description            = null,
                                   I18NString?                   AdditionalInfo         = null,
                                   Byte                          NumberOfRetries        = 0,
@@ -782,7 +782,7 @@ namespace cloud.charging.open.protocols.WWCP
                        IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
                        IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                       eMobilityProvider_Id?         ProviderId             = null,
+                       EMobilityProvider_Id?         ProviderId             = null,
                        I18NString?                   Description            = null,
                        I18NString?                   AdditionalInfo         = null,
                        Byte                          NumberOfRetries        = 0,
@@ -851,7 +851,7 @@ namespace cloud.charging.open.protocols.WWCP
                        IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
                        IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
-                       eMobilityProvider_Id?         ProviderId             = null,
+                       EMobilityProvider_Id?         ProviderId             = null,
                        I18NString?                   Description            = null,
                        I18NString?                   AdditionalInfo         = null,
                        Byte                          NumberOfRetries        = 0,
@@ -898,7 +898,7 @@ namespace cloud.charging.open.protocols.WWCP
             NotAuthorized(IId                      AuthorizatorId,
                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                           ChargingSession_Id?      SessionId        = null,
-                          eMobilityProvider_Id?    ProviderId       = null,
+                          EMobilityProvider_Id?    ProviderId       = null,
                           I18NString               Description      = null,
                           I18NString               AdditionalInfo   = null,
                           TimeSpan?                Runtime          = null)
@@ -930,7 +930,7 @@ namespace cloud.charging.open.protocols.WWCP
             NotAuthorized(IId                         AuthorizatorId,
                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                           ChargingSession_Id?         SessionId        = null,
-                          eMobilityProvider_Id?       ProviderId       = null,
+                          EMobilityProvider_Id?       ProviderId       = null,
                           I18NString                  Description      = null,
                           I18NString                  AdditionalInfo   = null,
                           TimeSpan?                   Runtime          = null)
@@ -964,7 +964,7 @@ namespace cloud.charging.open.protocols.WWCP
             Blocked(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                     ChargingSession_Id?      SessionId        = null,
-                    eMobilityProvider_Id?    ProviderId       = null,
+                    EMobilityProvider_Id?    ProviderId       = null,
                     I18NString               Description      = null,
                     I18NString               AdditionalInfo   = null,
                     TimeSpan?                Runtime          = null)
@@ -996,7 +996,7 @@ namespace cloud.charging.open.protocols.WWCP
             Blocked(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                     ChargingSession_Id?         SessionId        = null,
-                    eMobilityProvider_Id?       ProviderId       = null,
+                    EMobilityProvider_Id?       ProviderId       = null,
                     I18NString                  Description      = null,
                     I18NString                  AdditionalInfo   = null,
                     TimeSpan?                   Runtime          = null)

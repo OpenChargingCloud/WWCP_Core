@@ -29,6 +29,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering charging station identifications.
+    /// </summary>
+    /// <param name="ChargingStationId">A charging station identification to include.</param>
+    public delegate Boolean IncludeChargingStationIdDelegate(ChargingStation_Id ChargingStationId);
+
+
+    /// <summary>
     /// Extension methods for charging station identifications.
     /// </summary>
     public static class ChargingStationIdExtensions

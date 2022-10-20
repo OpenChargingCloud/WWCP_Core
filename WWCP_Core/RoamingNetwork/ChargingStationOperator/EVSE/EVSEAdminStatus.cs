@@ -208,8 +208,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public static EVSEAdminStatus Snapshot(EVSE EVSE)
 
-            => new EVSEAdminStatus(EVSE.Id,
-                                   EVSE.AdminStatus);
+            => new (EVSE.Id,
+                    EVSE.AdminStatus);
 
         #endregion
 

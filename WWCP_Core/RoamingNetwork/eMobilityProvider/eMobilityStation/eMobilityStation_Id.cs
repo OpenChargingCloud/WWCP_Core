@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The the e-mobility provider identification.
         /// </summary>
-        public eMobilityProvider_Id  ProviderId  { get; }
+        public EMobilityProvider_Id  ProviderId  { get; }
 
         /// <summary>
         /// The suffix of the identification.
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new e-mobility station identification
         /// based on the given string.
         /// </summary>
-        private eMobilityStation_Id(eMobilityProvider_Id  ProviderId,
+        private eMobilityStation_Id(EMobilityProvider_Id  ProviderId,
                                     String                Suffix)
         {
 
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
-        public static eMobilityStation_Id Random(eMobilityProvider_Id   ProviderId,
+        public static eMobilityStation_Id Random(EMobilityProvider_Id   ProviderId,
                                                  Func<String, String>?  Mapper   = null)
 
             => new (ProviderId,
@@ -154,21 +154,21 @@ namespace cloud.charging.open.protocols.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal e-mobility station identification '" + Text + "'!", nameof(Text));
 
-            eMobilityProvider_Id __EVSEOperatorId;
+            EMobilityProvider_Id __EVSEOperatorId;
 
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 return new eMobilityStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[2].Value);
 
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 return new eMobilityStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[4].Value);
 
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
+            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
                 return new eMobilityStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[6].Value);
 
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
+            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
                 return new eMobilityStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[8].Value);
 
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ProviderId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Suffix">A text representation of a charging station identification.</param>
-        public static eMobilityStation_Id Parse(eMobilityProvider_Id  ProviderId,
+        public static eMobilityStation_Id Parse(EMobilityProvider_Id  ProviderId,
                                                 String                Suffix)
         {
 
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
                     return false;
 
                 // New format...
-                if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out eMobilityProvider_Id eMobilityProviderId))
+                if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out EMobilityProvider_Id eMobilityProviderId))
                 {
 
                     eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
                 // Old format...
-                else if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[3].Value, out eMobilityProviderId))
+                else if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[3].Value, out eMobilityProviderId))
                 {
 
                     eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
                 // New format without the 'S'...
-                else if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[5].Value, out eMobilityProviderId))
+                else if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[5].Value, out eMobilityProviderId))
                 {
 
                     eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
                 // Old format without the 'S'...
-                else if (eMobilityProvider_Id.TryParse(matchCollection[0].Groups[7].Value, out eMobilityProviderId))
+                else if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[7].Value, out eMobilityProviderId))
                 {
 
                     eMobilityStationId = new eMobilityStation_Id(eMobilityProviderId,
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Suffix">A text representation of a charging station identification.</param>
         /// <param name="eMobilityStationId">The parsed charging station identification.</param>
-        public static Boolean TryParse(eMobilityProvider_Id      OperatorId,
+        public static Boolean TryParse(EMobilityProvider_Id      OperatorId,
                                        String                    Suffix,
                                        out eMobilityStation_Id?  eMobilityStationId)
         {

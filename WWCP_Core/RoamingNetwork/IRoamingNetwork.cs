@@ -340,38 +340,62 @@ namespace cloud.charging.open.protocols.WWCP
         ChargingSessionsStore       SessionsStore               { get; }
 
 
+        #region EMPRoamingProviders
+
         Boolean TryGetEMPRoamingProviderById(EMPRoamingProvider_Id Id, out IEMPRoamingProvider EMPRoamingProvider);
         IEMPRoamingProvider GetEMPRoamingProviderById(EMPRoamingProvider_Id Id);
 
         IEnumerable<IEMPRoamingProvider> EMPRoamingProviders { get; }
 
-
-
-        #region EMobilityProviders
-
-        Boolean            ContainsEMobilityProvider(eMobilityProvider    EMobilityProvider);
-        Boolean            ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId);
-
-        eMobilityProvider  GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId);
-
-        IEnumerable<eMobilityProvider>                                                                                eMobilityProviders              { get; }
-        IEnumerable<eMobilityProvider_Id>                                                                             eMobilityProviderIds            { get; }
-        IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>>  eMobilityProviderAdminStatus    { get; }
-        IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>>       eMobilityProviderStatus         { get; }
-
-        eMobilityProvider?  CreateEMobilityProvider(eMobilityProvider_Id                           ProviderId,
-                                                    I18NString?                                    Name                             = null,
-                                                    I18NString?                                    Description                      = null,
-                                                    eMobilityProviderPriority?                     Priority                         = null,
-                                                    Action<eMobilityProvider>?                     Configurator                     = null,
-                                                    RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
-                                                    eMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
-                                                    eMobilityProviderStatusTypes?                  InitialStatus                    = null,
-                                                    Action<eMobilityProvider>?                     OnSuccess                        = null,
-                                                    Action<RoamingNetwork, eMobilityProvider_Id>?  OnError                          = null);
+        IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider? _CPORoamingProvider,
+                                                     Action<IEMPRoamingProvider>? Configurator = null);
 
         #endregion
 
+        #region EMobilityProviders
+
+        IEnumerable<EMobilityProvider>             EMobilityProviders          { get; }
+        Boolean                                    ContainsEMobilityProvider   (EMobilityProvider                  EMobilityProvider);
+        Boolean                                    ContainsEMobilityProvider   (EMobilityProvider_Id               EMobilityProviderId);
+        EMobilityProvider?                         GetEMobilityProviderById    (EMobilityProvider_Id               EMobilityProviderId);
+        EMobilityProvider?                         GetEMobilityProviderById    (EMobilityProvider_Id?              EMobilityProviderId);
+        Boolean                                    TryGetEMobilityProviderById (EMobilityProvider_Id               EMobilityProviderId, out EMobilityProvider? EMobilityProvider);
+        Boolean                                    TryGetEMobilityProviderById (EMobilityProvider_Id?              EMobilityProviderId, out EMobilityProvider? EMobilityProvider);
+        EMobilityProvider?                         RemoveEMobilityProvider     (EMobilityProvider_Id               EMobilityProviderId);
+        EMobilityProvider?                         RemoveEMobilityProvider     (EMobilityProvider_Id?              EMobilityProviderId);
+        Boolean                                    TryRemoveEMobilityProvider  (EMobilityProvider_Id               EMobilityProviderId, out EMobilityProvider? EMobilityProvider);
+        Boolean                                    TryRemoveEMobilityProvider  (EMobilityProvider_Id?              EMobilityProviderId, out EMobilityProvider? EMobilityProvider);
+
+        IEnumerable<EMobilityProvider_Id>          EMobilityProviderIds        (IncludeEMobilityProviderDelegate?  IncludeEMobilityProvider   = null);
+        IEnumerable<EMobilityProviderAdminStatus>  EMobilityProviderAdminStatus(IncludeEMobilityProviderDelegate?  IncludeEMobilityProvider   = null);
+        IEnumerable<EMobilityProviderStatus>       EMobilityProviderStatus     (IncludeEMobilityProviderDelegate?  IncludeEMobilityProvider   = null);
+
+        EMobilityProvider?  CreateEMobilityProvider(EMobilityProvider_Id                           ProviderId,
+                                                    I18NString?                                    Name                             = null,
+                                                    I18NString?                                    Description                      = null,
+                                                    eMobilityProviderPriority?                     Priority                         = null,
+                                                    Action<EMobilityProvider>?                     Configurator                     = null,
+                                                    RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
+                                                    EMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
+                                                    EMobilityProviderStatusTypes?                  InitialStatus                    = null,
+                                                    Action<EMobilityProvider>?                     OnSuccess                        = null,
+                                                    Action<RoamingNetwork, EMobilityProvider_Id>?  OnError                          = null);
+
+        #endregion
+
+
+        #region CSORoamingProviders
+
+        ICSORoamingProvider?  GetCSORoamingProviderById   (CSORoamingProvider_Id   CSORoamingProviderId);
+        ICSORoamingProvider?  GetCSORoamingProviderById   (CSORoamingProvider_Id?  CSORoamingProviderId);
+        Boolean               TryGetCSORoamingProviderById(CSORoamingProvider_Id  Id, out ICSORoamingProvider? CSORoamingProvider);
+        Boolean               TryGetCSORoamingProviderById(CSORoamingProvider_Id? Id, out ICSORoamingProvider? CSORoamingProvider);
+
+
+        ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider eMobilityRoamingService,
+                                                     Action<ICSORoamingProvider>? Configurator = null);
+
+        #endregion
 
         #region ChargingStationOperators
 
@@ -379,8 +403,13 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean                                          ContainsChargingStationOperator   (ChargingStationOperator                  ChargingStationOperator);
         Boolean                                          ContainsChargingStationOperator   (ChargingStationOperator_Id               ChargingStationOperatorId);
         ChargingStationOperator?                         GetChargingStationOperatorById    (ChargingStationOperator_Id               ChargingStationOperatorId);
+        ChargingStationOperator?                         GetChargingStationOperatorById    (ChargingStationOperator_Id?              ChargingStationOperatorId);
         Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id               ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
         Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id?              ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
+        ChargingStationOperator?                         RemoveChargingStationOperator     (ChargingStationOperator_Id               ChargingStationOperatorId);
+        ChargingStationOperator?                         RemoveChargingStationOperator     (ChargingStationOperator_Id?              ChargingStationOperatorId);
+        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id               ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
+        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id?              ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
 
         IEnumerable<ChargingStationOperator_Id>          ChargingStationOperatorIds        (IncludeChargingStationOperatorDelegate?  IncludeChargingStationOperator   = null);
 
@@ -503,19 +532,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                          UInt64?                               Take                = null);
 
         #endregion
-
-
-        Boolean TryGetCSORoamingProviderById(CSORoamingProvider_Id Id, out ICSORoamingProvider CSORoamingProvider);
-        ICSORoamingProvider GetCSORoamingProviderById(CSORoamingProvider_Id Id);
-
-
-
-
-        IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider?          _CPORoamingProvider,
-                                                     Action<IEMPRoamingProvider>?  Configurator   = null);
-        ICSORoamingProvider CreateNewRoamingProvider(ICSORoamingProvider           eMobilityRoamingService,
-                                                     Action<ICSORoamingProvider>?  Configurator   = null);
-
 
 
         JObject ToJSON(Boolean                                                    Embedded                                  = false,
