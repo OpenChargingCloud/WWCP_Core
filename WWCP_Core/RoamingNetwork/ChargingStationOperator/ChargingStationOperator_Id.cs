@@ -467,9 +467,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station operator identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging station operator identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is ChargingStationOperator_Id chargingStationOperatorId
@@ -482,9 +482,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingStationOperatorId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station operator identifications.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">An object to compare with.</param>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification to compare with.</param>
         public Int32 CompareTo(ChargingStationOperator_Id ChargingStationOperatorId)
         {
 
@@ -508,10 +508,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station operator identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging station operator identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingStationOperator_Id chargingStationOperatorId &&
@@ -522,10 +521,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(ChargingStationOperatorId)
 
         /// <summary>
-        /// Compares two ChargingStationOperatorIds for equality.
+        /// Compares two charging station operator identifications for equality.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">A ChargingStationOperatorId to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="ChargingStationOperatorId">A charging station operator identification to compare with.</param>
         public Boolean Equals(ChargingStationOperator_Id ChargingStationOperatorId)
 
             => CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&

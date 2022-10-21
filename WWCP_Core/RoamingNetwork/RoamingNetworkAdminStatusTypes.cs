@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// Extension methods for roaming network admin status typess.
+    /// Extension methods for roaming network admin status types.
     /// </summary>
     public static class RoamingNetworkAdminStatusTypesExtensions
     {
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The unique identification of a roaming network.
+    /// The admin status type of a roaming network.
     /// </summary>
     public readonly struct RoamingNetworkAdminStatusTypes : IId,
                                                             IEquatable <RoamingNetworkAdminStatusTypes>,
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the roaming network identificator.
+        /// The length of the roaming network admin status.
         /// </summary>
         public UInt64 Length
             => (UInt64) InternalId.Length;
@@ -109,10 +109,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetworkAdminStatusTypes Parse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusTypes))
-                return roamingNetworkAdminStatusTypes;
+            if (TryParse(Text, out RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusType))
+                return roamingNetworkAdminStatusType;
 
-            throw new ArgumentException("Invalid text-representation of a roaming network admin status types: '" + Text + "'!",
+            throw new ArgumentException("Invalid text-representation of a roaming network admin status type: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -128,8 +128,8 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetworkAdminStatusTypes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusTypes))
-                return roamingNetworkAdminStatusTypes;
+            if (TryParse(Text, out RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusType))
+                return roamingNetworkAdminStatusType;
 
             return null;
 
@@ -137,14 +137,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text, out RoamingNetworkAdminStatusTypes)
+        #region (static) TryParse(Text, out RoamingNetworkAdminStatusType)
 
         /// <summary>
         /// Parse the given string as a roaming network admin status type.
         /// </summary>
         /// <param name="Text">A text representation of a roaming network admin status type.</param>
-        /// <param name="RoamingNetworkAdminStatusTypes">The parsed roaming network admin status type.</param>
-        public static Boolean TryParse(String Text, out RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes)
+        /// <param name="RoamingNetworkAdminStatusType">The parsed roaming network admin status type.</param>
+        public static Boolean TryParse(String Text, out RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType)
         {
 
             Text = Text.Trim();
@@ -153,14 +153,14 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    RoamingNetworkAdminStatusTypes = new RoamingNetworkAdminStatusTypes(Text);
+                    RoamingNetworkAdminStatusType = new RoamingNetworkAdminStatusTypes(Text);
                     return true;
                 }
                 catch
                 { }
             }
 
-            RoamingNetworkAdminStatusTypes = default;
+            RoamingNetworkAdminStatusType = default;
             return false;
 
         }
@@ -220,93 +220,93 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Operator overloading
 
-        #region Operator == (RoamingNetworkAdminStatusTypes1, RoamingNetworkAdminStatusTypes2)
+        #region Operator == (RoamingNetworkAdminStatusType1, RoamingNetworkAdminStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes1">A roaming network admin status type.</param>
-        /// <param name="RoamingNetworkAdminStatusTypes2">Another roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType1">A roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType2">Another roaming network admin status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes1,
-                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes2)
+        public static Boolean operator == (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType1,
+                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType2)
 
-            => RoamingNetworkAdminStatusTypes1.Equals(RoamingNetworkAdminStatusTypes2);
+            => RoamingNetworkAdminStatusType1.Equals(RoamingNetworkAdminStatusType2);
 
         #endregion
 
-        #region Operator != (RoamingNetworkAdminStatusTypes1, RoamingNetworkAdminStatusTypes2)
+        #region Operator != (RoamingNetworkAdminStatusType1, RoamingNetworkAdminStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes1">A roaming network admin status type.</param>
-        /// <param name="RoamingNetworkAdminStatusTypes2">Another roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType1">A roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType2">Another roaming network admin status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes1,
-                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes2)
+        public static Boolean operator != (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType1,
+                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType2)
 
-            => !RoamingNetworkAdminStatusTypes1.Equals(RoamingNetworkAdminStatusTypes2);
+            => !RoamingNetworkAdminStatusType1.Equals(RoamingNetworkAdminStatusType2);
 
         #endregion
 
-        #region Operator <  (RoamingNetworkAdminStatusTypes1, RoamingNetworkAdminStatusTypes2)
+        #region Operator <  (RoamingNetworkAdminStatusType1, RoamingNetworkAdminStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes1">A roaming network admin status type.</param>
-        /// <param name="RoamingNetworkAdminStatusTypes2">Another roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType1">A roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType2">Another roaming network admin status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes1,
-                                          RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes2)
+        public static Boolean operator < (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType1,
+                                          RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType2)
 
-            => RoamingNetworkAdminStatusTypes1.CompareTo(RoamingNetworkAdminStatusTypes2) < 0;
+            => RoamingNetworkAdminStatusType1.CompareTo(RoamingNetworkAdminStatusType2) < 0;
 
         #endregion
 
-        #region Operator <= (RoamingNetworkAdminStatusTypes1, RoamingNetworkAdminStatusTypes2)
+        #region Operator <= (RoamingNetworkAdminStatusType1, RoamingNetworkAdminStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes1">A roaming network admin status type.</param>
-        /// <param name="RoamingNetworkAdminStatusTypes2">Another roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType1">A roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType2">Another roaming network admin status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes1,
-                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes2)
+        public static Boolean operator <= (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType1,
+                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType2)
 
-            => RoamingNetworkAdminStatusTypes1.CompareTo(RoamingNetworkAdminStatusTypes2) <= 0;
+            => RoamingNetworkAdminStatusType1.CompareTo(RoamingNetworkAdminStatusType2) <= 0;
 
         #endregion
 
-        #region Operator >  (RoamingNetworkAdminStatusTypes1, RoamingNetworkAdminStatusTypes2)
+        #region Operator >  (RoamingNetworkAdminStatusType1, RoamingNetworkAdminStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes1">A roaming network admin status type.</param>
-        /// <param name="RoamingNetworkAdminStatusTypes2">Another roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType1">A roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType2">Another roaming network admin status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes1,
-                                          RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes2)
+        public static Boolean operator > (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType1,
+                                          RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType2)
 
-            => RoamingNetworkAdminStatusTypes1.CompareTo(RoamingNetworkAdminStatusTypes2) > 0;
+            => RoamingNetworkAdminStatusType1.CompareTo(RoamingNetworkAdminStatusType2) > 0;
 
         #endregion
 
-        #region Operator >= (RoamingNetworkAdminStatusTypes1, RoamingNetworkAdminStatusTypes2)
+        #region Operator >= (RoamingNetworkAdminStatusType1, RoamingNetworkAdminStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes1">A roaming network admin status type.</param>
-        /// <param name="RoamingNetworkAdminStatusTypes2">Another roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType1">A roaming network admin status type.</param>
+        /// <param name="RoamingNetworkAdminStatusType2">Another roaming network admin status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes1,
-                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes2)
+        public static Boolean operator >= (RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType1,
+                                           RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType2)
 
-            => RoamingNetworkAdminStatusTypes1.CompareTo(RoamingNetworkAdminStatusTypes2) >= 0;
+            => RoamingNetworkAdminStatusType1.CompareTo(RoamingNetworkAdminStatusType2) >= 0;
 
         #endregion
 
@@ -317,28 +317,28 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network admin status types.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A roaming network admin status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusTypes
-                   ? CompareTo(roamingNetworkAdminStatusTypes)
+            => Object is RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusType
+                   ? CompareTo(roamingNetworkAdminStatusType)
                    : throw new ArgumentException("The given object is not a roaming network admin status type!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(RoamingNetworkAdminStatusTypes)
+        #region CompareTo(RoamingNetworkAdminStatusType)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network admin status types.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes">An object to compare with.</param>
-        public Int32 CompareTo(RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes)
+        /// <param name="RoamingNetworkAdminStatusType">A roaming network admin status type to compare with.</param>
+        public Int32 CompareTo(RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType)
 
             => String.Compare(InternalId,
-                              RoamingNetworkAdminStatusTypes.InternalId,
+                              RoamingNetworkAdminStatusType.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -350,28 +350,26 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network admin status types for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A roaming network admin status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusTypes &&
-                   Equals(roamingNetworkAdminStatusTypes);
+            => Object is RoamingNetworkAdminStatusTypes roamingNetworkAdminStatusType &&
+                   Equals(roamingNetworkAdminStatusType);
 
         #endregion
 
-        #region Equals(RoamingNetworkAdminStatusTypes)
+        #region Equals(RoamingNetworkAdminStatusType)
 
         /// <summary>
-        /// Compares two roaming network admin status typess for equality.
+        /// Compares two roaming network admin status types for equality.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes">A roaming network admin status types to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusTypes)
+        /// <param name="RoamingNetworkAdminStatusType">A roaming network admin status type to compare with.</param>
+        public Boolean Equals(RoamingNetworkAdminStatusTypes RoamingNetworkAdminStatusType)
 
             => String.Equals(InternalId,
-                             RoamingNetworkAdminStatusTypes.InternalId,
+                             RoamingNetworkAdminStatusType.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion

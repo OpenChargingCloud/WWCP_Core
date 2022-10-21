@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -29,7 +25,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// A PushChargingStationOperatorAdminStatusResult result.
+    /// A PushChargingStationOperatorAdminStatus result.
     /// </summary>
     public class PushChargingStationOperatorAdminStatusResult
     {
@@ -39,48 +35,48 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                                 AuthId                            { get; }
+        public IId                                                    AuthId                                                { get; }
 
         /// <summary>
-        /// An object implementing ISendStatus.
+        /// An object implementing ISendAdminStatus.
         /// </summary>
-        public ISendAdminStatus                    ISendAdminStatus                  { get; }
+        public ISendAdminStatus?                                      ISendAdminStatus                                      { get; }
 
         /// <summary>
-        /// An object implementing IReceiveStatus.
+        /// An object implementing IReceiveAdminStatus.
         /// </summary>
-        public IReceiveAdminStatus                 IReceiveAdminStatus               { get; }
+        public IReceiveAdminStatus?                                   IReceiveAdminStatus                                   { get; }
 
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public PushChargingStationOperatorAdminStatusResultTypes      Result                            { get; }
+        public PushChargingStationOperatorAdminStatusResultTypes      Result                                                { get; }
 
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String                              Description                       { get; }
+        public String?                                                Description                                           { get; }
 
         /// <summary>
-        /// An enumeration of rejected ChargingStationOperator admin status updates.
+        /// An enumeration of rejected charging station operator admin status updates.
         /// </summary>
-        public IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates    { get; }
+        public IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates     { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<Warning>                Warnings                          { get; }
+        public IEnumerable<Warning>                                   Warnings                                              { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                           Runtime                           { get;  }
+        public TimeSpan?                                              Runtime                                               { get;  }
 
         #endregion
 
         #region Constructor(s)
 
-        #region (private)  PushChargingStationOperatorAdminStatusResult(AuthId,                 Result, ...)
+        #region (private)  PushChargingStationOperatorAdminStatusResult(AuthId,                      Result, ...)
 
         /// <summary>
         /// Create a new PushChargingStationOperatorAdminStatus result.
@@ -88,33 +84,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AuthId">The unqiue identification of the authenticator.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
-        /// <param name="RejectedChargingStationOperatorAdminStatusUpdates">An enumeration of rejected ChargingStationOperator status updates.</param>
+        /// <param name="RejectedChargingStationOperatorAdminStatusUpdates">An enumeration of rejected charging station operator admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushChargingStationOperatorAdminStatusResult(IId                                 AuthId,
-                                          PushChargingStationOperatorAdminStatusResultTypes      Result,
-                                          String                              Description                 = null,
-                                          IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates   = null,
-                                          IEnumerable<Warning>                Warnings                    = null,
-                                          TimeSpan?                           Runtime                     = null)
+        private PushChargingStationOperatorAdminStatusResult(IId                                                     AuthId,
+                                                             PushChargingStationOperatorAdminStatusResultTypes       Result,
+                                                             String?                                                 Description                                         = null,
+                                                             IEnumerable<ChargingStationOperatorAdminStatusUpdate>?  RejectedChargingStationOperatorAdminStatusUpdates   = null,
+                                                             IEnumerable<Warning>?                                   Warnings                                            = null,
+                                                             TimeSpan?                                               Runtime                                             = null)
         {
 
-            this.AuthId                          = AuthId;
-            this.Result                          = Result;
+            this.AuthId                                             = AuthId;
+            this.Result                                             = Result;
 
-            this.Description                     = Description.IsNotNullOrEmpty()
-                                                       ? Description.Trim()
-                                                       : null;
+            this.Description                                        = Description is not null && Description.IsNotNullOrEmpty()
+                                                                          ? Description.Trim()
+                                                                          : String.Empty;
 
-            this.RejectedChargingStationOperatorAdminStatusUpdates  = RejectedChargingStationOperatorAdminStatusUpdates != null
-                                                       ? RejectedChargingStationOperatorAdminStatusUpdates.Where(evse => evse != null)
-                                                       : new ChargingStationOperatorAdminStatusUpdate[0];
+            this.RejectedChargingStationOperatorAdminStatusUpdates  = RejectedChargingStationOperatorAdminStatusUpdates ?? Array.Empty<ChargingStationOperatorAdminStatusUpdate>();
 
-            this.Warnings                        = Warnings != null
-                                                       ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                       : new Warning[0];
+            this.Warnings                                           = Warnings is not null
+                                                                          ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                                          : Array.Empty<Warning>();
 
-            this.Runtime                         = Runtime;
+            this.Runtime                                            = Runtime;
 
         }
 
@@ -129,16 +123,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ISendAdminStatus">An object implementing ISendAdminStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
-        /// <param name="RejectedChargingStationOperatorAdminStatusUpdates">An enumeration of rejected ChargingStationOperator status updates.</param>
+        /// <param name="RejectedChargingStationOperatorAdminStatusUpdates">An enumeration of rejected charging station operator admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushChargingStationOperatorAdminStatusResult(IId                            AuthId,
-                                      ISendAdminStatus                    ISendAdminStatus,
-                                      PushChargingStationOperatorAdminStatusResultTypes      Result,
-                                      String                              Description                      = null,
-                                      IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates   = null,
-                                      IEnumerable<Warning>                Warnings                         = null,
-                                      TimeSpan?                           Runtime                          = null)
+        internal PushChargingStationOperatorAdminStatusResult(IId                                                     AuthId,
+                                                              ISendAdminStatus                                        ISendAdminStatus,
+                                                              PushChargingStationOperatorAdminStatusResultTypes       Result,
+                                                              String?                                                 Description                                         = null,
+                                                              IEnumerable<ChargingStationOperatorAdminStatusUpdate>?  RejectedChargingStationOperatorAdminStatusUpdates   = null,
+                                                              IEnumerable<Warning>?                                   Warnings                                            = null,
+                                                              TimeSpan?                                               Runtime                                             = null)
 
             : this(AuthId,
                    Result,
@@ -164,16 +158,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IReceiveAdminStatus">An object implementing IReceiveAdminStatus.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
-        /// <param name="RejectedChargingStationOperatorAdminStatusUpdates">An enumeration of rejected ChargingStationOperator status updates.</param>
+        /// <param name="RejectedChargingStationOperatorAdminStatusUpdates">An enumeration of rejected charging station operator admin status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushChargingStationOperatorAdminStatusResult(IId                                 AuthId,
-                                           IReceiveAdminStatus                 IReceiveAdminStatus,
-                                           PushChargingStationOperatorAdminStatusResultTypes      Result,
-                                           String                              Description                      = null,
-                                           IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates   = null,
-                                           IEnumerable<Warning>                Warnings                         = null,
-                                           TimeSpan?                           Runtime                          = null)
+        internal PushChargingStationOperatorAdminStatusResult(IId                                                     AuthId,
+                                                              IReceiveAdminStatus                                     IReceiveAdminStatus,
+                                                              PushChargingStationOperatorAdminStatusResultTypes       Result,
+                                                              String?                                                 Description                                         = null,
+                                                              IEnumerable<ChargingStationOperatorAdminStatusUpdate>?  RejectedChargingStationOperatorAdminStatusUpdates   = null,
+                                                              IEnumerable<Warning>?                                   Warnings                                            = null,
+                                                              TimeSpan?                                               Runtime                                             = null)
 
             : this(AuthId,
                    Result,
@@ -197,37 +191,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            Success(IId                   AuthId,
-                    ISendAdminStatus           ISendAdminStatus,
-                    String                Description    = null,
-                    IEnumerable<Warning>  Warnings       = null,
-                    TimeSpan?             Runtime        = null)
+            Success(IId                    AuthId,
+                    ISendAdminStatus       ISendAdminStatus,
+                    String?                Description   = null,
+                    IEnumerable<Warning>?  Warnings      = null,
+                    TimeSpan?              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.Success,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.Success,
+                    Description,
+                    Array.Empty<ChargingStationOperatorAdminStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            Success(IId                   AuthId,
-                    IReceiveAdminStatus        IReceiveAdminStatus,
-                    String                Description    = null,
-                    IEnumerable<Warning>  Warnings       = null,
-                    TimeSpan?             Runtime        = null)
+            Success(IId                    AuthId,
+                    IReceiveAdminStatus    IReceiveAdminStatus,
+                    String?                Description   = null,
+                    IEnumerable<Warning>?  Warnings      = null,
+                    TimeSpan?              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                             IReceiveAdminStatus,
-                                             PushChargingStationOperatorAdminStatusResultTypes.Success,
-                                             Description,
-                                             new ChargingStationOperatorAdminStatusUpdate[0],
-                                             Warnings,
-                                             Runtime);
+            => new (AuthId,
+                    IReceiveAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.Success,
+                    Description,
+                    Array.Empty<ChargingStationOperatorAdminStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -236,19 +230,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            Enqueued(IId                   AuthId,
-                     ISendAdminStatus           ISendAdminStatus,
-                     String                Description    = null,
-                     IEnumerable<Warning>  Warnings       = null,
-                     TimeSpan?             Runtime        = null)
+            Enqueued(IId                    AuthId,
+                     ISendAdminStatus       ISendAdminStatus,
+                     String?                Description   = null,
+                     IEnumerable<Warning>?  Warnings      = null,
+                     TimeSpan?              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.Enqueued,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.Enqueued,
+                    Description,
+                    Array.Empty<ChargingStationOperatorAdminStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -256,37 +250,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            NoOperation(IId                   AuthId,
-                        ISendAdminStatus           ISendAdminStatus,
-                        String                Description    = null,
-                        IEnumerable<Warning>  Warnings       = null,
-                        TimeSpan?             Runtime        = null)
+            NoOperation(IId                    AuthId,
+                        ISendAdminStatus       ISendAdminStatus,
+                        String?                Description   = null,
+                        IEnumerable<Warning>?  Warnings      = null,
+                        TimeSpan?              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.NoOperation,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.NoOperation,
+                    Description,
+                    Array.Empty<ChargingStationOperatorAdminStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            NoOperation(IId                   AuthId,
-                        IReceiveAdminStatus        IReceiveAdminStatus,
-                        String                Description    = null,
-                        IEnumerable<Warning>  Warnings       = null,
-                        TimeSpan?             Runtime        = null)
+            NoOperation(IId                    AuthId,
+                        IReceiveAdminStatus    IReceiveAdminStatus,
+                        String?                Description   = null,
+                        IEnumerable<Warning>?  Warnings      = null,
+                        TimeSpan?              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.NoOperation,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    IReceiveAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.NoOperation,
+                    Description,
+                    Array.Empty<ChargingStationOperatorAdminStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -294,115 +288,39 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            OutOfService(IId                                 AuthId,
-                         ISendAdminStatus                    ISendAdminStatus,
+            OutOfService(IId                                                    AuthId,
+                         ISendAdminStatus                                       ISendAdminStatus,
                          IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                         String                              Description    = null,
-                         IEnumerable<Warning>                Warnings       = null,
-                         TimeSpan?                           Runtime        = null)
+                         String?                                                Description   = null,
+                         IEnumerable<Warning>?                                  Warnings      = null,
+                         TimeSpan?                                              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                             ISendAdminStatus,
-                                             PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
-                                             Description,
-                                             RejectedChargingStationOperatorAdminStatusUpdates,
-                                             Warnings,
-                                             Runtime);
+            => new (AuthId,
+                    ISendAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
+                    Description,
+                    RejectedChargingStationOperatorAdminStatusUpdates,
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            OutOfService(IId                            AuthId,
-                         IReceiveAdminStatus                 IReceiveAdminStatus,
+            OutOfService(IId                                                    AuthId,
+                         IReceiveAdminStatus                                    IReceiveAdminStatus,
                          IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                         String                         Description    = null,
-                         IEnumerable<Warning>           Warnings       = null,
-                         TimeSpan?                      Runtime        = null)
+                         String?                                                Description   = null,
+                         IEnumerable<Warning>?                                  Warnings      = null,
+                         TimeSpan?                                              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
-                                        Description,
-                                        RejectedChargingStationOperatorAdminStatusUpdates,
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            OutOfService(IId                                       AuthId,
-                         ISendAdminStatus                               ISendAdminStatus,
-                         IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                         String                                    Description    = null,
-                         IEnumerable<Warning>                      Warnings       = null,
-                         TimeSpan?                                 Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            OutOfService(IId                                       AuthId,
-                         IReceiveAdminStatus                            IReceiveAdminStatus,
-                         IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                         String                                    Description    = null,
-                         IEnumerable<Warning>                      Warnings       = null,
-                         TimeSpan?                                 Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            OutOfService(IId                                    AuthId,
-                         ISendAdminStatus                            ISendAdminStatus,
-                         IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                         String                                 Description    = null,
-                         IEnumerable<Warning>                   Warnings       = null,
-                         TimeSpan?                              Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            OutOfService(IId                                    AuthId,
-                         IReceiveAdminStatus                         IReceiveAdminStatus,
-                         IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                         String                                 Description    = null,
-                         IEnumerable<Warning>                   Warnings       = null,
-                         TimeSpan?                              Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    IReceiveAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.OutOfService,
+                    Description,
+                    RejectedChargingStationOperatorAdminStatusUpdates,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -410,115 +328,39 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            AdminDown(IId                            AuthId,
-                      ISendAdminStatus                    ISendAdminStatus,
+            AdminDown(IId                                                    AuthId,
+                      ISendAdminStatus                                       ISendAdminStatus,
                       IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                      String                         Description    = null,
-                      IEnumerable<Warning>           Warnings       = null,
-                      TimeSpan?                      Runtime        = null)
+                      String?                                                Description   = null,
+                      IEnumerable<Warning>?                                  Warnings      = null,
+                      TimeSpan?                                              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
-                                        Description,
-                                        RejectedChargingStationOperatorAdminStatusUpdates,
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
+                    Description,
+                    RejectedChargingStationOperatorAdminStatusUpdates,
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            AdminDown(IId                            AuthId,
-                      IReceiveAdminStatus                 IReceiveAdminStatus,
+            AdminDown(IId                                                    AuthId,
+                      IReceiveAdminStatus                                    IReceiveAdminStatus,
                       IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                      String                         Description    = null,
-                      IEnumerable<Warning>           Warnings       = null,
-                      TimeSpan?                      Runtime        = null)
+                      String?                                                Description   = null,
+                      IEnumerable<Warning>?                                  Warnings      = null,
+                      TimeSpan?                                              Runtime       = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
-                                        Description,
-                                        RejectedChargingStationOperatorAdminStatusUpdates,
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            AdminDown(IId                                       AuthId,
-                      ISendAdminStatus                               ISendAdminStatus,
-                      IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                      String                                    Description    = null,
-                      IEnumerable<Warning>                      Warnings       = null,
-                      TimeSpan?                                 Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            AdminDown(IId                                       AuthId,
-                      IReceiveAdminStatus                            IReceiveAdminStatus,
-                      IEnumerable<ChargingStationAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                      String                                    Description    = null,
-                      IEnumerable<Warning>                      Warnings       = null,
-                      TimeSpan?                                 Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            AdminDown(IId                                    AuthId,
-                      ISendAdminStatus                            ISendAdminStatus,
-                      IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                      String                                 Description    = null,
-                      IEnumerable<Warning>                   Warnings       = null,
-                      TimeSpan?                              Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushChargingStationOperatorAdminStatusResult
-
-            AdminDown(IId                                    AuthId,
-                      IReceiveAdminStatus                         IReceiveAdminStatus,
-                      IEnumerable<ChargingPoolAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
-                      String                                 Description    = null,
-                      IEnumerable<Warning>                   Warnings       = null,
-                      TimeSpan?                              Runtime        = null)
-
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    IReceiveAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.AdminDown,
+                    Description,
+                    RejectedChargingStationOperatorAdminStatusUpdates,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -527,114 +369,123 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationOperatorAdminStatusResult
 
-            Error(IId                            AuthId,
-                  ISendAdminStatus                    ISendAdminStatus,
-                  IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperators  = null,
-                  String                         Description    = null,
-                  IEnumerable<Warning>           Warnings       = null,
-                  TimeSpan?                      Runtime        = null)
+            Error(IId                                                     AuthId,
+                  ISendAdminStatus                                        ISendAdminStatus,
+                  IEnumerable<ChargingStationOperatorAdminStatusUpdate>?  RejectedChargingStationOperatorAdminStatusUpdates   = null,
+                  String?                                                 Description                                         = null,
+                  IEnumerable<Warning>?                                   Warnings                                            = null,
+                  TimeSpan?                                               Runtime                                             = null)
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.Error,
-                                        Description,
-                                        RejectedChargingStationOperators,
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.Error,
+                    Description,
+                    RejectedChargingStationOperatorAdminStatusUpdates,
+                    Warnings,
+                    Runtime);
 
 
-        public static PushChargingStationOperatorAdminStatusResult Error(IId                            AuthId,
-                                                 IReceiveAdminStatus                 IReceiveAdminStatus,
-                                                 IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperators  = null,
-                                                 String                         Description    = null,
-                                                 IEnumerable<Warning>           Warnings       = null,
-                                                 TimeSpan?                      Runtime        = null)
+        public static PushChargingStationOperatorAdminStatusResult
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.Error,
-                                        Description,
-                                        RejectedChargingStationOperators,
-                                        Warnings,
-                                        Runtime);
+            Error(IId                                                     AuthId,
+                  IReceiveAdminStatus                                     IReceiveAdminStatus,
+                  IEnumerable<ChargingStationOperatorAdminStatusUpdate>?  RejectedChargingStationOperatorAdminStatusUpdates   = null,
+                  String?                                                 Description                                         = null,
+                  IEnumerable<Warning>?                                   Warnings                                            = null,
+                  TimeSpan?                                               Runtime                                             = null)
+
+            => new (AuthId,
+                    IReceiveAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.Error,
+                    Description,
+                    RejectedChargingStationOperatorAdminStatusUpdates,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
         #region LockTimeout
 
-        public static PushChargingStationOperatorAdminStatusResult LockTimeout(IId                   AuthId,
-                                                       ISendAdminStatus           ISendAdminStatus,
-                                                       String                Description    = null,
-                                                       IEnumerable<Warning>  Warnings       = null,
-                                                       TimeSpan?             Runtime        = null)
+        public static PushChargingStationOperatorAdminStatusResult
 
-            => new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushChargingStationOperatorAdminStatusResultTypes.LockTimeout,
-                                        Description,
-                                        new ChargingStationOperatorAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            LockTimeout(IId                                                    AuthId,
+                        ISendAdminStatus                                       ISendAdminStatus,
+                        IEnumerable<ChargingStationOperatorAdminStatusUpdate>  RejectedChargingStationOperatorAdminStatusUpdates,
+                        String?                                                Description   = null,
+                        IEnumerable<Warning>?                                  Warnings      = null,
+                        TimeSpan?                                              Runtime       = null)
+
+            => new (AuthId,
+                    ISendAdminStatus,
+                    PushChargingStationOperatorAdminStatusResultTypes.LockTimeout,
+                    Description,
+                    RejectedChargingStationOperatorAdminStatusUpdates,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
 
 
-        public static PushChargingStationOperatorAdminStatusResult Flatten(IId                                     AuthId,
-                                                                           ISendAdminStatus                        ISendAdminStatus,
+        #region Flatten(AuthId, ISendAdminStatus, PushChargingStationOperatorAdminStatusResults, Runtime)
+
+        public static PushChargingStationOperatorAdminStatusResult Flatten(IId                                                        AuthId,
+                                                                           ISendAdminStatus                                           ISendAdminStatus,
                                                                            IEnumerable<PushChargingStationOperatorAdminStatusResult>  PushChargingStationOperatorAdminStatusResults,
-                                                                           TimeSpan                                Runtime)
+                                                                           TimeSpan                                                   Runtime)
         {
 
             #region Initial checks
 
-            if (PushChargingStationOperatorAdminStatusResults == null || !PushChargingStationOperatorAdminStatusResults.Any())
+            if (PushChargingStationOperatorAdminStatusResults is null || !PushChargingStationOperatorAdminStatusResults.Any())
                 return new PushChargingStationOperatorAdminStatusResult(AuthId,
-                                                     ISendAdminStatus,
-                                                     PushChargingStationOperatorAdminStatusResultTypes.Error,
-                                                     "!",
-                                                     new ChargingStationOperatorAdminStatusUpdate[0],
-                                                     new Warning[0],
-                                                     Runtime);
+                                                                        ISendAdminStatus,
+                                                                        PushChargingStationOperatorAdminStatusResultTypes.Error,
+                                                                        "!",
+                                                                        Array.Empty<ChargingStationOperatorAdminStatusUpdate>(),
+                                                                        Array.Empty<Warning>(),
+                                                                        Runtime);
 
             #endregion
 
-            var All                            = PushChargingStationOperatorAdminStatusResults.ToArray();
+            var all                                                = PushChargingStationOperatorAdminStatusResults.ToArray();
 
-            var ResultOverview                 = All.GroupBy     (_ => _.Result).
-                                                     ToDictionary(_ => _.Key,
-                                                                  _ => new List<PushChargingStationOperatorAdminStatusResult>(_));
+            var resultOverview                                     = all.GroupBy      (result => result.Result).
+                                                                         ToDictionary (result => result.Key,
+                                                                                       result => new List<PushChargingStationOperatorAdminStatusResult>(result));
 
-            var Descriptions                   = All.Where       (_ => _ != null).
-                                                     SafeSelect  (_ => _.Description).
-                                                     AggregateWith(Environment.NewLine);
+            var descriptions                                       = all.Where        (result => result is not null).
+                                                                         SafeSelect   (result => result.Description).
+                                                                         AggregateWith(Environment.NewLine);
 
-            var RejectedChargingStationOperatorAdminStatusUpdates = All.Where       (_ => _ != null).
-                                                     SelectMany  (_ => _.RejectedChargingStationOperatorAdminStatusUpdates);
+            var rejectedChargingStationOperatorAdminStatusUpdates  = all.Where        (result => result is not null).
+                                                                         SelectMany   (result => result.RejectedChargingStationOperatorAdminStatusUpdates);
 
-            var Warnings                       = All.Where       (_ => _ != null).
-                                                     SelectMany  (_ => _.Warnings);
+            var warnings                                           = all.Where        (result => result is not null).
+                                                                         SelectMany   (result => result.Warnings);
 
 
-            foreach (var result in ResultOverview)
-                if (ResultOverview[result.Key].Count == All.Length)
-                    return new PushChargingStationOperatorAdminStatusResult(All[0].AuthId,
-                                                         ISendAdminStatus,
-                                                         result.Key,
-                                                         Descriptions,
-                                                         RejectedChargingStationOperatorAdminStatusUpdates,
-                                                         Warnings,
-                                                         Runtime);
+            foreach (var result in resultOverview)
+                if (resultOverview[result.Key].Count == all.Length)
+                    return new PushChargingStationOperatorAdminStatusResult(all[0].AuthId,
+                                                                            ISendAdminStatus,
+                                                                            result.Key,
+                                                                            descriptions,
+                                                                            rejectedChargingStationOperatorAdminStatusUpdates,
+                                                                            warnings,
+                                                                            Runtime);
 
-            return new PushChargingStationOperatorAdminStatusResult(All[0].AuthId,
-                                                 ISendAdminStatus,
-                                                 PushChargingStationOperatorAdminStatusResultTypes.Partial,
-                                                 Descriptions,
-                                                 RejectedChargingStationOperatorAdminStatusUpdates,
-                                                 Warnings,
-                                                 Runtime);
+            return new PushChargingStationOperatorAdminStatusResult(all[0].AuthId,
+                                                                    ISendAdminStatus,
+                                                                    PushChargingStationOperatorAdminStatusResultTypes.Partial,
+                                                                    descriptions,
+                                                                    rejectedChargingStationOperatorAdminStatusUpdates,
+                                                                    warnings,
+                                                                    Runtime);
 
         }
+
+        #endregion
 
 
         #region (override) ToString()

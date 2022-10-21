@@ -54,55 +54,6 @@ namespace cloud.charging.open.protocols.WWCP
     public static partial class ChargingStationOperatorExtensions
     {
 
-        #region ToJSON(this ChargingStationOperators,           Skip = null, Take = null, Embedded = false, ...)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of charging station operators.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// <param name="Skip">The optional number of charging station operators to skip.</param>
-        /// <param name="Take">The optional number of charging station operators to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingStationOperator>                 ChargingStationOperators,
-                                    UInt64?                                                   Skip                                      = null,
-                                    UInt64?                                                   Take                                      = null,
-                                    Boolean                                                   Embedded                                  = false,
-                                    InfoStatus                                                ExpandRoamingNetworkId                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
-                                    CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                                    CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                                    CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                                    CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
-
-
-            => ChargingStationOperators?.SafeAny() == true
-
-                   ? new JArray(ChargingStationOperators.
-                                    Where         (cso => cso != null).
-                                    OrderBy       (cso => cso.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect    (cso => cso.ToJSON(Embedded,
-                                                                     ExpandRoamingNetworkId,
-                                                                     ExpandChargingPoolIds,
-                                                                     ExpandChargingStationIds,
-                                                                     ExpandEVSEIds,
-                                                                     ExpandBrandIds,
-                                                                     ExpandDataLicenses,
-                                                                     CustomChargingStationOperatorSerializer,
-                                                                     CustomChargingPoolSerializer,
-                                                                     CustomChargingStationSerializer,
-                                                                     CustomEVSESerializer)).
-                                    Where         (cso => cso != null))
-
-                   : new JArray();
-
-        #endregion
-
-
         #region ToJSON(this ChargingStationOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>>  ChargingStationOperatorAdminStatus,
@@ -160,7 +111,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
         #region ToJSON(this ChargingStationOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>>  ChargingStationOperatorStatus,
@@ -217,21 +167,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
-    }
-
-
-    public interface IChargingStationOperator : IEquatable<ChargingStationOperator>,
-                                                IComparable<ChargingStationOperator>,
-                                                IComparable,
-                                                IEnumerable<ChargingPool>,
-                                                IReserveRemoteStartStop,
-                                                IStatus<ChargingStationOperatorStatusTypes>
-    {
-
-        IRoamingNetwork                 RoamingNetwork                   { get; }
-
-        IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
 
     }
 
@@ -5534,17 +5469,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation for the given charging station operator.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
-        public JObject ToJSON(Boolean                                                Embedded                                  = false,
-                              InfoStatus                                             ExpandRoamingNetworkId                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                                             ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
-                              InfoStatus                                             ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                              InfoStatus                                             ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                              InfoStatus                                             ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                              InfoStatus                                             ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<ChargingStationOperator>  CustomChargingStationOperatorSerializer   = null,
-                              CustomJObjectSerializerDelegate<ChargingPool>             CustomChargingPoolSerializer              = null,
-                              CustomJObjectSerializerDelegate<ChargingStation>          CustomChargingStationSerializer           = null,
-                              CustomJObjectSerializerDelegate<EVSE>                     CustomEVSESerializer                      = null)
+        public JObject ToJSON(Boolean                                                    Embedded                                  = false,
+                              InfoStatus                                                 ExpandRoamingNetworkId                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                                 ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
+                              InfoStatus                                                 ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                              InfoStatus                                                 ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                              InfoStatus                                                 ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                                 ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<ChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingPool>?             CustomChargingPoolSerializer              = null,
+                              CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null)
         {
 
             var JSON = JSONObject.Create(

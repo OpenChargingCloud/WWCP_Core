@@ -138,26 +138,26 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusTypes.InternalUse;
                 Assert.AreEqual(ChargingStationOperatorAdminStatusTypes.InternalUse,  DE_GEF.AdminStatus);
-                Assert.AreEqual("InternalUse, OutOfService",                          DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("internalUse, outOfService",                          DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                                    DE_GEF.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF.AdminStatus = ChargingStationOperatorAdminStatusTypes.Operational;
                 Assert.AreEqual(ChargingStationOperatorAdminStatusTypes.Operational,  DE_GEF.AdminStatus);
-                Assert.AreEqual("Operational, InternalUse, OutOfService",             DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("operational, internalUse, outOfService",             DE_GEF.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                                    DE_GEF.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF.                                  GenerateAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.GenerateAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.                          GenerateChargingStationOperatorAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                  GenerateAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.GenerateAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                          GenerateChargingStationOperatorAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF.GenerateAdminStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorAdminStatusReport\",\"count\":1,\"report\":{\"Operational\":{\"count\":1,\"percentage\":100.0}}}",
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -187,26 +187,26 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 DE_GEF.Status = ChargingStationOperatorStatusTypes.InDeployment;
                 Assert.AreEqual(ChargingStationOperatorStatusTypes.InDeployment, DE_GEF.Status);
-                Assert.AreEqual("InDeployment, Offline",                         DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("inDeployment, offline",                         DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                               DE_GEF.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                DE_GEF.Status = ChargingStationOperatorStatusTypes.Faulted;
-                Assert.AreEqual(ChargingStationOperatorStatusTypes.Faulted,      DE_GEF.Status);
-                Assert.AreEqual("Faulted, InDeployment, Offline",                DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                DE_GEF.Status = ChargingStationOperatorStatusTypes.Error;
+                Assert.AreEqual(ChargingStationOperatorStatusTypes.Error,        DE_GEF.Status);
+                Assert.AreEqual("error, inDeployment, offline",                  DE_GEF.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                               DE_GEF.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF.                                  GenerateStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.GenerateStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", roamingNetwork.                          GenerateChargingStationOperatorStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                  GenerateStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.GenerateStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                          GenerateChargingStationOperatorStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF.GenerateStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorStatusReport\",\"count\":1,\"report\":{\"Faulted\":{\"count\":1,\"percentage\":100.0}}}",
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationOperatorStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }

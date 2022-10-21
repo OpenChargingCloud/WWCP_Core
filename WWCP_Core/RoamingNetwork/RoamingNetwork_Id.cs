@@ -281,9 +281,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A roaming network identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is RoamingNetwork_Id roamingNetworkId
@@ -296,9 +296,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(RoamingNetworkId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network identifications.
         /// </summary>
-        /// <param name="RoamingNetworkId">An object to compare with.</param>
+        /// <param name="RoamingNetworkId">A roaming network identification to compare with.</param>
         public Int32 CompareTo(RoamingNetwork_Id RoamingNetworkId)
 
             => String.Compare(InternalId,
@@ -314,10 +314,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A roaming network identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RoamingNetwork_Id roamingNetworkId &&
@@ -331,7 +330,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two roaming network identifications for equality.
         /// </summary>
         /// <param name="RoamingNetworkId">A roaming network identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RoamingNetwork_Id RoamingNetworkId)
 
             => String.Equals(InternalId,

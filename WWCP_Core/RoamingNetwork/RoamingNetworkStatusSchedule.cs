@@ -27,6 +27,71 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// Extension methods for roaming networks.
+    /// </summary>
+    public static partial class IRoamingNetworkExtensions
+    {
+
+        #region ToJSON(this RoamingNetworkStatusSchedules, Skip = null, Take = null, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<RoamingNetworkStatusSchedule>  RoamingNetworkStatusSchedules,
+                                     UInt64?                                         Skip          = null,
+                                     UInt64?                                         Take          = null,
+                                     UInt64?                                         HistorySize   = 1)
+        {
+
+            #region Initial checks
+
+            if (RoamingNetworkStatusSchedules is null || !RoamingNetworkStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkStatusSchedule>();
+
+            foreach (var status in RoamingNetworkStatusSchedules)
+            {
+
+                if (!filteredStatus.ContainsKey(status.Id))
+                    filteredStatus.Add(status.Id, status);
+
+                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
+                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         filteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject(filteredStatus.
+                                   OrderBy(status => status.Key).
+                                   SkipTakeFilter(Skip, Take).
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// The status schedule of a roaming network.
     /// </summary>
     public class RoamingNetworkStatusSchedule : AInternalData

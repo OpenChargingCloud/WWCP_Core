@@ -48,11 +48,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The unique identification of a roaming network.
+    /// The status type of a roaming network.
     /// </summary>
     public readonly struct RoamingNetworkStatusTypes : IId,
-                                                            IEquatable<RoamingNetworkStatusTypes>,
-                                                            IComparable<RoamingNetworkStatusTypes>
+                                                       IEquatable<RoamingNetworkStatusTypes>,
+                                                       IComparable<RoamingNetworkStatusTypes>
 
     {
 
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the roaming network identificator.
+        /// The length of the roaming network status.
         /// </summary>
         public UInt64 Length
             => (UInt64) InternalId.Length;
@@ -103,14 +103,14 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a roaming network status types.
+        /// Parse the given string as a roaming network status type.
         /// </summary>
-        /// <param name="Text">A text representation of a roaming network status types.</param>
+        /// <param name="Text">A text representation of a roaming network status type.</param>
         public static RoamingNetworkStatusTypes Parse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetworkStatusTypes roamingNetworkStatusTypes))
-                return roamingNetworkStatusTypes;
+            if (TryParse(Text, out RoamingNetworkStatusTypes roamingNetworkStatusType))
+                return roamingNetworkStatusType;
 
             throw new ArgumentException("Invalid text-representation of a roaming network status type: '" + Text + "'!",
                                         nameof(Text));
@@ -128,8 +128,8 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetworkStatusTypes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetworkStatusTypes roamingNetworkStatusTypes))
-                return roamingNetworkStatusTypes;
+            if (TryParse(Text, out RoamingNetworkStatusTypes roamingNetworkStatusType))
+                return roamingNetworkStatusType;
 
             return null;
 
@@ -137,14 +137,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text, out RoamingNetworkStatusTypes)
+        #region (static) TryParse(Text, out RoamingNetworkStatusType)
 
         /// <summary>
         /// Parse the given string as a roaming network status type.
         /// </summary>
         /// <param name="Text">A text representation of a roaming network status type.</param>
-        /// <param name="RoamingNetworkStatusTypes">The parsed roaming network status type.</param>
-        public static Boolean TryParse(String Text, out RoamingNetworkStatusTypes RoamingNetworkStatusTypes)
+        /// <param name="RoamingNetworkStatusType">The parsed roaming network status type.</param>
+        public static Boolean TryParse(String Text, out RoamingNetworkStatusTypes RoamingNetworkStatusType)
         {
 
             Text = Text.Trim();
@@ -153,14 +153,14 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 try
                 {
-                    RoamingNetworkStatusTypes = new RoamingNetworkStatusTypes(Text);
+                    RoamingNetworkStatusType = new RoamingNetworkStatusTypes(Text);
                     return true;
                 }
                 catch
                 { }
             }
 
-            RoamingNetworkStatusTypes = default;
+            RoamingNetworkStatusType = default;
             return false;
 
         }
@@ -226,93 +226,93 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Operator overloading
 
-        #region Operator == (RoamingNetworkStatusTypes1, RoamingNetworkStatusTypes2)
+        #region Operator == (RoamingNetworkStatusType1, RoamingNetworkStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes1">A roaming network status type.</param>
-        /// <param name="RoamingNetworkStatusTypes2">Another roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingNetworkStatusTypes RoamingNetworkStatusTypes1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusTypes2)
+        public static Boolean operator == (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
-            => RoamingNetworkStatusTypes1.Equals(RoamingNetworkStatusTypes2);
+            => RoamingNetworkStatusType1.Equals(RoamingNetworkStatusType2);
 
         #endregion
 
-        #region Operator != (RoamingNetworkStatusTypes1, RoamingNetworkStatusTypes2)
+        #region Operator != (RoamingNetworkStatusType1, RoamingNetworkStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes1">A roaming network status type.</param>
-        /// <param name="RoamingNetworkStatusTypes2">Another roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingNetworkStatusTypes RoamingNetworkStatusTypes1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusTypes2)
+        public static Boolean operator != (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
-            => !RoamingNetworkStatusTypes1.Equals(RoamingNetworkStatusTypes2);
+            => !RoamingNetworkStatusType1.Equals(RoamingNetworkStatusType2);
 
         #endregion
 
-        #region Operator <  (RoamingNetworkStatusTypes1, RoamingNetworkStatusTypes2)
+        #region Operator <  (RoamingNetworkStatusType1, RoamingNetworkStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes1">A roaming network status type.</param>
-        /// <param name="RoamingNetworkStatusTypes2">Another roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingNetworkStatusTypes RoamingNetworkStatusTypes1,
-                                          RoamingNetworkStatusTypes RoamingNetworkStatusTypes2)
+        public static Boolean operator < (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
+                                          RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
-            => RoamingNetworkStatusTypes1.CompareTo(RoamingNetworkStatusTypes2) < 0;
+            => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) < 0;
 
         #endregion
 
-        #region Operator <= (RoamingNetworkStatusTypes1, RoamingNetworkStatusTypes2)
+        #region Operator <= (RoamingNetworkStatusType1, RoamingNetworkStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes1">A roaming network status type.</param>
-        /// <param name="RoamingNetworkStatusTypes2">Another roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingNetworkStatusTypes RoamingNetworkStatusTypes1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusTypes2)
+        public static Boolean operator <= (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
-            => RoamingNetworkStatusTypes1.CompareTo(RoamingNetworkStatusTypes2) <= 0;
+            => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) <= 0;
 
         #endregion
 
-        #region Operator >  (RoamingNetworkStatusTypes1, RoamingNetworkStatusTypes2)
+        #region Operator >  (RoamingNetworkStatusType1, RoamingNetworkStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes1">A roaming network status type.</param>
-        /// <param name="RoamingNetworkStatusTypes2">Another roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingNetworkStatusTypes RoamingNetworkStatusTypes1,
-                                          RoamingNetworkStatusTypes RoamingNetworkStatusTypes2)
+        public static Boolean operator > (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
+                                          RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
-            => RoamingNetworkStatusTypes1.CompareTo(RoamingNetworkStatusTypes2) > 0;
+            => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) > 0;
 
         #endregion
 
-        #region Operator >= (RoamingNetworkStatusTypes1, RoamingNetworkStatusTypes2)
+        #region Operator >= (RoamingNetworkStatusType1, RoamingNetworkStatusType2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes1">A roaming network status type.</param>
-        /// <param name="RoamingNetworkStatusTypes2">Another roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType1">A roaming network status type.</param>
+        /// <param name="RoamingNetworkStatusType2">Another roaming network status type.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingNetworkStatusTypes RoamingNetworkStatusTypes1,
-                                           RoamingNetworkStatusTypes RoamingNetworkStatusTypes2)
+        public static Boolean operator >= (RoamingNetworkStatusTypes RoamingNetworkStatusType1,
+                                           RoamingNetworkStatusTypes RoamingNetworkStatusType2)
 
-            => RoamingNetworkStatusTypes1.CompareTo(RoamingNetworkStatusTypes2) >= 0;
+            => RoamingNetworkStatusType1.CompareTo(RoamingNetworkStatusType2) >= 0;
 
         #endregion
 
@@ -323,28 +323,28 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network status types.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A roaming network status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is RoamingNetworkStatusTypes roamingNetworkStatusTypes
-                   ? CompareTo(roamingNetworkStatusTypes)
+            => Object is RoamingNetworkStatusTypes roamingNetworkStatusType
+                   ? CompareTo(roamingNetworkStatusType)
                    : throw new ArgumentException("The given object is not a roaming network status type!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(RoamingNetworkStatusTypes)
+        #region CompareTo(RoamingNetworkStatusType)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network status types.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes">An object to compare with.</param>
-        public Int32 CompareTo(RoamingNetworkStatusTypes RoamingNetworkStatusTypes)
+        /// <param name="RoamingNetworkStatusType">A roaming network status type to compare with.</param>
+        public Int32 CompareTo(RoamingNetworkStatusTypes RoamingNetworkStatusType)
 
             => String.Compare(InternalId,
-                              RoamingNetworkStatusTypes.InternalId,
+                              RoamingNetworkStatusType.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -356,28 +356,26 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network status types for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A roaming network status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is RoamingNetworkStatusTypes roamingNetworkStatusTypes &&
-                   Equals(roamingNetworkStatusTypes);
+            => Object is RoamingNetworkStatusTypes roamingNetworkStatusType &&
+                   Equals(roamingNetworkStatusType);
 
         #endregion
 
-        #region Equals(RoamingNetworkStatusTypes)
+        #region Equals(RoamingNetworkStatusType)
 
         /// <summary>
         /// Compares two roaming network status types for equality.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes">A roaming network status type to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingNetworkStatusTypes RoamingNetworkStatusTypes)
+        /// <param name="RoamingNetworkStatusType">A roaming network status type to compare with.</param>
+        public Boolean Equals(RoamingNetworkStatusTypes RoamingNetworkStatusType)
 
             => String.Equals(InternalId,
-                             RoamingNetworkStatusTypes.InternalId,
+                             RoamingNetworkStatusType.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion

@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// WWCP JSON I/O roaming network interface extentions.
+    /// Extension methods for roaming networks.
     /// </summary>
     public static partial class IRoamingNetworkExtensions
     {
@@ -86,132 +86,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region ToJSON(this RoamingNetworkAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<RoamingNetworkAdminStatusSchedule>  RoamingNetworkAdminStatusSchedules,
-                                     UInt64?                                              Skip         = null,
-                                     UInt64?                                              Take         = null,
-                                     UInt64?                                              HistorySize  = 1)
-        {
-
-            #region Initial checks
-
-            if (RoamingNetworkAdminStatusSchedules is null || !RoamingNetworkAdminStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkAdminStatusSchedule>();
-
-            foreach (var status in RoamingNetworkAdminStatusSchedules)
-            {
-
-                if (!filteredStatus.ContainsKey(status.Id))
-                    filteredStatus.Add(status.Id, status);
-
-                else if (filteredStatus[status.Id].StatusSchedule.Any() &&
-                         filteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         filteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(filteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this RoamingNetworkStatusSchedules,      Skip = null, Take = null, HistorySize = 1)
-
-        public static JObject ToJSON(this IEnumerable<RoamingNetworkStatusSchedule>  RoamingNetworkStatusSchedules,
-                                     UInt64?                                         Skip         = null,
-                                     UInt64?                                         Take         = null,
-                                     UInt64?                                         HistorySize  = 1)
-        {
-
-            #region Initial checks
-
-            if (RoamingNetworkStatusSchedules == null || !RoamingNetworkStatusSchedules.Any())
-                return new JObject();
-
-            #endregion
-
-            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
-
-            var _FilteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkStatusSchedule>();
-
-            foreach (var status in RoamingNetworkStatusSchedules)
-            {
-
-                if (!_FilteredStatus.ContainsKey(status.Id))
-                    _FilteredStatus.Add(status.Id, status);
-
-                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
-                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
-                         _FilteredStatus[status.Id] = status;
-
-            }
-
-            #endregion
-
-
-            return new JObject(_FilteredStatus.
-                                   OrderBy(status => status.Key).
-                                   SkipTakeFilter(Skip, Take).
-                                   Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JObject(
-                                                                   kvp.Value.StatusSchedule.
-
-                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                             Select           (group => group.First()).
-
-                                                                             OrderByDescending(tsv   => tsv.Timestamp).
-                                                                             Take             (HistorySize).
-                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                      tsv.Value.    ToString())))
-
-                                                              )));
-
-        }
-
-        #endregion
-
     }
 
 
     /// <summary>
     /// The common interface of all roaming networks.
     /// </summary>
-    public interface IRoamingNetwork : IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
-                                       IAdminStatus<RoamingNetworkAdminStatusTypes>,
+    public interface IRoamingNetwork : IAdminStatus<RoamingNetworkAdminStatusTypes>,
                                        IStatus<RoamingNetworkStatusTypes>,
                                        ISendAuthorizeStartStop,
                                        IReserveRemoteStartStop,
                                        IReceiveChargeDetailRecords,
-                                       ISendChargeDetailRecords
+                                       ISendChargeDetailRecords,
+                                       IEquatable<RoamingNetwork>,
+                                       IComparable<RoamingNetwork>,
+                                       IComparable
     {
 
         /// <summary>
@@ -346,8 +235,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                               I18NString?                                          Description                            = null,
                                                               Action<ChargingStationOperator>?                     Configurator                           = null,
                                                               RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
-                                                              ChargingStationOperatorAdminStatusTypes              InitialAdminStatus                     = ChargingStationOperatorAdminStatusTypes.Operational,
-                                                              ChargingStationOperatorStatusTypes                   InitialStatus                          = ChargingStationOperatorStatusTypes.Available,
+                                                              ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
+                                                              ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
                                                               Action<ChargingStationOperator>?                     OnSuccess                              = null,
                                                               Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null);
 
