@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region RoamingNetworkStatus(Id, AdminStatus,            CustomData = null, InternalData = null)
+        #region RoamingNetworkAdminStatus(Id, AdminStatus,            CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new roaming network admin status.
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RoamingNetworkStatus(Id, AdminStatus, Timestamp, CustomData = null, InternalData = null)
+        #region RoamingNetworkAdminStatus(Id, AdminStatus, Timestamp, CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new roaming network admin status.

@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region ChargingStationOperatorStatus(Id, AdminStatus,            CustomData = null, InternalData = null)
+        #region ChargingStationOperatorAdminStatus(Id, AdminStatus,            CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new charging station operator admin status.
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ChargingStationOperatorStatus(Id, AdminStatus, Timestamp, CustomData = null, InternalData = null)
+        #region ChargingStationOperatorAdminStatus(Id, AdminStatus, Timestamp, CustomData = null, InternalData = null)
 
         /// <summary>
         /// Create a new charging station operator admin status.

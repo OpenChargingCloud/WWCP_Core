@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -31,114 +27,58 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A generic status diff.
     /// </summary>
-    public class StatusDiff<TId, TStatusType>
+    public class StatusDiff<TParentId, TId, TStatusType>
+
+        where TParentId : IId
+        where TId       : IId
+
     {
 
+        #region Data
+
+        private readonly HashSet<KeyValuePair<TId, TStatusType>>  newStatus;
+
+        private readonly HashSet<KeyValuePair<TId, TStatusType>>  changedStatus;
+
+        private readonly HashSet<TId>                             removedIds;
+
+        #endregion
+
         #region Properties
-
-        #region Timestamp
-
-        private readonly DateTime _Timestamp;
 
         /// <summary>
         /// The timestamp of the status diff.
         /// </summary>
-        public DateTime Timestamp
-        {
-            get
-            {
-                return _Timestamp;
-            }
-        }
-
-        #endregion
-
-
-        #region EVSEOperatorId
-
-        private readonly ChargingStationOperator_Id _EVSEOperatorId;
+        public DateTime                                     Timestamp     { get; }
 
         /// <summary>
-        /// The unique identification of the Charging Station Operator.
+        /// The unique identification of the charging station operator.
         /// </summary>
-        public ChargingStationOperator_Id EVSEOperatorId
-        {
-            get
-            {
-                return _EVSEOperatorId;
-            }
-        }
-
-        #endregion
-
-        #region EVSEOperatorName
-
-        private readonly I18NString _EVSEOperatorName;
+        public TParentId                                    ParentId      { get; }
 
         /// <summary>
-        /// The optional internationalized name of the Charging Station Operator.
+        /// The optional internationalized name of the charging station operator.
         /// </summary>
-        public I18NString EVSEOperatorName
-        {
-            get
-            {
-                return _EVSEOperatorName;
-            }
-        }
+        public I18NString                                   ParentName    { get; }
 
-        #endregion
-
-
-        #region NewStatus
-
-        private List<KeyValuePair<TId, TStatusType>> _NewStatus;
 
         /// <summary>
         /// All new status.
         /// </summary>
-        public IEnumerable<KeyValuePair<TId, TStatusType>> NewStatus
-        {
-            get
-            {
-                return _NewStatus;
-            }
-        }
-
-        #endregion
-
-        #region ChangedStatus
-
-        private List<KeyValuePair<TId, TStatusType>> _ChangedStatus;
+        public IEnumerable<KeyValuePair<TId, TStatusType>>  NewStatus
+            => NewStatus;
 
         /// <summary>
         /// All changed status.
         /// </summary>
-        public IEnumerable<KeyValuePair<TId, TStatusType>> ChangedStatus
-        {
-            get
-            {
-                return _ChangedStatus;
-            }
-        }
-
-        #endregion
-
-        #region RemovedEVSEIds
-
-        private List<TId> _RemovedIds;
+        public IEnumerable<KeyValuePair<TId, TStatusType>>  ChangedStatus
+            => ChangedStatus;
 
         /// <summary>
         /// All removed Ids (status).
         /// </summary>
-        public IEnumerable<TId> RemovedIds
-        {
-            get
-            {
-                return _RemovedIds;
-            }
-        }
-
-        #endregion
+        public IEnumerable<TId>                             RemovedIds
+            => RemovedIds;
 
 
         #region ShortInfo
@@ -147,12 +87,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public String ShortInfo
-        {
-            get
-            {
-                return _NewStatus.Count + " / " + _ChangedStatus.Count + " / " + _RemovedIds.Count;
-            }
-        }
+
+            => String.Concat(newStatus.    Count, " / ",
+                             changedStatus.Count, " / ",
+                             removedIds.   Count);
 
         #endregion
 
@@ -162,14 +100,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public String ExtendedInfo
-        {
-            get
-            {
-                return "New: "     + _NewStatus.    Select(kvp => kvp.Key.ToString() + " => " + kvp.Value.ToString()).AggregateWith(", ") + Environment.NewLine +
-                       "Changed: " + _ChangedStatus.Select(kvp => kvp.Key.ToString() + " => " + kvp.Value.ToString()).AggregateWith(", ") + Environment.NewLine +
-                       "Removed: " + _RemovedIds.   Select(EVSEId => EVSEId.ToString()).AggregateWith(", ") + Environment.NewLine;
-            }
-        }
+            => "New: "     + newStatus.    Select(kvp    => kvp.Key.ToString() + " => " + kvp.Value.ToString()).AggregateWith(", ") + Environment.NewLine +
+               "Changed: " + changedStatus.Select(kvp    => kvp.Key.ToString() + " => " + kvp.Value.ToString()).AggregateWith(", ") + Environment.NewLine +
+               "Removed: " + removedIds.   Select(evseId => evseId. ToString()).AggregateWith(", ") + Environment.NewLine;
 
         #endregion
 
@@ -177,63 +110,32 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region StatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
-
         /// <summary>
-        /// Create a new status diff.
+        /// Create a new generic status diff.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the status diff.</param>
-        /// <param name="EVSEOperatorId">The unique identification of the Charging Station Operator.</param>
-        /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
-        public StatusDiff(DateTime         Timestamp,
-                          ChargingStationOperator_Id  EVSEOperatorId,
-                          I18NString       EVSEOperatorName = null)
+        /// <param name="Timestamp">The timestamp of the generic status diff.</param>
+        /// <param name="ParentId">The unique identification of the parent data structure.</param>
+        /// <param name="ParentName">The optional multi-language name of the parent data structure.</param>
+        /// <param name="NewStatus">An optional enumeration of all new generic status.</param>
+        /// <param name="ChangedStatus">An optional enumeration of all generic status.</param>
+        /// <param name="RemovedIds">An optional enumeration of all removed generic status.</param>
+        public StatusDiff(DateTime                                      Timestamp,
+                          TParentId                                     ParentId,
+                          I18NString?                                   ParentName      = null,
+                          IEnumerable<KeyValuePair<TId, TStatusType>>?  NewStatus       = null,
+                          IEnumerable<KeyValuePair<TId, TStatusType>>?  ChangedStatus   = null,
+                          IEnumerable<TId>?                             RemovedIds      = null)
         {
 
-            this._Timestamp         = Timestamp;
-            this._EVSEOperatorId    = EVSEOperatorId;
+            this.Timestamp      = Timestamp;
+            this.ParentId       = ParentId;
+            this.ParentName     = ParentName ?? new I18NString();
 
-            this._NewStatus         = NewStatus        != null ? new List<KeyValuePair<TId, TStatusType>>(NewStatus)     : new List<KeyValuePair<TId, TStatusType>>();
-            this._ChangedStatus     = ChangedStatus    != null ? new List<KeyValuePair<TId, TStatusType>>(ChangedStatus) : new List<KeyValuePair<TId, TStatusType>>();
-            this._RemovedIds        = RemovedIds       != null ? new List<TId>(RemovedIds)                               : new List<TId>();
-
-            this._EVSEOperatorName  = EVSEOperatorName != null ? EVSEOperatorName                                        : new I18NString();
-
-        }
-
-        #endregion
-
-        #region StatusDiff(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
-
-        /// <summary>
-        /// Create a new status diff.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the status diff.</param>
-        /// <param name="EVSEOperatorId">The unique identification of the Charging Station Operator.</param>
-        /// <param name="NewStatus">All new status.</param>
-        /// <param name="ChangedStatus">All changed status.</param>
-        /// <param name="RemovedIds">All removed status.</param>
-        /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
-        public StatusDiff(DateTime                                     Timestamp,
-                          ChargingStationOperator_Id                              EVSEOperatorId,
-                          IEnumerable<KeyValuePair<TId, TStatusType>>  NewStatus,
-                          IEnumerable<KeyValuePair<TId, TStatusType>>  ChangedStatus,
-                          IEnumerable<TId>                             RemovedIds,
-                          I18NString                                   EVSEOperatorName = null)
-        {
-
-            this._Timestamp         = Timestamp;
-            this._EVSEOperatorId    = EVSEOperatorId;
-
-            this._NewStatus         = NewStatus        != null ? new List<KeyValuePair<TId, TStatusType>>(NewStatus)     : new List<KeyValuePair<TId, TStatusType>>();
-            this._ChangedStatus     = ChangedStatus    != null ? new List<KeyValuePair<TId, TStatusType>>(ChangedStatus) : new List<KeyValuePair<TId, TStatusType>>();
-            this._RemovedIds        = RemovedIds       != null ? new List<TId>(RemovedIds)                               : new List<TId>();
-
-            this._EVSEOperatorName  = EVSEOperatorName != null ? EVSEOperatorName                                        : new I18NString();
+            this.newStatus      = NewStatus     is not null && NewStatus.    Any() ? new HashSet<KeyValuePair<TId, TStatusType>>(NewStatus)     : new HashSet<KeyValuePair<TId, TStatusType>>();
+            this.changedStatus  = ChangedStatus is not null && ChangedStatus.Any() ? new HashSet<KeyValuePair<TId, TStatusType>>(ChangedStatus) : new HashSet<KeyValuePair<TId, TStatusType>>();
+            this.removedIds     = RemovedIds    is not null && RemovedIds   .Any() ? new HashSet<TId>(RemovedIds)                               : new HashSet<TId>();
 
         }
-
-        #endregion
 
         #endregion
 
@@ -244,10 +146,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Add a new status.
         /// </summary>
         /// <param name="NewStatus">The new status</param>
-        public StatusDiff<TId, TStatusType> AddNewStatus(KeyValuePair<TId, TStatusType> NewStatus)
+        public StatusDiff<TParentId, TId, TStatusType> AddNewStatus(KeyValuePair<TId, TStatusType> NewStatus)
         {
 
-            this._NewStatus.Add(NewStatus);
+            newStatus.Add(NewStatus);
 
             return this;
 
@@ -262,10 +164,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The identification.</param>
         /// <param name="NewStatus">The new status</param>
-        public StatusDiff<TId, TStatusType> AddNewStatus(TId Id, TStatusType NewStatus)
+        public StatusDiff<TParentId, TId, TStatusType> AddNewStatus(TId Id, TStatusType NewStatus)
         {
 
-            this._NewStatus.Add(new KeyValuePair<TId, TStatusType>(Id, NewStatus));
+            newStatus.Add(new KeyValuePair<TId, TStatusType>(Id, NewStatus));
 
             return this;
 
@@ -280,10 +182,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Add a changed status.
         /// </summary>
         /// <param name="ChangedStatus">The changed status</param>
-        public StatusDiff<TId, TStatusType> AddChangedStatus(KeyValuePair<TId, TStatusType> ChangedStatus)
+        public StatusDiff<TParentId, TId, TStatusType> AddChangedStatus(KeyValuePair<TId, TStatusType> ChangedStatus)
         {
 
-            this._ChangedStatus.Add(ChangedStatus);
+            changedStatus.Add(ChangedStatus);
 
             return this;
 
@@ -298,10 +200,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The identification.</param>
         /// <param name="ChangedStatus">The changed status</param>
-        public StatusDiff<TId, TStatusType> AddChangedStatus(TId Id, TStatusType ChangedStatus)
+        public StatusDiff<TParentId, TId, TStatusType> AddChangedStatus(TId Id, TStatusType ChangedStatus)
         {
 
-            this._ChangedStatus.Add(new KeyValuePair<TId, TStatusType>(Id, ChangedStatus));
+            changedStatus.Add(new KeyValuePair<TId, TStatusType>(Id, ChangedStatus));
 
             return this;
 
@@ -316,10 +218,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Remove the status/Id.
         /// </summary>
         /// <param name="RemovedId">The removed Id.</param>
-        public StatusDiff<TId, TStatusType> AddRemovedId(TId RemovedId)
+        public StatusDiff<TParentId, TId, TStatusType> AddRemovedId(TId RemovedId)
         {
 
-            this._RemovedIds.Add(RemovedId);
+            removedIds.Add(RemovedId);
 
             return this;
 
@@ -333,10 +235,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Remove the status/Ids.
         /// </summary>
         /// <param name="RemovedIds">The removed Ids.</param>
-        public StatusDiff<TId, TStatusType> AddRemovedId(IEnumerable<TId> RemovedIds)
+        public StatusDiff<TParentId, TId, TStatusType> AddRemovedId(IEnumerable<TId> RemovedIds)
         {
 
-            this._RemovedIds.AddRange(RemovedIds);
+            foreach (var removedId in removedIds)
+                removedIds.Add(removedId);
 
             return this;
 
@@ -351,9 +254,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return "[" + Timestamp + "] Status diff: " + _NewStatus.Count + " new, " + _ChangedStatus.Count + " changed, " + _RemovedIds.Count + " removed";
-        }
+
+            => String.Concat("[", Timestamp,
+                             "] Status diff: ",
+                             NewStatus.    Count(), " new, ",
+                             ChangedStatus.Count(), " changed, ",
+                             RemovedIds.   Count(), " removed");
 
         #endregion
 

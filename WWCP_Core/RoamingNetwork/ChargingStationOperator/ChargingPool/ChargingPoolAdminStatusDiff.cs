@@ -17,60 +17,45 @@
 
 #region Usings
 
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using System;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class ChargingPoolAdminStatusDiff : StatusDiff<ChargingPool_Id, ChargingPoolAdminStatusTypes>
+    /// <summary>
+    /// A charging pool admin status diff.
+    /// </summary>
+    public class ChargingPoolAdminStatusDiff : StatusDiff<ChargingStationOperator_Id,
+                                                          ChargingPool_Id,
+                                                          ChargingPoolAdminStatusTypes>
     {
 
-        #region StatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
-
         /// <summary>
-        /// Create a new status diff.
+        /// Create a new charging pool admin status diff.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the status diff.</param>
-        /// <param name="EVSEOperatorId">The unique identification of the Charging Station Operator.</param>
-        /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
-        public ChargingPoolAdminStatusDiff(DateTime         Timestamp,
-                                           ChargingStationOperator_Id  EVSEOperatorId,
-                                           I18NString       EVSEOperatorName = null)
+        /// <param name="Timestamp">The timestamp of the admin status diff.</param>
+        /// <param name="ChargingStationOperatorId">The unique identification of the charging station operator.</param>
+        /// <param name="ChargingStationOperatorName">The optional multi-language name of the charging station operator.</param>
+        /// <param name="NewStatus">An optional enumeration of all new admin status.</param>
+        /// <param name="ChangedStatus">An optional enumeration of all changed admin status.</param>
+        /// <param name="RemovedIds">An optional enumeration of all removed admin status.</param>
+        public ChargingPoolAdminStatusDiff(DateTime                                                                   Timestamp,
+                                           ChargingStationOperator_Id                                                 ChargingStationOperatorId,
+                                           I18NString?                                                                ChargingStationOperatorName   = null,
+                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>>?  NewStatus                     = null,
+                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>>?  ChangedStatus                 = null,
+                                           IEnumerable<ChargingPool_Id>?                                              RemovedIds                    = null)
 
-            : base(Timestamp, EVSEOperatorId, EVSEOperatorName)
+            : base(Timestamp,
+                   ChargingStationOperatorId,
+                   ChargingStationOperatorName,
+                   NewStatus,
+                   ChangedStatus,
+                   RemovedIds)
 
         { }
-
-        #endregion
-
-        #region StatusDiff(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
-
-        /// <summary>
-        /// Create a new status diff.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the status diff.</param>
-        /// <param name="EVSEOperatorId">The unique identification of the Charging Station Operator.</param>
-        /// <param name="NewStatus">All new status.</param>
-        /// <param name="ChangedStatus">All changed status.</param>
-        /// <param name="RemovedIds">All removed status.</param>
-        /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
-        public ChargingPoolAdminStatusDiff(DateTime                                                                 Timestamp,
-                                           ChargingStationOperator_Id                                                          EVSEOperatorId,
-                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>>  NewStatus,
-                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>>  ChangedStatus,
-                                           IEnumerable<ChargingPool_Id>                                             RemovedIds,
-                                           I18NString                                                               EVSEOperatorName = null)
-
-            : base(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
-
-        { }
-
-        #endregion
 
     }
 

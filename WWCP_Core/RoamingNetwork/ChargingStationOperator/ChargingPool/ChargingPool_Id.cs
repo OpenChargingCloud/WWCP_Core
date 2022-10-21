@@ -468,9 +468,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging pool identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging pool identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is ChargingPool_Id chargingPoolId
@@ -483,9 +483,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingPoolId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging pool identifications.
         /// </summary>
-        /// <param name="ChargingPoolId">An object to compare with.</param>
+        /// <param name="ChargingPoolId">A charging pool identification to compare with.</param>
         public Int32 CompareTo(ChargingPool_Id ChargingPoolId)
         {
 
@@ -509,10 +509,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging pool identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging pool identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingPool_Id chargingPoolId &&
@@ -526,7 +525,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging pool identifications for equality.
         /// </summary>
         /// <param name="ChargingPoolId">A charging pool identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingPool_Id ChargingPoolId)
 
             => OperatorId.Equals(ChargingPoolId.OperatorId) &&
