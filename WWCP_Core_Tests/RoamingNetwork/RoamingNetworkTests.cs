@@ -126,24 +126,24 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.InternalUse;
                 Assert.AreEqual(RoamingNetworkAdminStatusTypes.InternalUse,  roamingNetwork.AdminStatus);
-                Assert.AreEqual("InternalUse, OutOfService",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("internalUse, outOfService",                 roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                           roamingNetwork.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 roamingNetwork.AdminStatus = RoamingNetworkAdminStatusTypes.Operational;
                 Assert.AreEqual(RoamingNetworkAdminStatusTypes.Operational,  roamingNetwork.AdminStatus);
-                Assert.AreEqual("Operational, InternalUse, OutOfService",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("operational, internalUse, outOfService",    roamingNetwork.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                           roamingNetwork.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.GenerateAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.GenerateAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = roamingNetwork.GenerateAdminStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkAdminStatusReport\",\"count\":1,\"report\":{\"Operational\":{\"count\":1,\"percentage\":100.0}}}",
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -169,26 +169,26 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 // Status entries are compared by their ISO 8601 timestamp!
                 Thread.Sleep(1000);
 
-                roamingNetwork.Status = RoamingNetworkStatusTypes.Faulted;
-                Assert.AreEqual(RoamingNetworkStatusTypes.Faulted,    roamingNetwork.Status);
-                Assert.AreEqual("Faulted, Offline",                   roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                roamingNetwork.Status = RoamingNetworkStatusTypes.Error;
+                Assert.AreEqual(RoamingNetworkStatusTypes.Error,      roamingNetwork.Status);
+                Assert.AreEqual("error, offline",                     roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                    roamingNetwork.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 roamingNetwork.Status = RoamingNetworkStatusTypes.Available;
                 Assert.AreEqual(RoamingNetworkStatusTypes.Available,  roamingNetwork.Status);
-                Assert.AreEqual("Available, Faulted, Offline",        roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("available, error, offline",          roamingNetwork.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                    roamingNetwork.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Available: 1 (100,00)", roamingNetwork.GenerateStatusReport().ToString());
+                Assert.AreEqual("1 entities; available: 1 (100,00)", roamingNetwork.GenerateStatusReport().ToString());
 
 
                 var jsonStatusReport = roamingNetwork.GenerateStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkStatusReport\",\"count\":1,\"report\":{\"Available\":{\"count\":1,\"percentage\":100.0}}}",
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/roamingNetworkStatusReport\",\"count\":1,\"report\":{\"available\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }

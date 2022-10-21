@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -30,8 +27,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A roaming network status update.
     /// </summary>
-    public struct RoamingNetworkStatusUpdate : IEquatable <RoamingNetworkStatusUpdate>,
-                                               IComparable<RoamingNetworkStatusUpdate>
+    public readonly struct RoamingNetworkStatusUpdate : IEquatable<RoamingNetworkStatusUpdate>,
+                                                        IComparable<RoamingNetworkStatusUpdate>
     {
 
         #region Properties
@@ -82,11 +79,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current roaming network status.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        public static RoamingNetworkStatusUpdate Snapshot(RoamingNetwork RoamingNetwork)
+        public static RoamingNetworkStatusUpdate Snapshot(IRoamingNetwork RoamingNetwork)
 
-            => new RoamingNetworkStatusUpdate(RoamingNetwork.Id,
-                                              RoamingNetwork.Status,
-                                              RoamingNetwork.StatusSchedule().Skip(1).FirstOrDefault());
+            => new (RoamingNetwork.Id,
+                    RoamingNetwork.Status,
+                    RoamingNetwork.StatusSchedule().Skip(1).FirstOrDefault());
 
         #endregion
 
@@ -101,20 +98,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1, RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
-        {
+        public static Boolean operator == (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
+                                           RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(RoamingNetworkStatusUpdate1, RoamingNetworkStatusUpdate2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) RoamingNetworkStatusUpdate1 == null) || ((Object) RoamingNetworkStatusUpdate2 == null))
-                return false;
-
-            return RoamingNetworkStatusUpdate1.Equals(RoamingNetworkStatusUpdate2);
-
-        }
+            => RoamingNetworkStatusUpdate1.Equals(RoamingNetworkStatusUpdate2);
 
         #endregion
 
@@ -126,10 +113,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1, RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
-        {
-            return !(RoamingNetworkStatusUpdate1 == RoamingNetworkStatusUpdate2);
-        }
+        public static Boolean operator != (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
+                                           RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
+
+            => !RoamingNetworkStatusUpdate1.Equals(RoamingNetworkStatusUpdate2);
 
         #endregion
 
@@ -141,15 +128,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1, RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
-        {
+        public static Boolean operator < (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
+                                          RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
-            if ((Object) RoamingNetworkStatusUpdate1 == null)
-                throw new ArgumentNullException("The given RoamingNetworkStatusUpdate1 must not be null!");
-
-            return RoamingNetworkStatusUpdate1.CompareTo(RoamingNetworkStatusUpdate2) < 0;
-
-        }
+            => RoamingNetworkStatusUpdate1.CompareTo(RoamingNetworkStatusUpdate2) < 0;
 
         #endregion
 
@@ -161,10 +143,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1, RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
-        {
-            return !(RoamingNetworkStatusUpdate1 > RoamingNetworkStatusUpdate2);
-        }
+        public static Boolean operator <= (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
+                                           RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
+
+            => RoamingNetworkStatusUpdate1.CompareTo(RoamingNetworkStatusUpdate2) <= 0;
 
         #endregion
 
@@ -176,15 +158,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1, RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
-        {
+        public static Boolean operator > (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
+                                          RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
 
-            if ((Object) RoamingNetworkStatusUpdate1 == null)
-                throw new ArgumentNullException("The given RoamingNetworkStatusUpdate1 must not be null!");
-
-            return RoamingNetworkStatusUpdate1.CompareTo(RoamingNetworkStatusUpdate2) > 0;
-
-        }
+            => RoamingNetworkStatusUpdate1.CompareTo(RoamingNetworkStatusUpdate2) > 0;
 
         #endregion
 
@@ -196,10 +173,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworkStatusUpdate1">A roaming network status update.</param>
         /// <param name="RoamingNetworkStatusUpdate2">Another roaming network status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1, RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
-        {
-            return !(RoamingNetworkStatusUpdate1 < RoamingNetworkStatusUpdate2);
-        }
+        public static Boolean operator >= (RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate1,
+                                           RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate2)
+
+            => RoamingNetworkStatusUpdate1.CompareTo(RoamingNetworkStatusUpdate2) >= 0;
 
         #endregion
 
@@ -214,18 +191,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is RoamingNetworkStatusUpdate))
-                throw new ArgumentException("The given object is not a RoamingNetworkStatus!",
-                                            nameof(Object));
-
-            return CompareTo((RoamingNetworkStatusUpdate) Object);
-
-        }
+            => Object is RoamingNetworkStatusUpdate roamingNetworkStatusUpdate
+                   ? CompareTo(roamingNetworkStatusUpdate)
+                   : throw new ArgumentException("The given object is not a roaming network status update!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -238,21 +208,15 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate)
         {
 
-            if ((Object) RoamingNetworkStatusUpdate == null)
-                throw new ArgumentNullException(nameof(RoamingNetworkStatusUpdate), "The given RoamingNetwork status update must not be null!");
+            var c = Id.       CompareTo(RoamingNetworkStatusUpdate.Id);
 
-            // Compare RoamingNetwork Ids
-            var _Result = Id.CompareTo(RoamingNetworkStatusUpdate.Id);
+            if (c == 0)
+                c = NewStatus.CompareTo(RoamingNetworkStatusUpdate.NewStatus);
 
-            // If equal: Compare the new roaming network status
-            if (_Result == 0)
-                _Result = NewStatus.CompareTo(RoamingNetworkStatusUpdate.NewStatus);
+            if (c == 0)
+                c = OldStatus.CompareTo(RoamingNetworkStatusUpdate.OldStatus);
 
-            // If equal: Compare the old RoamingNetwork status
-            if (_Result == 0)
-                _Result = OldStatus.CompareTo(RoamingNetworkStatusUpdate.OldStatus);
-
-            return _Result;
+            return c;
 
         }
 
@@ -269,39 +233,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is RoamingNetworkStatusUpdate))
-                return false;
-
-            return this.Equals((RoamingNetworkStatusUpdate) Object);
-
-        }
+            => Object is RoamingNetworkStatusUpdate roamingNetworkStatusUpdate &&
+                   Equals(roamingNetworkStatusUpdate);
 
         #endregion
 
         #region Equals(RoamingNetworkStatusUpdate)
 
         /// <summary>
-        /// Compares two RoamingNetwork status updates for equality.
+        /// Compares two roaming network status updates for equality.
         /// </summary>
         /// <param name="RoamingNetworkStatusUpdate">A roaming network status update to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate)
-        {
 
-            if ((Object) RoamingNetworkStatusUpdate == null)
-                return false;
-
-            return Id.       Equals(RoamingNetworkStatusUpdate.Id)        &&
-                   OldStatus.Equals(RoamingNetworkStatusUpdate.OldStatus) &&
-                   NewStatus.Equals(RoamingNetworkStatusUpdate.NewStatus);
-
-        }
+            => Id.       Equals(RoamingNetworkStatusUpdate.Id)        &&
+               OldStatus.Equals(RoamingNetworkStatusUpdate.OldStatus) &&
+               NewStatus.Equals(RoamingNetworkStatusUpdate.NewStatus);
 
         #endregion
 
@@ -318,8 +268,8 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       OldStatus.GetHashCode() * 5 ^
+                return Id.       GetHashCode() * 5 ^
+                       OldStatus.GetHashCode() * 3 ^
                        NewStatus.GetHashCode();
 
             }

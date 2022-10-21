@@ -35,42 +35,42 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                            AuthId                       { get; }
+        public IId                                      AuthId                                  { get; }
 
         /// <summary>
         /// An object implementing ISendStatus.
         /// </summary>
-        public ISendStatus                    ISendStatus                  { get; }
+        public ISendStatus?                             ISendStatus                             { get; }
 
         /// <summary>
         /// An object implementing IReceiveStatus.
         /// </summary>
-        public IReceiveStatus                 IReceiveStatus               { get; }
+        public IReceiveStatus?                          IReceiveStatus                          { get; }
 
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public PushRoamingNetworkStatusResultTypes      Result                       { get; }
+        public PushRoamingNetworkStatusResultTypes      Result                                  { get; }
 
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String                         Description                  { get; }
+        public String?                                  Description                             { get; }
 
         /// <summary>
         /// An enumeration of rejected RoamingNetwork status updates.
         /// </summary>
-        public IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates    { get; }
+        public IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates     { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<Warning>           Warnings                     { get; }
+        public IEnumerable<Warning>                     Warnings                                { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                      Runtime                      { get;  }
+        public TimeSpan?                                Runtime                                 { get;  }
 
         #endregion
 
@@ -87,30 +87,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedRoamingNetworkStatusUpdates">An enumeration of rejected RoamingNetwork status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushRoamingNetworkStatusResult(IId                            AuthId,
-                                     PushRoamingNetworkStatusResultTypes      Result,
-                                     String                         Description                 = null,
-                                     IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates   = null,
-                                     IEnumerable<Warning>           Warnings                    = null,
-                                     TimeSpan?                      Runtime                     = null)
+        private PushRoamingNetworkStatusResult(IId                                       AuthId,
+                                               PushRoamingNetworkStatusResultTypes       Result,
+                                               String?                                   Description                           = null,
+                                               IEnumerable<RoamingNetworkStatusUpdate>?  RejectedRoamingNetworkStatusUpdates   = null,
+                                               IEnumerable<Warning>?                     Warnings                              = null,
+                                               TimeSpan?                                 Runtime                               = null)
         {
 
-            this.AuthId                     = AuthId;
-            this.Result                     = Result;
+            this.AuthId                               = AuthId;
+            this.Result                               = Result;
 
-            this.Description                = Description.IsNotNullOrEmpty()
-                                                  ? Description.Trim()
-                                                  : null;
+            this.Description                          = Description is not null && Description.IsNotNullOrEmpty()
+                                                            ? Description.Trim()
+                                                            : String.Empty;
 
-            this.RejectedRoamingNetworkStatusUpdates  = RejectedRoamingNetworkStatusUpdates != null
-                                                  ? RejectedRoamingNetworkStatusUpdates.Where(evse => evse != null)
-                                                  : new RoamingNetworkStatusUpdate[0];
+            this.RejectedRoamingNetworkStatusUpdates  = RejectedRoamingNetworkStatusUpdates ?? Array.Empty<RoamingNetworkStatusUpdate>();
 
-            this.Warnings                   = Warnings != null
-                                                  ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                  : new Warning[0];
+            this.Warnings                             = Warnings is not null
+                                                            ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                            : Array.Empty<Warning>();
 
-            this.Runtime                    = Runtime;
+            this.Runtime                              = Runtime;
 
         }
 
@@ -128,13 +126,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedRoamingNetworkStatusUpdates">An enumeration of rejected RoamingNetwork status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushRoamingNetworkStatusResult(IId                            AuthId,
-                                      ISendStatus                    ISendStatus,
-                                      PushRoamingNetworkStatusResultTypes      Result,
-                                      String                         Description                 = null,
-                                      IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates   = null,
-                                      IEnumerable<Warning>           Warnings                    = null,
-                                      TimeSpan?                      Runtime                     = null)
+        internal PushRoamingNetworkStatusResult(IId                                       AuthId,
+                                                ISendStatus                               ISendStatus,
+                                                PushRoamingNetworkStatusResultTypes       Result,
+                                                String?                                   Description                           = null,
+                                                IEnumerable<RoamingNetworkStatusUpdate>?  RejectedRoamingNetworkStatusUpdates   = null,
+                                                IEnumerable<Warning>?                     Warnings                              = null,
+                                                TimeSpan?                                 Runtime                               = null)
 
             : this(AuthId,
                    Result,
@@ -163,13 +161,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedRoamingNetworkStatusUpdates">An enumeration of rejected RoamingNetwork status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushRoamingNetworkStatusResult(IId                            AuthId,
-                                      IReceiveStatus                 IReceiveStatus,
-                                      PushRoamingNetworkStatusResultTypes      Result,
-                                      String                         Description                 = null,
-                                      IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates   = null,
-                                      IEnumerable<Warning>           Warnings                    = null,
-                                      TimeSpan?                      Runtime                     = null)
+        internal PushRoamingNetworkStatusResult(IId                                       AuthId,
+                                                IReceiveStatus                            IReceiveStatus,
+                                                PushRoamingNetworkStatusResultTypes       Result,
+                                                String?                                   Description                           = null,
+                                                IEnumerable<RoamingNetworkStatusUpdate>?  RejectedRoamingNetworkStatusUpdates   = null,
+                                                IEnumerable<Warning>?                     Warnings                              = null,
+                                                TimeSpan?                                 Runtime                               = null)
 
             : this(AuthId,
                    Result,
@@ -193,37 +191,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkStatusResult
 
-            Success(IId                   AuthId,
-                    ISendStatus           ISendStatus,
-                    String                Description    = null,
-                    IEnumerable<Warning>  Warnings       = null,
-                    TimeSpan?             Runtime        = null)
+            Success(IId                    AuthId,
+                    ISendStatus            ISendStatus,
+                    String?                Description   = null,
+                    IEnumerable<Warning>?  Warnings      = null,
+                    TimeSpan?              Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.Success,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendStatus,
+                    PushRoamingNetworkStatusResultTypes.Success,
+                    Description,
+                    Array.Empty<RoamingNetworkStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushRoamingNetworkStatusResult
 
-            Success(IId                   AuthId,
-                    IReceiveStatus        IReceiveStatus,
-                    String                Description    = null,
-                    IEnumerable<Warning>  Warnings       = null,
-                    TimeSpan?             Runtime        = null)
+            Success(IId                    AuthId,
+                    IReceiveStatus         IReceiveStatus,
+                    String?                Description   = null,
+                    IEnumerable<Warning>?  Warnings      = null,
+                    TimeSpan?              Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.Success,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    IReceiveStatus,
+                    PushRoamingNetworkStatusResultTypes.Success,
+                    Description,
+                    Array.Empty<RoamingNetworkStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -232,19 +230,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkStatusResult
 
-            Enqueued(IId                   AuthId,
-                     ISendStatus           ISendStatus,
-                     String                Description    = null,
-                     IEnumerable<Warning>  Warnings       = null,
-                     TimeSpan?             Runtime        = null)
+            Enqueued(IId                    AuthId,
+                     ISendStatus            ISendStatus,
+                     String?                Description   = null,
+                     IEnumerable<Warning>?  Warnings      = null,
+                     TimeSpan?              Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.Enqueued,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendStatus,
+                    PushRoamingNetworkStatusResultTypes.Enqueued,
+                    Description,
+                    Array.Empty<RoamingNetworkStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -252,37 +250,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkStatusResult
 
-            NoOperation(IId                   AuthId,
-                        ISendStatus           ISendStatus,
-                        String                Description    = null,
-                        IEnumerable<Warning>  Warnings       = null,
-                        TimeSpan?             Runtime        = null)
+            NoOperation(IId                    AuthId,
+                        ISendStatus            ISendStatus,
+                        String?                Description   = null,
+                        IEnumerable<Warning>?  Warnings      = null,
+                        TimeSpan?              Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.NoOperation,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendStatus,
+                    PushRoamingNetworkStatusResultTypes.NoOperation,
+                    Description,
+                    Array.Empty<RoamingNetworkStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushRoamingNetworkStatusResult
 
-            NoOperation(IId                   AuthId,
-                        IReceiveStatus        IReceiveStatus,
-                        String                Description    = null,
-                        IEnumerable<Warning>  Warnings       = null,
-                        TimeSpan?             Runtime        = null)
+            NoOperation(IId                    AuthId,
+                        IReceiveStatus         IReceiveStatus,
+                        String?                Description   = null,
+                        IEnumerable<Warning>?  Warnings      = null,
+                        TimeSpan?              Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.NoOperation,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    IReceiveStatus,
+                    PushRoamingNetworkStatusResultTypes.NoOperation,
+                    Description,
+                    Array.Empty<RoamingNetworkStatusUpdate>(),
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -290,115 +288,39 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkStatusResult
 
-            OutOfService(IId                            AuthId,
-                         ISendStatus                    ISendStatus,
+            OutOfService(IId                                      AuthId,
+                         ISendStatus                              ISendStatus,
                          IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                         String                         Description    = null,
-                         IEnumerable<Warning>           Warnings       = null,
-                         TimeSpan?                      Runtime        = null)
+                         String?                                  Description   = null,
+                         IEnumerable<Warning>?                    Warnings      = null,
+                         TimeSpan?                                Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.OutOfService,
-                                        Description,
-                                        RejectedRoamingNetworkStatusUpdates,
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendStatus,
+                    PushRoamingNetworkStatusResultTypes.OutOfService,
+                    Description,
+                    RejectedRoamingNetworkStatusUpdates,
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushRoamingNetworkStatusResult
 
-            OutOfService(IId                            AuthId,
-                         IReceiveStatus                 IReceiveStatus,
+            OutOfService(IId                                      AuthId,
+                         IReceiveStatus                           IReceiveStatus,
                          IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                         String                         Description    = null,
-                         IEnumerable<Warning>           Warnings       = null,
-                         TimeSpan?                      Runtime        = null)
+                         String?                                  Description   = null,
+                         IEnumerable<Warning>?                    Warnings      = null,
+                         TimeSpan?                                Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.OutOfService,
-                                        Description,
-                                        RejectedRoamingNetworkStatusUpdates,
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            OutOfService(IId                                       AuthId,
-                         ISendStatus                               ISendStatus,
-                         IEnumerable<ChargingStationStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                         String                                    Description    = null,
-                         IEnumerable<Warning>                      Warnings       = null,
-                         TimeSpan?                                 Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.OutOfService,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            OutOfService(IId                                       AuthId,
-                         IReceiveStatus                            IReceiveStatus,
-                         IEnumerable<ChargingStationStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                         String                                    Description    = null,
-                         IEnumerable<Warning>                      Warnings       = null,
-                         TimeSpan?                                 Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.OutOfService,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            OutOfService(IId                                    AuthId,
-                         ISendStatus                            ISendStatus,
-                         IEnumerable<ChargingPoolStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                         String                                 Description    = null,
-                         IEnumerable<Warning>                   Warnings       = null,
-                         TimeSpan?                              Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.OutOfService,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            OutOfService(IId                                    AuthId,
-                         IReceiveStatus                         IReceiveStatus,
-                         IEnumerable<ChargingPoolStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                         String                                 Description    = null,
-                         IEnumerable<Warning>                   Warnings       = null,
-                         TimeSpan?                              Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.OutOfService,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    IReceiveStatus,
+                    PushRoamingNetworkStatusResultTypes.OutOfService,
+                    Description,
+                    RejectedRoamingNetworkStatusUpdates,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -406,115 +328,39 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkStatusResult
 
-            AdminDown(IId                            AuthId,
-                      ISendStatus                    ISendStatus,
+            AdminDown(IId                                      AuthId,
+                      ISendStatus                              ISendStatus,
                       IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                      String                         Description    = null,
-                      IEnumerable<Warning>           Warnings       = null,
-                      TimeSpan?                      Runtime        = null)
+                      String?                                  Description   = null,
+                      IEnumerable<Warning>?                    Warnings      = null,
+                      TimeSpan?                                Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.AdminDown,
-                                        Description,
-                                        RejectedRoamingNetworkStatusUpdates,
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendStatus,
+                    PushRoamingNetworkStatusResultTypes.AdminDown,
+                    Description,
+                    RejectedRoamingNetworkStatusUpdates,
+                    Warnings,
+                    Runtime);
 
 
 
         public static PushRoamingNetworkStatusResult
 
-            AdminDown(IId                            AuthId,
-                      IReceiveStatus                 IReceiveStatus,
+            AdminDown(IId                                      AuthId,
+                      IReceiveStatus                           IReceiveStatus,
                       IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                      String                         Description    = null,
-                      IEnumerable<Warning>           Warnings       = null,
-                      TimeSpan?                      Runtime        = null)
+                      String?                                  Description   = null,
+                      IEnumerable<Warning>?                    Warnings      = null,
+                      TimeSpan?                                Runtime       = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.AdminDown,
-                                        Description,
-                                        RejectedRoamingNetworkStatusUpdates,
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            AdminDown(IId                                       AuthId,
-                      ISendStatus                               ISendStatus,
-                      IEnumerable<ChargingStationStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                      String                                    Description    = null,
-                      IEnumerable<Warning>                      Warnings       = null,
-                      TimeSpan?                                 Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.AdminDown,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            AdminDown(IId                                       AuthId,
-                      IReceiveStatus                            IReceiveStatus,
-                      IEnumerable<ChargingStationStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                      String                                    Description    = null,
-                      IEnumerable<Warning>                      Warnings       = null,
-                      TimeSpan?                                 Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.AdminDown,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            AdminDown(IId                                    AuthId,
-                      ISendStatus                            ISendStatus,
-                      IEnumerable<ChargingPoolStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                      String                                 Description    = null,
-                      IEnumerable<Warning>                   Warnings       = null,
-                      TimeSpan?                              Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.AdminDown,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
-
-
-        public static PushRoamingNetworkStatusResult
-
-            AdminDown(IId                                    AuthId,
-                      IReceiveStatus                         IReceiveStatus,
-                      IEnumerable<ChargingPoolStatusUpdate>  RejectedRoamingNetworkStatusUpdates,
-                      String                                 Description    = null,
-                      IEnumerable<Warning>                   Warnings       = null,
-                      TimeSpan?                              Runtime        = null)
-
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.AdminDown,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    IReceiveStatus,
+                    PushRoamingNetworkStatusResultTypes.AdminDown,
+                    Description,
+                    RejectedRoamingNetworkStatusUpdates,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
@@ -523,115 +369,123 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushRoamingNetworkStatusResult
 
-            Error(IId                            AuthId,
-                  ISendStatus                    ISendStatus,
-                  IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworks  = null,
-                  String                         Description    = null,
-                  IEnumerable<Warning>           Warnings       = null,
-                  TimeSpan?                      Runtime        = null)
+            Error(IId                                       AuthId,
+                  ISendStatus                               ISendStatus,
+                  IEnumerable<RoamingNetworkStatusUpdate>?  RejectedRoamingNetworks   = null,
+                  String?                                   Description               = null,
+                  IEnumerable<Warning>?                     Warnings                  = null,
+                  TimeSpan?                                 Runtime                   = null)
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.Error,
-                                        Description,
-                                        RejectedRoamingNetworks,
-                                        Warnings,
-                                        Runtime);
+            => new (AuthId,
+                    ISendStatus,
+                    PushRoamingNetworkStatusResultTypes.Error,
+                    Description,
+                    RejectedRoamingNetworks,
+                    Warnings,
+                    Runtime);
 
 
-        public static PushRoamingNetworkStatusResult Error(IId                            AuthId,
-                                                 IReceiveStatus                 IReceiveStatus,
-                                                 IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworks  = null,
-                                                 String                         Description    = null,
-                                                 IEnumerable<Warning>           Warnings       = null,
-                                                 TimeSpan?                      Runtime        = null)
+        public static PushRoamingNetworkStatusResult
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        IReceiveStatus,
-                                        PushRoamingNetworkStatusResultTypes.Error,
-                                        Description,
-                                        RejectedRoamingNetworks,
-                                        Warnings,
-                                        Runtime);
+            Error(IId                                       AuthId,
+                  IReceiveStatus                            IReceiveStatus,
+                  IEnumerable<RoamingNetworkStatusUpdate>?  RejectedRoamingNetworks   = null,
+                  String?                                   Description               = null,
+                  IEnumerable<Warning>?                     Warnings                  = null,
+                  TimeSpan?                                 Runtime                   = null)
+
+            => new (AuthId,
+                    IReceiveStatus,
+                    PushRoamingNetworkStatusResultTypes.Error,
+                    Description,
+                    RejectedRoamingNetworks,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
         #region LockTimeout
 
-        public static PushRoamingNetworkStatusResult LockTimeout(IId                   AuthId,
-                                                       ISendStatus           ISendStatus,
-                                                       String                Description    = null,
-                                                       IEnumerable<Warning>  Warnings       = null,
-                                                       TimeSpan?             Runtime        = null)
+        public static PushRoamingNetworkStatusResult
 
-            => new PushRoamingNetworkStatusResult(AuthId,
-                                        ISendStatus,
-                                        PushRoamingNetworkStatusResultTypes.LockTimeout,
-                                        Description,
-                                        new RoamingNetworkStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
+            LockTimeout(IId                                      AuthId,
+                        ISendStatus                              ISendStatus,
+                        IEnumerable<RoamingNetworkStatusUpdate>  RejectedRoamingNetworks,
+                        String?                                  Description   = null,
+                        IEnumerable<Warning>?                    Warnings      = null,
+                        TimeSpan?                                Runtime       = null)
+
+            => new (AuthId,
+                    ISendStatus,
+                    PushRoamingNetworkStatusResultTypes.LockTimeout,
+                    Description,
+                    RejectedRoamingNetworks,
+                    Warnings,
+                    Runtime);
 
         #endregion
 
 
 
-        public static PushRoamingNetworkStatusResult Flatten(IId                                AuthId,
-                                                   ISendStatus                        ISendStatus,
-                                                   IEnumerable<PushRoamingNetworkStatusResult>  PushRoamingNetworkStatusResults,
-                                                   TimeSpan                           Runtime)
+        #region Flatten(AuthId, ISendStatus, PushRoamingNetworkStatusResults, Runtime)
+
+        public static PushRoamingNetworkStatusResult Flatten(IId                                          AuthId,
+                                                             ISendStatus                                  ISendStatus,
+                                                             IEnumerable<PushRoamingNetworkStatusResult>  PushRoamingNetworkStatusResults,
+                                                             TimeSpan                                     Runtime)
         {
 
             #region Initial checks
 
-            if (PushRoamingNetworkStatusResults == null || !PushRoamingNetworkStatusResults.Any())
+            if (PushRoamingNetworkStatusResults is null || !PushRoamingNetworkStatusResults.Any())
                 return new PushRoamingNetworkStatusResult(AuthId,
-                                                ISendStatus,
-                                                PushRoamingNetworkStatusResultTypes.Error,
-                                                "!",
-                                                new RoamingNetworkStatusUpdate[0],
-                                                new Warning[0],
-                                                Runtime);
+                                                          ISendStatus,
+                                                          PushRoamingNetworkStatusResultTypes.Error,
+                                                          "!",
+                                                          Array.Empty<RoamingNetworkStatusUpdate>(),
+                                                          Array.Empty<Warning>(),
+                                                          Runtime);
 
             #endregion
 
-            var All                        = PushRoamingNetworkStatusResults.ToArray();
+            var all                                  = PushRoamingNetworkStatusResults.ToArray();
 
-            var ResultOverview             = All.GroupBy     (_ => _.Result).
-                                                 ToDictionary(_ => _.Key,
-                                                              _ => new List<PushRoamingNetworkStatusResult>(_));
+            var resultOverview                       = all.GroupBy      (result => result.Result).
+                                                           ToDictionary (result => result.Key,
+                                                                         result => new List<PushRoamingNetworkStatusResult>(result));
 
-            var Descriptions               = All.Where       (_ => _ != null).
-                                                 SafeSelect  (_ => _.Description).
-                                                 AggregateWith(Environment.NewLine);
+            var descriptions                         = all.Where        (result => result is not null).
+                                                           SafeSelect   (result => result.Description).
+                                                           AggregateWith(Environment.NewLine);
 
-            var RejectedRoamingNetworkStatusUpdates  = All.Where       (_ => _ != null).
-                                                 SelectMany  (_ => _.RejectedRoamingNetworkStatusUpdates);
+            var rejectedRoamingNetworkStatusUpdates  = all.Where        (result => result is not null).
+                                                           SelectMany   (result => result.RejectedRoamingNetworkStatusUpdates);
 
-            var Warnings                   = All.Where       (_ => _ != null).
-                                                 SelectMany  (_ => _.Warnings);
+            var warnings                             = all.Where        (result => result is not null).
+                                                           SelectMany   (result => result.Warnings);
 
 
-            foreach (var result in ResultOverview)
-                if (ResultOverview[result.Key].Count == All.Length)
-                    return new PushRoamingNetworkStatusResult(All[0].AuthId,
-                                                    ISendStatus,
-                                                    result.Key,
-                                                    Descriptions,
-                                                    RejectedRoamingNetworkStatusUpdates,
-                                                    Warnings,
-                                                    Runtime);
+            foreach (var result in resultOverview)
+                if (resultOverview[result.Key].Count == all.Length)
+                    return new PushRoamingNetworkStatusResult(all[0].AuthId,
+                                                              ISendStatus,
+                                                              result.Key,
+                                                              descriptions,
+                                                              rejectedRoamingNetworkStatusUpdates,
+                                                              warnings,
+                                                              Runtime);
 
-            return new PushRoamingNetworkStatusResult(All[0].AuthId,
-                                            ISendStatus,
-                                            PushRoamingNetworkStatusResultTypes.Partial,
-                                            Descriptions,
-                                            RejectedRoamingNetworkStatusUpdates,
-                                            Warnings,
-                                            Runtime);
+            return new PushRoamingNetworkStatusResult(all[0].AuthId,
+                                                      ISendStatus,
+                                                      PushRoamingNetworkStatusResultTypes.Partial,
+                                                      descriptions,
+                                                      rejectedRoamingNetworkStatusUpdates,
+                                                      warnings,
+                                                      Runtime);
 
         }
 
+        #endregion
 
 
         #region (override) ToString()

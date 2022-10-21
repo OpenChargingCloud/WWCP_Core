@@ -28,18 +28,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new roaming network admin status report for the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        public static RoamingNetworkAdminStatusReport GenerateAdminStatusReport(this RoamingNetwork               RoamingNetwork,
-                                                                                DateTime?                         Timestamp = null)
+        public static RoamingNetworkAdminStatusReport GenerateAdminStatusReport(this IRoamingNetwork               RoamingNetwork,
+                                                                                DateTime?                          Timestamp   = null)
 
-            => new (new RoamingNetwork[] { RoamingNetwork },
+            => new (new IRoamingNetwork[] { RoamingNetwork },
                     Timestamp);
 
         /// <summary>
         /// Generate a new roaming network admin status report for the given roaming network.
         /// </summary>
         /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
-        public static RoamingNetworkAdminStatusReport GenerateAdminStatusReport(this IEnumerable<RoamingNetwork>  RoamingNetworks,
-                                                                                DateTime?                         Timestamp = null)
+        public static RoamingNetworkAdminStatusReport GenerateAdminStatusReport(this IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                                                                DateTime?                          Timestamp   = null)
 
             => new (RoamingNetworks,
                     Timestamp);
@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A roaming network admin status report.
     /// </summary>
-    public class RoamingNetworkAdminStatusReport : StatusReport<RoamingNetwork, RoamingNetworkAdminStatusTypes>
+    public class RoamingNetworkAdminStatusReport : StatusReport<IRoamingNetwork, RoamingNetworkAdminStatusTypes>
     {
 
         /// <summary>
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
-        public RoamingNetworkAdminStatusReport(IEnumerable<RoamingNetwork>  RoamingNetworks,
-                                               DateTime?                    Timestamp = null)
+        public RoamingNetworkAdminStatusReport(IEnumerable<IRoamingNetwork>  RoamingNetworks,
+                                               DateTime?                     Timestamp   = null)
 
             : base(RoamingNetworks,
                    chargingStationOperator => chargingStationOperator.AdminStatus.Value,

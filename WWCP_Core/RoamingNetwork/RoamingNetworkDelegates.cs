@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -52,9 +49,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RoamingNetwork">The updated roaming network.</param>
     /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
     /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-    public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTime                                    Timestamp,
-                                                                    EventTracking_Id                            EventTrackingId,
-                                                                    RoamingNetwork                              RoamingNetwork,
+    public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTime                                     Timestamp,
+                                                                    EventTracking_Id                             EventTrackingId,
+                                                                    RoamingNetwork                               RoamingNetwork,
                                                                     Timestamped<RoamingNetworkAdminStatusTypes>  OldStatus,
                                                                     Timestamped<RoamingNetworkAdminStatusTypes>  NewStatus);
 
@@ -67,9 +64,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="RoamingNetwork">The updated roaming network.</param>
     /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
     /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-    public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                               Timestamp,
-                                                               EventTracking_Id                       EventTrackingId,
-                                                               RoamingNetwork                         RoamingNetwork,
+    public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                                Timestamp,
+                                                               EventTracking_Id                        EventTrackingId,
+                                                               RoamingNetwork                          RoamingNetwork,
                                                                Timestamped<RoamingNetworkStatusTypes>  OldStatus,
                                                                Timestamped<RoamingNetworkStatusTypes>  NewStatus);
 
