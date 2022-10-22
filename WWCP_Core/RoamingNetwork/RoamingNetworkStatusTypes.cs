@@ -183,43 +183,35 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Static members
 
-        private static readonly RoamingNetworkStatusTypes unknown       = new("unknown");
-        private static readonly RoamingNetworkStatusTypes unspecified   = new("unspecified");
-        private static readonly RoamingNetworkStatusTypes offline       = new("offline");
-        private static readonly RoamingNetworkStatusTypes inDeployment  = new("inDeployment");
-        private static readonly RoamingNetworkStatusTypes available     = new("available");
-        private static readonly RoamingNetworkStatusTypes error         = new("error");
-
-
         /// <summary>
         /// Unknown status of the roaming network.
         /// </summary>
-        public static RoamingNetworkStatusTypes Unknown        = unknown;
+        public static readonly RoamingNetworkStatusTypes Unknown       = new("unknown");
 
         /// <summary>
         /// Unclear status of the roaming network.
         /// </summary>
-        public static RoamingNetworkStatusTypes Unspecified    = unspecified;
+        public static readonly RoamingNetworkStatusTypes Unspecified   = new("unspecified");
 
         /// <summary>
         /// The roaming network is currently offline.
         /// </summary>
-        public static RoamingNetworkStatusTypes Offline        = offline;
+        public static readonly RoamingNetworkStatusTypes Offline       = new("offline");
 
         /// <summary>
         /// The roaming network is not fully operational yet.
         /// </summary>
-        public static RoamingNetworkStatusTypes InDeployment   = inDeployment;
+        public static readonly RoamingNetworkStatusTypes InDeployment  = new("inDeployment");
 
         /// <summary>
         /// The roaming network is available.
         /// </summary>
-        public static RoamingNetworkStatusTypes Available      = available;
+        public static readonly RoamingNetworkStatusTypes Available     = new("available");
 
         /// <summary>
         /// A fatal error has occured within the roaming network.
         /// </summary>
-        public static RoamingNetworkStatusTypes Error          = error;
+        public static readonly RoamingNetworkStatusTypes Error         = new("error");
 
         #endregion
 

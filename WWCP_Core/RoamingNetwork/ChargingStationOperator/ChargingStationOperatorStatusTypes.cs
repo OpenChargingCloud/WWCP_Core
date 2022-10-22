@@ -183,43 +183,35 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Static members
 
-        private static readonly ChargingStationOperatorStatusTypes unknown       = new("unknown");
-        private static readonly ChargingStationOperatorStatusTypes unspecified   = new("unspecified");
-        private static readonly ChargingStationOperatorStatusTypes offline       = new("offline");
-        private static readonly ChargingStationOperatorStatusTypes inDeployment  = new("inDeployment");
-        private static readonly ChargingStationOperatorStatusTypes available     = new("available");
-        private static readonly ChargingStationOperatorStatusTypes error         = new("error");
-
-
         /// <summary>
         /// Unknown status of the charging station operator.
         /// </summary>
-        public static ChargingStationOperatorStatusTypes Unknown        = unknown;
+        public static readonly ChargingStationOperatorStatusTypes Unknown       = new("unknown");
 
         /// <summary>
         /// Unclear status of the charging station operator.
         /// </summary>
-        public static ChargingStationOperatorStatusTypes Unspecified    = unspecified;
+        public static readonly ChargingStationOperatorStatusTypes Unspecified   = new("unspecified");
 
         /// <summary>
         /// The charging station operator is currently offline.
         /// </summary>
-        public static ChargingStationOperatorStatusTypes Offline        = offline;
+        public static readonly ChargingStationOperatorStatusTypes Offline       = new("offline");
 
         /// <summary>
         /// The charging station operator is not fully operational yet.
         /// </summary>
-        public static ChargingStationOperatorStatusTypes InDeployment   = inDeployment;
+        public static readonly ChargingStationOperatorStatusTypes InDeployment  = new("inDeployment");
 
         /// <summary>
         /// The charging station operator is available.
         /// </summary>
-        public static ChargingStationOperatorStatusTypes Available      = available;
+        public static readonly ChargingStationOperatorStatusTypes Available     = new("available");
 
         /// <summary>
         /// A fatal error has occured within the charging station operator.
         /// </summary>
-        public static ChargingStationOperatorStatusTypes Error          = error;
+        public static readonly ChargingStationOperatorStatusTypes Error         = new("error");
 
         #endregion
 

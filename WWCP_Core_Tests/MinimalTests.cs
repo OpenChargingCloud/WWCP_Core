@@ -48,7 +48,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
             _cp.StatusAggregationDelegate = report => {
                                                           var max   = report.Max  (v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);
-                                                          return (ChargingPoolStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
+                                                          //return (ChargingStationStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
+                                                          return ChargingPoolStatusTypes.Unknown;
                                                       };
             _cp.OnStatusChanged += async (ts, EventTrackingId, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 

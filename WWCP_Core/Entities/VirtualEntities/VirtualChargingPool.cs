@@ -17,21 +17,12 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -53,12 +44,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// The default max size of the status history.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize = 50;
+        public const UInt16 DefaultMaxStatusListSize        = 50;
 
         /// <summary>
         /// The default max size of the admin status history.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize = 50;
+        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
@@ -83,24 +74,24 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// Create a new virtual charging pool.
         /// </summary>
-        public VirtualChargingPool(ChargingPool_Id               Id,
-                                   IRoamingNetwork               RoamingNetwork,
-                                   I18NString?                   Name                         = null,
-                                   I18NString?                   Description                  = null,
-                                   ChargingPoolAdminStatusTypes  InitialAdminStatus           = ChargingPoolAdminStatusTypes.Operational,
-                                   ChargingPoolStatusTypes       InitialStatus                = ChargingPoolStatusTypes.Available,
-                                   String                        EllipticCurve                = "P-256",
-                                   ECPrivateKeyParameters?       PrivateKey                   = null,
-                                   PublicKeyCertificates?        PublicKeyCertificates        = null,
-                                   TimeSpan?                     SelfCheckTimeSpan            = null,
-                                   UInt16?                       MaxAdminStatusScheduleSize   = null,
-                                   UInt16?                       MaxStatusScheduleSize        = null,
+        public VirtualChargingPool(ChargingPool_Id                Id,
+                                   IRoamingNetwork                RoamingNetwork,
+                                   I18NString?                    Name                         = null,
+                                   I18NString?                    Description                  = null,
+                                   ChargingPoolAdminStatusTypes?  InitialAdminStatus           = null,
+                                   ChargingPoolStatusTypes?       InitialStatus                = null,
+                                   String                         EllipticCurve                = "P-256",
+                                   ECPrivateKeyParameters?        PrivateKey                   = null,
+                                   PublicKeyCertificates?         PublicKeyCertificates        = null,
+                                   TimeSpan?                      SelfCheckTimeSpan            = null,
+                                   UInt16?                        MaxAdminStatusScheduleSize   = null,
+                                   UInt16?                        MaxStatusScheduleSize        = null,
 
-                                   String?                       DataSource                   = null,
-                                   DateTime?                     LastChange                   = null,
+                                   String?                        DataSource                   = null,
+                                   DateTime?                      LastChange                   = null,
 
-                                   JObject?                      CustomData                   = null,
-                                   UserDefinedDictionary?        InternalData                 = null)
+                                   JObject?                       CustomData                   = null,
+                                   UserDefinedDictionary?         InternalData                 = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -109,8 +100,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EllipticCurve,
                    PrivateKey,
                    PublicKeyCertificates,
-                   InitialAdminStatus,
-                   InitialStatus,
+                   InitialAdminStatus         ?? ChargingPoolAdminStatusTypes.Operational,
+                   InitialStatus              ?? ChargingPoolStatusTypes.Available,
                    MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusListSize,
                    MaxStatusScheduleSize      ?? DefaultMaxStatusListSize,
                    DataSource,

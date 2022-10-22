@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -45,27 +43,27 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualChargingPoolConfigurator">An optional delegate to configure the new virtual charging station.</param>
         /// <param name="OnSuccess">An optional delegate for reporting success.</param>
         /// <param name="OnError">An optional delegate for reporting an error.</param>
-        public static ChargingPool? CreateVirtualPool(this ChargingStationOperator                      ChargingStationOperator,
-                                                      ChargingPool_Id                                   ChargingPoolId,
-                                                      I18NString?                                       Name                              = null,
-                                                      I18NString?                                       Description                       = null,
-                                                      ChargingPoolAdminStatusTypes                      InitialAdminStatus                = ChargingPoolAdminStatusTypes.Operational,
-                                                      ChargingPoolStatusTypes                           InitialStatus                     = ChargingPoolStatusTypes.Available,
-                                                      String                                            EllipticCurve                     = "P-256",
-                                                      ECPrivateKeyParameters                            PrivateKey                        = null,
-                                                      PublicKeyCertificates                             PublicKeyCertificates             = null,
-                                                      TimeSpan?                                         SelfCheckTimeSpan                 = null,
-                                                      UInt16                                            MaxAdminStatusListSize            = VirtualChargingPool.DefaultMaxAdminStatusListSize,
-                                                      UInt16                                            MaxStatusListSize                 = VirtualChargingPool.DefaultMaxStatusListSize,
-                                                      Action<ChargingPool>                              ChargingPoolConfigurator          = null,
-                                                      Action<VirtualChargingPool>                       VirtualChargingPoolConfigurator   = null,
-                                                      Action<ChargingPool>                              OnSuccess                         = null,
-                                                      Action<ChargingStationOperator, ChargingPool_Id>  OnError                           = null)
+        public static ChargingPool? CreateVirtualPool(this ChargingStationOperator                       ChargingStationOperator,
+                                                      ChargingPool_Id                                    ChargingPoolId,
+                                                      I18NString?                                        Name                              = null,
+                                                      I18NString?                                        Description                       = null,
+                                                      ChargingPoolAdminStatusTypes?                      InitialAdminStatus                = null,
+                                                      ChargingPoolStatusTypes?                           InitialStatus                     = null,
+                                                      String                                             EllipticCurve                     = "P-256",
+                                                      ECPrivateKeyParameters?                            PrivateKey                        = null,
+                                                      PublicKeyCertificates?                             PublicKeyCertificates             = null,
+                                                      TimeSpan?                                          SelfCheckTimeSpan                 = null,
+                                                      UInt16                                             MaxAdminStatusListSize            = VirtualChargingPool.DefaultMaxAdminStatusListSize,
+                                                      UInt16                                             MaxStatusListSize                 = VirtualChargingPool.DefaultMaxStatusListSize,
+                                                      Action<ChargingPool>?                              ChargingPoolConfigurator          = null,
+                                                      Action<VirtualChargingPool>?                       VirtualChargingPoolConfigurator   = null,
+                                                      Action<ChargingPool>?                              OnSuccess                         = null,
+                                                      Action<ChargingStationOperator, ChargingPool_Id>?  OnError                           = null)
         {
 
             #region Initial checks
 
-            if (ChargingStationOperator == null)
+            if (ChargingStationOperator is null)
                 throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
             #endregion
@@ -80,8 +78,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                                                ChargingStationOperator.RoamingNetwork, 
                                                                                                                newPool.Name,
                                                                                                                newPool.Description,
-                                                                                                               InitialAdminStatus,
-                                                                                                               InitialStatus,
+                                                                                                               InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
+                                                                                                               InitialStatus      ?? ChargingPoolStatusTypes.Available,
                                                                                                                EllipticCurve,
                                                                                                                PrivateKey,
                                                                                                                PublicKeyCertificates,
@@ -133,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Initial checks
 
-            if (ChargingPool == null)
+            if (ChargingPool is null)
                 throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
 
             #endregion
@@ -181,23 +179,23 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSEConfigurator">An optional delegate to configure the new EVSE.</param>
         /// <param name="OnSuccess">An optional delegate for reporting success.</param>
         /// <param name="OnError">An optional delegate for reporting an error.</param>
-        public static EVSE? CreateVirtualEVSE(this ChargingStation              ChargingStation,
-                                              EVSE_Id                           EVSEId,
-                                              I18NString?                       Name                      = null,
-                                              I18NString?                       Description               = null,
-                                              EVSEAdminStatusTypes              InitialAdminStatus        = EVSEAdminStatusTypes.Operational,
-                                              EVSEStatusTypes                   InitialStatus             = EVSEStatusTypes.Available,
-                                              EnergyMeter_Id?                   EnergyMeterId             = null,
-                                              String                            EllipticCurve             = "P-256",
-                                              ECPrivateKeyParameters            PrivateKey                = null,
-                                              PublicKeyCertificates             PublicKeyCertificates     = null,
-                                              TimeSpan?                         SelfCheckTimeSpan         = null,
-                                              UInt16                            MaxAdminStatusListSize    = VirtualEVSE.DefaultMaxAdminStatusListSize,
-                                              UInt16                            MaxStatusListSize         = VirtualEVSE.DefaultMaxStatusListSize,
-                                              Action<EVSE>                      EVSEConfigurator          = null,
-                                              Action<VirtualEVSE>               VirtualEVSEConfigurator   = null,
-                                              Action<EVSE>                      OnSuccess                 = null,
-                                              Action<ChargingStation, EVSE_Id>  OnError                   = null)
+        public static EVSE? CreateVirtualEVSE(this ChargingStation               ChargingStation,
+                                              EVSE_Id                            EVSEId,
+                                              I18NString?                        Name                      = null,
+                                              I18NString?                        Description               = null,
+                                              EVSEAdminStatusTypes               InitialAdminStatus        = EVSEAdminStatusTypes.Operational,
+                                              EVSEStatusTypes                    InitialStatus             = EVSEStatusTypes.Available,
+                                              EnergyMeter_Id?                    EnergyMeterId             = null,
+                                              String                             EllipticCurve             = "P-256",
+                                              ECPrivateKeyParameters?            PrivateKey                = null,
+                                              PublicKeyCertificates?             PublicKeyCertificates     = null,
+                                              TimeSpan?                          SelfCheckTimeSpan         = null,
+                                              UInt16                             MaxAdminStatusListSize    = VirtualEVSE.DefaultMaxAdminStatusListSize,
+                                              UInt16                             MaxStatusListSize         = VirtualEVSE.DefaultMaxStatusListSize,
+                                              Action<EVSE>?                      EVSEConfigurator          = null,
+                                              Action<VirtualEVSE>?               VirtualEVSEConfigurator   = null,
+                                              Action<EVSE>?                      OnSuccess                 = null,
+                                              Action<ChargingStation, EVSE_Id>?  OnError                   = null)
         {
 
             #region Initial checks

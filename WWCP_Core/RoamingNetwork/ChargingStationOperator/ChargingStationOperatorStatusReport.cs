@@ -24,6 +24,8 @@ namespace cloud.charging.open.protocols.WWCP
     public static class ChargingStationOperatorStatusReportExtensions
     {
 
+        #region GenerateStatusReport(this ChargingStationOperator,  Timestamp = null)
+
         /// <summary>
         /// Generate a new charging station operator status report for the given charging station operator.
         /// </summary>
@@ -33,6 +35,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (new ChargingStationOperator[] { ChargingStationOperator },
                     Timestamp);
+
+        #endregion
+
+        #region GenerateStatusReport(this ChargingStationOperators, Timestamp = null)
 
         /// <summary>
         /// Generate a new charging station operator status report for the given charging station operators.
@@ -44,6 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
             => new (ChargingStationOperators,
                     Timestamp);
 
+        #endregion
+
+        #region GenerateStatusReport(this RoamingNetwork,           Timestamp = null)
 
         /// <summary>
         /// Generate a new charging pool status report for the given roaming network.
@@ -54,6 +63,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (RoamingNetwork.ChargingStationOperators,
                     Timestamp);
+
+        #endregion
 
     }
 

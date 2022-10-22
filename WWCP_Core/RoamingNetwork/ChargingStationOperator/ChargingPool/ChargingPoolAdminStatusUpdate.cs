@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -30,8 +27,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging pool admin status update.
     /// </summary>
-    public struct ChargingPoolAdminStatusUpdate : IEquatable <ChargingPoolAdminStatusUpdate>,
-                                                     IComparable<ChargingPoolAdminStatusUpdate>
+    public struct ChargingPoolAdminStatusUpdate : IEquatable<ChargingPoolAdminStatusUpdate>,
+                                                  IComparable<ChargingPoolAdminStatusUpdate>
     {
 
         #region Properties
@@ -39,17 +36,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id                            Id          { get; }
+        public ChargingPool_Id                            Id           { get; }
 
         /// <summary>
         /// The old timestamped status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolAdminStatusTypes>  OldStatus   { get; }
+        public Timestamped<ChargingPoolAdminStatusTypes>  OldStatus    { get; }
 
         /// <summary>
         /// The new timestamped status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolAdminStatusTypes>  NewStatus   { get; }
+        public Timestamped<ChargingPoolAdminStatusTypes>  NewStatus    { get; }
 
         #endregion
 
@@ -61,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
         /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-        public ChargingPoolAdminStatusUpdate(ChargingPool_Id                           Id,
+        public ChargingPoolAdminStatusUpdate(ChargingPool_Id                            Id,
                                              Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
                                              Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
 
@@ -82,11 +79,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current charging pool status.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public static ChargingPoolAdminStatusUpdate Snapshot(ChargingPool ChargingPool)
+        public static ChargingPoolAdminStatusUpdate Snapshot(IChargingPool ChargingPool)
 
-            => new ChargingPoolAdminStatusUpdate(ChargingPool.Id,
-                                                 ChargingPool.AdminStatus,
-                                                 ChargingPool.AdminStatusSchedule().Skip(1).FirstOrDefault());
+            => new (ChargingPool.Id,
+                    ChargingPool.AdminStatus,
+                    ChargingPool.AdminStatusSchedule().Skip(1).FirstOrDefault());
 
         #endregion
 
@@ -98,23 +95,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool status update.</param>
-        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1, ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
-        {
+        public static Boolean operator == (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
+                                           ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingPoolAdminStatusUpdate1, ChargingPoolAdminStatusUpdate2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingPoolAdminStatusUpdate1 == null) || ((Object) ChargingPoolAdminStatusUpdate2 == null))
-                return false;
-
-            return ChargingPoolAdminStatusUpdate1.Equals(ChargingPoolAdminStatusUpdate2);
-
-        }
+            => ChargingPoolAdminStatusUpdate1.Equals(ChargingPoolAdminStatusUpdate2);
 
         #endregion
 
@@ -123,11 +110,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool status update.</param>
-        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1, ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
-            => !(ChargingPoolAdminStatusUpdate1 == ChargingPoolAdminStatusUpdate2);
+        public static Boolean operator != (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
+                                           ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
+
+            => !ChargingPoolAdminStatusUpdate1.Equals(ChargingPoolAdminStatusUpdate2);
 
         #endregion
 
@@ -136,18 +125,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool status update.</param>
-        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1, ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
-        {
+        public static Boolean operator < (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
+                                          ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
-            if ((Object) ChargingPoolAdminStatusUpdate1 == null)
-                throw new ArgumentNullException(nameof(ChargingPoolAdminStatusUpdate1), "The given ChargingPoolAdminStatusUpdate1 must not be null!");
-
-            return ChargingPoolAdminStatusUpdate1.CompareTo(ChargingPoolAdminStatusUpdate2) < 0;
-
-        }
+            => ChargingPoolAdminStatusUpdate1.CompareTo(ChargingPoolAdminStatusUpdate2) < 0;
 
         #endregion
 
@@ -156,11 +140,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool status update.</param>
-        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1, ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
-            => !(ChargingPoolAdminStatusUpdate1 > ChargingPoolAdminStatusUpdate2);
+        public static Boolean operator <= (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
+                                           ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
+
+            => ChargingPoolAdminStatusUpdate1.CompareTo(ChargingPoolAdminStatusUpdate2) <= 0;
 
         #endregion
 
@@ -169,18 +155,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool status update.</param>
-        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1, ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
-        {
+        public static Boolean operator > (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
+                                          ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
 
-            if ((Object) ChargingPoolAdminStatusUpdate1 == null)
-                throw new ArgumentNullException(nameof(ChargingPoolAdminStatusUpdate1), "The given ChargingPoolAdminStatusUpdate1 must not be null!");
-
-            return ChargingPoolAdminStatusUpdate1.CompareTo(ChargingPoolAdminStatusUpdate2) > 0;
-
-        }
+            => ChargingPoolAdminStatusUpdate1.CompareTo(ChargingPoolAdminStatusUpdate2) > 0;
 
         #endregion
 
@@ -189,11 +170,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool status update.</param>
-        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate1">A charging pool admin status update.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate2">Another charging pool admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1, ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
-            => !(ChargingPoolAdminStatusUpdate1 < ChargingPoolAdminStatusUpdate2);
+        public static Boolean operator >= (ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate1,
+                                           ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate2)
+
+            => ChargingPoolAdminStatusUpdate1.CompareTo(ChargingPoolAdminStatusUpdate2) >= 0;
 
         #endregion
 
@@ -208,18 +191,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingPoolAdminStatusUpdate))
-                throw new ArgumentException("The given object is not a ChargingPoolStatus!",
-                                            nameof(Object));
-
-            return CompareTo((ChargingPoolAdminStatusUpdate) Object);
-
-        }
+            => Object is ChargingPoolAdminStatusUpdate chargingPoolAdminStatusUpdate
+                   ? CompareTo(chargingPoolAdminStatusUpdate)
+                   : throw new ArgumentException("The given object is not a charging pool admin status update!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -232,21 +208,15 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate)
         {
 
-            if ((Object) ChargingPoolAdminStatusUpdate == null)
-                throw new ArgumentNullException(nameof(ChargingPoolAdminStatusUpdate), "The given ChargingPool status update must not be null!");
+            var c = Id.       CompareTo(ChargingPoolAdminStatusUpdate.Id);
 
-            // Compare ChargingPool Ids
-            var _Result = Id.CompareTo(ChargingPoolAdminStatusUpdate.Id);
+            if (c == 0)
+                c = NewStatus.CompareTo(ChargingPoolAdminStatusUpdate.NewStatus);
 
-            // If equal: Compare the new charging pool status
-            if (_Result == 0)
-                _Result = NewStatus.CompareTo(ChargingPoolAdminStatusUpdate.NewStatus);
+            if (c == 0)
+                c = OldStatus.CompareTo(ChargingPoolAdminStatusUpdate.OldStatus);
 
-            // If equal: Compare the old ChargingPool status
-            if (_Result == 0)
-                _Result = OldStatus.CompareTo(ChargingPoolAdminStatusUpdate.OldStatus);
-
-            return _Result;
+            return c;
 
         }
 
@@ -263,39 +233,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingPoolAdminStatusUpdate))
-                return false;
-
-            return this.Equals((ChargingPoolAdminStatusUpdate) Object);
-
-        }
+            => Object is ChargingPoolAdminStatusUpdate chargingPoolAdminStatusUpdate &&
+                   Equals(chargingPoolAdminStatusUpdate);
 
         #endregion
 
         #region Equals(ChargingPoolAdminStatusUpdate)
 
         /// <summary>
-        /// Compares two ChargingPool status updates for equality.
+        /// Compares two charging pool admin status updates for equality.
         /// </summary>
-        /// <param name="ChargingPoolAdminStatusUpdate">A charging pool status update to compare with.</param>
+        /// <param name="ChargingPoolAdminStatusUpdate">A charging pool admin status update to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingPoolAdminStatusUpdate ChargingPoolAdminStatusUpdate)
-        {
 
-            if ((Object) ChargingPoolAdminStatusUpdate == null)
-                return false;
-
-            return Id.       Equals(ChargingPoolAdminStatusUpdate.Id)        &&
-                   OldStatus.Equals(ChargingPoolAdminStatusUpdate.OldStatus) &&
-                   NewStatus.Equals(ChargingPoolAdminStatusUpdate.NewStatus);
-
-        }
+            => Id.       Equals(ChargingPoolAdminStatusUpdate.Id)        &&
+               OldStatus.Equals(ChargingPoolAdminStatusUpdate.OldStatus) &&
+               NewStatus.Equals(ChargingPoolAdminStatusUpdate.NewStatus);
 
         #endregion
 
@@ -312,8 +268,8 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       OldStatus.GetHashCode() * 5 ^
+                return Id.       GetHashCode() * 5 ^
+                       OldStatus.GetHashCode() * 3 ^
                        NewStatus.GetHashCode();
 
             }

@@ -15,19 +15,9 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    
     #region ChargingPoolAlreadyExists
 
     /// <summary>

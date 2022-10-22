@@ -715,9 +715,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging station identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is ChargingStation_Id chargingStationId
@@ -730,9 +730,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingStationId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station identifications.
         /// </summary>
-        /// <param name="ChargingStationId">An object to compare with.</param>
+        /// <param name="ChargingStationId">A charging station identification to compare with.</param>
         public Int32 CompareTo(ChargingStation_Id ChargingStationId)
         {
 
@@ -756,10 +756,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging station identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingStation_Id chargingStationId &&
@@ -773,7 +772,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station identifications for equality.
         /// </summary>
         /// <param name="ChargingStationId">A charging station identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStation_Id ChargingStationId)
 
             => OperatorId.Equals(ChargingStationId.OperatorId) &&

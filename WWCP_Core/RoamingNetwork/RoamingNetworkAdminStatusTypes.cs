@@ -183,37 +183,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Static members
 
-        private static readonly RoamingNetworkAdminStatusTypes unspecified   = new("unspecified");
-        private static readonly RoamingNetworkAdminStatusTypes unkown        = new("unkown");
-        private static readonly RoamingNetworkAdminStatusTypes outOfService  = new("outOfService");
-        private static readonly RoamingNetworkAdminStatusTypes operational   = new("operational");
-        private static readonly RoamingNetworkAdminStatusTypes internalUse   = new("internalUse");
-
-
         /// <summary>
         /// Unkown admin status of the roaming network.
         /// </summary>
-        public static RoamingNetworkAdminStatusTypes Unkown         = unkown;
+        public static readonly RoamingNetworkAdminStatusTypes Unkown        = new("unkown");
 
         /// <summary>
         /// Unclear admin status of the roaming network.
         /// </summary>
-        public static RoamingNetworkAdminStatusTypes Unspecified    = unspecified;
+        public static readonly RoamingNetworkAdminStatusTypes Unspecified   = new("unspecified");
 
         /// <summary>
         /// The roaming network is under maintenance.
         /// </summary>
-        public static RoamingNetworkAdminStatusTypes OutOfService   = outOfService;
+        public static readonly RoamingNetworkAdminStatusTypes OutOfService  = new("outOfService");
 
         /// <summary>
         /// The roaming network is operational.
         /// </summary>
-        public static RoamingNetworkAdminStatusTypes Operational    = operational;
+        public static readonly RoamingNetworkAdminStatusTypes Operational   = new("operational");
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        public static RoamingNetworkAdminStatusTypes InternalUse    = internalUse;
+        public static readonly RoamingNetworkAdminStatusTypes InternalUse   = new("internalUse");
 
         #endregion
 

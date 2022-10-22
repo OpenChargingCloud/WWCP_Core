@@ -183,37 +183,30 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Static members
 
-        private static readonly ChargingStationOperatorAdminStatusTypes unspecified   = new("unspecified");
-        private static readonly ChargingStationOperatorAdminStatusTypes unkown        = new("unkown");
-        private static readonly ChargingStationOperatorAdminStatusTypes outOfService  = new("outOfService");
-        private static readonly ChargingStationOperatorAdminStatusTypes operational   = new("operational");
-        private static readonly ChargingStationOperatorAdminStatusTypes internalUse   = new("internalUse");
-
-
         /// <summary>
         /// Unkown admin status of the charging station operator.
         /// </summary>
-        public static ChargingStationOperatorAdminStatusTypes Unkown        = unkown;
+        public static readonly ChargingStationOperatorAdminStatusTypes Unkown        = new("unkown");
 
         /// <summary>
         /// Unclear admin status of the charging station operator.
         /// </summary>
-        public static ChargingStationOperatorAdminStatusTypes Unspecified   = unspecified;
+        public static readonly ChargingStationOperatorAdminStatusTypes Unspecified   = new("unspecified");
 
         /// <summary>
         /// The charging station operator is under maintenance.
         /// </summary>
-        public static ChargingStationOperatorAdminStatusTypes OutOfService  = outOfService;
+        public static readonly ChargingStationOperatorAdminStatusTypes OutOfService  = new("outOfService");
 
         /// <summary>
         /// The charging station operator is operational.
         /// </summary>
-        public static ChargingStationOperatorAdminStatusTypes Operational   = operational;
+        public static readonly ChargingStationOperatorAdminStatusTypes Operational   = new("operational");
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        public static ChargingStationOperatorAdminStatusTypes InternalUse   = internalUse;
+        public static readonly ChargingStationOperatorAdminStatusTypes InternalUse   = new("internalUse");
 
         #endregion
 

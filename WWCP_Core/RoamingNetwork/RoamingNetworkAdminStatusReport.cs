@@ -24,6 +24,8 @@ namespace cloud.charging.open.protocols.WWCP
     public static class RoamingNetworkAdminStatusReportExtensions
     {
 
+        #region GenerateAdminStatusReport(RoamingNetwork,  Timestamp = null)
+
         /// <summary>
         /// Generate a new roaming network admin status report for the given roaming network.
         /// </summary>
@@ -34,6 +36,10 @@ namespace cloud.charging.open.protocols.WWCP
             => new (new IRoamingNetwork[] { RoamingNetwork },
                     Timestamp);
 
+        #endregion
+
+        #region GenerateAdminStatusReport(RoamingNetworks, Timestamp = null)
+
         /// <summary>
         /// Generate a new roaming network admin status report for the given roaming network.
         /// </summary>
@@ -43,6 +49,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => new (RoamingNetworks,
                     Timestamp);
+
+        #endregion
 
     }
 
