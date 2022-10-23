@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
         #region Data
 
-        protected EVSE? DE_GEF_E0001_AAAA_1;
+        protected IEVSE? DE_GEF_E0001_AAAA_1;
 
         #endregion
 

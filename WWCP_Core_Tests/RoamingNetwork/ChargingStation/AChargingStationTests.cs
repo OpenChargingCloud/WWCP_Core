@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
         #region Data
 
-        protected ChargingStation? DE_GEF_S0001_AAAA;
+        protected IChargingStation? DE_GEF_S0001_AAAA;
 
         #endregion
 

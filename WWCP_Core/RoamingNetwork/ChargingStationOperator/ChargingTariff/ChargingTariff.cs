@@ -17,20 +17,11 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
-using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Hermod;
-using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -64,46 +55,25 @@ namespace cloud.charging.open.protocols.WWCP
                                     InfoStatus                        ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
 
-            => ChargingTariffs != null && ChargingTariffs.Any()
+            => ChargingTariffs is not null && ChargingTariffs.Any()
 
                    ? new JArray(ChargingTariffs.
-                                    Where     (stationgroup => stationgroup != null).
-                                    OrderBy   (stationgroup => stationgroup.Id).
+                                    Where     (chargingTariff => chargingTariff is not null).
+                                    OrderBy   (chargingTariff => chargingTariff.Id).
                                     SkipTakeFilter(Skip, Take).
-                                    SafeSelect(stationgroup => stationgroup.ToJSON(Embedded,
-                                                                                   ExpandRoamingNetworkId,
-                                                                                   ExpandChargingStationOperatorId,
-                                                                                   ExpandChargingPoolId,
-                                                                                   ExpandEVSEIds,
-                                                                                   ExpandBrandIds,
-                                                                                   ExpandDataLicenses)))
+                                    SafeSelect(chargingTariff => chargingTariff.ToJSON(Embedded,
+                                                                                       ExpandRoamingNetworkId,
+                                                                                       ExpandChargingStationOperatorId,
+                                                                                       ExpandChargingPoolId,
+                                                                                       ExpandEVSEIds,
+                                                                                       ExpandBrandIds,
+                                                                                       ExpandDataLicenses)))
 
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this ChargingTariffs, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<ChargingTariff> ChargingTariffs, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
-
-            #endregion
-
-            return ChargingTariffs?.Any() == true
-                       ? new JProperty(JPropertyKey, ChargingTariffs.ToJSON())
-                       : null;
-
-        }
+                   : new JArray();
 
         #endregion
 
-
-        #region ToCSV(this ChargingTariffs, Skip = null, Take = null, Embedded = false, ...)
+        #region GetTariffs(this ChargingStations, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of charging stations.
@@ -112,29 +82,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Skip">The optional number of charging stations to skip.</param>
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public static IEnumerable<String[]> GetTariffs(this IEnumerable<ChargingStation> ChargingStations,
-                                                       UInt64?                           Skip                              = null,
-                                                       UInt64?                           Take                              = null,
-                                                       Boolean                           Embedded                          = false,
-                                                       InfoStatus                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                        ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                        ExpandEVSEIds                     = InfoStatus.Expanded,
-                                                       InfoStatus                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                        ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+        public static IEnumerable<String[]> GetTariffs(this IEnumerable<IChargingStation>  ChargingStations,
+                                                       UInt64?                             Skip                              = null,
+                                                       UInt64?                             Take                              = null,
+                                                       Boolean                             Embedded                          = false,
+                                                       InfoStatus                          ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                          ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                          ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                          ExpandEVSEIds                     = InfoStatus.Expanded,
+                                                       InfoStatus                          ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                          ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
 
-            => ChargingStations != null && ChargingStations.Any()
+            => ChargingStations is not null && ChargingStations.Any()
 
                    ? ChargingStations.
-                         Where     (station => station != null).
+                         Where     (station => station is not null).
                          OrderBy   (station => station.Id).
                          SkipTakeFilter(Skip, Take).
                          SafeSelectMany(station => {
 
                              var results = new List<String[]>();
 
-                             foreach (var group in station.Operator.ChargingStationGroups.Where(group => group.Tariff != null))
+                             foreach (var group in station.Operator.ChargingStationGroups.Where(group => group.Tariff is not null))
                                  if (group.AllowedMemberIds.Contains(station.Id) ||
                                      (group.AutoIncludeStations != null && group.AutoIncludeStations(station.Operator.GetChargingStationById(station.Id))))
                                      foreach (var evse in station)
@@ -153,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     });
 
                              foreach (var evse in station)
-                                 foreach (var group in evse.Operator.EVSEGroups.Where(group => group.Tariff != null))
+                                 foreach (var group in evse.Operator.EVSEGroups.Where(group => group.Tariff is not null))
                                      if (group.AllowedMemberIds.Contains(evse.Id) ||
                                          (group.AutoIncludeEVSEs != null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEById(evse.Id))))
                                          results.Add(new String[] {

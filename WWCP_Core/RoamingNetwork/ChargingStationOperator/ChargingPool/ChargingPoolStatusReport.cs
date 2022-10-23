@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging pool status report for the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public static ChargingPoolStatusReport GenerateStatusReport            (this iChargingPool                          ChargingPool,
+        public static ChargingPoolStatusReport GenerateStatusReport            (this IChargingPool                          ChargingPool,
                                                                                 DateTime?                                   Timestamp   = null)
 
             => new (new IChargingPool[] { ChargingPool },

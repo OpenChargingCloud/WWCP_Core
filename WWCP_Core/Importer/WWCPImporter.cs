@@ -87,28 +87,28 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// <summary>
         /// The unique identification of this WWCP importer.
         /// </summary>
-        public String                                                          Id                                  { get; }
+        public String                                                           Id                                  { get; }
 
         /// <summary>
         /// The prefix of the importer forwarding files.
         /// </summary>
-        //public String                                                          ForwardingFilenamePrefix            { get; }
+        //public String                                                           ForwardingFilenamePrefix            { get; }
 
 
-        public IEnumerable<ChargingStationOperator>                            AllChargingStationOperators         { get; }
+        public IEnumerable<IChargingStationOperator>                            AllChargingStationOperators         { get; }
 
-        public Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  GetChargingStationOperators         { get; }
+        public Func<ChargingStation_Id, IEnumerable<IChargingStationOperator>>  GetChargingStationOperators         { get; }
 
-        public Func<ChargingStation_Id, ChargingStationOperator>               GetDefaultChargingStationOperator   { get; }
+        public Func<ChargingStation_Id, IChargingStationOperator>               GetDefaultChargingStationOperator   { get; }
 
-        public Func<ChargingStation_Id, IEnumerable<RoamingNetwork_Id>>        RoamingNetworkIds
+        public Func<ChargingStation_Id, IEnumerable<RoamingNetwork_Id>>         RoamingNetworkIds
             => operators => GetChargingStationOperators(operators).Select(cso => cso.RoamingNetwork.Id);
 
 
         /// <summary>
         /// The time span between importer runs.
         /// </summary>
-        public TimeSpan                                                        ImportEvery                         { get; }
+        public TimeSpan                                                         ImportEvery                         { get; }
 
         #region LastRunId
 
@@ -287,22 +287,22 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// <summary>
         /// Create a new WWCP importer.
         /// </summary>
-        public WWCPImporter(String                                                           Id,
-                            //String?                                                          ForwardingFilenamePrefix            = null,
+        public WWCPImporter(String                                                            Id,
+                            //String?                                                           ForwardingFilenamePrefix            = null,
 
-                            IEnumerable<ChargingStationOperator>?                            AllChargingStationOperators         = null,
-                            Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>?  GetChargingStationOperators         = null,
-                            Func<ChargingStation_Id, ChargingStationOperator>?               GetDefaultChargingStationOperator   = null,
+                            IEnumerable<IChargingStationOperator>?                            AllChargingStationOperators         = null,
+                            Func<ChargingStation_Id, IEnumerable<IChargingStationOperator>>?  GetChargingStationOperators         = null,
+                            Func<ChargingStation_Id, IChargingStationOperator>?               GetDefaultChargingStationOperator   = null,
                             //CreateForwardingTableDelegate<T>?                                CreateForwardingTable               = null,
 
-                            Action<WWCPImporter<T>, T>?                                      OnStartup                           = null,
-                            TimeSpan?                                                        ImportEvery                         = null,
-                            GetDataDelegate<T>?                                              GetData                             = null,
-                            Action<WWCPImporter<T>, T>?                                      OnEveryRun                          = null,
-                            UInt32                                                           MaxNumberOfCachedDataImports        = DefaultMaxNumberOfCachedImports,
-                            Action<WWCPImporter<T>, T>?                                      OnShutdown                          = null,
+                            Action<WWCPImporter<T>, T>?                                       OnStartup                           = null,
+                            TimeSpan?                                                         ImportEvery                         = null,
+                            GetDataDelegate<T>?                                               GetData                             = null,
+                            Action<WWCPImporter<T>, T>?                                       OnEveryRun                          = null,
+                            UInt32                                                            MaxNumberOfCachedDataImports        = DefaultMaxNumberOfCachedImports,
+                            Action<WWCPImporter<T>, T>?                                       OnShutdown                          = null,
 
-                            DNSClient?                                                       DNSClient                           = null)
+                            DNSClient?                                                        DNSClient                           = null)
 
         {
 

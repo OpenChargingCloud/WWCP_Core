@@ -28,11 +28,90 @@ using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using System.Collections.Concurrent;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.Virtual
 {
+
+    /// <summary>
+    /// Extension methods for virtual charging stations.
+    /// </summary>
+    public static class VirtualChargingStationExtensions
+    {
+
+        #region CreateVirtualStation(this ChargingPool, ChargingStationId = null, ChargingStationConfigurator = null, VirtualChargingStationConfigurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create a new virtual charging station.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingStationId">The charging station identification for the charging station to be created.</param>
+        /// <param name="ChargingStationConfigurator">An optional delegate to configure the new (local) charging station.</param>
+        /// <param name="VirtualChargingStationConfigurator">An optional delegate to configure the new virtual charging station.</param>
+        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
+        /// <param name="OnError">An optional delegate for reporting an error.</param>
+        public static IChargingStation? CreateVirtualStation(this IChargingPool                          ChargingPool,
+                                                             ChargingStation_Id                          ChargingStationId,
+                                                             I18NString?                                 Name                                 = null,
+                                                             I18NString?                                 Description                          = null,
+                                                             ChargingStationAdminStatusTypes?            InitialAdminStatus                   = null,
+                                                             ChargingStationStatusTypes?                 InitialStatus                        = null,
+                                                             String                                      EllipticCurve                        = "P-256",
+                                                             ECPrivateKeyParameters?                     PrivateKey                           = null,
+                                                             PublicKeyCertificates?                      PublicKeyCertificates                = null,
+                                                             TimeSpan?                                   SelfCheckTimeSpan                    = null,
+                                                             UInt16                                      MaxAdminStatusListSize               = VirtualChargingStation.DefaultMaxAdminStatusListSize,
+                                                             UInt16                                      MaxStatusListSize                    = VirtualChargingStation.DefaultMaxStatusListSize,
+                                                             Action<IChargingStation>?                   ChargingStationConfigurator          = null,
+                                                             Action<VirtualChargingStation>?             VirtualChargingStationConfigurator   = null,
+                                                             Action<IChargingStation>?                   OnSuccess                            = null,
+                                                             Action<IChargingPool, ChargingStation_Id>?  OnError                              = null)
+        {
+
+            #region Initial checks
+
+            if (ChargingPool is null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+
+            #endregion
+
+            return ChargingPool.CreateChargingStation(ChargingStationId,
+                                                      Name,
+                                                      Description,
+                                                      ChargingStationConfigurator,
+                                                      newStation => {
+
+                                                          var virtualstation = new VirtualChargingStation(newStation.Id,
+                                                                                                          ChargingPool.RoamingNetwork,
+                                                                                                          newStation.Name,
+                                                                                                          newStation.Description,
+                                                                                                          InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                                                                          InitialStatus      ?? ChargingStationStatusTypes.Available,
+                                                                                                          EllipticCurve,
+                                                                                                          PrivateKey,
+                                                                                                          PublicKeyCertificates,
+                                                                                                          SelfCheckTimeSpan,
+                                                                                                          MaxAdminStatusListSize,
+                                                                                                          MaxStatusListSize);
+
+                                                          VirtualChargingStationConfigurator?.Invoke(virtualstation);
+
+                                                          return virtualstation;
+
+                                                      },
+
+                                                      OnSuccess: OnSuccess,
+                                                      OnError:   OnError);
+
+        }
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// A virtual charging station.
@@ -1937,15 +2016,100 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             => throw new NotImplementedException();
 
         public Address? Address
-            => throw new NotImplementedException();
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public GeoCoordinate? GeoLocation
-            => throw new NotImplementedException();
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public OpeningTimes OpeningTimes
             => throw new NotImplementedException();
 
+        public ChargingPool? ChargingPool => throw new NotImplementedException();
 
+        public ChargingStation? ChargingStation => throw new NotImplementedException();
+
+        public ConcurrentDictionary<Brand_Id, Brand> Brands => throw new NotImplementedException();
+
+        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
+
+        public String? OpenStreetMapNodeId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Address? EntranceAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GeoCoordinate? EntranceLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public I18NString ArrivalInstructions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        OpeningTimes IChargingStation.OpeningTimes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<ParkingSpace> ParkingSpaces => throw new NotImplementedException();
+
+        public UIFeatures? UIFeatures { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<AuthenticationModes> AuthenticationModes => throw new NotImplementedException();
+
+        public ReactiveSet<PaymentOptions> PaymentOptions => throw new NotImplementedException();
+
+        public AccessibilityTypes? Accessibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<String> PhotoURIs => throw new NotImplementedException();
+
+        public I18NString HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Address ExitAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GeoCoordinate? ExitLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GridConnectionTypes? GridConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Decimal? MaxCurrent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<Decimal>? MaxCurrentRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxCurrentPrognoses => throw new NotImplementedException();
+
+        public Decimal? MaxPower { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<Decimal>? MaxPowerRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxPowerPrognoses => throw new NotImplementedException();
+
+        public Decimal? MaxCapacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<Decimal>? MaxCapacityRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxCapacityPrognoses => throw new NotImplementedException();
+
+        public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<EnergyMix>> EnergyMixPrognoses => throw new NotImplementedException();
+
+        TimeSpan IChargingStation.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Boolean IsFreeOfCharge { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Boolean IsHubjectCompatible { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Boolean DynamicInfoAvailable { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public String ServiceIdentification { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public String ModelCode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public String HubjectStationId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Func<EVSEStatusReport, ChargingStationStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
+
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
+
+        ReactiveSet<Brand> IChargingStation.Brands => throw new NotImplementedException();
+
+        public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
+
+        public ChargingStationOperator? SubOperator => throw new NotImplementedException();
 
         public Boolean Equals(IChargingStation? other)
         {
@@ -2196,6 +2360,66 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public override String ToString()
 
             => Id.ToString();
+
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate? IncludeEVSEs = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate? IncludeEVSEs = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<EVSEStatus> EVSEStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean ContainsEVSE(EVSE EVSE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEVSE? CreateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEVSE? CreateOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16 MaxAdminStatusScheduleSize = 50, UInt16 MaxStatusScheduleSize = 50, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEAdminStatusTypes, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatusSchedule(IncludeEVSEDelegate? IncludeEVSEs = null, Func<DateTime, Boolean>? TimestampFilter = null, Func<EVSEStatusTypes, Boolean>? StatusFilter = null, UInt64? Skip = null, UInt64? Take = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean ContainsEVSE(IEVSE EVSE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IChargingStation UpdateWith(IChargingStation OtherChargingStation)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

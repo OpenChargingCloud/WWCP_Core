@@ -37,19 +37,6 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// A delegate for filtering charging station operator identifications.
-    /// </summary>
-    /// <param name="ChargingStationOperatorId">A charging station operator identification to include.</param>
-    public delegate Boolean IncludeChargingStationOperatorIdDelegate(ChargingStationOperator_Id  ChargingStationOperatorId);
-
-    /// <summary>
-    /// A delegate for filtering charging station operators.
-    /// </summary>
-    /// <param name="ChargingStationOperator">A charging station operator to include.</param>
-    public delegate Boolean IncludeChargingStationOperatorDelegate  (ChargingStationOperator     ChargingStationOperator);
-
-
-    /// <summary>
     /// Charging station extentions.
     /// </summary>
     public static partial class ChargingStationOperatorExtensions
@@ -210,6 +197,25 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The remote charging station operator.
+        /// </summary>
+        [Optional]
+        public IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
+
+        /// <summary>
+        /// The roaming provider of this charging station operator.
+        /// </summary>
+        [Optional]
+        public ICSORoamingProvider             EMPRoamingProvider               { get; }
+
+
+        /// <summary>
+        /// All brands registered for this charging station operator.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<Brand>         Brands          { get; }
 
         #region Logo
 
@@ -453,22 +459,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Links
-
-        /// <summary>
-        /// The remote charging station operator.
-        /// </summary>
-        [Optional]
-        public IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
-
-        /// <summary>
-        /// The roaming provider of this charging station operator.
-        /// </summary>
-        [Optional]
-        public ICSORoamingProvider             EMPRoamingProvider               { get; }
-
-        #endregion
-
         #region Events
 
         #region OnInvalidEVSEIdAdded
@@ -554,6 +544,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
+            this.Brands                       = new ReactiveSet<Brand>();
             this._DataLicenses                = new ReactiveSet<DataLicense>();
 
             #region InvalidEVSEIds
@@ -568,14 +559,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            this.brands                       = new ConcurrentDictionary<Brand_Id, Brand>();
-
-            this.chargingPools                = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
+            this.chargingPools                = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this);
             this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
             this._EVSEGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
-            this._ChargingTariffs             = new EntityHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
-            this._ChargingTariffGroups        = new EntityHashSet <ChargingStationOperator, ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
+            this.chargingTariffs             = new EntityHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
+            this.chargingTariffGroups        = new EntityHashSet <ChargingStationOperator, ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
 
             //this._ChargingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
             //this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ChargingPool>();
@@ -584,28 +573,25 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init events
 
-            this.ChargingPoolAddition          = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval           = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition          = new VotingNotificator<DateTime, IChargingStationOperator,    IChargingPool,         Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval           = new VotingNotificator<DateTime, IChargingStationOperator,    IChargingPool,         Boolean>(() => new VetoVote(), true);
             //this.ChargingPoolGroupAddition     = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPoolGroup,    Boolean>(() => new VetoVote(), true);
             //this.ChargingPoolGroupRemoval      = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPoolGroup,    Boolean>(() => new VetoVote(), true);
 
-            this.ChargingStationAddition       = new VotingNotificator<DateTime, ChargingPool,               ChargingStation,      Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval        = new VotingNotificator<DateTime, ChargingPool,               ChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition       = new VotingNotificator<DateTime, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval        = new VotingNotificator<DateTime, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
-            this.EVSEAddition                  = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval                   = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
+            this.evseAddition                  = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
+            this.evseRemoval                   = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
             this.EVSEGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
             this.EVSEGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
 
-            this.BrandAddition                 = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
-            this.BrandRemoval                  = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
-
-            this.ChargingTariffAddition        = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
-            this.ChargingTariffRemoval         = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
-            this.ChargingTariffGroupAddition   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
-            this.ChargingTariffGroupRemoval    = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
+            this.chargingTariffAddition        = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
+            this.chargingTariffRemoval         = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
+            this.chargingTariffGroupAddition   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
+            this.chargingTariffGroupRemoval    = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -721,319 +707,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddDataLicense(params DataLicense)
-
-        public ChargingStationOperator AddDataLicense(params DataLicense[] DataLicenses)
-        {
-
-            lock (_DataLicenses)
-            {
-
-                if (DataLicenses.Length > 0)
-                {
-                    foreach (var license in DataLicenses.Where(license => license != null))
-                        _DataLicenses.Add(license);
-                }
-
-                return this;
-
-            }
-
-        }
-
-        #endregion
-
-        #region Brands
-
-        #region BrandAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, Brand, Boolean> BrandAddition;
-
-        /// <summary>
-        /// Called whenever a brand will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, Brand, Boolean> OnBrandAddition
-
-            => BrandAddition;
-
-        #endregion
-
-        #region CreateBrand     (Id, Name, Logo = null, Homepage = null, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// Create and register a new brand having the given
-        /// unique brand identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of this brand.</param>
-        /// <param name="Name">The multi-language brand name.</param>
-        /// <param name="Logo">An optional logo of this brand.</param>
-        /// <param name="Homepage">An optional homepage of this brand.</param>
-        /// 
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
-        public Brand? CreateBrand(Brand_Id                                    Id,
-                                  I18NString                                  Name,
-                                  I18NString?                                 Description   = null,
-                                  URL?                                        Logo          = null,
-                                  URL?                                        Homepage      = null,
-
-                                  Action<ChargingStationOperator, Brand>?     OnSuccess     = null,
-                                  Action<ChargingStationOperator, Brand_Id>?  OnError       = null)
-
-        {
-
-            lock (brands)
-            {
-
-                #region Initial checks
-
-                if (brands.ContainsKey(Id))
-                {
-
-                    if (OnError is not null)
-                        OnError?.Invoke(this, Id);
-
-                    else
-                        throw new BrandAlreadyExists(this, Id);
-
-                }
-
-                if (Name.IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(Name), "The name of the brand must not be null or empty!");
-
-                #endregion
-
-                var brand = new Brand(Id,
-                                      Name,
-                                      Description,
-                                      Logo,
-                                      Homepage);
-
-
-                if (BrandAddition.SendVoting(Timestamp.Now,
-                                             this,
-                                             brand) &&
-                    brands.TryAdd(brand.Id, brand))
-                {
-
-                    OnSuccess?.Invoke(this, brand);
-
-                    BrandAddition.SendNotification(Timestamp.Now,
-                                                   this,
-                                                   brand);
-
-                    return brand;
-
-                }
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region GetOrCreateBrand(Id, Name, Logo = null, Homepage = null, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// Get or create and register a new brand having the given
-        /// unique brand identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of this brand.</param>
-        /// <param name="Name">The multi-language brand name.</param>
-        /// <param name="Logo">An optional logo of this brand.</param>
-        /// <param name="Homepage">An optional homepage of this brand.</param>
-        /// 
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
-        public Brand? GetOrCreateBrand(Brand_Id                                    Id,
-                                       I18NString                                  Name,
-                                       I18NString?                                 Description   = null,
-                                       URL?                                        Logo          = null,
-                                       URL?                                        Homepage      = null,
-
-                                       Action<ChargingStationOperator, Brand>?     OnSuccess     = null,
-                                       Action<ChargingStationOperator, Brand_Id>?  OnError       = null)
-
-        {
-
-            lock (brands)
-            {
-
-                #region Initial checks
-
-                if (Name.IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(Name), "The name of the brand must not be null or empty!");
-
-                #endregion
-
-                if (brands.TryGetValue(Id, out var brand))
-                    return brand;
-
-                return CreateBrand(Id,
-                                   Name,
-                                   Description,
-                                   Logo,
-                                   Homepage,
-
-                                   OnSuccess,
-                                   OnError);
-
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region Brands
-
-        private readonly ConcurrentDictionary<Brand_Id, Brand> brands;
-
-        /// <summary>
-        /// All brands registered within this charging station operator.
-        /// </summary>
-        public IEnumerable<Brand> Brands
-            => brands.Values;
-
-        #endregion
-
-        #region BrandIds
-
-        /// <summary>
-        /// All brand identifications registered within this charging station operator.
-        /// </summary>
-        public IEnumerable<Brand_Id> BrandIds
-            => brands.Select(brand => brand.Key);
-
-        #endregion
-
-        #region TryGetBrand(Id, out Brand)
-
-        /// <summary>
-        /// Try to return the brand of the given brand identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the brand.</param>
-        /// <param name="Brand">The brand.</param>
-        public Boolean TryGetBrand(Brand_Id Id, out Brand? Brand)
-
-            => brands.TryGetValue(Id, out Brand);
-
-        #endregion
-
-
-        #region BrandRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, Brand, Boolean> BrandRemoval;
-
-        /// <summary>
-        /// Called whenever a brand will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, Brand, Boolean> OnBrandRemoval
-
-            => BrandRemoval;
-
-        #endregion
-
-        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station operator.
-        /// </summary>
-        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand? RemoveBrand(Brand_Id                                    BrandId,
-                                  Action<ChargingStationOperator, Brand>?     OnSuccess   = null,
-                                  Action<ChargingStationOperator, Brand_Id>?  OnError     = null)
-        {
-
-            lock (brands)
-            {
-
-                if (brands.TryGetValue(BrandId, out var brand) &&
-                    BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            brand) &&
-                    brands.TryRemove(BrandId, out var _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, BrandId);
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All brands registered within this charging station operator.
-        /// </summary>
-        /// <param name="Brand">The brand to remove.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand                                    Brand,
-                                 Action<ChargingStationOperator, Brand>?  OnSuccess   = null,
-                                 Action<ChargingStationOperator, Brand>?  OnError     = null)
-        {
-
-            lock (brands)
-            {
-
-                if (BrandRemoval.SendVoting(Timestamp.Now,
-                                            this,
-                                            Brand) &&
-                    brands.TryRemove(Brand.Id, out var _Brand))
-                {
-
-                    OnSuccess?.Invoke(this, _Brand);
-
-                    BrandRemoval.SendNotification(Timestamp.Now,
-                                                  this,
-                                                  _Brand);
-
-                    return _Brand;
-
-                }
-
-                OnError?.Invoke(this, Brand);
-
-                return Brand;
-
-            }
-
-        }
-
-        #endregion
-
-        #endregion
-
         #region Charging pools
 
         #region ChargingPoolAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
 
             => ChargingPoolAddition;
 
@@ -1050,18 +733,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool? CreateChargingPool(ChargingPool_Id?                                   Id                          = null,
-                                                I18NString?                                        Name                        = null,
-                                                I18NString?                                        Description                 = null,
-                                                Action<ChargingPool>?                              Configurator                = null,
-                                                RemoteChargingPoolCreatorDelegate?                 RemoteChargingPoolCreator   = null,
-                                                Timestamped<ChargingPoolAdminStatusTypes>?         InitialAdminStatus          = null,
-                                                Timestamped<ChargingPoolStatusTypes>?              InitialStatus               = null,
-                                                UInt16                                             MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                UInt16                                             MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
-                                                Action<ChargingPool>?                              OnSuccess                   = null,
-                                                Action<ChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
-
+        public IChargingPool? CreateChargingPool(ChargingPool_Id?                                    Id                          = null,
+                                                 I18NString?                                         Name                        = null,
+                                                 I18NString?                                         Description                 = null,
+                                                 Action<IChargingPool>?                              Configurator                = null,
+                                                 RemoteChargingPoolCreatorDelegate?                  RemoteChargingPoolCreator   = null,
+                                                 Timestamped<ChargingPoolAdminStatusTypes>?          InitialAdminStatus          = null,
+                                                 Timestamped<ChargingPoolStatusTypes>?               InitialStatus               = null,
+                                                 UInt16                                              MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                                 UInt16                                              MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                 Action<IChargingPool>?                              OnSuccess                   = null,
+                                                 Action<IChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
         {
 
             #region Initial checks
@@ -1113,13 +795,13 @@ namespace cloud.charging.open.protocols.WWCP
                 chargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationRemoval. SendVoting      (timestamp, evseoperator, pool, vote);
                 chargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
-                chargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote)         => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-                chargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)               => EVSEAddition.           SendNotification(timestamp, station, evse);
+                chargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote)         => evseAddition.           SendVoting      (timestamp, station, evse, vote);
+                chargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)               => evseAddition.           SendNotification(timestamp, station, evse);
                 chargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
                 chargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
                 chargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
-                chargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote)         => EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
-                chargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)               => EVSERemoval .           SendNotification(timestamp, station, evse);
+                chargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote)         => evseRemoval .           SendVoting      (timestamp, station, evse, vote);
+                chargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)               => evseRemoval .           SendNotification(timestamp, station, evse);
 
 
                 chargingPool.OnNewReservation                          += SendNewReservation;
@@ -1150,18 +832,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool? CreateOrUpdateChargingPool(ChargingPool_Id                                    Id,
-                                                        I18NString?                                        Name                        = null,
-                                                        I18NString?                                        Description                 = null,
-                                                        Action<ChargingPool>?                              Configurator                = null,
-                                                        RemoteChargingPoolCreatorDelegate?                 RemoteChargingPoolCreator   = null,
-                                                        Timestamped<ChargingPoolAdminStatusTypes>?         InitialAdminStatus          = null,
-                                                        Timestamped<ChargingPoolStatusTypes>?              InitialStatus               = null,
-                                                        UInt16                                             MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                        UInt16                                             MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
-                                                        Action<ChargingPool>?                              OnSuccess                   = null,
-                                                        Action<ChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
-
+        public IChargingPool? CreateOrUpdateChargingPool(ChargingPool_Id                                     Id,
+                                                         I18NString?                                         Name                        = null,
+                                                         I18NString?                                         Description                 = null,
+                                                         Action<IChargingPool>?                              Configurator                = null,
+                                                         RemoteChargingPoolCreatorDelegate?                  RemoteChargingPoolCreator   = null,
+                                                         Timestamped<ChargingPoolAdminStatusTypes>?          InitialAdminStatus          = null,
+                                                         Timestamped<ChargingPoolStatusTypes>?               InitialStatus               = null,
+                                                         UInt16                                              MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                                         UInt16                                              MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                         Action<IChargingPool>?                              OnSuccess                   = null,
+                                                         Action<IChargingStationOperator, ChargingPool_Id>?  OnError                     = null)
         {
 
             lock (chargingPools)
@@ -1226,12 +907,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPools
 
-        private readonly EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> chargingPools;
+        private readonly EntityHashSet<IChargingStationOperator, ChargingPool_Id, IChargingPool> chargingPools;
 
         /// <summary>
         /// Return an enumeration of all charging pools.
         /// </summary>
-        public IEnumerable<ChargingPool> ChargingPools
+        public IEnumerable<IChargingPool> ChargingPools
 
             => chargingPools;
 
@@ -1372,7 +1053,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given ChargingPool is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public Boolean ContainsChargingPool(ChargingPool ChargingPool)
+        public Boolean ContainsChargingPool(IChargingPool ChargingPool)
 
             => chargingPools.Contains(ChargingPool);
 
@@ -1392,7 +1073,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetChargingPoolById(ChargingPoolId)
 
-        public ChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId)
+        public IChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId)
 
             => chargingPools.GetById(ChargingPoolId);
 
@@ -1400,7 +1081,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolById(ChargingPoolId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
 
             => chargingPools.TryGet(ChargingPoolId, out ChargingPool);
 
@@ -1408,7 +1089,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolByStationId(ChargingStationId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out ChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out IChargingPool? ChargingPool)
         {
 
             foreach (var chargingPool in chargingPools)
@@ -1429,7 +1110,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveChargingPool(ChargingPoolId)
 
-        public ChargingPool? RemoveChargingPool(ChargingPool_Id ChargingPoolId)
+        public IChargingPool? RemoveChargingPool(ChargingPool_Id ChargingPoolId)
         {
 
             if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
@@ -1464,7 +1145,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveChargingPool(ChargingPoolId, out ChargingPool)
 
-        public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out ChargingPool? ChargingPool)
+        public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
         {
 
             if (TryGetChargingPoolById(ChargingPoolId, out ChargingPool))
@@ -1680,7 +1361,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => chargingPools.GetEnumerator();
 
-        public IEnumerator<ChargingPool> GetEnumerator()
+        public IEnumerator<IChargingPool> GetEnumerator()
 
             => chargingPools.GetEnumerator();
 
@@ -1689,12 +1370,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPoolRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolRemoval;
 
         /// <summary>
         /// Called whenever an charging pool will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
 
             => ChargingPoolRemoval;
 
@@ -1706,12 +1387,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
 
             => ChargingStationAddition;
 
@@ -1723,7 +1404,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return an enumeration of all charging stations.
         /// </summary>
-        public IEnumerable<ChargingStation> ChargingStations
+        public IEnumerable<IChargingStation> ChargingStations
 
             => chargingPools.SelectMany(chargingPool => chargingPool.ChargingStations);
 
@@ -1865,7 +1546,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given ChargingStation is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public Boolean ContainsChargingStation(ChargingStation ChargingStation)
+        public Boolean ContainsChargingStation(IChargingStation ChargingStation)
 
             => chargingPools.Any(chargingPool => chargingPool.ContainsChargingStation(ChargingStation.Id));
 
@@ -1885,7 +1566,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetChargingStationById       (ChargingStationId)
 
-        public ChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
+        public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
 
             => ChargingStations.FirstOrDefault(chargingStation => chargingStation.Id == ChargingStationId);
 
@@ -1893,7 +1574,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingStationById    (ChargingStationId, out ChargingStation ChargingStation)
 
-        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out ChargingStation? ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
         {
 
             ChargingStation = ChargingStations.FirstOrDefault(chargingStation => chargingStation.Id == ChargingStationId);
@@ -2183,12 +1864,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
             => ChargingStationRemoval;
 
@@ -2255,16 +1936,16 @@ namespace cloud.charging.open.protocols.WWCP
                                                                ChargingTariff                                                      Tariff                        = null,
                                                                IEnumerable<DataLicense>                                            DataLicenses                  = null,
 
-                                                               IEnumerable<ChargingStation>                                        Members                       = null,
+                                                               IEnumerable<IChargingStation>                                       Members                       = null,
                                                                IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
-                                                               Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
+                                                               Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
                                                                Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                                                UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
                                                                Action<ChargingStationGroup>                                        OnSuccess                     = null,
-                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>            OnError                       = null)
+                                                               Action<IChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
 
         {
 
@@ -2363,16 +2044,16 @@ namespace cloud.charging.open.protocols.WWCP
                                                                I18NString                                                          Name,
                                                                I18NString                                                          Description                   = null,
 
-                                                               IEnumerable<ChargingStation>                                        Members                       = null,
+                                                               IEnumerable<IChargingStation>                                       Members                       = null,
                                                                IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
-                                                               Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
+                                                               Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
                                                                Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                                                UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
                                                                Action<ChargingStationGroup>                                        OnSuccess                     = null,
-                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>            OnError                       = null)
+                                                               Action<IChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
 
         {
 
@@ -2430,16 +2111,16 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     I18NString                                                          Name,
                                                                     I18NString                                                          Description                   = null,
 
-                                                                    IEnumerable<ChargingStation>                                        Members                       = null,
+                                                                    IEnumerable<IChargingStation>                                       Members                       = null,
                                                                     IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
-                                                                    Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
+                                                                    Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
                                                                     Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                                                     UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                     UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
                                                                     Action<ChargingStationGroup>                                        OnSuccess                     = null,
-                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>            OnError                       = null)
+                                                                    Action<IChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
 
         {
 
@@ -2500,20 +2181,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
-        public ChargingStationGroup GetOrCreateChargingStationGroup(String                                                             IdSuffix,
-                                                                    I18NString                                                         Name,
-                                                                    I18NString                                                         Description                   = null,
+        public ChargingStationGroup GetOrCreateChargingStationGroup(String                                                              IdSuffix,
+                                                                    I18NString                                                          Name,
+                                                                    I18NString                                                          Description                   = null,
 
-                                                                    IEnumerable<ChargingStation>                                       Members                       = null,
-                                                                    IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
-                                                                    Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+                                                                    IEnumerable<IChargingStation>                                       Members                       = null,
+                                                                    IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
+                                                                    Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
                                                                     Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
-                                                                    UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
-                                                                    UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+                                                                    UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                                    UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
-                                                                    Action<ChargingStationGroup>                                       OnSuccess                     = null,
-                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+                                                                    Action<ChargingStationGroup>                                        OnSuccess                     = null,
+                                                                    Action<IChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
 
 
         {
@@ -2662,14 +2343,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> evseAddition;
+
+        public IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition
+            => evseAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
         public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
-            => EVSEAddition;
+            => evseAddition;
+
+        #endregion
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> evseRemoval;
+
+        public IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval
+            => evseRemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
+
+            => evseRemoval;
 
         #endregion
 
@@ -2871,7 +2571,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetEVSEbyId(EVSE_Id? EVSEId, out IEVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id? EVSEId, out IEVSE? EVSE)
         {
 
             if (!EVSEId.HasValue)
@@ -2888,9 +2588,32 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region TryGetChargingStationByEVSEId(EVSEId, out Station)
+
+        public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IChargingStation? Station)
+        {
+
+            foreach (var station in ChargingStations)
+            {
+
+                if (station.TryGetEVSEById(EVSEId, out var evse))
+                {
+                    Station = station;
+                    return true;
+                }
+
+            }
+
+            Station = null;
+            return false;
+
+        }
+
+        #endregion
+
         #region TryGetChargingPoolByEVSEId(EVSEId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id EVSEId, out ChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id EVSEId, out IChargingPool? ChargingPool)
         {
 
             foreach (var chargingPool in chargingPools)
@@ -3330,20 +3053,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                NewStatus);
 
         }
-
-        #endregion
-
-
-        #region EVSERemoval
-
-        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
 
         #endregion
 
@@ -3844,28 +3553,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> chargingTariffAddition;
+
+        public IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffAddition
+            => chargingTariffAddition;
 
         /// <summary>
         /// Called whenever a charging tariff will be or was added.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, ChargingTariff, Boolean> OnChargingTariffAddition
-
-            => ChargingTariffAddition;
+            => chargingTariffAddition;
 
         #endregion
 
 
         #region ChargingTariffs
 
-        private readonly EntityHashSet<ChargingStationOperator, ChargingTariff_Id, ChargingTariff> _ChargingTariffs;
+        private readonly EntityHashSet<ChargingStationOperator, ChargingTariff_Id, ChargingTariff> chargingTariffs;
 
         /// <summary>
         /// All charging tariffs registered within this charging station operator.
         /// </summary>
         public IEnumerable<ChargingTariff> ChargingTariffs
-
-            => _ChargingTariffs;
+            => chargingTariffs;
 
         #endregion
 
@@ -3882,26 +3592,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff CreateChargingTariff(ChargingTariff_Id                                   Id,
-                                                   I18NString                                          Name,
-                                                   I18NString                                          Description,
-                                                   Brand                                               Brand,
-                                                   Uri                                                 TariffUrl,
-                                                   Currency                                            Currency,
-                                                   EnergyMix                                           EnergyMix,
-                                                   IEnumerable<ChargingTariffElement>                  TariffElements,
+        public ChargingTariff CreateChargingTariff(ChargingTariff_Id                                    Id,
+                                                   I18NString                                           Name,
+                                                   I18NString                                           Description,
+                                                   Brand                                                Brand,
+                                                   Uri                                                  TariffUrl,
+                                                   Currency                                             Currency,
+                                                   EnergyMix                                            EnergyMix,
+                                                   IEnumerable<ChargingTariffElement>                   TariffElements,
 
-                                                   Action<ChargingTariff>                              OnSuccess  = null,
-                                                   Action<ChargingStationOperator, ChargingTariff_Id>  OnError    = null)
+                                                   Action<ChargingTariff>?                              OnSuccess  = null,
+                                                   Action<ChargingStationOperator, ChargingTariff_Id>?  OnError    = null)
 
         {
 
-            lock (_ChargingTariffs)
+            lock (chargingTariffs)
             {
 
                 #region Initial checks
 
-                if (_ChargingTariffs.ContainsId(Id))
+                if (chargingTariffs.ContainsId(Id))
                 {
 
                     if (OnError != null)
@@ -3927,8 +3637,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                          TariffElements);
 
 
-                if (ChargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff) &&
-                    _ChargingTariffs.TryAdd(_ChargingTariff))
+                if (chargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff) &&
+                    chargingTariffs.TryAdd(_ChargingTariff))
                 {
 
                     //_ChargingTariff.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -3944,7 +3654,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(_ChargingTariff);
 
-                    ChargingTariffAddition.SendNotification(Timestamp.Now,
+                    chargingTariffAddition.SendNotification(Timestamp.Now,
                                                             this,
                                                             _ChargingTariff);
 
@@ -3972,17 +3682,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff CreateChargingTariff(String                                                        IdSuffix,
-                                                   I18NString                                                    Name,
-                                                   I18NString                                                    Description,
-                                                   Brand                                                         Brand,
-                                                   Uri                                                           TariffUrl,
-                                                   Currency                                                      Currency,
-                                                   EnergyMix                                                     EnergyMix,
-                                                   IEnumerable<ChargingTariffElement>                            TariffElements,
+        public ChargingTariff CreateChargingTariff(String                                                         IdSuffix,
+                                                   I18NString                                                     Name,
+                                                   I18NString                                                     Description,
+                                                   Brand                                                          Brand,
+                                                   Uri                                                            TariffUrl,
+                                                   Currency                                                       Currency,
+                                                   EnergyMix                                                      EnergyMix,
+                                                   IEnumerable<ChargingTariffElement>                             TariffElements,
 
-                                                   Action<ChargingTariff>                                        OnSuccess                     = null,
-                                                   Action<ChargingStationOperator, ChargingTariff_Id>            OnError                       = null)
+                                                   Action<ChargingTariff>?                                        OnSuccess   = null,
+                                                   Action<ChargingStationOperator, ChargingTariff_Id>?            OnError     = null)
 
         {
 
@@ -4022,21 +3732,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff GetOrCreateChargingTariff(ChargingTariff_Id                                   Id,
-                                                        I18NString                                          Name,
-                                                        I18NString                                          Description,
-                                                        Brand                                               Brand,
-                                                        Uri                                                 TariffUrl,
-                                                        Currency                                            Currency,
-                                                        EnergyMix                                           EnergyMix,
-                                                        IEnumerable<ChargingTariffElement>                  TariffElements,
+        public ChargingTariff GetOrCreateChargingTariff(ChargingTariff_Id                                    Id,
+                                                        I18NString                                           Name,
+                                                        I18NString                                           Description,
+                                                        Brand                                                Brand,
+                                                        Uri                                                  TariffUrl,
+                                                        Currency                                             Currency,
+                                                        EnergyMix                                            EnergyMix,
+                                                        IEnumerable<ChargingTariffElement>                   TariffElements,
 
-                                                        Action<ChargingTariff>                              OnSuccess  = null,
-                                                        Action<ChargingStationOperator, ChargingTariff_Id>  OnError    = null)
+                                                        Action<ChargingTariff>?                              OnSuccess   = null,
+                                                        Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
 
         {
 
-            lock (_ChargingTariffs)
+            lock (chargingTariffs)
             {
 
                 #region Initial checks
@@ -4046,7 +3756,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (_ChargingTariffs.TryGet(Id, out ChargingTariff _ChargingTariff))
+                if (chargingTariffs.TryGet(Id, out ChargingTariff _ChargingTariff))
                     return _ChargingTariff;
 
                 return CreateChargingTariff(Id,
@@ -4079,17 +3789,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff GetOrCreateChargingTariff(String                                              IdSuffix,
-                                                        I18NString                                          Name,
-                                                        I18NString                                          Description,
-                                                        Brand                                               Brand,
-                                                        Uri                                                 TariffUrl,
-                                                        Currency                                            Currency,
-                                                        EnergyMix                                           EnergyMix,
-                                                        IEnumerable<ChargingTariffElement>                  TariffElements,
+        public ChargingTariff GetOrCreateChargingTariff(String                                               IdSuffix,
+                                                        I18NString                                           Name,
+                                                        I18NString                                           Description,
+                                                        Brand                                                Brand,
+                                                        Uri                                                  TariffUrl,
+                                                        Currency                                             Currency,
+                                                        EnergyMix                                            EnergyMix,
+                                                        IEnumerable<ChargingTariffElement>                   TariffElements,
 
-                                                        Action<ChargingTariff>                              OnSuccess  = null,
-                                                        Action<ChargingStationOperator, ChargingTariff_Id>  OnError    = null)
+                                                        Action<ChargingTariff>?                              OnSuccess   = null,
+                                                        Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
 
 
         {
@@ -4125,11 +3835,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return to charging tariff for the given charging tariff identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing tariff.</param>
-        public ChargingTariff GetChargingTariff(ChargingTariff_Id Id)
+        public ChargingTariff? GetChargingTariff(ChargingTariff_Id Id)
         {
 
-            if (_ChargingTariffs.TryGet(Id, out ChargingTariff Tariff))
-                return Tariff;
+            if (chargingTariffs.TryGet(Id, out var tariff))
+                return tariff;
 
             return null;
 
@@ -4144,24 +3854,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charing tariff.</param>
         /// <param name="ChargingTariff">The charing tariff.</param>
-        public Boolean TryGetChargingTariff(ChargingTariff_Id   Id,
-                                            out ChargingTariff  ChargingTariff)
+        public Boolean TryGetChargingTariff(ChargingTariff_Id    Id,
+                                            out ChargingTariff?  ChargingTariff)
 
-            => _ChargingTariffs.TryGet(Id, out ChargingTariff);
+            => chargingTariffs.TryGet(Id, out ChargingTariff);
 
         #endregion
 
 
         #region ChargingTariffRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffRemoval;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> chargingTariffRemoval;
+
+        public IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffRemoval
+            => chargingTariffRemoval;
 
         /// <summary>
         /// Called whenever a charging tariff will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, ChargingTariff, Boolean> OnChargingTariffRemoval
-
-            => ChargingTariffRemoval;
+            => chargingTariffRemoval;
 
         #endregion
 
@@ -4173,28 +3885,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffId">The unique identification of the charging tariff to be removed.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
-        public ChargingTariff RemoveChargingTariff(ChargingTariff_Id                                   ChargingTariffId,
-                                                               Action<ChargingStationOperator, ChargingTariff>     OnSuccess   = null,
-                                                               Action<ChargingStationOperator, ChargingTariff_Id>  OnError     = null)
+        public ChargingTariff? RemoveChargingTariff(ChargingTariff_Id                                     ChargingTariffId,
+                                                    Action<IChargingStationOperator, ChargingTariff>?     OnSuccess   = null,
+                                                    Action<IChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
         {
 
-            lock (_ChargingTariffs)
+            lock (chargingTariffs)
             {
 
-                if (_ChargingTariffs.TryGet(ChargingTariffId, out ChargingTariff ChargingTariff) &&
-                    ChargingTariffRemoval.SendVoting(Timestamp.Now,
-                                                           this,
-                                                           ChargingTariff) &&
-                    _ChargingTariffs.TryRemove(ChargingTariffId, out ChargingTariff _ChargingTariff))
+                if (chargingTariffs.TryGet(ChargingTariffId, out var chargingTariff)      &&
+                    chargingTariff is not null                                            &&
+                    chargingTariffRemoval.SendVoting(Timestamp.Now, this, chargingTariff) &&
+                    chargingTariffs.TryRemove(ChargingTariffId, out _))
                 {
 
-                    OnSuccess?.Invoke(this, ChargingTariff);
+                    OnSuccess?.Invoke(this, chargingTariff);
 
-                    ChargingTariffRemoval.SendNotification(Timestamp.Now,
-                                                                 this,
-                                                                 _ChargingTariff);
+                    chargingTariffRemoval.SendNotification(Timestamp.Now,
+                                                           this,
+                                                           chargingTariff);
 
-                    return _ChargingTariff;
+                    return chargingTariff;
 
                 }
 
@@ -4216,27 +3927,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariff">The charging tariff to remove.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
-        public ChargingTariff RemoveChargingTariff(ChargingTariff                                   ChargingTariff,
-                                                               Action<ChargingStationOperator, ChargingTariff>  OnSuccess   = null,
-                                                               Action<ChargingStationOperator, ChargingTariff>  OnError     = null)
+        public ChargingTariff? RemoveChargingTariff(ChargingTariff                                     ChargingTariff,
+                                                    Action<IChargingStationOperator, ChargingTariff>?  OnSuccess   = null,
+                                                    Action<IChargingStationOperator, ChargingTariff>?  OnError     = null)
         {
 
-            lock (_ChargingTariffs)
+            lock (chargingTariffs)
             {
 
-                if (ChargingTariffRemoval.SendVoting(Timestamp.Now,
-                                                           this,
-                                                           ChargingTariff) &&
-                    _ChargingTariffs.TryRemove(ChargingTariff.Id, out ChargingTariff _ChargingTariff))
+                if (chargingTariffRemoval.SendVoting(Timestamp.Now, this, ChargingTariff) &&
+                    chargingTariffs.TryRemove(ChargingTariff.Id, out var chargingTariff)  &&
+                    chargingTariff is not null)
                 {
 
-                    OnSuccess?.Invoke(this, _ChargingTariff);
+                    OnSuccess?.Invoke(this, chargingTariff);
 
-                    ChargingTariffRemoval.SendNotification(Timestamp.Now,
-                                                                 this,
-                                                                 _ChargingTariff);
+                    chargingTariffRemoval.SendNotification(Timestamp.Now,
+                                                           this,
+                                                           chargingTariff);
 
-                    return _ChargingTariff;
+                    return chargingTariff;
 
                 }
 
@@ -4256,27 +3966,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffGroupAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> chargingTariffGroupAddition;
+
+        public IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupAddition
+            => chargingTariffGroupAddition;
 
         /// <summary>
         /// Called whenever a charging tariff will be or was added.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupAddition
 
-            => ChargingTariffGroupAddition;
+            => chargingTariffGroupAddition;
 
         #endregion
 
         #region ChargingTariffGroups
 
-        private readonly EntityHashSet<ChargingStationOperator, ChargingTariffGroup_Id, ChargingTariffGroup> _ChargingTariffGroups;
+        private readonly EntityHashSet<ChargingStationOperator, ChargingTariffGroup_Id, ChargingTariffGroup> chargingTariffGroups;
 
         /// <summary>
         /// All charging tariff groups registered within this charging station operator.
         /// </summary>
         public IEnumerable<ChargingTariffGroup> ChargingTariffGroups
-
-            => _ChargingTariffGroups;
+            => chargingTariffGroups;
 
         #endregion
 
@@ -4291,39 +4003,39 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional (multi-language) description of this charging tariff group.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff group after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff group failed.</param>
-        public ChargingTariffGroup CreateChargingTariffGroup(String                                                   IdSuffix,
-                                                             I18NString                                               Description,
-                                                             Action<ChargingTariffGroup>                              OnSuccess  = null,
-                                                             Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
+        public ChargingTariffGroup? CreateChargingTariffGroup(String                                                     IdSuffix,
+                                                              I18NString                                                 Description,
+                                                              Action<ChargingTariffGroup>?                               OnSuccess   = null,
+                                                              Action<IChargingStationOperator, ChargingTariffGroup_Id>?  OnError     = null)
 
         {
 
-            lock (_ChargingTariffGroups)
+            lock (chargingTariffGroups)
             {
 
                 #region Initial checks
 
-                var NewGroupId = ChargingTariffGroup_Id.Parse(Id, IdSuffix);
+                var newGroupId = ChargingTariffGroup_Id.Parse(Id, IdSuffix);
 
-                if (_ChargingTariffGroups.ContainsId(NewGroupId))
+                if (chargingTariffGroups.ContainsId(newGroupId))
                 {
 
                     if (OnError != null)
-                        OnError?.Invoke(this, NewGroupId);
+                        OnError?.Invoke(this, newGroupId);
 
-                    throw new ChargingTariffGroupAlreadyExists(this, NewGroupId);
+                    throw new ChargingTariffGroupAlreadyExists(this, newGroupId);
 
                 }
 
                 #endregion
 
-                var _ChargingTariffGroup = new ChargingTariffGroup(NewGroupId,
-                                                                   this,
-                                                                   Description);
+                var chargingTariffGroup = new ChargingTariffGroup(newGroupId,
+                                                                  this,
+                                                                  Description);
 
 
-                if (ChargingTariffGroupAddition.SendVoting(Timestamp.Now, this, _ChargingTariffGroup) &&
-                    _ChargingTariffGroups.TryAdd(_ChargingTariffGroup))
+                if (chargingTariffGroupAddition.SendVoting(Timestamp.Now, this, chargingTariffGroup) &&
+                    chargingTariffGroups.TryAdd(chargingTariffGroup))
                 {
 
                     //_ChargingTariffGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -4337,13 +4049,13 @@ namespace cloud.charging.open.protocols.WWCP
                     ////_ChargingTariffGroup.OnDataChanged                                 += UpdateChargingTariffGroupData;
                     ////_ChargingTariffGroup.OnAdminStatusChanged                          += UpdateChargingTariffGroupAdminStatus;
 
-                    OnSuccess?.Invoke(_ChargingTariffGroup);
+                    OnSuccess?.Invoke(chargingTariffGroup);
 
-                    ChargingTariffGroupAddition.SendNotification(Timestamp.Now,
+                    chargingTariffGroupAddition.SendNotification(Timestamp.Now,
                                                                  this,
-                                                                 _ChargingTariffGroup);
+                                                                 chargingTariffGroup);
 
-                    return _ChargingTariffGroup;
+                    return chargingTariffGroup;
 
                 }
 
@@ -4365,18 +4077,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariffGroup GetOrCreateChargingTariffGroup(String                                                   IdSuffix,
-                                                                  I18NString                                               Description,
-                                                                  Action<ChargingTariffGroup>                              OnSuccess  = null,
-                                                                  Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
+        public ChargingTariffGroup? GetOrCreateChargingTariffGroup(String                                                     IdSuffix,
+                                                                   I18NString                                                 Description,
+                                                                   Action<ChargingTariffGroup>?                               OnSuccess   = null,
+                                                                   Action<IChargingStationOperator, ChargingTariffGroup_Id>?  OnError     = null)
 
         {
 
-            lock (_ChargingTariffGroups)
+            lock (chargingTariffGroups)
             {
 
-                if (_ChargingTariffGroups.TryGet(ChargingTariffGroup_Id.Parse(Id, IdSuffix), out ChargingTariffGroup _ChargingTariffGroup))
-                    return _ChargingTariffGroup;
+                if (chargingTariffGroups.TryGet(ChargingTariffGroup_Id.Parse(Id, IdSuffix), out var chargingTariffGroup))
+                    return chargingTariffGroup;
 
                 return CreateChargingTariffGroup(IdSuffix,
                                                  Description,
@@ -4396,11 +4108,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return to charging tariff for the given charging tariff identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing tariff.</param>
-        public ChargingTariffGroup GetChargingTariffGroup(ChargingTariffGroup_Id Id)
+        public ChargingTariffGroup? GetChargingTariffGroup(ChargingTariffGroup_Id Id)
         {
 
-            if (_ChargingTariffGroups.TryGet(Id, out ChargingTariffGroup TariffGroup))
-                return TariffGroup;
+            if (chargingTariffGroups.TryGet(Id, out var chargingTariffGroup))
+                return chargingTariffGroup;
 
             return null;
 
@@ -4415,24 +4127,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charing tariff.</param>
         /// <param name="ChargingTariffGroup">The charing tariff.</param>
-        public Boolean TryGetChargingTariffGroup(ChargingTariffGroup_Id Id,
-                                                 out ChargingTariffGroup ChargingTariffGroup)
+        public Boolean TryGetChargingTariffGroup(ChargingTariffGroup_Id   Id,
+                                                 out ChargingTariffGroup? ChargingTariffGroup)
 
-            => _ChargingTariffGroups.TryGet(Id, out ChargingTariffGroup);
+            => chargingTariffGroups.TryGet(Id, out ChargingTariffGroup);
 
         #endregion
 
 
         #region ChargingTariffGroupRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupRemoval;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> chargingTariffGroupRemoval;
+
+        public IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupRemoval
+            => chargingTariffGroupRemoval;
 
         /// <summary>
         /// Called whenever a charging tariff group will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupRemoval
 
-            => ChargingTariffGroupRemoval;
+            => chargingTariffGroupRemoval;
 
         #endregion
 
@@ -4444,28 +4159,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffGroupId">The unique identification of the charging tariff to be removed.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
-        public ChargingTariffGroup RemoveChargingTariffGroup(ChargingTariffGroup_Id                                   ChargingTariffGroupId,
-                                                             Action<ChargingStationOperator, ChargingTariffGroup>     OnSuccess   = null,
-                                                             Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError     = null)
+        public ChargingTariffGroup? RemoveChargingTariffGroup(ChargingTariffGroup_Id                                     ChargingTariffGroupId,
+                                                              Action<IChargingStationOperator, ChargingTariffGroup>?     OnSuccess   = null,
+                                                              Action<IChargingStationOperator, ChargingTariffGroup_Id>?  OnError     = null)
         {
 
-            lock (_ChargingTariffGroups)
+            lock (chargingTariffGroups)
             {
 
-                if (_ChargingTariffGroups.TryGet(ChargingTariffGroupId, out ChargingTariffGroup ChargingTariffGroup) &&
-                    ChargingTariffGroupRemoval.SendVoting(Timestamp.Now,
-                                                          this,
-                                                          ChargingTariffGroup) &&
-                    _ChargingTariffGroups.TryRemove(ChargingTariffGroupId, out ChargingTariffGroup _ChargingTariffGroup))
+                if (chargingTariffGroups.TryGet(ChargingTariffGroupId, out var chargingTariffGroup) &&
+                    chargingTariffGroup is not null                                                 &&
+                    chargingTariffGroupRemoval.SendVoting(Timestamp.Now, this, chargingTariffGroup) &&
+                    chargingTariffGroups.TryRemove(ChargingTariffGroupId, out _))
                 {
 
-                    OnSuccess?.Invoke(this, ChargingTariffGroup);
+                    OnSuccess?.Invoke(this, chargingTariffGroup);
 
-                    ChargingTariffGroupRemoval.SendNotification(Timestamp.Now,
+                    chargingTariffGroupRemoval.SendNotification(Timestamp.Now,
                                                                 this,
-                                                                _ChargingTariffGroup);
+                                                                chargingTariffGroup);
 
-                    return _ChargingTariffGroup;
+                    return chargingTariffGroup;
 
                 }
 
@@ -4487,27 +4201,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffGroup">The charging tariff to remove.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
-        public ChargingTariffGroup RemoveChargingTariffGroup(ChargingTariffGroup                                   ChargingTariffGroup,
-                                                             Action<ChargingStationOperator, ChargingTariffGroup>  OnSuccess   = null,
-                                                             Action<ChargingStationOperator, ChargingTariffGroup>  OnError     = null)
+        public ChargingTariffGroup? RemoveChargingTariffGroup(ChargingTariffGroup                                     ChargingTariffGroup,
+                                                              Action<IChargingStationOperator, ChargingTariffGroup>?  OnSuccess   = null,
+                                                              Action<IChargingStationOperator, ChargingTariffGroup>?  OnError     = null)
         {
 
-            lock (_ChargingTariffGroups)
+            lock (chargingTariffGroups)
             {
 
-                if (ChargingTariffGroupRemoval.SendVoting(Timestamp.Now,
-                                                          this,
-                                                          ChargingTariffGroup) &&
-                    _ChargingTariffGroups.TryRemove(ChargingTariffGroup.Id, out ChargingTariffGroup _ChargingTariffGroup))
+                if (chargingTariffGroupRemoval.SendVoting(Timestamp.Now, this, ChargingTariffGroup) &&
+                    chargingTariffGroups.TryRemove(ChargingTariffGroup.Id, out var chargingTariffGroup) &&
+                    chargingTariffGroup is not null)
                 {
 
-                    OnSuccess?.Invoke(this, _ChargingTariffGroup);
+                    OnSuccess?.Invoke(this, chargingTariffGroup);
 
-                    ChargingTariffGroupRemoval.SendNotification(Timestamp.Now,
+                    chargingTariffGroupRemoval.SendNotification(Timestamp.Now,
                                                                 this,
-                                                                _ChargingTariffGroup);
+                                                                chargingTariffGroup);
 
-                    return _ChargingTariffGroup;
+                    return chargingTariffGroup;
 
                 }
 
@@ -5157,9 +4870,9 @@ namespace cloud.charging.open.protocols.WWCP
                     AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
                 {
 
-                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out ChargingPool chargingPool)) ||
-                        (ChargingLocation.ChargingStationId.HasValue && TryGetChargingPoolByStationId(ChargingLocation.ChargingStationId.Value, out              chargingPool)) ||
-                        (ChargingLocation.ChargingPoolId.   HasValue && TryGetChargingPoolById       (ChargingLocation.ChargingPoolId.   Value, out              chargingPool)))
+                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out var chargingPool)) ||
+                        (ChargingLocation.ChargingStationId.HasValue && TryGetChargingPoolByStationId(ChargingLocation.ChargingStationId.Value, out     chargingPool)) ||
+                        (ChargingLocation.ChargingPoolId.   HasValue && TryGetChargingPoolById       (ChargingLocation.ChargingPoolId.   Value, out     chargingPool)))
                     {
 
                         result = await chargingPool.
@@ -5324,9 +5037,9 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     if (TryGetChargingSessionById(SessionId, out ChargingSession chargingSession) &&
-                       ((chargingSession.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (chargingSession.EVSEId.           Value, out ChargingPool chargingPool)) ||
-                        (chargingSession.ChargingStationId.HasValue && TryGetChargingPoolByStationId(chargingSession.ChargingStationId.Value, out              chargingPool)) ||
-                        (chargingSession.ChargingPoolId.   HasValue && TryGetChargingPoolById       (chargingSession.ChargingPoolId.   Value, out              chargingPool))))
+                       ((chargingSession.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (chargingSession.EVSEId.           Value, out var chargingPool)) ||
+                        (chargingSession.ChargingStationId.HasValue && TryGetChargingPoolByStationId(chargingSession.ChargingStationId.Value, out     chargingPool)) ||
+                        (chargingSession.ChargingPoolId.   HasValue && TryGetChargingPoolById       (chargingSession.ChargingPoolId.   Value, out     chargingPool))))
                     {
 
                         result = await chargingPool.
@@ -5615,7 +5328,7 @@ namespace cloud.charging.open.protocols.WWCP
                              ? ExpandBrandIds.Switch(
 
                                    () => new JProperty("brandIds",
-                                                       new JArray(BrandIds.
+                                                       new JArray(Brands.                 Select (brand   => brand.Id).
                                                                                           OrderBy(brandId => brandId).
                                                                                           Select (brandId => brandId.ToString()))),
 

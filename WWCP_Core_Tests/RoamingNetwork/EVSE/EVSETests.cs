@@ -397,15 +397,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(3,                                         DE_GEF_E0001_AAAA_1.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                  GenerateAdminStatusReport().    ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new EVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateAdminStatusReport().    ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                    GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_P0001.                                         GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF.                                               GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.             GenerateEVSEAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.                                       GenerateEVSEAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                   GenerateAdminStatusReport().    ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IEVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateAdminStatusReport().    ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateEVSEAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_P0001.                                          GenerateEVSEAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF.                                                GenerateEVSEAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateEVSEAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.                                        GenerateEVSEAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_E0001_AAAA_1.GenerateAdminStatusReport().ToJSON();
@@ -458,15 +458,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(3,                             DE_GEF_E0001_AAAA_1.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                  GenerateStatusReport().    ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new EVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateStatusReport().    ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_S0001_AAAA.                                    GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_P0001.                                         GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF.                                               GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.             GenerateEVSEStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", roamingNetwork.                                       GenerateEVSEStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_E0001_AAAA_1.                                   GenerateStatusReport().    ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IEVSE[]                    { DE_GEF_E0001_AAAA_1 }.GenerateStatusReport().    ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateEVSEStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateEVSEStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_P0001.                                          GenerateEVSEStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateEVSEStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF.                                                GenerateEVSEStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateEVSEStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", roamingNetwork.                                        GenerateEVSEStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_E0001_AAAA_1.GenerateStatusReport().ToJSON();

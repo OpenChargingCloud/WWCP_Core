@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -92,7 +93,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The common interface of all roaming networks.
     /// </summary>
-    public interface IRoamingNetwork : IAdminStatus<RoamingNetworkAdminStatusTypes>,
+    public interface IRoamingNetwork : IEntity<RoamingNetwork_Id>,
+                                       IAdminStatus<RoamingNetworkAdminStatusTypes>,
                                        IStatus<RoamingNetworkStatusTypes>,
                                        ISendAuthorizeStartStop,
                                        IReserveRemoteStartStop,
@@ -197,17 +199,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationOperators
 
-        IEnumerable<ChargingStationOperator>             ChargingStationOperators { get; }
-        Boolean                                          ContainsChargingStationOperator   (ChargingStationOperator                  ChargingStationOperator);
+        IEnumerable<IChargingStationOperator>            ChargingStationOperators { get; }
+        Boolean                                          ContainsChargingStationOperator   (IChargingStationOperator                 ChargingStationOperator);
         Boolean                                          ContainsChargingStationOperator   (ChargingStationOperator_Id               ChargingStationOperatorId);
-        ChargingStationOperator?                         GetChargingStationOperatorById    (ChargingStationOperator_Id               ChargingStationOperatorId);
-        ChargingStationOperator?                         GetChargingStationOperatorById    (ChargingStationOperator_Id?              ChargingStationOperatorId);
-        Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id               ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
-        Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id?              ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
-        ChargingStationOperator?                         RemoveChargingStationOperator     (ChargingStationOperator_Id               ChargingStationOperatorId);
-        ChargingStationOperator?                         RemoveChargingStationOperator     (ChargingStationOperator_Id?              ChargingStationOperatorId);
-        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id               ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
-        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id?              ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator);
+        IChargingStationOperator?                        GetChargingStationOperatorById    (ChargingStationOperator_Id               ChargingStationOperatorId);
+        IChargingStationOperator?                        GetChargingStationOperatorById    (ChargingStationOperator_Id?              ChargingStationOperatorId);
+        Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id               ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+        Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id?              ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+        IChargingStationOperator?                        RemoveChargingStationOperator     (ChargingStationOperator_Id               ChargingStationOperatorId);
+        IChargingStationOperator?                        RemoveChargingStationOperator     (ChargingStationOperator_Id?              ChargingStationOperatorId);
+        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id               ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id?              ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
 
         IEnumerable<ChargingStationOperator_Id>          ChargingStationOperatorIds        (IncludeChargingStationOperatorDelegate?  IncludeChargingStationOperator   = null);
 
@@ -230,25 +232,25 @@ namespace cloud.charging.open.protocols.WWCP
         //                                               UInt64?                                       Take                             = null);
 
 
-        ChargingStationOperator CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
-                                                              I18NString?                                          Name                                   = null,
-                                                              I18NString?                                          Description                            = null,
-                                                              Action<ChargingStationOperator>?                     Configurator                           = null,
-                                                              RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
-                                                              ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
-                                                              ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
-                                                              Action<ChargingStationOperator>?                     OnSuccess                              = null,
-                                                              Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null);
+        IChargingStationOperator? CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
+                                                                I18NString?                                          Name                                   = null,
+                                                                I18NString?                                          Description                            = null,
+                                                                Action<IChargingStationOperator>?                    Configurator                           = null,
+                                                                RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
+                                                                ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
+                                                                ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
+                                                                Action<IChargingStationOperator>?                    OnSuccess                              = null,
+                                                                Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null);
 
         #endregion
 
         #region ChargingPools
 
-        IEnumerable<ChargingPool>                ChargingPools { get; }
-        Boolean                                  ContainsChargingPool             (ChargingPool                                  ChargingPool);
+        IEnumerable<IChargingPool>               ChargingPools { get; }
+        Boolean                                  ContainsChargingPool             (IChargingPool                                 ChargingPool);
         Boolean                                  ContainsChargingPool             (ChargingPool_Id                               ChargingPoolId);
-        ChargingPool?                            GetChargingPoolById              (ChargingPool_Id                               ChargingPoolId);
-        Boolean                                  TryGetChargingPoolById           (ChargingPool_Id                               ChargingPoolId, out ChargingPool? ChargingPool);
+        IChargingPool?                           GetChargingPoolById              (ChargingPool_Id                               ChargingPoolId);
+        Boolean                                  TryGetChargingPoolById           (ChargingPool_Id                               ChargingPoolId, out IChargingPool? ChargingPool);
         IEnumerable<ChargingPool_Id>             ChargingPoolIds                  (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
         IEnumerable<ChargingPoolAdminStatus>     ChargingPoolAdminStatus          (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
 
@@ -271,11 +273,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStations
 
-        IEnumerable<ChargingStation>             ChargingStations { get; }
-        Boolean                                  ContainsChargingStation           (ChargingStation                                  ChargingStation);
+        IEnumerable<IChargingStation>            ChargingStations { get; }
+        Boolean                                  ContainsChargingStation           (IChargingStation                                 ChargingStation);
         Boolean                                  ContainsChargingStation           (ChargingStation_Id                               ChargingStationId);
-        ChargingStation?                         GetChargingStationById            (ChargingStation_Id                               ChargingStationId);
-        Boolean                                  TryGetChargingStationById         (ChargingStation_Id                               ChargingStationId, out ChargingStation? ChargingStation);
+        IChargingStation?                        GetChargingStationById            (ChargingStation_Id                               ChargingStationId);
+        Boolean                                  TryGetChargingStationById         (ChargingStation_Id                               ChargingStationId, out IChargingStation? ChargingStation);
         IEnumerable<ChargingStation_Id>          ChargingStationIds                (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
         IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus        (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
 
@@ -294,6 +296,26 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                     Func<ChargingStationStatusTypes, Boolean>?       StatusFilter              = null,
                                                                                     UInt64?                                          Skip                      = null,
                                                                                     UInt64?                                          Take                      = null);
+
+        #region SetChargingStationAdminStatus
+
+        void SetChargingStationAdminStatus(ChargingStation_Id                            ChargingStationId,
+                                           Timestamped<ChargingStationAdminStatusTypes>  CurrentAdminStatus);
+
+        void SetChargingStationAdminStatus(ChargingStation_Id                                         ChargingStationId,
+                                           IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  CurrentAdminStatusList);
+
+        #endregion
+
+        #region SetChargingStationStatus
+
+        void SetChargingStationStatus(ChargingStation_Id                       ChargingStationId,
+                                      Timestamped<ChargingStationStatusTypes>  CurrentStatus);
+
+        void SetChargingStationStatus(ChargingStation_Id                                    ChargingStationId,
+                                      IEnumerable<Timestamped<ChargingStationStatusTypes>>  CurrentStatusList);
+
+        #endregion
 
         #endregion
 
@@ -329,7 +351,294 @@ namespace cloud.charging.open.protocols.WWCP
                                                                          UInt64?                               Skip                = null,
                                                                          UInt64?                               Take                = null);
 
+
+        #region SetEVSEAdminStatus
+
+        void SetEVSEAdminStatus(IEnumerable<EVSEAdminStatus> EVSEAdminStatusList);
+
+        void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
+                                Timestamped<EVSEAdminStatusTypes>  NewAdminStatus);
+
+        void SetEVSEAdminStatus(EVSE_Id               EVSEId,
+                                DateTime              Timestamp,
+                                EVSEAdminStatusTypes  NewAdminStatus);
+
+        void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
+                                IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
+                                ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace);
+
         #endregion
+
+        #region SetEVSEStatus
+
+        void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList);
+
+        void SetEVSEStatus(EVSE_Id                       EVSEId,
+                           Timestamped<EVSEStatusTypes>  NewStatus);
+
+        void SetEVSEStatus(EVSE_Id          EVSEId,
+                           DateTime         Timestamp,
+                           EVSEStatusTypes  NewStatus);
+
+        void SetEVSEStatus(EVSE_Id                                    EVSEId,
+                           IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
+                           ChangeMethods                              ChangeMethod  = ChangeMethods.Replace);
+
+        #endregion
+
+        #endregion
+
+
+        #region Parking Operators...
+
+        /// <summary>
+        /// Return all parking operators registered within this roaming network.
+        /// </summary>
+        IEnumerable<ParkingOperator> ParkingOperators { get; }
+
+        /// <summary>
+        /// Called whenever a parking operator will be or was added.
+        /// </summary>
+        IVotingSender<DateTime, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition { get; }
+
+        /// <summary>
+        /// Called whenever a parking operator will be or was removed.
+        /// </summary>
+        IVotingSender<DateTime, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorRemoval { get; }
+
+
+        /// <summary>
+        /// Return the admin status of all parking operators registered within this roaming network.
+        /// </summary>
+        IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorAdminStatusTypes>>>> ParkingOperatorAdminStatus { get; }
+
+        /// <summary>
+        /// Return the status of all parking operators registered within this roaming network.
+        /// </summary>
+        IEnumerable<KeyValuePair<ParkingOperator_Id, IEnumerable<Timestamped<ParkingOperatorStatusTypes>>>> ParkingOperatorStatus { get; }
+
+
+        /// <summary>
+        /// Create and register a new parking operator having the given
+        /// unique parking operator identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the new parking operator.</param>
+        /// <param name="Name">The offical (multi-language) name of the parking operator.</param>
+        /// <param name="Description">An optional (multi-language) description of the parking operator.</param>
+        /// <param name="Configurator">An optional delegate to configure the new parking operator before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new parking operator after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the parking operator failed.</param>
+        ParkingOperator? CreateNewParkingOperator(ParkingOperator_Id                           Id,
+                                                  I18NString?                                  Name                           = null,
+                                                  I18NString?                                  Description                    = null,
+                                                  Action<ParkingOperator>?                     Configurator                   = null,
+                                                  RemoteParkingOperatorCreatorDelegate?        RemoteParkingOperatorCreator   = null,
+                                                  ParkingOperatorAdminStatusTypes?             InititalAdminStatus            = ParkingOperatorAdminStatusTypes.Operational,
+                                                  ParkingOperatorStatusTypes?                  InititalStatus                 = ParkingOperatorStatusTypes.Available,
+                                                  Action<ParkingOperator>?                     OnSuccess                      = null,
+                                                  Action<RoamingNetwork, ParkingOperator_Id>?  OnError                        = null);
+
+        /// <summary>
+        /// Create and register a new parking space having the given
+        /// unique parking space identification.
+        /// </summary>
+        /// <param name="ParkingSpaceId">The unique identification of the new charging pool.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        ParkingSpace CreateParkingSpace(ParkingSpace_Id                                    ParkingSpaceId,
+                                        Action<ParkingSpace>?                              Configurator   = null,
+                                        Action<ParkingSpace>?                              OnSuccess      = null,
+                                        Action<ChargingStationOperator, ParkingSpace_Id>?  OnError        = null);
+
+        /// <summary>
+        /// Check if the given ParkingOperator is already present within the roaming network.
+        /// </summary>
+        /// <param name="ParkingOperator">An parking Operator.</param>
+        Boolean ContainsParkingOperator(ParkingOperator ParkingOperator);
+
+        /// <summary>
+        /// Check if the given ParkingOperator identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="ParkingOperatorId">The unique identification of the parking Operator.</param>
+        Boolean ContainsParkingOperator(ParkingOperator_Id ParkingOperatorId);
+
+        ParkingOperator GetParkingOperatorById(ParkingOperator_Id ParkingOperatorId);
+
+        Boolean TryGetParkingOperatorById(ParkingOperator_Id ParkingOperatorId, out ParkingOperator ParkingOperator);
+
+        ParkingOperator RemoveParkingOperator(ParkingOperator_Id ParkingOperatorId);
+
+        Boolean TryRemoveParkingOperator(ParkingOperator_Id ParkingOperatorId, out ParkingOperator ParkingOperator);
+
+
+        #region OnParkingOperatorData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated parking Operator changed.
+        /// </summary>
+        public event OnParkingOperatorDataChangedDelegate?         OnParkingOperatorDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated parking Operator changed.
+        /// </summary>
+        public event OnParkingOperatorStatusChangedDelegate?       OnParkingOperatorStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated admin status of any subordinated parking Operator changed.
+        /// </summary>
+        public event OnParkingOperatorAdminStatusChangedDelegate?  OnParkingOperatorAdminStatusChanged;
+
+        #endregion
+
+        #endregion
+
+        #region Grid Operators...
+
+        /// <summary>
+        /// Return all smart cities registered within this roaming network.
+        /// </summary>
+        IEnumerable<GridOperator> GridOperators { get; }
+
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was added.
+        /// </summary>
+        IVotingSender<DateTime, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition { get; }
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was removed.
+        /// </summary>
+        IVotingSender<DateTime, RoamingNetwork, GridOperator, Boolean> OnGridOperatorRemoval { get; }
+
+        /// <summary>
+        /// Return the admin status of all smart cities registered within this roaming network.
+        /// </summary>
+        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>> GridOperatorsAdminStatus { get; }
+
+        /// <summary>
+        /// Return the status of all smart cities registered within this roaming network.
+        /// </summary>
+        IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>> GridOperatorsStatus { get; }
+
+
+
+        /// <summary>
+        /// Create and register a new e-mobility (service) provider having the given
+        /// unique smart city identification.
+        /// </summary>
+        /// <param name="GridOperatorId">The unique identification of the new smart city.</param>
+        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Description">An optional (multi-language) description of the smart city.</param>
+        /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
+        GridOperator CreateNewGridOperator(GridOperator_Id                          GridOperatorId,
+                                           I18NString                               Name                        = null,
+                                           I18NString                               Description                 = null,
+                                           GridOperatorPriority                     Priority                    = null,
+                                           GridOperatorAdminStatusType              AdminStatus                 = GridOperatorAdminStatusType.Available,
+                                           GridOperatorStatusType                   Status                      = GridOperatorStatusType.Available,
+                                           Action<GridOperator>                     Configurator                = null,
+                                           Action<GridOperator>                     OnSuccess                   = null,
+                                           Action<RoamingNetwork, GridOperator_Id>  OnError                     = null,
+                                           RemoteGridOperatorCreatorDelegate        RemoteGridOperatorCreator   = null);
+
+        /// <summary>
+        /// Check if the given GridOperator is already present within the roaming network.
+        /// </summary>
+        /// <param name="GridOperator">An Charging Station Operator.</param>
+        Boolean ContainsGridOperator(GridOperator GridOperator);
+
+        /// <summary>
+        /// Check if the given GridOperator identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="GridOperatorId">The unique identification of the Charging Station Operator.</param>
+        Boolean ContainsGridOperator(GridOperator_Id GridOperatorId);
+
+        GridOperator GetGridOperatorById(GridOperator_Id GridOperatorId);
+
+        Boolean TryGetGridOperatorById(GridOperator_Id GridOperatorId, out GridOperator GridOperator);
+
+        GridOperator RemoveGridOperator(GridOperator_Id GridOperatorId);
+
+        Boolean TryRemoveGridOperator(GridOperator_Id GridOperatorId, out GridOperator GridOperator);
+
+        #endregion
+
+        #region Smart Cities...
+
+        /// <summary>
+        /// Return all smart cities registered within this roaming network.
+        /// </summary>
+        IEnumerable<SmartCityProxy>  SmartCities    { get; }
+
+        /// <summary>
+        /// Return the admin status of all smart cities registered within this roaming network.
+        /// </summary>
+        IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusTypes>>>> SmartCitiesAdminStatus { get; }
+
+        /// <summary>
+        /// Return the status of all smart cities registered within this roaming network.
+        /// </summary>
+        IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusTypes>>>> SmartCitiesStatus { get; }
+
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was added.
+        /// </summary>
+        IVotingSender<DateTime, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition { get; }
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was removed.
+        /// </summary>
+        IVotingSender<DateTime, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityRemoval { get; }
+
+
+
+        /// <summary>
+        /// Create and register a new e-mobility (service) provider having the given
+        /// unique smart city identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the new smart city.</param>
+        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Description">An optional (multi-language) description of the smart city.</param>
+        /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
+        SmartCityProxy? CreateNewSmartCity(SmartCity_Id                           Id,
+                                           I18NString?                            Name                     = null,
+                                           I18NString?                            Description              = null,
+                                           SmartCityPriority?                     Priority                 = null,
+                                           SmartCityAdminStatusTypes?             InitialAdminStatus       = SmartCityAdminStatusTypes.Available,
+                                           SmartCityStatusTypes?                  InitialStatus            = SmartCityStatusTypes.Available,
+                                           Action<SmartCityProxy>?                Configurator             = null,
+                                           Action<SmartCityProxy>?                OnSuccess                = null,
+                                           Action<RoamingNetwork, SmartCity_Id>?  OnError                  = null,
+                                           RemoteSmartCityCreatorDelegate?        RemoteSmartCityCreator   = null);
+
+        /// <summary>
+        /// Check if the given SmartCity is already present within the roaming network.
+        /// </summary>
+        /// <param name="SmartCity">An Charging Station Operator.</param>
+        Boolean ContainsSmartCity(SmartCityProxy SmartCity);
+
+        /// <summary>
+        /// Check if the given SmartCity identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="SmartCityId">The unique identification of the Charging Station Operator.</param>
+        Boolean ContainsSmartCity(SmartCity_Id SmartCityId);
+
+        SmartCityProxy GetSmartCityById(SmartCity_Id SmartCityId);
+
+        Boolean TryGetSmartCityById(SmartCity_Id SmartCityId, out SmartCityProxy SmartCity);
+
+        SmartCityProxy RemoveSmartCity(SmartCity_Id SmartCityId);
+
+        Boolean TryRemoveSmartCity(SmartCity_Id SmartCityId, out SmartCityProxy SmartCity);
+
+        #endregion
+
 
 
         JObject ToJSON(Boolean                                                    Embedded                                  = false,

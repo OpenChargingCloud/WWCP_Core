@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.eMobilityProviders                                 = new EntityHashSet<RoamingNetwork, EMobilityProvider_Id,       EMobilityProvider>      (this);
 
             this.csoRoamingProviders                                = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
-            this.chargingStationOperators                           = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
+            this.chargingStationOperators                           = new EntityHashSet<IRoamingNetwork, ChargingStationOperator_Id, IChargingStationOperator>(this);
 
             this.parkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
             this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>         (this);
@@ -292,12 +292,12 @@ namespace cloud.charging.open.protocols.WWCP
             this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
 
             // cso events
-            this.ChargingPoolAddition        = new VotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval         = new VotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition        = new VotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval         = new VotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean>(() => new VetoVote(), true);
 
             // ChargingPool events
-            this.ChargingStationAddition     = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval      = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition     = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval      = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
             this.EVSEAddition                = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
@@ -1192,12 +1192,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationOperators
 
-        private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> chargingStationOperators;
+        private readonly EntityHashSet<IRoamingNetwork, ChargingStationOperator_Id, IChargingStationOperator> chargingStationOperators;
 
         /// <summary>
         /// Return all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingStationOperator> ChargingStationOperators
+        public IEnumerable<IChargingStationOperator> ChargingStationOperators
 
             => chargingStationOperators;
 
@@ -1269,7 +1269,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a charging station operator will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperator, Boolean> OnChargingStationOperatorAddition
+        public IVotingSender<DateTime, IRoamingNetwork, IChargingStationOperator, Boolean> OnChargingStationOperatorAddition
             => chargingStationOperators.OnAddition;
 
         #endregion
@@ -1279,7 +1279,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever charging station operator will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperator, Boolean> OnChargingStationOperatorRemoval
+        public IVotingSender<DateTime, IRoamingNetwork, IChargingStationOperator, Boolean> OnChargingStationOperatorRemoval
             => chargingStationOperators.OnRemoval;
 
         #endregion
@@ -1297,16 +1297,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station operator after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
-        public ChargingStationOperator
+        public IChargingStationOperator?
 
             CreateChargingStationOperator(ChargingStationOperator_Id                           Id,
                                           I18NString?                                          Name                                   = null,
                                           I18NString?                                          Description                            = null,
-                                          Action<ChargingStationOperator>?                     Configurator                           = null,
+                                          Action<IChargingStationOperator>?                    Configurator                           = null,
                                           RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
                                           ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
                                           ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
-                                          Action<ChargingStationOperator>?                     OnSuccess                              = null,
+                                          Action<IChargingStationOperator>?                    OnSuccess                              = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null)
 
         {
@@ -1352,7 +1352,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     chargingStationOperator.OnEVSEAddition.           OnVoting         += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
                     chargingStationOperator.OnEVSEAddition.           OnNotification   += (timestamp, station, evse)        => EVSEAddition.           SendNotification(timestamp, station, evse);
-                    chargingStationOperator.EVSEAddition.OnNotification                += SendEVSEAdded;
+                    chargingStationOperator.evseAddition.OnNotification                += SendEVSEAdded;
                     chargingStationOperator.OnEVSEDataChanged                          += UpdateEVSEData;
                     chargingStationOperator.OnEVSEStatusChanged                        += UpdateEVSEStatus;
                     chargingStationOperator.OnEVSEAdminStatusChanged                   += UpdateEVSEAdminStatus;
@@ -1387,7 +1387,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station operator is already present within the roaming network.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
-        public Boolean ContainsChargingStationOperator(ChargingStationOperator ChargingStationOperator)
+        public Boolean ContainsChargingStationOperator(IChargingStationOperator ChargingStationOperator)
 
             => chargingStationOperators.ContainsId(ChargingStationOperator.Id);
 
@@ -1407,11 +1407,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetChargingStationOperatorById   (ChargingStationOperatorId)
 
-        public ChargingStationOperator? GetChargingStationOperatorById(ChargingStationOperator_Id  ChargingStationOperatorId)
+        public IChargingStationOperator? GetChargingStationOperatorById(ChargingStationOperator_Id  ChargingStationOperatorId)
 
              => chargingStationOperators.GetById(ChargingStationOperatorId);
 
-        public ChargingStationOperator? GetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId)
+        public IChargingStationOperator? GetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId)
 
              => ChargingStationOperatorId.HasValue
                     ? chargingStationOperators.GetById(ChargingStationOperatorId.Value)
@@ -1421,11 +1421,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingStationOperatorById(ChargingStationOperatorId, out ChargingStationOperator)
 
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
 
             => chargingStationOperators.TryGet(ChargingStationOperatorId, out ChargingStationOperator);
 
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
         {
 
             if (!ChargingStationOperatorId.HasValue)
@@ -1442,7 +1442,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveChargingStationOperator    (ChargingStationOperatorId)
 
-        public ChargingStationOperator? RemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
+        public IChargingStationOperator? RemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
         {
 
             if (chargingStationOperators.TryRemove(ChargingStationOperatorId, out var chargingStationOperator))
@@ -1452,7 +1452,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public ChargingStationOperator? RemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId)
+        public IChargingStationOperator? RemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId)
         {
 
             if (ChargingStationOperatorId.HasValue &&
@@ -1469,11 +1469,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveChargingStationOperator (ChargingStationOperatorId, out ChargingStationOperator)
 
-        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator)
+        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
 
             => chargingStationOperators.TryRemove(ChargingStationOperatorId, out ChargingStationOperator);
 
-        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator? ChargingStationOperator)
+        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
         {
 
             if (!ChargingStationOperatorId.HasValue)
@@ -1519,7 +1519,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateCSOAdminStatus(DateTime                                              Timestamp,
-                                                 ChargingStationOperator                               ChargingStationOperator,
+                                                 IChargingStationOperator                              ChargingStationOperator,
                                                  Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
                                                  Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
         {
@@ -1567,7 +1567,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateCSOStatus(DateTime                                         Timestamp,
-                                            ChargingStationOperator                          ChargingStationOperator,
+                                            IChargingStationOperator                         ChargingStationOperator,
                                             Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
                                             Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
         {
@@ -1616,11 +1616,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateCSOData(DateTime                 Timestamp,
-                                          ChargingStationOperator  ChargingStationOperator,
-                                          String                   PropertyName,
-                                          Object                   OldValue,
-                                          Object                   NewValue)
+        internal async Task UpdateCSOData(DateTime                  Timestamp,
+                                          IChargingStationOperator  ChargingStationOperator,
+                                          String?                   PropertyName,
+                                          Object?                   OldValue,
+                                          Object?                   NewValue)
         {
 
             var OnChargingStationOperatorDataChangedLocal = OnChargingStationOperatorDataChanged;
@@ -1644,7 +1644,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return all charging pools registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingPool> ChargingPools
+        public IEnumerable<IChargingPool> ChargingPools
 
             => chargingStationOperators.SelectMany(cso => cso.ChargingPools);
 
@@ -1653,24 +1653,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPoolAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
             => ChargingPoolAddition;
 
         #endregion
 
         #region ChargingPoolRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolRemoval;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
             => ChargingPoolRemoval;
 
         #endregion
@@ -1774,7 +1774,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging pool is already present within the roaming network.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public Boolean ContainsChargingPool(ChargingPool ChargingPool)
+        public Boolean ContainsChargingPool(IChargingPool ChargingPool)
         {
 
             if (TryGetChargingStationOperatorById(ChargingPool.Operator.Id, out var chargingStationOperator) &&
@@ -1812,7 +1812,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetChargingPoolbyId(ChargingPoolId)
 
-        public ChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId)
+        public IChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId)
         {
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId,   out var chargingStationOperator) &&
@@ -1826,7 +1826,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public ChargingPool? GetChargingPoolById(ChargingPool_Id? ChargingPoolId)
+        public IChargingPool? GetChargingPoolById(ChargingPool_Id? ChargingPoolId)
         {
 
             if (ChargingPoolId.HasValue &&
@@ -1845,7 +1845,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out ChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
         {
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator) &&
@@ -2047,7 +2047,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return all charging stations registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingStation> ChargingStations
+        public IEnumerable<IChargingStation> ChargingStations
 
             => chargingStationOperators.SelectMany(cso => cso.ChargingStations);
 
@@ -2056,12 +2056,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
 
             => ChargingStationAddition;
 
@@ -2069,12 +2069,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
             => ChargingStationRemoval;
 
@@ -2179,7 +2179,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given charging station is already present within the roaming network.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public Boolean ContainsChargingStation(ChargingStation ChargingStation)
+        public Boolean ContainsChargingStation(IChargingStation ChargingStation)
         {
 
             if (ChargingStation.Operator is not null                                                            &&
@@ -2218,7 +2218,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetChargingStationbyId       (ChargingStationId)
 
-        public ChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
+        public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
         {
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId,      out var chargingStationOperator) &&
@@ -2232,7 +2232,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public ChargingStation? GetChargingStationById(ChargingStation_Id? ChargingStationId)
+        public IChargingStation? GetChargingStationById(ChargingStation_Id? ChargingStationId)
         {
 
             if (ChargingStationId.HasValue &&
@@ -2251,8 +2251,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingStationbyId    (ChargingStationId, out ChargingStation)
 
-        public Boolean TryGetChargingStationById(ChargingStation_Id    ChargingStationId,
-                                                 out ChargingStation?  ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id     ChargingStationId,
+                                                 out IChargingStation?  ChargingStation)
         {
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out var chargingStationOperator) &&
@@ -2266,8 +2266,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetChargingStationById(ChargingStation_Id?   ChargingStationId,
-                                                 out ChargingStation?  ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id?    ChargingStationId,
+                                                 out IChargingStation?  ChargingStation)
         {
 
             if (ChargingStationId.HasValue                                                                             &&
@@ -2746,7 +2746,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetEVSEbyId(EVSEId, out EVSE)
+        #region TryGetEVSEById(EVSEId, out EVSE)
 
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
         {
@@ -2782,7 +2782,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVSEStatus(EVSEStatusList)
 
-        public void SetEVSEStatus(IEnumerable<EVSEAdminStatus> EVSEAdminStatusList)
+        public void SetEVSEAdminStatus(IEnumerable<EVSEAdminStatus> EVSEAdminStatusList)
         {
 
             if (EVSEAdminStatusList is not null)
@@ -3003,7 +3003,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.
                                                                             UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
-                                                                                                  new EVSEAdminStatusUpdate(EVSE,
+                                                                                                  new EVSEAdminStatusUpdate(EVSE.Id,
                                                                                                                             OldStatus,
                                                                                                                             NewStatus)
                                                                                               },
@@ -3040,7 +3040,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
                                                                   UpdateStatus(new EVSEStatusUpdate[] {
-                                                                                   new EVSEStatusUpdate(EVSE,
+                                                                                   new EVSEStatusUpdate(EVSE.Id,
                                                                                                         OldStatus,
                                                                                                         NewStatus)
                                                                                },
@@ -4220,7 +4220,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var EVSEId = ChargingLocation.EVSEId.Value;
 
-                if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
+                if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var _ChargingStationOperator))
                 {
 
                     result = await _ChargingStationOperator.
@@ -4421,7 +4421,7 @@ namespace cloud.charging.open.protocols.WWCP
                     #region Check Charging Station Operator charging reservation lookup...
 
                     if (Reservation.ChargingStationOperatorId.HasValue &&
-                        TryGetChargingStationOperatorById(Reservation.ChargingStationOperatorId.Value, out ChargingStationOperator _ChargingStationOperator))
+                        TryGetChargingStationOperatorById(Reservation.ChargingStationOperatorId.Value, out var _ChargingStationOperator))
                     {
 
                         result = await _ChargingStationOperator.
@@ -4828,10 +4828,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try to lookup the charging station operator given in the EVSE identification...
 
-                    if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out ChargingStationOperator chargingStationOperator) ||
-                        TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out                         chargingStationOperator) ||
-                        TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out                         chargingStationOperator) ||
-                        TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out                         chargingStationOperator))
+                    if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out var chargingStationOperator) ||
+                        TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out     chargingStationOperator) ||
+                        TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out     chargingStationOperator) ||
+                        TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out     chargingStationOperator))
                     {
 
                         result = await chargingStationOperator.

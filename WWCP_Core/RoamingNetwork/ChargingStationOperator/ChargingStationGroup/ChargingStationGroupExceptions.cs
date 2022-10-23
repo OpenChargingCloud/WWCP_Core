@@ -54,17 +54,17 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingStationGroupException : ChargingStationOperatorException
     {
 
-        public ChargingStationGroupException(ChargingStationOperator  ChargingStationOperator,
-                                             String                   Message)
+        public ChargingStationGroupException(IChargingStationOperator  ChargingStationOperator,
+                                             String                    Message)
 
             : base(ChargingStationOperator.RoamingNetwork,
                    Message)
 
         { }
 
-        public ChargingStationGroupException(ChargingStationOperator  ChargingStationOperator,
-                                             String                   Message,
-                                             Exception                InnerException)
+        public ChargingStationGroupException(IChargingStationOperator  ChargingStationOperator,
+                                             String                    Message,
+                                             Exception                 InnerException)
 
             : base(ChargingStationOperator.RoamingNetwork,
                    Message,

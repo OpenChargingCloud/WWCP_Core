@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          ChargingStationGroupAdminStatusTypes,
                                                          ChargingStationGroupStatusTypes>,
                                         IEquatable<ChargingStationGroup>, IComparable<ChargingStationGroup>, IComparable,
-                                        IEnumerable<ChargingStation>
+                                        IEnumerable<IChargingStation>
     {
 
         #region Data
@@ -109,19 +109,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The offical (multi-language) name of this group.
-        /// </summary>
-        [Mandatory]
-        public I18NString               Name           { get; }
-
-        /// <summary>
-        /// An optional (multi-language) description of this group.
-        /// </summary>
-        [Optional]
-        public I18NString               Description    { get; }
-
 
         /// <summary>
         /// An optional (multi-language) brand name for this group.
@@ -194,19 +181,19 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<ChargingStation_Id> AllowedMemberIds
             => _AllowedMemberIds;
 
-        public Func<ChargingStation, Boolean> AutoIncludeStations { get; }
+        public Func<IChargingStation, Boolean> AutoIncludeStations { get; }
 
 
         public ChargingStationGroup     ParentGroup    { get; }
 
         #region ChargingStations
 
-        private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation> _ChargingStations;
+        private readonly ConcurrentDictionary<ChargingStation_Id, IChargingStation> _ChargingStations;
 
         /// <summary>
         /// Return all charging stations registered within this charing station group.
         /// </summary>
-        public IEnumerable<ChargingStation> ChargingStations
+        public IEnumerable<IChargingStation> ChargingStations
             => _ChargingStations.Values;
 
 
@@ -249,7 +236,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The Charging Station Operator of this charging pool.
         /// </summary>
         [Mandatory]
-        public ChargingStationOperator Operator { get; }
+        public IChargingStationOperator Operator { get; }
 
         /// <summary>
         /// The roaming network of this charging station.
@@ -331,12 +318,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
         {
             get
             {
@@ -348,12 +335,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
         {
             get
             {
@@ -405,7 +392,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
         /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
         internal ChargingStationGroup(ChargingStationGroup_Id                                             Id,
-                                      ChargingStationOperator                                             Operator,
+                                      IChargingStationOperator                                            Operator,
                                       I18NString                                                          Name,
                                       I18NString                                                          Description                   = null,
 
@@ -414,15 +401,17 @@ namespace cloud.charging.open.protocols.WWCP
                                       ChargingTariff                                                      Tariff                        = null,
                                       IEnumerable<DataLicense>                                            DataLicenses                  = null,
 
-                                      IEnumerable<ChargingStation>                                        Members                       = null,
+                                      IEnumerable<IChargingStation>                                       Members                       = null,
                                       IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
-                                      Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
+                                      Func<IChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
                                       Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                       UInt16                                                              MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
                                       UInt16                                                              MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   Name,
+                   Description)
 
         {
 
@@ -439,8 +428,6 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init data and properties
 
             this.Operator                    = Operator;
-            this.Name                        = Name;
-            this.Description                 = Description ?? new I18NString();
 
             this.Brand                       = Brand;
             this.Priority                    = Priority;
@@ -448,8 +435,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
             this._AllowedMemberIds           = MemberIds != null ? new HashSet<ChargingStation_Id>(MemberIds) : new HashSet<ChargingStation_Id>();
-            this.AutoIncludeStations         = AutoIncludeStations ?? (MemberIds == null ? (Func<ChargingStation, Boolean>) (station => true) : station => false);
-            this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
+            this.AutoIncludeStations         = AutoIncludeStations ?? (MemberIds == null ? (Func<IChargingStation, Boolean>) (station => true) : station => false);
+            this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, IChargingStation>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
 
@@ -462,8 +449,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingStationRemoval   = new VotingNotificator<DateTime, ChargingStationGroup, ChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
-            this.EVSEAddition             = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
 
@@ -499,7 +486,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public ChargingStationGroup Add(ChargingStation Station)
+        public ChargingStationGroup Add(IChargingStation Station)
         {
 
             if (_AllowedMemberIds.Contains(Station.Id) &&
@@ -735,7 +722,7 @@ namespace cloud.charging.open.protocols.WWCP
             return ChargingStations.GetEnumerator();
         }
 
-        public IEnumerator<ChargingStation> GetEnumerator()
+        public IEnumerator<IChargingStation> GetEnumerator()
         {
             return ChargingStations.GetEnumerator();
         }

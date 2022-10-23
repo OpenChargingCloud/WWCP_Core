@@ -116,12 +116,12 @@ namespace cloud.charging.open.protocols.WWCP
         public RoamingNetwork_Id? RoamingNetworkId { get; set; }
 
 
-        private IRoamingNetwork _RoamingNetwork;
+        private IRoamingNetwork? _RoamingNetwork;
 
         /// <summary>
         /// The roaming network serving this session.
         /// </summary>
-        public IRoamingNetwork RoamingNetwork
+        public IRoamingNetwork? RoamingNetwork
         {
 
             get
@@ -167,12 +167,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        private ChargingStationOperator _ChargingStationOperator;
+        private IChargingStationOperator? _ChargingStationOperator;
 
         /// <summary>
         /// The charging station operator serving this session.
         /// </summary>
-        public ChargingStationOperator ChargingStationOperator
+        public IChargingStationOperator? ChargingStationOperator
 
         {
 
@@ -221,12 +221,12 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        private ChargingPool _ChargingPool;
+        private IChargingPool? _ChargingPool;
 
         /// <summary>
         /// The charging pool serving this session.
         /// </summary>
-        public ChargingPool ChargingPool
+        public IChargingPool? ChargingPool
         {
 
             get
@@ -270,12 +270,12 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        private ChargingStation _ChargingStation;
+        private IChargingStation? _ChargingStation;
 
         /// <summary>
         /// The charging station serving this session.
         /// </summary>
-        public ChargingStation ChargingStation
+        public IChargingStation? ChargingStation
         {
 
             get

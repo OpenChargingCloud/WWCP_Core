@@ -173,16 +173,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                     OnSuccess:           evse => success = true,
                                                     Configurator:        evse => {
 
-                                                                             evse.Brands.TryAdd(Brand_Id.Parse("openChargingCloudChargingStation"),
-                                                                                                new Brand(
-                                                                                                    Id:            Brand_Id.Parse("openChargingCloudChargingStation"),
-                                                                                                    Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Station"),
-                                                                                                    Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
-                                                                                                    Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                                                                    DataLicenses:  new DataLicense[] {
-                                                                                                                       DataLicense.CreativeCommons_BY_SA_4
-                                                                                                                   }
-                                                                                                ));
+                                                                             evse.Brands.Add(new Brand(
+                                                                                                 Id:            Brand_Id.Parse("openChargingCloudChargingStation"),
+                                                                                                 Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Station"),
+                                                                                                 Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                                                                 Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                                                                 DataLicenses:  new DataLicense[] {
+                                                                                                                    DataLicense.CreativeCommons_BY_SA_4
+                                                                                                                }
+                                                                                             ));
 
                                                                          }
                                                 );
@@ -214,16 +213,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
 
 
-                    DE_GEF_S1234.Brands.TryAdd(Brand_Id.Parse("openChargingCloud3223"),
-                                               new Brand(
-                                                   Id:            Brand_Id.Parse("openChargingCloud3223"),
-                                                   Name:          I18NString.Create(Languages.de, "Open Charging Cloud 3223"),
-                                                   Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
-                                                   Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                   DataLicenses:  new DataLicense[] {
-                                                                      DataLicense.CreativeCommons_BY_SA_4
-                                                                  }
-                                               ));
+                    DE_GEF_S1234.Brands.Add(new Brand(
+                                                Id:            Brand_Id.Parse("openChargingCloud3223"),
+                                                Name:          I18NString.Create(Languages.de, "Open Charging Cloud 3223"),
+                                                Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                DataLicenses:  new DataLicense[] {
+                                                                   DataLicense.CreativeCommons_BY_SA_4
+                                                               }
+                                            ));
 
 
                     Assert.AreEqual(2, DE_GEF_S1234.Brands.Count());
@@ -359,13 +357,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(3,                                            DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                    GenerateAdminStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateAdminStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_P0001.                                         GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF.                                               GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.             GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.                                       GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateAdminStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateAdminStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_P0001.                                          GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF.                                                GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.                                        GenerateChargingStationAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_S0001_AAAA.GenerateAdminStatusReport().ToJSON();
@@ -416,13 +414,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(3,                                               DE_GEF_S0001_AAAA.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_S0001_AAAA.                                    GenerateStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_P0001.                                         GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF.                                               GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.             GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", roamingNetwork.                                       GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateStatusReport().               ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_P0001.                                          GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF.                                                GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", roamingNetwork.                                        GenerateChargingStationStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_S0001_AAAA.GenerateStatusReport().ToJSON();

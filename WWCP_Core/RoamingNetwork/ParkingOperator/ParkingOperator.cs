@@ -18,7 +18,9 @@
 #region Usings
 
 using System.Collections;
+
 using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
@@ -570,23 +572,6 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
-
-        #endregion
-
-        #region AddDataLicense(params DataLicense)
-
-        public ParkingOperator AddDataLicense(params DataLicense[] DataLicenses)
-        {
-
-            if (DataLicenses.Length > 0)
-            {
-                foreach (var license in DataLicenses.Where(license => license != null))
-                    _DataLicenses.Add(license);
-            }
-
-            return this;
-
-        }
 
         #endregion
 
@@ -1985,7 +1970,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
-
 
 
         #region IComparable<ParkingOperator> Members

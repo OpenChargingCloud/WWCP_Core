@@ -93,17 +93,15 @@ namespace cloud.charging.open.protocols.WWCP.Importer
                 if (_ForwardedToChargingStationOperator != null)
                 {
 
-                    ChargingStation _ChargingStationToMove = null;
-
                     // Do not fail if the charging station is not yet available/existing!
-                    if (_ForwardedToChargingStationOperator.TryGetChargingStationById(StationId, out _ChargingStationToMove))
+                    if (_ForwardedToChargingStationOperator.TryGetChargingStationById(StationId, out var chargingStationToMove))
                     {
 
-                        _ChargingStationToMove.ChargingPool.RemoveChargingStation(StationId);
+                        chargingStationToMove.ChargingPool.RemoveChargingStation(StationId);
 
                         // Also remove empty charging pools
-                        if (!_ChargingStationToMove.ChargingPool.ChargingStations.Any())
-                            _ChargingStationToMove.ChargingPool.Operator.RemoveChargingPool(_ChargingStationToMove.ChargingPool.Id);
+                        if (!chargingStationToMove.ChargingPool.ChargingStations.Any())
+                            chargingStationToMove.ChargingPool.Operator.RemoveChargingPool(chargingStationToMove.ChargingPool.Id);
 
                     }
 

@@ -598,8 +598,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var FilteredUpdates = AdminStatusUpdates.Where(adminstatusupdate => IncludeEVSEs  (adminstatusupdate.EVSE) &&
-                                                                                    IncludeEVSEIds(adminstatusupdate.EVSE.Id)).
+                var FilteredUpdates = AdminStatusUpdates.Where(adminstatusupdate => IncludeEVSEIds(adminstatusupdate.Id)).
                                                          ToArray();
 
                 if (FilteredUpdates.Length > 0)
@@ -609,7 +608,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         // Delay the status update until the EVSE data had been uploaded!
-                        if (!DisablePushData && EVSEsToAddQueue.Any(evse => evse == Update.EVSE))
+                        if (!DisablePushData && EVSEsToAddQueue.Any(evse => evse.Id == Update.Id))
                             EVSEAdminStatusChangesDelayedQueue.Add(Update);
 
                         else
@@ -699,8 +698,7 @@ namespace cloud.charging.open.protocols.WWCP
             try
             {
 
-                var FilteredUpdates = StatusUpdates.Where(statusupdate => IncludeEVSEs  (statusupdate.EVSE) &&
-                                                                          IncludeEVSEIds(statusupdate.EVSE.Id)).
+                var FilteredUpdates = StatusUpdates.Where(statusupdate => IncludeEVSEIds(statusupdate.Id)).
                                                     ToArray();
 
                 if (FilteredUpdates.Length > 0)
@@ -710,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         // Delay the status update until the EVSE data had been uploaded!
-                        if (!DisablePushData && EVSEsToAddQueue.Any(evse => evse == Update.EVSE))
+                        if (!DisablePushData && EVSEsToAddQueue.Any(evse => evse.Id == Update.Id))
                             EVSEStatusChangesDelayedQueue.Add(Update);
 
                         else

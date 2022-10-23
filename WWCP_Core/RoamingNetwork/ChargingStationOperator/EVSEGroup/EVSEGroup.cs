@@ -409,11 +409,11 @@ namespace cloud.charging.open.protocols.WWCP
             //this.OnChargingStationRemoval. OnNotification += (timestamp, evseoperator, pool)       => EVSEOperator.ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
             // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => Operator.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => Operator.EVSEAddition.           SendNotification(timestamp, station, evse);
+            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => Operator.evseAddition.           SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => Operator.evseAddition.           SendNotification(timestamp, station, evse);
 
-            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => Operator.EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => Operator.EVSERemoval .           SendNotification(timestamp, station, evse);
+            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => Operator.evseRemoval .           SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => Operator.evseRemoval .           SendNotification(timestamp, station, evse);
 
             #endregion
 

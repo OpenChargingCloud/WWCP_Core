@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         I18NString  Description    { get; }
 
-        String?     DataSource     { get; }
+        String?     DataSource     { get; set; }
 
     }
 

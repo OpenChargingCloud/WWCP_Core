@@ -34,6 +34,85 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 {
 
     /// <summary>
+    /// Extension methods for virtual EVSEs.
+    /// </summary>
+    public static class VirtualEVSEExtensions
+    {
+
+        #region CreateVirtualEVSE(this ChargingStation, EVSEId = null, EVSEConfigurator = null, VirtualEVSEConfigurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create a new virtual charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="EVSEId">The EVSE identification for the EVSE to be created.</param>
+        /// <param name="EVSEConfigurator">An optional delegate to configure the new (local) EVSE.</param>
+        /// <param name="VirtualEVSEConfigurator">An optional delegate to configure the new EVSE.</param>
+        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
+        /// <param name="OnError">An optional delegate for reporting an error.</param>
+        public static IEVSE? CreateVirtualEVSE(this IChargingStation               ChargingStation,
+                                               EVSE_Id                             EVSEId,
+                                               I18NString?                         Name                      = null,
+                                               I18NString?                         Description               = null,
+                                               EVSEAdminStatusTypes                InitialAdminStatus        = EVSEAdminStatusTypes.Operational,
+                                               EVSEStatusTypes                     InitialStatus             = EVSEStatusTypes.Available,
+                                               EnergyMeter_Id?                     EnergyMeterId             = null,
+                                               String                              EllipticCurve             = "P-256",
+                                               ECPrivateKeyParameters?             PrivateKey                = null,
+                                               PublicKeyCertificates?              PublicKeyCertificates     = null,
+                                               TimeSpan?                           SelfCheckTimeSpan         = null,
+                                               UInt16                              MaxAdminStatusListSize    = VirtualEVSE.DefaultMaxAdminStatusListSize,
+                                               UInt16                              MaxStatusListSize         = VirtualEVSE.DefaultMaxStatusListSize,
+                                               Action<IEVSE>?                      EVSEConfigurator          = null,
+                                               Action<VirtualEVSE>?                VirtualEVSEConfigurator   = null,
+                                               Action<IEVSE>?                      OnSuccess                 = null,
+                                               Action<IChargingStation, EVSE_Id>?  OnError                   = null)
+        {
+
+            #region Initial checks
+
+            if (ChargingStation is null)
+                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+
+            #endregion
+
+            return ChargingStation.CreateEVSE(EVSEId,
+                                              Name,
+                                              Description,
+                                              EVSEConfigurator,
+                                              newEVSE => {
+
+                                                  var virtualevse = new VirtualEVSE(newEVSE.Id,
+                                                                                    ChargingStation.RoamingNetwork,
+                                                                                    newEVSE.Name,
+                                                                                    newEVSE.Description,
+                                                                                    InitialAdminStatus,
+                                                                                    InitialStatus,
+                                                                                    EnergyMeterId,
+                                                                                    EllipticCurve,
+                                                                                    PrivateKey,
+                                                                                    PublicKeyCertificates,
+                                                                                    SelfCheckTimeSpan,
+                                                                                    MaxAdminStatusListSize,
+                                                                                    MaxStatusListSize);
+
+                                                  VirtualEVSEConfigurator?.Invoke(virtualevse);
+
+                                                  return virtualevse;
+
+                                              },
+
+                                              OnSuccess: OnSuccess,
+                                              OnError:   OnError);
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
     /// A virtual EVSE.
     /// </summary>
     public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id,

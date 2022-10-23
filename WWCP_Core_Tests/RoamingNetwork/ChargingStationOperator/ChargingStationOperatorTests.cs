@@ -149,9 +149,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(3,                                                    DE_GEF.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                  GenerateAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.GenerateAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                          GenerateChargingStationOperatorAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                   GenerateAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.GenerateAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                           GenerateChargingStationOperatorAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF.GenerateAdminStatusReport().ToJSON();
@@ -198,9 +198,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual(3,                                               DE_GEF.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                  GenerateStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", new ChargingStationOperator[] { DE_GEF }.GenerateStatusReport().ToString());
-                Assert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                          GenerateChargingStationOperatorStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                   GenerateStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.GenerateStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                           GenerateChargingStationOperatorStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF.GenerateStatusReport().ToJSON();
