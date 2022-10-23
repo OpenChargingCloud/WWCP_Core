@@ -98,15 +98,15 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new SemaphoreSlim(1, 1);
         protected readonly      Timer                                                            FlushChargeDetailRecordsTimer;
 
-        protected readonly      Dictionary<EVSE,                    List<PropertyUpdateInfos>>   EVSEsUpdateLog;
-        protected readonly      Dictionary<ChargingStation,         List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
+        protected readonly      Dictionary<IEVSE,                   List<PropertyUpdateInfos>>   EVSEsUpdateLog;
+        protected readonly      Dictionary<IChargingStation,        List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
         protected readonly      Dictionary<ChargingPool,            List<PropertyUpdateInfos>>   ChargingPoolsUpdateLog;
         protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
         protected readonly      Dictionary<RoamingNetwork,          List<PropertyUpdateInfos>>   RoamingNetworksUpdateLog;
 
-        protected readonly      HashSet<EVSE>                                                    EVSEsToAddQueue;
-        protected readonly      HashSet<EVSE>                                                    EVSEsToUpdateQueue;
-        protected readonly      HashSet<EVSE>                                                    EVSEsToRemoveQueue;
+        protected readonly      HashSet<IEVSE>                                                   EVSEsToAddQueue;
+        protected readonly      HashSet<IEVSE>                                                   EVSEsToUpdateQueue;
+        protected readonly      HashSet<IEVSE>                                                   EVSEsToRemoveQueue;
         protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesFastQueue;
         protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
         protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
@@ -344,13 +344,13 @@ namespace cloud.charging.open.protocols.WWCP
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
             this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
 
-            this.EVSEsUpdateLog                                  = new Dictionary<EVSE,            List<PropertyUpdateInfos>>();
-            this.ChargingStationsUpdateLog                       = new Dictionary<ChargingStation, List<PropertyUpdateInfos>>();
-            this.ChargingPoolsUpdateLog                          = new Dictionary<ChargingPool,    List<PropertyUpdateInfos>>();
+            this.EVSEsUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfos>>();
+            this.ChargingStationsUpdateLog                       = new Dictionary<IChargingStation, List<PropertyUpdateInfos>>();
+            this.ChargingPoolsUpdateLog                          = new Dictionary<ChargingPool,     List<PropertyUpdateInfos>>();
 
-            this.EVSEsToAddQueue                                 = new HashSet<EVSE>();
-            this.EVSEsToUpdateQueue                              = new HashSet<EVSE>();
-            this.EVSEsToRemoveQueue                              = new HashSet<EVSE>();
+            this.EVSEsToAddQueue                                 = new HashSet<IEVSE>();
+            this.EVSEsToUpdateQueue                              = new HashSet<IEVSE>();
+            this.EVSEsToRemoveQueue                              = new HashSet<IEVSE>();
             this.EVSEAdminStatusChangesFastQueue                 = new List<EVSEAdminStatusUpdate>();
             this.EVSEAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
             this.EVSEStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
@@ -378,11 +378,11 @@ namespace cloud.charging.open.protocols.WWCP
         protected async Task<PushEVSEDataResult>
 
             SetStaticData(ISendPOIData        Sender,
-                          EVSE                EVSE,
+                          IEVSE               EVSE,
 
                           DateTime?           Timestamp,
                           CancellationToken?  CancellationToken,
-                          EventTracking_Id    EventTrackingId,
+                          EventTracking_Id?   EventTrackingId,
                           TimeSpan?           RequestTimeout)
 
         {
@@ -396,7 +396,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (DisablePushData)
                 return PushEVSEDataResult.AdminDown(Id,
                                                     Sender,
-                                                    new EVSE[] { EVSE });
+                                                    new IEVSE[] { EVSE });
 
             #endregion
 
@@ -463,11 +463,11 @@ namespace cloud.charging.open.protocols.WWCP
         protected async Task<PushEVSEDataResult>
 
             AddStaticData(ISendPOIData        Sender,
-                          EVSE                EVSE,
+                          IEVSE               EVSE,
 
                           DateTime?           Timestamp,
                           CancellationToken?  CancellationToken,
-                          EventTracking_Id    EventTrackingId,
+                          EventTracking_Id?   EventTrackingId,
                           TimeSpan?           RequestTimeout)
 
         {
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (DisablePushData)
                 return PushEVSEDataResult.AdminDown(Id,
                                                     Sender,
-                                                    new EVSE[] { EVSE });
+                                                    new IEVSE[] { EVSE });
 
             #endregion
 

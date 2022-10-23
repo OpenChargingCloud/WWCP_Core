@@ -23,6 +23,9 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using System.Collections;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
@@ -69,6 +72,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
+        public ChargingStationOperator Operator => throw new NotImplementedException();
+
+        public IRemoteChargingPool RemoteChargingPool => throw new NotImplementedException();
+
+        public Address? Address => throw new NotImplementedException();
+
+        public GeoCoordinate? GeoLocation => throw new NotImplementedException();
+
+        public OpeningTimes OpeningTimes => throw new NotImplementedException();
+
+        public IEnumerable<IEVSE> EVSEs => throw new NotImplementedException();
+
         #region Constructor(s)
 
         /// <summary>
@@ -113,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Init data and properties
 
-            this.chargingStations     = new HashSet<IRemoteChargingStation>();
+            this.chargingStations     = new HashSet<IChargingStation>();
 
             #endregion
 
@@ -169,15 +184,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region TryGetEVSEById(EVSEId, out RemoteEVSE)
 
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE RemoteEVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? RemoteEVSE)
         {
 
             foreach (var station in chargingStations)
             {
-
-                if (station.TryGetEVSEById(EVSEId, out RemoteEVSE))
+                if (station is not null &&
+                    station.TryGetEVSEById(EVSEId, out RemoteEVSE))
+                {
                     return true;
-
+                }
             }
 
             RemoteEVSE = null;
@@ -193,12 +209,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region Stations
 
-        private readonly HashSet<IRemoteChargingStation> chargingStations;
+        private readonly HashSet<IChargingStation> chargingStations;
 
         /// <summary>
         /// All registered charging stations.
         /// </summary>
-        public IEnumerable<IRemoteChargingStation> ChargingStations
+        public IEnumerable<IChargingStation> ChargingStations
             => chargingStations;
 
         #endregion
@@ -296,19 +312,19 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region GetChargingStationById(ChargingStationId)
 
-        public IRemoteChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
+        public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
             => chargingStations.FirstOrDefault(evse => evse.Id == ChargingStationId);
 
         #endregion
 
         #region TryGetChargingStationById(ChargingStationId, out ChargingStation)
 
-        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IRemoteChargingStation ChargingStation)
+        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
         {
 
             ChargingStation = GetChargingStationById(ChargingStationId);
 
-            return ChargingStation != null;
+            return ChargingStation is not null;
 
         }
 
@@ -317,13 +333,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region TryGetChargingStationByEVSEId(EVSEId, out RemoteChargingStation)
 
-        public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IRemoteChargingStation RemoteChargingStation)
+        public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IChargingStation? RemoteChargingStation)
         {
 
             foreach (var station in chargingStations)
             {
 
-                if (station.TryGetEVSEById(EVSEId, out IRemoteEVSE RemoteEVSE))
+                if (station.TryGetEVSEById(EVSEId, out var RemoteEVSE))
                 {
                     RemoteChargingStation = station;
                     return true;
@@ -633,9 +649,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                          AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
                 {
 
-                    if (ReservationLevel == ChargingReservationLevel.EVSE &&
-                        ChargingLocation.EVSEId.HasValue &&
-                        TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.Value, out IRemoteChargingStation remoteStation))
+                    if (ReservationLevel == ChargingReservationLevel.EVSE                                   &&
+                        ChargingLocation.EVSEId.HasValue                                                    &&
+                        TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.Value, out var remoteStation) &&
+                        remoteStation is not null)
                     {
 
                         result = await remoteStation.
@@ -1082,15 +1099,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<RemoteStartResult>
 
-            RemoteStart(ChargingProduct          ChargingProduct        = null,
+            RemoteStart(ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
                         EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
                         CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
+                        EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
 
 
@@ -1127,15 +1144,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct          ChargingProduct        = null,
+                        ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
                         EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
                         CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
+                        EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
         {
 
@@ -1150,22 +1167,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            RemoteStartResult result = null;
+            RemoteStartResult? result = null;
 
             #endregion
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(StartTime,
+                OnRemoteStartRequest?.Invoke(startTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -1205,10 +1221,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     if (!ChargingLocation.EVSEId.HasValue)
                         result = RemoteStartResult.UnknownLocation();
 
-                    else if (!TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.Value, out IRemoteChargingStation remoteStation))
+                    else if (!TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.Value, out var remoteStation))
                         result = RemoteStartResult.UnknownLocation();
 
-                    else
+                    else if (remoteStation is not null)
                         result = await remoteStation.
                                            RemoteStart(ChargingProduct,
                                                        ReservationId,
@@ -1242,15 +1258,17 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 result = RemoteStartResult.Error(e.Message);
             }
 
+            result ??= RemoteStartResult.Error("unknown");
+
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(EndTime,
+                OnRemoteStartResponse?.Invoke(endTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -1265,7 +1283,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               RemoteAuthentication,
                                               RequestTimeout,
                                               result,
-                                              EndTime - StartTime);
+                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -1300,19 +1318,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        EMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication   RemoteAuthentication   = null,
+                       RemoteAuthentication?  RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,
                        CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id       EventTrackingId        = null,
+                       EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null)
 
         {
 
             #region Initial checks
-
-            if (SessionId == null)
-                SessionId = ChargingSession_Id.NewRandom;
 
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
@@ -1320,22 +1335,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            RemoteStopResult result = null;
+            RemoteStopResult? result = null;
 
             #endregion
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStopRequest?.Invoke(StartTime,
+                OnRemoteStopRequest?.Invoke(startTime,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -1364,7 +1378,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
                 {
 
-                    if (!TryGetChargingSessionById(SessionId, out ChargingSession chargingSession))
+                    if (!TryGetChargingSessionById(SessionId, out var chargingSession))
                     {
 
                         foreach (var remoteStation in chargingStations)
@@ -1381,17 +1395,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                           EventTrackingId,
                                                           RequestTimeout);
 
-                            if (result.Result == RemoteStopResultTypes.Success)
+                            if (result?.Result == RemoteStopResultTypes.Success)
                                 break;
 
                         }
 
-                        if (result.Result != RemoteStopResultTypes.Success)
+                        if (result?.Result != RemoteStopResultTypes.Success)
                             result = RemoteStopResult.InvalidSessionId(SessionId);
 
                     }
 
-                    else if (chargingSession.ChargingStation != null)
+                    else if (chargingSession.ChargingStation                       is not null &&
+                             chargingSession.ChargingStation.RemoteChargingStation is not null)
                     {
 
                         result = await chargingSession.ChargingStation.RemoteChargingStation.
@@ -1408,7 +1423,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     }
 
                     else if (chargingSession.ChargingStationId.HasValue &&
-                             TryGetChargingStationById(chargingSession.ChargingStationId.Value, out IRemoteChargingStation remoteStation))
+                             TryGetChargingStationById(chargingSession.ChargingStationId.Value, out var remoteStation))
                     {
 
                         result = await remoteStation.
@@ -1469,7 +1484,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              RemoteAuthentication,
                                              RequestTimeout,
                                              result,
-                                             EndTime - StartTime);
+                                             EndTime - startTime);
 
             }
             catch (Exception e)
@@ -1739,6 +1754,31 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public override String ToString()
 
             => Id.ToString();
+
+        public JObject ToJSON(Boolean Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationIds = InfoStatus.Expanded, InfoStatus ExpandEVSEIds = InfoStatus.Hidden, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<ChargingPool>? CustomChargingPoolSerializer = null, CustomJObjectSerializerDelegate<ChargingStation>? CustomChargingStationSerializer = null, CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Equals(IChargingPool? other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Int32 CompareTo(IChargingPool? other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<ChargingStation> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

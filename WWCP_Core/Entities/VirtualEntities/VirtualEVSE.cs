@@ -33,6 +33,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using System.Collections.Concurrent;
 
 #endregion
 
@@ -481,6 +482,45 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             EnergyMeterTimer         = new Timer(ReadEnergyMeter,             null, Timeout.Infinite,        Timeout.Infinite);
             EnergyMeterInterval      = TimeSpan.FromSeconds(30);
 
+        }
+
+        event OnEVSEAdminStatusChangedDelegate? IEVSE.OnAdminStatusChanged
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnEVSEDataChangedDelegate? IEVSE.OnDataChanged
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event OnEVSEStatusChangedDelegate? IEVSE.OnStatusChanged
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
         }
 
         #endregion
@@ -1287,6 +1327,49 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             }
 
         }
+
+        public ChargingStationOperator? Operator => throw new NotImplementedException();
+
+        public IRemoteEVSE? RemoteEVSE => throw new NotImplementedException();
+
+        Decimal? IEVSE.AverageVoltage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ConcurrentDictionary<Brand_Id, Brand> Brands => throw new NotImplementedException();
+
+        public ChargingPool? ChargingPool => throw new NotImplementedException();
+
+        public ChargingStation? ChargingStation => throw new NotImplementedException();
+
+        CurrentTypes? IEVSE.CurrentType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
+
+        public EnergyMeter? EnergyMeter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<EnergyMix>> EnergyMixPrognoses => throw new NotImplementedException();
+
+        public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Boolean IsFreeOfCharge { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime? LastStatusUpdate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        Decimal? IEVSE.MaxCapacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxCapacityPrognoses => throw new NotImplementedException();
+
+        public Timestamped<Decimal>? MaxCapacityRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        Decimal? IEVSE.MaxCurrent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxCurrentPrognoses => throw new NotImplementedException();
+
+        public Timestamped<Decimal>? MaxCurrentRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        Decimal? IEVSE.MaxPower { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxPowerPrognoses => throw new NotImplementedException();
+
+        public Timestamped<Decimal>? MaxPowerRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        TimeSpan IEVSE.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public IEnumerable<ChargingReservation> Reservations => throw new NotImplementedException();
 
         #endregion
 
@@ -2155,6 +2238,42 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             => Id.ToString();
 
         #endregion
+
+
+        public void AddCurrentType(CurrentTypes CurrentType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Int32 CompareTo(EVSE? EVSE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Equals(EVSE? EVSE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JObject ToJSON(Boolean Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingPoolId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationId = InfoStatus.ShowIdOnly, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EVSE UpdateWith(EVSE OtherEVSE)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Boolean Equals(IEVSE? other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Int32 CompareTo(IEVSE? other)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 

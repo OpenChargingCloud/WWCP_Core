@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public delegate IRemoteChargingStation RemoteChargingStationCreatorDelegate(ChargingStation ChargingStation);
+    public delegate IRemoteChargingStation RemoteChargingStationCreatorDelegate(IChargingStation ChargingStation);
 
     public delegate String ChargingStationNameSelectorDelegate(I18NString I18NText);
 
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnChargingStationDataChangedDelegate(DateTime          Timestamp,
                                                               EventTracking_Id  EventTrackingId,
-                                                              ChargingStation   ChargingStation,
+                                                              IChargingStation  ChargingStation,
                                                               String            PropertyName,
                                                               Object            OldValue,
                                                               Object            NewValue);
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
     public delegate Task OnChargingStationStatusChangedDelegate(DateTime                                 Timestamp,
                                                                 EventTracking_Id                         EventTrackingId,
-                                                                ChargingStation                          ChargingStation,
+                                                                IChargingStation                         ChargingStation,
                                                                 Timestamped<ChargingStationStatusTypes>  OldStatus,
                                                                 Timestamped<ChargingStationStatusTypes>  NewStatus);
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
     public delegate Task OnChargingStationAdminStatusChangedDelegate(DateTime                                      Timestamp,
                                                                      EventTracking_Id                              EventTrackingId,
-                                                                     ChargingStation                               ChargingStation,
+                                                                     IChargingStation                              ChargingStation,
                                                                      Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
                                                                      Timestamped<ChargingStationAdminStatusTypes>  NewStatus);
 

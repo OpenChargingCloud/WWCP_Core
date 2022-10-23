@@ -35,9 +35,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatusSchedule>  ChargingStationAdminStatusSchedules,
-                                     UInt64?                                               Skip         = null,
-                                     UInt64?                                               Take         = null,
-                                     UInt64                                                HistorySize  = 1)
+                                     UInt64?                                               Skip          = null,
+                                     UInt64?                                               Take          = null,
+                                     UInt64                                                HistorySize   = 1)
         {
 
             #region Initial checks

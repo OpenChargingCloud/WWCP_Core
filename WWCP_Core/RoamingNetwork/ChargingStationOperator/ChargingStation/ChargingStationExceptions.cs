@@ -15,15 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -35,8 +26,8 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingStationAlreadyExistsInPool : ChargingPoolException
     {
 
-        public ChargingStationAlreadyExistsInPool(ChargingPool ChargingPool,
-                                                  ChargingStation_Id ChargingStationId)
+        public ChargingStationAlreadyExistsInPool(ChargingPool        ChargingPool,
+                                                  ChargingStation_Id  ChargingStationId)
 
             : base(ChargingPool.Operator,
                    "The given charging station identification '" + ChargingStationId + "' already exists within the given '" + ChargingPool.Id + "' charging pool!")
@@ -68,10 +59,8 @@ namespace cloud.charging.open.protocols.WWCP
     #endregion
 
 
-
-
     /// <summary>
-    /// A EVS pool exception.
+    /// A charging station exception.
     /// </summary>
     public class ChargingStationException : ChargingPoolException
     {
@@ -88,36 +77,12 @@ namespace cloud.charging.open.protocols.WWCP
                                         String        Message,
                                         Exception     InnerException)
 
-            : base(ChargingPool.Operator, Message, InnerException)
+            : base(ChargingPool.Operator,
+                   Message,
+                   InnerException)
 
         { }
 
     }
-
-
-    #region InvalidEVSEOperatorId
-
-    /// <summary>
-    /// An invalid EVSE operator identification was given.
-    /// </summary>
-    public class InvalidEVSEOperatorId : ChargingStationException
-    {
-
-        /// <summary>
-        /// An invalid EVSE operator identification was given.
-        /// </summary>
-        /// <param name="ChargingStation">The charging station in which the exception occured.</param>
-        /// <param name="InvalidChargingStationOperatorId">The invalid operator identification.</param>
-        public InvalidEVSEOperatorId(ChargingStation             ChargingStation,
-                                     ChargingStationOperator_Id  InvalidChargingStationOperatorId)
-
-            : base(ChargingStation.ChargingPool,
-                   "Invalid charging station operator identification '" + InvalidChargingStationOperatorId + "'!")
-
-        { }
-
-    }
-
-    #endregion
 
 }

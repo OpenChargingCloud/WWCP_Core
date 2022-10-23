@@ -299,15 +299,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        IEnumerable<EVSE>                        EVSEs { get; }
+        IEnumerable<IEVSE>                       EVSEs { get; }
 
-        Boolean                                  ContainsEVSE           (EVSE                                  EVSE);
+        Boolean                                  ContainsEVSE           (IEVSE                                 EVSE);
 
         Boolean                                  ContainsEVSE           (EVSE_Id                               EVSEId);
 
-        EVSE?                                    GetEVSEById            (EVSE_Id                               EVSEId);
+        IEVSE?                                   GetEVSEById            (EVSE_Id                               EVSEId);
 
-        Boolean                                  TryGetEVSEById         (EVSE_Id                               EVSEId, out EVSE? EVSE);
+        Boolean                                  TryGetEVSEById         (EVSE_Id                               EVSEId, out IEVSE? EVSE);
 
         IEnumerable<EVSE_Id>                     EVSEIds                (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
 

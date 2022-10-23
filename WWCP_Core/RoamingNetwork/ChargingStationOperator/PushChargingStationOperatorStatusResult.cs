@@ -502,7 +502,6 @@ namespace cloud.charging.open.protocols.WWCP
     }
 
 
-
     public enum PushChargingStationOperatorStatusResultTypes
     {
 

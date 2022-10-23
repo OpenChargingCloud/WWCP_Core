@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The EVSE used for charging.
         /// </summary>
         [Optional]
-        public EVSE?                        EVSE                         { get; }
+        public IEVSE?                       EVSE                         { get; }
 
         /// <summary>
         /// The identification of the EVSE used for charging.
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   StartEndDateTime                            SessionTime,
                                   TimeSpan?                                   Duration                    = null,
 
-                                  EVSE?                                       EVSE                        = null,
+                                  IEVSE?                                      EVSE                        = null,
                                   EVSE_Id?                                    EVSEId                      = null,
                                   ChargingStation?                            ChargingStation             = null,
                                   ChargingStation_Id?                         ChargingStationId           = null,

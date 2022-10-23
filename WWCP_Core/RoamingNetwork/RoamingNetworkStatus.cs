@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            #region Maybe there are duplicate RoamingNetwork identifications in the enumeration... take the newest one!
+            #region Maybe there are duplicate roaming network identifications in the enumeration... take the newest one!
 
             var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkStatus>();
 
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             foreach (var status in RoamingNetworkStatus)
             {
-                if (status.Id          == Id &&
+                if (status.Id     == Id &&
                     status.Status == Status)
                 {
                     return true;

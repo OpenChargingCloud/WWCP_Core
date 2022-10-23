@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        if (session.EVSEId.HasValue && session.EVSE == null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
 
-                                       if (session.EVSE != null)
+                                       if (session.EVSE is not null)
                                            session.EVSE.ChargingSession = session;
 
                                    }

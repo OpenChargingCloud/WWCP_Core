@@ -53,7 +53,6 @@ namespace cloud.charging.open.protocols.WWCP
     public readonly struct ChargingStationOperatorAdminStatusTypes : IId,
                                                                      IEquatable<ChargingStationOperatorAdminStatusTypes>,
                                                                      IComparable<ChargingStationOperatorAdminStatusTypes>
-
     {
 
         #region Data

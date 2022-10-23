@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            #region Maybe there are duplicate RoamingNetworkAdmin identifications in the enumeration... take the newest one!
+            #region Maybe there are duplicate roaming network identifications in the enumeration... take the newest one!
 
             var filteredStatus = new Dictionary<RoamingNetwork_Id, RoamingNetworkAdminStatus>();
 

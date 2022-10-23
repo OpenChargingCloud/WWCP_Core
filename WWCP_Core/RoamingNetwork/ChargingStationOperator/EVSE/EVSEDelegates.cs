@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnEVSEDataChangedDelegate(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
-                                                   EVSE              EVSE,
+                                                   IEVSE             EVSE,
                                                    String            PropertyName,
                                                    Object            OldValue,
                                                    Object            NewValue);
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
     public delegate Task OnEVSEAdminStatusChangedDelegate(DateTime                           Timestamp,
                                                           EventTracking_Id                   EventTrackingId,
-                                                          EVSE                               EVSE,
+                                                          IEVSE                              EVSE,
                                                           Timestamped<EVSEAdminStatusTypes>  OldEVSEStatus,
                                                           Timestamped<EVSEAdminStatusTypes>  NewEVSEStatus);
 
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
     public delegate Task OnEVSEStatusChangedDelegate(DateTime                      Timestamp,
                                                      EventTracking_Id              EventTrackingId,
-                                                     EVSE                          EVSE,
+                                                     IEVSE                         EVSE,
                                                      Timestamped<EVSEStatusTypes>  OldEVSEStatus,
                                                      Timestamped<EVSEStatusTypes>  NewEVSEStatus);
 

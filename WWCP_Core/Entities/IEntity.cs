@@ -27,23 +27,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The common interface of an entity having one or multiple unique identification(s).
     /// </summary>
-    public interface IEntity
+    public interface IEntity : IInternalData
     {
 
-        I18NString                       Name           { get; }
+        I18NString  Name           { get; }
 
-        I18NString                       Description    { get; }
+        I18NString  Description    { get; }
 
-        /// <summary>
-        /// The timestamp of the last change of this entity.
-        /// </summary>
-        DateTime                         LastChange     { get; }
-
-
-        /// <summary>
-        /// A delegate called whenever any (internal) state of this entity changed.
-        /// </summary>
-        event OnPropertyChangedDelegate  OnPropertyChanged;
+        String?     DataSource     { get; }
 
     }
 

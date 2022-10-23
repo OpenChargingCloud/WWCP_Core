@@ -19,6 +19,7 @@
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
@@ -90,6 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IChargingPool : IEntity<ChargingPool_Id>,
                                      IAdminStatus<ChargingPoolAdminStatusTypes>,
                                      IStatus<ChargingPoolStatusTypes>,
+                                     ILocalReserveRemoteStartStop,
                                      IEquatable<IChargingPool>, IComparable<IChargingPool>, IComparable,
                                      IEnumerable<ChargingStation>
 
@@ -98,19 +100,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The roaming network of this charging pool.
         /// </summary>
-        IRoamingNetwork          RoamingNetwork        { get; }
+        IRoamingNetwork?          RoamingNetwork           { get; }
 
         /// <summary>
         /// The charging station operator of this charging pool.
         /// </summary>
         [Optional]
-        ChargingStationOperator  Operator              { get; }
+        ChargingStationOperator?  Operator                 { get; }
 
         /// <summary>
         /// The remote charging pool.
         /// </summary>
         [Optional]
-        IRemoteChargingPool      RemoteChargingPool    { get; }
+        IRemoteChargingPool?      RemoteChargingPool       { get; }
+
+
+
+        Address?                  Address                  { get; }
+
+        GeoCoordinate?            GeoLocation              { get; }
+
+        OpeningTimes              OpeningTimes             { get; }
+
+        IEnumerable<IEVSE>        EVSEs                    { get; }
 
 
 

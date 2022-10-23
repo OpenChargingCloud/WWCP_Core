@@ -25,18 +25,12 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+using System.Collections.Concurrent;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
-
-    /// <summary>
-    /// A delegate for filtering EVSEs.
-    /// </summary>
-    /// <param name="EVSE">An EVSE to include.</param>
-    public delegate Boolean IncludeEVSEDelegate(EVSE EVSE);
-
 
     /// <summary>
     /// An Electric Vehicle Supply Equipment (EVSE) to charge an electric vehicle (EV).
@@ -83,7 +77,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brands registered for this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public EntityHashSet<EVSE, Brand_Id, Brand>     Brands                  { get; }
+        public ConcurrentDictionary<Brand_Id, Brand>    Brands                  { get; }
 
         /// <summary>
         /// The license of the EVSE data.
@@ -590,7 +584,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The current charging session, if available.
         /// </summary>
         [InternalUseOnly]
-        public ChargingSession? ChargingSession { get; internal set; }
+        public ChargingSession? ChargingSession { get; set; }
 
 
 
@@ -776,7 +770,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingStation = ChargingStation;
 
-            this.Brands                             = new EntityHashSet<EVSE, Brand_Id, Brand>(this);
+            this.Brands                             = new ConcurrentDictionary<Brand_Id, Brand>();
             //this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
 
             //    PropertyChanged("DataLicenses",
@@ -879,7 +873,7 @@ namespace cloud.charging.open.protocols.WWCP
                 this.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => { AdminStatus = NewStatus; return Task.CompletedTask; };
                 this.RemoteEVSE.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => { Status = NewStatus; return Task.CompletedTask; };
 
-                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation) => OnNewReservation.Invoke(Timestamp, RemoteEVSE, Reservation);
+                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)         => OnNewReservation.     Invoke(Timestamp, RemoteEVSE, Reservation);
                 this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
                 this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) =>
@@ -912,7 +906,8 @@ namespace cloud.charging.open.protocols.WWCP
             Description.Add(OtherEVSE.Description);
 
             Brands.Clear();
-            Brands.TryAdd(OtherEVSE.Brands);
+            foreach (var brand in OtherEVSE.Brands)
+                Brands.TryAdd(brand.Key, brand.Value);
 
             ChargingModes.Clear();
             ChargingModes.Add(OtherEVSE.ChargingModes);
@@ -1056,6 +1051,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Reservations
 
         #region Data
+
+        public IEnumerable<ChargingReservation> ChargingReservations
+            => throw new NotImplementedException();
 
         /// <summary>
         /// All current charging reservations.
@@ -2192,8 +2190,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                            Brands.SafeAny()
                                  ? ExpandBrandIds.Switch(
-                                       () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
-                                       () => new JProperty("brand", Brands.ToJSON()))
+                                       () => new JProperty("brandId", Brands.Select(brand => brand.Key.ToString())),
+                                       () => new JProperty("brand",   Brands.Values.ToJSON()))
                                  : null,
 
                            (!Embedded || DataSource != ChargingStation.DataSource)

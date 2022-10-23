@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            #region Maybe there are duplicate ChargingStationOperatorAdmin identifications in the enumeration... take the newest one!
+            #region Maybe there are duplicate charging station operator identifications in the enumeration... take the newest one!
 
             var filteredStatus = new Dictionary<ChargingStationOperator_Id, ChargingStationOperatorAdminStatus>();
 

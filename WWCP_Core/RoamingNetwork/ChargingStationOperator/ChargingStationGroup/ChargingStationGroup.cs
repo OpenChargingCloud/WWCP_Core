@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return all EVSEs registered within this charing station group.
         /// </summary>
-        public IEnumerable<EVSE> EVSEs
+        public IEnumerable<IEVSE> EVSEs
             => ChargingStations.SafeSelectMany(station => station.EVSEs);
 
         /// <summary>
@@ -315,17 +315,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated charging station changed.
         /// </summary>
-        public event OnChargingStationDataChangedDelegate         OnChargingStationDataChanged;
+        public event OnChargingStationDataChangedDelegate?         OnChargingStationDataChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
         /// </summary>
-        public event OnChargingStationStatusChangedDelegate       OnChargingStationStatusChanged;
+        public event OnChargingStationStatusChangedDelegate?       OnChargingStationStatusChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated admin status of any subordinated charging station changed.
         /// </summary>
-        public event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
+        public event OnChargingStationAdminStatusChangedDelegate?  OnChargingStationAdminStatusChanged;
 
         #endregion
 

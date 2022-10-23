@@ -21,11 +21,19 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections.Concurrent;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// A delegate for filtering EVSEs.
+    /// </summary>
+    /// <param name="EVSE">An EVSE to include.</param>
+    public delegate Boolean IncludeEVSEDelegate(IEVSE EVSE);
+
 
     /// <summary>
     /// Extension methods for the common Electric Vehicle Supply Equipments (EVSEs) interface.
@@ -83,6 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IEVSE : IEntity<EVSE_Id>,
                              IAdminStatus<EVSEAdminStatusTypes>,
                              IStatus<EVSEStatusTypes>,
+                             ILocalReserveRemoteStartStop,
                              IEquatable<IEVSE>, IComparable<IEVSE>, IComparable,
                              IEnumerable<SocketOutlet>
     {
@@ -107,11 +116,10 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         decimal? AverageVoltage { get; set; }
-        EntityHashSet<EVSE, Brand_Id, Brand> Brands { get; }
+        ConcurrentDictionary<Brand_Id, Brand> Brands { get; }
         ReactiveSet<ChargingModes> ChargingModes { get; }
         ChargingPool? ChargingPool { get; }
-        ChargingSession? ChargingSession { get; }
-        IEnumerable<ChargingSession> ChargingSessions { get; }
+        ChargingSession? ChargingSession { get; set; }
         ChargingStation? ChargingStation { get; }
         CurrentTypes? CurrentType { get; set; }
         ReactiveSet<DataLicense> DataLicenses { get; }
@@ -134,37 +142,17 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<ChargingReservation> Reservations { get; }
         ReactiveSet<SocketOutlet> SocketOutlets { get; }
 
-        event OnEVSEAdminStatusChangedDelegate? OnAdminStatusChanged;
-        event OnCancelReservationRequestDelegate? OnCancelReservationRequest;
-        event OnCancelReservationResponseDelegate? OnCancelReservationResponse;
         event OnEVSEDataChangedDelegate? OnDataChanged;
-        event OnNewChargeDetailRecordDelegate? OnNewChargeDetailRecord;
-        event OnNewChargingSessionDelegate? OnNewChargingSession;
-        event OnNewReservationDelegate? OnNewReservation;
-        event OnRemoteStartRequestDelegate? OnRemoteStartRequest;
-        event OnRemoteStartResponseDelegate? OnRemoteStartResponse;
-        event OnRemoteStopRequestDelegate? OnRemoteStopRequest;
-        event OnRemoteStopResponseDelegate? OnRemoteStopResponse;
-        event OnReservationCanceledDelegate? OnReservationCanceled;
-        event OnReserveRequestDelegate? OnReserveRequest;
-        event OnReserveResponseDelegate? OnReserveResponse;
+        event OnEVSEAdminStatusChangedDelegate? OnAdminStatusChanged;
         event OnEVSEStatusChangedDelegate? OnStatusChanged;
 
         void AddCurrentType(CurrentTypes CurrentType);
-        Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
         int CompareTo(EVSE? EVSE);
         bool Equals(EVSE? EVSE);
         bool Equals(object? Object);
         int GetHashCode();
-        Task<RemoteStartResult> RemoteStart(ChargingProduct? ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
-        Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct? ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
-        Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
-        Task<ReservationResult> Reserve(DateTime? StartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, ChargingProduct? ChargingProduct = null, IEnumerable<Auth_Token>? AuthTokens = null, IEnumerable<eMobilityAccount_Id>? eMAIds = null, IEnumerable<uint>? PINs = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
-        Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTime? ReservationStartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, ChargingProduct? ChargingProduct = null, IEnumerable<Auth_Token>? AuthTokens = null, IEnumerable<eMobilityAccount_Id>? eMAIds = null, IEnumerable<uint>? PINs = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
         JObject ToJSON(bool Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingPoolId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationId = InfoStatus.ShowIdOnly, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null);
         string ToString();
-        bool TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? ChargingReservation);
-        bool TryGetChargingSessionById(ChargingSession_Id SessionId, out ChargingSession? chargingSession);
         EVSE UpdateWith(EVSE OtherEVSE);
 
     }

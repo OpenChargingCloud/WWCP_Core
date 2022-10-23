@@ -18,7 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
-
+using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -26,6 +26,13 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 namespace cloud.charging.open.protocols.WWCP
 {
+
+    /// <summary>
+    /// A delegate for filtering charging stations.
+    /// </summary>
+    /// <param name="ChargingStation">A charging station to include.</param>
+    public delegate Boolean IncludeChargingStationDelegate(IChargingStation ChargingStation);
+
 
     /// <summary>
     /// Extension methods for the commom charging station interface.
@@ -86,27 +93,43 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IChargingStation : IEntity<ChargingStation_Id>,
                                         IAdminStatus<ChargingStationAdminStatusTypes>,
                                         IStatus<ChargingStationStatusTypes>,
+                                        ILocalReserveRemoteStartStop,
                                         IEquatable<IChargingStation>, IComparable<IChargingStation>, IComparable,
-                                        IEnumerable<EVSE>
+                                        IEnumerable<IEVSE>
     {
 
 
         /// <summary>
-        /// The roaming network of this charging Station.
+        /// The roaming network of this charging station.
         /// </summary>
         IRoamingNetwork?          RoamingNetwork           { get; }
 
         /// <summary>
-        /// The charging station operator of this charging Station.
+        /// The charging station operator of this charging station.
         /// </summary>
         [Optional]
         ChargingStationOperator?  Operator                 { get; }
 
         /// <summary>
-        /// The remote charging Station.
+        /// The remote charging station.
         /// </summary>
         [Optional]
         IRemoteChargingStation?   RemoteChargingStation    { get; }
+
+
+
+        Address?                  Address                  { get; }
+
+        GeoCoordinate?            GeoLocation              { get; }
+
+        OpeningTimes              OpeningTimes             { get; }
+
+        IEnumerable<IEVSE>        EVSEs                    { get; }
+
+
+
+
+        Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE);
 
 
         /// <summary>

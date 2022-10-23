@@ -173,7 +173,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                     OnSuccess:           evse => success = true,
                                                     Configurator:        evse => {
 
-                                                                             evse.Brands.TryAdd(new Brand(
+                                                                             evse.Brands.TryAdd(Brand_Id.Parse("openChargingCloudChargingStation"),
+                                                                                                new Brand(
                                                                                                     Id:            Brand_Id.Parse("openChargingCloudChargingStation"),
                                                                                                     Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Station"),
                                                                                                     Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
@@ -213,7 +214,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
 
 
-                    DE_GEF_S1234.Brands.TryAdd(new Brand(
+                    DE_GEF_S1234.Brands.TryAdd(Brand_Id.Parse("openChargingCloud3223"),
+                                               new Brand(
                                                    Id:            Brand_Id.Parse("openChargingCloud3223"),
                                                    Name:          I18NString.Create(Languages.de, "Open Charging Cloud 3223"),
                                                    Logo:          URL.Parse("https://open.charging.cloud/logos.json"),

@@ -28,18 +28,12 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+using System.Collections.Concurrent;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
-
-    /// <summary>
-    /// A delegate for filtering charging stations.
-    /// </summary>
-    /// <param name="ChargingStation">A charging station to include.</param>
-    public delegate Boolean IncludeChargingStationDelegate(ChargingStation ChargingStation);
-
 
     /// <summary>
     /// A charging station to charge an electric vehicle.
@@ -85,7 +79,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brands registered for this charging station.
         /// </summary>
         [Optional, SlowData]
-        public EntityHashSet<ChargingStation, Brand_Id, Brand>  Brands          { get; }
+        public ConcurrentDictionary<Brand_Id, Brand>            Brands          { get; }
 
         /// <summary>
         /// The license of the charging station data.
@@ -1407,7 +1401,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingPool                = ChargingPool;
 
-            this.Brands                      = new EntityHashSet<ChargingStation, Brand_Id, Brand>(this);
+            this.Brands                      = new ConcurrentDictionary<Brand_Id, Brand>();
             //this.Brands.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
 
             //    PropertyChanged("DataLicenses",
@@ -1466,8 +1460,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-
-            this.evses                             = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
+            this.evses                             = new EntityHashSet<ChargingStation, EVSE_Id, IEVSE>(this);
             //this.evses.OnSetChanged               += (timestamp, reactiveSet, newItems, oldItems) =>
             //{
 
@@ -1481,15 +1474,15 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             this.openingTimes                = OpeningTimes.Open24Hours;
-            this.evses                       = new EntityHashSet<ChargingStation, EVSE_Id,  EVSE> (this);
+            this.evses                       = new EntityHashSet<ChargingStation, EVSE_Id,  IEVSE> (this);
 
             #endregion
 
             #region Init events
 
             // ChargingStation events
-            this.EVSEAddition             = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
 
@@ -1612,12 +1605,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => EVSEAddition;
 
@@ -1625,13 +1618,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        private readonly EntityHashSet<ChargingStation, EVSE_Id, EVSE> evses;
+        private readonly EntityHashSet<ChargingStation, EVSE_Id, IEVSE> evses;
 
         /// <summary>
         /// All Electric Vehicle Supply Equipments (EVSE) present
         /// within this charging station.
         /// </summary>
-        public IEnumerable<EVSE> EVSEs
+        public IEnumerable<IEVSE> EVSEs
 
             => evses;
 
@@ -1726,8 +1719,8 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
                 if (Operator.Id != Id.OperatorId)
-                    throw new InvalidEVSEOperatorId(this,
-                                                    Id.OperatorId);
+                    return null;
+                    //throw new InvalidChargingStationOperatorId(Id.OperatorId);
 
                 #endregion
 
@@ -1771,8 +1764,8 @@ namespace cloud.charging.open.protocols.WWCP
                         OnAdminStatusChanged               += (Timestamp, EventTrackingId, station, oldstatus, newstatus) => { this.AdminStatus = newstatus; return Task.CompletedTask; };
                         OnStatusChanged                    += (Timestamp, EventTrackingId, station, oldstatus, newstatus) => { this.Status      = newstatus; return Task.CompletedTask; };
 
-                        this.RemoteChargingStation.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => AdminStatus = NewStatus;
-                        this.RemoteChargingStation.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus) => Status      = NewStatus;
+                        this.RemoteChargingStation.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus) => AdminStatus = NewStatus;
+                        this.RemoteChargingStation.OnStatusChanged         += async (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus) => Status      = NewStatus;
 
                         //RemoteConfigurator?.Invoke(_EVSE.RemoteEVSE);
 
@@ -1820,8 +1813,9 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (Operator.Id != Id.OperatorId)
-                throw new InvalidEVSEOperatorId(this,
-                                                Id.OperatorId);
+                return null;
+                //throw new InvalidChargingStationOperatorId(this,
+                //                                Id.OperatorId);
 
             InitialAdminStatus = InitialAdminStatus ?? new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
             InitialStatus      = InitialStatus      ?? new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
@@ -1878,7 +1872,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given EVSE is already present within the charging station.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        public Boolean ContainsEVSE(EVSE EVSE)
+        public Boolean ContainsEVSE(IEVSE EVSE)
 
             => evses.Contains(EVSE);
 
@@ -1898,7 +1892,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetEVSEById(EVSEId)
 
-        public EVSE GetEVSEById(EVSE_Id EVSEId)
+        public IEVSE? GetEVSEById(EVSE_Id EVSEId)
 
             => evses.GetById(EVSEId);
 
@@ -1906,7 +1900,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEVSEById(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
 
             => evses.TryGet(EVSEId, out EVSE);
 
@@ -1914,7 +1908,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveEVSE(EVSEId)
 
-        public EVSE RemoveEVSE(EVSE_Id EVSEId)
+        public IEVSE? RemoveEVSE(EVSE_Id EVSEId)
 
             => evses.Remove(EVSEId);
 
@@ -1922,7 +1916,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveEVSE(EVSEId, out EVSE)
 
-        public Boolean TryRemoveEVSE(EVSE_Id EVSEId, out EVSE EVSE)
+        public Boolean TryRemoveEVSE(EVSE_Id EVSEId, out IEVSE? EVSE)
 
             => evses.TryRemove(EVSEId, out EVSE);
 
@@ -1934,17 +1928,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
+        public event OnEVSEDataChangedDelegate?         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
+        public event OnEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -1962,7 +1956,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateEVSEData(DateTime          Timestamp,
                                            EventTracking_Id  EventTrackingId,
-                                           EVSE              EVSE,
+                                           IEVSE             EVSE,
                                            String            PropertyName,
                                            Object            OldValue,
                                            Object            NewValue)
@@ -1993,7 +1987,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
                                                   EventTracking_Id                   EventTrackingId,
-                                                  EVSE                               EVSE,
+                                                  IEVSE                              EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
@@ -2022,7 +2016,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
                                              EventTracking_Id              EventTrackingId,
-                                             EVSE                          EVSE,
+                                             IEVSE                         EVSE,
                                              Timestamped<EVSEStatusTypes>  OldStatus,
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
@@ -2048,23 +2042,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => EVSERemoval;
 
         #endregion
 
-        #region IEnumerable<EVSE> Members
+        #region IEnumerable<IEVSE> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             => evses.GetEnumerator();
 
-        public IEnumerator<EVSE> GetEnumerator()
+        public IEnumerator<IEVSE> GetEnumerator()
             => evses.GetEnumerator();
 
         #endregion
@@ -2076,25 +2070,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
-
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
-            => _Reservations.Select(_ => _.Value);
-
-        #region TryGetReservationById(ReservationId, out Reservation)
+        public IEnumerable<ChargingReservation> ChargingReservations
+            => RoamingNetwork is not null
+                   ? RoamingNetwork.ReservationsStore.
+                         Where     (reservations => reservations.First().ChargingStationId == Id).
+                         SelectMany(reservations => reservations)
+                   : Array.Empty<ChargingReservation>();
 
         /// <summary>
         /// Return the charging reservation specified by the given identification.
         /// </summary>
         /// <param name="ReservationId">The charging reservation identification.</param>
         /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-            => _Reservations.TryGetValue(ReservationId, out Reservation);
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservationCollection ChargingReservations)
+            => RoamingNetwork.ReservationsStore.TryGet(ReservationId, out ChargingReservations);
 
-        #endregion
+
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? ChargingReservation)
+        {
+
+            if (RoamingNetwork.ReservationsStore.TryGet(ReservationId, out var chargingReservations))
+            {
+                ChargingReservation = chargingReservations.FirstOrDefault();
+                return true;
+            }
+
+            ChargingReservation = null;
+            return false;
+
+        }
 
         #endregion
 
@@ -2690,15 +2697,15 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct          ChargingProduct        = null,
+                        ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
                         EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
                         CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
+                        EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
 
         {
@@ -2711,22 +2718,21 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            RemoteStartResult result = null;
+            RemoteStartResult? result = null;
 
             #endregion
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(StartTime,
+                OnRemoteStartRequest?.Invoke(startTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -2757,7 +2763,9 @@ namespace cloud.charging.open.protocols.WWCP
                     AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
                 {
 
-                    if (TryGetEVSEById(ChargingLocation.EVSEId.Value, out EVSE evse))
+                    if (ChargingLocation.EVSEId.HasValue                            &&
+                        TryGetEVSEById(ChargingLocation.EVSEId.Value, out var evse) &&
+                        evse is not null)
                     {
 
                         result = await evse.RemoteStart(ChargingLocation,
@@ -2781,7 +2789,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                             // The session can be delivered within the response
                             // or via an explicit message afterwards!
-                            if (result.Session != null)
+                            if (result.Session is not null)
                                 result.Session.ChargingStation = this;
 
                         }
@@ -2814,15 +2822,17 @@ namespace cloud.charging.open.protocols.WWCP
                 result = RemoteStartResult.Error(e.Message);
             }
 
+            result ??= RemoteStartResult.Error("unkown");
+
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(EndTime,
+                OnRemoteStartResponse?.Invoke(endTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -2837,7 +2847,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               RemoteAuthentication,
                                               RequestTimeout,
                                               result,
-                                              EndTime - StartTime);
+                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -2872,11 +2882,11 @@ namespace cloud.charging.open.protocols.WWCP
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling?   ReservationHandling    = null,
                        EMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication   RemoteAuthentication   = null,
+                       RemoteAuthentication?  RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,
                        CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id       EventTrackingId        = null,
+                       EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null)
 
         {
@@ -2889,11 +2899,10 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            RemoteStopResult result = null;
+            RemoteStopResult? result = null;
 
             #endregion
 
@@ -2933,25 +2942,25 @@ namespace cloud.charging.open.protocols.WWCP
                     AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
                 {
 
-                    if (TryGetChargingSessionById(SessionId, out ChargingSession chargingSession) &&
-                        chargingSession.EVSEId.HasValue &&
-                        TryGetEVSEById(chargingSession.EVSEId.Value, out EVSE evse))
+                    if (TryGetChargingSessionById(SessionId, out var chargingSession) &&
+                        chargingSession.EVSEId.HasValue                               &&
+                        TryGetEVSEById(chargingSession.EVSEId.Value, out var evse)    &&
+                        evse is not null)
                     {
 
-                        result = await evse.
-                                           RemoteStop(SessionId,
-                                                      ReservationHandling,
-                                                      ProviderId,
-                                                      RemoteAuthentication,
+                        result = await evse.RemoteStop(SessionId,
+                                                       ReservationHandling,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
 
-                                                      Timestamp,
-                                                      CancellationToken,
-                                                      EventTrackingId,
-                                                      RequestTimeout);
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
 
                     }
 
-                    if (result == null)
+                    if (result is null)
                     {
                         DebugX.Log("Invalid charging session at charging station '" + Id + "': " + SessionId);
                         result = RemoteStopResult.InvalidSessionId(SessionId);
@@ -2979,6 +2988,8 @@ namespace cloud.charging.open.protocols.WWCP
                 result = RemoteStopResult.Error(SessionId,
                                                 e.Message);
             }
+
+            result ??= RemoteStopResult.Error(SessionId, "unknown");
 
 
             #region Send OnRemoteStopResponse event
@@ -3187,12 +3198,13 @@ namespace cloud.charging.open.protocols.WWCP
                              ? ExpandBrandIds.Switch(
 
                                    () => new JProperty("brandIds",
-                                                       new JArray(Brands.Select (brand   => brand.Id).
+                                                       new JArray(Brands.Select (brand   => brand.Key).
                                                                          OrderBy(brandId => brandId).
                                                                          Select (brandId => brandId.ToString()))),
 
                                    () => new JProperty("brands",
-                                                       new JArray(Brands.OrderBy(brand => brand).
+                                                       new JArray(Brands.OrderBy(brand => brand.Key).
+                                                                         Select (brand => brand.Value).
                                                                          ToJSON (Embedded:                         true,
                                                                                  ExpandDataLicenses:               InfoStatus.ShowIdOnly))))
 
@@ -3223,7 +3235,8 @@ namespace cloud.charging.open.protocols.WWCP
             Description.Add(OtherChargingStation.Description);
 
             Brands.Clear();
-            Brands.TryAdd(OtherChargingStation.Brands);
+            foreach (var brand in OtherChargingStation.Brands)
+                Brands.TryAdd(brand.Key, brand.Value);
 
             Address              = OtherChargingStation.Address;
             OpenStreetMapNodeId           = OtherChargingStation.OpenStreetMapNodeId;

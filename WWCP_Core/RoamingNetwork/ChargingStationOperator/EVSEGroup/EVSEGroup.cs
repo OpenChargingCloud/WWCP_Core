@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<EVSE_Id> AllowedMemberIds
             => _AllowedMemberIds;
 
-        public Func<EVSE,    Boolean> AutoIncludeEVSEs      { get; }
+        public Func<IEVSE,   Boolean> AutoIncludeEVSEs      { get; }
 
         public Func<EVSE_Id, Boolean> AutoIncludeEVSEIds    { get; }
 
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.WWCP
                            IEnumerable<EVSE>                             Members                      = null,
                            IEnumerable<EVSE_Id>                          MemberIds                    = null,
                            Func<EVSE_Id, Boolean>                        AutoIncludeEVSEIds           = null,
-                           Func<EVSE,    Boolean>                        AutoIncludeEVSEs             = null,
+                           Func<IEVSE,   Boolean>                        AutoIncludeEVSEs             = null,
 
                            Func<EVSEStatusReport, EVSEGroupStatusTypes>  StatusAggregationDelegate    = null,
                            UInt16                                        MaxGroupStatusListSize       = DefaultMaxGroupStatusListSize,
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this._AllowedMemberIds           = MemberIds != null ? new HashSet<EVSE_Id>(MemberIds) : new HashSet<EVSE_Id>();
             this.AutoIncludeEVSEIds          = AutoIncludeEVSEIds ?? (MemberIds == null ? (Func<EVSE_Id, Boolean>) (evseid => true) : evseid => false);
-            this.AutoIncludeEVSEs            = AutoIncludeEVSEs   ?? (MemberIds == null ? (Func<EVSE,    Boolean>) (evse   => true) : evse   => false);
+            this.AutoIncludeEVSEs            = AutoIncludeEVSEs   ?? (MemberIds == null ? (Func<IEVSE,   Boolean>) (evse   => true) : evse   => false);
             this._EVSEs                      = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;

@@ -300,8 +300,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingStationRemoval      = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
-            this.EVSEAddition                = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval                 = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition                = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval                 = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
 
@@ -2407,7 +2407,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
         internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
                                                              EventTracking_Id                              EventTrackingId,
-                                                             ChargingStation                               ChargingStation,
+                                                             IChargingStation                              ChargingStation,
                                                              Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
                                                              Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
@@ -2436,7 +2436,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggregated charging pool status.</param>
         internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
                                                         EventTracking_Id                         EventTrackingId,
-                                                        ChargingStation                          ChargingStation,
+                                                        IChargingStation                         ChargingStation,
                                                         Timestamped<ChargingStationStatusTypes>  OldStatus,
                                                         Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
@@ -2466,7 +2466,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateChargingStationData(DateTime          Timestamp,
                                                       EventTracking_Id  EventTrackingId,
-                                                      ChargingStation   ChargingStation,
+                                                      IChargingStation  ChargingStation,
                                                       String            PropertyName,
                                                       Object            OldValue,
                                                       Object            NewValue)
@@ -2522,7 +2522,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return all EVSEs registered within this roaming network.
         /// </summary>
-        public IEnumerable<EVSE> EVSEs
+        public IEnumerable<IEVSE> EVSEs
 
             => chargingStationOperators.SelectMany(cso => cso.EVSEs);
 
@@ -2531,18 +2531,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => EVSEAddition;
 
-        private void SendEVSEAdded(DateTime         Timestamp,
-                                   ChargingStation  ChargingStation,
-                                   EVSE             EVSE)
+        private void SendEVSEAdded(DateTime          Timestamp,
+                                   IChargingStation  ChargingStation,
+                                   IEVSE             EVSE)
         {
 
             var results = _ISendData.WhenAll(iSendData => iSendData.
@@ -2554,18 +2554,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => EVSERemoval;
 
-        private void SendEVSERemoved(DateTime         Timestamp,
-                                     ChargingStation  ChargingStation,
-                                     EVSE             EVSE)
+        private void SendEVSERemoved(DateTime          Timestamp,
+                                     IChargingStation  ChargingStation,
+                                     IEVSE             EVSE)
         {
 
             var results = _ISendData.WhenAll(iSendData => iSendData.
@@ -2676,7 +2676,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given EVSE is already present within the roaming network.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        public Boolean ContainsEVSE(EVSE EVSE)
+        public Boolean ContainsEVSE(IEVSE EVSE)
         {
 
             if (EVSE.Operator is not null                                                            &&
@@ -2715,7 +2715,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetEVSEById(EVSEId)
 
-        public EVSE? GetEVSEById(EVSE_Id EVSEId)
+        public IEVSE? GetEVSEById(EVSE_Id EVSEId)
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
@@ -2729,7 +2729,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public EVSE? GetEVSEById(EVSE_Id? EVSEId)
+        public IEVSE? GetEVSEById(EVSE_Id? EVSEId)
         {
 
             if (EVSEId.HasValue &&
@@ -2748,7 +2748,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEVSEbyId(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out var chargingStationOperator) &&
@@ -2762,7 +2762,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetEVSEById(EVSE_Id? EVSEId, out EVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id? EVSEId, out IEVSE? EVSE)
         {
 
             if (EVSEId.HasValue                                                                             &&
@@ -2996,7 +2996,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
                                                   EventTracking_Id                   EventTrackingId,
-                                                  EVSE                               EVSE,
+                                                  IEVSE                              EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
@@ -3033,7 +3033,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
                                              EventTracking_Id              EventTrackingId,
-                                             EVSE                          EVSE,
+                                             IEVSE                         EVSE,
                                              Timestamped<EVSEStatusTypes>  OldStatus,
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
@@ -3071,7 +3071,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateEVSEData(DateTime          Timestamp,
                                            EventTracking_Id  EventTrackingId,
-                                           EVSE              EVSE,
+                                           IEVSE             EVSE,
                                            String            PropertyName,
                                            Object            OldValue,
                                            Object            NewValue)
@@ -6101,7 +6101,7 @@ namespace cloud.charging.open.protocols.WWCP
                     if (ChargeDetailRecord.EVSEId.HasValue)
                     {
 
-                        if (TryGetEVSEById(ChargeDetailRecord.EVSEId.Value, out EVSE _EVSE))
+                        if (TryGetEVSEById(ChargeDetailRecord.EVSEId.Value, out IEVSE _EVSE))
                         {
 
                             if (_EVSE.ChargingSession    != null &&

@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+using System.Collections.Concurrent;
 
 #endregion
 
@@ -567,9 +568,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            this.brands                      = new EntityHashSet<ChargingStationOperator, Brand_Id,                Brand>               (this);
+            this.brands                       = new ConcurrentDictionary<Brand_Id, Brand>();
 
-            this.chargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
+            this.chargingPools                = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
             this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
             this._EVSEGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
@@ -593,8 +594,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
-            this.EVSEAddition                  = new VotingNotificator<DateTime, ChargingStation,            EVSE,                 Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval                   = new VotingNotificator<DateTime, ChargingStation,            EVSE,                 Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition                  = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval                   = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
             this.EVSEGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
             this.EVSEGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
 
@@ -786,7 +787,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Initial checks
 
-                if (brands.ContainsId(Id))
+                if (brands.ContainsKey(Id))
                 {
 
                     if (OnError is not null)
@@ -812,7 +813,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (BrandAddition.SendVoting(Timestamp.Now,
                                              this,
                                              brand) &&
-                    brands.TryAdd(brand))
+                    brands.TryAdd(brand.Id, brand))
                 {
 
                     OnSuccess?.Invoke(this, brand);
@@ -867,7 +868,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (brands.TryGet(Id, out Brand? brand))
+                if (brands.TryGetValue(Id, out var brand))
                     return brand;
 
                 return CreateBrand(Id,
@@ -889,13 +890,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Brands
 
-        private readonly EntityHashSet<ChargingStationOperator, Brand_Id, Brand> brands;
+        private readonly ConcurrentDictionary<Brand_Id, Brand> brands;
 
         /// <summary>
         /// All brands registered within this charging station operator.
         /// </summary>
         public IEnumerable<Brand> Brands
-            => brands;
+            => brands.Values;
 
         #endregion
 
@@ -905,7 +906,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brand identifications registered within this charging station operator.
         /// </summary>
         public IEnumerable<Brand_Id> BrandIds
-            => brands.Select(brand => brand.Id);
+            => brands.Select(brand => brand.Key);
 
         #endregion
 
@@ -916,10 +917,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the brand.</param>
         /// <param name="Brand">The brand.</param>
-        public Boolean TryGetBrand(Brand_Id   Id,
-                                   out Brand  Brand)
+        public Boolean TryGetBrand(Brand_Id Id, out Brand? Brand)
 
-            => brands.TryGet(Id, out Brand);
+            => brands.TryGetValue(Id, out Brand);
 
         #endregion
 
@@ -945,22 +945,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="BrandId">The unique identification of the brand to be removed.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand_Id                                   BrandId,
-                                 Action<ChargingStationOperator, Brand>     OnSuccess   = null,
-                                 Action<ChargingStationOperator, Brand_Id>  OnError     = null)
+        public Brand? RemoveBrand(Brand_Id                                    BrandId,
+                                  Action<ChargingStationOperator, Brand>?     OnSuccess   = null,
+                                  Action<ChargingStationOperator, Brand_Id>?  OnError     = null)
         {
 
             lock (brands)
             {
 
-                if (brands.TryGet(BrandId, out Brand Brand) &&
+                if (brands.TryGetValue(BrandId, out var brand) &&
                     BrandRemoval.SendVoting(Timestamp.Now,
                                             this,
-                                            Brand) &&
-                    brands.TryRemove(BrandId, out Brand _Brand))
+                                            brand) &&
+                    brands.TryRemove(BrandId, out var _Brand))
                 {
 
-                    OnSuccess?.Invoke(this, Brand);
+                    OnSuccess?.Invoke(this, brand);
 
                     BrandRemoval.SendNotification(Timestamp.Now,
                                                   this,
@@ -988,9 +988,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Brand">The brand to remove.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
-        public Brand RemoveBrand(Brand                                   Brand,
-                                 Action<ChargingStationOperator, Brand>  OnSuccess   = null,
-                                 Action<ChargingStationOperator, Brand>  OnError     = null)
+        public Brand RemoveBrand(Brand                                    Brand,
+                                 Action<ChargingStationOperator, Brand>?  OnSuccess   = null,
+                                 Action<ChargingStationOperator, Brand>?  OnError     = null)
         {
 
             lock (brands)
@@ -999,7 +999,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (BrandRemoval.SendVoting(Timestamp.Now,
                                             this,
                                             Brand) &&
-                    brands.TryRemove(Brand.Id, out Brand _Brand))
+                    brands.TryRemove(Brand.Id, out var _Brand))
                 {
 
                     OnSuccess?.Invoke(this, _Brand);
@@ -2103,7 +2103,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateChargingStationData(DateTime          Timestamp,
                                                       EventTracking_Id  EventTrackingId,
-                                                      ChargingStation   ChargingStation,
+                                                      IChargingStation  ChargingStation,
                                                       String            PropertyName,
                                                       Object            OldValue,
                                                       Object            NewValue)
@@ -2134,7 +2134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
         internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
                                                              EventTracking_Id                              EventTrackingId,
-                                                             ChargingStation                               ChargingStation,
+                                                             IChargingStation                              ChargingStation,
                                                              Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
                                                              Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
@@ -2163,7 +2163,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggregated charging pool status.</param>
         internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
                                                         EventTracking_Id                         EventTrackingId,
-                                                        ChargingStation                          ChargingStation,
+                                                        IChargingStation                         ChargingStation,
                                                         Timestamped<ChargingStationStatusTypes>  OldStatus,
                                                         Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
@@ -2662,12 +2662,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => EVSEAddition;
 
@@ -2679,7 +2679,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return an enumeration of all EVSEs.
         /// </summary>
-        public IEnumerable<EVSE> EVSEs
+        public IEnumerable<IEVSE> EVSEs
 
             => chargingPools.SelectMany(chargingPool => chargingPool.EVSEs);
 
@@ -2854,7 +2854,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetEVSEById(EVSEId)
 
-        public EVSE? GetEVSEById(EVSE_Id EVSEId)
+        public IEVSE? GetEVSEById(EVSE_Id EVSEId)
 
             => EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
 
@@ -2862,7 +2862,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEVSEById(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out EVSE? EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
         {
 
             EVSE = EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
@@ -2871,7 +2871,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryGetEVSEbyId(EVSE_Id? EVSEId, out EVSE? EVSE)
+        public Boolean TryGetEVSEbyId(EVSE_Id? EVSEId, out IEVSE? EVSE)
         {
 
             if (!EVSEId.HasValue)
@@ -3256,7 +3256,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateEVSEData(DateTime          Timestamp,
                                            EventTracking_Id  EventTrackingId,
-                                           EVSE              EVSE,
+                                           IEVSE             EVSE,
                                            String            PropertyName,
                                            Object            OldValue,
                                            Object            NewValue)
@@ -3287,7 +3287,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
                                                   EventTracking_Id                   EventTrackingId,
-                                                  EVSE                               EVSE,
+                                                  IEVSE                              EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
@@ -3316,7 +3316,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
                                              EventTracking_Id              EventTrackingId,
-                                             EVSE                          EVSE,
+                                             IEVSE                         EVSE,
                                              Timestamped<EVSEStatusTypes>  OldStatus,
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
@@ -3336,12 +3336,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => EVSERemoval;
 
@@ -3411,7 +3411,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
                                          Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
-                                         Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
+                                         Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
                                          Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                          UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3526,7 +3526,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
                                          Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
-                                         Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
+                                         Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
                                          Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                          UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3600,7 +3600,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,
                                               Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
-                                              Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
+                                              Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
                                               Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                               UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3681,7 +3681,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,
                                               Func<EVSE_Id, Boolean>                         AutoIncludeEVSEIds            = null,
-                                              Func<EVSE,    Boolean>                         AutoIncludeEVSEs              = null,
+                                              Func<IEVSE,   Boolean>                         AutoIncludeEVSEs              = null,
 
                                               Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
                                               UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
@@ -3731,8 +3731,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charing station group.</param>
         /// <param name="EVSEGroup">The charing station group.</param>
-        public Boolean TryGetEVSEGroup(EVSEGroup_Id   Id,
-                                                  out EVSEGroup  EVSEGroup)
+        public Boolean TryGetEVSEGroup(EVSEGroup_Id    Id,
+                                       out EVSEGroup?  EVSEGroup)
 
             => _EVSEGroups.TryGet(Id, out EVSEGroup);
 

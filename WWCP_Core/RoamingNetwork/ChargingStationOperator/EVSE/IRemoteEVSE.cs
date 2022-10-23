@@ -34,10 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The interface of a remote EVSE.
     /// </summary>
-    public interface IRemoteEVSE : ILocalReserveRemoteStartStop,
-                                   IAdminStatus<EVSEAdminStatusTypes>,
-                                   IStatus<EVSEStatusTypes>
-
+    public interface IRemoteEVSE : IEVSE
     {
 
         #region Properties

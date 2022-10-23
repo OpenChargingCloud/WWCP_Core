@@ -53,7 +53,6 @@ namespace cloud.charging.open.protocols.WWCP
     public readonly struct RoamingNetworkStatusTypes : IId,
                                                        IEquatable<RoamingNetworkStatusTypes>,
                                                        IComparable<RoamingNetworkStatusTypes>
-
     {
 
         #region Data

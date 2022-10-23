@@ -319,13 +319,13 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        private EVSE _EVSE;
+        private IEVSE _EVSE;
 
         /// <summary>
         /// The EVSE serving this session.
         /// </summary>
         [Optional]
-        public EVSE EVSE
+        public IEVSE EVSE
         {
 
             get

@@ -35,8 +35,8 @@ namespace cloud.charging.open.protocols.WWCP
         #region ToJSON(this ChargingStationAdminStatus, Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
-                                     UInt64?                                       Skip  = null,
-                                     UInt64?                                       Take  = null)
+                                     UInt64?                                       Skip   = null,
+                                     UInt64?                                       Take   = null)
         {
 
             #region Initial checks
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!filteredStatus.ContainsKey(status.Id))
                     filteredStatus.Add(status.Id, status);
 
-                else if (filteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                else if (filteredStatus[status.Id].Timestamp >= status.Timestamp)
                     filteredStatus[status.Id] = status;
 
             }
@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.WWCP
                                               : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.Value.    ToString())
+                                                               new JArray(kvp.Value.Timestamp.  ToIso8601(),
+                                                                          kvp.Value.AdminStatus.ToString())
                                                               )));
 
         }
@@ -84,16 +84,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationAdminStatus">An enumeration of charging stations and their current admin status.</param>
         /// <param name="Id">A charging station identification.</param>
-        /// <param name="Status">A charging station admin status.</param>
+        /// <param name="AdminStatus">A charging station admin status.</param>
         public static Boolean Contains(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
                                        ChargingStation_Id                            Id,
-                                       ChargingStationAdminStatusTypes               Status)
+                                       ChargingStationAdminStatusTypes               AdminStatus)
         {
 
-            foreach (var adminStatus in ChargingStationAdminStatus)
+            foreach (var status in ChargingStationAdminStatus)
             {
-                if (adminStatus.Id     == Id &&
-                    adminStatus.Status == Status)
+                if (status.Id          == Id &&
+                    status.AdminStatus == AdminStatus)
                 {
                     return true;
                 }
@@ -112,8 +112,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The current admin status of a charging station.
     /// </summary>
     public class ChargingStationAdminStatus : AInternalData,
-                                              IEquatable <ChargingStationAdminStatus>,
-                                              IComparable<ChargingStationAdminStatus>
+                                                      IEquatable<ChargingStationAdminStatus>,
+                                                      IComparable<ChargingStationAdminStatus>
     {
 
         #region Properties
@@ -121,25 +121,38 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the charging station.
         /// </summary>
-        public ChargingStation_Id                            Id        { get; }
+        public ChargingStation_Id               Id             { get; }
 
         /// <summary>
-        /// The current timestamped admin status of the charging station.
+        /// The current admin status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationAdminStatusTypes>  Status    { get; }
+        public ChargingStationAdminStatusTypes  AdminStatus    { get; }
+
+        /// <summary>
+        /// The timestamp of the current admin status of the charging station.
+        /// </summary>
+        public DateTime                         Timestamp      { get; }
+
+        /// <summary>
+        /// The timestamped admin status of the charging station.
+        /// </summary>
+        public Timestamped<ChargingStationAdminStatusTypes> TimestampedAdminStatus
+            => new (Timestamp, AdminStatus);
 
         #endregion
 
         #region Constructor(s)
 
+        #region ChargingStationAdminStatus(Id, AdminStatus,            CustomData = null, InternalData = null)
+
         /// <summary>
         /// Create a new charging station admin status.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station.</param>
-        /// <param name="Status">The current timestamped admin status of the charging station.</param>
+        /// <param name="AdminStatus">The current timestamped adminstatus of the charging station.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargingStationAdminStatus(ChargingStation_Id                            Id,
-                                          Timestamped<ChargingStationAdminStatusTypes>  Status,
+                                          Timestamped<ChargingStationAdminStatusTypes>  AdminStatus,
                                           JObject?                                      CustomData     = null,
                                           UserDefinedDictionary?                        InternalData   = null)
 
@@ -148,10 +161,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.Id      = Id;
-            this.Status  = Status;
+            this.Id           = Id;
+            this.AdminStatus  = AdminStatus.Value;
+            this.Timestamp    = AdminStatus.Timestamp;
 
         }
+
+        #endregion
+
+        #region ChargingStationAdminStatus(Id, AdminStatus, Timestamp, CustomData = null, InternalData = null)
+
+        /// <summary>
+        /// Create a new charging station admin status.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charging station.</param>
+        /// <param name="Status">The current admin status of the charging station.</param>
+        /// <param name="Timestamp">The timestamp of the status change of the charging station.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public ChargingStationAdminStatus(ChargingStation_Id               Id,
+                                          ChargingStationAdminStatusTypes  AdminStatus,
+                                          DateTime                         Timestamp,
+                                          JObject?                         CustomData     = null,
+                                          UserDefinedDictionary?           InternalData   = null)
+
+            : base(CustomData,
+                   InternalData)
+
+        {
+
+            this.Id           = Id;
+            this.AdminStatus  = AdminStatus;
+            this.Timestamp    = Timestamp;
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -164,8 +208,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">A charging station.</param>
         public static ChargingStationAdminStatus Snapshot(ChargingStation ChargingStation)
 
-            => new ChargingStationAdminStatus(ChargingStation.Id,
-                                              ChargingStation.AdminStatus);
+            => new (ChargingStation.Id,
+                    ChargingStation.AdminStatus);
 
         #endregion
 
@@ -180,7 +224,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatus1">A charging station admin status.</param>
         /// <param name="ChargingStationAdminStatus2">Another charging station admin status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStationAdminStatus ChargingStationAdminStatus1, ChargingStationAdminStatus ChargingStationAdminStatus2)
+        public static Boolean operator == (ChargingStationAdminStatus ChargingStationAdminStatus1,
+                                           ChargingStationAdminStatus ChargingStationAdminStatus2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -188,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingStationAdminStatus1 == null) || ((Object) ChargingStationAdminStatus2 == null))
+            if (ChargingStationAdminStatus1 is null || ChargingStationAdminStatus2 is null)
                 return false;
 
             return ChargingStationAdminStatus1.Equals(ChargingStationAdminStatus2);
@@ -205,7 +250,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatus1">A charging station admin status.</param>
         /// <param name="ChargingStationAdminStatus2">Another charging station admin status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingStationAdminStatus ChargingStationAdminStatus1, ChargingStationAdminStatus ChargingStationAdminStatus2)
+        public static Boolean operator != (ChargingStationAdminStatus ChargingStationAdminStatus1,
+                                           ChargingStationAdminStatus ChargingStationAdminStatus2)
+
             => !(ChargingStationAdminStatus1 == ChargingStationAdminStatus2);
 
         #endregion
@@ -218,10 +265,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatus1">A charging station admin status.</param>
         /// <param name="ChargingStationAdminStatus2">Another charging station admin status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingStationAdminStatus ChargingStationAdminStatus1, ChargingStationAdminStatus ChargingStationAdminStatus2)
+        public static Boolean operator < (ChargingStationAdminStatus ChargingStationAdminStatus1,
+                                          ChargingStationAdminStatus ChargingStationAdminStatus2)
         {
 
-            if ((Object) ChargingStationAdminStatus1 == null)
+            if (ChargingStationAdminStatus1 is null)
                 throw new ArgumentNullException(nameof(ChargingStationAdminStatus1), "The given ChargingStationAdminStatus1 must not be null!");
 
             return ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) < 0;
@@ -238,7 +286,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatus1">A charging station admin status.</param>
         /// <param name="ChargingStationAdminStatus2">Another charging station admin status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingStationAdminStatus ChargingStationAdminStatus1, ChargingStationAdminStatus ChargingStationAdminStatus2)
+        public static Boolean operator <= (ChargingStationAdminStatus ChargingStationAdminStatus1,
+                                           ChargingStationAdminStatus ChargingStationAdminStatus2)
+
             => !(ChargingStationAdminStatus1 > ChargingStationAdminStatus2);
 
         #endregion
@@ -251,10 +301,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatus1">A charging station admin status.</param>
         /// <param name="ChargingStationAdminStatus2">Another charging station admin status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingStationAdminStatus ChargingStationAdminStatus1, ChargingStationAdminStatus ChargingStationAdminStatus2)
+        public static Boolean operator > (ChargingStationAdminStatus ChargingStationAdminStatus1,
+                                          ChargingStationAdminStatus ChargingStationAdminStatus2)
         {
 
-            if ((Object) ChargingStationAdminStatus1 == null)
+            if (ChargingStationAdminStatus1 is null)
                 throw new ArgumentNullException(nameof(ChargingStationAdminStatus1), "The given ChargingStationAdminStatus1 must not be null!");
 
             return ChargingStationAdminStatus1.CompareTo(ChargingStationAdminStatus2) > 0;
@@ -271,7 +322,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationAdminStatus1">A charging station admin status.</param>
         /// <param name="ChargingStationAdminStatus2">Another charging station admin status.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingStationAdminStatus ChargingStationAdminStatus1, ChargingStationAdminStatus ChargingStationAdminStatus2)
+        public static Boolean operator >= (ChargingStationAdminStatus ChargingStationAdminStatus1,
+                                           ChargingStationAdminStatus ChargingStationAdminStatus2)
+
             => !(ChargingStationAdminStatus1 < ChargingStationAdminStatus2);
 
         #endregion
@@ -286,19 +339,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingStationAdminStatus))
-                throw new ArgumentException("The given object is not a ChargingStationAdminStatus!",
-                                            nameof(Object));
-
-            return CompareTo((ChargingStationAdminStatus) Object);
-
-        }
+            => Object is ChargingStationAdminStatus chargingStationAdminStatus
+                   ? CompareTo(chargingStationAdminStatus)
+                   : throw new ArgumentException("The given object is not a charging station admin status!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -308,20 +354,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="ChargingStationAdminStatus">An object to compare with.</param>
-        public Int32 CompareTo(ChargingStationAdminStatus ChargingStationAdminStatus)
+        public Int32 CompareTo(ChargingStationAdminStatus? ChargingStationAdminStatus)
         {
 
-            if ((Object) ChargingStationAdminStatus == null)
-                throw new ArgumentNullException(nameof(ChargingStationAdminStatus), "The given ChargingStationAdminStatus must not be null!");
+            if (ChargingStationAdminStatus is null)
+                throw new ArgumentNullException(nameof(ChargingStationAdminStatus), "The given charging station admin status must not be null!");
 
-            // Compare ChargingStation Ids
-            var _Result = Id.CompareTo(ChargingStationAdminStatus.Id);
+            var c = Id.         CompareTo(ChargingStationAdminStatus.Id);
 
-            // If equal: Compare ChargingStation status
-            if (_Result == 0)
-                _Result = Status.CompareTo(ChargingStationAdminStatus.Status);
+            if (c == 0)
+                c = AdminStatus.CompareTo(ChargingStationAdminStatus.AdminStatus);
 
-            return _Result;
+            if (c == 0)
+                c = Timestamp.  CompareTo(ChargingStationAdminStatus.Timestamp);
+
+            return c;
 
         }
 
@@ -338,18 +385,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingStationAdminStatus))
-                return false;
-
-            return Equals((ChargingStationAdminStatus) Object);
-
-        }
+            => Object is ChargingStationAdminStatus chargingStationAdminStatus &&
+                   Equals(chargingStationAdminStatus);
 
         #endregion
 
@@ -360,16 +399,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationAdminStatus">A charging station identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStationAdminStatus ChargingStationAdminStatus)
-        {
+        public Boolean Equals(ChargingStationAdminStatus? ChargingStationAdminStatus)
 
-            if ((Object) ChargingStationAdminStatus == null)
-                return false;
-
-            return Id.    Equals(ChargingStationAdminStatus.Id) &&
-                   Status.Equals(ChargingStationAdminStatus.Status);
-
-        }
+            => ChargingStationAdminStatus is not null                     &&
+               Id.         Equals(ChargingStationAdminStatus.Id)          &&
+               AdminStatus.Equals(ChargingStationAdminStatus.AdminStatus) &&
+               Timestamp.  Equals(ChargingStationAdminStatus.Timestamp);
 
         #endregion
 
@@ -386,8 +421,9 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.    GetHashCode() * 5 ^
-                       Status.GetHashCode();
+                return Id.         GetHashCode() * 5 ^
+                       AdminStatus.GetHashCode() * 3 ^
+                       Timestamp.  GetHashCode();
 
             }
         }
@@ -402,9 +438,9 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             Status.Value,
+                             AdminStatus,
                              " since ",
-                             Status.Timestamp.ToIso8601());
+                             Timestamp.ToIso8601());
 
         #endregion
 

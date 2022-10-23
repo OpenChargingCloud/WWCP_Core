@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEDataChangedDelegate         OnEVSEDataChanged;
+        event OnRemoteEVSEDataChangedDelegate?         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+        event OnRemoteEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -62,12 +62,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingStationDataChangedDelegate         OnDataChanged;
+        event OnChargingStationDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
+        event OnChargingStationAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         #endregion
 

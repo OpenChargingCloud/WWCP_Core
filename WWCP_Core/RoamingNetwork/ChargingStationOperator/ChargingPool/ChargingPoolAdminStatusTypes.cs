@@ -51,9 +51,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// The admin status of a charging pool.
     /// </summary>
     public readonly struct ChargingPoolAdminStatusTypes : IId,
-                                                                     IEquatable<ChargingPoolAdminStatusTypes>,
-                                                                     IComparable<ChargingPoolAdminStatusTypes>
-
+                                                          IEquatable<ChargingPoolAdminStatusTypes>,
+                                                          IComparable<ChargingPoolAdminStatusTypes>
     {
 
         #region Data

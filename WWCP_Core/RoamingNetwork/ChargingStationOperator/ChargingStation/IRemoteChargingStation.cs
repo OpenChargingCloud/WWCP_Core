@@ -17,16 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -36,30 +27,31 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The interface of a remote charging station.
     /// </summary>
-    public interface IRemoteChargingStation : ILocalReserveRemoteStartStop
+    public interface IRemoteChargingStation : IChargingStation,
+                                              ILocalReserveRemoteStartStop
     {
 
-        ChargingStation_Id                           Id          { get; }
-        Timestamped<ChargingStationStatusTypes>      Status      { get; }
+        //ChargingStation_Id                           Id          { get; }
+        //Timestamped<ChargingStationStatusTypes>      Status      { get; }
 
-        Timestamped<ChargingStationAdminStatusTypes> AdminStatus { get; set; }
+        //Timestamped<ChargingStationAdminStatusTypes> AdminStatus { get; set; }
 
         #region OnEVSEData/(Admin)StatusChanged
 
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEDataChangedDelegate         OnEVSEDataChanged;
+        event OnRemoteEVSEDataChangedDelegate?         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEStatusChangedDelegate       OnEVSEStatusChanged;
+        event OnRemoteEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+        event OnRemoteEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -68,26 +60,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingStationDataChangedDelegate         OnDataChanged;
+        event OnChargingStationDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
+        event OnChargingStationAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingStationStatusChangedDelegate       OnStatusChanged;
+        event OnChargingStationStatusChangedDelegate?       OnStatusChanged;
 
         #endregion
 
 
 
-        IRemoteEVSE AddEVSE(IRemoteEVSE                       EVSE,
-                            Action<IRemoteEVSE>               Configurator  = null,
-                            Action<IRemoteEVSE>               OnSuccess     = null,
-                            Action<ChargingStation, EVSE_Id>  OnError       = null);
+        IRemoteEVSE AddEVSE(IRemoteEVSE                        EVSE,
+                            Action<IRemoteEVSE>?               Configurator  = null,
+                            Action<IRemoteEVSE>?               OnSuccess     = null,
+                            Action<ChargingStation, EVSE_Id>?  OnError       = null);
 
 
         Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime                 Timestamp,
@@ -96,15 +88,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                     TimeSpan?                RequestTimeout = null);
 
 
-        IEnumerable<IRemoteEVSE> EVSEs { get; }
+     //   IEnumerable<IRemoteEVSE> EVSEs { get; }
 
 
 
-        Boolean ContainsEVSE(EVSE_Id EVSEId);
+        //Boolean ContainsEVSE(EVSE_Id EVSEId);
 
-        IRemoteEVSE GetEVSEById(EVSE_Id EVSEId);
+        //IRemoteEVSE GetEVSEById(EVSE_Id EVSEId);
 
-        Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE EVSE);
+        //Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE EVSE);
 
 
 

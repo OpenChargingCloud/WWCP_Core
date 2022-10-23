@@ -35,35 +35,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly List<ChargingReservation> _Reservations;
+        private readonly List<ChargingReservation> chargingReservations;
 
         #endregion
 
         #region Properties
 
-        public ChargingReservation_Id  Id    { get; }
+        public ChargingReservation_Id       Id    { get; }
 
-        public EVSE_Id?             EVSEId
-            => _Reservations.LastOrDefault()?.EVSEId;
+        public EVSE_Id?                     EVSEId
+            => chargingReservations.LastOrDefault()?.EVSEId;
 
-        public ChargingStation_Id?  ChargingStationId
-            => _Reservations.LastOrDefault()?.ChargingStationId;
+        public ChargingStation_Id?          ChargingStationId
+            => chargingReservations.LastOrDefault()?.ChargingStationId;
 
-        public ChargingPool_Id?     ChargingPoolId
-            => _Reservations.LastOrDefault()?.ChargingPoolId;
+        public ChargingPool_Id?             ChargingPoolId
+            => chargingReservations.LastOrDefault()?.ChargingPoolId;
 
         public ChargingStationOperator_Id?  ChargingStationOperatorId
-            => _Reservations.LastOrDefault()?.ChargingStationOperatorId;
+            => chargingReservations.LastOrDefault()?.ChargingStationOperatorId;
 
-        public EMPRoamingProvider_Id? EMPRoamingProviderId
-            => _Reservations.LastOrDefault()?.EMPRoamingProviderId;
+        public EMPRoamingProvider_Id?       EMPRoamingProviderId
+            => chargingReservations.LastOrDefault()?.EMPRoamingProviderId;
 
-        public CSORoamingProvider_Id? CSORoamingProviderId
-            => _Reservations.LastOrDefault()?.CSORoamingProviderId;
+        public CSORoamingProvider_Id?       CSORoamingProviderId
+            => chargingReservations.LastOrDefault()?.CSORoamingProviderId;
 
-        public ulong Length => throw new NotImplementedException();
+        public ulong Length
+            => throw new NotImplementedException();
 
-        public bool IsNullOrEmpty => throw new NotImplementedException();
+        public bool IsNullOrEmpty
+            => throw new NotImplementedException();
 
         #endregion
 
@@ -72,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingReservationCollection(ChargingReservation_Id Id)
         {
             this.Id = Id;
-            this._Reservations  = new List<ChargingReservation>();
+            this.chargingReservations  = new List<ChargingReservation>();
         }
 
         public ChargingReservationCollection(ChargingReservation Reservation)
@@ -101,15 +103,15 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingReservationCollection Add(ChargingReservation Reservation)
         {
 
-            if (Reservation == null)
+            if (Reservation is null)
                 throw new ArgumentNullException(nameof(Reservation), "The given charging reservation must not be null!");
 
             if (Reservation.Id != Id)
                 throw new ArgumentException("The given charging reservation identification '" + Reservation.Id + "' does not match!", nameof(Reservation));
 
-            lock (_Reservations)
+            lock (chargingReservations)
             {
-                _Reservations.Add(Reservation);
+                chargingReservations.Add(Reservation);
             }
 
             return this;
@@ -119,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingReservationCollection Add(IEnumerable<ChargingReservation> Reservations)
         {
 
-            _Reservations.AddRange(Reservations);
+            chargingReservations.AddRange(Reservations);
 
             return this;
 
@@ -128,18 +130,18 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingReservationCollection UpdateLast(ChargingReservation Reservation)
         {
 
-            _Reservations.RemoveAt(_Reservations.Count - 1);
-            _Reservations.Add(Reservation);
+            chargingReservations.RemoveAt(chargingReservations.Count - 1);
+            chargingReservations.Add(Reservation);
 
             return this;
 
         }
 
         public IEnumerator<ChargingReservation> GetEnumerator()
-            => _Reservations.GetEnumerator();
+            => chargingReservations.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-            => _Reservations.GetEnumerator();
+            => chargingReservations.GetEnumerator();
 
         public int CompareTo(object obj)
         {

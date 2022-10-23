@@ -68,26 +68,24 @@ namespace cloud.charging.open.protocols.WWCP
 
     #region InvalidChargingStationOperatorId
 
-    /// <summary>
-    /// An invalid charging station operator identification was given.
-    /// </summary>
-    public class InvalidChargingStationOperatorId : ChargingPoolException
-    {
+    ///// <summary>
+    ///// An invalid charging station operator identification was given.
+    ///// </summary>
+    //public class InvalidChargingStationOperatorId : ChargingPoolException
+    //{
 
-        /// <summary>
-        /// An invalid charging station operator identification was given.
-        /// </summary>
-        /// <param name="ChargingPool">The charging pool in which the exception occured.</param>
-        /// <param name="InvalidChargingStationOperatorId">The invalid operator identification.</param>
-        public InvalidChargingStationOperatorId(ChargingPool                ChargingPool,
-                                                ChargingStationOperator_Id  InvalidChargingStationOperatorId)
+    //    /// <summary>
+    //    /// An invalid charging station operator identification was given.
+    //    /// </summary>
+    //    /// <param name="InvalidChargingStationOperatorId">The invalid operator identification.</param>
+    //    public InvalidChargingStationOperatorId(ChargingStationOperator_Id  InvalidChargingStationOperatorId)
 
-            : base(ChargingPool.Operator,
-                   "Invalid charging station operator identification '" + InvalidChargingStationOperatorId + "'!")
+    //        : base(ChargingPool.Operator,
+    //               "Invalid charging station operator identification '" + InvalidChargingStationOperatorId + "'!")
 
-        { }
+    //    { }
 
-    }
+    //}
 
     #endregion
 

@@ -158,7 +158,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                               OnSuccess:           chargingPool => success = true,
                                               Configurator:        chargingPool => {
 
-                                                                       chargingPool.Brands.TryAdd(new Brand(
+                                                                       chargingPool.Brands.TryAdd(Brand_Id.Parse("openChargingCloudChargingPool"),
+                                                                                                  new Brand(
                                                                                                       Id:            Brand_Id.Parse("openChargingCloudChargingPool"),
                                                                                                       Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Pool"),
                                                                                                       Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
@@ -195,7 +196,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
 
 
-                    DE_GEF_P1234.Brands.TryAdd(new Brand(
+                    DE_GEF_P1234.Brands.TryAdd(Brand_Id.Parse("openChargingCloud3223"),
+                                               new Brand(
                                                    Id:            Brand_Id.Parse("openChargingCloud3223"),
                                                    Name:          I18NString.Create(Languages.de, "Open Charging Cloud 3223"),
                                                    Logo:          URL.Parse("https://open.charging.cloud/logos.json"),

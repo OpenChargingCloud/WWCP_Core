@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -30,8 +27,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging station admin status update.
     /// </summary>
-    public struct ChargingStationAdminStatusUpdate : IEquatable <ChargingStationAdminStatusUpdate>,
-                                                     IComparable<ChargingStationAdminStatusUpdate>
+    public readonly struct ChargingStationAdminStatusUpdate : IEquatable<ChargingStationAdminStatusUpdate>,
+                                                              IComparable<ChargingStationAdminStatusUpdate>
     {
 
         #region Properties
@@ -42,12 +39,12 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStation_Id                            Id          { get; }
 
         /// <summary>
-        /// The old timestamped status of the charging station.
+        /// The old timestamped admin status of the charging station.
         /// </summary>
         public Timestamped<ChargingStationAdminStatusTypes>  OldStatus   { get; }
 
         /// <summary>
-        /// The new timestamped status of the charging station.
+        /// The new timestamped admin status of the charging station.
         /// </summary>
         public Timestamped<ChargingStationAdminStatusTypes>  NewStatus   { get; }
 
@@ -79,14 +76,14 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Snapshot(ChargingStation)
 
         /// <summary>
-        /// Take a snapshot of the current charging station status.
+        /// Take a snapshot of the current charging station admin status.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public static ChargingStationAdminStatusUpdate Snapshot(ChargingStation ChargingStation)
+        public static ChargingStationAdminStatusUpdate Snapshot(IChargingStation ChargingStation)
 
-            => new ChargingStationAdminStatusUpdate(ChargingStation.Id,
-                                                    ChargingStation.AdminStatus,
-                                                    ChargingStation.AdminStatusSchedule().Skip(1).FirstOrDefault());
+            => new (ChargingStation.Id,
+                    ChargingStation.AdminStatus,
+                    ChargingStation.AdminStatusSchedule().Skip(1).FirstOrDefault());
 
         #endregion
 
@@ -98,23 +95,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate1">A charging station status update.</param>
-        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate1">A charging station admin status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1, ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
-        {
+        public static Boolean operator == (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1,
+                                           ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingStationAdminStatusUpdate1, ChargingStationAdminStatusUpdate2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingStationAdminStatusUpdate1 == null) || ((Object) ChargingStationAdminStatusUpdate2 == null))
-                return false;
-
-            return ChargingStationAdminStatusUpdate1.Equals(ChargingStationAdminStatusUpdate2);
-
-        }
+            => ChargingStationAdminStatusUpdate1.Equals(ChargingStationAdminStatusUpdate2);
 
         #endregion
 
@@ -123,11 +110,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate1">A charging station status update.</param>
-        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate1">A charging station admin status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1, ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
-            => !(ChargingStationAdminStatusUpdate1 == ChargingStationAdminStatusUpdate2);
+        public static Boolean operator != (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1,
+                                           ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
+
+            => !ChargingStationAdminStatusUpdate1.Equals(ChargingStationAdminStatusUpdate2);
 
         #endregion
 
@@ -136,18 +125,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate1">A charging station status update.</param>
-        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate1">A charging station admin status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1, ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
-        {
+        public static Boolean operator < (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1,
+                                          ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
 
-            if ((Object) ChargingStationAdminStatusUpdate1 == null)
-                throw new ArgumentNullException(nameof(ChargingStationAdminStatusUpdate1), "The given ChargingStationAdminStatusUpdate1 must not be null!");
-
-            return ChargingStationAdminStatusUpdate1.CompareTo(ChargingStationAdminStatusUpdate2) < 0;
-
-        }
+            => ChargingStationAdminStatusUpdate1.CompareTo(ChargingStationAdminStatusUpdate2) < 0;
 
         #endregion
 
@@ -156,11 +140,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate1">A charging station status update.</param>
-        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate1">A charging station admin status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1, ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
-            => !(ChargingStationAdminStatusUpdate1 > ChargingStationAdminStatusUpdate2);
+        public static Boolean operator <= (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1,
+                                           ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
+
+            => ChargingStationAdminStatusUpdate1.CompareTo(ChargingStationAdminStatusUpdate2) <= 0;
 
         #endregion
 
@@ -169,18 +155,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate1">A charging station status update.</param>
-        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate1">A charging station admin status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1, ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
-        {
+        public static Boolean operator > (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1,
+                                          ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
 
-            if ((Object) ChargingStationAdminStatusUpdate1 == null)
-                throw new ArgumentNullException(nameof(ChargingStationAdminStatusUpdate1), "The given ChargingStationAdminStatusUpdate1 must not be null!");
-
-            return ChargingStationAdminStatusUpdate1.CompareTo(ChargingStationAdminStatusUpdate2) > 0;
-
-        }
+            => ChargingStationAdminStatusUpdate1.CompareTo(ChargingStationAdminStatusUpdate2) > 0;
 
         #endregion
 
@@ -189,11 +170,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate1">A charging station status update.</param>
-        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate1">A charging station admin status update.</param>
+        /// <param name="ChargingStationAdminStatusUpdate2">Another charging station admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1, ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
-            => !(ChargingStationAdminStatusUpdate1 < ChargingStationAdminStatusUpdate2);
+        public static Boolean operator >= (ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate1,
+                                           ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate2)
+
+            => ChargingStationAdminStatusUpdate1.CompareTo(ChargingStationAdminStatusUpdate2) >= 0;
 
         #endregion
 
@@ -208,18 +191,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingStationAdminStatusUpdate))
-                throw new ArgumentException("The given object is not a ChargingStationStatus!",
-                                            nameof(Object));
-
-            return CompareTo((ChargingStationAdminStatusUpdate) Object);
-
-        }
+            => Object is ChargingStationAdminStatusUpdate chargingStationAdminStatusUpdate
+                   ? CompareTo(chargingStationAdminStatusUpdate)
+                   : throw new ArgumentException("The given object is not a charging station admin status update!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -232,21 +208,15 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate)
         {
 
-            if ((Object) ChargingStationAdminStatusUpdate == null)
-                throw new ArgumentNullException(nameof(ChargingStationAdminStatusUpdate), "The given ChargingStation status update must not be null!");
+            var c = Id.       CompareTo(ChargingStationAdminStatusUpdate.Id);
 
-            // Compare ChargingStation Ids
-            var _Result = Id.CompareTo(ChargingStationAdminStatusUpdate.Id);
+            if (c == 0)
+                c = NewStatus.CompareTo(ChargingStationAdminStatusUpdate.NewStatus);
 
-            // If equal: Compare the new charging station status
-            if (_Result == 0)
-                _Result = NewStatus.CompareTo(ChargingStationAdminStatusUpdate.NewStatus);
+            if (c == 0)
+                c = OldStatus.CompareTo(ChargingStationAdminStatusUpdate.OldStatus);
 
-            // If equal: Compare the old ChargingStation status
-            if (_Result == 0)
-                _Result = OldStatus.CompareTo(ChargingStationAdminStatusUpdate.OldStatus);
-
-            return _Result;
+            return c;
 
         }
 
@@ -263,39 +233,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingStationAdminStatusUpdate))
-                return false;
-
-            return this.Equals((ChargingStationAdminStatusUpdate) Object);
-
-        }
+            => Object is ChargingStationAdminStatusUpdate chargingStationAdminStatusUpdate &&
+                   Equals(chargingStationAdminStatusUpdate);
 
         #endregion
 
         #region Equals(ChargingStationAdminStatusUpdate)
 
         /// <summary>
-        /// Compares two ChargingStation status updates for equality.
+        /// Compares two charging station admin status updates for equality.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate">A charging station status update to compare with.</param>
+        /// <param name="ChargingStationAdminStatusUpdate">A charging station admin status update to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate)
-        {
 
-            if ((Object) ChargingStationAdminStatusUpdate == null)
-                return false;
-
-            return Id.       Equals(ChargingStationAdminStatusUpdate.Id)        &&
-                   OldStatus.Equals(ChargingStationAdminStatusUpdate.OldStatus) &&
-                   NewStatus.Equals(ChargingStationAdminStatusUpdate.NewStatus);
-
-        }
+            => Id.       Equals(ChargingStationAdminStatusUpdate.Id)        &&
+               OldStatus.Equals(ChargingStationAdminStatusUpdate.OldStatus) &&
+               NewStatus.Equals(ChargingStationAdminStatusUpdate.NewStatus);
 
         #endregion
 
@@ -312,8 +268,8 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       OldStatus.GetHashCode() * 5 ^
+                return Id.       GetHashCode() * 5 ^
+                       OldStatus.GetHashCode() * 3 ^
                        NewStatus.GetHashCode();
 
             }

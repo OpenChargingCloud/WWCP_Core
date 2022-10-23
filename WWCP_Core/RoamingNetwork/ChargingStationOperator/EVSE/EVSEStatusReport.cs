@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An EVSE status report.
     /// </summary>
-    public class EVSEStatusReport : StatusReport<EVSE, EVSEStatusTypes>
+    public class EVSEStatusReport : StatusReport<IEVSE, EVSEStatusTypes>
     {
 
         /// <summary>
@@ -129,8 +129,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
-        public EVSEStatusReport(IEnumerable<EVSE>  EVSEs,
-                                DateTime?          Timestamp = null)
+        public EVSEStatusReport(IEnumerable<IEVSE>  EVSEs,
+                                DateTime?           Timestamp = null)
 
             : base(EVSEs,
                    evse => evse.Status.Value,

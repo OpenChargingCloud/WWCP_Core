@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The interface of a remote charging pool.
     /// </summary>
-    public interface IRemoteChargingPool : ILocalReserveRemoteStartStop
+    public interface IRemoteChargingPool : IChargingPool
     {
 
         #region Properties
@@ -56,17 +56,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingPoolDataChangedDelegate         OnDataChanged;
+        event OnRemoteChargingPoolDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingPoolAdminStatusChangedDelegate  OnAdminStatusChanged;
+        event OnRemoteChargingPoolAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteChargingPoolStatusChangedDelegate       OnStatusChanged;
+        event OnRemoteChargingPoolStatusChangedDelegate?       OnStatusChanged;
 
         #endregion
 
@@ -75,21 +75,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE RemoteEVSE);
+        //Boolean TryGetEVSEById(EVSE_Id EVSEId, out IRemoteEVSE RemoteEVSE);
 
         #endregion
 
         #region Charging stations
 
-        IEnumerable<IRemoteChargingStation> ChargingStations { get; }
+        //IEnumerable<IRemoteChargingStation> ChargingStations { get; }
 
-        Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId);
+        //Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId);
 
-        IRemoteChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId);
+        //IRemoteChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId);
 
-        Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IRemoteChargingStation ChargingStation);
+        //Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IRemoteChargingStation ChargingStation);
 
-        Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IRemoteChargingStation ChargingStation);
+        //Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IRemoteChargingStation ChargingStation);
 
         #endregion
 
