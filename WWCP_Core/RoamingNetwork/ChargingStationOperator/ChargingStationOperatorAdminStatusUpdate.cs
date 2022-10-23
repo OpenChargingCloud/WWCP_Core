@@ -36,17 +36,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the charging station operator.
         /// </summary>
-        public ChargingStationOperator_Id                            Id          { get; }
+        public ChargingStationOperator_Id                            Id           { get; }
 
         /// <summary>
         /// The old timestamped admin status of the charging station operator.
         /// </summary>
-        public Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus   { get; }
+        public Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus    { get; }
 
         /// <summary>
         /// The new timestamped admin status of the charging station operator.
         /// </summary>
-        public Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus   { get; }
+        public Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus    { get; }
 
         #endregion
 
@@ -187,9 +187,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station operator admin status updates.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging station operator admin status update to compare with.</param>
         public Int32 CompareTo(Object Object)
 
             => Object is ChargingStationOperatorAdminStatusUpdate chargingStationOperatorAdminStatusUpdate
@@ -202,9 +202,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingStationOperatorAdminStatusUpdate)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station operator admin status updates.
         /// </summary>
-        /// <param name="ChargingStationOperatorAdminStatusUpdate">An object to compare with.</param>
+        /// <param name="ChargingStationOperatorAdminStatusUpdate">A charging station operator admin status update to compare with.</param>
         public Int32 CompareTo(ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate)
         {
 
@@ -229,10 +229,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station operator admin status updates for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging station operator admin status update to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingStationOperatorAdminStatusUpdate chargingStationOperatorAdminStatusUpdate &&
@@ -246,7 +245,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station operator admin status updates for equality.
         /// </summary>
         /// <param name="ChargingStationOperatorAdminStatusUpdate">A charging station operator admin status update to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStationOperatorAdminStatusUpdate ChargingStationOperatorAdminStatusUpdate)
 
             => Id.       Equals(ChargingStationOperatorAdminStatusUpdate.Id)        &&

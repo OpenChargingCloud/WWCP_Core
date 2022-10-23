@@ -190,9 +190,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network admin status updates.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A roaming network admin status update to compare with.</param>
         public Int32 CompareTo(Object Object)
 
             => Object is RoamingNetworkAdminStatusUpdate roamingNetworkStatusUpdate
@@ -205,9 +205,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(RoamingNetworkAdminStatusUpdate)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network admin status updates.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusUpdate">An object to compare with.</param>
+        /// <param name="RoamingNetworkAdminStatusUpdate">A roaming network admin status update to compare with.</param>
         public Int32 CompareTo(RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate)
         {
 
@@ -232,10 +232,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming network admin status updates for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A roaming network admin status update to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RoamingNetworkAdminStatusUpdate roamingNetworkStatusUpdate &&
@@ -249,7 +248,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two roaming network admin status updates for equality.
         /// </summary>
         /// <param name="RoamingNetworkAdminStatusUpdate">A roaming network admin status update to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RoamingNetworkAdminStatusUpdate RoamingNetworkAdminStatusUpdate)
 
             => Id.       Equals(RoamingNetworkAdminStatusUpdate.Id)        &&

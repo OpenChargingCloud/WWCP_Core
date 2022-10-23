@@ -187,9 +187,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging pool status updates.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging pool status update to compare with.</param>
         public Int32 CompareTo(Object Object)
 
             => Object is ChargingPoolStatusUpdate chargingPoolStatusUpdate
@@ -202,9 +202,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingPoolStatusUpdate)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging pool status updates.
         /// </summary>
-        /// <param name="ChargingPoolStatusUpdate">An object to compare with.</param>
+        /// <param name="ChargingPoolStatusUpdate">A charging pool status update to compare with.</param>
         public Int32 CompareTo(ChargingPoolStatusUpdate ChargingPoolStatusUpdate)
         {
 
@@ -229,10 +229,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging pool status updates for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging pool status update to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingPoolStatusUpdate chargingPoolStatusUpdate &&
@@ -246,7 +245,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging pool status updates for equality.
         /// </summary>
         /// <param name="ChargingPoolStatusUpdate">A charging pool status update to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingPoolStatusUpdate ChargingPoolStatusUpdate)
 
             => Id.       Equals(ChargingPoolStatusUpdate.Id)        &&

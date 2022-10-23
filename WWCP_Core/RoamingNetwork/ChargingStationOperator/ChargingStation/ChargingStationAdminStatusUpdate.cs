@@ -187,9 +187,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station admin status updates.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging station admin status update to compare with.</param>
         public Int32 CompareTo(Object Object)
 
             => Object is ChargingStationAdminStatusUpdate chargingStationAdminStatusUpdate
@@ -202,9 +202,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingStationAdminStatusUpdate)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station admin status updates.
         /// </summary>
-        /// <param name="ChargingStationAdminStatusUpdate">An object to compare with.</param>
+        /// <param name="ChargingStationAdminStatusUpdate">A charging station admin status update to compare with.</param>
         public Int32 CompareTo(ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate)
         {
 
@@ -229,10 +229,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging station admin status updates for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging station admin status update to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingStationAdminStatusUpdate chargingStationAdminStatusUpdate &&
@@ -246,7 +245,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station admin status updates for equality.
         /// </summary>
         /// <param name="ChargingStationAdminStatusUpdate">A charging station admin status update to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStationAdminStatusUpdate ChargingStationAdminStatusUpdate)
 
             => Id.       Equals(ChargingStationAdminStatusUpdate.Id)        &&

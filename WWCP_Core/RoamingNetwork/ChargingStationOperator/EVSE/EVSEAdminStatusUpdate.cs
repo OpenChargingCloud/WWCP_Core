@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -28,18 +25,18 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// An EVSE admin status update.
+    /// A EVSE admin status update.
     /// </summary>
-    public struct EVSEAdminStatusUpdate : IEquatable <EVSEAdminStatusUpdate>,
-                                          IComparable<EVSEAdminStatusUpdate>
+    public readonly struct EVSEAdminStatusUpdate : IEquatable<EVSEAdminStatusUpdate>,
+                                                   IComparable<EVSEAdminStatusUpdate>
     {
 
         #region Properties
 
         /// <summary>
-        /// The updated EVSE.
+        /// The unique identification of the EVSE.
         /// </summary>
-        public IEVSE                              EVSE         { get; }
+        public EVSE_Id                            Id           { get; }
 
         /// <summary>
         /// The old timestamped admin status of the EVSE.
@@ -55,21 +52,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region EVSEAdminStatusUpdate(EVSE, OldStatus, NewStatus)
-
         /// <summary>
         /// Create a new EVSE admin status update.
         /// </summary>
-        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-        public EVSEAdminStatusUpdate(IEVSE                              EVSE,
+        public EVSEAdminStatusUpdate(EVSE_Id                            Id,
                                      Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                      Timestamped<EVSEAdminStatusTypes>  NewStatus)
 
         {
 
-            this.EVSE       = EVSE;
+            this.Id         = Id;
             this.OldStatus  = OldStatus;
             this.NewStatus  = NewStatus;
 
@@ -77,53 +72,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSEAdminStatusUpdate(EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Create a new EVSE admin status update.
-        /// </summary>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
-        /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-        public EVSEAdminStatusUpdate(IEVSE            EVSE,
-                                     EVSEAdminStatus  OldStatus,
-                                     EVSEAdminStatus  NewStatus)
-
-        {
-
-            this.EVSE       = EVSE;
-            this.OldStatus  = OldStatus.AdminStatus;
-            this.NewStatus  = NewStatus.AdminStatus;
-
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region (static) Snapshot(EVSE)
 
         /// <summary>
-        /// Take a snapshot of the current EVSE status.
+        /// Take a snapshot of the current EVSE admin status.
         /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        public static EVSEAdminStatusUpdate Snapshot(EVSE EVSE)
+        /// <param name="EVSE">A EVSE.</param>
+        public static EVSEAdminStatusUpdate Snapshot(IEVSE EVSE)
 
-        {
-
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            return new EVSEAdminStatusUpdate(EVSE,
-                                             EVSE.AdminStatus,
-                                             EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault());
-
-        }
+            => new (EVSE.Id,
+                    EVSE.AdminStatus,
+                    EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault());
 
         #endregion
 
@@ -135,23 +95,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate1">A EVSE status update.</param>
-        /// <param name="EVSEAdminStatusUpdate2">Another EVSE status update.</param>
+        /// <param name="EVSEAdminStatusUpdate1">A EVSE admin status update.</param>
+        /// <param name="EVSEAdminStatusUpdate2">Another EVSE admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1, EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
-        {
+        public static Boolean operator == (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1,
+                                           EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(EVSEAdminStatusUpdate1, EVSEAdminStatusUpdate2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) EVSEAdminStatusUpdate1 == null) || ((Object) EVSEAdminStatusUpdate2 == null))
-                return false;
-
-            return EVSEAdminStatusUpdate1.Equals(EVSEAdminStatusUpdate2);
-
-        }
+            => EVSEAdminStatusUpdate1.Equals(EVSEAdminStatusUpdate2);
 
         #endregion
 
@@ -160,11 +110,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate1">A EVSE status update.</param>
-        /// <param name="EVSEAdminStatusUpdate2">Another EVSE status update.</param>
+        /// <param name="EVSEAdminStatusUpdate1">A EVSE admin status update.</param>
+        /// <param name="EVSEAdminStatusUpdate2">Another EVSE admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1, EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
-            => !(EVSEAdminStatusUpdate1 == EVSEAdminStatusUpdate2);
+        public static Boolean operator != (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1,
+                                           EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
+
+            => !EVSEAdminStatusUpdate1.Equals(EVSEAdminStatusUpdate2);
 
         #endregion
 
@@ -173,18 +125,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate1">A EVSE status update.</param>
-        /// <param name="EVSEAdminStatusUpdate2">Another EVSE status update.</param>
+        /// <param name="EVSEAdminStatusUpdate1">A EVSE admin status update.</param>
+        /// <param name="EVSEAdminStatusUpdate2">Another EVSE admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1, EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
-        {
+        public static Boolean operator < (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1,
+                                          EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
 
-            if ((Object) EVSEAdminStatusUpdate1 == null)
-                throw new ArgumentNullException(nameof(EVSEAdminStatusUpdate1), "The given EVSEAdminStatusUpdate1 must not be null!");
-
-            return EVSEAdminStatusUpdate1.CompareTo(EVSEAdminStatusUpdate2) < 0;
-
-        }
+            => EVSEAdminStatusUpdate1.CompareTo(EVSEAdminStatusUpdate2) < 0;
 
         #endregion
 
@@ -193,11 +140,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate1">A EVSE status update.</param>
-        /// <param name="EVSEAdminStatusUpdate2">Another EVSE status update.</param>
+        /// <param name="EVSEAdminStatusUpdate1">A EVSE admin status update.</param>
+        /// <param name="EVSEAdminStatusUpdate2">Another EVSE admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1, EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
-            => !(EVSEAdminStatusUpdate1 > EVSEAdminStatusUpdate2);
+        public static Boolean operator <= (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1,
+                                           EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
+
+            => EVSEAdminStatusUpdate1.CompareTo(EVSEAdminStatusUpdate2) <= 0;
 
         #endregion
 
@@ -206,18 +155,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate1">A EVSE status update.</param>
-        /// <param name="EVSEAdminStatusUpdate2">Another EVSE status update.</param>
+        /// <param name="EVSEAdminStatusUpdate1">A EVSE admin status update.</param>
+        /// <param name="EVSEAdminStatusUpdate2">Another EVSE admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1, EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
-        {
+        public static Boolean operator > (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1,
+                                          EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
 
-            if ((Object) EVSEAdminStatusUpdate1 == null)
-                throw new ArgumentNullException(nameof(EVSEAdminStatusUpdate1), "The given EVSEAdminStatusUpdate1 must not be null!");
-
-            return EVSEAdminStatusUpdate1.CompareTo(EVSEAdminStatusUpdate2) > 0;
-
-        }
+            => EVSEAdminStatusUpdate1.CompareTo(EVSEAdminStatusUpdate2) > 0;
 
         #endregion
 
@@ -226,11 +170,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate1">A EVSE status update.</param>
-        /// <param name="EVSEAdminStatusUpdate2">Another EVSE status update.</param>
+        /// <param name="EVSEAdminStatusUpdate1">A EVSE admin status update.</param>
+        /// <param name="EVSEAdminStatusUpdate2">Another EVSE admin status update.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1, EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
-            => !(EVSEAdminStatusUpdate1 < EVSEAdminStatusUpdate2);
+        public static Boolean operator >= (EVSEAdminStatusUpdate EVSEAdminStatusUpdate1,
+                                           EVSEAdminStatusUpdate EVSEAdminStatusUpdate2)
+
+            => EVSEAdminStatusUpdate1.CompareTo(EVSEAdminStatusUpdate2) >= 0;
 
         #endregion
 
@@ -241,49 +187,36 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE admin status updates.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A EVSE admin status update to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is EVSEAdminStatusUpdate))
-                throw new ArgumentException("The given object is not a EVSEStatus!",
-                                            nameof(Object));
-
-            return CompareTo((EVSEAdminStatusUpdate) Object);
-
-        }
+            => Object is EVSEAdminStatusUpdate evseAdminStatusUpdate
+                   ? CompareTo(evseAdminStatusUpdate)
+                   : throw new ArgumentException("The given object is not a EVSE admin status update!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(EVSEAdminStatusUpdate)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE admin status updates.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate">An object to compare with.</param>
+        /// <param name="EVSEAdminStatusUpdate">A EVSE admin status update to compare with.</param>
         public Int32 CompareTo(EVSEAdminStatusUpdate EVSEAdminStatusUpdate)
         {
 
-            if ((Object) EVSEAdminStatusUpdate == null)
-                throw new ArgumentNullException(nameof(EVSEAdminStatusUpdate), "The given EVSE status update must not be null!");
+            var c = Id.       CompareTo(EVSEAdminStatusUpdate.Id);
 
-            // Compare EVSE Ids
-            var _Result = EVSE.CompareTo(EVSEAdminStatusUpdate.EVSE);
+            if (c == 0)
+                c = NewStatus.CompareTo(EVSEAdminStatusUpdate.NewStatus);
 
-            // If equal: Compare the new EVSE status
-            if (_Result == 0)
-                _Result = NewStatus.CompareTo(EVSEAdminStatusUpdate.NewStatus);
+            if (c == 0)
+                c = OldStatus.CompareTo(EVSEAdminStatusUpdate.OldStatus);
 
-            // If equal: Compare the old EVSE status
-            if (_Result == 0)
-                _Result = OldStatus.CompareTo(EVSEAdminStatusUpdate.OldStatus);
-
-            return _Result;
+            return c;
 
         }
 
@@ -296,43 +229,27 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE admin status updates for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A EVSE admin status update to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is EVSEAdminStatusUpdate))
-                return false;
-
-            return this.Equals((EVSEAdminStatusUpdate) Object);
-
-        }
+            => Object is EVSEAdminStatusUpdate evseAdminStatusUpdate &&
+                   Equals(evseAdminStatusUpdate);
 
         #endregion
 
         #region Equals(EVSEAdminStatusUpdate)
 
         /// <summary>
-        /// Compares two EVSE status updates for equality.
+        /// Compares two EVSE admin status updates for equality.
         /// </summary>
-        /// <param name="EVSEAdminStatusUpdate">An EVSE status update to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="EVSEAdminStatusUpdate">A EVSE admin status update to compare with.</param>
         public Boolean Equals(EVSEAdminStatusUpdate EVSEAdminStatusUpdate)
-        {
 
-            if ((Object) EVSEAdminStatusUpdate == null)
-                return false;
-
-            return EVSE.     Equals(EVSEAdminStatusUpdate.EVSE)      &&
-                   OldStatus.Equals(EVSEAdminStatusUpdate.OldStatus) &&
-                   NewStatus.Equals(EVSEAdminStatusUpdate.NewStatus);
-
-        }
+            => Id.       Equals(EVSEAdminStatusUpdate.Id)        &&
+               OldStatus.Equals(EVSEAdminStatusUpdate.OldStatus) &&
+               NewStatus.Equals(EVSEAdminStatusUpdate.NewStatus);
 
         #endregion
 
@@ -349,7 +266,7 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return EVSE.     GetHashCode() * 5 ^
+                return Id.       GetHashCode() * 5 ^
                        OldStatus.GetHashCode() * 3 ^
                        NewStatus.GetHashCode();
 
@@ -365,7 +282,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(EVSE.Id, ": ",
+            => String.Concat(Id, ": ",
                              OldStatus,
                              " -> ",
                              NewStatus);
