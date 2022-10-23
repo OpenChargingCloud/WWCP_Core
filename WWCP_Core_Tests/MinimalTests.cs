@@ -54,22 +54,22 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
             _cp.OnStatusChanged += async (ts, EventTrackingId, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 
             var s1  = _cp.CreateChargingStation(ChargingStation_Id.NewRandom(_op.Id));
-            s1.StatusAggregationDelegate = report => {
-                                                          var max   = report.Max  (v => v.Value);
-                                                          var max_n = report.Where(o => o.Value == max);
-                                                          return (ChargingStationStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
-                                                      };
+            //s1.StatusAggregationDelegate = report => {
+            //                                              var max   = report.Max  (v => v.Value);
+            //                                              var max_n = report.Where(o => o.Value == max);
+            //                                              return (ChargingStationStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
+            //                                          };
             s1.OnStatusChanged += async (ts, EventTrackingId, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
 
             var e1 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*1"));
             var e2 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*2"));
             var e3 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*3"));
             var s2 = _cp.CreateChargingStation(ChargingStation_Id.NewRandom(_op.Id));
-            s2.StatusAggregationDelegate = report => {
-                                                          var max   = report.Max  (v => v.Value);
-                                                          var max_n = report.Where(o => o.Value == max);
-                                                          return (ChargingStationStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
-                                                      };
+            //s2.StatusAggregationDelegate = report => {
+            //                                              var max   = report.Max  (v => v.Value);
+            //                                              var max_n = report.Where(o => o.Value == max);
+            //                                              return (ChargingStationStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
+            //                                          };
             s2.OnStatusChanged += async (ts, EventTrackingId, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
 
             var f1 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*1"));

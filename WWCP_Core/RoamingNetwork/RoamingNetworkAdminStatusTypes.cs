@@ -33,16 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this roaming network admin status types is null or empty.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes">A roaming network admin status type.</param>
-        public static Boolean IsNullOrEmpty(this RoamingNetworkAdminStatusTypes? RoamingNetworkAdminStatusTypes)
-            => !RoamingNetworkAdminStatusTypes.HasValue || RoamingNetworkAdminStatusTypes.Value.IsNullOrEmpty;
+        /// <param name="RoamingNetworkAdminStatusType">A roaming network admin status type.</param>
+        public static Boolean IsNullOrEmpty(this RoamingNetworkAdminStatusTypes? RoamingNetworkAdminStatusType)
+            => !RoamingNetworkAdminStatusType.HasValue || RoamingNetworkAdminStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this roaming network admin status types is null or empty.
         /// </summary>
-        /// <param name="RoamingNetworkAdminStatusTypes">A roaming network admin status type.</param>
-        public static Boolean IsNotNullOrEmpty(this RoamingNetworkAdminStatusTypes? RoamingNetworkAdminStatusTypes)
-            => RoamingNetworkAdminStatusTypes.HasValue && RoamingNetworkAdminStatusTypes.Value.IsNotNullOrEmpty;
+        /// <param name="RoamingNetworkAdminStatusType">A roaming network admin status type.</param>
+        public static Boolean IsNotNullOrEmpty(this RoamingNetworkAdminStatusTypes? RoamingNetworkAdminStatusType)
+            => RoamingNetworkAdminStatusType.HasValue && RoamingNetworkAdminStatusType.Value.IsNotNullOrEmpty;
 
     }
 

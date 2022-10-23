@@ -79,9 +79,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingLocation">A charging location.</param>
         /// <param name="ReservationLevel">The level of the reservation to create (EVSE, charging station, ...).</param>
-        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+        /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
@@ -100,6 +101,7 @@ namespace cloud.charging.open.protocols.WWCP
                     DateTime?                          StartTime              = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
@@ -259,9 +261,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Start a charging session.
         /// </summary>
-        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+        /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
@@ -278,6 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
             Reserve(DateTime?                          StartTime              = null,
                     TimeSpan?                          Duration               = null,
                     ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,

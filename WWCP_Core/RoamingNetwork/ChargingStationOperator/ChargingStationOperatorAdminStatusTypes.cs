@@ -33,16 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this charging station operator admin status types is null or empty.
         /// </summary>
-        /// <param name="ChargingStationOperatorAdminStatusTypes">A charging station operator admin status type.</param>
-        public static Boolean IsNullOrEmpty(this ChargingStationOperatorAdminStatusTypes? ChargingStationOperatorAdminStatusTypes)
-            => !ChargingStationOperatorAdminStatusTypes.HasValue || ChargingStationOperatorAdminStatusTypes.Value.IsNullOrEmpty;
+        /// <param name="ChargingStationOperatorAdminStatusType">A charging station operator admin status type.</param>
+        public static Boolean IsNullOrEmpty(this ChargingStationOperatorAdminStatusTypes? ChargingStationOperatorAdminStatusType)
+            => !ChargingStationOperatorAdminStatusType.HasValue || ChargingStationOperatorAdminStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this charging station operator admin status types is null or empty.
         /// </summary>
-        /// <param name="ChargingStationOperatorAdminStatusTypes">A charging station operator admin status type.</param>
-        public static Boolean IsNotNullOrEmpty(this ChargingStationOperatorAdminStatusTypes? ChargingStationOperatorAdminStatusTypes)
-            => ChargingStationOperatorAdminStatusTypes.HasValue && ChargingStationOperatorAdminStatusTypes.Value.IsNotNullOrEmpty;
+        /// <param name="ChargingStationOperatorAdminStatusType">A charging station operator admin status type.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingStationOperatorAdminStatusTypes? ChargingStationOperatorAdminStatusType)
+            => ChargingStationOperatorAdminStatusType.HasValue && ChargingStationOperatorAdminStatusType.Value.IsNotNullOrEmpty;
 
     }
 

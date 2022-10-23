@@ -33,16 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this charging station operator status types is null or empty.
         /// </summary>
-        /// <param name="ChargingStationOperatorStatusTypes">A charging station operator status type.</param>
-        public static Boolean IsNullOrEmpty(this ChargingStationOperatorStatusTypes? ChargingStationOperatorStatusTypes)
-            => !ChargingStationOperatorStatusTypes.HasValue || ChargingStationOperatorStatusTypes.Value.IsNullOrEmpty;
+        /// <param name="ChargingStationOperatorStatusType">A charging station operator status type.</param>
+        public static Boolean IsNullOrEmpty(this ChargingStationOperatorStatusTypes? ChargingStationOperatorStatusType)
+            => !ChargingStationOperatorStatusType.HasValue || ChargingStationOperatorStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this charging station operator status types is null or empty.
         /// </summary>
-        /// <param name="ChargingStationOperatorStatusTypes">A charging station operator status type.</param>
-        public static Boolean IsNotNullOrEmpty(this ChargingStationOperatorStatusTypes? ChargingStationOperatorStatusTypes)
-            => ChargingStationOperatorStatusTypes.HasValue && ChargingStationOperatorStatusTypes.Value.IsNotNullOrEmpty;
+        /// <param name="ChargingStationOperatorStatusType">A charging station operator status type.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingStationOperatorStatusTypes? ChargingStationOperatorStatusType)
+            => ChargingStationOperatorStatusType.HasValue && ChargingStationOperatorStatusType.Value.IsNotNullOrEmpty;
 
     }
 

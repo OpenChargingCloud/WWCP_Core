@@ -1058,9 +1058,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IEnumerable<ChargingReservation> Reservations
 
-            => RoamingNetwork?.ReservationsStore.Where(reservationCollection => reservationCollection.EVSEId == Id).
+            => RoamingNetwork?.ReservationsStore.Where (reservationCollection => reservationCollection.EVSEId == Id).
                                                  Select(reservationCollection => reservationCollection.LastOrDefault()).
-                                                 Where(result => result is not null).
+                                                 Where (result                => result is not null).
                                                  Cast<ChargingReservation>()
 
                    ?? Array.Empty<ChargingReservation>();
@@ -1096,9 +1096,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Reserve the possibility to charge at this EVSE.
         /// </summary>
-        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+        /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
@@ -1112,27 +1113,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<ReservationResult>
 
-            Reserve(DateTime? StartTime = null,
-                    TimeSpan? Duration = null,
-                    ChargingReservation_Id? ReservationId = null,
-                    EMobilityProvider_Id? ProviderId = null,
-                    RemoteAuthentication? RemoteAuthentication = null,
-                    ChargingProduct? ChargingProduct = null,
-                    IEnumerable<Auth_Token>? AuthTokens = null,
-                    IEnumerable<eMobilityAccount_Id>? eMAIds = null,
-                    IEnumerable<UInt32>? PINs = null,
+            Reserve(DateTime?                          StartTime              = null,
+                    TimeSpan?                          Duration               = null,
+                    ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
+                    EMobilityProvider_Id?              ProviderId             = null,
+                    RemoteAuthentication?              RemoteAuthentication   = null,
+                    ChargingProduct?                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>?           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime? Timestamp = null,
-                    CancellationToken? CancellationToken = null,
-                    EventTracking_Id? EventTrackingId = null,
-                    TimeSpan? RequestTimeout = null)
-
+                    DateTime?                          Timestamp              = null,
+                    CancellationToken?                 CancellationToken      = null,
+                    EventTracking_Id?                  EventTrackingId        = null,
+                    TimeSpan?                          RequestTimeout         = null)
 
                 => Reserve(ChargingLocation.FromEVSEId(Id),
                            ChargingReservationLevel.EVSE,
                            StartTime,
                            Duration,
                            ReservationId,
+                           LinkedReservationId,
                            ProviderId,
                            RemoteAuthentication,
                            ChargingProduct,
@@ -1157,6 +1159,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
@@ -1170,22 +1173,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingLocation ChargingLocation,
-                    ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE,
-                    DateTime? ReservationStartTime = null,
-                    TimeSpan? Duration = null,
-                    ChargingReservation_Id? ReservationId = null,
-                    EMobilityProvider_Id? ProviderId = null,
-                    RemoteAuthentication? RemoteAuthentication = null,
-                    ChargingProduct? ChargingProduct = null,
-                    IEnumerable<Auth_Token>? AuthTokens = null,
-                    IEnumerable<eMobilityAccount_Id>? eMAIds = null,
-                    IEnumerable<UInt32>? PINs = null,
+            Reserve(ChargingLocation                   ChargingLocation,
+                    ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
+                    DateTime?                          ReservationStartTime   = null,
+                    TimeSpan?                          Duration               = null,
+                    ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
+                    EMobilityProvider_Id?              ProviderId             = null,
+                    RemoteAuthentication?              RemoteAuthentication   = null,
+                    ChargingProduct?                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>?           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime? Timestamp = null,
-                    CancellationToken? CancellationToken = null,
-                    EventTracking_Id? EventTrackingId = null,
-                    TimeSpan? RequestTimeout = null)
+                    DateTime?                          Timestamp              = null,
+                    CancellationToken?                 CancellationToken      = null,
+                    EventTracking_Id?                  EventTrackingId        = null,
+                    TimeSpan?                          RequestTimeout         = null)
 
         {
 
@@ -1217,6 +1221,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          EventTrackingId,
                                          RoamingNetwork.Id,
                                          ReservationId,
+                                         LinkedReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
                                          Duration,
@@ -1256,6 +1261,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ReservationStartTime,
                                                    Duration,
                                                    ReservationId,
+                                                   LinkedReservationId,
                                                    ProviderId,
                                                    RemoteAuthentication,
                                                    ChargingProduct,
@@ -1317,6 +1323,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           EventTrackingId,
                                           RoamingNetwork.Id,
                                           ReservationId,
+                                          LinkedReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
                                           Duration,
@@ -1358,13 +1365,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult>
 
-            CancelReservation(ChargingReservation_Id ReservationId,
-                              ChargingReservationCancellationReason Reason,
+            CancelReservation(ChargingReservation_Id                 ReservationId,
+                              ChargingReservationCancellationReason  Reason,
 
-                              DateTime? Timestamp = null,
-                              CancellationToken? CancellationToken = null,
-                              EventTracking_Id? EventTrackingId = null,
-                              TimeSpan? RequestTimeout = null)
+                              DateTime?                              Timestamp           = null,
+                              CancellationToken?                     CancellationToken   = null,
+                              EventTracking_Id?                      EventTrackingId     = null,
+                              TimeSpan?                              RequestTimeout      = null)
 
         {
 
@@ -1379,8 +1386,8 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
 
-            ChargingReservation? canceledReservation = null;
-            CancelReservationResult? result = null;
+            ChargingReservation?     canceledReservation   = null;
+            CancelReservationResult? result                = null;
 
             #endregion
 
@@ -1440,16 +1447,10 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            result = CancelReservationResult.OutOfService(ReservationId,
-                                                                          Reason);
-                            break;
-
-                    }
-
+                    result = AdminStatus.Value switch {
+                        _ => CancelReservationResult.OutOfService(ReservationId,
+                                                                  Reason),
+                    };
                 }
 
             }

@@ -2926,33 +2926,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a charging location is being reserved.
         /// </summary>
-        public event OnReserveRequestDelegate             OnReserveRequest;
+        public event OnReserveRequestDelegate?             OnReserveRequest;
 
         /// <summary>
         /// An event fired whenever a charging location was reserved.
         /// </summary>
-        public event OnReserveResponseDelegate            OnReserveResponse;
+        public event OnReserveResponseDelegate?            OnReserveResponse;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
-        public event OnNewReservationDelegate             OnNewReservation;
+        public event OnNewReservationDelegate?             OnNewReservation;
 
 
         /// <summary>
         /// An event fired whenever a charging reservation is being canceled.
         /// </summary>
-        public event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnReservationCanceledDelegate        OnReservationCanceled;
+        public event OnReservationCanceledDelegate?        OnReservationCanceled;
 
         #endregion
 
@@ -2966,6 +2966,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
@@ -2979,22 +2980,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingLocation                  ChargingLocation,
-                    ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                         ReservationStartTime   = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    EMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
+            Reserve(ChargingLocation                   ChargingLocation,
+                    ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
+                    DateTime?                          ReservationStartTime   = null,
+                    TimeSpan?                          Duration               = null,
+                    ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
+                    EMobilityProvider_Id?              ProviderId             = null,
+                    RemoteAuthentication?              RemoteAuthentication   = null,
+                    ChargingProduct?                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>?           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
+                    DateTime?                          Timestamp              = null,
+                    CancellationToken?                 CancellationToken      = null,
+                    EventTracking_Id?                  EventTrackingId        = null,
+                    TimeSpan?                          RequestTimeout         = null)
 
         {
 
@@ -3006,27 +3008,27 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            ReservationResult result = null;
+            ReservationResult? result = null;
 
             #endregion
 
             #region Send OnReserveRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnReserveRequest?.Invoke(StartTime,
+                OnReserveRequest?.Invoke(startTime,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
                                          RoamingNetwork.Id,
                                          ReservationId,
+                                         LinkedReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
                                          Duration,
@@ -3056,6 +3058,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  ReservationStartTime,
                                                  Duration,
                                                  ReservationId,
+                                                 LinkedReservationId,
                                                  Id,
                                                  RemoteAuthentication,
                                                  ChargingProduct,
@@ -3075,20 +3078,23 @@ namespace cloud.charging.open.protocols.WWCP
                 result = ReservationResult.Error(e.Message);
             }
 
+            result ??= ReservationResult.Error();
+
 
             #region Send OnReserveResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnReserveResponse?.Invoke(EndTime,
+                OnReserveResponse?.Invoke(endTime,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
                                           RoamingNetwork.Id,
                                           ReservationId,
+                                          LinkedReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
                                           Duration,
@@ -3099,7 +3105,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           eMAIds,
                                           PINs,
                                           result,
-                                          EndTime - StartTime,
+                                          endTime - startTime,
                                           RequestTimeout);
 
             }
@@ -3150,23 +3156,22 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            ChargingReservation     canceledReservation  = null;
-            CancelReservationResult result                = null;
+            ChargingReservation?     canceledReservation   = null;
+            CancelReservationResult? result                = null;
 
             #endregion
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnCancelReservationRequest?.Invoke(StartTime,
+                OnCancelReservationRequest?.Invoke(startTime,
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
@@ -3215,15 +3220,18 @@ namespace cloud.charging.open.protocols.WWCP
                                                        e.Message);
             }
 
+            result ??= CancelReservationResult.Error(ReservationId,
+                                                     Reason);
+
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnCancelReservationResponse?.Invoke(EndTime,
+                OnCancelReservationResponse?.Invoke(endTime,
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
@@ -3232,7 +3240,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     canceledReservation,
                                                     Reason,
                                                     result,
-                                                    EndTime - StartTime,
+                                                    endTime - startTime,
                                                     RequestTimeout);
 
             }

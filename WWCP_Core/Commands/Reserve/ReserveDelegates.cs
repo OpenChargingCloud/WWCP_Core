@@ -33,11 +33,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// An event send whenever a reservation at an EVSE is being made.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="RequestTimestamp">The timestamp of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="ChargingLocation">A charging location.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+    /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
+    /// <param name="StartTime">The starting time of the reservation.</param>
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
@@ -46,22 +47,23 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnReserveRequestDelegate(DateTime                          LogTimestamp,
-                                                  DateTime                          RequestTimestamp,
-                                                  Object                            Sender,
-                                                  EventTracking_Id                  EventTrackingId,
-                                                  RoamingNetwork_Id                 RoamingNetworkId,
-                                                  ChargingReservation_Id?           ReservationId,
-                                                  ChargingLocation                  ChargingLocation,
-                                                  DateTime?                         StartTime,
-                                                  TimeSpan?                         Duration,
-                                                  EMobilityProvider_Id?             ProviderId,
-                                                  RemoteAuthentication              RemoteAuthentication,
-                                                  ChargingProduct                   ChargingProduct,
-                                                  IEnumerable<Auth_Token>           AuthTokens,
-                                                  IEnumerable<eMobilityAccount_Id>  eMAIds,
-                                                  IEnumerable<UInt32>               PINs,
-                                                  TimeSpan?                         RequestTimeout);
+    public delegate Task OnReserveRequestDelegate(DateTime                           LogTimestamp,
+                                                  DateTime                           RequestTimestamp,
+                                                  Object                             Sender,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  RoamingNetwork_Id                  RoamingNetworkId,
+                                                  ChargingReservation_Id?            ReservationId,
+                                                  ChargingReservation_Id?            LinkedReservationId,
+                                                  ChargingLocation                   ChargingLocation,
+                                                  DateTime?                          StartTime,
+                                                  TimeSpan?                          Duration,
+                                                  EMobilityProvider_Id?              ProviderId,
+                                                  RemoteAuthentication?              RemoteAuthentication,
+                                                  ChargingProduct?                   ChargingProduct,
+                                                  IEnumerable<Auth_Token>?           AuthTokens,
+                                                  IEnumerable<eMobilityAccount_Id>?  eMAIds,
+                                                  IEnumerable<UInt32>?               PINs,
+                                                  TimeSpan?                          RequestTimeout);
 
 
     /// <summary>
@@ -72,7 +74,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingLocation">A charging location.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+    /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
+    /// <param name="StartTime">The starting time of the reservation.</param>
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
@@ -81,21 +84,22 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<ReservationResult> OnReserveDelegate(ChargingReservation_Id?           ReservationId,
-                                                              ChargingLocation                  ChargingLocation,
-                                                              DateTime?                         StartTime,
-                                                              TimeSpan?                         Duration,
-                                                              EMobilityProvider_Id?             ProviderId,
-                                                              RemoteAuthentication              RemoteAuthentication,
-                                                              ChargingProduct                   ChargingProduct,
-                                                              IEnumerable<Auth_Token>           AuthTokens,
-                                                              IEnumerable<eMobilityAccount_Id>  eMAIds,
-                                                              IEnumerable<UInt32>               PINs,
+    public delegate Task<ReservationResult> OnReserveDelegate(ChargingReservation_Id?            ReservationId,
+                                                              ChargingReservation_Id?            LinkedReservationId,
+                                                              ChargingLocation                   ChargingLocation,
+                                                              DateTime?                          StartTime,
+                                                              TimeSpan?                          Duration,
+                                                              EMobilityProvider_Id?              ProviderId,
+                                                              RemoteAuthentication               RemoteAuthentication,
+                                                              ChargingProduct?                   ChargingProduct,
+                                                              IEnumerable<Auth_Token>?           AuthTokens,
+                                                              IEnumerable<eMobilityAccount_Id>?  eMAIds,
+                                                              IEnumerable<UInt32>?               PINs,
 
-                                                              DateTime?                         Timestamp           = null,
-                                                              CancellationToken?                CancellationToken   = null,
-                                                              EventTracking_Id                  EventTrackingId     = null,
-                                                              TimeSpan?                         RequestTimeout      = null);
+                                                              DateTime?                          Timestamp           = null,
+                                                              CancellationToken?                 CancellationToken   = null,
+                                                              EventTracking_Id?                  EventTrackingId     = null,
+                                                              TimeSpan?                          RequestTimeout      = null);
 
 
     /// <summary>
@@ -113,11 +117,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// An event send whenever a reservation at an EVSE was made.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
-    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="RequestTimestamp">The timestamp of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="ChargingLocation">A charging location.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+    /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
+    /// <param name="StartTime">The starting time of the reservation.</param>
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
@@ -128,23 +133,24 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Result">The result of the reservation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnReserveResponseDelegate(DateTime                          LogTimestamp,
-                                                   DateTime                          RequestTimestamp,
-                                                   Object                            Sender,
-                                                   EventTracking_Id                  EventTrackingId,
-                                                   RoamingNetwork_Id                 RoamingNetworkId,
-                                                   ChargingReservation_Id?           ReservationId,
-                                                   ChargingLocation                  ChargingLocation,
-                                                   DateTime?                         StartTime,
-                                                   TimeSpan?                         Duration,
-                                                   EMobilityProvider_Id?             ProviderId,
-                                                   RemoteAuthentication              RemoteAuthentication,
-                                                   ChargingProduct                   ChargingProduct,
-                                                   IEnumerable<Auth_Token>           AuthTokens,
-                                                   IEnumerable<eMobilityAccount_Id>  eMAIds,
-                                                   IEnumerable<UInt32>               PINs,
-                                                   ReservationResult                 Result,
-                                                   TimeSpan                          Runtime,
-                                                   TimeSpan?                         RequestTimeout);
+    public delegate Task OnReserveResponseDelegate(DateTime                           LogTimestamp,
+                                                   DateTime                           RequestTimestamp,
+                                                   Object                             Sender,
+                                                   EventTracking_Id                   EventTrackingId,
+                                                   RoamingNetwork_Id                  RoamingNetworkId,
+                                                   ChargingReservation_Id?            ReservationId,
+                                                   ChargingReservation_Id?            LinkedReservationId,
+                                                   ChargingLocation                   ChargingLocation,
+                                                   DateTime?                          StartTime,
+                                                   TimeSpan?                          Duration,
+                                                   EMobilityProvider_Id?              ProviderId,
+                                                   RemoteAuthentication?              RemoteAuthentication,
+                                                   ChargingProduct?                   ChargingProduct,
+                                                   IEnumerable<Auth_Token>?           AuthTokens,
+                                                   IEnumerable<eMobilityAccount_Id>?  eMAIds,
+                                                   IEnumerable<UInt32>?               PINs,
+                                                   ReservationResult                  Result,
+                                                   TimeSpan                           Runtime,
+                                                   TimeSpan?                          RequestTimeout);
 
 }

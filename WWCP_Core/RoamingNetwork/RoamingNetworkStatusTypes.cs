@@ -33,16 +33,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this roaming network status types is null or empty.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes">A roaming network status type.</param>
-        public static Boolean IsNullOrEmpty(this RoamingNetworkStatusTypes? RoamingNetworkStatusTypes)
-            => !RoamingNetworkStatusTypes.HasValue || RoamingNetworkStatusTypes.Value.IsNullOrEmpty;
+        /// <param name="RoamingNetworkStatusType">A roaming network status type.</param>
+        public static Boolean IsNullOrEmpty(this RoamingNetworkStatusTypes? RoamingNetworkStatusType)
+            => !RoamingNetworkStatusType.HasValue || RoamingNetworkStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this roaming network status types is null or empty.
         /// </summary>
-        /// <param name="RoamingNetworkStatusTypes">A roaming network status type.</param>
-        public static Boolean IsNotNullOrEmpty(this RoamingNetworkStatusTypes? RoamingNetworkStatusTypes)
-            => RoamingNetworkStatusTypes.HasValue && RoamingNetworkStatusTypes.Value.IsNotNullOrEmpty;
+        /// <param name="RoamingNetworkStatusType">A roaming network status type.</param>
+        public static Boolean IsNotNullOrEmpty(this RoamingNetworkStatusTypes? RoamingNetworkStatusType)
+            => RoamingNetworkStatusType.HasValue && RoamingNetworkStatusType.Value.IsNotNullOrEmpty;
 
     }
 

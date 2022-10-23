@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             ReservationExpiredTimer    = new Timer(CheckIfReservationIsExpired, null, this.SelfCheckTimeSpan, this.SelfCheckTimeSpan);
 
 
-            this._Reservations         = new Dictionary<ChargingReservation_Id, ChargingReservation>();
+            this.reservations         = new Dictionary<ChargingReservation_Id, ChargingReservation>();
             this._ChargingSessions     = new Dictionary<ChargingSession_Id, ChargingSession>();
 
             #endregion
@@ -758,13 +758,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region Data
 
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _Reservations;
+        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> reservations;
 
         /// <summary>
         /// All current charging reservations.
         /// </summary>
         public IEnumerable<ChargingReservation> ChargingReservations
-            => _Reservations.Select(_ => _.Value);
+            => reservations.Select(_ => _.Value);
+
 
         #region TryGetReservationById(ReservationId, out Reservation)
 
@@ -774,7 +775,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="ReservationId">The charging reservation identification.</param>
         /// <param name="Reservation">The charging reservation.</param>
         public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-            => _Reservations.TryGetValue(ReservationId, out Reservation);
+            => reservations.TryGetValue(ReservationId, out Reservation);
 
         #endregion
 
@@ -820,9 +821,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// Reserve the possibility to charge at this charging station.
         /// </summary>
-        /// <param name="ReservationStartTime">The starting time of the reservation.</param>
+        /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
@@ -836,20 +838,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public Task<ReservationResult>
 
-            Reserve(DateTime?                         StartTime              = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    EMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
+            Reserve(DateTime?                          StartTime              = null,
+                    TimeSpan?                          Duration               = null,
+                    ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
+                    EMobilityProvider_Id?              ProviderId             = null,
+                    RemoteAuthentication?              RemoteAuthentication   = null,
+                    ChargingProduct?                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>?           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
+                    DateTime?                          Timestamp              = null,
+                    CancellationToken?                 CancellationToken      = null,
+                    EventTracking_Id?                  EventTrackingId        = null,
+                    TimeSpan?                          RequestTimeout         = null)
 
 
                 => Reserve(ChargingLocation.FromChargingStationId(Id),
@@ -857,6 +860,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                            StartTime,
                            Duration,
                            ReservationId,
+                           LinkedReservationId,
                            ProviderId,
                            RemoteAuthentication,
                            ChargingProduct,
@@ -881,6 +885,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="ReservationStartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="LinkedReservationId">An existing linked charging reservation identification.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="RemoteAuthentication">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
@@ -894,22 +899,23 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingLocation                  ChargingLocation,
-                    ChargingReservationLevel          ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                         ReservationStartTime   = null,
-                    TimeSpan?                         Duration               = null,
-                    ChargingReservation_Id?           ReservationId          = null,
-                    EMobilityProvider_Id?             ProviderId             = null,
-                    RemoteAuthentication              RemoteAuthentication   = null,
-                    ChargingProduct                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
-                    IEnumerable<UInt32>               PINs                   = null,
+            Reserve(ChargingLocation                   ChargingLocation,
+                    ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
+                    DateTime?                          ReservationStartTime   = null,
+                    TimeSpan?                          Duration               = null,
+                    ChargingReservation_Id?            ReservationId          = null,
+                    ChargingReservation_Id?            LinkedReservationId    = null,
+                    EMobilityProvider_Id?              ProviderId             = null,
+                    RemoteAuthentication?              RemoteAuthentication   = null,
+                    ChargingProduct?                   ChargingProduct        = null,
+                    IEnumerable<Auth_Token>?           AuthTokens             = null,
+                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<UInt32>?               PINs                   = null,
 
-                    DateTime?                         Timestamp              = null,
-                    CancellationToken?                CancellationToken      = null,
-                    EventTracking_Id                  EventTrackingId        = null,
-                    TimeSpan?                         RequestTimeout         = null)
+                    DateTime?                          Timestamp              = null,
+                    CancellationToken?                 CancellationToken      = null,
+                    EventTracking_Id?                  EventTrackingId        = null,
+                    TimeSpan?                          RequestTimeout         = null)
 
         {
 
@@ -924,24 +930,25 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             EventTrackingId ??= EventTracking_Id.New;
 
 
-            ChargingReservation newReservation  = null;
-            ReservationResult   result          = null;
+            ChargingReservation? newReservation   = null;
+            ReservationResult?   result           = null;
 
             #endregion
 
             #region Send OnReserveRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnReserveRequest?.Invoke(StartTime,
+                OnReserveRequest?.Invoke(startTime,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
                                          RoamingNetwork.Id,
                                          ReservationId,
+                                         LinkedReservationId,
                                          ChargingLocation,
                                          ReservationStartTime,
                                          Duration,
@@ -996,6 +1003,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                        ReservationStartTime,
                                                        Duration,
                                                        ReservationId,
+                                                       LinkedReservationId,
                                                        ProviderId,
                                                        RemoteAuthentication,
                                                        ChargingProduct,
@@ -1027,6 +1035,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                               ReservationStartTime,
                                                               Duration,
                                                               ChargingReservation_Id.Random(OperatorId),
+                                                              LinkedReservationId,
                                                               ProviderId,
                                                               RemoteAuthentication,
                                                               ChargingProduct,
@@ -1088,15 +1097,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 else
                 {
 
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            result = ReservationResult.OutOfService;
-                            break;
-
-                    }
-
+                    result = AdminStatus.Value switch {
+                        _ => ReservationResult.OutOfService,
+                    };
                 }
 
 
@@ -1104,10 +1107,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     newReservation != null)
                 {
 
-                    _Reservations.Add(newReservation.Id, newReservation);
+                    reservations.Add(newReservation.Id, newReservation);
 
                     foreach (var subReservation in newReservation.SubReservations)
-                        _Reservations.Add(subReservation.Id, subReservation);
+                        reservations.Add(subReservation.Id, subReservation);
 
                     OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              this,
@@ -1124,17 +1127,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Send OnReserveResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnReserveResponse?.Invoke(EndTime,
+                OnReserveResponse?.Invoke(endTime,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
                                           RoamingNetwork.Id,
                                           ReservationId,
+                                          LinkedReservationId,
                                           ChargingLocation,
                                           ReservationStartTime,
                                           Duration,
@@ -1145,7 +1149,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                           eMAIds,
                                           PINs,
                                           result,
-                                          EndTime - StartTime,
+                                          endTime - startTime,
                                           RequestTimeout);
 
             }
@@ -1181,7 +1185,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
-                              EventTracking_Id                       EventTrackingId    = null,
+                              EventTracking_Id?                      EventTrackingId    = null,
                               TimeSpan?                              RequestTimeout     = null)
 
         {
@@ -1189,28 +1193,27 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+                Timestamp          = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
+                CancellationToken  = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId      ??= EventTracking_Id.New;
 
 
-            ChargingReservation     canceledReservation  = null;
-            CancelReservationResult result               = null;
+            ChargingReservation?     canceledReservation   = null;
+            CancelReservationResult? result                = null;
 
             #endregion
 
             #region Send OnCancelReservationRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnCancelReservationRequest?.Invoke(StartTime,
+                OnCancelReservationRequest?.Invoke(startTime,
                                                    Timestamp.Value,
                                                    this,
                                                    EventTrackingId,
@@ -1250,7 +1253,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     }
 
-                    if (result.Result == CancelReservationResultTypes.UnknownReservationId)
+                    if (result?.Result == CancelReservationResultTypes.UnknownReservationId)
                     {
                         foreach (var evse in _EVSEs)
                         {
@@ -1289,7 +1292,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             }
                         }
 
-                        if (result.Result                         == CancelReservationResultTypes.Success &&
+                        if (result?.Result                        == CancelReservationResultTypes.Success &&
                             results.All(result2 => result2.Result == CancelReservationResultTypes.Success ||
                                                    result2.Result == CancelReservationResultTypes.UnknownReservationId))
                         {
@@ -1307,28 +1310,23 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             }
             else
             {
-
-                switch (AdminStatus.Value)
-                {
-
-                    default:
-                        result = CancelReservationResult.OutOfService(ReservationId,
-                                                                      Reason);
-                        break;
-
-                }
-
+                result = AdminStatus.Value switch {
+                    _ => CancelReservationResult.OutOfService(ReservationId,
+                                                              Reason),
+                };
             }
+
+            result ??= CancelReservationResult.OutOfService(ReservationId, Reason);
 
 
             #region Send OnCancelReservationResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnCancelReservationResponse?.Invoke(EndTime,
+                OnCancelReservationResponse?.Invoke(endTime,
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
@@ -1337,7 +1335,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                     canceledReservation,
                                                     Reason,
                                                     result,
-                                                    EndTime - StartTime,
+                                                    endTime - startTime,
                                                     RequestTimeout);
 
             }
@@ -1368,19 +1366,19 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 try
                 {
 
-                    ChargingReservation[] expiredReservations = null;
+                    ChargingReservation[]? expiredReservations = null;
 
-                    lock (_Reservations)
+                    lock (reservations)
                     {
-                        expiredReservations = _Reservations.Values.Where(reservation => reservation.IsExpired()).ToArray();
+                        expiredReservations = reservations.Values.Where(reservation => reservation.IsExpired()).ToArray();
                     }
 
                     foreach (var expiredReservation in expiredReservations)
                     {
 
-                        lock (_Reservations)
+                        lock (reservations)
                         {
-                            _Reservations.Remove(expiredReservation.Id);
+                            reservations.Remove(expiredReservation.Id);
                         }
 
                         //if (Status.Value == EVSEStatusTypes.Reserved &&

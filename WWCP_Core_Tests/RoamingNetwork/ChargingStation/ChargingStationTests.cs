@@ -346,30 +346,30 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 DE_GEF_S0001_AAAA.AdminStatus = ChargingStationAdminStatusTypes.InternalUse;
                 Assert.AreEqual(ChargingStationAdminStatusTypes.InternalUse,  DE_GEF_S0001_AAAA.AdminStatus);
-                Assert.AreEqual("InternalUse, OutOfService",                  DE_GEF_S0001_AAAA.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("internalUse, outOfService",                  DE_GEF_S0001_AAAA.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(2,                                            DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
                 DE_GEF_S0001_AAAA.AdminStatus = ChargingStationAdminStatusTypes.Operational;
                 Assert.AreEqual(ChargingStationAdminStatusTypes.Operational,  DE_GEF_S0001_AAAA.AdminStatus);
-                Assert.AreEqual("Operational, InternalUse, OutOfService",     DE_GEF_S0001_AAAA.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual("operational, internalUse, outOfService",     DE_GEF_S0001_AAAA.AdminStatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
                 Assert.AreEqual(3,                                            DE_GEF_S0001_AAAA.AdminStatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateAdminStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateAdminStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF_P0001.                                          GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", DE_GEF.                                                GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateChargingStationAdminStatusReport().ToString());
-                Assert.AreEqual("1 entities; Operational: 1 (100,00)", roamingNetwork.                                        GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateAdminStatusReport().               ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateAdminStatusReport().               ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF_P0001.                                          GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", DE_GEF.                                                GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateChargingStationAdminStatusReport().ToString());
+                Assert.AreEqual("1 entities; operational: 1 (100,00)", roamingNetwork.                                        GenerateChargingStationAdminStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_S0001_AAAA.GenerateAdminStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationAdminStatusReport\",\"count\":1,\"report\":{\"Operational\":{\"count\":1,\"percentage\":100.0}}}",
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationAdminStatusReport\",\"count\":1,\"report\":{\"operational\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
@@ -403,30 +403,30 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 DE_GEF_S0001_AAAA.Status = ChargingStationStatusTypes.InDeployment;
                 Assert.AreEqual(ChargingStationStatusTypes.InDeployment, DE_GEF_S0001_AAAA.Status);
-                Assert.AreEqual("InDeployment, Offline",                         DE_GEF_S0001_AAAA.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(2,                                               DE_GEF_S0001_AAAA.StatusSchedule().Count());
+                Assert.AreEqual("inDeployment, offline",           DE_GEF_S0001_AAAA.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual(2,                                 DE_GEF_S0001_AAAA.StatusSchedule().Count());
 
                 Thread.Sleep(1000);
 
-                DE_GEF_S0001_AAAA.Status = ChargingStationStatusTypes.Faulted;
-                Assert.AreEqual(ChargingStationStatusTypes.Faulted,      DE_GEF_S0001_AAAA.Status);
-                Assert.AreEqual("Faulted, InDeployment, Offline",                DE_GEF_S0001_AAAA.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
-                Assert.AreEqual(3,                                               DE_GEF_S0001_AAAA.StatusSchedule().Count());
+                DE_GEF_S0001_AAAA.Status = ChargingStationStatusTypes.Error;
+                Assert.AreEqual(ChargingStationStatusTypes.Error,  DE_GEF_S0001_AAAA.Status);
+                Assert.AreEqual("error, inDeployment, offline",    DE_GEF_S0001_AAAA.StatusSchedule().Select(status => status.Value.ToString()).AggregateWith(", "));
+                Assert.AreEqual(3,                                 DE_GEF_S0001_AAAA.StatusSchedule().Count());
 
 
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateStatusReport().               ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF_P0001.                                          GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", DE_GEF.                                                GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateChargingStationStatusReport().ToString());
-                Assert.AreEqual("1 entities; Faulted: 1 (100,00)", roamingNetwork.                                        GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_S0001_AAAA.                                     GenerateStatusReport().               ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStation[]         { DE_GEF_S0001_AAAA }.  GenerateStatusReport().               ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF_P0001.                                          GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingPool[]            { DE_GEF_P0001 }.       GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", DE_GEF.                                                GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", new IChargingStationOperator[] { DE_GEF }.             GenerateChargingStationStatusReport().ToString());
+                Assert.AreEqual("1 entities; error: 1 (100,00)", roamingNetwork.                                        GenerateChargingStationStatusReport().ToString());
 
 
                 var jsonStatusReport = DE_GEF_S0001_AAAA.GenerateStatusReport().ToJSON();
                 jsonStatusReport.Remove("timestamp");
 
-                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationStatusReport\",\"count\":1,\"report\":{\"Faulted\":{\"count\":1,\"percentage\":100.0}}}",
+                Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/chargingStationStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
 
             }
