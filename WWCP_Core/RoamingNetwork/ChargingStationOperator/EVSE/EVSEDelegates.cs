@@ -42,9 +42,9 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnEVSEDataChangedDelegate(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    IEVSE             EVSE,
-                                                   String            PropertyName,
-                                                   Object            OldValue,
-                                                   Object            NewValue);
+                                                   String?           PropertyName,
+                                                   Object?           OldValue,
+                                                   Object?           NewValue);
 
     /// <summary>
     /// A delegate called whenever the admin status of the EVSE changed.

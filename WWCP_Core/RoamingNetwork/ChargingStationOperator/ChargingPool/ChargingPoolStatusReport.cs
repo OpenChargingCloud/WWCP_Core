@@ -30,10 +30,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging pool status report for the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public static ChargingPoolStatusReport GenerateStatusReport            (this ChargingPool                          ChargingPool,
-                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingPoolStatusReport GenerateStatusReport            (this iChargingPool                          ChargingPool,
+                                                                                DateTime?                                   Timestamp   = null)
 
-            => new (new ChargingPool[] { ChargingPool },
+            => new (new IChargingPool[] { ChargingPool },
                     Timestamp);
 
         #endregion
@@ -44,8 +44,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging pool status report for the given charging pools.
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        public static ChargingPoolStatusReport GenerateStatusReport            (this IEnumerable<ChargingPool>             ChargingPools,
-                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingPoolStatusReport GenerateStatusReport            (this IEnumerable<IChargingPool>             ChargingPools,
+                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingPools,
                     Timestamp);
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging pool status report for the given charging station operator.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
-        public static ChargingPoolStatusReport GenerateChargingPoolStatusReport(this ChargingStationOperator               ChargingStationOperator,
-                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingPoolStatusReport GenerateChargingPoolStatusReport(this IChargingStationOperator               ChargingStationOperator,
+                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingStationOperator.ChargingPools,
                     Timestamp);
@@ -72,8 +72,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging pool status report for the given charging station operators.
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        public static ChargingPoolStatusReport GenerateChargingPoolStatusReport(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingPoolStatusReport GenerateChargingPoolStatusReport(this IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.ChargingPools),
                     Timestamp);
@@ -86,8 +86,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging pool status report for the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        public static ChargingPoolStatusReport GenerateChargingPoolStatusReport(this RoamingNetwork                        RoamingNetwork,
-                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingPoolStatusReport GenerateChargingPoolStatusReport(this IRoamingNetwork                        RoamingNetwork,
+                                                                                DateTime?                                   Timestamp   = null)
 
             => new (RoamingNetwork.ChargingPools,
                     Timestamp);
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging pool status report.
     /// </summary>
-    public class ChargingPoolStatusReport : StatusReport<ChargingPool, ChargingPoolStatusTypes>
+    public class ChargingPoolStatusReport : StatusReport<IChargingPool, ChargingPoolStatusTypes>
     {
 
         /// <summary>
@@ -108,8 +108,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
-        public ChargingPoolStatusReport(IEnumerable<ChargingPool>  ChargingPools,
-                                        DateTime?                  Timestamp   = null)
+        public ChargingPoolStatusReport(IEnumerable<IChargingPool>  ChargingPools,
+                                        DateTime?                   Timestamp   = null)
 
             : base(ChargingPools,
                    pool => pool.Status.Value,

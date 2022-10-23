@@ -35,8 +35,8 @@ namespace cloud.charging.open.protocols.WWCP
         #region ToJSON(this EVSEStatus, Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
-                                     UInt64?                       Skip  = null,
-                                     UInt64?                       Take  = null)
+                                     UInt64?                       Skip   = null,
+                                     UInt64?                       Take   = null)
         {
 
             #region Initial checks
@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.WWCP
                                               : filteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
-                                                               new JArray(kvp.Value.Timestamp.ToIso8601(),
-                                                                          kvp.Value.Status.   ToString())
+                                                               new JArray(kvp.Value.Timestamp.  ToIso8601(),
+                                                                          kvp.Value.Status.ToString())
                                                               )));
 
         }
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The current timestamped status of an EVSE.
+    /// The current status of a EVSE.
     /// </summary>
     public class EVSEStatus : AInternalData,
                               IEquatable <EVSEStatus>,
@@ -138,7 +138,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Timestamped<EVSEStatusTypes> TimestampedStatus
             => new (Timestamp, Status);
-
 
         #endregion
 
@@ -206,7 +205,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Take a snapshot of the current EVSE status.
         /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="EVSE">A EVSE.</param>
         public static EVSEStatus Snapshot(EVSE EVSE)
 
             => new (EVSE.Id,
@@ -222,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus1">A EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSEStatus EVSEStatus1,
@@ -248,7 +247,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus1">A EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEStatus EVSEStatus1,
@@ -263,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus1">A EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSEStatus EVSEStatus1,
@@ -284,7 +283,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus1">A EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEStatus EVSEStatus1,
@@ -299,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus1">A EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSEStatus EVSEStatus1,
@@ -320,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus1">A EVSE status.</param>
         /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEStatus EVSEStatus1,
@@ -344,7 +343,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => Object is EVSEStatus evseStatus
                    ? CompareTo(evseStatus)
-                   : throw new ArgumentException("The given object is not an EVSE status!",
+                   : throw new ArgumentException("The given object is not a EVSE status!",
                                                  nameof(Object));
 
         #endregion
@@ -398,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two EVSE identifications for equality.
         /// </summary>
-        /// <param name="EVSEStatus">An EVSE identification to compare with.</param>
+        /// <param name="EVSEStatus">A EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EVSEStatus? EVSEStatus)
 

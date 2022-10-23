@@ -30,10 +30,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging station admin status report for the given charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public static ChargingStationAdminStatusReport GenerateAdminStatusReport               (this ChargingStation                       ChargingStation,
-                                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingStationAdminStatusReport GenerateAdminStatusReport               (this IChargingStation                       ChargingStation,
+                                                                                                DateTime?                                   Timestamp   = null)
 
-            => new (new ChargingStation[] { ChargingStation },
+            => new (new IChargingStation[] { ChargingStation },
                     Timestamp);
 
         #endregion
@@ -44,8 +44,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging station admin status report for the given charging stations.
         /// </summary>
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        public static ChargingStationAdminStatusReport GenerateAdminStatusReport               (this IEnumerable<ChargingStation>          ChargingStations,
-                                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingStationAdminStatusReport GenerateAdminStatusReport               (this IEnumerable<IChargingStation>          ChargingStations,
+                                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingStations,
                     Timestamp);
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging station admin status report for the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this ChargingPool                          ChargingPool,
-                                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IChargingPool                          ChargingPool,
+                                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingPool.ChargingStations,
                     Timestamp);
@@ -72,8 +72,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging station admin status report for the given charging pools.
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IEnumerable<ChargingPool>             ChargingPools,
-                                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IEnumerable<IChargingPool>             ChargingPools,
+                                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingPools.SelectMany(chargingPool => chargingPool.ChargingStations),
                     Timestamp);
@@ -86,8 +86,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging station admin status report for the given charging station operator.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
-        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this ChargingStationOperator               ChargingStationOperator,
-                                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IChargingStationOperator               ChargingStationOperator,
+                                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingStationOperator.ChargingStations,
                     Timestamp);
@@ -100,8 +100,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging station admin status report for the given charging station operators.
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-                                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                                                DateTime?                                   Timestamp   = null)
 
             => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.ChargingStations),
                     Timestamp);
@@ -114,8 +114,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new charging station admin status report for the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this RoamingNetwork                        RoamingNetwork,
-                                                                                                DateTime?                                  Timestamp   = null)
+        public static ChargingStationAdminStatusReport GenerateChargingStationAdminStatusReport(this IRoamingNetwork                        RoamingNetwork,
+                                                                                                DateTime?                                   Timestamp   = null)
 
             => new (RoamingNetwork.ChargingStations,
                     Timestamp);
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging station admin status report.
     /// </summary>
-    public class ChargingStationAdminStatusReport : StatusReport<ChargingStation, ChargingStationAdminStatusTypes>
+    public class ChargingStationAdminStatusReport : StatusReport<IChargingStation, ChargingStationAdminStatusTypes>
     {
 
         /// <summary>
@@ -136,8 +136,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
         /// <param name="Timestamp">The optional timestamp of the status report generation.</param>
-        public ChargingStationAdminStatusReport(IEnumerable<ChargingStation>  ChargingStations,
-                                                DateTime?                     Timestamp   = null)
+        public ChargingStationAdminStatusReport(IEnumerable<IChargingStation>  ChargingStations,
+                                                DateTime?                      Timestamp   = null)
 
             : base(ChargingStations,
                    station => station.AdminStatus.Value,

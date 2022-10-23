@@ -30,16 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
     public static class GridConnectionTypesExtensions
     {
 
-        #region ToJSON(this GridConnection, JPropertyKey)
-
-        public static JProperty ToJSON(this GridConnectionTypes GridConnection, String JPropertyKey)
-
-            => GridConnection != GridConnectionTypes.Unknown
-                   ? new JProperty(JPropertyKey,
-                                   GridConnection.ToString())
-                   : null;
-
-        #endregion
+        
 
     }
 
@@ -52,29 +43,29 @@ namespace cloud.charging.open.protocols.WWCP
         Unknown,
 
         /// <summary>
-        /// 3-phase grid connection.
-        /// </summary>
-        ThreePhase,
-
-        /// <summary>
         /// Single phase grid connection.
         /// </summary>
-        SinglePhase,
+        AC_SinglePhase,
 
         /// <summary>
         /// Single phase grid connection on L0.
         /// </summary>
-        SinglePhaseL0,
+        AC_SinglePhase_L0,
 
         /// <summary>
         /// Single phase grid connection on L1.
         /// </summary>
-        SinglePhaseL1,
+        AC_SinglePhase_L1,
 
         /// <summary>
         /// Single phase grid connection on L2.
         /// </summary>
-        SinglePhaseL2,
+        AC_SinglePhase_L2,
+
+        /// <summary>
+        /// 3-phases grid connection.
+        /// </summary>
+        AC_ThreePhases
 
     }
 

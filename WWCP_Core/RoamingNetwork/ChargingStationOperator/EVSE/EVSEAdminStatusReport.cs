@@ -24,96 +24,131 @@ namespace cloud.charging.open.protocols.WWCP
     public static class EVSEAdminStatusReportExtensions
     {
 
+        #region GenerateAdminStatusReport(this EVSE,                     Timestamp = null)
+
         /// <summary>
         /// Generate a new EVSE admin status report for the given EVSE.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        public static EVSEAdminStatusReport GenerateAdminStatusReport(this EVSE                                      EVSE,
-                                                                      DateTime?                                      Timestamp = null)
+        public static EVSEAdminStatusReport GenerateAdminStatusReport(this IEVSE                                      EVSE,
+                                                                      DateTime?                                       Timestamp   = null)
 
-            => new (new EVSE[] { EVSE },
+            => new (new IEVSE[] { EVSE },
                     Timestamp);
+
+        #endregion
+
+        #region GenerateAdminStatusReport(this EVSEs,                    Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given EVSEs.
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        public static EVSEAdminStatusReport GenerateAdminStatusReport(this IEnumerable<EVSE>                         EVSEs,
-                                                                      DateTime?                                      Timestamp = null)
+        public static EVSEAdminStatusReport GenerateAdminStatusReport(this IEnumerable<IEVSE>                         EVSEs,
+                                                                      DateTime?                                       Timestamp   = null)
 
             => new (EVSEs,
                     Timestamp);
 
+        #endregion
+
+        #region GenerateAdminStatusReport(this ChargingStation,          Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this ChargingStation                       ChargingStation,
-                                                                          DateTime?                                  Timestamp = null)
+        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IChargingStation                       ChargingStation,
+                                                                          DateTime?                                   Timestamp   = null)
 
             => new (ChargingStation.EVSEs,
                     Timestamp);
+
+        #endregion
+
+        #region GenerateAdminStatusReport(this ChargingStations,         Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given charging stations.
         /// </summary>
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<ChargingStation>          ChargingStations,
-                                                                          DateTime?                                  Timestamp = null)
+        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<IChargingStation>          ChargingStations,
+                                                                          DateTime?                                   Timestamp   = null)
 
             => new (ChargingStations.SelectMany(chargingStation => chargingStation.EVSEs),
                     Timestamp);
+
+        #endregion
+
+        #region GenerateAdminStatusReport(this ChargingPool,             Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this ChargingPool                          ChargingPool,
-                                                                          DateTime?                                  Timestamp = null)
+        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IChargingPool                          ChargingPool,
+                                                                          DateTime?                                   Timestamp   = null)
 
             => new (ChargingPool.EVSEs,
                     Timestamp);
+
+        #endregion
+
+        #region GenerateAdminStatusReport(this ChargingPools,            Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given charging pools.
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<ChargingPool>             ChargingPools,
-                                                                          DateTime?                                  Timestamp = null)
+        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<IChargingPool>             ChargingPools,
+                                                                          DateTime?                                   Timestamp   = null)
 
             => new (ChargingPools.SelectMany(chargingPool => chargingPool.EVSEs),
                     Timestamp);
+
+        #endregion
+
+        #region GenerateAdminStatusReport(this ChargingStationOperator,  Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given charging station operator.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
-        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this ChargingStationOperator               ChargingStationOperator,
-                                                                          DateTime?                                  Timestamp = null)
+        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IChargingStationOperator               ChargingStationOperator,
+                                                                          DateTime?                                   Timestamp   = null)
 
             => new (ChargingStationOperator.EVSEs,
                     Timestamp);
+
+        #endregion
+
+        #region GenerateAdminStatusReport(this ChargingStationOperators, Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given charging station operators.
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-                                                                          DateTime?                                  Timestamp = null)
+        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                                                          DateTime?                                   Timestamp   = null)
 
             => new (ChargingStationOperators.SelectMany(chargingStationOperator => chargingStationOperator.EVSEs),
                     Timestamp);
+
+        #endregion
+
+        #region GenerateAdminStatusReport(this RoamingNetwork,           Timestamp = null)
 
         /// <summary>
         /// Generate a new EVSE admin status report for the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this RoamingNetwork                        RoamingNetwork,
-                                                                          DateTime?                                  Timestamp = null)
+        public static EVSEAdminStatusReport GenerateEVSEAdminStatusReport(this IRoamingNetwork                        RoamingNetwork,
+                                                                          DateTime?                                   Timestamp   = null)
 
             => new (RoamingNetwork.EVSEs,
                     Timestamp);
+
+        #endregion
 
     }
 

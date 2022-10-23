@@ -700,7 +700,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId1">A EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        public static Boolean operator == (EVSE_Id EVSEId1,
+                                           EVSE_Id EVSEId2)
+
             => EVSEId1.Equals(EVSEId2);
 
         #endregion
@@ -713,7 +715,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId1">A EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        public static Boolean operator != (EVSE_Id EVSEId1,
+                                           EVSE_Id EVSEId2)
+
             => !EVSEId1.Equals(EVSEId2);
 
         #endregion
@@ -726,7 +730,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId1">A EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        public static Boolean operator < (EVSE_Id EVSEId1,
+                                          EVSE_Id EVSEId2)
+
             => EVSEId1.CompareTo(EVSEId2) < 0;
 
         #endregion
@@ -739,7 +745,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId1">A EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        public static Boolean operator <= (EVSE_Id EVSEId1,
+                                           EVSE_Id EVSEId2)
+
             => EVSEId1.CompareTo(EVSEId2) <= 0;
 
         #endregion
@@ -752,7 +760,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId1">A EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        public static Boolean operator > (EVSE_Id EVSEId1,
+                                          EVSE_Id EVSEId2)
+
             => EVSEId1.CompareTo(EVSEId2) > 0;
 
         #endregion
@@ -765,7 +775,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId1">A EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        public static Boolean operator >= (EVSE_Id EVSEId1,
+                                           EVSE_Id EVSEId2)
+
             => EVSEId1.CompareTo(EVSEId2) >= 0;
 
         #endregion
@@ -777,10 +789,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">An EVSE identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is EVSE_Id EVSEId
                    ? CompareTo(EVSEId)
@@ -791,9 +803,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(EVSEId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE identifications.
         /// </summary>
-        /// <param name="EVSEId">An object to compare with.</param>
+        /// <param name="EVSEId">An EVSE identification to compare with.</param>
         public Int32 CompareTo(EVSE_Id EVSEId)
         {
 
@@ -814,11 +826,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">An EVSE identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is EVSE_Id EVSEId &&
                    Equals(EVSEId);
@@ -831,7 +842,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two EVSE identifications for equality.
         /// </summary>
         /// <param name="EVSEId">An EVSE identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EVSE_Id EVSEId)
 
             => OperatorId.Equals(EVSEId.OperatorId) &&

@@ -17,11 +17,12 @@
 
 #region Usings
 
+using System.Collections.Concurrent;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections.Concurrent;
 
 #endregion
 
@@ -96,55 +97,178 @@ namespace cloud.charging.open.protocols.WWCP
                              IEnumerable<SocketOutlet>
     {
 
+        #region Properties
+
         /// <summary>
         /// The roaming network of this EVSE.
         /// </summary>
-        IRoamingNetwork?          RoamingNetwork        { get; }
+        IRoamingNetwork?                       RoamingNetwork          { get; }
 
         /// <summary>
         /// The charging station operator of this EVSE.
         /// </summary>
         [Optional]
-        ChargingStationOperator?  Operator              { get; }
+        ChargingStationOperator?               Operator                { get; }
 
         /// <summary>
-        /// The remote EVSE.
+        /// The charging pool of this EVSE.
+        /// </summary>
+        ChargingPool?                          ChargingPool            { get; }
+
+        /// <summary>
+        /// The charging station of this EVSE.
+        /// </summary>
+        ChargingStation?                       ChargingStation         { get; }
+
+        /// <summary>
+        /// An optional remote EVSE.
         /// </summary>
         [Optional]
-        IRemoteEVSE?              RemoteEVSE            { get; }
+        IRemoteEVSE?                           RemoteEVSE              { get; }
 
 
 
-        decimal? AverageVoltage { get; set; }
-        ConcurrentDictionary<Brand_Id, Brand> Brands { get; }
-        ReactiveSet<ChargingModes> ChargingModes { get; }
-        ChargingPool? ChargingPool { get; }
-        ChargingSession? ChargingSession { get; set; }
-        ChargingStation? ChargingStation { get; }
-        CurrentTypes? CurrentType { get; set; }
-        ReactiveSet<DataLicense> DataLicenses { get; }
-        EnergyMeter? EnergyMeter { get; set; }
-        EnergyMix? EnergyMix { get; set; }
-        ReactiveSet<Timestamped<EnergyMix>> EnergyMixPrognoses { get; }
-        Timestamped<EnergyMix>? EnergyMixRealTime { get; set; }
-        bool IsFreeOfCharge { get; set; }
-        DateTime? LastStatusUpdate { get; set; }
-        decimal? MaxCapacity { get; set; }
-        ReactiveSet<Timestamped<decimal>> MaxCapacityPrognoses { get; }
-        Timestamped<decimal>? MaxCapacityRealTime { get; set; }
-        decimal? MaxCurrent { get; set; }
-        ReactiveSet<Timestamped<decimal>> MaxCurrentPrognoses { get; }
-        Timestamped<decimal>? MaxCurrentRealTime { get; set; }
-        decimal? MaxPower { get; set; }
-        ReactiveSet<Timestamped<decimal>> MaxPowerPrognoses { get; }
-        Timestamped<decimal>? MaxPowerRealTime { get; set; }
+        /// <summary>
+        /// All brands registered for this EVSE.
+        /// </summary>
+        ConcurrentDictionary<Brand_Id, Brand>  Brands                  { get; }
+
+        /// <summary>
+        /// The license of the EVSE data.
+        /// </summary>
+        ReactiveSet<DataLicense>               DataLicenses            { get; }
+
+
+        /// <summary>
+        /// Charging modes.
+        /// </summary>
+        ReactiveSet<ChargingModes>             ChargingModes           { get; }
+
+        /// <summary>
+        /// The power socket outlets.
+        /// </summary>
+        ReactiveSet<SocketOutlet>              SocketOutlets           { get; set; }
+
+
+        /// <summary>
+        /// The type of the current.
+        /// </summary>
+        CurrentTypes?                          CurrentType             { get; set; }
+
+        /// <summary>
+        /// The average voltage.
+        /// </summary>
+        Decimal?                               AverageVoltage          { get; set; }
+
+
+        /// <summary>
+        /// The maximum current [Ampere].
+        /// </summary>
+        Decimal?                               MaxCurrent              { get; set; }
+
+        /// <summary>
+        /// The real-time maximum current [Ampere].
+        /// </summary>
+        Timestamped<Decimal>?                  MaxCurrentRealTime      { get; set; }
+
+        /// <summary>
+        /// Prognoses on future values of the maximum current [Ampere].
+        /// </summary>
+        ReactiveSet<Timestamped<Decimal>>      MaxCurrentPrognoses     { get; }
+
+
+        /// <summary>
+        /// The maximum power [kWatt].
+        /// </summary>
+        Decimal?                               MaxPower                { get; set; }
+
+        /// <summary>
+        /// The real-time maximum power [kWatt].
+        /// </summary>
+        Timestamped<Decimal>?                  MaxPowerRealTime        { get; set; }
+
+        /// <summary>
+        /// Prognoses on future values of the maximum power [kWatt].
+        /// </summary>
+        ReactiveSet<Timestamped<Decimal>>      MaxPowerPrognoses       { get; }
+
+
+        /// <summary>
+        /// The maximum capacity [kWh].
+        /// </summary>
+        Decimal?                               MaxCapacity             { get; set; }
+
+        /// <summary>
+        /// The real-time maximum capacity [kWh].
+        /// </summary>
+        Timestamped<Decimal>?                  MaxCapacityRealTime     { get; set; }
+
+
+        ReactiveSet<Timestamped<Decimal>>      MaxCapacityPrognoses    { get; }
+
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+        EnergyMix?                             EnergyMix               { get; set; }
+
+        /// <summary>
+        /// The current energy mix.
+        /// </summary>
+        Timestamped<EnergyMix>?                EnergyMixRealTime       { get; set; }
+
+
+        /// <summary>
+        /// Prognoses on future values of the energy mix.
+        /// </summary>
+        ReactiveSet<Timestamped<EnergyMix>>    EnergyMixPrognoses      { get; }
+
+
+
+        /// <summary>
+        /// An optional energy meter.
+        /// </summary>
+        EnergyMeter?                           EnergyMeter             { get; set; }
+
+
+
+        Boolean IsFreeOfCharge { get; set; }
+
+
+
         TimeSpan MaxReservationDuration { get; set; }
         IEnumerable<ChargingReservation> Reservations { get; }
-        ReactiveSet<SocketOutlet> SocketOutlets { get; }
+        ChargingSession? ChargingSession { get; set; }
 
-        event OnEVSEDataChangedDelegate? OnDataChanged;
-        event OnEVSEAdminStatusChangedDelegate? OnAdminStatusChanged;
-        event OnEVSEStatusChangedDelegate? OnStatusChanged;
+
+
+        DateTime? LastStatusUpdate { get; set; }
+
+        #endregion
+
+        #region Events
+
+        #region OnEVSEData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        event OnEVSEDataChangedDelegate?         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        event OnEVSEAdminStatusChangedDelegate?  OnAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        event OnEVSEStatusChangedDelegate?       OnStatusChanged;
+
+        #endregion
+
+        #endregion
+
 
         void AddCurrentType(CurrentTypes CurrentType);
         int CompareTo(EVSE? EVSE);

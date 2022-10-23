@@ -41,17 +41,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEDataChangedDelegate?         OnEVSEDataChanged;
+        event OnEVSEDataChangedDelegate?         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
+        event OnEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
+        event OnEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -82,10 +82,10 @@ namespace cloud.charging.open.protocols.WWCP
                             Action<ChargingStation, EVSE_Id>?  OnError       = null);
 
 
-        Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime                 Timestamp,
-                                                    CancellationToken        CancellationToken,
-                                                    EventTracking_Id         EventTrackingId,
-                                                    TimeSpan?                RequestTimeout = null);
+        Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime           Timestamp,
+                                                    CancellationToken  CancellationToken,
+                                                    EventTracking_Id   EventTrackingId,
+                                                    TimeSpan?          RequestTimeout = null);
 
 
      //   IEnumerable<IRemoteEVSE> EVSEs { get; }

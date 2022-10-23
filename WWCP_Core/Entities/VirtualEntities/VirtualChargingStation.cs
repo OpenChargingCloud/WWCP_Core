@@ -387,17 +387,17 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        public event OnRemoteEVSEDataChangedDelegate?         OnEVSEDataChanged;
+        public event OnEVSEDataChangedDelegate?         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        public event OnRemoteEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
+        public event OnEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        public event OnRemoteEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -543,14 +543,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal void UpdateEVSEData(DateTime     Timestamp,
-                                     IRemoteEVSE  RemoteEVSE,
-                                     String       PropertyName,
-                                     Object       OldValue,
-                                     Object       NewValue)
+        internal void UpdateEVSEData(DateTime  Timestamp,
+                                     IEVSE     RemoteEVSE,
+                                     String?   PropertyName,
+                                     Object?   OldValue,
+                                     Object?   NewValue)
         {
 
             OnEVSEDataChanged?.Invoke(Timestamp,
+                                      EventTracking_Id.New,
                                       RemoteEVSE,
                                       PropertyName,
                                       OldValue,
@@ -570,15 +571,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="RemoteEVSE">The updated remote EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                                  EventTracking_Id                  EventTrackingId,
-                                                  IRemoteEVSE                       RemoteEVSE,
+        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  IEVSE                              RemoteEVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-            if (OnEVSEAdminStatusChangedLocal != null)
+            if (OnEVSEAdminStatusChangedLocal is not null)
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
                                                     EventTrackingId,
                                                     RemoteEVSE,
@@ -599,15 +600,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="RemoteEVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
-                                             EventTracking_Id             EventTrackingId,
-                                             IRemoteEVSE                  RemoteEVSE,
+        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
+                                             EventTracking_Id              EventTrackingId,
+                                             IEVSE                         RemoteEVSE,
                                              Timestamped<EVSEStatusTypes>  OldStatus,
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal != null)
+            if (OnEVSEStatusChangedLocal is not null)
                 await OnEVSEStatusChangedLocal(Timestamp,
                                                EventTrackingId,
                                                RemoteEVSE,

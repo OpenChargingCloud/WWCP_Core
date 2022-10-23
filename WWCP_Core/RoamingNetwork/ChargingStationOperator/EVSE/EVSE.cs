@@ -74,6 +74,38 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
+        /// The roaming network of this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public IRoamingNetwork?                         RoamingNetwork
+            => ChargingStation?.RoamingNetwork;
+
+        /// <summary>
+        /// The charging station operator of this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingStationOperator?                 Operator
+            => ChargingStation?.Operator;
+
+        /// <summary>
+        /// The charging pool of this EVSE.
+        /// </summary>
+        public ChargingPool?                            ChargingPool
+            => ChargingStation?.ChargingPool;
+
+        /// <summary>
+        /// The charging station of this EVSE.
+        /// </summary>
+        public ChargingStation?                         ChargingStation         { get; }
+
+        /// <summary>
+        /// An optional remote EVSE.
+        /// </summary>
+        public IRemoteEVSE?                             RemoteEVSE              { get; }
+
+
+
+        /// <summary>
         /// All brands registered for this EVSE.
         /// </summary>
         [Optional, SlowData]
@@ -95,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The power socket outlets.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<SocketOutlet>                SocketOutlets           { get; }
+        public ReactiveSet<SocketOutlet>                SocketOutlets           { get; set; }
 
 
         #region CurrentType
@@ -682,40 +714,6 @@ namespace cloud.charging.open.protocols.WWCP
         public event OnNewChargeDetailRecordDelegate?  OnNewChargeDetailRecord;
 
         #endregion
-
-        #endregion
-
-        #region Links
-
-        /// <summary>
-        /// An optional remote EVSE.
-        /// </summary>
-        public IRemoteEVSE?              RemoteEVSE         { get; }
-
-        /// <summary>
-        /// The charging station of this EVSE.
-        /// </summary>
-        public ChargingStation?          ChargingStation    { get; }
-
-        /// <summary>
-        /// The charging pool of this EVSE.
-        /// </summary>
-        public ChargingPool?             ChargingPool
-            => ChargingStation?.ChargingPool;
-
-        /// <summary>
-        /// The operator of this EVSE.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingStationOperator?  Operator
-            => ChargingStation?.Operator;
-
-        /// <summary>
-        /// The roaming network of this EVSE.
-        /// </summary>
-        [InternalUseOnly]
-        public IRoamingNetwork?          RoamingNetwork
-            => ChargingStation?.RoamingNetwork;
 
         #endregion
 

@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Diagnostics;
+using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
@@ -28,7 +29,6 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
-using System.Collections.Concurrent;
 
 #endregion
 

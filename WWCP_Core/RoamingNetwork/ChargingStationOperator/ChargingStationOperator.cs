@@ -2930,7 +2930,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGetEVSEById(NewAdminStatus.Id, out var evse) &&
                 evse is not null)
             {
-                evse.AdminStatus = NewAdminStatus.TimestampedStatus;
+                evse.AdminStatus = NewAdminStatus.TimestampedAdminStatus;
             }
 
         }

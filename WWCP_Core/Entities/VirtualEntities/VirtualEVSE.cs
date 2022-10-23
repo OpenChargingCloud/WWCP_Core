@@ -484,44 +484,44 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         }
 
-        event OnEVSEAdminStatusChangedDelegate? IEVSE.OnAdminStatusChanged
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
+        //event OnEVSEAdminStatusChangedDelegate? IEVSE.OnAdminStatusChanged
+        //{
+        //    add
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    remove
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
-        event OnEVSEDataChangedDelegate? IEVSE.OnDataChanged
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
+        //event OnEVSEDataChangedDelegate? IEVSE.OnDataChanged
+        //{
+        //    add
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    remove
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
-        event OnEVSEStatusChangedDelegate? IEVSE.OnStatusChanged
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
+        //event OnEVSEStatusChangedDelegate? IEVSE.OnStatusChanged
+        //{
+        //    add
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    remove
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
         #endregion
 
@@ -570,17 +570,17 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// An event fired whenever the static data of the EVSE changed.
         /// </summary>
-        public event OnRemoteEVSEDataChangedDelegate         OnDataChanged;
+        public event OnEVSEDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of the EVSE changed.
         /// </summary>
-        public event OnRemoteEVSEStatusChangedDelegate       OnStatusChanged;
+        public event OnEVSEStatusChangedDelegate?       OnStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of the EVSE changed.
         /// </summary>
-        public event OnRemoteEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         #endregion
 
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
+            if (OnAdminStatusChangedLocal is not null)
                 await OnAdminStatusChangedLocal(Timestamp,
                                                 EventTrackingId,
                                                 this,
@@ -628,7 +628,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
+            if (OnStatusChangedLocal is not null)
                 await OnStatusChangedLocal(Timestamp,
                                            EventTrackingId,
                                            this,

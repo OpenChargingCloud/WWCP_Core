@@ -110,6 +110,9 @@ namespace cloud.charging.open.protocols.WWCP
         IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
 
 
+        IEnumerable<IEVSE>              EVSEs                            { get; }
+
+
         /// <summary>
         /// Return a JSON representation for the given charging station operator.
         /// </summary>
