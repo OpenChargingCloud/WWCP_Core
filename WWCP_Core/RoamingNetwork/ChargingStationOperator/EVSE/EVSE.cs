@@ -25,7 +25,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
-using System.Collections.Concurrent;
 
 #endregion
 
@@ -109,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brands registered for this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ConcurrentDictionary<Brand_Id, Brand>    Brands                  { get; }
+        public ReactiveSet<Brand>                       Brands                  { get; }
 
         /// <summary>
         /// The license of the EVSE data.
@@ -263,9 +262,14 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (value is not null)
-                    SetProperty(ref maxCurrentRealTime,
-                                value,
-                                EventTracking_Id.New);
+                {
+
+                    if (!maxCurrentRealTime.HasValue || Math.Abs(maxCurrentRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref maxCurrentRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
 
                 else
                     DeleteProperty(ref maxCurrentRealTime);
@@ -305,12 +309,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value is not null)
                 {
 
-                    if (!maxPower.HasValue)
-                        SetProperty(ref maxPower,
-                                    value,
-                                    EventTracking_Id.New);
-
-                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                    if (!maxPower.HasValue || Math.Abs(maxPower.Value - value.Value) > EPSILON)
                         SetProperty(ref maxPower,
                                     value,
                                     EventTracking_Id.New);
@@ -345,12 +344,16 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (value is not null)
-                    SetProperty(ref maxPowerRealTime,
-                                value,
-                                EventTracking_Id.New);
+                {
 
+                    if (!maxPowerRealTime.HasValue || Math.Abs(maxPowerRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref maxPowerRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
                 else
-                    DeleteProperty(ref maxPowerRealTime);
+                    DeleteProperty(ref maxPower);
 
             }
 
@@ -414,7 +417,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The real-time maximum capacity [kWh].
         /// </summary>
-        [Mandatory]
+        [Optional]
         public Timestamped<Decimal>? MaxCapacityRealTime
         {
 
@@ -427,10 +430,14 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (value is not null)
-                    SetProperty(ref maxCapacityRealTime,
-                                value,
-                                EventTracking_Id.New);
+                {
 
+                    if (!maxCapacityRealTime.HasValue || Math.Abs(maxCapacityRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref maxCapacityRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
                 else
                     DeleteProperty(ref maxCapacityRealTime);
 
@@ -443,7 +450,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Prognoses on future values of the maximum capacity [kWh].
         /// </summary>
-        [Mandatory]
+        [Optional]
         public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses    { get; }
 
 
@@ -490,7 +497,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The current energy mix.
         /// </summary>
-        [Mandatory, FastData]
+        [Optional, FastData]
         public Timestamped<EnergyMix>? EnergyMixRealTime
         {
 
@@ -516,11 +523,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region EnergyMixPrognoses
+
+        private EnergyMixPrognosis? energyMixPrognoses;
+
         /// <summary>
         /// Prognoses on future values of the energy mix.
         /// </summary>
-        [Mandatory, FastData]
-        public ReactiveSet<Timestamped<EnergyMix>>      EnergyMixPrognoses      { get; }
+        [Optional, FastData]
+        public EnergyMixPrognosis? EnergyMixPrognoses
+        {
+
+            get
+            {
+                return energyMixPrognoses ?? ChargingStation?.EnergyMixPrognoses;
+            }
+
+            set
+            {
+
+                if (value != energyMixPrognoses && value != ChargingStation?.EnergyMixPrognoses)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref energyMixPrognoses);
+
+                    else
+                        SetProperty(ref energyMixPrognoses, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
 
 
         #region MaxReservationDuration
@@ -541,9 +578,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-                SetProperty(ref maxReservationDuration,
-                            value,
-                            EventTracking_Id.New);
+                if (maxReservationDuration.TotalSeconds != value.TotalSeconds)
+                    SetProperty(ref maxReservationDuration,
+                                value,
+                                EventTracking_Id.New);
             }
 
         }
@@ -568,9 +606,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-                SetProperty(ref isFreeOfCharge,
-                            value,
-                            EventTracking_Id.New);
+                if (isFreeOfCharge != value)
+                    SetProperty(ref isFreeOfCharge,
+                                value,
+                                EventTracking_Id.New);
             }
 
         }
@@ -768,14 +807,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingStation = ChargingStation;
 
-            this.Brands                             = new ConcurrentDictionary<Brand_Id, Brand>();
-            //this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
+            this.Brands                             = new ReactiveSet<Brand>();
+            this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
 
-            //    PropertyChanged("DataLicenses",
-            //                    oldItems,
-            //                    newItems);
+                PropertyChanged("DataLicenses",
+                                oldItems,
+                                newItems);
 
-            //};
+            };
 
             this.DataLicenses                       = new ReactiveSet<DataLicense>();
             this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
@@ -822,16 +861,6 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 PropertyChanged("MaxCapacityPrognoses",
-                                oldItems,
-                                newItems);
-
-            };
-
-            this.EnergyMixPrognoses                 = new ReactiveSet<Timestamped<EnergyMix>>();
-            this.EnergyMixPrognoses.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
-            {
-
-                PropertyChanged("EnergyMixPrognoses",
                                 oldItems,
                                 newItems);
 
@@ -904,8 +933,7 @@ namespace cloud.charging.open.protocols.WWCP
             Description.Add(OtherEVSE.Description);
 
             Brands.Clear();
-            foreach (var brand in OtherEVSE.Brands)
-                Brands.TryAdd(brand.Key, brand.Value);
+            Brands.Add(OtherEVSE.Brands);
 
             ChargingModes.Clear();
             ChargingModes.Add(OtherEVSE.ChargingModes);
@@ -2164,18 +2192,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of the given EVSE.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public JObject ToJSON(Boolean Embedded = false,
-                              InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly,
-                              InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly,
-                              InfoStatus ExpandChargingPoolId = InfoStatus.ShowIdOnly,
-                              InfoStatus ExpandChargingStationId = InfoStatus.ShowIdOnly,
-                              InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly,
-                              InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
+        public JObject ToJSON(Boolean                                 Embedded                          = false,
+                              InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
 
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("@id", Id.ToString()),
 
@@ -2189,8 +2217,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                            Brands.SafeAny()
                                  ? ExpandBrandIds.Switch(
-                                       () => new JProperty("brandId", Brands.Select(brand => brand.Key.ToString())),
-                                       () => new JProperty("brand",   Brands.Values.ToJSON()))
+                                       () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
+                                       () => new JProperty("brand",   Brands.ToJSON()))
                                  : null,
 
                            (!Embedded || DataSource != ChargingStation.DataSource)
@@ -2282,8 +2310,8 @@ namespace cloud.charging.open.protocols.WWCP
                      );
 
             return CustomEVSESerializer is not null
-                       ? CustomEVSESerializer(this, JSON)
-                       : JSON;
+                       ? CustomEVSESerializer(this, json)
+                       : json;
 
         }
 

@@ -151,38 +151,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        public ChargingStationOperator Operator => throw new NotImplementedException();
-
-        public IRemoteChargingPool RemoteChargingPool => throw new NotImplementedException();
-
-        public Address? Address
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public GeoCoordinate? GeoLocation
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public OpeningTimes OpeningTimes => throw new NotImplementedException();
-
-        public IEnumerable<IEVSE> EVSEs => throw new NotImplementedException();
-
         #region Constructor(s)
 
         /// <summary>
@@ -1168,66 +1136,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public IEnumerable<ChargingSession> ChargingSessions
             => _ChargingSessions.Select(_ => _.Value);
 
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition => throw new NotImplementedException();
-
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval => throw new NotImplementedException();
-
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
-
-        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
-
-        public ChargingStationOperator? SubOperator => throw new NotImplementedException();
-
-        public ReactiveSet<Brand> Brands => throw new NotImplementedException();
-
-        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
-
-        public Languages? LocationLanguage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Address EntranceAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GeoCoordinate? EntranceLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public I18NString ArrivalInstructions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        OpeningTimes IChargingPool.OpeningTimes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public UIFeatures? UIFeatures { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<AuthenticationModes> AuthenticationModes => throw new NotImplementedException();
-
-        public ReactiveSet<PaymentOptions> PaymentOptions => throw new NotImplementedException();
-
-        public AccessibilityTypes? Accessibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
-
-        public I18NString HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GridConnectionTypes? GridConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Decimal? MaxCurrent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<Decimal>? MaxCurrentRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxCurrentPrognoses => throw new NotImplementedException();
-
-        public Decimal? MaxPower { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<Decimal>? MaxPowerRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxPowerPrognoses => throw new NotImplementedException();
-
-        public Decimal? MaxCapacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<Decimal>? MaxCapacityRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxCapacityPrognoses => throw new NotImplementedException();
-
-        public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<EnergyMix>> EnergyMixPrognoses => throw new NotImplementedException();
-
-        public Address ExitAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GeoCoordinate? ExitLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public Partly IsHubjectCompatible => throw new NotImplementedException();
-
-        public Partly DynamicInfoAvailable => throw new NotImplementedException();
-
-        public Func<ChargingStationStatusReport, ChargingPoolStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
         /// <summary>
@@ -1957,6 +1865,103 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             => Id.ToString();
 
+        #endregion
+
+
+
+
+
+        public ChargingStationOperator Operator => throw new NotImplementedException();
+
+        public IRemoteChargingPool RemoteChargingPool => throw new NotImplementedException();
+
+        public Address? Address
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public GeoCoordinate? GeoLocation
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public OpeningTimes OpeningTimes => throw new NotImplementedException();
+
+        public IEnumerable<IEVSE> EVSEs => throw new NotImplementedException();
+
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition => throw new NotImplementedException();
+
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval => throw new NotImplementedException();
+
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
+
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
+
+        public ChargingStationOperator? SubOperator => throw new NotImplementedException();
+
+        public ReactiveSet<Brand> Brands => throw new NotImplementedException();
+
+        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
+
+        public Languages? LocationLanguage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Address EntranceAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GeoCoordinate? EntranceLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public I18NString ArrivalInstructions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        OpeningTimes IChargingPool.OpeningTimes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public UIFeatures? UIFeatures { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<AuthenticationModes> AuthenticationModes => throw new NotImplementedException();
+
+        public ReactiveSet<PaymentOptions> PaymentOptions => throw new NotImplementedException();
+
+        public AccessibilityTypes? Accessibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
+
+        public I18NString HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GridConnectionTypes? GridConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Decimal? MaxCurrent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<Decimal>? MaxCurrentRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxCurrentPrognoses => throw new NotImplementedException();
+
+        public Decimal? MaxPower { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<Decimal>? MaxPowerRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxPowerPrognoses => throw new NotImplementedException();
+
+        public Decimal? MaxCapacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<Decimal>? MaxCapacityRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Timestamped<Decimal>> MaxCapacityPrognoses => throw new NotImplementedException();
+
+        public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public Address ExitAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public GeoCoordinate? ExitLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public Partly IsHubjectCompatible => throw new NotImplementedException();
+
+        public Partly DynamicInfoAvailable => throw new NotImplementedException();
+
+        public Func<ChargingStationStatusReport, ChargingPoolStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public JObject ToJSON(Boolean Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationIds = InfoStatus.Expanded, InfoStatus ExpandEVSEIds = InfoStatus.Hidden, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<ChargingPool>? CustomChargingPoolSerializer = null, CustomJObjectSerializerDelegate<ChargingStation>? CustomChargingStationSerializer = null, CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
         {
             throw new NotImplementedException();
@@ -2101,9 +2106,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
             throw new NotImplementedException();
         }
-
-        #endregion
-
 
     }
 

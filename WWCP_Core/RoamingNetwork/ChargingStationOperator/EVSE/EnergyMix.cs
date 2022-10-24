@@ -17,69 +17,78 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class TimestampedMap<TKey, TValue>
-    {
-
-        public DateTime                                 Timestamp   { get; }
-        public IEnumerable<KeyValuePair<TKey, TValue>>  Map         { get; }
-
-        public TimestampedMap(DateTime                                 Timestamp,
-                              IEnumerable<KeyValuePair<TKey, TValue>>  Map)
-        {
-
-            this.Timestamp  = Timestamp;
-            this.Map        = Map;
-
-        }
-
-    }
-
-
     /// <summary>
-    /// A socket outlet to connect an electric vehicle (EV)
-    /// to an Electric Vehicle Supply Equipment (EVSE).
+    /// An energy mix.
     /// </summary>
-    public class EnergyMix
+    public class EnergyMix : IEquatable<EnergyMix>
     {
 
         #region Properties
 
-        public Boolean                                         IsGreenEnergy           { get; }
+        /// <summary>
+        /// The energy sources.
+        /// </summary>
+        public IEnumerable<Percentage<EnergySourceCategories>>  EnergySources           { get; }
 
-        public TimestampedMap<EnergySourceCategories, Single>  EnergySources           { get; }
+        /// <summary>
+        /// The environmental impacts.
+        /// </summary>
+        public IEnumerable<Percentage<EnvironmentalImpacts>>    EnvironmentalImpacts    { get; }
 
-        public TimestampedMap<EnvironmentalImpacts,   Single>  EnvironmentalImpacts    { get; }
+        /// <summary>
+        /// The name or brand of the energy supplier.
+        /// </summary>
+        public I18NString                                       SupplierName            { get; }
 
-        public I18NString                                      Supplier                { get; }
+        /// <summary>
+        /// The name or brand of the energy product.
+        /// </summary>
+        public I18NString                                       ProductName             { get; }
 
-        public I18NString                                      EnergyProduct           { get; }
-
-        public GridConnectionTypes?                            GridConnection          { get; }
+        /// <summary>
+        /// Optional additional remarks.
+        /// </summary>
+        public I18NString?                                      AdditionalRemarks       { get; }
 
         #endregion
-
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new energy sources overview.
+        /// Create a new energy mix.
         /// </summary>
-        public EnergyMix()
+        /// <param name="EnergySources">The energy sources.</param>
+        /// <param name="EnvironmentalImpacts">The environmental impacts.</param>
+        /// <param name="SupplierName">The name or brand of the energy supplier.</param>
+        /// <param name="ProductName">The name or brand of the energy product.</param>
+        /// <param name="AdditionalRemarks">Optional additional remarks.</param>
+        public EnergyMix(IEnumerable<Percentage<EnergySourceCategories>>  EnergySources,
+                         IEnumerable<Percentage<EnvironmentalImpacts>>    EnvironmentalImpacts,
+                         I18NString                                       SupplierName,
+                         I18NString                                       ProductName,
+                         I18NString?                                      AdditionalRemarks   = null)
         {
 
-            
+            if (!EnergySources.Any())
+                throw new ArgumentNullException(nameof(EnergySources),  "The given energy sources must not be null or empty!");
+
+            if (!EnvironmentalImpacts.Any())
+                throw new ArgumentNullException(nameof(EnergySources),  "The given environmental impacts must not be null or empty!");
+
+            this.EnergySources         = EnergySources;
+            this.EnvironmentalImpacts  = EnvironmentalImpacts;
+            this.SupplierName          = SupplierName;
+            this.ProductName           = ProductName;
+            this.AdditionalRemarks     = AdditionalRemarks;
 
         }
 
@@ -95,8 +104,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             => JSONObject.Create(
 
-                   new JProperty("is_green_energy", IsGreenEnergy),
-
                    //new JProperty("energy_sources",  new JArray(
                    //    EnergyMix.EnergySources.SafeSelect(energysource => energysource.ToJSON())
                    //)),
@@ -105,10 +112,70 @@ namespace cloud.charging.open.protocols.WWCP
                    //    EnergyMix.EnvironmentalImpacts.Select(environmentalimpact => environmentalimpact.ToJSON())
                    //)),
 
-                   new JProperty("supplier_name",        Supplier.     ToJSON()),
-                   new JProperty("energy_product_name",  EnergyProduct.ToJSON())
+                   new JProperty("supplierName",  SupplierName.ToJSON()),
+                   new JProperty("productName",   ProductName. ToJSON()),
+
+                   AdditionalRemarks is not null
+                       ? new JProperty("additionalRemarks",  AdditionalRemarks.ToJSON())
+                       : null
 
                );
+
+        #endregion
+
+
+        #region IEquatable<EnergyMix> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two energy mixes for equality.
+        /// </summary>
+        /// <param name="Object">An energy mix to compare with.</param>
+        public override Boolean Equals(Object? Object)
+
+            => Object is EnergyMix energyMix &&
+                   Equals(energyMix);
+
+        #endregion
+
+        #region Equals(EnergyMix)
+
+        /// <summary>
+        /// Compares two energy mixes for equality.
+        /// </summary>
+        /// <param name="EnergyMix">An energy mix to compare with.</param>
+        public Boolean Equals(EnergyMix? EnergyMix)
+
+            => EnergyMix is not null &&
+
+               SupplierName.       Equals(EnergyMix.SupplierName) &&
+               ProductName.        Equals(EnergyMix.ProductName)  &&
+
+               ((AdditionalRemarks is null     && EnergyMix.AdditionalRemarks is null) ||
+                (AdditionalRemarks is not null && EnergyMix.AdditionalRemarks is not null && AdditionalRemarks.Equals(EnergyMix.AdditionalRemarks)));
+
+        #endregion
+
+        #endregion
+
+        #region GetHashCode()
+
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        /// <returns>The hash code of this object.</returns>
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+
+                return SupplierName.       GetHashCode() * 7 ^
+                       ProductName.        GetHashCode() * 5 ^
+                       (AdditionalRemarks?.GetHashCode() ?? 0);
+
+            }
+        }
 
         #endregion
 
@@ -120,7 +187,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat("");
+            => String.Concat("'", ProductName.FirstText(), "' from '", SupplierName.FirstText(), "'");
 
         #endregion
 

@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Prognoses on future values of the energy mix.
         /// </summary>
-        ReactiveSet<Timestamped<EnergyMix>>     EnergyMixPrognoses          { get; }
+        EnergyMixPrognosis?                     EnergyMixPrognoses          { get; set; }
 
 
         /// <summary>

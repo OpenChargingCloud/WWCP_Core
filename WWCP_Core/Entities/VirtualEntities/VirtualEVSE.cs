@@ -2287,7 +2287,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         Decimal? IEVSE.AverageVoltage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public ConcurrentDictionary<Brand_Id, Brand> Brands => throw new NotImplementedException();
+        public ReactiveSet<Brand> Brands => throw new NotImplementedException();
 
         public ChargingPool? ChargingPool => throw new NotImplementedException();
 
@@ -2299,8 +2299,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public EnergyMeter? EnergyMeter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<EnergyMix>> EnergyMixPrognoses => throw new NotImplementedException();
 
         public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Boolean IsFreeOfCharge { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -2324,7 +2322,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public IEnumerable<ChargingReservation> Reservations => throw new NotImplementedException();
 
-
+        public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 
 }

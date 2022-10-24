@@ -2088,8 +2088,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public ReactiveSet<Timestamped<EnergyMix>> EnergyMixPrognoses => throw new NotImplementedException();
-
         TimeSpan IChargingStation.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Boolean IsFreeOfCharge { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Boolean IsHubjectCompatible { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -2108,6 +2106,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
 
         public ChargingStationOperator? SubOperator => throw new NotImplementedException();
+
+        public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Boolean Equals(IChargingStation? other)
         {

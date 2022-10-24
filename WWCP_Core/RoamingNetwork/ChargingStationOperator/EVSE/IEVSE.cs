@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// All brands registered for this EVSE.
         /// </summary>
-        ConcurrentDictionary<Brand_Id, Brand>  Brands                  { get; }
+        ReactiveSet<Brand>                     Brands                  { get; }
 
         /// <summary>
         /// The license of the EVSE data.
@@ -203,7 +203,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         Timestamped<Decimal>?                  MaxCapacityRealTime     { get; set; }
 
-
+        /// <summary>
+        /// Prognoses on future values of the capacity [kWh].
+        /// </summary>
         ReactiveSet<Timestamped<Decimal>>      MaxCapacityPrognoses    { get; }
 
 
@@ -217,12 +219,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         Timestamped<EnergyMix>?                EnergyMixRealTime       { get; set; }
 
-
         /// <summary>
         /// Prognoses on future values of the energy mix.
         /// </summary>
-        ReactiveSet<Timestamped<EnergyMix>>    EnergyMixPrognoses      { get; }
-
+        EnergyMixPrognosis?                    EnergyMixPrognoses      { get; set; }
 
 
         /// <summary>

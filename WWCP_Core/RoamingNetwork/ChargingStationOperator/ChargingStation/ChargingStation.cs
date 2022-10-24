@@ -26,11 +26,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
-using System.Collections.Concurrent;
-using System.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -857,7 +855,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The current energy mix.
         /// </summary>
-        [Mandatory, FastData]
+        [Optional, FastData]
         public Timestamped<EnergyMix>? EnergyMixRealTime
         {
 
@@ -883,11 +881,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region EnergyMixPrognoses
+
+        private EnergyMixPrognosis? energyMixPrognoses;
+
         /// <summary>
         /// Prognoses on future values of the energy mix.
         /// </summary>
-        [Mandatory, FastData]
-        public ReactiveSet<Timestamped<EnergyMix>>      EnergyMixPrognoses      { get; }
+        [Optional, FastData]
+        public EnergyMixPrognosis? EnergyMixPrognoses
+        {
+
+            get
+            {
+                return energyMixPrognoses ?? ChargingPool?.EnergyMixPrognoses;
+            }
+
+            set
+            {
+
+                if (value != energyMixPrognoses && value != ChargingPool?.EnergyMixPrognoses)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref energyMixPrognoses);
+
+                    else
+                        SetProperty(ref energyMixPrognoses, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
 
 
 
@@ -1312,16 +1340,6 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 PropertyChanged("MaxCapacityPrognoses",
-                                oldItems,
-                                newItems);
-
-            };
-
-            this.EnergyMixPrognoses                 = new ReactiveSet<Timestamped<EnergyMix>>();
-            this.EnergyMixPrognoses.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
-            {
-
-                PropertyChanged("EnergyMixPrognoses",
                                 oldItems,
                                 newItems);
 

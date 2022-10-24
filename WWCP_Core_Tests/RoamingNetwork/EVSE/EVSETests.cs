@@ -188,16 +188,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 OnSuccess:           evse => success = true,
                                                                 Configurator:        evse => {
 
-                                                                                         evse.Brands.TryAdd(Brand_Id.Parse("openChargingCloudEVSE"),
-                                                                                                            new Brand(
-                                                                                                                Id:            Brand_Id.Parse("openChargingCloudEVSE"),
-                                                                                                                Name:          I18NString.Create(Languages.de, "Open Charging Cloud EVSE"),
-                                                                                                                Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
-                                                                                                                Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                                                                                DataLicenses:  new DataLicense[] {
-                                                                                                                                   DataLicense.CreativeCommons_BY_SA_4
-                                                                                                                               }
-                                                                                                            ));
+                                                                                         evse.Brands.Add(new Brand(
+                                                                                                             Id:            Brand_Id.Parse("openChargingCloudEVSE"),
+                                                                                                             Name:          I18NString.Create(Languages.de, "Open Charging Cloud EVSE"),
+                                                                                                             Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                                                                             Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                                                                             DataLicenses:  new DataLicense[] {
+                                                                                                                                DataLicense.CreativeCommons_BY_SA_4
+                                                                                                                            }
+                                                                                                         ));
 
                                                                                      }
                                                             );
@@ -232,16 +231,15 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
 
 
-                    DE_GEF_E1234_5678_1.Brands.TryAdd(Brand_Id.Parse("openChargingCloud23"),
-                                                      new Brand(
-                                                          Id:            Brand_Id.Parse("openChargingCloud23"),
-                                                          Name:          I18NString.Create(Languages.de, "Open Charging Cloud 23"),
-                                                          Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
-                                                          Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                          DataLicenses:  new DataLicense[] {
-                                                                             DataLicense.CreativeCommons_BY_SA_4
-                                                                         }
-                                                      ));
+                    DE_GEF_E1234_5678_1.Brands.Add(new Brand(
+                                                       Id:            Brand_Id.Parse("openChargingCloud23"),
+                                                       Name:          I18NString.Create(Languages.de, "Open Charging Cloud 23"),
+                                                       Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                       Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                       DataLicenses:  new DataLicense[] {
+                                                                          DataLicense.CreativeCommons_BY_SA_4
+                                                                      }
+                                                   ));
 
 
                     Assert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count());
@@ -348,6 +346,23 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual(7, chargingStationOperatorEVSEDataChanges.Count);
                     Assert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
 
+                    // The same again... must not call the data change listeners!
+                    DE_GEF_E1234_5678_1.Name.       Add(Languages.it, "namelalala");
+                    DE_GEF_E1234_5678_1.Description.Add(Languages.it, "desclalala");
+
+                    DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
+                    DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
+                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
+                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
+                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
+                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                                                                  });
+
+                    Assert.AreEqual(7, evseDataChanges.                       Count);
+                    Assert.AreEqual(7, chargingStationEVSEDataChanges.        Count);
+                    Assert.AreEqual(7, chargingPoolEVSEDataChanges.           Count);
+                    Assert.AreEqual(7, chargingStationOperatorEVSEDataChanges.Count);
+                    Assert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
 
                 }
 

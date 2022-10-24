@@ -26,9 +26,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming network of this charging pool.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork RoamingNetwork
+        public IRoamingNetwork?          RoamingNetwork
             => Operator?.RoamingNetwork;
 
         /// <summary>
@@ -108,13 +108,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brands registered for this charging pool.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>         Brands          { get; }
+        public ReactiveSet<Brand>        Brands                 { get; }
 
         /// <summary>
         /// The license of the charging pool data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<DataLicense>   DataLicenses    { get; }
+        public ReactiveSet<DataLicense>  DataLicenses           { get; }
 
 
         #region LocationLanguage
@@ -814,11 +814,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region EnergyMixPrognoses
+
+        private EnergyMixPrognosis? energyMixPrognoses;
+
         /// <summary>
         /// Prognoses on future values of the energy mix.
         /// </summary>
-        [Mandatory, FastData]
-        public ReactiveSet<Timestamped<EnergyMix>>      EnergyMixPrognoses      { get; }
+        [Optional, FastData]
+        public EnergyMixPrognosis? EnergyMixPrognoses
+        {
+
+            get
+            {
+                return energyMixPrognoses;
+            }
+
+            set
+            {
+
+                if (value != energyMixPrognoses)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref energyMixPrognoses);
+
+                    else
+                        SetProperty(ref energyMixPrognoses, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
 
 
         #region ExitAddress
@@ -1090,16 +1120,6 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 PropertyChanged("MaxCapacityPrognoses",
-                                oldItems,
-                                newItems);
-
-            };
-
-            this.EnergyMixPrognoses                 = new ReactiveSet<Timestamped<EnergyMix>>();
-            this.EnergyMixPrognoses.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
-            {
-
-                PropertyChanged("EnergyMixPrognoses",
                                 oldItems,
                                 newItems);
 
