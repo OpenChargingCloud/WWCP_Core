@@ -3396,8 +3396,8 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingPool UpdateWith(ChargingPool OtherChargingPool)
         {
 
-            Name.       Add(OtherChargingPool.Name);
-            Description.Add(OtherChargingPool.Description);
+            Name.       Set(OtherChargingPool.Name);
+            Description.Set(OtherChargingPool.Description);
 
             Brands.Clear();
             Brands.Add(OtherChargingPool.Brands);

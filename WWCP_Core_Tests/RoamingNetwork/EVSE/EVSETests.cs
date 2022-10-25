@@ -318,8 +318,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     #endregion
 
-                    DE_GEF_E1234_5678_1.Name.       Add(Languages.it, "namelalala");
-                    DE_GEF_E1234_5678_1.Description.Add(Languages.it, "desclalala");
+                    DE_GEF_E1234_5678_1.Name.       Set(Languages.it, "namelalala");
+                    DE_GEF_E1234_5678_1.Description.Set(Languages.it, "desclalala");
 
                     Assert.AreEqual(2, evseDataChanges.                       Count);
                     Assert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
@@ -347,8 +347,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual(7, roamingNetworkEVSEDataChanges.         Count);
 
                     // The same again... must not call the data change listeners!
-                    DE_GEF_E1234_5678_1.Name.       Add(Languages.it, "namelalala");
-                    DE_GEF_E1234_5678_1.Description.Add(Languages.it, "desclalala");
+                    DE_GEF_E1234_5678_1.Name.       Set(Languages.it, "namelalala");
+                    DE_GEF_E1234_5678_1.Description.Set(Languages.it, "desclalala");
 
                     DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;

@@ -286,8 +286,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     #endregion
 
-                    DE_GEF_S1234.Name.       Add(Languages.it, "namelalala");
-                    DE_GEF_S1234.Description.Add(Languages.it, "desclalala");
+                    DE_GEF_S1234.Name.       Set(Languages.it, "namelalala");
+                    DE_GEF_S1234.Description.Set(Languages.it, "desclalala");
 
                     Assert.AreEqual(2, chargingStationDataChanges.                       Count);
                     Assert.AreEqual(2, chargingPoolChargingStationDataChanges.           Count);

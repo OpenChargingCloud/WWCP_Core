@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The roaming network of this charging pool.
         /// </summary>
-        IRoamingNetwork?                       RoamingNetwork               { get; }
+        IRoamingNetwork?                        RoamingNetwork              { get; }
 
         /// <summary>
         /// The charging station operator of this charging pool.

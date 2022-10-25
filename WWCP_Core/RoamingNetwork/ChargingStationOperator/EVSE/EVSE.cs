@@ -929,8 +929,8 @@ namespace cloud.charging.open.protocols.WWCP
         public EVSE UpdateWith(EVSE OtherEVSE)
         {
 
-            Name.Add(OtherEVSE.Name);
-            Description.Add(OtherEVSE.Description);
+            Name.       Set(OtherEVSE.Name);
+            Description.Set(OtherEVSE.Description);
 
             Brands.Clear();
             Brands.Add(OtherEVSE.Brands);
