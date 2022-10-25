@@ -102,147 +102,144 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The roaming network of this EVSE.
         /// </summary>
-        IRoamingNetwork?                       RoamingNetwork          { get; }
+        IRoamingNetwork?                       RoamingNetwork               { get; }
 
         /// <summary>
         /// The charging station operator of this EVSE.
         /// </summary>
         [Optional]
-        ChargingStationOperator?               Operator                { get; }
+        ChargingStationOperator?               Operator                     { get; }
 
         /// <summary>
         /// The charging pool of this EVSE.
         /// </summary>
-        ChargingPool?                          ChargingPool            { get; }
+        ChargingPool?                          ChargingPool                 { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        ChargingStation?                       ChargingStation         { get; }
+        ChargingStation?                       ChargingStation              { get; }
 
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
         [Optional]
-        IRemoteEVSE?                           RemoteEVSE              { get; }
+        IRemoteEVSE?                           RemoteEVSE                   { get; }
 
 
 
         /// <summary>
         /// All brands registered for this EVSE.
         /// </summary>
-        ReactiveSet<Brand>                     Brands                  { get; }
+        ReactiveSet<Brand>                     Brands                       { get; }
 
         /// <summary>
         /// The license of the EVSE data.
         /// </summary>
-        ReactiveSet<DataLicense>               DataLicenses            { get; }
+        ReactiveSet<DataLicense>               DataLicenses                 { get; }
 
 
         /// <summary>
         /// Charging modes.
         /// </summary>
-        ReactiveSet<ChargingModes>             ChargingModes           { get; }
+        ReactiveSet<ChargingModes>             ChargingModes                { get; }
 
         /// <summary>
         /// The power socket outlets.
         /// </summary>
-        ReactiveSet<SocketOutlet>              SocketOutlets           { get; set; }
+        ReactiveSet<SocketOutlet>              SocketOutlets                { get; set; }
 
 
         /// <summary>
         /// The type of the current.
         /// </summary>
-        CurrentTypes?                          CurrentType             { get; set; }
+        CurrentTypes                           CurrentType                  { get; set; }
 
         /// <summary>
         /// The average voltage.
         /// </summary>
-        Decimal?                               AverageVoltage          { get; set; }
+        Decimal?                               AverageVoltage               { get; set; }
 
 
         /// <summary>
         /// The maximum current [Ampere].
         /// </summary>
-        Decimal?                               MaxCurrent              { get; set; }
+        Decimal?                               MaxCurrent                   { get; set; }
 
         /// <summary>
         /// The real-time maximum current [Ampere].
         /// </summary>
-        Timestamped<Decimal>?                  MaxCurrentRealTime      { get; set; }
+        Timestamped<Decimal>?                  MaxCurrentRealTime           { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the maximum current [Ampere].
         /// </summary>
-        ReactiveSet<Timestamped<Decimal>>      MaxCurrentPrognoses     { get; }
+        ReactiveSet<Timestamped<Decimal>>      MaxCurrentPrognoses          { get; }
 
 
         /// <summary>
         /// The maximum power [kWatt].
         /// </summary>
-        Decimal?                               MaxPower                { get; set; }
+        Decimal?                               MaxPower                     { get; set; }
 
         /// <summary>
         /// The real-time maximum power [kWatt].
         /// </summary>
-        Timestamped<Decimal>?                  MaxPowerRealTime        { get; set; }
+        Timestamped<Decimal>?                  MaxPowerRealTime             { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the maximum power [kWatt].
         /// </summary>
-        ReactiveSet<Timestamped<Decimal>>      MaxPowerPrognoses       { get; }
+        ReactiveSet<Timestamped<Decimal>>      MaxPowerPrognoses            { get; }
 
 
         /// <summary>
         /// The maximum capacity [kWh].
         /// </summary>
-        Decimal?                               MaxCapacity             { get; set; }
+        Decimal?                               MaxCapacity                  { get; set; }
 
         /// <summary>
         /// The real-time maximum capacity [kWh].
         /// </summary>
-        Timestamped<Decimal>?                  MaxCapacityRealTime     { get; set; }
+        Timestamped<Decimal>?                  MaxCapacityRealTime          { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the capacity [kWh].
         /// </summary>
-        ReactiveSet<Timestamped<Decimal>>      MaxCapacityPrognoses    { get; }
+        ReactiveSet<Timestamped<Decimal>>      MaxCapacityPrognoses         { get; }
 
 
         /// <summary>
         /// The energy mix.
         /// </summary>
-        EnergyMix?                             EnergyMix               { get; set; }
+        EnergyMix?                             EnergyMix                    { get; set; }
 
         /// <summary>
         /// The current energy mix.
         /// </summary>
-        Timestamped<EnergyMix>?                EnergyMixRealTime       { get; set; }
+        Timestamped<EnergyMix>?                EnergyMixRealTime            { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the energy mix.
         /// </summary>
-        EnergyMixPrognosis?                    EnergyMixPrognoses      { get; set; }
+        EnergyMixPrognosis?                    EnergyMixPrognoses           { get; set; }
 
 
         /// <summary>
         /// An optional energy meter.
         /// </summary>
-        EnergyMeter?                           EnergyMeter             { get; set; }
+        EnergyMeter?                           EnergyMeter                  { get; set; }
 
 
-
-        Boolean IsFreeOfCharge { get; set; }
-
-
-
-        TimeSpan MaxReservationDuration { get; set; }
-        IEnumerable<ChargingReservation> Reservations { get; }
-        ChargingSession? ChargingSession { get; set; }
+        /// <summary>
+        /// The current charging session.
+        /// </summary>
+        ChargingSession?                       ChargingSession              { get; set; }
 
 
+        Boolean                                IsFreeOfCharge               { get; set; }
 
-        DateTime? LastStatusUpdate { get; set; }
+        DateTime?                              LastStatusUpdate             { get; set; }
 
         #endregion
 
@@ -270,7 +267,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        void AddCurrentType(CurrentTypes CurrentType);
         int CompareTo(EVSE? EVSE);
         bool Equals(EVSE? EVSE);
         bool Equals(object? Object);

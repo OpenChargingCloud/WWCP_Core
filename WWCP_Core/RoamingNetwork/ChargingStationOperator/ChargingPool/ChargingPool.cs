@@ -2764,6 +2764,8 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<ChargingSession> ChargingSessions
             => RoamingNetwork.SessionsStore.Where(session => session.ChargingPoolId == Id);
 
+        TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 
         /// <summary>
@@ -3396,43 +3398,34 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingPool UpdateWith(ChargingPool OtherChargingPool)
         {
 
-            Name.       Set(OtherChargingPool.Name);
-            Description.Set(OtherChargingPool.Description);
+            Name.                   Set(OtherChargingPool.Name);
+            Description.            Set(OtherChargingPool.Description);
 
-            Brands.Clear();
-            Brands.Add(OtherChargingPool.Brands);
+            Brands.             Replace(OtherChargingPool.Brands);
+            AuthenticationModes.Replace(OtherChargingPool.AuthenticationModes);
+            PaymentOptions.     Replace(OtherChargingPool.PaymentOptions);
+            PhotoURLs.          Replace(OtherChargingPool.PhotoURLs);
 
-            LocationLanguage     = OtherChargingPool.LocationLanguage;
-            Address              = OtherChargingPool.Address;
-            GeoLocation          = OtherChargingPool.GeoLocation;
-            EntranceAddress      = OtherChargingPool.EntranceAddress;
-            EntranceLocation     = OtherChargingPool.EntranceLocation;
-            ArrivalInstructions.Set(OtherChargingPool.ArrivalInstructions);
-            OpeningTimes         = OtherChargingPool.OpeningTimes;
-            UIFeatures           = OtherChargingPool.UIFeatures;
+            LocationLanguage          = OtherChargingPool.LocationLanguage;
+            Address                   = OtherChargingPool.Address;
+            GeoLocation               = OtherChargingPool.GeoLocation;
+            EntranceAddress           = OtherChargingPool.EntranceAddress;
+            EntranceLocation          = OtherChargingPool.EntranceLocation;
+            ArrivalInstructions.    Set(OtherChargingPool.ArrivalInstructions);
+            OpeningTimes              = OtherChargingPool.OpeningTimes;
+            UIFeatures                = OtherChargingPool.UIFeatures;
+            Accessibility             = OtherChargingPool.Accessibility;
 
-            AuthenticationModes.Clear();
-            AuthenticationModes.Add(OtherChargingPool.AuthenticationModes);
-
-            PaymentOptions.Clear();
-            PaymentOptions.Add(OtherChargingPool.PaymentOptions);
-
-            Accessibility        = OtherChargingPool.Accessibility;
-
-            PhotoURLs.Clear();
-            PhotoURLs.Add(OtherChargingPool.PhotoURLs);
-
-            HotlinePhoneNumber.Set(OtherChargingPool.HotlinePhoneNumber);
-            GridConnection       = OtherChargingPool.GridConnection;
-            ExitAddress          = OtherChargingPool.ExitAddress;
-            ExitLocation         = OtherChargingPool.ExitLocation;
-
+            HotlinePhoneNumber.     Set(OtherChargingPool.HotlinePhoneNumber);
+            GridConnection            = OtherChargingPool.GridConnection;
+            ExitAddress               = OtherChargingPool.ExitAddress;
+            ExitLocation              = OtherChargingPool.ExitLocation;
 
             if (OtherChargingPool.AdminStatus.Timestamp > AdminStatus.Timestamp)
-                AdminStatus = OtherChargingPool.AdminStatus;
+                AdminStatus           = OtherChargingPool.AdminStatus;
 
             if (OtherChargingPool.Status.Timestamp > Status.Timestamp)
-                Status      = OtherChargingPool.Status;
+                Status                = OtherChargingPool.Status;
 
             return this;
 

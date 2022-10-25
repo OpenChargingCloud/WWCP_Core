@@ -3182,44 +3182,35 @@ namespace cloud.charging.open.protocols.WWCP
         public IChargingStation UpdateWith(IChargingStation OtherChargingStation)
         {
 
-            Name.       Set(OtherChargingStation.Name);
-            Description.Set(OtherChargingStation.Description);
+            Name.               Set    (OtherChargingStation.Name);
+            Description.        Set    (OtherChargingStation.Description);
 
-            Brands.Clear();
-            Brands.Add(OtherChargingStation.Brands);
+            Brands.             Replace(OtherChargingStation.Brands);
+            AuthenticationModes.Replace(OtherChargingStation.AuthenticationModes);
+            PaymentOptions.     Replace(OtherChargingStation.PaymentOptions);
+            PhotoURLs.          Replace(OtherChargingStation.PhotoURLs);
 
-            Address              = OtherChargingStation.Address;
-            OpenStreetMapNodeId  = OtherChargingStation.OpenStreetMapNodeId;
-            GeoLocation          = OtherChargingStation.GeoLocation;
-            EntranceAddress      = OtherChargingStation.EntranceAddress;
-            EntranceLocation     = OtherChargingStation.EntranceLocation;
-            ArrivalInstructions.Set(OtherChargingStation.ArrivalInstructions);
-            OpeningTimes         = OtherChargingStation.OpeningTimes;
-            //ParkingSpaces        = OtherChargingStation.ParkingSpaces;
-            UIFeatures           = OtherChargingStation.UIFeatures;
+            ArrivalInstructions.Set    (OtherChargingStation.ArrivalInstructions);
+            HotlinePhoneNumber. Set    (OtherChargingStation.HotlinePhoneNumber);
 
-            AuthenticationModes.Clear();
-            AuthenticationModes.Add(OtherChargingStation.AuthenticationModes);
-
-            PaymentOptions.Clear();
-            PaymentOptions.Add(OtherChargingStation.PaymentOptions);
-
-            Accessibility        = OtherChargingStation.Accessibility;
-
-            PhotoURLs.Clear();
-            PhotoURLs.Add(OtherChargingStation.PhotoURLs);
-
-            HotlinePhoneNumber.Set(OtherChargingStation.HotlinePhoneNumber);
-            GridConnection       = OtherChargingStation.GridConnection;
-            ExitAddress          = OtherChargingStation.ExitAddress;
-            ExitLocation         = OtherChargingStation.ExitLocation;
-
+            Address                   = OtherChargingStation.Address;
+            OpenStreetMapNodeId       = OtherChargingStation.OpenStreetMapNodeId;
+            GeoLocation               = OtherChargingStation.GeoLocation;
+            EntranceAddress           = OtherChargingStation.EntranceAddress;
+            EntranceLocation          = OtherChargingStation.EntranceLocation;
+            OpeningTimes              = OtherChargingStation.OpeningTimes;
+            //ParkingSpaces             = OtherChargingStation.ParkingSpaces;
+            UIFeatures                = OtherChargingStation.UIFeatures;
+            Accessibility             = OtherChargingStation.Accessibility;
+            GridConnection            = OtherChargingStation.GridConnection;
+            ExitAddress               = OtherChargingStation.ExitAddress;
+            ExitLocation              = OtherChargingStation.ExitLocation;
 
             if (OtherChargingStation.AdminStatus.Timestamp > AdminStatus.Timestamp)
-                AdminStatus = OtherChargingStation.AdminStatus;
+                AdminStatus           = OtherChargingStation.AdminStatus;
 
-            if (OtherChargingStation.Status.Timestamp > Status.Timestamp)
-                Status      = OtherChargingStation.Status;
+            if (OtherChargingStation.Status.     Timestamp > Status.     Timestamp)
+                Status                = OtherChargingStation.Status;
 
             return this;
 
