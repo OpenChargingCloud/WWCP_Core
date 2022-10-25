@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.IsNotNull(DE_GEF_S0001_AAAA.GetEVSEById (EVSE_Id.Parse("DE*GEF*E1234*5678*1")));
 
 
-                    Assert.AreEqual(1, DE_GEF_E1234_5678_1.Brands.Count());
+                    Assert.AreEqual(1, DE_GEF_E1234_5678_1.Brands.Count);
 
 
 
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                    ));
 
 
-                    Assert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count());
+                    Assert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count);
 
 
                     #region Setup DataChange listeners
@@ -327,6 +327,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
                     Assert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
 
+                    var now = Timestamp.Now;
 
                     DE_GEF_E1234_5678_1.MaxPower           = 123.45m;
                     DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
@@ -335,9 +336,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
 
                     DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
-                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
-                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
-                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(1), 567.89m),
+                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(2), 678.91m),
+                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
                                                                   });
 
                     Assert.AreEqual(7, evseDataChanges.                       Count);
@@ -353,9 +354,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
                     DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
-                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
-                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
-                                                                      new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)
+                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(1), 567.89m),
+                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(2), 678.91m),
+                                                                      new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
                                                                   });
 
                     Assert.AreEqual(7, evseDataChanges.                       Count);
