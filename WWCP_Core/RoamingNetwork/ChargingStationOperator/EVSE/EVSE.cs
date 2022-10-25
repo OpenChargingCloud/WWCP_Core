@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 }
                 else
-                    DeleteProperty(ref maxPower);
+                    DeleteProperty(ref maxPowerRealTime);
 
             }
 
