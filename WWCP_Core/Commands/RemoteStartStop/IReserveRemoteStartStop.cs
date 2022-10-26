@@ -29,6 +29,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Reservations
 
+        TimeSpan  MaxReservationDuration    { get; set; }
+
         #region Events
 
         /// <summary>

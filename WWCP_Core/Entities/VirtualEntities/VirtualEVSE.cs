@@ -2246,11 +2246,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        public void AddCurrentType(CurrentTypes CurrentType)
-        {
-            throw new NotImplementedException();
-        }
-
         public Int32 CompareTo(EVSE? EVSE)
         {
             throw new NotImplementedException();
@@ -2293,8 +2288,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ChargingStation? ChargingStation => throw new NotImplementedException();
 
-        CurrentTypes? IEVSE.CurrentType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
 
         public EnergyMeter? EnergyMeter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -2318,11 +2311,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public ReactiveSet<Timestamped<Decimal>> MaxPowerPrognoses => throw new NotImplementedException();
 
         public Timestamped<Decimal>? MaxPowerRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        TimeSpan IEVSE.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public IEnumerable<ChargingReservation> Reservations => throw new NotImplementedException();
 
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 
 }

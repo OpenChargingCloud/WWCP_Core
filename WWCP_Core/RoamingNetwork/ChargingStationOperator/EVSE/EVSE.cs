@@ -131,13 +131,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CurrentType
 
-        private CurrentTypes? currentType;
+        private CurrentTypes currentType;
 
         /// <summary>
         /// The type of the current.
         /// </summary>
         [Mandatory, SlowData]
-        public CurrentTypes? CurrentType
+        public CurrentTypes CurrentType
         {
 
             get
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 }
                 else
-                    DeleteProperty(ref maxPower);
+                    DeleteProperty(ref maxPowerRealTime);
 
             }
 
@@ -649,16 +649,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-
-
-        /// <summary>
-        /// The current charging session, if available.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingSession? ChargingSession { get; set; }
-
-
-
         public DateTime? LastStatusUpdate { get; set; }
 
         #endregion
@@ -882,7 +872,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
-            this.OnPropertyChanged += UpdateData;
+            this.OnPropertyChanged                      += UpdateData;
 
             this.adminStatusSchedule.OnStatusChanged    += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                             => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
@@ -903,8 +893,7 @@ namespace cloud.charging.open.protocols.WWCP
                 this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)         => OnNewReservation.     Invoke(Timestamp, RemoteEVSE, Reservation);
                 this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
-                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) =>
-                {
+                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) => {
                     RoamingNetwork?.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
                     //_ChargingSession       = ChargingSession;
                     //_ChargingSession.EVSE  = this;
@@ -929,59 +918,43 @@ namespace cloud.charging.open.protocols.WWCP
         public EVSE UpdateWith(EVSE OtherEVSE)
         {
 
-            Name.       Set(OtherEVSE.Name);
-            Description.Set(OtherEVSE.Description);
+            Name.                Set    (OtherEVSE.Name);
+            Description.         Set    (OtherEVSE.Description);
 
-            Brands.Clear();
-            Brands.Add(OtherEVSE.Brands);
+            Brands.              Replace(OtherEVSE.Brands);
+            ChargingModes.       Replace(OtherEVSE.ChargingModes);
+            SocketOutlets.       Replace(OtherEVSE.SocketOutlets);
+            DataLicenses.        Replace(OtherEVSE.DataLicenses);
+            MaxCurrentPrognoses. Replace(OtherEVSE.MaxCurrentPrognoses);
+            MaxPowerPrognoses.   Replace(OtherEVSE.MaxPowerPrognoses);
+            MaxCapacityPrognoses.Replace(OtherEVSE.MaxCapacityPrognoses);
 
-            ChargingModes.Clear();
-            ChargingModes.Add(OtherEVSE.ChargingModes);
-
-            SocketOutlets.Clear();
-            SocketOutlets.Add(OtherEVSE.SocketOutlets);
-
-            AverageVoltage = OtherEVSE.AverageVoltage;
-            CurrentType = OtherEVSE.CurrentType;
-            MaxCurrent = OtherEVSE.MaxCurrent;
-            MaxPower = OtherEVSE.MaxPower;
-            MaxCapacity = OtherEVSE.MaxCapacity;
-            EnergyMeter = OtherEVSE.EnergyMeter;
+            CurrentType                = OtherEVSE.CurrentType;
+            AverageVoltage             = OtherEVSE.AverageVoltage;
+            MaxCurrent                 = OtherEVSE.MaxCurrent;
+            MaxCurrentRealTime         = OtherEVSE.MaxCurrentRealTime;
+            MaxPower                   = OtherEVSE.MaxPower;
+            MaxPowerRealTime           = OtherEVSE.MaxPowerRealTime;
+            MaxCapacity                = OtherEVSE.MaxCapacity;
+            MaxCapacityRealTime        = OtherEVSE.MaxCapacityRealTime;
+            EnergyMix                  = OtherEVSE.EnergyMix;               //ToDo: Implement Equality!
+            EnergyMixRealTime          = OtherEVSE.EnergyMixRealTime;       //ToDo: Implement Equality!
+            EnergyMixPrognoses         = OtherEVSE.EnergyMixPrognoses;      //ToDo: Implement Equality!
+            EnergyMeter                = OtherEVSE.EnergyMeter;             //ToDo: Implement Equality!
+            IsFreeOfCharge             = OtherEVSE.IsFreeOfCharge;
+            MaxReservationDuration     = OtherEVSE.MaxReservationDuration;
 
             if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
-                AdminStatus = OtherEVSE.AdminStatus;
+                AdminStatus            = OtherEVSE.AdminStatus;
 
-            if (OtherEVSE.Status.Timestamp > Status.Timestamp)
-                Status      = OtherEVSE.Status;
+            if (OtherEVSE.Status.     Timestamp > Status.     Timestamp)
+                Status                 = OtherEVSE.Status;
 
             return this;
 
         }
 
         #endregion
-
-
-        //public void AddChargingMode(ChargingModes ChargingMode)
-        //{
-
-        //    if (!_ChargingModes.HasValue)
-        //        _ChargingModes = ChargingMode;
-
-        //    else
-        //        _ChargingModes |= ChargingMode;
-
-        //}
-
-        public void AddCurrentType(CurrentTypes CurrentType)
-        {
-
-            if (!currentType.HasValue)
-                currentType = CurrentType;
-
-            else
-                currentType |= CurrentType;
-
-        }
 
 
         #region Data/(Admin-)Status
@@ -1078,13 +1051,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        public IEnumerable<ChargingReservation> ChargingReservations
-            => throw new NotImplementedException();
-
         /// <summary>
         /// All current charging reservations.
         /// </summary>
-        public IEnumerable<ChargingReservation> Reservations
+        public IEnumerable<ChargingReservation> ChargingReservations
 
             => RoamingNetwork?.ReservationsStore.Where (reservationCollection => reservationCollection.EVSEId == Id).
                                                  Select(reservationCollection => reservationCollection.LastOrDefault()).
@@ -1528,6 +1498,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region RemoteStart/-Stop and SendSession/-CDR
 
         #region Data
+
+        /// <summary>
+        /// The current charging session, if available.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingSession? ChargingSession { get; set; }
+
 
         public IEnumerable<ChargingSession> ChargingSessions
             => ChargingSession is not null
@@ -2221,7 +2198,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        () => new JProperty("brand",   Brands.ToJSON()))
                                  : null,
 
-                           (!Embedded || DataSource != ChargingStation.DataSource)
+                           (!Embedded || DataSource   != ChargingStation.DataSource)
                                ? new JProperty("dataSource", DataSource)
                                : null,
 
@@ -2255,7 +2232,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                         ExpandDataLicenses: InfoStatus.Hidden)))
                                : null,
 
-                           ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool != null
+                           ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool is not null
                                ? ExpandChargingPoolId.Switch(
                                      () => new JProperty("chargingPoolId", ChargingPool.Id.ToString()),
                                      () => new JProperty("chargingPool", ChargingPool.ToJSON(Embedded: true,
@@ -2267,7 +2244,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                         ExpandDataLicenses: InfoStatus.Hidden)))
                                : null,
 
-                           ExpandChargingStationId != InfoStatus.Hidden && ChargingStation != null
+                           ExpandChargingStationId != InfoStatus.Hidden && ChargingStation is not null
                                ? ExpandChargingStationId.Switch(
                                      () => new JProperty("chargingStationId", ChargingStation.Id.ToString()),
                                      () => new JProperty("chargingStation", ChargingStation.ToJSON(Embedded: true,
@@ -2278,22 +2255,20 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                         ExpandDataLicenses: InfoStatus.Hidden)))
                                : null,
 
-                           !Embedded ? new JProperty("geoLocation", ChargingStation.GeoLocation.Value.ToJSON()) : null,
-                           !Embedded ? new JProperty("address", ChargingStation.Address.ToJSON()) : null,
-                           !Embedded ? new JProperty("authenticationModes", ChargingStation.AuthenticationModes.ToJSON()) : null,
+                           !Embedded && ChargingStation is not null ? new JProperty("geoLocation",         ChargingStation.GeoLocation.        ToJSON()) : null,
+                           !Embedded && ChargingStation is not null ? new JProperty("address",             ChargingStation.Address?.           ToJSON()) : null,
+                           !Embedded && ChargingStation is not null ? new JProperty("authenticationModes", ChargingStation.AuthenticationModes.ToJSON()) : null,
 
                            ChargingModes.SafeAny()
-                               ? new JProperty("chargingModes", new JArray(ChargingModes.SafeSelect(mode => mode.ToText())))
+                               ? new JProperty("chargingModes", new JArray(ChargingModes.SafeSelect(chargingMode => chargingMode.ToText())))
                                : null,
 
-                           CurrentType.HasValue && CurrentType.Value != CurrentTypes.Unspecified
-                               ? new JProperty("currentTypes", new JArray(CurrentType.Value.ToText()))
-                               : null,
+                           new JProperty("currentType", CurrentType.ToText()),
 
-                           AverageVoltage.HasValue && AverageVoltage > 0 ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value, 2)) : null,
-                           MaxCurrent.HasValue && MaxCurrent > 0 ? new JProperty("maxCurrent", Math.Round(MaxCurrent.Value, 2)) : null,
-                           MaxPower.HasValue && MaxPower.HasValue ? new JProperty("maxPower", Math.Round(MaxPower.Value, 2)) : null,
-                           MaxCapacity.HasValue && MaxCapacity.HasValue ? new JProperty("maxCapacity", Math.Round(MaxCapacity.Value, 2)) : null,
+                           AverageVoltage.HasValue && AverageVoltage   > 0 ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value, 2)) : null,
+                           MaxCurrent.    HasValue && MaxCurrent       > 0 ? new JProperty("maxCurrent",     Math.Round(MaxCurrent.    Value, 2)) : null,
+                           MaxPower.      HasValue && MaxPower.   HasValue ? new JProperty("maxPower",       Math.Round(MaxPower.      Value, 2)) : null,
+                           MaxCapacity.   HasValue && MaxCapacity.HasValue ? new JProperty("maxCapacity",    Math.Round(MaxCapacity.   Value, 2)) : null,
 
                            SocketOutlets.Count > 0
                                ? new JProperty("socketOutlets", new JArray(SocketOutlets.ToJSON()))

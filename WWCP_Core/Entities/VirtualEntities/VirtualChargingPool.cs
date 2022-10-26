@@ -1961,6 +1961,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public Func<ChargingStationStatusReport, ChargingPoolStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public JObject ToJSON(Boolean Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationIds = InfoStatus.Expanded, InfoStatus ExpandEVSEIds = InfoStatus.Hidden, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<ChargingPool>? CustomChargingPoolSerializer = null, CustomJObjectSerializerDelegate<ChargingStation>? CustomChargingStationSerializer = null, CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
         {

@@ -4608,6 +4608,8 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<ChargingSession> ChargingSessions
             => SessionsStore;
 
+        TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         /// <summary>
         /// Return the charging session specified by the given identification.
         /// </summary>
