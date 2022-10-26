@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual(2, DE_GEF_E1234_5678_1.Brands.Count);
 
 
-                    #region Setup DataChange listeners
+                    #region Setup OnEVSEDataChange listeners
 
                     var evseDataChanges = new List<String>();
 
@@ -490,6 +490,192 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 Assert.AreEqual("{\"@context\":\"https://open.charging.cloud/contexts/wwcp+json/evseStatusReport\",\"count\":1,\"report\":{\"error\":{\"count\":1,\"percentage\":100.0}}}",
                                 jsonStatusReport.ToString(Newtonsoft.Json.Formatting.None));
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region EVSE_Tariff_Test()
+
+        /// <summary>
+        /// A test for charging tariffs at EVSEs.
+        /// </summary>
+        [Test]
+        public void EVSE_Tariff_Test()
+        {
+
+            Assert.IsNotNull(roamingNetwork);
+            Assert.IsNotNull(DE_GEF);
+            Assert.IsNotNull(DE_GEF_P0001);
+            Assert.IsNotNull(DE_GEF_S0001_AAAA);
+            Assert.IsNotNull(DE_GEF_E0001_AAAA_1);
+
+            if (roamingNetwork      is not null &&
+                DE_GEF              is not null &&
+                DE_GEF_P0001        is not null &&
+                DE_GEF_S0001_AAAA   is not null &&
+                DE_GEF_E0001_AAAA_1 is not null)
+            {
+
+                #region Setup OnEVSEDataChange listeners
+
+                var evseDataChanges = new List<String>();
+
+                DE_GEF_E0001_AAAA_1.OnDataChanged += async (Timestamp,
+                                                            EventTrackingId,
+                                                            EVSE,
+                                                            PropertyName,
+                                                            OldValue,
+                                                            NewValue) => {
+
+                    evseDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                };
+
+
+                var chargingStationEVSEDataChanges = new List<String>();
+
+                DE_GEF_S0001_AAAA.OnEVSEDataChanged += async (Timestamp,
+                                                                EventTrackingId,
+                                                                EVSE,
+                                                                PropertyName,
+                                                                OldValue,
+                                                                NewValue) => {
+
+                    chargingStationEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                };
+
+
+                var chargingPoolEVSEDataChanges = new List<String>();
+
+                DE_GEF_P0001.OnEVSEDataChanged += async (Timestamp,
+                                                            EventTrackingId,
+                                                            EVSE,
+                                                            PropertyName,
+                                                            OldValue,
+                                                            NewValue) => {
+
+                    chargingPoolEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                };
+
+
+                var chargingStationOperatorEVSEDataChanges = new List<String>();
+
+                DE_GEF.OnEVSEDataChanged += async (Timestamp,
+                                                            EventTrackingId,
+                                                            EVSE,
+                                                            PropertyName,
+                                                            OldValue,
+                                                            NewValue) => {
+
+                    chargingStationOperatorEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                };
+
+
+                var roamingNetworkEVSEDataChanges = new List<String>();
+
+                roamingNetwork.OnEVSEDataChanged += async (Timestamp,
+                                                            EventTrackingId,
+                                                            EVSE,
+                                                            PropertyName,
+                                                            OldValue,
+                                                            NewValue) => {
+
+                    roamingNetworkEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
+
+                };
+
+                #endregion
+
+                var tariffGroup_VW = DE_GEF.CreateChargingTariffGroup("_VW", I18NString.Create(Languages.de, "Volkswagen"));
+                Assert.IsNotNull(tariffGroup_VW);
+
+                if (tariffGroup_VW is not null)
+                {
+
+                    var tariff_3_98_60min = tariffGroup_VW.CreateChargingTariff(
+                                                Id:              ChargingTariff_Id.Parse(DE_GEF.Id, tariffGroup_VW.Id, "_Tariff_3.98_per_60min"),
+                                                Name:            I18NString.Create(Languages.de, "3,98 € / 60 min"),
+                                                Description:     I18NString.Create(Languages.de, "3,98 € pro angefangener 60 min für alle Volkswagen"),
+                                                Brand:           null,
+                                                TariffURL:       null,
+                                                Currency:        Currency.EUR,
+                                                EnergyMix:       null,
+                                                TariffElements:  new ChargingTariffElement[] {
+                                                                     new ChargingTariffElement(
+
+                                                                         new ChargingPriceComponent(
+                                                                             Type:       ChargingDimensionTypes.TIME,
+                                                                             Price:      3.98M,
+                                                                             StepSize:   60*60
+                                                                         )
+
+                                                                     )
+                                                                 }
+                                            );
+                    Assert.IsNotNull(tariff_3_98_60min);
+
+
+                    var tariff_0_25_kWh   = tariffGroup_VW.CreateChargingTariff(
+                                                Id:              ChargingTariff_Id.Parse(DE_GEF.Id, tariffGroup_VW.Id, "_Tariff_0.25_per_kWh"),
+                                                Name:            I18NString.Create(Languages.de, "0,25 € / kWh"),
+                                                Description:     I18NString.Create(Languages.de, "0,25 € pro kWh für alle Volkswagen"),
+                                                Brand:           null,
+                                                TariffURL:       null,
+                                                Currency:        Currency.EUR,
+                                                EnergyMix:       null,
+                                                TariffElements:  new ChargingTariffElement[] {
+                                                                     new ChargingTariffElement(
+
+                                                                         new ChargingPriceComponent(
+                                                                             Type:       ChargingDimensionTypes.ENERGY,
+                                                                             Price:      0.25M,
+                                                                             StepSize:   1000
+                                                                         )
+
+                                                                     )
+                                                                 }
+                                            );
+                    Assert.IsNotNull(tariff_0_25_kWh);
+
+
+                    if (tariff_3_98_60min is not null &&
+                        tariff_0_25_kWh   is not null)
+                    {
+
+                        DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_3_98_60min);
+                        DE_GEF_E0001_AAAA_1.ChargingTariffs.Add(tariff_0_25_kWh);
+
+                        Assert.AreEqual(2, DE_GEF_E0001_AAAA_1.ChargingTariffs.   Count);
+
+                        Assert.AreEqual(2, evseDataChanges.                       Count);
+                        Assert.AreEqual(2, chargingStationEVSEDataChanges.        Count);
+                        Assert.AreEqual(2, chargingPoolEVSEDataChanges.           Count);
+                        Assert.AreEqual(2, chargingStationOperatorEVSEDataChanges.Count);
+                        Assert.AreEqual(2, roamingNetworkEVSEDataChanges.         Count);
+
+
+                        var evseGroup_0_25_kWh  = DE_GEF.CreateEVSEGroup(
+                                                      Id:         EVSEGroup_Id.Parse(DE_GEF.Id, tariffGroup_VW.Id, "_T0.25_per_kWh"),
+                                                      Name:       I18NString.Create(Languages.de, "0,25 € / kWh"),
+                                                      Tariff:     tariff_0_25_kWh,
+                                                      MemberIds:  new EVSE_Id[] {
+                                                                      DE_GEF_E0001_AAAA_1.Id
+                                                                  }
+                                                  );
+
+                        Assert.IsNotNull(evseGroup_0_25_kWh);
+
+
+                    }
+
+                }
 
             }
 

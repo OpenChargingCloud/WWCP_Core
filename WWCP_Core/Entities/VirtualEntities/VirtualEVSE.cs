@@ -27,6 +27,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -2315,6 +2316,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
+
+        public ReactiveSet<ChargingProduct> ChargingProducts => throw new NotImplementedException();
+
+        public ReactiveSet<ChargingTariff> ChargingTariffs => throw new NotImplementedException();
     }
 
 }

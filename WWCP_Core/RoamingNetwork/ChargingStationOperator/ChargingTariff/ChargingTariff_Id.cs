@@ -27,21 +27,50 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The unique identification of of a group of electric vehicle charging tariff.
+    /// A delegate for filtering charging tariff identifications.
     /// </summary>
-    public struct ChargingTariff_Id : IId,
-                                      IEquatable<ChargingTariff_Id>,
-                                      IComparable<ChargingTariff_Id>
+    /// <param name="ChargingTariffId">A charging tariff identification to include.</param>
+    public delegate Boolean IncludeChargingTariffIdDelegate(ChargingTariff_Id ChargingTariffId);
+
+
+    /// <summary>
+    /// Extension methods for charging tariff identifications.
+    /// </summary>
+    public static class ChargingTariffIdExtensions
+    {
+
+        /// <summary>
+        /// Indicates whether this charging tariff identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingTariffId">A charging tariff identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingTariff_Id? ChargingTariffId)
+            => !ChargingTariffId.HasValue || ChargingTariffId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this charging tariff identification is null or empty.
+        /// </summary>
+        /// <param name="ChargingTariffId">A charging tariff identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingTariff_Id? ChargingTariffId)
+            => ChargingTariffId.HasValue && ChargingTariffId.Value.IsNotNullOrEmpty;
+
+    }
+
+    /// <summary>
+    /// The unique identification of a charging tariff.
+    /// </summary>
+    public readonly struct ChargingTariff_Id : IId,
+                                               IEquatable<ChargingTariff_Id>,
+                                               IComparable<ChargingTariff_Id>
 
     {
 
         #region Data
 
         /// <summary>
-        /// The regular expression for parsing a charging tariff identification.
+        /// The regular expression for parsing a charging pool identification.
         /// </summary>
-        public static readonly Regex ChargingTariffId_RegEx  = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?T([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
-                                                                    RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex ChargingTariffId_RegEx = new(@"^([a-zA-Z]{2}\*?[a-zA-Z0-9]{3})\*?T([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
+                                                                  RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -50,12 +79,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The charging station operator identification.
         /// </summary>
-        public ChargingStationOperator_Id  OperatorId   { get; }
+        public ChargingStationOperator_Id  OperatorId    { get; }
 
         /// <summary>
         /// The suffix of the identification.
         /// </summary>
-        public String                      Suffix       { get; }
+        public String                      Suffix        { get; }
+
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
@@ -64,57 +94,61 @@ namespace cloud.charging.open.protocols.WWCP
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => Suffix.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the EVSE admin status.
         /// </summary>
         public UInt64 Length
-            => (UInt64) (OperatorId.ToString(OperatorIdFormats.ISO_STAR).Length + 2 + Suffix.Length);
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.DIN       => OperatorId.Length + 1 + (UInt64) Suffix.Length,
+                   OperatorIdFormats.ISO_STAR  => OperatorId.Length + 2 + (UInt64) Suffix.Length,
+                   _                           => OperatorId.Length + 1 + (UInt64) Suffix.Length,  // ISO
+               };
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new electric vehicle charging tariff identification
-        /// based on the given charging station operator and identification suffix.
+        /// Create a new charging tariff identification based on the given
+        /// charging station operator and charging tariff identification suffix.
         /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging tariff identification.</param>
         private ChargingTariff_Id(ChargingStationOperator_Id  OperatorId,
                                   String                      Suffix)
         {
-
-            #region Initial checks
-
-            if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix), "The charging tariff identification suffix must not be null or empty!");
-
-            #endregion
-
             this.OperatorId  = OperatorId;
             this.Suffix      = Suffix;
-
         }
 
         #endregion
 
 
-        #region Random(OperatorId, Mapper = null)
+        #region (static) NewRandom(OperatorId, Mapper = null)
 
         /// <summary>
-        /// Generate a new unique identification of a charging tariff.
+        /// Generate a new unique identification of a charging tariff identification.
         /// </summary>
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging tariff identification.</param>
-        public static ChargingTariff_Id Random(ChargingStationOperator_Id  OperatorId,
-                                               Func<String, String>?       Mapper   = null)
-
+        public static ChargingTariff_Id NewRandom(ChargingStationOperator_Id  OperatorId,
+                                                  Func<String, String>?       Mapper   = null)
 
             => new (OperatorId,
                     Mapper is not null
-                        ? Mapper(RandomExtensions.RandomString(30))
-                        :        RandomExtensions.RandomString(30));
+                        ? Mapper(RandomExtensions.RandomString(50))
+                        :        RandomExtensions.RandomString(50));
 
         #endregion
 
-        #region Parse(Text)
+
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a charging tariff identification.
@@ -123,31 +157,17 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingTariff_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out ChargingTariff_Id chargingTariffId))
+                return chargingTariffId;
 
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging tariff identification must not be null or empty!");
-
-            #endregion
-
-            var MatchCollection = ChargingTariffId_RegEx.Matches(Text);
-
-            if (MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal text representation of a charging tariff identification: '" + Text + "'!",
-                                            nameof(Text));
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id _OperatorId))
-                return new ChargingTariff_Id(_OperatorId,
-                                             MatchCollection[0].Groups[2].Value);
-
-            throw new ArgumentException("Illegal charging tariff identification '" + Text + "'!",
+            throw new ArgumentException("Invalid text-representation of a charging tariff identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
 
         #endregion
 
-        #region Parse(OperatorId, Suffix)
+        #region (static) Parse   (OperatorId, Suffix)
 
         /// <summary>
         /// Parse the given string as a charging tariff identification.
@@ -157,79 +177,185 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingTariff_Id Parse(ChargingStationOperator_Id  OperatorId,
                                               String                      Suffix)
 
-            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*T" + Suffix);
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => Parse(String.Concat(OperatorId,  "T", Suffix)),
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(OperatorId, "*T", Suffix)),
+                   _                           => Parse(String.Concat(OperatorId, "*T", Suffix))
+               };
 
         #endregion
 
-        #region Parse(OperatorId, Suffix)
+        #region (static) Parse   (OperatorId, TariffGroupId, Suffix)
 
         /// <summary>
         /// Parse the given string as a charging tariff identification.
         /// </summary>
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="TariffGroupId">The unique identification of a charging tariff group.</param>
         /// <param name="Suffix">The suffix of the charging tariff identification.</param>
         public static ChargingTariff_Id Parse(ChargingStationOperator_Id  OperatorId,
                                               ChargingTariffGroup_Id      TariffGroupId,
                                               String                      Suffix)
 
-            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*T" + TariffGroupId + "_" + Suffix);
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => Parse(String.Concat(OperatorId,  "T", TariffGroupId, "_", Suffix)),
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(OperatorId, "*T", TariffGroupId, "_", Suffix)),
+                   _                           => Parse(String.Concat(OperatorId, "*T", TariffGroupId, "_", Suffix))
+               };
 
         #endregion
 
-        #region TryParse(Text, out ChargingTariff_Id)
+
+        #region (static) TryParse(Text)
 
         /// <summary>
         /// Parse the given string as a charging tariff identification.
         /// </summary>
+        public static ChargingTariff_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out ChargingTariff_Id chargingTariffId))
+                return chargingTariffId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(OperatorId, Suffix)
+
+        /// <summary>
+        /// Parse the given string as a charging tariff identification.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging tariff identification.</param>
+        public static ChargingTariff_Id? TryParse(ChargingStationOperator_Id  OperatorId,
+                                                  String                      Suffix)
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(OperatorId,  "T", Suffix)),
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(OperatorId, "*T", Suffix)),
+                   _                           => TryParse(String.Concat(OperatorId, "*T", Suffix))
+               };
+
+        #endregion
+
+        #region (static) TryParse(OperatorId, TariffGroupId, Suffix)
+
+        /// <summary>
+        /// Parse the given string as a charging tariff identification.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="TariffGroupId">The unique identification of a charging tariff group.</param>
+        /// <param name="Suffix">The suffix of the charging tariff identification.</param>
+        public static ChargingTariff_Id? TryParse(ChargingStationOperator_Id  OperatorId,
+                                                  ChargingTariffGroup_Id      TariffGroupId,
+                                                  String                      Suffix)
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(OperatorId,  "T", TariffGroupId, "_", Suffix)),
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(OperatorId, "*T", TariffGroupId, "_", Suffix)),
+                   _                           => TryParse(String.Concat(OperatorId, "*T", TariffGroupId, "_", Suffix))
+               };
+
+        #endregion
+
+
+        #region (static) TryParse(Text,                              out ChargingTariffId)
+
+        /// <summary>
+        /// Parse the given string as a charging tariff identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging tariff identification.</param>
+        /// <param name="ChargingTariffId">The parsed charging tariff identification.</param>
         public static Boolean TryParse(String Text, out ChargingTariff_Id ChargingTariffId)
         {
 
             #region Initial checks
 
-            if (Text.IsNullOrEmpty())
-            {
-                ChargingTariffId = default(ChargingTariff_Id);
+            ChargingTariffId = default;
+
+            if (Text is null)
                 return false;
-            }
+
+            Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+                return false;
 
             #endregion
 
             try
             {
 
-                ChargingTariffId = default(ChargingTariff_Id);
+                var matchCollection = ChargingTariffId_RegEx.Matches(Text);
 
-                var _MatchCollection = ChargingTariffId_RegEx.Matches(Text);
-
-                if (_MatchCollection.Count != 1)
+                if (matchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
-
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out var chargingStationOperatorId))
                 {
 
-                    ChargingTariffId = new ChargingTariff_Id(_OperatorId,
-                                                             _MatchCollection[0].Groups[2].Value);
+                    ChargingTariffId = new ChargingTariff_Id(chargingStationOperatorId,
+                                                             matchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception e)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch (Exception)
             { }
 
-            ChargingTariffId = default(ChargingTariff_Id);
             return false;
 
         }
 
         #endregion
+
+        #region (static) TryParse(OperatorId, Suffix,                out ChargingTariffId)
+
+        /// <summary>
+        /// Parse the given string as a charging tariff identification.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging tariff identification.</param>
+        /// <param name="ChargingTariffId">The parsed charging tariff identification.</param>
+        public static Boolean TryParse(ChargingStationOperator_Id  OperatorId,
+                                       String                      Suffix,
+                                       out ChargingTariff_Id       ChargingTariffId)
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(OperatorId,  "T", Suffix), out ChargingTariffId),
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(OperatorId, "*T", Suffix), out ChargingTariffId),
+                   _                           => TryParse(String.Concat(OperatorId, "*T", Suffix), out ChargingTariffId)
+               };
+
+        #endregion
+
+        #region (static) TryParse(OperatorId, TariffGroupId, Suffix, out ChargingTariffId)
+
+        /// <summary>
+        /// Parse the given string as a charging tariff identification.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="TariffGroupId">The unique identification of a charging tariff group.</param>
+        /// <param name="Suffix">The suffix of the charging tariff identification.</param>
+        /// <param name="ChargingTariffId">The parsed charging tariff identification.</param>
+        public static Boolean TryParse(ChargingStationOperator_Id  OperatorId,
+                                       ChargingTariffGroup_Id      TariffGroupId,
+                                       String                      Suffix,
+                                       out ChargingTariff_Id       ChargingTariffId)
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(OperatorId,  "T", TariffGroupId, "_", Suffix), out ChargingTariffId),
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(OperatorId, "*T", TariffGroupId, "_", Suffix), out ChargingTariffId),
+                   _                           => TryParse(String.Concat(OperatorId, "*T", TariffGroupId, "_", Suffix), out ChargingTariffId)
+               };
+
+        #endregion
+
 
         #region Clone
 
@@ -238,8 +364,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public ChargingTariff_Id Clone
 
-            => new ChargingTariff_Id(OperatorId.Clone,
-                                     new String(Suffix.ToCharArray()));
+            => new (OperatorId.Clone,
+                    new String(Suffix?.ToCharArray()));
 
         #endregion
 
@@ -254,20 +380,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffId1">A charging tariff identification.</param>
         /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingTariff_Id ChargingTariffId1, ChargingTariff_Id ChargingTariffId2)
-        {
+        public static Boolean operator == (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingTariffId1, ChargingTariffId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ChargingTariffId1 == null) || ((Object) ChargingTariffId2 == null))
-                return false;
-
-            return ChargingTariffId1.Equals(ChargingTariffId2);
-
-        }
+            => ChargingTariffId1.Equals(ChargingTariffId2);
 
         #endregion
 
@@ -279,8 +395,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffId1">A charging tariff identification.</param>
         /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingTariff_Id ChargingTariffId1, ChargingTariff_Id ChargingTariffId2)
-            => !(ChargingTariffId1 == ChargingTariffId2);
+        public static Boolean operator != (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
+
+            => !ChargingTariffId1.Equals(ChargingTariffId2);
 
         #endregion
 
@@ -292,15 +410,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffId1">A charging tariff identification.</param>
         /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingTariff_Id ChargingTariffId1, ChargingTariff_Id ChargingTariffId2)
-        {
+        public static Boolean operator < (ChargingTariff_Id ChargingTariffId1,
+                                          ChargingTariff_Id ChargingTariffId2)
 
-            if ((Object) ChargingTariffId1 == null)
-                throw new ArgumentNullException(nameof(ChargingTariffId1), "The given ChargingTariffId1 must not be null!");
-
-            return ChargingTariffId1.CompareTo(ChargingTariffId2) < 0;
-
-        }
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) < 0;
 
         #endregion
 
@@ -312,8 +425,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffId1">A charging tariff identification.</param>
         /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingTariff_Id ChargingTariffId1, ChargingTariff_Id ChargingTariffId2)
-            => !(ChargingTariffId1 > ChargingTariffId2);
+        public static Boolean operator <= (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
+
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) <= 0;
 
         #endregion
 
@@ -325,15 +440,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffId1">A charging tariff identification.</param>
         /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingTariff_Id ChargingTariffId1, ChargingTariff_Id ChargingTariffId2)
-        {
+        public static Boolean operator > (ChargingTariff_Id ChargingTariffId1,
+                                          ChargingTariff_Id ChargingTariffId2)
 
-            if ((Object) ChargingTariffId1 == null)
-                throw new ArgumentNullException(nameof(ChargingTariffId1), "The given ChargingTariffId1 must not be null!");
-
-            return ChargingTariffId1.CompareTo(ChargingTariffId2) > 0;
-
-        }
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) > 0;
 
         #endregion
 
@@ -345,60 +455,49 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariffId1">A charging tariff identification.</param>
         /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingTariff_Id ChargingTariffId1, ChargingTariff_Id ChargingTariffId2)
-            => !(ChargingTariffId1 < ChargingTariffId2);
+        public static Boolean operator >= (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
+
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargingTariff_Id> Members
+        #region IComparable<ChargingTariffId> Members
 
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging tariff identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A charging tariff identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is ChargingTariff_Id))
-                throw new ArgumentException("The given object is not a charging tariff identification!", nameof(Object));
-
-            return CompareTo((ChargingTariff_Id) Object);
-
-        }
+            => Object is ChargingTariff_Id chargingTariffId
+                   ? CompareTo(chargingTariffId)
+                   : throw new ArgumentException("The given object is not a charging tariff identification!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(ChargingStationId)
+        #region CompareTo(ChargingTariffId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging tariff identifications.
         /// </summary>
-        /// <param name="ChargingStationId">An object to compare with.</param>
-        public Int32 CompareTo(ChargingTariff_Id ChargingStationId)
+        /// <param name="ChargingTariffId">A charging tariff identification to compare with.</param>
+        public Int32 CompareTo(ChargingTariff_Id ChargingTariffId)
         {
 
-            if ((Object) ChargingStationId == null)
-                throw new ArgumentNullException(nameof(ChargingStationId), "The given charging tariff identification must not be null!");
+            var c = OperatorId.CompareTo(ChargingTariffId.OperatorId);
 
-            // Compare the length of the identifications
-            var _Result = Length.CompareTo(ChargingStationId.Length);
+            if (c == 0)
+                c = String.Compare(Suffix,
+                                   ChargingTariffId.Suffix,
+                                   StringComparison.OrdinalIgnoreCase);
 
-            // If equal: Compare charging operator identifications
-            if (_Result == 0)
-                _Result = OperatorId.CompareTo(ChargingStationId.OperatorId);
-
-            // If equal: Compare suffix
-            if (_Result == 0)
-                _Result = String.Compare(Suffix, ChargingStationId.Suffix, StringComparison.Ordinal);
-
-            return _Result;
+            return c;
 
         }
 
@@ -406,47 +505,34 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region IEquatable<ChargingTariff_Id> Members
+        #region IEquatable<ChargingTariffId> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging tariff identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A charging tariff identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is ChargingTariff_Id))
-                return false;
-
-            return Equals((ChargingTariff_Id) Object);
-
-        }
+            => Object is ChargingTariff_Id chargingTariffId &&
+                   Equals(chargingTariffId);
 
         #endregion
 
-        #region Equals(ChargingStationId)
+        #region Equals(ChargingTariffId)
 
         /// <summary>
         /// Compares two charging tariff identifications for equality.
         /// </summary>
-        /// <param name="ChargingStationId">A charging tariff identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingTariff_Id ChargingStationId)
-        {
+        /// <param name="ChargingTariffId">A charging tariff identification to compare with.</param>
+        public Boolean Equals(ChargingTariff_Id ChargingTariffId)
 
-            if ((Object) ChargingStationId == null)
-                return false;
+            => OperatorId.Equals(ChargingTariffId.OperatorId) &&
 
-            return OperatorId.Equals(ChargingStationId.OperatorId) &&
-                   Suffix.    Equals(ChargingStationId.Suffix);
-
-        }
+               String.Equals(Suffix.                 Replace("*", ""),
+                             ChargingTariffId.Suffix.Replace("*", ""),
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -460,8 +546,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => OperatorId.GetHashCode() ^
-               Suffix.    GetHashCode();
+            => OperatorId.               GetHashCode() ^
+               Suffix?.Replace("*", "")?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -471,7 +557,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => String.Concat(OperatorId, "*T", Suffix);
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => String.Concat(OperatorId,  "T", Suffix),
+                   OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId, "*T", Suffix),
+                   _                           => String.Concat(OperatorId, "*T", Suffix)
+               };
 
         #endregion
 

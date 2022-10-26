@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -46,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Start/end date, for example: 2015-12-24, valid from this day until that day (excluding that day).
         /// </summary>
-        public StartEndDateTime        Date         { get; }
+        public StartEndDateTime?       Date         { get; }
 
         /// <summary>
         /// Minimum/Maximum used energy in kWh, for example 20, valid from this amount of energy is used.
@@ -81,12 +77,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Power">Minimum/Maximum power in kW, for example 0, valid from this charging speed.</param>
         /// <param name="Duration">Minimum/Maximum duration in seconds, valid for a duration from x seconds.</param>
         /// <param name="DayOfWeek">Minimum/Maximum duration in seconds, valid for a duration from x seconds.</param>
-        public ChargingTariffRestriction(TimeRange?              Time        = null,
-                                         StartEndDateTime        Date        = null,
-                                         DecimalMinMax?          kWh         = null,
-                                         DecimalMinMax?          Power       = null,
-                                         TimeSpanMinMax?         Duration    = null,
-                                         IEnumerable<DayOfWeek>  DayOfWeek   = null)
+        public ChargingTariffRestriction(TimeRange?               Time        = null,
+                                         StartEndDateTime?        Date        = null,
+                                         DecimalMinMax?           kWh         = null,
+                                         DecimalMinMax?           Power       = null,
+                                         TimeSpanMinMax?          Duration    = null,
+                                         IEnumerable<DayOfWeek>?  DayOfWeek   = null)
         {
 
             #region Initial checks
@@ -122,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="MinkWh">The minimum kWh value.</param>
         public static ChargingTariffRestriction MinkWh(Decimal MinkWh)
-            => new ChargingTariffRestriction(kWh: DecimalMinMax.FromMin(MinkWh));
+            => new (kWh: DecimalMinMax.FromMin(MinkWh));
 
         #endregion
 
@@ -133,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="MaxkWh">The maximum kWh value.</param>
         public static ChargingTariffRestriction MaxkWh(Decimal MaxkWh)
-            => new ChargingTariffRestriction(kWh: DecimalMinMax.FromMax(MaxkWh));
+            => new (kWh: DecimalMinMax.FromMax(MaxkWh));
 
         #endregion
 
@@ -144,7 +140,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="MinPower">The minimum power value.</param>
         public static ChargingTariffRestriction MinPower(Decimal MinPower)
-            => new ChargingTariffRestriction(Power: DecimalMinMax.FromMin(MinPower));
+            => new (Power: DecimalMinMax.FromMin(MinPower));
 
         #endregion
 
@@ -155,7 +151,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="MaxPower">The maximum power value.</param>
         public static ChargingTariffRestriction MaxPower(Decimal MaxPower)
-            => new ChargingTariffRestriction(Power: DecimalMinMax.FromMax(MaxPower));
+            => new (Power: DecimalMinMax.FromMax(MaxPower));
 
         #endregion
 
@@ -166,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="MinDuration">The minimum Duration value.</param>
         public static ChargingTariffRestriction MinDuration(TimeSpan MinDuration)
-            => new ChargingTariffRestriction(Duration: TimeSpanMinMax.FromMin(MinDuration));
+            => new (Duration: TimeSpanMinMax.FromMin(MinDuration));
 
         #endregion
 
@@ -177,10 +173,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="MaxDuration">The maximum Duration value.</param>
         public static ChargingTariffRestriction MaxDuration(TimeSpan MaxDuration)
-            => new ChargingTariffRestriction(Duration: TimeSpanMinMax.FromMax(MaxDuration));
+            => new (Duration: TimeSpanMinMax.FromMax(MaxDuration));
 
         #endregion
-
 
 
         #region ToJSON()
@@ -213,7 +208,6 @@ namespace cloud.charging.open.protocols.WWCP
                );
 
         #endregion
-
 
 
         #region GetHashCode()

@@ -3592,17 +3592,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff CreateChargingTariff(ChargingTariff_Id                                    Id,
-                                                   I18NString                                           Name,
-                                                   I18NString                                           Description,
-                                                   Brand                                                Brand,
-                                                   Uri                                                  TariffUrl,
-                                                   Currency                                             Currency,
-                                                   EnergyMix                                            EnergyMix,
-                                                   IEnumerable<ChargingTariffElement>                   TariffElements,
+        public ChargingTariff? CreateChargingTariff(ChargingTariff_Id                                    Id,
+                                                    I18NString                                           Name,
+                                                    I18NString                                           Description,
+                                                    IEnumerable<ChargingTariffElement>                   TariffElements,
+                                                    Currency                                             Currency,
+                                                    Brand                                                Brand,
+                                                    URL                                                  TariffURL,
+                                                    EnergyMix                                            EnergyMix,
 
-                                                   Action<ChargingTariff>?                              OnSuccess  = null,
-                                                   Action<ChargingStationOperator, ChargingTariff_Id>?  OnError    = null)
+                                                    Action<ChargingTariff>?                              OnSuccess   = null,
+                                                    Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
 
         {
 
@@ -3627,14 +3627,13 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
                 var _ChargingTariff = new ChargingTariff(Id,
-                                                         this,
                                                          Name,
                                                          Description,
-                                                         Brand,
-                                                         TariffUrl,
+                                                         TariffElements,
                                                          Currency,
-                                                         EnergyMix,
-                                                         TariffElements);
+                                                         Brand,
+                                                         TariffURL,
+                                                         EnergyMix);
 
 
                 if (chargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff) &&
@@ -3682,36 +3681,35 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff CreateChargingTariff(String                                                         IdSuffix,
-                                                   I18NString                                                     Name,
-                                                   I18NString                                                     Description,
-                                                   Brand                                                          Brand,
-                                                   Uri                                                            TariffUrl,
-                                                   Currency                                                       Currency,
-                                                   EnergyMix                                                      EnergyMix,
-                                                   IEnumerable<ChargingTariffElement>                             TariffElements,
+        public ChargingTariff? CreateChargingTariff(String                                                         Id,
+                                                    I18NString                                                     Name,
+                                                    I18NString                                                     Description,
+                                                    IEnumerable<ChargingTariffElement>                             TariffElements,
+                                                    Currency                                                       Currency,
+                                                    Brand                                                          Brand,
+                                                    URL                                                            TariffURL,
+                                                    EnergyMix                                                      EnergyMix,
 
-                                                   Action<ChargingTariff>?                                        OnSuccess   = null,
-                                                   Action<ChargingStationOperator, ChargingTariff_Id>?            OnError     = null)
+                                                    Action<ChargingTariff>?                                        OnSuccess   = null,
+                                                    Action<ChargingStationOperator, ChargingTariff_Id>?            OnError     = null)
 
         {
 
             #region Initial checks
 
-            if (IdSuffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging tariff must not be null or empty!");
+            if (Id.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Id), "The given suffix of the unique identification of the new charging tariff must not be null or empty!");
 
             #endregion
 
-            return CreateChargingTariff(ChargingTariff_Id.Parse(Id,
-                                                                IdSuffix.Trim().ToUpper()),
+            return CreateChargingTariff(ChargingTariff_Id.Parse(Id),
                                         Name,
                                         Description,
-                                        Brand,
-                                        TariffUrl,
-                                        Currency,
-                                        EnergyMix,
                                         TariffElements,
+                                        Currency,
+                                        Brand,
+                                        TariffURL,
+                                        EnergyMix,
 
                                         OnSuccess,
                                         OnError);
@@ -3732,17 +3730,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff GetOrCreateChargingTariff(ChargingTariff_Id                                    Id,
-                                                        I18NString                                           Name,
-                                                        I18NString                                           Description,
-                                                        Brand                                                Brand,
-                                                        Uri                                                  TariffUrl,
-                                                        Currency                                             Currency,
-                                                        EnergyMix                                            EnergyMix,
-                                                        IEnumerable<ChargingTariffElement>                   TariffElements,
+        public ChargingTariff? GetOrCreateChargingTariff(ChargingTariff_Id                                    Id,
+                                                         I18NString                                           Name,
+                                                         I18NString                                           Description,
+                                                         IEnumerable<ChargingTariffElement>                   TariffElements,
+                                                         Currency                                             Currency,
+                                                         Brand                                                Brand,
+                                                         URL                                                  TariffURL,
+                                                         EnergyMix                                            EnergyMix,
 
-                                                        Action<ChargingTariff>?                              OnSuccess   = null,
-                                                        Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
+                                                         Action<ChargingTariff>?                              OnSuccess   = null,
+                                                         Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
 
         {
 
@@ -3756,17 +3754,17 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (chargingTariffs.TryGet(Id, out ChargingTariff _ChargingTariff))
-                    return _ChargingTariff;
+                if (chargingTariffs.TryGet(Id, out var chargingTariff))
+                    return chargingTariff;
 
                 return CreateChargingTariff(Id,
                                             Name,
                                             Description,
-                                            Brand,
-                                            TariffUrl,
-                                            Currency,
-                                            EnergyMix,
                                             TariffElements,
+                                            Currency,
+                                            Brand,
+                                            TariffURL,
+                                            EnergyMix,
 
                                             OnSuccess,
                                             OnError);
@@ -3789,17 +3787,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff GetOrCreateChargingTariff(String                                               IdSuffix,
-                                                        I18NString                                           Name,
-                                                        I18NString                                           Description,
-                                                        Brand                                                Brand,
-                                                        Uri                                                  TariffUrl,
-                                                        Currency                                             Currency,
-                                                        EnergyMix                                            EnergyMix,
-                                                        IEnumerable<ChargingTariffElement>                   TariffElements,
+        public ChargingTariff? GetOrCreateChargingTariff(String                                               IdSuffix,
+                                                         I18NString                                           Name,
+                                                         I18NString                                           Description,
+                                                         IEnumerable<ChargingTariffElement>                   TariffElements,
+                                                         Currency                                             Currency,
+                                                         Brand                                                Brand,
+                                                         URL                                                  TariffURL,
+                                                         EnergyMix                                            EnergyMix,
 
-                                                        Action<ChargingTariff>?                              OnSuccess   = null,
-                                                        Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
+                                                         Action<ChargingTariff>?                              OnSuccess   = null,
+                                                         Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
 
 
         {
@@ -3811,15 +3809,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return GetOrCreateChargingTariff(ChargingTariff_Id.Parse(Id,
-                                                                     IdSuffix.Trim().ToUpper()),
+            return GetOrCreateChargingTariff(ChargingTariff_Id.Parse(Id, IdSuffix.Trim()),
                                              Name,
                                              Description,
-                                             Brand,
-                                             TariffUrl,
-                                             Currency,
-                                             EnergyMix,
                                              TariffElements,
+                                             Currency,
+                                             Brand,
+                                             TariffURL,
+                                             EnergyMix,
 
                                              OnSuccess,
                                              OnError);

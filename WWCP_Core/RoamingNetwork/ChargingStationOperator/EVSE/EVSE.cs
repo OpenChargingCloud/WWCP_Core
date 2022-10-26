@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
@@ -48,25 +49,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The JSON-LD context of the object.
         /// </summary>
-        public const            String    JSONLDContext                            = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
+        public const            String    JSONLDContext                           = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
 
 
-        private readonly        Decimal   EPSILON                                  = 0.01m;
+        private readonly        Decimal   EPSILON                                 = 0.01m;
 
         /// <summary>
         /// The default max size of the EVSE admin status schedule/history.
         /// </summary>
-        public const            UInt16    DefaultMaxEVSEAdminStatusScheduleSize    = 50;
+        public const            UInt16    DefaultMaxEVSEAdminStatusScheduleSize   = 50;
 
         /// <summary>
         /// The default max size of the EVSE status schedule/history.
         /// </summary>
-        public const            UInt16    DefaultMaxEVSEStatusScheduleSize         = 50;
+        public const            UInt16    DefaultMaxEVSEStatusScheduleSize        = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly  TimeSpan  DefaultMaxReservationDuration            = TimeSpan.FromMinutes(15);
+        public static readonly  TimeSpan  DefaultMaxReservationDuration           = TimeSpan.FromMinutes(15);
 
         #endregion
 
@@ -103,24 +104,35 @@ namespace cloud.charging.open.protocols.WWCP
         public IRemoteEVSE?                             RemoteEVSE              { get; }
 
 
+        /// <summary>
+        /// An optional enumeration of links to photos related to the EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<URL>                         PhotoURLs               { get; }
 
         /// <summary>
-        /// All brands registered for this EVSE.
+        /// An enumeration of all brands registered for this EVSE.
         /// </summary>
         [Optional, SlowData]
         public ReactiveSet<Brand>                       Brands                  { get; }
 
         /// <summary>
-        /// The license of the EVSE data.
+        /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
-        [Mandatory, SlowData]
+        [Optional, SlowData]
         public ReactiveSet<DataLicense>                 DataLicenses            { get; }
 
         /// <summary>
-        /// The charging modes.
+        /// An enumeration of all supported charging modes of this EVSE.
         /// </summary>
         [Mandatory, SlowData]
         public ReactiveSet<ChargingModes>               ChargingModes           { get; }
+
+        /// <summary>
+        /// An enumeration of all available charging tariffs at this EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<ChargingTariff>              ChargingTariffs         { get; }
 
         /// <summary>
         /// The power socket outlets.
@@ -649,7 +661,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public DateTime? LastStatusUpdate { get; set; }
+        public DateTime?                                LastStatusUpdate        { get; set; }
 
         #endregion
 
@@ -753,28 +765,69 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="ChargingStation">The charging station hosting this EVSE.</param>
-        /// <param name="Configurator">A delegate to configure the newly created EVSE.</param>
+        /// 
         /// <param name="RemoteEVSECreator">A delegate to attach a remote EVSE.</param>
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxAdminStatusScheduleSize">An optional max length of the admin staus schedule.</param>
         /// <param name="MaxStatusScheduleSize">An optional max length of the staus schedule.</param>
         /// 
+        /// <param name="Name">An optional multi-language text e.g. printed on the outside of the EVSE for visual identification.</param>
+        /// <param name="Description">An optional multi-language description of this EVSE.</param>
+        /// 
+        /// <param name="PhotoURLs">An optional enumeration of links to photos related to the EVSE.</param>
+        /// <param name="Brands">An optional enumeration of brands registered for this EVSE.</param>
+        /// <param name="DataLicenses">An optional enumeration of data license(s) of this EVSE.</param>
+        /// <param name="ChargingModes">An optional enumeration of the supported charging modes of this EVSE.</param>
+        /// 
+        /// <param name="DataSource"></param>
+        /// <param name="LastChange"></param>
+        /// 
+        /// <param name="Configurator">A delegate to configure the newly created EVSE.</param>
+        /// 
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
-        /// <param name="InternalData">An optional dictionary of internal data.</param>
+        /// <param name="InternalData">Optional internal data.</param>
         public EVSE(EVSE_Id                             Id,
                     ChargingStation                     ChargingStation,
-                    I18NString?                         Name                         = null,
-                    I18NString?                         Description                  = null,
-                    Action<EVSE>?                       Configurator                 = null,
-                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+
                     Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
                     Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
                     UInt16?                             MaxAdminStatusScheduleSize   = null,
                     UInt16?                             MaxStatusScheduleSize        = null,
 
+                    I18NString?                         Name                         = null,
+                    I18NString?                         Description                  = null,
+
+                    ReactiveSet<URL>?                   PhotoURLs                    = null,
+                    ReactiveSet<Brand>?                 Brands                       = null,
+                    ReactiveSet<DataLicense>?           DataLicenses                 = null,
+                    ReactiveSet<ChargingModes>?         ChargingModes                = null,
+                    ReactiveSet<ChargingTariff>?        ChargingTariffs              = null,
+                    CurrentTypes?                       CurrentType                  = null,
+                    Decimal?                            AverageVoltage               = null,
+                    Decimal?                            MaxCurrent                   = null,
+                    Timestamped<Decimal>?               MaxCurrentRealTime           = null,
+                    IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
+                    Decimal?                            MaxPower                     = null,
+                    Timestamped<Decimal>?               MaxPowerRealTime             = null,
+                    IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
+                    Decimal?                            MaxCapacity                  = null,
+                    Timestamped<Decimal>?               MaxCapacityRealTime          = null,
+                    IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
+                    EnergyMix?                          EnergyMix                    = null,
+                    Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
+                    EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
+                    EnergyMeter?                        EnergyMeter                  = null,
+                    Boolean?                            IsFreeOfCharge               = null,
+                    IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+
+                    ChargingSession?                    ChargingSession              = null,
+                    DateTime?                           LastStatusUpdate             = null,
                     String?                             DataSource                   = null,
                     DateTime?                           LastChange                   = null,
+
+                    Action<EVSE>?                       Configurator                 = null,
+                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
 
                     JObject?                            CustomData                   = null,
                     UserDefinedDictionary?              InternalData                 = null)
@@ -795,9 +848,22 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.ChargingStation = ChargingStation;
+            this.ChargingStation                    = ChargingStation;
 
-            this.Brands                             = new ReactiveSet<Brand>();
+            this.PhotoURLs                          = PhotoURLs is null
+                                                          ? new ReactiveSet<URL>()
+                                                          : new ReactiveSet<URL>(PhotoURLs);
+            this.PhotoURLs.OnSetChanged            += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("PhotoURLs",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.Brands                             = Brands is null
+                                                          ? new ReactiveSet<Brand>()
+                                                          : new ReactiveSet<Brand>(Brands);
             this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("DataLicenses",
@@ -806,7 +872,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.DataLicenses                       = new ReactiveSet<DataLicense>();
+            this.DataLicenses                       = DataLicenses is null
+                                                          ? new ReactiveSet<DataLicense>()
+                                                          : new ReactiveSet<DataLicense>(DataLicenses);
             this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -816,7 +884,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.ChargingModes                      = new ReactiveSet<ChargingModes>();
+            this.ChargingModes                      = ChargingModes is null
+                                                          ? new ReactiveSet<ChargingModes>()
+                                                          : new ReactiveSet<ChargingModes>(ChargingModes);
             this.ChargingModes.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -826,7 +896,27 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.MaxCurrentPrognoses                = new ReactiveSet<Timestamped<Decimal>>();
+            this.ChargingTariffs                    = ChargingTariffs is null
+                                                          ? new ReactiveSet<ChargingTariff>()
+                                                          : new ReactiveSet<ChargingTariff>(ChargingTariffs);
+            this.ChargingTariffs.OnSetChanged      += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("ChargingTariffs",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.currentType                        = CurrentType ?? CurrentTypes.AC_ThreePhases;
+            this.averageVoltage                     = AverageVoltage;
+
+            this.maxCurrent                         = MaxCurrent;
+            this.maxCurrentRealTime                 = MaxCurrentRealTime;
+
+            this.MaxCurrentPrognoses                = MaxCurrentPrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxCurrentPrognoses);
             this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -836,7 +926,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.MaxPowerPrognoses                  = new ReactiveSet<Timestamped<Decimal>>();
+            this.maxPower                           = MaxPower;
+            this.maxPowerRealTime                   = MaxPowerRealTime;
+
+            this.MaxPowerPrognoses                  = MaxPowerPrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxPowerPrognoses);
             this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -846,7 +941,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.MaxCapacityPrognoses               = new ReactiveSet<Timestamped<Decimal>>();
+            this.maxCapacity                        = MaxCapacity;
+            this.maxCapacityRealTime                = MaxCapacityRealTime;
+
+            this.MaxCapacityPrognoses               = MaxCapacityPrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxCapacityPrognoses);
             this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -856,7 +956,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.SocketOutlets                      = new ReactiveSet<SocketOutlet>();
+            this.energyMix                          = EnergyMix;
+            this.energyMixRealTime                  = EnergyMixRealTime;
+            this.energyMixPrognoses                 = EnergyMixPrognoses;
+
+            this.energyMeter                        = EnergyMeter;
+
+            this.SocketOutlets                      = SocketOutlets is null
+                                                          ? new ReactiveSet<SocketOutlet>()
+                                                          : new ReactiveSet<SocketOutlet>(SocketOutlets);
             this.SocketOutlets.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -882,6 +990,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
+            #region RemoteEVSE
+
             this.RemoteEVSE = RemoteEVSECreator?.Invoke(this);
 
             if (this.RemoteEVSE is not null)
@@ -894,15 +1004,24 @@ namespace cloud.charging.open.protocols.WWCP
                 this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
 
                 this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession) => {
-                    RoamingNetwork?.SessionsStore.NewOrUpdate(ChargingSession, session => { session.EVSEId = Id; session.EVSE = this; });
-                    //_ChargingSession       = ChargingSession;
-                    //_ChargingSession.EVSE  = this;
-                    OnNewChargingSession?.Invoke(Timestamp, this, ChargingSession);
-                };
+
+                                                               RoamingNetwork?.SessionsStore.NewOrUpdate(ChargingSession, session => {
+                                                                                                 session.EVSEId = Id;
+                                                                                                 session.EVSE = this;
+                                                                                             });
+
+                                                               //_ChargingSession       = ChargingSession;
+                                                               //_ChargingSession.EVSE  = this;
+
+                                                               OnNewChargingSession?.Invoke(Timestamp, this, ChargingSession);
+
+                                                           };
 
                 this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord) => OnNewChargeDetailRecord?.Invoke(Timestamp, RemoteEVSE, ChargeDetailRecord);
 
             }
+
+            #endregion
 
         }
 

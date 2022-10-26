@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
@@ -181,28 +182,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// An optional (multi-language) name of this charging tariff.
+        /// An enumeration of tariff elements.
         /// </summary>
-        [Optional]
-        public I18NString                          Name              { get; }
-
-        /// <summary>
-        /// An optional (multi-language) description of this charging tariff.
-        /// </summary>
-        [Optional]
-        public I18NString                          Description       { get; }
-
-        /// <summary>
-        /// An optional brand for this charging tariff.
-        /// </summary>
-        [Optional]
-        public Brand                               Brand             { get; }
-
-        /// <summary>
-        /// An URI for more information about this tariff.
-        /// </summary>
-        [Optional]
-        public Uri                                 TariffURI         { get; }
+        [Mandatory]
+        public IEnumerable<ChargingTariffElement>  TariffElements    { get; }
 
         /// <summary>
         /// ISO 4217 code of the currency used for this tariff.
@@ -210,60 +193,52 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory]
         public Currency                            Currency          { get; }
 
+
+        /// <summary>
+        /// An optional brand for this charging tariff.
+        /// </summary>
+        [Optional]
+        public Brand?                              Brand             { get; }
+
+        /// <summary>
+        /// An URI for more information about this tariff.
+        /// </summary>
+        [Optional]
+        public URL?                                TariffURL         { get; }
+
         /// <summary>
         /// The energy mix.
         /// </summary>
         [Optional]
-        public EnergyMix                           EnergyMix         { get;  }
-
-                /// <summary>
-        /// An enumeration of tariff elements.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<ChargingTariffElement>  TariffElements    { get; }
-
-
-        /// <summary>
-        /// The charging tariff operator of this charging tariff.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingStationOperator             Operator          { get; }
-
-
-        public ChargingTariffGroup?                TariffGroup       { get; }
+        public EnergyMix?                          EnergyMix         { get;  }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ChargingTariff(Id, Operator, ...)
-
         /// <summary>
         /// Create a new charging tariff having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="Operator">The charging station operator of this charging tariff.</param>
         /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         public ChargingTariff(ChargingTariff_Id                   Id,
-                              ChargingStationOperator             Operator,
                               I18NString                          Name,
                               I18NString                          Description,
-                              Brand                               Brand,
-
-                              Uri                                 TariffUrl,
+                              IEnumerable<ChargingTariffElement>  TariffElements,
                               Currency                            Currency,
-                              EnergyMix                           EnergyMix,
-                              IEnumerable<ChargingTariffElement>  TariffElements)
 
-            : base(Id)
+                              Brand?                              Brand            = null,
+                              URL?                                TariffURL        = null,
+                              EnergyMix?                          EnergyMix        = null)
+
+            : base(Id,
+                   Name,
+                   Description)
 
         {
 
             #region Initial checks
-
-            if (Operator is null)
-                throw new ArgumentNullException(nameof(Operator),        "The given charging station operator must not be null!");
 
             if (TariffElements is null || !TariffElements.Any())
                 throw new ArgumentNullException(nameof(TariffElements),  "The given enumeration of tariff elements must not be null or empty!");
@@ -272,60 +247,16 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.Operator        = Operator;
-            this.Name            = Name;
-            this.Description     = Description ?? new I18NString();
-            this.Brand           = Brand;
-
-            this.TariffURI       = TariffUrl;
-            this.Currency        = Currency;
-            this.EnergyMix       = EnergyMix;
             this.TariffElements  = TariffElements;
+            this.Currency        = Currency;
+
+            this.Brand           = Brand;
+            this.TariffURL       = TariffURL;
+            this.EnergyMix       = EnergyMix;
 
             #endregion
 
         }
-
-        #endregion
-
-        #region ChargingTariff(Id, TariffGroup, ...)
-
-        /// <summary>
-        /// Create a new charging tariff having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="TariffGroup">The charging tariff group of this charging tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
-        public ChargingTariff(ChargingTariff_Id                   Id,
-                              ChargingTariffGroup                 TariffGroup,
-                              I18NString                          Name,
-                              I18NString                          Description,
-                              Brand                               Brand,
-
-                              Uri                                 TariffUrl,
-                              Currency                            Currency,
-                              EnergyMix                           EnergyMix,
-                              IEnumerable<ChargingTariffElement>  TariffElements)
-
-            : this(Id,
-                   TariffGroup.Operator,
-                   Name,
-                   Description,
-                   Brand,
-
-                   TariffUrl,
-                   Currency,
-                   EnergyMix,
-                   TariffElements)
-
-        {
-
-            this.TariffGroup  = TariffGroup;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -367,94 +298,27 @@ namespace cloud.charging.open.protocols.WWCP
                                    () => new JProperty("brand",    Brand.   ToJSON()))
                              : null,
 
-                         (DataSource is not null && (!Embedded || DataSource != Operator.DataSource))
+                         (DataSource is not null && !Embedded)
                              ? new JProperty("dataSource", DataSource)
                              : null,
 
-                         //(!Embedded || DataLicenses != Operator.DataLicenses)
-                         //    ? ExpandDataLicenses.Switch(
-                         //        () => new JProperty("dataLicenseIds",  new JArray(DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                         //        () => new JProperty("dataLicenses",    DataLicenses.ToJSON()))
-                         //    : null,
 
+                         TariffElements.Any()
+                             ? new JProperty("elements", new JArray(TariffElements.Select(tariffElement => tariffElement.ToJSON())))
+                             : null,
 
                          new JProperty("currency", Currency.ISOCode),
 
-                         TariffURI is not null
-                             ? new JProperty("URI", TariffURI.ToString())
-                             : null,
 
-                         TariffElements.Any()
-                             ? new JProperty("elements", new JArray(TariffElements.Select(TariffElement => TariffElement.ToJSON())))
+
+
+                         TariffURL is not null
+                             ? new JProperty("URI", TariffURL.ToString())
                              : null,
 
                          EnergyMix is not null
                              ? new JProperty("energy_mix", EnergyMix.ToJSON())
-                             : null,
-
-
-
-                         Operator.ChargingStationGroups.Any(group => group.Tariff == this)
-                             ? new JProperty("chargingStations", new JArray(Operator.ChargingStationGroups.
-                                                                                Where (group => group.Tariff == this).
-                                                                                Select(group => group.AllowedMemberIds.
-                                                                                                          Select(id => id.ToString()))))
-                             : null,
-
-                         Operator.EVSEGroups.           Any(group => group.Tariff == this)
-                             ? new JProperty("EVSEs",            new JArray(Operator.EVSEGroups.
-                                                                                Where (group => group.Tariff == this).
-                                                                                Select(group => group.AllowedMemberIds.
-                                                                                                          Select(id => id.ToString()))))
                              : null
-
-
-
-
-
-
-        //                 #region Embedded means it is served as a substructure of e.g. a charging station operator
-
-        //                 Embedded
-        //                     ? null
-        //                     : ExpandRoamingNetworkId.Switch(
-        //                           () => new JProperty("roamingNetworkId",           RoamingNetwork.Id. ToString()),
-        //                           () => new JProperty("roamingNetwork",             RoamingNetwork.    ToJSON(Embedded:                          true,
-        //                                                                                                                            ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
-        //                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
-        //                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
-        //                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-        //                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
-        //                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden))),
-
-        //                 Embedded
-        //                     ? null
-        //                     : ExpandChargingStationOperatorId.Switch(
-        //                           () => new JProperty("chargingStationOperatorId",  Operator.Id.       ToString()),
-        //                           () => new JProperty("chargingStationOperator",    Operator.          ToJSON(Embedded:                          true,
-        //                                                                                                                            ExpandRoamingNetworkId:            InfoStatus.Hidden,
-        //                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
-        //                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
-        //                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
-        //                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
-        //                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden))),
-
-        //                 #endregion
-
-        //                 ExpandEVSEIds.Switch(
-        //                     () => new JProperty("EVSEIds",
-        //                                         EVSEIds.SafeAny()
-        //                                             ? new JArray(EVSEIds.
-        //                                                                               OrderBy(evseid => evseid).
-        //                                                                               Select (evseid => evseid.ToString()))
-        //                                             : null),
-
-        //                     () => new JProperty("EVSEs",
-        //                                         EVSEs.SafeAny()
-        //                                             ? new JArray(EVSEs.
-        //                                                                               OrderBy(evse   => evse.Id).
-        //                                                                               Select (evse   => evse.  ToJSON(Embedded: true)))
-        //                                             : null))
 
                         );
 

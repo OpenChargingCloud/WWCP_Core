@@ -25,6 +25,13 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
+    /// A delegate for filtering charging product identifications.
+    /// </summary>
+    /// <param name="ChargingProductId">A charging product identification to include.</param>
+    public delegate Boolean IncludeChargingProductIdDelegate(ChargingProduct_Id ChargingProductId);
+
+
+    /// <summary>
     /// Extension methods for charging product identifications.
     /// </summary>
     public static class ChargingProductIdExtensions
@@ -46,19 +53,19 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
-
     /// <summary>
     /// The unique identification of a charging product.
     /// </summary>
-    public struct ChargingProduct_Id : IId,
-                                       IEquatable <ChargingProduct_Id>,
-                                       IComparable<ChargingProduct_Id>
+    public readonly struct ChargingProduct_Id : IId,
+                                                IEquatable<ChargingProduct_Id>,
+                                                IComparable<ChargingProduct_Id>
+
     {
 
         #region Data
 
         /// <summary>
-        /// The internal user identification.
+        /// The internal identification.
         /// </summary>
         private readonly String InternalId;
 
@@ -67,30 +74,29 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// Indicates whether this charging product identification is null or empty.
+        /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Indicates whether this charging product identification is NOT null or empty.
+        /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public Boolean IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the charging product identificator.
+        /// The length of the EVSE admin status.
         /// </summary>
         public UInt64 Length
-            => (UInt64) (InternalId?.Length ?? 0);
+            => (UInt64) InternalId.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging product identification.
-        /// based on the given string.
+        /// Create a new charging product identification based on the given string.
         /// </summary>
         private ChargingProduct_Id(String Text)
         {
@@ -100,19 +106,21 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Random  (Length = 20)
+        #region (static) NewRandom(Mapper = null)
 
         /// <summary>
-        /// Create a new random charging product identification.
+        /// Generate a new unique identification of a charging product identification.
         /// </summary>
-        /// <param name="Length">The expected length of the random charging product identification.</param>
-        public static ChargingProduct_Id Random(Byte Length = 20)
+        /// <param name="Mapper">A delegate to modify the newly generated charging product identification.</param>
+        public static ChargingProduct_Id NewRandom(Func<String, String>? Mapper   = null)
 
-            => new (RandomExtensions.RandomString(Length).ToUpper());
+            => new (Mapper is not null
+                        ? Mapper(RandomExtensions.RandomString(50))
+                        :        RandomExtensions.RandomString(50));
 
         #endregion
 
-        #region (static) Parse   (Text)
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given string as a charging product identification.
@@ -131,17 +139,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse (Text)
 
         /// <summary>
         /// Parse the given string as a charging product identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging product identification.</param>
-        public static ChargingProduct_Id? TryParse(String? Text)
+        public static ChargingProduct_Id? TryParse(String Text)
         {
 
-            if (Text is not null && TryParse(Text, out ChargingProduct_Id ChargingProductId))
-                return ChargingProductId;
+            if (TryParse(Text, out ChargingProduct_Id chargingProductId))
+                return chargingProductId;
 
             return null;
 
@@ -159,27 +166,18 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean TryParse(String Text, out ChargingProduct_Id ChargingProductId)
         {
 
-            #region Initial checks
+            Text = Text.Trim();
 
-            Text = Text?.Trim();
-
-            if (Text?.IsNullOrEmpty() == true)
+            if (Text.IsNotNullOrEmpty())
             {
-                ChargingProductId = default;
-                return false;
+                try
+                {
+                    ChargingProductId = new ChargingProduct_Id(Text);
+                    return true;
+                }
+                catch
+                { }
             }
-
-            #endregion
-
-             try
-             {
-                 ChargingProductId = new ChargingProduct_Id(Text);
-                 return true;
-             }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-             catch (Exception)
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
-             { }
 
             ChargingProductId = default;
             return false;
@@ -195,9 +193,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public ChargingProduct_Id Clone
 
-            => new (
-                   new String(InternalId?.ToCharArray())
-               );
+            => new (new String(InternalId?.ToCharArray()));
 
         #endregion
 
@@ -301,9 +297,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging product identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging product identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is ChargingProduct_Id chargingProductId
@@ -316,9 +312,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingProductId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging product identifications.
         /// </summary>
-        /// <param name="ChargingProductId">An object to compare with.</param>
+        /// <param name="ChargingProductId">A charging product identification to compare with.</param>
         public Int32 CompareTo(ChargingProduct_Id ChargingProductId)
 
             => String.Compare(InternalId,
@@ -334,10 +330,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging product identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging product identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingProduct_Id chargingProductId &&
@@ -348,10 +343,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(ChargingProductId)
 
         /// <summary>
-        /// Compares two ChargingProductIds for equality.
+        /// Compares two charging product identifications for equality.
         /// </summary>
-        /// <param name="ChargingProductId">A ChargingProductId to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="ChargingProductId">A charging product identification to compare with.</param>
         public Boolean Equals(ChargingProduct_Id ChargingProductId)
 
             => String.Equals(InternalId,
@@ -362,7 +356,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.
@@ -370,7 +364,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.ToLower().GetHashCode() ?? 0;
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 

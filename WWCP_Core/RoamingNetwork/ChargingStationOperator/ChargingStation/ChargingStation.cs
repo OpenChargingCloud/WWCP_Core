@@ -1230,10 +1230,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.ChargingPool                = ChargingPool;
+            this.ChargingPool                        = ChargingPool;
 
-            this.Brands                      = new ReactiveSet<Brand>();
-            this.Brands.OnSetChanged        += (timestamp, sender, newItems, oldItems) => {
+            this.Brands                              = new ReactiveSet<Brand>();
+            this.Brands.OnSetChanged                += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("Brands",
                                 oldItems,
@@ -1241,8 +1241,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.DataLicenses                = new ReactiveSet<DataLicense>();
-            this.DataLicenses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            this.DataLicenses                        = new ReactiveSet<DataLicense>();
+            this.DataLicenses.OnSetChanged          += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
                 PropertyChanged("DataLicenses",
@@ -1252,8 +1252,8 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
 
-            this.AuthenticationModes = new ReactiveSet<AuthenticationModes>();
-            this.AuthenticationModes.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+            this.AuthenticationModes                 = new ReactiveSet<AuthenticationModes>();
+            this.AuthenticationModes.OnSetChanged   += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("AuthenticationModes",
                                 oldItems,
@@ -1261,8 +1261,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.PaymentOptions = new ReactiveSet<PaymentOptions>();
-            this.PaymentOptions.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+            this.PaymentOptions                      = new ReactiveSet<PaymentOptions>();
+            this.PaymentOptions.OnSetChanged        += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("PaymentOptions",
                                 oldItems,
@@ -1270,8 +1270,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.ParkingSpaces = new ReactiveSet<ParkingSpace>();
-            this.ParkingSpaces.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+            this.ParkingSpaces                       = new ReactiveSet<ParkingSpace>();
+            this.ParkingSpaces.OnSetChanged         += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("ParkingSpaces",
                                 oldItems,
@@ -1279,8 +1279,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.ParkingSpaces = new ReactiveSet<ParkingSpace>();
-            this.ParkingSpaces.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+            this.ParkingSpaces                       = new ReactiveSet<ParkingSpace>();
+            this.ParkingSpaces.OnSetChanged         += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("ParkingSpaces",
                                 oldItems,
@@ -1288,8 +1288,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.PhotoURLs = new ReactiveSet<URL>();
-            this.PhotoURLs.OnSetChanged += (timestamp, sender, newItems, oldItems) => {
+            this.PhotoURLs                           = new ReactiveSet<URL>();
+            this.PhotoURLs.OnSetChanged             += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("PhotoURLs",
                                 oldItems,
@@ -1372,9 +1372,6 @@ namespace cloud.charging.open.protocols.WWCP
             //                    newItems);
 
             //};
-
-
-
 
             this.openingTimes                = OpeningTimes.Open24Hours;
             this.evses                       = new EntityHashSet<ChargingStation, EVSE_Id,  IEVSE> (this);
@@ -1703,14 +1700,47 @@ namespace cloud.charging.open.protocols.WWCP
                 var now   = Timestamp.Now;
                 var evse  = new EVSE(Id,
                                      this,
-                                     Name,
-                                     Description,
-                                     Configurator,
-                                     RemoteEVSECreator,
+
                                      InitialAdminStatus,
                                      InitialStatus,
                                      MaxAdminStatusScheduleSize,
-                                     MaxStatusScheduleSize);
+                                     MaxStatusScheduleSize,
+
+                                     Name,
+                                     Description,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+
+                                     null,
+                                     null,
+                                     null,
+                                     null,
+
+                                     Configurator,
+                                     RemoteEVSECreator,
+
+                                     null,
+                                     null);
 
                 if (EVSEAddition.SendVoting(now, this, evse) &&
                     evses.TryAdd(evse))
@@ -1826,12 +1856,46 @@ namespace cloud.charging.open.protocols.WWCP
                     return existingEVSE.
                                UpdateWith(new EVSE(Id,
                                                    this,
+                                                   new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
+                                                   new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.     Available),
+                                                   null,
+                                                   null,
+
                                                    Name,
                                                    Description,
-                                                   Configurator,
                                                    null,
-                                                   new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
-                                                   new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.     Available)));
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   null,
+
+                                                   Configurator,
+                                                   RemoteEVSECreator,
+
+                                                   null,
+                                                   null));
 
             }
 

@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region TryParse(Text, out EVSEId, ParsingMode = relaxed)
+        #region (static) TryParse(Text, out EVSEId, ParsingMode = relaxed)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -515,10 +515,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 // New format...
                 if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value,
-                                                        out ChargingStationOperator_Id operatorId))
+                                                        out ChargingStationOperator_Id chargingStationOperatorId))
                 {
 
-                    EVSEId = new EVSE_Id(operatorId,
+                    EVSEId = new EVSE_Id(chargingStationOperatorId,
                                          matchCollection[0].Groups[2].Value);
 
                     return true;
@@ -527,10 +527,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 // Old format...
                 if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[3].Value,
-                                                        out operatorId))
+                                                        out chargingStationOperatorId))
                 {
 
-                    EVSEId = new EVSE_Id(operatorId,
+                    EVSEId = new EVSE_Id(chargingStationOperatorId,
                                          matchCollection[0].Groups[4].Value);
 
                     return true;

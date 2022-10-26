@@ -19,7 +19,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
@@ -163,17 +163,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff CreateChargingTariff(ChargingTariff_Id                                   Id,
-                                                   I18NString                                          Name,
-                                                   I18NString                                          Description,
-                                                   Brand                                               Brand,
-                                                   Uri                                                 TariffUrl,
-                                                   Currency                                            Currency,
-                                                   EnergyMix                                           EnergyMix,
-                                                   IEnumerable<ChargingTariffElement>                  TariffElements,
+        public ChargingTariff CreateChargingTariff(ChargingTariff_Id                                    Id,
+                                                   I18NString                                           Name,
+                                                   I18NString                                           Description,
+                                                   Brand?                                               Brand,
+                                                   URL?                                                 TariffURL,
+                                                   Currency                                             Currency,
+                                                   EnergyMix?                                           EnergyMix,
+                                                   IEnumerable<ChargingTariffElement>                   TariffElements,
 
-                                                   Action<ChargingTariff>                              OnSuccess  = null,
-                                                   Action<ChargingStationOperator, ChargingTariff_Id>  OnError    = null)
+                                                   Action<ChargingTariff>?                              OnSuccess   = null,
+                                                   Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
 
         {
 
@@ -195,14 +195,13 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
                 var _ChargingTariff = new ChargingTariff(Id,
-                                                         this,
                                                          Name,
                                                          Description,
-                                                         Brand,
-                                                         TariffUrl,
+                                                         TariffElements,
                                                          Currency,
-                                                         EnergyMix,
-                                                         TariffElements);
+                                                         Brand,
+                                                         TariffURL,
+                                                         EnergyMix);
 
 
                 if (ChargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff))

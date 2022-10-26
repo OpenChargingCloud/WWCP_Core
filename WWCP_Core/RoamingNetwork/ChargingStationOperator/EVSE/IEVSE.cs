@@ -17,12 +17,11 @@
 
 #region Usings
 
-using System.Collections.Concurrent;
-
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -127,112 +126,128 @@ namespace cloud.charging.open.protocols.WWCP
         IRemoteEVSE?                           RemoteEVSE                   { get; }
 
 
+        /// <summary>
+        /// An optional enumeration of links to photos related to the EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        ReactiveSet<URL>                       PhotoURLs                    { get; }
 
         /// <summary>
-        /// All brands registered for this EVSE.
+        /// An enumeration of all brands registered for this EVSE.
         /// </summary>
+        [Optional, SlowData]
         ReactiveSet<Brand>                     Brands                       { get; }
 
         /// <summary>
-        /// The license of the EVSE data.
+        /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
+        [Optional, SlowData]
         ReactiveSet<DataLicense>               DataLicenses                 { get; }
 
-
         /// <summary>
-        /// Charging modes.
+        /// An enumeration of all supported charging modes of this EVSE.
         /// </summary>
+        [Mandatory, SlowData]
         ReactiveSet<ChargingModes>             ChargingModes                { get; }
 
         /// <summary>
-        /// The power socket outlets.
+        /// An enumeration of all available charging tariffs at this EVSE.
         /// </summary>
-        ReactiveSet<SocketOutlet>              SocketOutlets                { get; set; }
+        [Optional, SlowData]
+        ReactiveSet<ChargingTariff>            ChargingTariffs             { get; }
 
 
         /// <summary>
-        /// The type of the current.
+        /// The type of the current of this EVSE.
         /// </summary>
         CurrentTypes                           CurrentType                  { get; set; }
 
         /// <summary>
-        /// The average voltage.
+        /// The average voltage of this EVSE.
         /// </summary>
         Decimal?                               AverageVoltage               { get; set; }
 
 
         /// <summary>
-        /// The maximum current [Ampere].
+        /// The maximum current of this EVSE [Ampere].
         /// </summary>
         Decimal?                               MaxCurrent                   { get; set; }
 
         /// <summary>
-        /// The real-time maximum current [Ampere].
+        /// The real-time maximum current of this EVSE [Ampere].
         /// </summary>
         Timestamped<Decimal>?                  MaxCurrentRealTime           { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the maximum current [Ampere].
+        /// Prognoses on future values of the maximum current of this EVSE [Ampere].
         /// </summary>
         ReactiveSet<Timestamped<Decimal>>      MaxCurrentPrognoses          { get; }
 
 
         /// <summary>
-        /// The maximum power [kWatt].
+        /// The maximum power of this EVSE [kWatt].
         /// </summary>
         Decimal?                               MaxPower                     { get; set; }
 
         /// <summary>
-        /// The real-time maximum power [kWatt].
+        /// The real-time maximum power of this EVSE [kWatt].
         /// </summary>
         Timestamped<Decimal>?                  MaxPowerRealTime             { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the maximum power [kWatt].
+        /// Prognoses on future values of the maximum power of this EVSE [kWatt].
         /// </summary>
         ReactiveSet<Timestamped<Decimal>>      MaxPowerPrognoses            { get; }
 
 
         /// <summary>
-        /// The maximum capacity [kWh].
+        /// The maximum capacity of this EVSE [kWh].
         /// </summary>
         Decimal?                               MaxCapacity                  { get; set; }
 
         /// <summary>
-        /// The real-time maximum capacity [kWh].
+        /// The real-time maximum capacity of this EVSE [kWh].
         /// </summary>
         Timestamped<Decimal>?                  MaxCapacityRealTime          { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the capacity [kWh].
+        /// Prognoses on future values of the capacity of this EVSE [kWh].
         /// </summary>
         ReactiveSet<Timestamped<Decimal>>      MaxCapacityPrognoses         { get; }
 
 
         /// <summary>
-        /// The energy mix.
+        /// The energy mix of this EVSE.
         /// </summary>
         EnergyMix?                             EnergyMix                    { get; set; }
 
         /// <summary>
-        /// The current energy mix.
+        /// The current energy mix of this EVSE.
         /// </summary>
         Timestamped<EnergyMix>?                EnergyMixRealTime            { get; set; }
 
         /// <summary>
-        /// Prognoses on future values of the energy mix.
+        /// Prognoses on future values of the energy mix of this EVSE.
         /// </summary>
         EnergyMixPrognosis?                    EnergyMixPrognoses           { get; set; }
 
 
         /// <summary>
-        /// An optional energy meter.
+        /// An optional energy meter of this EVSE.
         /// </summary>
         EnergyMeter?                           EnergyMeter                  { get; set; }
 
 
         /// <summary>
-        /// The current charging session.
+        /// The power socket outlets of this EVSE.
+        /// </summary>
+        [Mandatory, SlowData]
+        ReactiveSet<SocketOutlet>              SocketOutlets                { get; set; }
+
+
+
+        /// <summary>
+        /// The current charging session of this EVSE.
         /// </summary>
         ChargingSession?                       ChargingSession              { get; set; }
 

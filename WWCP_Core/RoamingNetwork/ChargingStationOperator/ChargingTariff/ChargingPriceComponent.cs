@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -85,9 +83,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Price">Flat rate price.</param>
         public static ChargingPriceComponent FlatRate(Decimal  Price)
 
-            => new ChargingPriceComponent(ChargingDimensionTypes.FLAT,
-                                          Price,
-                                          1);
+            => new (ChargingDimensionTypes.FLAT,
+                    Price,
+                    1);
 
         #endregion
 
@@ -101,9 +99,9 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingPriceComponent ChargingTime(Decimal   Price,
                                                           TimeSpan  BillingIncrement)
 
-            => new ChargingPriceComponent(ChargingDimensionTypes.TIME,
-                                          Price,
-                                          (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
+            => new (ChargingDimensionTypes.TIME,
+                    Price,
+                    (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
 
         #endregion
 
@@ -117,9 +115,9 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingPriceComponent ParkingTime(Decimal   Price,
                                                          TimeSpan  BillingIncrement)
 
-            => new ChargingPriceComponent(ChargingDimensionTypes.PARKING_TIME,
-                                          Price,
-                                          (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
+            => new (ChargingDimensionTypes.PARKING_TIME,
+                    Price,
+                    (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
 
         #endregion
 

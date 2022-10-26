@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System.Runtime.CompilerServices;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -275,7 +273,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         /// 
-        /// <param name="InternalData">An optional dictionary of internal data.</param>
+        /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
+        /// <param name="InternalData">Optional internal data.</param>
         public AEMobilityEntity(TId                         Id,
                                 I18NString?                 Name                         = null,
                                 I18NString?                 Description                  = null,

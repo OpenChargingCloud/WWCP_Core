@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (matchCollection.Count != 1)
                     return false;
 
-                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out ChargingStationOperator_Id chargingStationOperatorId))
+                if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out var chargingStationOperatorId))
                 {
 
                     ChargingStationId = new ChargingStation_Id(chargingStationOperatorId,

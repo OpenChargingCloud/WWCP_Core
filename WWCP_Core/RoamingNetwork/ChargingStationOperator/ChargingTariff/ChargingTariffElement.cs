@@ -17,13 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -42,12 +37,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Enumeration of price components that make up the pricing of this tariff.
         /// </summary>
-        public IEnumerable<ChargingPriceComponent>     ChargingPriceComponents     { get; }
+        public IEnumerable<ChargingPriceComponent>     ChargingPriceComponents       { get; }
 
         /// <summary>
         /// Enumeration of tariff restrictions.
         /// </summary>
-        public IEnumerable<ChargingTariffRestriction>  ChargingTariffRestrictions  { get;  }
+        public IEnumerable<ChargingTariffRestriction>  ChargingTariffRestrictions    { get;  }
 
         #endregion
 
@@ -59,9 +54,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new charging tariff element.
         /// </summary>
         /// <param name="ChargingPriceComponents">Enumeration of price components that make up the pricing of this tariff.</param>
-        public ChargingTariffElement(params ChargingPriceComponent[]  ChargingPriceComponents)
+        public ChargingTariffElement(params ChargingPriceComponent[] ChargingPriceComponents)
 
-            : this(ChargingPriceComponents, new ChargingTariffRestriction[0])
+            : this(ChargingPriceComponents,
+                   Array.Empty<ChargingTariffRestriction>())
 
         { }
 
@@ -74,13 +70,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPriceComponents">Enumeration of price components that make up the pricing of this tariff.</param>
         /// <param name="ChargingTariffRestrictions">Enumeration of tariff restrictions.</param>
-        public ChargingTariffElement(IEnumerable<ChargingPriceComponent>     ChargingPriceComponents,
-                                     IEnumerable<ChargingTariffRestriction>  ChargingTariffRestrictions = null)
+        public ChargingTariffElement(IEnumerable<ChargingPriceComponent>      ChargingPriceComponents,
+                                     IEnumerable<ChargingTariffRestriction>?  ChargingTariffRestrictions = null)
         {
 
             #region Initial checks
 
-            if (ChargingPriceComponents == null)
+            if (ChargingPriceComponents is null)
                 throw new ArgumentNullException(nameof(ChargingPriceComponents),  "The given parameter must not be null!");
 
             if (!ChargingPriceComponents.Any())
@@ -108,7 +104,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ChargingTariffRestriction == null)
+            if (ChargingTariffRestriction is null)
                 throw new ArgumentNullException(nameof(ChargingTariffRestriction),  "The given enumeration must not be empty!");
 
             #endregion
