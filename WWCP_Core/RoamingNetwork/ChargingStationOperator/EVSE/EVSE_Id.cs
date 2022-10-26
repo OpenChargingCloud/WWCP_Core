@@ -131,6 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public String                      Suffix       { get; }
 
+
         /// <summary>
         /// The detected format of the EVSE identification.
         /// </summary>
@@ -153,33 +154,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
 
-                switch (Format)
-                {
-
-                    case OperatorIdFormats.DIN:
-                        return OperatorId.Length + 1 + (UInt64) Suffix.Length;
-
-                    case OperatorIdFormats.ISO_STAR:
-                        return OperatorId.Length + 2 + (UInt64) Suffix.Length;
-
-                    default:  // ISO
-                        return OperatorId.Length + 1 + (UInt64) Suffix.Length;
-
-                }
-
-            }
-        }
+            => Format switch {
+                OperatorIdFormats.DIN       => OperatorId.Length + 1 + (UInt64) Suffix.Length,
+                OperatorIdFormats.ISO_STAR  => OperatorId.Length + 2 + (UInt64) Suffix.Length,
+                _                           => OperatorId.Length + 1 + (UInt64) Suffix.Length,  // ISO
+            };
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification
+        /// Create a new Electric Vehicle Supply Equipment (EVSE) identification
         /// based on the given charging station operator and identification suffix.
         /// </summary>
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
@@ -187,17 +174,8 @@ namespace cloud.charging.open.protocols.WWCP
         private EVSE_Id(ChargingStationOperator_Id  OperatorId,
                         String                      Suffix)
         {
-
-            #region Initial checks
-
-            if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix),  "The EVSE identification suffix must not be null or empty!");
-
-            #endregion
-
             this.OperatorId  = OperatorId;
             this.Suffix      = Suffix;
-
         }
 
         #endregion
@@ -809,11 +787,14 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(EVSE_Id EVSEId)
         {
 
-            var result = OperatorId.CompareTo(EVSEId.OperatorId);
+            var c = OperatorId.CompareTo(EVSEId.OperatorId);
 
-            return result == 0
-                       ? String.Compare(Suffix, EVSEId.Suffix, StringComparison.OrdinalIgnoreCase)
-                       : result;
+            if (c == 0)
+                c = String.Compare(Suffix,
+                                   EVSEId.Suffix,
+                                   StringComparison.OrdinalIgnoreCase);
+
+            return c;
 
         }
 
@@ -845,6 +826,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(EVSE_Id EVSEId)
 
             => OperatorId.Equals(EVSEId.OperatorId) &&
+
                String.Equals(Suffix.       Replace("*", ""),
                              EVSEId.Suffix.Replace("*", ""),
                              StringComparison.OrdinalIgnoreCase);

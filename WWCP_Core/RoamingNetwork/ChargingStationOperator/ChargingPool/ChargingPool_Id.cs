@@ -104,6 +104,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public String                      Suffix        { get; }
 
+
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
@@ -127,19 +128,16 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new charging pool identification
-        /// based on the given charging station operator and identification suffix.
+        /// Create a new charging pool identification based on the given
+        /// charging station operator and charging tariff identification suffix.
         /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging pool identification.</param>
         private ChargingPool_Id(ChargingStationOperator_Id  OperatorId,
                                 String                      Suffix)
         {
-
-            if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix), "The charging pool identification suffix must not be null or empty!");
-
             this.OperatorId  = OperatorId;
             this.Suffix      = Suffix;
-
         }
 
         #endregion
@@ -528,6 +526,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingPool_Id ChargingPoolId)
 
             => OperatorId.Equals(ChargingPoolId.OperatorId) &&
+
                String.Equals(Suffix.               Replace("*", ""),
                              ChargingPoolId.Suffix.Replace("*", ""),
                              StringComparison.OrdinalIgnoreCase);
