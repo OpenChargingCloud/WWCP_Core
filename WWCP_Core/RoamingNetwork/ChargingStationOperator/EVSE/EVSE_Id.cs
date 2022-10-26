@@ -133,12 +133,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// The detected format of the EVSE identification.
-        /// </summary>
-        public OperatorIdFormats           Format
-            => OperatorId.Format;
-
-        /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
@@ -155,11 +149,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public UInt64 Length
 
-            => Format switch {
-                OperatorIdFormats.DIN       => OperatorId.Length + 1 + (UInt64) Suffix.Length,
-                OperatorIdFormats.ISO_STAR  => OperatorId.Length + 2 + (UInt64) Suffix.Length,
-                _                           => OperatorId.Length + 1 + (UInt64) Suffix.Length,  // ISO
-            };
+            => OperatorId.Format switch {
+                   OperatorIdFormats.DIN       => OperatorId.Length + 1 + (UInt64) Suffix.Length,
+                   OperatorIdFormats.ISO_STAR  => OperatorId.Length + 2 + (UInt64) Suffix.Length,
+                   _                           => OperatorId.Length + 1 + (UInt64) Suffix.Length,  // ISO
+               };
 
         #endregion
 
@@ -856,10 +850,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => Format switch {
-                   OperatorIdFormats.DIN       => String.Concat(OperatorId,  "*", Suffix),
+            => OperatorId.Format switch {
+                   OperatorIdFormats.ISO       => String.Concat(OperatorId,  "E", Suffix),
                    OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId, "*E", Suffix),
-                   _                           => String.Concat(OperatorId,  "E", Suffix),
+                   _                           => String.Concat(OperatorId, "*E", Suffix)
                };
 
         #endregion

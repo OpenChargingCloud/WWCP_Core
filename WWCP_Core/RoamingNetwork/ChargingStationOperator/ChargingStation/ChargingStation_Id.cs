@@ -123,16 +123,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return OperatorId.Format switch {
-                    OperatorIdFormats.DIN       => (UInt64) (OperatorId.CountryCode.TelefonCode.ToString().Length + 1 + (OperatorId.Suffix?.Length ?? 0) + 2 + (Suffix?.Length ?? 0)),
-                    OperatorIdFormats.ISO_STAR  => (UInt64) (OperatorId.CountryCode.Alpha2Code.            Length + 1 + (OperatorId.Suffix?.Length ?? 0) + 2 + (Suffix?.Length ?? 0)),
-                    _                           => (UInt64) (OperatorId.CountryCode.Alpha2Code.            Length +     (OperatorId.Suffix?.Length ?? 0) + 1 + (Suffix?.Length ?? 0)), // also ISO!
-                };
-            }
-        }
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.DIN       => OperatorId.Length + 1 + (UInt64) Suffix.Length,
+                   OperatorIdFormats.ISO_STAR  => OperatorId.Length + 2 + (UInt64) Suffix.Length,
+                   _                           => OperatorId.Length + 1 + (UInt64) Suffix.Length,  // ISO
+               };
 
         #endregion
 
@@ -302,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     var TmpEVSEId = EVSE_Id.Parse(_Prefix);
 
-                    if (TmpEVSEId.Format == OperatorIdFormats.ISO)
+                    if (TmpEVSEId.OperatorId.Format == OperatorIdFormats.ISO)
                     {
                         if (((UInt64) _Prefix.Length) > _EVSEIds[0].OperatorId.Length + 2)
                             _Prefix = TmpEVSEId.Suffix; //TmpEVSEId.OperatorId + "*S" + TmpEVSEId.Suffix;
@@ -815,26 +811,10 @@ namespace cloud.charging.open.protocols.WWCP
         public String ToString(OperatorIdFormats Format)
 
             => OperatorId.Format switch {
-
-                OperatorIdFormats.ISO       => String.Concat(OperatorId.CountryCode.Alpha2Code,
-                                                             OperatorId.Suffix,
-                                                             "S",
-                                                             Suffix),
-
-                OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId.CountryCode.Alpha2Code,
-                                                             "*",
-                                                             OperatorId.Suffix,
-                                                             "*S",
-                                                             Suffix),
-
-                _                           => String.Concat("+",
-                                                             OperatorId.CountryCode.TelefonCode,
-                                                             "*",
-                                                             OperatorId.Suffix,
-                                                             "*S",
-                                                             Suffix)
-
-            };
+                   OperatorIdFormats.ISO       => String.Concat(OperatorId,  "S", Suffix),
+                   OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId, "*S", Suffix),
+                   _                           => String.Concat(OperatorId, "*S", Suffix)
+               };
 
         #endregion
 

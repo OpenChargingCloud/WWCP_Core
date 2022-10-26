@@ -121,7 +121,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) (OperatorId.ToString(OperatorIdFormats.ISO_STAR).Length + 2 + Suffix.Length); // +2 because of "*P"
+
+            => OperatorId.Format switch {
+                   OperatorIdFormats.DIN       => OperatorId.Length + 1 + (UInt64) Suffix.Length,
+                   OperatorIdFormats.ISO_STAR  => OperatorId.Length + 2 + (UInt64) Suffix.Length,
+                   _                           => OperatorId.Length + 1 + (UInt64) Suffix.Length,  // ISO
+               };
 
         #endregion
 
@@ -556,26 +561,10 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => OperatorId.Format switch {
-
-                OperatorIdFormats.ISO       => String.Concat(OperatorId.CountryCode.Alpha2Code,
-                                                             OperatorId.Suffix,
-                                                             "P",
-                                                             Suffix),
-
-                OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId.CountryCode.Alpha2Code,
-                                                             "*",
-                                                             OperatorId.Suffix,
-                                                             "*P",
-                                                             Suffix),
-
-                _                           => String.Concat("+",
-                                                             OperatorId.CountryCode.TelefonCode,
-                                                             "*",
-                                                             OperatorId.Suffix,
-                                                             "*P",
-                                                             Suffix)
-
-            };
+                   OperatorIdFormats.ISO       => String.Concat(OperatorId,  "P", Suffix),
+                   OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId, "*P", Suffix),
+                   _                           => String.Concat(OperatorId, "*P", Suffix)
+               };
 
         #endregion
 
