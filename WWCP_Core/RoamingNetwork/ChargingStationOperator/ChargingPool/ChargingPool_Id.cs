@@ -243,9 +243,9 @@ namespace cloud.charging.open.protocols.WWCP
                                             String                      Suffix)
 
             => ChargingStationOperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingStationOperatorId.ToString(),                           "*P", Suffix)),
-                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingStationOperatorId.ToString(),                            "P", Suffix)),
-                   _                           => Parse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*P", Suffix))
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingStationOperatorId.ToString(), "*P", Suffix)),
+                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingStationOperatorId.ToString(),  "P", Suffix)),
+                   _                           => Parse(String.Concat(ChargingStationOperatorId.ToString(), "*P", Suffix))
                };
 
         #endregion

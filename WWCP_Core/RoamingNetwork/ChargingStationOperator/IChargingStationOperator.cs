@@ -191,17 +191,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        IChargingPool? CreateChargingPool(ChargingPool_Id?                                    Id                          = null,
-                                          I18NString?                                         Name                        = null,
-                                          I18NString?                                         Description                 = null,
-                                          Action<IChargingPool>?                              Configurator                = null,
-                                          RemoteChargingPoolCreatorDelegate?                  RemoteChargingPoolCreator   = null,
-                                          Timestamped<ChargingPoolAdminStatusTypes>?          InitialAdminStatus          = null,
-                                          Timestamped<ChargingPoolStatusTypes>?               InitialStatus               = null,
-                                          UInt16                                              MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                          UInt16                                              MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
-                                          Action<IChargingPool>?                              OnSuccess                   = null,
-                                          Action<IChargingStationOperator, ChargingPool_Id>?  OnError                     = null);
+        IChargingPool? CreateChargingPool(ChargingPool_Id?                                             Id                             = null,
+                                          I18NString?                                                  Name                           = null,
+                                          I18NString?                                                  Description                    = null,
+                                          Action<IChargingPool>?                                       Configurator                   = null,
+                                          RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
+                                          Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                          Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
+                                          UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                          UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
+                                          Action<IChargingPool>?                                       OnSuccess                      = null,
+                                          Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
+                                          Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null);
 
         /// <summary>
         /// Create and register or udpate a new charging pool having the given
@@ -211,17 +212,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        IChargingPool? CreateOrUpdateChargingPool(ChargingPool_Id                                     Id,
-                                                  I18NString?                                         Name                        = null,
-                                                  I18NString?                                         Description                 = null,
-                                                  Action<IChargingPool>?                              Configurator                = null,
-                                                  RemoteChargingPoolCreatorDelegate?                  RemoteChargingPoolCreator   = null,
-                                                  Timestamped<ChargingPoolAdminStatusTypes>?          InitialAdminStatus          = null,
-                                                  Timestamped<ChargingPoolStatusTypes>?               InitialStatus               = null,
-                                                  UInt16                                              MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                  UInt16                                              MaxStatusListSize           = ChargingPool.DefaultMaxStatusScheduleSize,
-                                                  Action<IChargingPool>?                              OnSuccess                   = null,
-                                                  Action<IChargingStationOperator, ChargingPool_Id>?  OnError                     = null);
+        IChargingPool? CreateOrUpdateChargingPool(ChargingPool_Id                                              Id,
+                                                  I18NString?                                                  Name                           = null,
+                                                  I18NString?                                                  Description                    = null,
+                                                  Action<IChargingPool>?                                       Configurator                   = null,
+                                                  RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
+                                                  Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                  Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
+                                                  UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                                  UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                  Action<IChargingPool>?                                       OnSuccess                      = null,
+                                                  Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
+                                                  Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null);
 
         /// <summary>
         /// Return an enumeration of all charging pools.

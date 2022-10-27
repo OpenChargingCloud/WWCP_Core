@@ -2028,16 +2028,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public ChargingStation CreateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Action<ChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<ChargingStation>? OnSuccess = null, Action<ChargingPool, ChargingStation_Id>? OnError = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Action<ChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<ChargingStation>? OnSuccess = null, Action<ChargingPool, ChargingStation_Id>? OnError = null)
-        {
-            throw new NotImplementedException();
-        }
-
         public IChargingStation? RemoveChargingStation(ChargingStation_Id ChargingStationId)
         {
             throw new NotImplementedException();
@@ -2108,6 +2098,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
+        public IChargingStation? CreateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<IChargingStation>? OnSuccess = null, Action<IChargingPool, ChargingStation_Id>? OnError = null, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<IChargingStation>? OnSuccess = null, Action<IChargingPool, ChargingStation_Id>? OnError = null, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

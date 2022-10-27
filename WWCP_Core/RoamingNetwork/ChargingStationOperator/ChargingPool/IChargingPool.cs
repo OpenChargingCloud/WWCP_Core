@@ -357,17 +357,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        IChargingStation? CreateChargingStation(ChargingStation_Id                             Id,
-                                                I18NString?                                    Name                           = null,
-                                                I18NString?                                    Description                    = null,
-                                                Action<IChargingStation>?                      Configurator                   = null,
-                                                RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
-                                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
-                                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                                                UInt16?                                        MaxAdminStatusListSize         = null,
-                                                UInt16?                                        MaxStatusListSize              = null,
-                                                Action<IChargingStation>?                      OnSuccess                      = null,
-                                                Action<IChargingPool, ChargingStation_Id>?     OnError                        = null);
+        IChargingStation? CreateChargingStation(ChargingStation_Id                                              Id,
+                                                I18NString?                                                     Name                           = null,
+                                                I18NString?                                                     Description                    = null,
+                                                Action<IChargingStation>?                                       Configurator                   = null,
+                                                RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                UInt16?                                                         MaxAdminStatusListSize         = null,
+                                                UInt16?                                                         MaxStatusListSize              = null,
+                                                Action<IChargingStation>?                                       OnSuccess                      = null,
+                                                Action<IChargingPool, ChargingStation_Id>?                      OnError                        = null,
+                                                Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null);
 
         /// <summary>
         /// Create and register a new charging station having the given
@@ -382,17 +383,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        IChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id                             Id,
-                                                        I18NString?                                    Name                           = null,
-                                                        I18NString?                                    Description                    = null,
-                                                        Action<IChargingStation>?                      Configurator                   = null,
-                                                        RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
-                                                        Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
-                                                        Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                                                        UInt16?                                        MaxAdminStatusListSize         = null,
-                                                        UInt16?                                        MaxStatusListSize              = null,
-                                                        Action<IChargingStation>?                      OnSuccess                      = null,
-                                                        Action<IChargingPool, ChargingStation_Id>?     OnError                        = null);
+        IChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id                                              Id,
+                                                        I18NString?                                                     Name                           = null,
+                                                        I18NString?                                                     Description                    = null,
+                                                        Action<IChargingStation>?                                       Configurator                   = null,
+                                                        RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                        Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                        Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                        UInt16?                                                         MaxAdminStatusListSize         = null,
+                                                        UInt16?                                                         MaxStatusListSize              = null,
+                                                        Action<IChargingStation>?                                       OnSuccess                      = null,
+                                                        Action<IChargingPool, ChargingStation_Id>?                      OnError                        = null,
+                                                        Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null);
 
 
         /// <summary>
