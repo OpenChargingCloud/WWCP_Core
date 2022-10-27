@@ -853,7 +853,7 @@ namespace cloud.charging.open.protocols.WWCP
             => OperatorId.Format switch {
                    OperatorIdFormats.ISO       => String.Concat(OperatorId,  "E", Suffix),
                    OperatorIdFormats.ISO_STAR  => String.Concat(OperatorId, "*E", Suffix),
-                   _                           => String.Concat(OperatorId, "*E", Suffix)
+                   _                           => String.Concat(OperatorId,  "*", Suffix)
                };
 
         #endregion
