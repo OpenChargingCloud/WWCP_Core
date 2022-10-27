@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         /// <summary>
         /// The regular expression for relaxed parsing an EVSE identification.
-        /// </summary>                                                  // new format:
+        /// </summary>                                             // new format:
         public static readonly Regex  EVSEId_relaxed_RegEx  = new (@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Za-z0-9\*]{1,30})$" + " | " +
 
                                                                    // old format:
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         /// <summary>
         /// The regular expression for strict parsing an EVSE identification.
-        /// </summary>                                                  // new format:
+        /// </summary>                                             // new format:
         public static readonly Regex  EVSEId_strict_RegEx   = new (@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{1,30})$",
                                                                    RegexOptions.IgnorePatternWhitespace);
 
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (TryParse(Text,
-                         out EVSE_Id evseId,
+                         out var evseId,
                          ParsingMode))
             {
                 return evseId;
@@ -287,9 +287,9 @@ namespace cloud.charging.open.protocols.WWCP
                                     String                      Suffix)
 
             => ChargingStationOperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingStationOperatorId.ToString(),                           "*E", Suffix)),
-                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingStationOperatorId.ToString(),                            "E", Suffix)),
-                   _                           => Parse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", Suffix))
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingStationOperatorId.ToString(), "*E", Suffix)),
+                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingStationOperatorId.ToString(),  "E", Suffix)),
+                   _                           => Parse(String.Concat(ChargingStationOperatorId.ToString(),  "*", Suffix))
                };
 
         #endregion
@@ -305,9 +305,9 @@ namespace cloud.charging.open.protocols.WWCP
                                     String           Suffix)
 
             => ChargingPoolId.OperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),                           "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
-                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "E", ChargingPoolId.Suffix, Suffix)),
-                   _                           => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(), "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
+                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),  "E", ChargingPoolId.Suffix, Suffix)),
+                   _                           => Parse(String.Concat(ChargingPoolId.OperatorId.ToString(),  "*", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
                };
 
         #endregion
@@ -323,48 +323,10 @@ namespace cloud.charging.open.protocols.WWCP
                                     String              Suffix)
 
             => ChargingStationId.OperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingStationId.OperatorId.ToString(),                           "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
-                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingStationId.OperatorId.ToString(),                            "E", ChargingStationId.Suffix, Suffix)),
-                   _                           => Parse(String.Concat(ChargingStationId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
+                   OperatorIdFormats.ISO_STAR  => Parse(String.Concat(ChargingStationId.OperatorId.ToString(), "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
+                   OperatorIdFormats.ISO       => Parse(String.Concat(ChargingStationId.OperatorId.ToString(),  "E", ChargingStationId.Suffix, Suffix)),
+                   _                           => Parse(String.Concat(ChargingStationId.OperatorId.ToString(),  "*", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
                };
-
-        #endregion
-
-        #region Parse   (OperatorId, Suffix)
-
-        ///// <summary>
-        ///// Parse the given string as an EVSE identification.
-        ///// </summary>
-        ///// <param name="OperatorId">The unique identification of a charging station operator.</param>
-        ///// <param name="Suffix">The suffix of the EVSE identification.</param>
-        //public static EVSE_Id Parse(ChargingStationOperator_Id  OperatorId,
-        //                            String                      Suffix)
-        //{
-
-        //    switch (OperatorId.Format)
-        //    {
-
-        //        case OperatorIdFormats.ISO:
-        //        case OperatorIdFormats.ISO_STAR:
-        //            if (!IdSuffixISO_RegEx.IsMatch(Suffix))
-        //                throw new ArgumentException("Illegal EVSE identification suffix '" + Suffix + "'!",
-        //                                            nameof(Suffix));
-        //            return new EVSE_Id(OperatorId,
-        //                               Suffix);
-
-        //        case OperatorIdFormats.DIN:
-        //            if (!IdSuffixDIN_RegEx.IsMatch(Suffix))
-        //                throw new ArgumentException("Illegal EVSE identification suffix '" + Suffix + "'!",
-        //                                            nameof(Suffix));
-        //            return new EVSE_Id(OperatorId,
-        //                               Suffix);
-
-        //    }
-
-        //    throw new ArgumentException("Illegal EVSE identification suffix '" + Suffix + "'!",
-        //                                nameof(Suffix));
-
-        //}
 
         #endregion
 
@@ -393,7 +355,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (TryParse(Text,
-                         out EVSE_Id evseId,
+                         out var evseId,
                          ParsingMode))
             {
                 return evseId;
@@ -418,7 +380,7 @@ namespace cloud.charging.open.protocols.WWCP
             => ChargingStationOperatorId.Format switch {
                    OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                           "*E", Suffix)),
                    OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                            "E", Suffix)),
-                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", Suffix))
+                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR),  "*", Suffix))
                };
 
         #endregion
@@ -434,9 +396,9 @@ namespace cloud.charging.open.protocols.WWCP
                                         String           Suffix)
 
             => ChargingPoolId.OperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),                           "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
-                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "E", ChargingPoolId.Suffix, Suffix)),
-                   _                           => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(), "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),  "E", ChargingPoolId.Suffix, Suffix)),
+                   _                           => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),  "*", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
                };
 
         #endregion
@@ -452,9 +414,9 @@ namespace cloud.charging.open.protocols.WWCP
                                         String              Suffix)
 
             => ChargingStationId.OperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(),                           "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
-                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(),                            "E", ChargingStationId.Suffix, Suffix)),
-                   _                           => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(), "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : "")),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(),  "E", ChargingStationId.Suffix, Suffix)),
+                   _                           => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(), "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""))
                };
 
         #endregion
@@ -515,7 +477,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 // New format...
                 if (ChargingStationOperator_Id.TryParse(matchCollection[0].Groups[1].Value,
-                                                        out ChargingStationOperator_Id chargingStationOperatorId))
+                                                        out var chargingStationOperatorId))
                 {
 
                     EVSEId = new EVSE_Id(chargingStationOperatorId,
@@ -559,9 +521,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        out EVSE_Id                 EVSEId)
 
             => ChargingStationOperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                           "*E", Suffix), out EVSEId),
-                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationOperatorId.ToString(),                            "E", Suffix), out EVSEId),
-                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", Suffix), out EVSEId)
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationOperatorId.ToString(), "*E", Suffix), out EVSEId),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationOperatorId.ToString(),  "E", Suffix), out EVSEId),
+                   _                           => TryParse(String.Concat(ChargingStationOperatorId.ToString(),  "*", Suffix), out EVSEId)
                };
 
         #endregion
@@ -578,9 +540,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        out EVSE_Id      EVSEId)
 
             => ChargingPoolId.OperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),                           "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId),
-                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),                            "E", ChargingPoolId.Suffix, Suffix),                                             out EVSEId),
-                   _                           => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId)
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(), "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(),  "E", ChargingPoolId.Suffix, Suffix),                                             out EVSEId),
+                   _                           => TryParse(String.Concat(ChargingPoolId.OperatorId.ToString(), "*E", ChargingPoolId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId)
                };
 
         #endregion
@@ -597,9 +559,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        out EVSE_Id         EVSEId)
 
             => ChargingStationId.OperatorId.Format switch {
-                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(),                           "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId),
-                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(),                            "E", ChargingStationId.Suffix, Suffix),                                             out EVSEId),
-                   _                           => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(OperatorIdFormats.ISO_STAR), "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId)
+                   OperatorIdFormats.ISO_STAR  => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(), "*E", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId),
+                   OperatorIdFormats.ISO       => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(),  "E", ChargingStationId.Suffix, Suffix),                                             out EVSEId),
+                   _                           => TryParse(String.Concat(ChargingStationId.OperatorId.ToString(),  "*", ChargingStationId.Suffix, Suffix.IsNeitherNullNorEmpty() ? "*" + Suffix : ""), out EVSEId)
                };
 
         #endregion
@@ -766,8 +728,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">An EVSE identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is EVSE_Id EVSEId
-                   ? CompareTo(EVSEId)
+            => Object is EVSE_Id evseId
+                   ? CompareTo(evseId)
                    : throw new ArgumentException("The given object is not an EVSE identification!", nameof(Object));
 
         #endregion
@@ -784,8 +746,8 @@ namespace cloud.charging.open.protocols.WWCP
             var c = OperatorId.CompareTo(EVSEId.OperatorId);
 
             if (c == 0)
-                c = String.Compare(Suffix,
-                                   EVSEId.Suffix,
+                c = String.Compare(Suffix.       Replace("*", ""),
+                                   EVSEId.Suffix.Replace("*", ""),
                                    StringComparison.OrdinalIgnoreCase);
 
             return c;
@@ -806,8 +768,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Object">An EVSE identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is EVSE_Id EVSEId &&
-                   Equals(EVSEId);
+            => Object is EVSE_Id evseId &&
+                   Equals(evseId);
 
         #endregion
 
