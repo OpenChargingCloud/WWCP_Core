@@ -117,14 +117,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Parse the given string as an energy meter identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an energy meter identification.</param>
+        /// <param name="Text">A text representation of an energy meter identification.</param>
         public static EnergyMeter_Id Parse(String Text)
         {
 
             if (TryParse(Text, out EnergyMeter_Id energyMeterId))
                 return energyMeterId;
 
-            throw new ArgumentException("Invalid text-representation of an energy meter identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of an energy meter identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to parse the given string as an energy meter identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an energy meter identification.</param>
+        /// <param name="Text">A text representation of an energy meter identification.</param>
         public static EnergyMeter_Id? TryParse(String? Text)
         {
 
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to parse the given string as an energy meter identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an energy meter identification.</param>
+        /// <param name="Text">A text representation of an energy meter identification.</param>
         /// <param name="EnergyMeterId">The parsed energy meter identification.</param>
         public static Boolean TryParse(String Text, out EnergyMeter_Id EnergyMeterId)
         {
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

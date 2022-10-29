@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingStationOperatorAdminStatusTypes chargingStationOperatorAdminStatusType))
                 return chargingStationOperatorAdminStatusType;
 
-            throw new ArgumentException("Invalid text-representation of a charging station operator admin status type: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charging station operator admin status type: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

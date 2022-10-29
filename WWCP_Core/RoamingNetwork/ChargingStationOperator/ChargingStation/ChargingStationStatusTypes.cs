@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingStationStatusTypes chargingStationStatusTypes))
                 return chargingStationStatusTypes;
 
-            throw new ArgumentException("Invalid text-representation of a charging station status type: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charging station status type: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

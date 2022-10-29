@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingTariff_Id chargingTariffId))
                 return chargingTariffId;
 
-            throw new ArgumentException("Invalid text-representation of a charging tariff identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charging tariff identification: '" + Text + "'!",
                                         nameof(Text));
 
         }

@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingStationOperator_Id chargingStationOperatorId))
                 return chargingStationOperatorId;
 
-            throw new ArgumentException("Invalid text-representation of a charging station operator identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charging station operator identification: '" + Text + "'!",
                                         nameof(Text));
 
         }

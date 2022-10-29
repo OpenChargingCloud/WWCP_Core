@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargingProduct_Id chargingProductId))
                 return chargingProductId;
 
-            throw new ArgumentException("Invalid text-representation of a charging product identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charging product identification: '" + Text + "'!",
                                         nameof(Text));
 
         }

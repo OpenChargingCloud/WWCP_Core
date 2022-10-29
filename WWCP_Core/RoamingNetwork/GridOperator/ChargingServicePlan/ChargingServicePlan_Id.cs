@@ -116,14 +116,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Parse the given string as a charging service plan identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a charging service plan identification.</param>
+        /// <param name="Text">A text representation of a charging service plan identification.</param>
         public static ChargingServicePlan_Id Parse(String Text)
         {
 
             if (TryParse(Text, out ChargingServicePlan_Id sessionId))
                 return sessionId;
 
-            throw new ArgumentException("Invalid text-representation of a charging service plan identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charging service plan identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to parse the given string as a charging service plan identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a charging service plan identification.</param>
+        /// <param name="Text">A text representation of a charging service plan identification.</param>
         public static ChargingServicePlan_Id? TryParse(String Text)
         {
 
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to parse the given string as a charging service plan identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a charging service plan identification.</param>
+        /// <param name="Text">A text representation of a charging service plan identification.</param>
         /// <param name="SessionId">The parsed charging service plan identification.</param>
         public static Boolean TryParse(String Text, out ChargingServicePlan_Id SessionId)
         {
@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

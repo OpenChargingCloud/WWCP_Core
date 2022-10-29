@@ -254,9 +254,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Parse(Text, ParsingMode = relaxed)
 
         /// <summary>
-        /// Parse the given text-representation of an EVSE identification.
+        /// Parse the given text representation of an EVSE identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="Text">A text representation of an EVSE identification.</param>
         /// <param name="ParsingMode">How strictly to parse the given EVSE identification.</param>
         public static EVSE_Id Parse(String              Text,
                                     EVSEIdParsingMode?  ParsingMode = EVSEIdParsingMode.relaxed)
@@ -336,9 +336,9 @@ namespace cloud.charging.open.protocols.WWCP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given text-representation of an EVSE identification.
+        /// Try to parse the given text representation of an EVSE identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="Text">A text representation of an EVSE identification.</param>
         public static EVSE_Id? TryParse(String Text)
 
             => TryParse(Text,
@@ -346,9 +346,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Try to parse the given text-representation of an EVSE identification.
+        /// Try to parse the given text representation of an EVSE identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="Text">A text representation of an EVSE identification.</param>
         /// <param name="ParsingMode">How strictly to parse the given EVSE identification.</param>
         public static EVSE_Id? TryParse(String              Text,
                                         EVSEIdParsingMode?  ParsingMode)
@@ -427,9 +427,9 @@ namespace cloud.charging.open.protocols.WWCP
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given text-representation of an EVSE identification.
+        /// Try to parse the given text representation of an EVSE identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="Text">A text representation of an EVSE identification.</param>
         /// <param name="EVSEId">The parsed EVSE identification.</param>
         public static Boolean TryParse(String       Text,
                                        out EVSE_Id  EVSEId)
@@ -440,9 +440,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Try to parse the given text-representation of an EVSE identification.
+        /// Try to parse the given text representation of an EVSE identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an EVSE identification.</param>
+        /// <param name="Text">A text representation of an EVSE identification.</param>
         /// <param name="EVSEId">The parsed EVSE identification.</param>
         /// <param name="ParsingMode">How strictly to parse the given EVSE identification.</param>
         public static Boolean TryParse(String              Text,

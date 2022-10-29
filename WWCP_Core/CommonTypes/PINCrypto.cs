@@ -33,9 +33,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parses the given text-representation of a PIN crypto.
+        /// Parses the given text representation of a PIN crypto.
         /// </summary>
-        /// <param name="Text">A text-representation of a PIN crypto.</param>
+        /// <param name="Text">A text representation of a PIN crypto.</param>
         public static PINCrypto Parse(String Text)
 
             => Text?.Trim() switch {
@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region AsString(ValueAddedService)
 
         /// <summary>
-        /// Return a text-representation of the given PIN crypto.
+        /// Return a text representation of the given PIN crypto.
         /// </summary>
         /// <param name="PINCrypto">A PIN crypto.</param>
         public static String AsString(this PINCrypto PINCrypto)

@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             if (TryParse(Text, out Tracker_Id trackerId))
                 return trackerId;
 
-            throw new ArgumentException("Invalid text-representation of a tracker identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a tracker identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

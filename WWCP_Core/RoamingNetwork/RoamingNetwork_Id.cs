@@ -110,10 +110,10 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetwork_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetwork_Id roamingNetworkId))
+            if (TryParse(Text, out var roamingNetworkId))
                 return roamingNetworkId;
 
-            throw new ArgumentException("Invalid text-representation of a roaming network identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a roaming network identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RoamingNetwork_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out RoamingNetwork_Id roamingNetworkId))
+            if (TryParse(Text, out var roamingNetworkId))
                 return roamingNetworkId;
 
             return null;
@@ -152,13 +152,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (Text.IsNotNullOrEmpty())
             {
-                try
-                {
-                    RoamingNetworkId = new RoamingNetwork_Id(Text);
-                    return true;
-                }
-                catch
-                { }
+                RoamingNetworkId = new RoamingNetwork_Id(Text);
+                return true;
             }
 
             RoamingNetworkId = default;
@@ -355,7 +350,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

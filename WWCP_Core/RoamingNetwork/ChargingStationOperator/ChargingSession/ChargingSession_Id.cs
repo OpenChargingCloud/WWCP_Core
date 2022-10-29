@@ -116,14 +116,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a charging session identification.</param>
+        /// <param name="Text">A text representation of a charging session identification.</param>
         public static ChargingSession_Id Parse(String Text)
         {
 
             if (TryParse(Text, out ChargingSession_Id chargingSessionId))
                 return chargingSessionId;
 
-            throw new ArgumentException("Invalid text-representation of a charging session identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charging session identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a charging session identification.</param>
+        /// <param name="Text">A text representation of a charging session identification.</param>
         public static ChargingSession_Id? TryParse(String Text)
         {
 
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a charging session identification.</param>
+        /// <param name="Text">A text representation of a charging session identification.</param>
         /// <param name="ChargingSessionId">The parsed charging session identification.</param>
         public static Boolean TryParse(String Text, out ChargingSession_Id ChargingSessionId)
         {
@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

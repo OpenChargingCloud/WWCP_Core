@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryParse(Text, out ChargeDetailRecord_Id cdrId))
                 return cdrId;
 
-            throw new ArgumentException("Invalid text-representation of a charge detail record identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a charge detail record identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Try to parse the given string as a charge detail record identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a charge detail record identification.</param>
+        /// <param name="Text">A text representation of a charge detail record identification.</param>
         public static ChargeDetailRecord_Id? TryParse(String Text)
         {
 
@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 
