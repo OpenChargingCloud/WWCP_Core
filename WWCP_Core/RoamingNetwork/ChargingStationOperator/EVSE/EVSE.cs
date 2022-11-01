@@ -2560,38 +2560,51 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSEs.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public override Int32 CompareTo(Object? Object)
 
             => Object is EVSE evse
                    ? CompareTo(evse)
-                   : throw new ArgumentException("The given object is not an evse!", nameof(Object));
+                   : throw new ArgumentException("The given object is not an EVSE!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(EVSE)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSEs.
         /// </summary>
         /// <param name="EVSE">An EVSE to compare with.</param>
         public Int32 CompareTo(EVSE? EVSE)
+        {
 
-            => EVSE is not null
-                   ? Id.CompareTo(EVSE.Id)
-                   : throw new ArgumentException("The given object is not an EVSE!", nameof(EVSE));
+            if (EVSE is null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            return Id.CompareTo(EVSE.Id);
+
+            //ToDo: Compare more properties!
+
+        }
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSEs.
         /// </summary>
-        /// <param name="IEVSE">An IEVSE to compare with.</param>
-        public Int32 CompareTo(IEVSE? IEVSE)
+        /// <param name="IEVSE">An EVSE to compare with.</param>
+        public Int32 CompareTo(IEVSE? EVSE)
+        {
 
-            => IEVSE is not null
-                   ? Id.CompareTo(IEVSE.Id)
-                   : throw new ArgumentException("The given object is not an IEVSE!", nameof(IEVSE));
+            if (EVSE is null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            return Id.CompareTo(EVSE.Id);
+
+            //ToDo: Compare more properties!
+
+        }
 
         #endregion
 
@@ -2602,14 +2615,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSEs for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">An EVSE to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is EVSE evse &&
-                  Equals(evse);
+                   Equals(evse);
 
         #endregion
 
@@ -2619,21 +2631,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two EVSEs for equality.
         /// </summary>
         /// <param name="EVSE">An EVSE to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EVSE? EVSE)
 
             => EVSE is not null &&
-               Id.Equals(EVSE.Id);
+                   Id.Equals(EVSE.Id);
 
         /// <summary>
         /// Compares two EVSEs for equality.
         /// </summary>
         /// <param name="IEVSE">An EVSE to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(IEVSE? IEVSE)
 
             => IEVSE is not null &&
-               Id.Equals(IEVSE.Id);
+                   Id.Equals(IEVSE.Id);
 
         #endregion
 

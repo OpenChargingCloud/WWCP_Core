@@ -6860,6 +6860,78 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Operator <  (RoamingNetwork1, RoamingNetwork2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RoamingNetwork1">A roaming network.</param>
+        /// <param name="RoamingNetwork2">Another roaming network.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (RoamingNetwork RoamingNetwork1,
+                                          RoamingNetwork RoamingNetwork2)
+        {
+
+            if (RoamingNetwork1 is null)
+                throw new ArgumentNullException(nameof(RoamingNetwork1), "The given roaming network must not be null!");
+
+            return RoamingNetwork1.CompareTo(RoamingNetwork2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (RoamingNetwork1, RoamingNetwork2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RoamingNetwork1">A roaming network.</param>
+        /// <param name="RoamingNetwork2">Another roaming network.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (RoamingNetwork RoamingNetwork1,
+                                           RoamingNetwork RoamingNetwork2)
+
+            => !(RoamingNetwork1 > RoamingNetwork2);
+
+        #endregion
+
+        #region Operator >  (RoamingNetwork1, RoamingNetwork2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RoamingNetwork1">A roaming network.</param>
+        /// <param name="RoamingNetwork2">Another roaming network.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (RoamingNetwork RoamingNetwork1,
+                                          RoamingNetwork RoamingNetwork2)
+        {
+
+            if (RoamingNetwork1 is null)
+                throw new ArgumentNullException(nameof(RoamingNetwork1), "The given roaming network must not be null!");
+
+            return RoamingNetwork1.CompareTo(RoamingNetwork2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (RoamingNetwork1, RoamingNetwork2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RoamingNetwork1">A roaming network.</param>
+        /// <param name="RoamingNetwork2">Another roaming network.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (RoamingNetwork RoamingNetwork1,
+                                           RoamingNetwork RoamingNetwork2)
+
+            => !(RoamingNetwork1 < RoamingNetwork2);
+
+        #endregion
+
         #endregion
 
         #region IComparable<RoamingNetwork> Members
@@ -6867,9 +6939,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming networks.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A roaming network to compare with.</param>
         public override Int32 CompareTo(Object? Object)
 
             => Object is RoamingNetwork roamingNetwork
@@ -6882,16 +6954,19 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(RoamingNetwork)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming networks.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network object to compare with.</param>
+        /// <param name="RoamingNetwork">A roaming network to compare with.</param>
         public Int32 CompareTo(RoamingNetwork? RoamingNetwork)
         {
 
             if (RoamingNetwork is null)
-                throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(RoamingNetwork),
+                                                "The given roaming network must not be null!");
 
             return Id.CompareTo(RoamingNetwork.Id);
+
+            //ToDo: Compare more properties!
 
         }
 
@@ -6904,10 +6979,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two roaming networks for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A roaming network to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RoamingNetwork roamingNetwork &&
@@ -6921,11 +6995,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two roaming networks for equality.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RoamingNetwork? RoamingNetwork)
 
             => RoamingNetwork is not null &&
-               Id.Equals(RoamingNetwork.Id);
+                   Id.Equals(RoamingNetwork.Id);
+
+        //ToDo: Compare more properties!
 
         #endregion
 
@@ -6937,6 +7012,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
+
             => Id.GetHashCode();
 
         #endregion
