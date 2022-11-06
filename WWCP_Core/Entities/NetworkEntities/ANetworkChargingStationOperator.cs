@@ -107,56 +107,56 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     //    #region Events
 
     //    /// <summary>
-    //    /// An event send whenever a GetCDRs request was sent.
+    //    /// An event sent whenever a GetCDRs request was sent.
     //    /// </summary>
     //    public event ClientRequestLogHandler   OnGetCDRsHTTPRequest;
 
     //    /// <summary>
-    //    /// An event send whenever a response to a GetCDRs request was received.
+    //    /// An event sent whenever a response to a GetCDRs request was received.
     //    /// </summary>
     //    public event ClientResponseLogHandler  OnGetCDRsHTTPResponse;
 
 
     //    /// <summary>
-    //    /// An event send whenever a remote reservation start request was sent.
+    //    /// An event sent whenever a remote reservation start request was sent.
     //    /// </summary>
     //    public event ClientRequestLogHandler   OnRemoteReservationStartHTTPRequest;
 
     //    /// <summary>
-    //    /// An event send whenever a response to a remote reservation start request was received.
+    //    /// An event sent whenever a response to a remote reservation start request was received.
     //    /// </summary>
     //    public event ClientResponseLogHandler  OnRemoteReservationStartHTTPResponse;
 
 
     //    /// <summary>
-    //    /// An event send whenever a remote reservation stop request was sent.
+    //    /// An event sent whenever a remote reservation stop request was sent.
     //    /// </summary>
     //    public event ClientRequestLogHandler   OnRemoteReservationStopHTTPRequest;
 
     //    /// <summary>
-    //    /// An event send whenever a response to a remote reservation stop request was received.
+    //    /// An event sent whenever a response to a remote reservation stop request was received.
     //    /// </summary>
     //    public event ClientResponseLogHandler  OnRemoteReservationStopHTTPResponse;
 
 
     //    /// <summary>
-    //    /// An event send whenever a remotestart request was sent.
+    //    /// An event sent whenever a remotestart request was sent.
     //    /// </summary>
     //    public event ClientRequestLogHandler   OnRemoteStartHTTPRequest;
 
     //    /// <summary>
-    //    /// An event send whenever a response to a remotestart request was received.
+    //    /// An event sent whenever a response to a remotestart request was received.
     //    /// </summary>
     //    public event ClientResponseLogHandler  OnRemoteStartHTTPResponse;
 
 
     //    /// <summary>
-    //    /// An event send whenever a remotestop request was sent.
+    //    /// An event sent whenever a remotestop request was sent.
     //    /// </summary>
     //    public event ClientRequestLogHandler   OnRemoteStopHTTPRequest;
 
     //    /// <summary>
-    //    /// An event send whenever a response to a remotestop request was received.
+    //    /// An event sent whenever a response to a remotestop request was received.
     //    /// </summary>
     //    public event ClientResponseLogHandler  OnRemoteStopHTTPResponse;
 

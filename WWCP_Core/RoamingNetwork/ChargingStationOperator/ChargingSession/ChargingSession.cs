@@ -812,7 +812,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Events
 
         /// <summary>
-        /// An event send whenever a new energy meter value was received.
+        /// An event sent whenever a new energy meter value was received.
         /// </summary>
         /// <param name="Timestamp">The current timestamp.</param>
         /// <param name="ChargingSession">The unique charging session identification.</param>
@@ -820,13 +820,13 @@ namespace cloud.charging.open.protocols.WWCP
         public delegate void OnNewEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, Timestamped<Double> EnergyMeterValue);
 
         /// <summary>
-        /// An event send whenever a new energy meter value was received.
+        /// An event sent whenever a new energy meter value was received.
         /// </summary>
         public event OnNewEnergyMeterValueDelegate OnNewEnergyMeterValue;
 
 
         /// <summary>
-        /// An event send whenever a new energy meter value was received.
+        /// An event sent whenever a new energy meter value was received.
         /// </summary>
         /// <param name="Timestamp">The current timestamp.</param>
         /// <param name="ChargingSession">The unique charging session identification.</param>
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.WWCP
         public delegate void OnNewSignedEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, SignedMeteringValue<Decimal> EnergyMeterValue);
 
         /// <summary>
-        /// An event send whenever a new energy meter value was received.
+        /// An event sent whenever a new energy meter value was received.
         /// </summary>
         public event OnNewSignedEnergyMeterValueDelegate OnNewSignedEnergyMeterValue;
 

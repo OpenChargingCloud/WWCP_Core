@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// An event send whenever a reservation will be canceled.
+    /// An event sent whenever a reservation will be canceled.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// An event send whenever a reservation was canceled.
+    /// An event sent whenever a reservation was canceled.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>

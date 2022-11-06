@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// An event send whenever a reservation at an EVSE is being made.
+    /// An event sent whenever a reservation at an EVSE is being made.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
     /// <param name="RequestTimestamp">The timestamp of the request.</param>
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// An event send whenever a reservation at an EVSE is being made.
+    /// An event sent whenever a reservation at an EVSE is being made.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// An event send whenever a reservation at an EVSE was made.
+    /// An event sent whenever a reservation at an EVSE was made.
     /// </summary>
     /// <param name="Sender">The sender of this event.</param>
     /// <param name="RequestTimestamp">The timestamp of the request.</param>
