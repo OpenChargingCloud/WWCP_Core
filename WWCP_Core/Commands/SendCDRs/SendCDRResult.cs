@@ -1062,34 +1062,27 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (JSONObject.ParseOptional("description",
                                              "description",
-                                             out I18NString Description,
+                                             out I18NString? Description,
                                              out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
-
 
                 #region Parse Runtime        [optional]
 
-                if (JSONObject.ParseOptionalStruct("runtime",
-                                                   "runtime",
-                                                   TimeSpan.TryParse,
-                                                   out TimeSpan? Runtime,
-                                                   out ErrorResponse))
+                if (JSONObject.ParseOptional("runtime",
+                                             "runtime",
+                                             out TimeSpan? Runtime,
+                                             out ErrorResponse))
                 {
-
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
-
 
 
                 SendCDRResult = new SendCDRResult(Timestamp,
