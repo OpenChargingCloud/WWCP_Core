@@ -39,14 +39,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AddToken(Token, AuthenticationResult = AuthenticationResult.Allowed)
 
-        Boolean AddToken(Auth_Token                    Token,
+        Boolean AddToken(AuthenticationToken                    Token,
                          TokenAuthorizationResultType  AuthenticationResult = TokenAuthorizationResultType.Authorized);
 
         #endregion
 
         #region RemoveToken(Token)
 
-        Boolean RemoveToken(Auth_Token Token);
+        Boolean RemoveToken(AuthenticationToken Token);
 
         #endregion
 

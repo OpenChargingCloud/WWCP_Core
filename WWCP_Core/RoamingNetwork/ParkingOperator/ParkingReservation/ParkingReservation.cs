@@ -218,10 +218,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region AuthTokens
 
-        private readonly HashSet<Auth_Token> _AuthTokens;
+        private readonly HashSet<AuthenticationToken> _AuthTokens;
 
         [Optional]
-        public IEnumerable<Auth_Token> AuthTokens
+        public IEnumerable<AuthenticationToken> AuthTokens
         {
             get
             {
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   EVSE_Id?                          EVSEId              = null,
                                   ParkingProduct_Id?                ParkingProductId   = null,
 
-                                  IEnumerable<Auth_Token>           AuthTokens          = null,
+                                  IEnumerable<AuthenticationToken>           AuthTokens          = null,
                                   IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                                   IEnumerable<UInt32>               PINs                = null)
 
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.EVSEId                    = EVSEId;
             this.ParkingProductId         = ParkingProductId;
 
-            this._AuthTokens               = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
+            this._AuthTokens               = AuthTokens != null ? new HashSet<AuthenticationToken>(AuthTokens) : new HashSet<AuthenticationToken>();
             this._eMAIds                   = eMAIds     != null ? new HashSet<eMobilityAccount_Id>    (eMAIds)     : new HashSet<eMobilityAccount_Id>();
             this._PINs                     = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
 

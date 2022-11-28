@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
         //Task<AuthStartResult>
 
         //    AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
-        //                   Auth_Token                  AuthToken,
+        //                   AuthenticationToken                  AuthToken,
         //                   ChargingProduct_Id?         ChargingProductId  = null,
         //                   ChargingSession_Id?         SessionId          = null,
 
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP
         //Task<AuthStartEVSEResult>
 
         //    AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
-        //                   Auth_Token                  AuthToken,
+        //                   AuthenticationToken                  AuthToken,
         //                   EVSE_Id                     EVSEId,
         //                   ChargingProduct_Id?         ChargingProductId  = null,
         //                   ChargingSession_Id?         SessionId          = null,
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
         //Task<AuthStartChargingStationResult>
 
         //    AuthorizeStart(ChargingStationOperator_Id   ChargingStationOperatorId,
-        //                   Auth_Token                   AuthToken,
+        //                   AuthenticationToken                   AuthToken,
         //                   ChargingStation_Id           ChargingStationId,
         //                   ChargingProduct_Id?          ChargingProductId  = null,
         //                   ChargingSession_Id?          SessionId          = null,
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //    AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
         //                  ChargingSession_Id          SessionId,
-        //                  Auth_Token                  AuthToken,
+        //                  AuthenticationToken                  AuthToken,
 
         //                  DateTime?                   Timestamp           = null,
         //                  CancellationToken?          CancellationToken   = null,
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.WWCP
         //    AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
         //                  EVSE_Id                     EVSEId,
         //                  ChargingSession_Id          SessionId,
-        //                  Auth_Token                  AuthToken,
+        //                  AuthenticationToken                  AuthToken,
 
         //                  DateTime?                   Timestamp           = null,
         //                  CancellationToken?          CancellationToken   = null,
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
         //    AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
         //                  ChargingStation_Id          ChargingStationId,
         //                  ChargingSession_Id          SessionId,
-        //                  Auth_Token                  AuthToken,
+        //                  AuthenticationToken                  AuthToken,
 
         //                  DateTime?                   Timestamp           = null,
         //                  CancellationToken?          CancellationToken   = null,

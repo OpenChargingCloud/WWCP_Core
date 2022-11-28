@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ? new List<PublicKeyLifetime>(PublicKeys)
                                                    : new List<PublicKeyLifetime>();
 
-            this.Id                          = Id            ?? Certificate_Id.Random(); //ToDo: Use better randomness!
+            this.Id                          = Id            ?? Certificate_Id.NewRandom(); //ToDo: Use better randomness!
             this.Name                        = Name;
             this.Description                 = Description   ?? I18NString.Empty;
             this.EMail                       = EMail;

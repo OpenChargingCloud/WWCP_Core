@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional list of authorize stop tokens.
         /// </summary>
-        public IEnumerable<Auth_Token>      ListOfAuthStopTokens          { get; }
+        public IEnumerable<AuthenticationToken>      ListOfAuthStopTokens          { get; }
 
         /// <summary>
         /// An optional list of authorize stop PINs.
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
                                 Single?                       MaxkWh                       = null,
                                 TimeSpan?                     MaxDuration                  = null,
                                 IEnumerable<ChargingTariff>?  ChargingTariffs              = null,
-                                IEnumerable<Auth_Token>?      ListOfAuthStopTokens         = null,
+                                IEnumerable<AuthenticationToken>?      ListOfAuthStopTokens         = null,
                                 IEnumerable<UInt32>?          ListOfAuthStopPINs           = null,
 
                                 EMobilityProvider_Id?         ProviderId                   = null,
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.MaxkWh                      = MaxkWh;
             this.MaxDuration                 = MaxDuration;
             this.ChargingTariffs             = ChargingTariffs      ?? Array.Empty<ChargingTariff>();
-            this.ListOfAuthStopTokens        = ListOfAuthStopTokens ?? Array.Empty<Auth_Token>();
+            this.ListOfAuthStopTokens        = ListOfAuthStopTokens ?? Array.Empty<AuthenticationToken>();
             this.ListOfAuthStopPINs          = ListOfAuthStopPINs   ?? Array.Empty<UInt32>();
 
             this.ProviderId                  = ProviderId           ?? new EMobilityProvider_Id?();
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Single?                       MaxkWh                 = null,
                                   TimeSpan?                     MaxDuration            = null,
                                   IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
-                                  IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                                  IEnumerable<AuthenticationToken>?      ListOfAuthStopTokens   = null,
                                   IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
                                   EMobilityProvider_Id?         ProviderId             = null,
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Single?                       MaxkWh                 = null,
                                   TimeSpan?                     MaxDuration            = null,
                                   IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
-                                  IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                                  IEnumerable<AuthenticationToken>?      ListOfAuthStopTokens   = null,
                                   IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
                                   EMobilityProvider_Id?         ProviderId             = null,
@@ -779,7 +779,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Single?                       MaxkWh                 = null,
                        TimeSpan?                     MaxDuration            = null,
                        IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
-                       IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                       IEnumerable<AuthenticationToken>?      ListOfAuthStopTokens   = null,
                        IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
                        EMobilityProvider_Id?         ProviderId             = null,
@@ -848,7 +848,7 @@ namespace cloud.charging.open.protocols.WWCP
                        Single?                       MaxkWh                 = null,
                        TimeSpan?                     MaxDuration            = null,
                        IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
-                       IEnumerable<Auth_Token>?      ListOfAuthStopTokens   = null,
+                       IEnumerable<AuthenticationToken>?      ListOfAuthStopTokens   = null,
                        IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
 
                        EMobilityProvider_Id?         ProviderId             = null,

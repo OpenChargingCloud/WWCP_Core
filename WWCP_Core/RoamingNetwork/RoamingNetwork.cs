@@ -3846,7 +3846,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //#region AllTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AllTokens
 
         //    => _SmartCities.SelectMany(provider => provider.AllTokens);
 
@@ -3854,7 +3854,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //#region AuthorizedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AuthorizedTokens
 
         //    => _SmartCities.SelectMany(provider => provider.AuthorizedTokens);
 
@@ -3862,7 +3862,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //#region NotAuthorizedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> NotAuthorizedTokens
 
         //    => _SmartCities.SelectMany(provider => provider.NotAuthorizedTokens);
 
@@ -3870,7 +3870,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         //#region BlockedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> BlockedTokens
 
         //    => _SmartCities.SelectMany(provider => provider.BlockedTokens);
 
@@ -4157,7 +4157,7 @@ namespace cloud.charging.open.protocols.WWCP
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>?           AuthTokens             = null,
+                    IEnumerable<AuthenticationToken>?           AuthTokens             = null,
                     IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 

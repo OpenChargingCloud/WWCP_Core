@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.WWCP
         //                //    ChargingStationOperatorId = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
         //                //    EVSE = RoamingNetwork.GetEVSEbyId(EVSE_Id.Parse(elements[3])),
         //                //    EVSEId = EVSE_Id.Parse(elements[3]),
-        //                //    IdentificationStart = elements[5] != "" ? (AAuthentication)LocalAuthentication.FromAuthToken(Auth_Token.Parse(elements[5]))
+        //                //    IdentificationStart = elements[5] != "" ? (AAuthentication)LocalAuthentication.FromAuthToken(authentication token.Parse(elements[5]))
         //                //                                                  : elements[6] != "" ? (AAuthentication)RemoteAuthentication.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
         //                //                                                  : null,
         //                //    ChargingProduct = elements[4] != "" ? ChargingProduct.Parse(elements[4]) : null

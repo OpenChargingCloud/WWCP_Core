@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An authentication token, e.g. the identification of a RFID card.
         /// </summary>
-        public Auth_Token?           AuthToken                      { get; }
+        public AuthenticationToken?           AuthToken                      { get; }
 
         /// <summary>
         /// A e-mobility account identification and its password/PIN.
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        protected AAuthentication(Auth_Token?           AuthToken                     = null,
+        protected AAuthentication(AuthenticationToken?           AuthToken                     = null,
                                   eMAIdWithPIN2?        QRCodeIdentification          = null,
                                   eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                   eMobilityAccount_Id?  RemoteIdentification          = null,
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        protected internal LocalAuthentication(Auth_Token?           AuthToken                     = null,
+        protected internal LocalAuthentication(AuthenticationToken?           AuthToken                     = null,
                                                eMAIdWithPIN2?        QRCodeIdentification          = null,
                                                eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                eMobilityAccount_Id?  RemoteIdentification          = null,
@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthToken">An authentication token.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromAuthToken(Auth_Token  AuthToken,
+        public static LocalAuthentication FromAuthToken(AuthenticationToken  AuthToken,
                                                         I18NString  Description  = null)
 
             => new LocalAuthentication(AuthToken:   AuthToken,
@@ -632,7 +632,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static LocalAuthentication Parse(JObject JSON)
 
             => new LocalAuthentication(
-                   JSON["authToken"]                   != null ? Auth_Token.         Parse(JSON["authToken"]?.                  Value<String>()) : new Auth_Token?(),
+                   JSON["authToken"]                   != null ? AuthenticationToken.         Parse(JSON["authToken"]?.                  Value<String>()) : new AuthenticationToken?(),
                    null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
                    JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
                    JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),
@@ -660,7 +660,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        protected internal RemoteAuthentication(Auth_Token?           AuthToken                     = null,
+        protected internal RemoteAuthentication(AuthenticationToken?           AuthToken                     = null,
                                                 eMAIdWithPIN2?        QRCodeIdentification          = null,
                                                 eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                 eMobilityAccount_Id?  RemoteIdentification          = null,
@@ -688,7 +688,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="AuthToken">An authentication token.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromAuthToken(Auth_Token  AuthToken,
+        public static RemoteAuthentication FromAuthToken(AuthenticationToken  AuthToken,
                                                          I18NString  Description  = null)
 
             => new RemoteAuthentication(AuthToken:   AuthToken,
@@ -839,7 +839,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static RemoteAuthentication Parse(JObject JSON)
 
             => new RemoteAuthentication(
-                   JSON["authToken"]                   != null ? Auth_Token.         Parse(JSON["authToken"]?.                  Value<String>()) : new Auth_Token?(),
+                   JSON["authToken"]                   != null ? AuthenticationToken.         Parse(JSON["authToken"]?.                  Value<String>()) : new AuthenticationToken?(),
                    null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
                    JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
                    JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),

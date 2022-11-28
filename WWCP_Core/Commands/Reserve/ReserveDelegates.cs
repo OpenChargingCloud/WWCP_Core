@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   EMobilityProvider_Id?              ProviderId,
                                                   RemoteAuthentication?              RemoteAuthentication,
                                                   ChargingProduct?                   ChargingProduct,
-                                                  IEnumerable<Auth_Token>?           AuthTokens,
+                                                  IEnumerable<AuthenticationToken>?           AuthTokens,
                                                   IEnumerable<eMobilityAccount_Id>?  eMAIds,
                                                   IEnumerable<UInt32>?               PINs,
                                                   TimeSpan?                          RequestTimeout);
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                               EMobilityProvider_Id?              ProviderId,
                                                               RemoteAuthentication               RemoteAuthentication,
                                                               ChargingProduct?                   ChargingProduct,
-                                                              IEnumerable<Auth_Token>?           AuthTokens,
+                                                              IEnumerable<AuthenticationToken>?           AuthTokens,
                                                               IEnumerable<eMobilityAccount_Id>?  eMAIds,
                                                               IEnumerable<UInt32>?               PINs,
 
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    EMobilityProvider_Id?              ProviderId,
                                                    RemoteAuthentication?              RemoteAuthentication,
                                                    ChargingProduct?                   ChargingProduct,
-                                                   IEnumerable<Auth_Token>?           AuthTokens,
+                                                   IEnumerable<AuthenticationToken>?           AuthTokens,
                                                    IEnumerable<eMobilityAccount_Id>?  eMAIds,
                                                    IEnumerable<UInt32>?               PINs,
                                                    ReservationResult                  Result,

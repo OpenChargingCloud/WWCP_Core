@@ -17,49 +17,61 @@
 
 #region Usings
 
-using System.Text;
-
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.Importer
 {
 
-    public delegate Task<T> GetDataDelegate<T>(DateTime         Timestamp,
-                                               WWCPImporter<T>  WWCPImporter,
-                                               DateTime         LastRuntimestamp,
-                                               UInt64           LastRunId,
-                                               DNSClient        DNSClient)
-
-        where T : class;
-
-
-    public delegate IEnumerable<ImporterForwardingInfo> CreateForwardingTableDelegate<T>(WWCPImporter<T>                                                 Importer,
-                                                                                         T                                                               Input,
-                                                                                         IEnumerable<ChargingStationOperator>                            AllChargingStationOperators,
-                                                                                         Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperatorSelector,
-                                                                                         Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator)
-
-        where T : class;
-
-
     /// <summary>
     /// Import data into the WWCP in-memory datastructures.
     /// </summary>
-    /// <typeparam name="T">The type of data which will be processed on every update run.</typeparam>
-    public class WWCPImporter<T>
-        where T: class
+    /// <typeparam name="TImportData">The type of data which will be processed on every update run.</typeparam>
+    public class WWCPImporter<TImportData>
+
+        where TImportData: class
+
     {
+
+        #region Delegates
+
+        public delegate Task OnStartedDelegate      (DateTime                    Timestamp,
+                                                     WWCPImporter<TImportData>   Importer,
+                                                     String                      Message);
+
+        public delegate Task OnStartFinishedDelegate(DateTime                    Timestamp,
+                                                     WWCPImporter<TImportData>   Importer,
+                                                     String                      Message);
+
+        public delegate Task OnFinishedDelegate     (DateTime                    Timestamp,
+                                                     WWCPImporter<TImportData>   Importer,
+                                                     String                      Message);
+
+        public delegate Task OnImportFailedDelegate (DateTime                    Timestamp,
+                                                     WWCPImporter<TImportData>   Importer,
+                                                     String                      Category,
+                                                     Exception?                  Exception         = null,
+                                                     String?                     Description       = null,
+                                                     DateTime?                   ExportTimestamp   = null);
+
+
+        //public delegate Task OnLoadForwardingDataFromFileStartedDelegate(DateTime         Timestamp,
+        //                                                                 WWCPImporter<T>  Importer,
+        //                                                                 String           FileName);
+
+        //public delegate Task OnLoadForwardingDataFromFileFinishedDelegate(DateTime         Timestamp,
+        //                                                                  WWCPImporter<T>  Importer,
+        //                                                                  String           FileName,
+        //                                                                  UInt64           NumberOfForwardingInfosLoaded);
+
+        #endregion
 
         #region Data
 
-        private                  Boolean                            Started;
-        //private readonly         Object                             ImporterRunLock;
+        private Boolean                            Started;
         private static readonly  SemaphoreSlim                      ImporterRunSemaphore = new (1, 1);
         private readonly         Timer                              ImporterRunTimer;
 
@@ -68,17 +80,16 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// </summary>
         public  readonly static  TimeSpan                           DefaultImportEvery                = TimeSpan.FromMinutes(1);
 
-        private readonly         Action<WWCPImporter<T>, T>         OnStartup;
-        private readonly         GetDataDelegate<T>                 GetData;
-        private readonly         Action<WWCPImporter<T>, T>         OnEveryRun;
-      //  private readonly         CreateForwardingTableDelegate<T>   CreateForwardingTable;
+        private readonly         Action<WWCPImporter<TImportData>, TImportData>         OnStartup;
+        private readonly         GetDataDelegate<TImportData>                 GetData;
+        private readonly         Action<WWCPImporter<TImportData>, TImportData>         OnEveryRun;
 
         /// <summary>
         /// The default number of cached data imports.
         /// </summary>
         public  const            UInt32                             DefaultMaxNumberOfCachedImports   = 3;
 
-        private readonly         Action<WWCPImporter<T>, T>         OnShutdown;
+        private readonly         Action<WWCPImporter<TImportData>, TImportData>         OnShutdown;
 
         #endregion
 
@@ -88,12 +99,6 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// The unique identification of this WWCP importer.
         /// </summary>
         public String                                                           Id                                  { get; }
-
-        /// <summary>
-        /// The prefix of the importer forwarding files.
-        /// </summary>
-        //public String                                                           ForwardingFilenamePrefix            { get; }
-
 
         public IEnumerable<IChargingStationOperator>                            AllChargingStationOperators         { get; }
 
@@ -126,30 +131,13 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         #endregion
 
 
-        #region AllForwardingInfos
-
-        //private readonly Dictionary<ChargingStation_Id, ImporterForwardingInfo> _AllForwardingInfos;
-
-        //public IEnumerable<ImporterForwardingInfo> AllForwardingInfos
-
-        //    => _AllForwardingInfos.
-        //           OrderBy(AllForwardingInfos => AllForwardingInfos.Key).
-        //           Select (AllForwardingInfos => AllForwardingInfos.Value);
-
-        #endregion
-
-        //public Boolean Get(ChargingStation_Id ChargingStationId, out ImporterForwardingInfo ImporterForwardingInfo)
-
-        //    => _AllForwardingInfos.TryGetValue(ChargingStationId, out ImporterForwardingInfo);
-
-
         #region ImportedData
 
-        private List<Timestamped<T>> _ImportedData;
+        private readonly List<Timestamped<TImportData>> importedData;
 
-        public IEnumerable<Timestamped<T>> ImportedData
+        public IEnumerable<Timestamped<TImportData>> ImportedData
 
-            => _ImportedData;
+            => importedData;
 
         #endregion
 
@@ -164,121 +152,17 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
         #region Events
 
-        #region OnNewForwardingInformation
+        public event OnStartedDelegate?        OnStarted;
 
-        /// <summary>
-        /// A delegate called whenever a new forwarding information was added.
-        /// </summary>
-        public delegate Task OnNewForwardingInformationDelegate(DateTime                Timestamp,
-                                                                WWCPImporter<T>         Importer,
-                                                                ImporterForwardingInfo  ForwardingInfo);
+        public event OnStartFinishedDelegate?  OnStartFinished;
 
-        /// <summary>
-        /// An event fired whenever a new forwarding information was added.
-        /// </summary>
-        public event OnNewForwardingInformationDelegate OnNewForwardingInformation;
+        public event OnFinishedDelegate?       OnFinished;
 
-        #endregion
+        public event OnImportFailedDelegate?   OnImportFailed;
 
-        #region OnForwardingInformationChanged
+        //public event OnLoadForwardingDataFromFileStartedDelegate OnLoadForwardingDataFromFileStarted;
 
-        /// <summary>
-        /// A delegate called whenever a new forwarding information was added.
-        /// </summary>
-        public delegate Task OnForwardingInformationChangedDelegate(DateTime                Timestamp,
-                                                                    WWCPImporter<T>         Importer,
-                                                                    ImporterForwardingInfo  OldForwardingInfo,
-                                                                    ImporterForwardingInfo  NewForwardingInfo);
-
-        /// <summary>
-        /// An event fired whenever a new forwarding information was added.
-        /// </summary>
-        public event OnForwardingInformationChangedDelegate OnForwardingInformationChanged;
-
-        #endregion
-
-        #region OnForwardingChanged
-
-        /// <summary>
-        /// A delegate called whenever a new forwarding information was changed.
-        /// </summary>
-        public delegate Task OnForwardingChangedDelegate(DateTime                Timestamp,
-                                                         WWCPImporter<T>         Sender,
-                                                         ImporterForwardingInfo  ForwardingInfo,
-                                                         RoamingNetwork_Id?      OldRN,
-                                                         RoamingNetwork_Id?      NewRN);
-
-        /// <summary>
-        /// An event fired whenever a new forwarding information was changed.
-        /// </summary>
-        public event OnForwardingChangedDelegate OnForwardingChanged;
-
-        #endregion
-
-
-        #region OnStarted
-
-        public delegate Task OnStartedDelegate(DateTime         Timestamp,
-                                               WWCPImporter<T>  Importer,
-                                               String           Message);
-
-        public event OnStartedDelegate OnStarted;
-
-        #endregion
-
-        #region OnStartFinished
-
-        public delegate Task OnStartFinishedDelegate(DateTime         Timestamp,
-                                                     WWCPImporter<T>  Importer,
-                                                     String           Message);
-
-        public event OnStartFinishedDelegate OnStartFinished;
-
-        #endregion
-
-        #region OnLoadForwardingDataFromFileStarted
-
-        public delegate Task OnLoadForwardingDataFromFileStartedDelegate(DateTime         Timestamp,
-                                                                         WWCPImporter<T>  Importer,
-                                                                         String           FileName);
-
-        public event OnLoadForwardingDataFromFileStartedDelegate OnLoadForwardingDataFromFileStarted;
-
-        #endregion
-
-        #region OnLoadForwardingDataFromFileFinished
-
-        public delegate Task OnLoadForwardingDataFromFileFinishedDelegate(DateTime         Timestamp,
-                                                                          WWCPImporter<T>  Importer,
-                                                                          String           FileName,
-                                                                          UInt64           NumberOfForwardingInfosLoaded);
-
-        public event OnLoadForwardingDataFromFileFinishedDelegate OnLoadForwardingDataFromFileFinished;
-
-        #endregion
-
-        #region OnFinished
-
-        public delegate Task OnFinishedDelegate(DateTime         Timestamp,
-                                                WWCPImporter<T>  Importer,
-                                                String           Message);
-
-        public event OnFinishedDelegate OnFinished;
-
-        #endregion
-
-        #region OnImportFailed
-
-        public delegate Task OnImportFailedDelegate(DateTime         Timestamp,
-                                                    WWCPImporter<T>  Importer,
-                                                    String           Category,
-                                                    Exception?       Exception         = null,
-                                                    String?          Description       = null,
-                                                    DateTime?        ExportTimestamp   = null);
-
-        public event OnImportFailedDelegate  OnImportFailed;
-
-        #endregion
+        //public event OnLoadForwardingDataFromFileFinishedDelegate OnLoadForwardingDataFromFileFinished;
 
         #endregion
 
@@ -288,19 +172,17 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// Create a new WWCP importer.
         /// </summary>
         public WWCPImporter(String                                                            Id,
-                            //String?                                                           ForwardingFilenamePrefix            = null,
 
                             IEnumerable<IChargingStationOperator>?                            AllChargingStationOperators         = null,
                             Func<ChargingStation_Id, IEnumerable<IChargingStationOperator>>?  GetChargingStationOperators         = null,
-                            Func<ChargingStation_Id, IChargingStationOperator>?               GetDefaultChargingStationOperator   = null,
-                            //CreateForwardingTableDelegate<T>?                                CreateForwardingTable               = null,
+                            Func<ChargingStation_Id, IChargingStationOperator?>?              GetDefaultChargingStationOperator   = null,
 
-                            Action<WWCPImporter<T>, T>?                                       OnStartup                           = null,
+                            Action<WWCPImporter<TImportData>, TImportData>?                   OnStartup                           = null,
                             TimeSpan?                                                         ImportEvery                         = null,
-                            GetDataDelegate<T>?                                               GetData                             = null,
-                            Action<WWCPImporter<T>, T>?                                       OnEveryRun                          = null,
+                            GetDataDelegate<TImportData>?                                     GetData                             = null,
+                            Action<WWCPImporter<TImportData>, TImportData>?                   OnEveryRun                          = null,
                             UInt32                                                            MaxNumberOfCachedDataImports        = DefaultMaxNumberOfCachedImports,
-                            Action<WWCPImporter<T>, T>?                                       OnShutdown                          = null,
+                            Action<WWCPImporter<TImportData>, TImportData>?                   OnShutdown                          = null,
 
                             DNSClient?                                                        DNSClient                           = null)
 
@@ -308,43 +190,28 @@ namespace cloud.charging.open.protocols.WWCP.Importer
 
             #region Initial checks
 
-            if (Id.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Id),                        "The given importer identification must not be null or empty!");
+            if (GetData is null)
+                throw new ArgumentNullException(nameof(GetData),     "The given GetData delegate must not be null!");
 
-            //if (ForwardingFilenamePrefix.IsNullOrEmpty())
-            //    throw new ArgumentNullException(nameof(ForwardingFilenamePrefix),  "The given importer config filename prefix must not be null or empty!");
-
-            if (GetData == null)
-                throw new ArgumentNullException(nameof(GetData),                   "The given GetData delegate must not be null!");
-
-            if (OnEveryRun == null)
-                throw new ArgumentNullException(nameof(OnEveryRun),                "The given OnEveryRun delegate must not be null!");
+            if (OnEveryRun is null)
+                throw new ArgumentNullException(nameof(OnEveryRun),  "The given OnEveryRun delegate must not be null!");
 
             #endregion
 
             this.Id                                 = Id;
-
-            //this.ForwardingFilenamePrefix           = ForwardingFilenamePrefix.IsNotNullOrEmpty()
-            //                                              ? ForwardingFilenamePrefix
-            //                                              : Id + "_forwardings_";
-
             this.ImportEvery                        = ImportEvery ?? DefaultImportEvery;
-
             this.OnStartup                          = OnStartup;
             this.GetData                            = GetData;
             this.OnEveryRun                         = OnEveryRun;
-            //this.CreateForwardingTable              = CreateForwardingTable;
             this.MaxNumberOfCachedDataImports       = MaxNumberOfCachedDataImports;
             this.OnShutdown                         = OnShutdown;
 
             this.AllChargingStationOperators        = AllChargingStationOperators;
             this.GetChargingStationOperators        = GetChargingStationOperators;
             this.GetDefaultChargingStationOperator  = GetDefaultChargingStationOperator;
-            //this._AllForwardingInfos                = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
-            this._ImportedData                      = new List<Timestamped<T>>();
+            this.importedData                       = new List<Timestamped<TImportData>>();
 
             this.Started                            = false;
-            //this.ImporterRunLock                    = new Object();
             this.ImporterRunTimer                   = new Timer(ImporterRun);
 
             this.DNSClient                          = DNSClient;
@@ -798,7 +665,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
         /// <summary>
         /// Start the WWCP importer.
         /// </summary>
-        public async Task<WWCPImporter<T>> Start()
+        public async Task<WWCPImporter<TImportData>> Start()
         {
 
             var success = await ImporterRunSemaphore.WaitAsync(TimeSpan.FromSeconds(10));

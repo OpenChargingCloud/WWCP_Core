@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
     //                eMobilityProvider_Id?             ProviderId             = null,
     //                RemoteAuthentication              RemoteAuthentication   = null,
     //                ChargingProduct                   ChargingProduct        = null,
-    //                IEnumerable<Auth_Token>           AuthTokens             = null,
+    //                IEnumerable<AuthenticationToken>           AuthTokens             = null,
     //                IEnumerable<eMobilityAccount_Id>  eMAIds                 = null,
     //                IEnumerable<UInt32>               PINs                   = null,
 

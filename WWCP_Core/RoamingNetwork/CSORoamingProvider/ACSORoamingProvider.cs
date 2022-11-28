@@ -402,7 +402,7 @@
 //                    eMobilityProvider_Id?             ProviderId          = null,
 //                    eMobilityAccount_Id?              eMAId               = null,
 //                    ChargingProduct_Id?               ChargingProductId   = null,
-//                    IEnumerable<Auth_Token>           AuthTokens          = null,
+//                    IEnumerable<AuthenticationToken>           AuthTokens          = null,
 //                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
 //                    IEnumerable<UInt32>               PINs                = null,
 
@@ -649,7 +649,7 @@
 //            throw new NotImplementedException();
 //        }
 
-//        Task<ReservationResult> IReserveRemoteStartStop.Reserve(EVSE_Id EVSEId, DateTime? StartTime, TimeSpan? Duration, ChargingReservation_Id? ReservationId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, ChargingProduct_Id? ChargingProductId, IEnumerable<Auth_Token> AuthTokens, IEnumerable<eMobilityAccount_Id> eMAIds, IEnumerable<uint> PINs, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<ReservationResult> IReserveRemoteStartStop.Reserve(EVSE_Id EVSEId, DateTime? StartTime, TimeSpan? Duration, ChargingReservation_Id? ReservationId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, ChargingProduct_Id? ChargingProductId, IEnumerable<AuthenticationToken> AuthTokens, IEnumerable<eMobilityAccount_Id> eMAIds, IEnumerable<uint> PINs, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }

@@ -335,41 +335,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         //#region AllTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AllTokens
 
         //    => RemoteEMobilityProvider != null
         //           ? RemoteEMobilityProvider.AllTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
         //#region AuthorizedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AuthorizedTokens
 
         //    => RemoteEMobilityProvider != null
         //           ? RemoteEMobilityProvider.AuthorizedTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
         //#region NotAuthorizedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> NotAuthorizedTokens
 
         //    => RemoteEMobilityProvider != null
         //           ? RemoteEMobilityProvider.NotAuthorizedTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
         //#region BlockedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> BlockedTokens
 
         //    => RemoteEMobilityProvider != null
         //           ? RemoteEMobilityProvider.BlockedTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
@@ -2989,7 +2989,7 @@ namespace cloud.charging.open.protocols.WWCP
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<Auth_Token>?           AuthTokens             = null,
+                    IEnumerable<AuthenticationToken>?           AuthTokens             = null,
                     IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 

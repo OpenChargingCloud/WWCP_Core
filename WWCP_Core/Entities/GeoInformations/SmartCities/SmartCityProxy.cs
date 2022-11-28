@@ -277,41 +277,41 @@ namespace cloud.charging.open.protocols.WWCP
 
         //#region AllTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AllTokens
 
         //    => RemoteSmartCity != null
         //           ? RemoteSmartCity.AllTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
         //#region AuthorizedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> AuthorizedTokens
 
         //    => RemoteSmartCity != null
         //           ? RemoteSmartCity.AuthorizedTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
         //#region NotAuthorizedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> NotAuthorizedTokens
 
         //    => RemoteSmartCity != null
         //           ? RemoteSmartCity.NotAuthorizedTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
         //#region BlockedTokens
 
-        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
+        //public IEnumerable<KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>> BlockedTokens
 
         //    => RemoteSmartCity != null
         //           ? RemoteSmartCity.BlockedTokens
-        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //           : new KeyValuePair<AuthenticationToken, TokenAuthorizationResultType>[0];
 
         //#endregion
 
