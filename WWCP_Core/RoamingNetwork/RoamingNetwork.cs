@@ -5403,7 +5403,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (LocalAuthentication  == null)
+            if (LocalAuthentication is null)
                 throw new ArgumentNullException(nameof(LocalAuthentication),   "The given authentication token must not be null!");
 
 
@@ -5413,19 +5413,18 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
             #endregion
 
             #region Send OnAuthorizeStartRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnAuthorizeStartRequest?.Invoke(StartTime,
+                OnAuthorizeStartRequest?.Invoke(startTime,
                                                 Timestamp.Value,
                                                 this,
                                                 Id.ToString(),
@@ -5547,29 +5546,29 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnAuthorizeStartResponse event
 
-            var Endtime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnAuthorizeStartResponse?.Invoke(Endtime,
-                                                     Timestamp.Value,
-                                                     this,
-                                                     Id.ToString(),
-                                                     EventTrackingId,
-                                                     Id,
-                                                     null,
-                                                     null,
-                                                     OperatorId,
-                                                     LocalAuthentication,
-                                                     ChargingLocation,
-                                                     ChargingProduct,
-                                                     SessionId,
-                                                     CPOPartnerSessionId,
-                                                     _ISend2RemoteAuthorizeStartStop,
-                                                     RequestTimeout,
-                                                     result,
-                                                     Endtime - StartTime);
+                OnAuthorizeStartResponse?.Invoke(endTime,
+                                                 Timestamp.Value,
+                                                 this,
+                                                 Id.ToString(),
+                                                 EventTrackingId,
+                                                 Id,
+                                                 null,
+                                                 null,
+                                                 OperatorId,
+                                                 LocalAuthentication,
+                                                 ChargingLocation,
+                                                 ChargingProduct,
+                                                 SessionId,
+                                                 CPOPartnerSessionId,
+                                                 _ISend2RemoteAuthorizeStartStop,
+                                                 RequestTimeout,
+                                                 result,
+                                                 endTime - startTime);
 
             }
             catch (Exception e)
@@ -5617,7 +5616,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (LocalAuthentication == null)
+            if (LocalAuthentication is null)
                 throw new ArgumentNullException(nameof(LocalAuthentication), "The given parameter must not be null!");
 
 
@@ -5627,22 +5626,18 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-
-            AuthStopResult result = null;
+            EventTrackingId ??= EventTracking_Id.New;
 
             #endregion
 
             #region Send OnAuthorizeStopRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnAuthorizeStopRequest?.Invoke(StartTime,
+                OnAuthorizeStopRequest?.Invoke(startTime,
                                                Timestamp.Value,
                                                this,
                                                Id.ToString(),
@@ -5666,6 +5661,8 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
+            AuthStopResult result = null;
+
             try
             {
 
@@ -5679,7 +5676,7 @@ namespace cloud.charging.open.protocols.WWCP
                         result = AuthStopResult.AlreadyStopped(SessionId,
                                                                this,
                                                                SessionId,
-                                                               Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - StartTime);
+                                                               Runtime: org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
 
                     else
                     {
@@ -5797,19 +5794,19 @@ namespace cloud.charging.open.protocols.WWCP
                                               this,
                                               SessionId,
                                               I18NString.Create(Languages.en, e.Message),
-                                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - StartTime);
+                                              org.GraphDefined.Vanaheimr.Illias.Timestamp.Now - startTime);
 
             }
 
 
             #region Send OnAuthorizeStopResponse event
 
-            var Endtime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnAuthorizeStopResponse?.Invoke(Endtime,
+                OnAuthorizeStopResponse?.Invoke(endTime,
                                                 Timestamp.Value,
                                                 this,
                                                 Id.ToString(),
@@ -5824,7 +5821,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                 LocalAuthentication,
                                                 RequestTimeout,
                                                 result,
-                                                Endtime - StartTime);
+                                                endTime - startTime);
 
             }
             catch (Exception e)
