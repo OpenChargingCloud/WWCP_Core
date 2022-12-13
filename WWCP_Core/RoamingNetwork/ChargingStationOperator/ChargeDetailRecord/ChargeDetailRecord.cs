@@ -492,33 +492,8 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("providerIdStop",         ProviderIdStop.ToString())
                                : null,
 
-                           ChargingProduct is not null
-                               ? new JProperty("chargingProduct",     JSONObject.Create(
-                                     new JProperty("@id",                             ChargingProduct.Id.ToString()),
-                                     ChargingProduct.MinDuration.HasValue
-                                         ? new JProperty("minDuration",               ChargingProduct.MinDuration.Value.TotalSeconds)
-                                         : null,
-                                     ChargingProduct.StopChargingAfterTime.HasValue
-                                         ? new JProperty("stopChargingAfterTime",     ChargingProduct.StopChargingAfterTime.Value.TotalSeconds)
-                                         : null,
-                                     ChargingProduct.MinPower.HasValue
-                                         ? new JProperty("minPower",                  ChargingProduct.MinPower.Value)
-                                         : null,
-                                     ChargingProduct.MaxPower.HasValue
-                                         ? new JProperty("maxPower",                  ChargingProduct.MaxPower.Value)
-                                         : null,
-                                     ChargingProduct.MinEnergy.HasValue
-                                         ? new JProperty("minEnergy",                 ChargingProduct.MinEnergy.Value)
-                                         : null,
-                                     ChargingProduct.StopChargingAfterKWh.HasValue
-                                         ? new JProperty("stopChargingAfterKWh",      ChargingProduct.StopChargingAfterKWh.Value)
-                                         : null
-                                    ))
-                               : null,
-
-
                            EnergyMeterId.HasValue
-                               ? new JProperty("EnergyMeterId", EnergyMeterId.ToString())
+                               ? new JProperty("energyMeterId", EnergyMeterId.ToString())
                                : null,
 
                            EnergyMeteringValues is not null && EnergyMeteringValues.Any()

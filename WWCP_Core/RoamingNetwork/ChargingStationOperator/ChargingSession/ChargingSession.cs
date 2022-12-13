@@ -917,7 +917,7 @@ namespace cloud.charging.open.protocols.WWCP
                                      : null,
 
 
-                           SessionTime != null
+                           SessionTime is not null
                                ? new JProperty("start", JSONObject.Create(
 
                                      new JProperty("timestamp",               SessionTime.StartTime.ToIso8601()),
