@@ -136,7 +136,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             // -----------------------------------------------------------------------
             // curl -v -X GET -H "Accept: application/json" \
             //      http://127.0.0.1:3004/tracker
-            HTTPServer.AddMethodCallback(HTTPHostname.Any,
+            HTTPServer.AddMethodCallback(null,
+                                         HTTPHostname.Any,
                                          HTTPMethod.GET,
                                          URLPrefix,
                                          HTTPContentType.JSON_UTF8,
@@ -213,7 +214,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
             //              \"2014-10-13T21:32:15.386Z\": \"Charging\"  \
             //          }" \
             //      http://127.0.0.1:3004/ext/BoschEBike/EVSEs/49*822*483*1/NotClosed
-            HTTPServer.AddMethodCallback(HTTPHostname.Any,
+            HTTPServer.AddMethodCallback(null,
+                                         HTTPHostname.Any,
                                          HTTPMethod.ANNOUNCE,
                                          URLPrefix,
                                          HTTPContentType.JSON_UTF8,
