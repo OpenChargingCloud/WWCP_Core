@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
             => !RoamingNetworkId.HasValue || RoamingNetworkId.Value.IsNullOrEmpty;
 
         /// <summary>
-        /// Indicates whether this roaming network identification is null or empty.
+        /// Indicates whether this roaming network identification is NOT null or empty.
         /// </summary>
         /// <param name="RoamingNetworkId">A roaming network identification.</param>
         public static Boolean IsNotNullOrEmpty(this RoamingNetwork_Id? RoamingNetworkId)
@@ -68,19 +68,19 @@ namespace cloud.charging.open.protocols.WWCP
         #region Properties
 
         /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this roaming network identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Indicates whether this identification is NOT null or empty.
+        /// Indicates whether this roaming network identification is NOT null or empty.
         /// </summary>
         public Boolean IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the roaming network identificator.
+        /// The length of the roaming network identification.
         /// </summary>
         public UInt64 Length
             => (UInt64) InternalId.Length;
@@ -90,9 +90,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new roaming network identification.
-        /// based on the given string.
+        /// Create a new roaming network identification based on the given string.
         /// </summary>
+        /// <param name="Text">A text representation of a roaming network identification.</param>
         private RoamingNetwork_Id(String Text)
         {
             InternalId = Text;
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) TryParse(Text, out RoamingNetworkId)
 
         /// <summary>
-        /// Parse the given string as a roaming network identification.
+        /// Parse the given text as a roaming network identification.
         /// </summary>
         /// <param name="Text">A text representation of a roaming network identification.</param>
         /// <param name="RoamingNetworkId">The parsed roaming network identification.</param>
