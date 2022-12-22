@@ -17,12 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
-
-using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -34,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
     public static class SendCDRResultTypesExtensions
     {
 
-        public static SendCDRsResultTypes Covert(this SendCDRResultTypes result)
+        public static SendCDRsResultTypes Convert(this SendCDRResultTypes result)
         {
 
             switch (result)
@@ -101,47 +96,47 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The timestamp of the charge detail record result.
         /// </summary>
-        public DateTime                     Timestamp                      { get; }
+        public DateTime                      Timestamp                      { get; }
 
         /// <summary>
         /// The identification of the charge detail record sending or receiving entity.
         /// </summary>
-        public IId                          AuthorizatorId                 { get; }
+        public IId                           AuthorizatorId                 { get; }
 
         /// <summary>
         /// The entity sending charge detail records.
         /// </summary>
-        public ISendChargeDetailRecords     ISendChargeDetailRecords       { get; }
+        public ISendChargeDetailRecords?     ISendChargeDetailRecords       { get; }
 
         /// <summary>
         /// The entity receiving charge detail records.
         /// </summary>
-        public IReceiveChargeDetailRecords  IReceiveChargeDetailRecords    { get; }
+        public IReceiveChargeDetailRecords?  IReceiveChargeDetailRecords    { get; }
 
         /// <summary>
         /// The result of the charge detail record transmission.
         /// </summary>
-        public SendCDRsResultTypes          Result                         { get; }
+        public SendCDRsResultTypes           Result                         { get; }
 
         /// <summary>
         /// An enumeration of charge detail records.
         /// </summary>
-        public IEnumerable<SendCDRResult>   ResultMap                      { get; }
+        public IEnumerable<SendCDRResult>    ResultMap                      { get; }
 
         /// <summary>
         /// An optional description of the send charge detail records result.
         /// </summary>
-        public I18NString                   Description                    { get; }
+        public I18NString                    Description                    { get; }
 
         /// <summary>
         /// Optional warnings or additional information.
         /// </summary>
-        public IEnumerable<Warning>         Warnings                       { get; }
+        public IEnumerable<Warning>          Warnings                       { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                    Runtime                        { get; }
+        public TimeSpan?                     Runtime                        { get; }
 
         #endregion
 
@@ -160,26 +155,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal SendCDRsResult(DateTime                    Timestamp,
-                                IId                         AuthorizatorId,
-                                ISendChargeDetailRecords    ISendChargeDetailRecords,
-                                SendCDRsResultTypes         Result,
-                                IEnumerable<SendCDRResult>  ResultMap,
-                                I18NString                  Description   = null,
-                                IEnumerable<Warning>        Warnings      = null,
-                                TimeSpan?                   Runtime       = null)
+        internal SendCDRsResult(DateTime                     Timestamp,
+                                IId                          AuthorizatorId,
+                                ISendChargeDetailRecords     ISendChargeDetailRecords,
+                                SendCDRsResultTypes          Result,
+                                IEnumerable<SendCDRResult>?  ResultMap,
+                                I18NString?                  Description   = null,
+                                IEnumerable<Warning>?        Warnings      = null,
+                                TimeSpan?                    Runtime       = null)
         {
 
             this.Timestamp                 = Timestamp;
             this.AuthorizatorId            = AuthorizatorId;
             this.ISendChargeDetailRecords  = ISendChargeDetailRecords;
             this.Result                    = Result;
-            this.ResultMap                 = ResultMap   ?? new SendCDRResult[0];
+            this.ResultMap                 = ResultMap   ?? Array.Empty<SendCDRResult>();
             this.Description               = Description ?? I18NString.Empty;
 
-            this.Warnings                  = Warnings != null
+            this.Warnings                  = Warnings is not null
                                                  ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                 : new Warning[0];
+                                                 : Array.Empty<Warning>();
 
             this.Runtime                   = Runtime;
 
@@ -200,26 +195,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal SendCDRsResult(DateTime                     Timestamp,
-                                IId                          AuthorizatorId,
-                                IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                                SendCDRsResultTypes          Result,
-                                IEnumerable<SendCDRResult>   ResultMap     = null,
-                                I18NString                   Description   = null,
-                                IEnumerable<Warning>         Warnings      = null,
-                                TimeSpan?                    Runtime       = null)
+        internal SendCDRsResult(DateTime                      Timestamp,
+                                IId                           AuthorizatorId,
+                                IReceiveChargeDetailRecords   IReceiveChargeDetailRecords,
+                                SendCDRsResultTypes           Result,
+                                IEnumerable<SendCDRResult>?   ResultMap     = null,
+                                I18NString?                   Description   = null,
+                                IEnumerable<Warning>?         Warnings      = null,
+                                TimeSpan?                     Runtime       = null)
         {
 
             this.Timestamp                    = Timestamp;
             this.AuthorizatorId               = AuthorizatorId;
             this.IReceiveChargeDetailRecords  = IReceiveChargeDetailRecords;
             this.Result                       = Result;
-            this.ResultMap                    = ResultMap   ?? new SendCDRResult[0];
+            this.ResultMap                    = ResultMap   ?? Array.Empty<SendCDRResult>();
             this.Description                  = Description ?? I18NString.Empty;
 
-            this.Warnings                     = Warnings != null
-                                                  ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                  : new Warning[0];
+            this.Warnings                     = Warnings is not null
+                                                    ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                    : Array.Empty<Warning>();
 
             this.Runtime                      = Runtime;
 
@@ -248,19 +243,19 @@ namespace cloud.charging.open.protocols.WWCP
                         IId                              AuthorizatorId,
                         ISendChargeDetailRecords         ISendChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ResultMap,
-                        I18NString                       Description   = null,
-                        IEnumerable<Warning>             Warnings      = null,
+                        I18NString?                      Description   = null,
+                        IEnumerable<Warning>?            Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.NoOperation,
-                                      ResultMap.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.NoOperation,
+                        ResultMap.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
 
@@ -280,19 +275,19 @@ namespace cloud.charging.open.protocols.WWCP
                         IId                              AuthorizatorId,
                         IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                         IEnumerable<ChargeDetailRecord>  ResultMap,
-                        I18NString                       Description   = null,
-                        IEnumerable<Warning>             Warnings      = null,
+                        I18NString?                      Description   = null,
+                        IEnumerable<Warning>?            Warnings      = null,
                         TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.NoOperation,
-                                      ResultMap.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.NoOperation,
+                        ResultMap.SafeSelect(cdr => SendCDRResult.NoOperation(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -314,19 +309,19 @@ namespace cloud.charging.open.protocols.WWCP
                       IId                              AuthorizatorId,
                       ISendChargeDetailRecords         ISendChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
-                      I18NString                       Description   = null,
-                      IEnumerable<Warning>             Warnings      = null,
+                      I18NString?                      Description   = null,
+                      IEnumerable<Warning>?            Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.AdminDown,
-                                      ResultMap.SafeSelect(cdr => SendCDRResult.AdminDown(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.AdminDown,
+                        ResultMap.SafeSelect(cdr => SendCDRResult.AdminDown(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -344,19 +339,19 @@ namespace cloud.charging.open.protocols.WWCP
                       IId                              AuthorizatorId,
                       IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                       IEnumerable<ChargeDetailRecord>  ResultMap,
-                      I18NString                       Description   = null,
-                      IEnumerable<Warning>             Warnings      = null,
+                      I18NString?                      Description   = null,
+                      IEnumerable<Warning>?            Warnings      = null,
                       TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.AdminDown,
-                                      ResultMap.Select(cdr => SendCDRResult.AdminDown(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.AdminDown,
+                        ResultMap.Select(cdr => SendCDRResult.AdminDown(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -378,19 +373,19 @@ namespace cloud.charging.open.protocols.WWCP
                          IId                              AuthorizatorId,
                          ISendChargeDetailRecords         ISendChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  ResultMap,
-                         I18NString                       Description   = null,
-                         IEnumerable<Warning>             Warnings      = null,
+                         I18NString?                      Description   = null,
+                         IEnumerable<Warning>?            Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.OutOfService,
-                                      ResultMap.Select(cdr => SendCDRResult.OutOfService(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.OutOfService,
+                        ResultMap.Select(cdr => SendCDRResult.OutOfService(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -409,19 +404,19 @@ namespace cloud.charging.open.protocols.WWCP
                          IId                              AuthorizatorId,
                          IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
-                         I18NString                       Description   = null,
-                         IEnumerable<Warning>             Warnings      = null,
+                         I18NString?                      Description   = null,
+                         IEnumerable<Warning>?            Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.OutOfService,
-                                      RejectedChargeDetailRecords.Select(cdr => SendCDRResult.OutOfService(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.OutOfService,
+                        RejectedChargeDetailRecords.Select(cdr => SendCDRResult.OutOfService(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -443,8 +438,8 @@ namespace cloud.charging.open.protocols.WWCP
                      IId                       AuthorizatorId,
                      ISendChargeDetailRecords  ISendChargeDetailRecords,
                      ChargeDetailRecord        ChargeDetailRecord,
-                     I18NString                Description   = null,
-                     IEnumerable<Warning>      Warnings      = null,
+                     I18NString?               Description   = null,
+                     IEnumerable<Warning>?     Warnings      = null,
                      TimeSpan?                 Runtime       = null)
 
 
@@ -474,19 +469,19 @@ namespace cloud.charging.open.protocols.WWCP
                      IId                              AuthorizatorId,
                      ISendChargeDetailRecords         ISendChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                     I18NString                       Description   = null,
-                     IEnumerable<Warning>             Warnings      = null,
+                     I18NString?                      Description   = null,
+                     IEnumerable<Warning>?            Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Enqueued,
-                                      ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Enqueued,
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
 
@@ -506,19 +501,19 @@ namespace cloud.charging.open.protocols.WWCP
                      IId                          AuthorizatorId,
                      IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                      ChargeDetailRecord           ChargeDetailRecord,
-                     I18NString                   Description   = null,
-                     IEnumerable<Warning>         Warnings      = null,
+                     I18NString?                  Description   = null,
+                     IEnumerable<Warning>?        Warnings      = null,
                      TimeSpan?                    Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Enqueued,
-                                      new SendCDRResult[] { SendCDRResult.Enqueued(Timestamp, ChargeDetailRecord) },
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Enqueued,
+                        new SendCDRResult[] { SendCDRResult.Enqueued(Timestamp, ChargeDetailRecord) },
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -537,19 +532,19 @@ namespace cloud.charging.open.protocols.WWCP
                      IId                              AuthorizatorId,
                      IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                     I18NString                       Description   = null,
-                     IEnumerable<Warning>             Warnings      = null,
+                     I18NString?                      Description   = null,
+                     IEnumerable<Warning>?            Warnings      = null,
                      TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Enqueued,
-                                      ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Enqueued,
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Enqueued(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -571,19 +566,19 @@ namespace cloud.charging.open.protocols.WWCP
                     IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ResultMap,
-                    I18NString                       Description   = null,
-                    IEnumerable<Warning>             Warnings      = null,
+                    I18NString?                      Description   = null,
+                    IEnumerable<Warning>?            Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Timeout,
-                                      ResultMap.SafeSelect(cdr => SendCDRResult.Timeout(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Timeout,
+                        ResultMap.SafeSelect(cdr => SendCDRResult.Timeout(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -605,19 +600,19 @@ namespace cloud.charging.open.protocols.WWCP
                     IId                       AuthorizatorId,
                     ISendChargeDetailRecords  ISendChargeDetailRecords,
                     ChargeDetailRecord        ChargeDetailRecord,
-                    I18NString                Description   = null,
-                    IEnumerable<Warning>      Warnings      = null,
+                    I18NString?               Description   = null,
+                    IEnumerable<Warning>?     Warnings      = null,
                     TimeSpan?                 Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      new SendCDRResult[] { SendCDRResult.Success(Timestamp, ChargeDetailRecord) },
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        new SendCDRResult[] { SendCDRResult.Success(Timestamp, ChargeDetailRecord) },
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -636,19 +631,19 @@ namespace cloud.charging.open.protocols.WWCP
                     IId                              AuthorizatorId,
                     ISendChargeDetailRecords         ISendChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                    I18NString                       Description   = null,
-                    IEnumerable<Warning>             Warnings      = null,
+                    I18NString?                      Description   = null,
+                    IEnumerable<Warning>?            Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -667,19 +662,19 @@ namespace cloud.charging.open.protocols.WWCP
                     IId                          AuthorizatorId,
                     IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                     ChargeDetailRecord           ChargeDetailRecord,
-                    I18NString                   Description   = null,
-                    IEnumerable<Warning>         Warnings      = null,
+                    I18NString?                  Description   = null,
+                    IEnumerable<Warning>?        Warnings      = null,
                     TimeSpan?                    Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      new SendCDRResult[] { SendCDRResult.Success(Timestamp, ChargeDetailRecord) },
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        new SendCDRResult[] { SendCDRResult.Success(Timestamp, ChargeDetailRecord) },
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -698,19 +693,19 @@ namespace cloud.charging.open.protocols.WWCP
                     IId                              AuthorizatorId,
                     IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                     IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                    I18NString                       Description   = null,
-                    IEnumerable<Warning>             Warnings      = null,
+                    I18NString?                      Description   = null,
+                    IEnumerable<Warning>?            Warnings      = null,
                     TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        ChargeDetailRecords.SafeSelect(cdr => SendCDRResult.Success(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -732,19 +727,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                       AuthorizatorId,
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   ChargeDetailRecord        ChargeDetailRecord,
-                  I18NString                Description   = null,
-                  IEnumerable<Warning>      Warnings      = null,
+                  I18NString?               Description   = null,
+                  IEnumerable<Warning>?     Warnings      = null,
                   TimeSpan?                 Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      new SendCDRResult[] { SendCDRResult.Error(Timestamp, ChargeDetailRecord) },
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        new SendCDRResult[] { SendCDRResult.Error(Timestamp, ChargeDetailRecord) },
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -763,19 +758,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                              AuthorizatorId,
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                  I18NString                       Description   = null,
-                  IEnumerable<Warning>             Warnings      = null,
+                  I18NString?                      Description   = null,
+                  IEnumerable<Warning>?            Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -797,14 +792,14 @@ namespace cloud.charging.open.protocols.WWCP
                   TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
-                                      I18NString.Empty,
-                                      new Warning[] { Warning },
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        I18NString.Empty,
+                        new Warning[] { Warning },
+                        Runtime);
 
 
 
@@ -824,19 +819,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   ChargeDetailRecord           ChargeDetailRecord,
-                  I18NString                   Description   = null,
-                  IEnumerable<Warning>         Warnings      = null,
+                  I18NString?                  Description   = null,
+                  IEnumerable<Warning>?        Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      new SendCDRResult[] { SendCDRResult.Error(Timestamp, ChargeDetailRecord) },
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        new SendCDRResult[] { SendCDRResult.Error(Timestamp, ChargeDetailRecord) },
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -855,19 +850,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                              AuthorizatorId,
                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                  I18NString                       Description   = null,
-                  IEnumerable<Warning>             Warnings      = null,
+                  I18NString?                      Description   = null,
+                  IEnumerable<Warning>?            Warnings      = null,
                   TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Success,
-                                      ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Success,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -889,19 +884,19 @@ namespace cloud.charging.open.protocols.WWCP
                          IId                              AuthorizatorId,
                          IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
                          IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                         I18NString                       Description   = null,
-                         IEnumerable<Warning>             Warnings      = null,
+                         I18NString?                      Description   = null,
+                         IEnumerable<Warning>?            Warnings      = null,
                          TimeSpan?                        Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.InvalidToken,
-                                      ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.InvalidToken,
+                        ChargeDetailRecords.Select(cdr => SendCDRResult.Error(Timestamp, cdr)),
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -923,19 +918,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                       AuthorizatorId,
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
                   SendCDRResult             Result,
-                  I18NString                Description   = null,
-                  IEnumerable<Warning>      Warnings      = null,
+                  I18NString?               Description   = null,
+                  IEnumerable<Warning>?     Warnings      = null,
                   TimeSpan?                 Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Mixed,
-                                      new SendCDRResult[] { Result },
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Mixed,
+                        new SendCDRResult[] { Result },
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -954,19 +949,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                         AuthorizatorId,
                   ISendChargeDetailRecords    ISendChargeDetailRecords,
                   IEnumerable<SendCDRResult>  ResultMap,
-                  I18NString                  Description   = null,
-                  IEnumerable<Warning>        Warnings      = null,
+                  I18NString?                 Description   = null,
+                  IEnumerable<Warning>?       Warnings      = null,
                   TimeSpan?                   Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.Mixed,
-                                      ResultMap,
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        ISendChargeDetailRecords,
+                        SendCDRsResultTypes.Mixed,
+                        ResultMap,
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
 
@@ -986,19 +981,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   SendCDRResult                Result,
-                  I18NString                   Description   = null,
-                  IEnumerable<Warning>         Warnings      = null,
+                  I18NString?                  Description   = null,
+                  IEnumerable<Warning>?        Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Mixed,
-                                      new SendCDRResult[] { Result },
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Mixed,
+                        new SendCDRResult[] { Result },
+                        Description,
+                        Warnings,
+                        Runtime);
 
 
         /// <summary>
@@ -1017,19 +1012,19 @@ namespace cloud.charging.open.protocols.WWCP
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
                   IEnumerable<SendCDRResult>   ResultMap,
-                  I18NString                   Description   = null,
-                  IEnumerable<Warning>         Warnings      = null,
+                  I18NString?                  Description   = null,
+                  IEnumerable<Warning>?        Warnings      = null,
                   TimeSpan?                    Runtime       = null)
 
 
-                => new SendCDRsResult(Timestamp,
-                                      AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.Mixed,
-                                      ResultMap,
-                                      Description,
-                                      Warnings,
-                                      Runtime);
+                => new (Timestamp,
+                        AuthorizatorId,
+                        IReceiveChargeDetailRecords,
+                        SendCDRsResultTypes.Mixed,
+                        ResultMap,
+                        Description,
+                        Warnings,
+                        Runtime);
 
         #endregion
 

@@ -5966,7 +5966,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                    DateTime?           Timestamp           = null,
                                    CancellationToken?  CancellationToken   = null,
-                                   EventTracking_Id    EventTrackingId     = null,
+                                   EventTracking_Id?   EventTrackingId     = null,
                                    TimeSpan?           RequestTimeout      = null)
 
 
@@ -5999,15 +5999,14 @@ namespace cloud.charging.open.protocols.WWCP
 
                                     DateTime?                        Timestamp           = null,
                                     CancellationToken?               CancellationToken   = null,
-                                    EventTracking_Id                 EventTrackingId     = null,
+                                    EventTracking_Id?                EventTrackingId     = null,
                                     TimeSpan?                        RequestTimeout      = null)
 
         {
 
             #region Initial checks
 
-            if (ChargeDetailRecords == null)
-                ChargeDetailRecords = new ChargeDetailRecord[0];
+            ChargeDetailRecords ??= Array.Empty<ChargeDetailRecord>();
 
 
             if (!Timestamp.HasValue)
@@ -6051,9 +6050,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region if SendChargeDetailRecords disabled...
 
-            DateTime        Endtime;
-            TimeSpan        Runtime;
-            SendCDRsResult  result = null;
+            DateTime         Endtime;
+            TimeSpan         Runtime;
+            SendCDRsResult?  result = null;
 
             if (DisableSendChargeDetailRecords)
             {
@@ -6092,23 +6091,23 @@ namespace cloud.charging.open.protocols.WWCP
 
                 //ToDo: Fail when RFID UID == "00000000000000"
 
-                var ChargeDetailRecordsToProcess  = ChargeDetailRecords.ToList();
-                var ExpectedChargeDetailRecords   = ChargeDetailRecords.ToList();
+                var chargeDetailRecordsToProcess  = ChargeDetailRecords.ToList();
+                var expectedChargeDetailRecords   = ChargeDetailRecords.ToList();
 
                 //ToDo: Merge given cdr information with local information!
 
                 #region Delete cached session information
 
-                foreach (var ChargeDetailRecord in ChargeDetailRecordsToProcess)
+                foreach (var chargeDetailRecord in chargeDetailRecordsToProcess)
                 {
-                    if (ChargeDetailRecord.EVSEId.HasValue)
+                    if (chargeDetailRecord.EVSEId.HasValue)
                     {
 
-                        if (TryGetEVSEById(ChargeDetailRecord.EVSEId.Value, out IEVSE _EVSE))
+                        if (TryGetEVSEById(chargeDetailRecord.EVSEId.Value, out var evse))
                         {
 
-                            if (_EVSE.ChargingSession    != null &&
-                                _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
+                            if (evse?.ChargingSession is not null &&
+                                evse. ChargingSession.Id == chargeDetailRecord.SessionId)
                             {
 
                                 //_EVSE.Status = EVSEStatusType.Available;
@@ -6132,29 +6131,34 @@ namespace cloud.charging.open.protocols.WWCP
                 if (OnFilterCDRRecordsLocal != null)
                 {
 
-                    foreach (var ChargeDetailRecord in ChargeDetailRecords)
+                    foreach (var chargeDetailRecord in ChargeDetailRecords)
                     {
 
-                        var FilterResult = OnFilterCDRRecordsLocal(Id, ChargeDetailRecord);
-                        if (FilterResult.IsNeitherNullNorEmpty())
+                        var filterResult = OnFilterCDRRecordsLocal(Id, chargeDetailRecord);
+                        if (filterResult.IsNeitherNullNorEmpty())
                         {
 
                             resultMap.Add(SendCDRResult.Filtered(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                                 ChargeDetailRecord,
-                                                                 FilterResult.SafeSelect(filterResult => Warning.Create(filterResult))));
+                                                                 chargeDetailRecord,
+                                                                 filterResult.SafeSelect(filterResult => Warning.Create(filterResult))));
 
-                            try
+                            var OnCDRWasFilteredLocal = OnCDRWasFiltered;
+                            if (OnCDRWasFilteredLocal is not null)
                             {
-                                await OnCDRWasFiltered.Invoke(ChargeDetailRecord, FilterResult);
-                            }
-                            catch (Exception e)
-                            {
-                                DebugX.Log("OnCDRWasFiltered event throw an exception: " +
-                                           e.Message + Environment.NewLine +
-                                           e.StackTrace);
+                                try
+                                {
+                                    await OnCDRWasFilteredLocal.Invoke(chargeDetailRecord,
+                                                                       filterResult);
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugX.Log("OnCDRWasFiltered event throw an exception: " +
+                                               e.Message + Environment.NewLine +
+                                               e.StackTrace);
+                                }
                             }
 
-                            ChargeDetailRecordsToProcess.Remove(ChargeDetailRecord);
+                            chargeDetailRecordsToProcess.Remove(chargeDetailRecord);
 
                         }
 
@@ -6167,19 +6171,52 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Group charge detail records by their targets...
 
-                var _ISendChargeDetailRecords = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
+                var cdrTargets = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
 
                 foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
-                    _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
+                    cdrTargets.Add(isendcdr, new List<ChargeDetailRecord>());
 
                 #endregion
 
-                #region Try to send the CDRs to their target based on their SessionId...
+                #region Try to find the target EMP or roaming network for each CDR...
 
-                foreach (var cdr in ChargeDetailRecordsToProcess.ToArray())
+                foreach (var cdr in chargeDetailRecordsToProcess.ToArray())
                 {
 
-                    if (SessionsStore.TryGet(cdr.SessionId, out ChargingSession chargingSession))
+                    #region The CDR EMPRoamingProvider(Id) is known, or...
+
+                    if (cdr.EMPRoamingProvider is not null &&
+                       !cdr.EMPRoamingProviderId.HasValue)
+                    {
+                        cdr.EMPRoamingProviderId = cdr.EMPRoamingProvider.Id;
+                    }
+
+                    if (cdr.EMPRoamingProviderId.HasValue)
+                    {
+
+                        var empRoamingProviderId      = cdr.EMPRoamingProviderId.ToString();
+                        var empRoamingProviderForCDR  = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.Id.ToString() == empRoamingProviderId) as IEMPRoamingProvider;
+
+                        if (empRoamingProviderForCDR is not null)
+                        {
+
+                            cdrTargets[empRoamingProviderForCDR].Add(cdr);
+                            chargeDetailRecordsToProcess.Remove(cdr);
+
+                            SessionsStore.CDRReceived(cdr.SessionId,
+                                                      cdr);
+
+                            continue;
+
+                        }
+
+                    }
+
+                    #endregion
+
+                    #region ...we lookup the EMP roaming provider via the authorization within the charging sessions
+
+                    else if (SessionsStore.TryGet(cdr.SessionId, out var chargingSession))
                     {
 
                         // Might occur when the software had been restarted
@@ -6193,20 +6230,25 @@ namespace cloud.charging.open.protocols.WWCP
                         //    ChargeDetailRecordsToProcess.Remove(cdr);
                         //}
 
-                        if (chargingSession.EMPRoamingProviderStart == null && chargingSession.EMPRoamingProviderIdStart != null)
-                            chargingSession.EMPRoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(rm => rm.Id.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
+                        if (chargingSession.EMPRoamingProviderStart is null &&
+                            chargingSession.EMPRoamingProviderIdStart is not null)
+                            chargingSession.EMPRoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.Id.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
 
-                        if (chargingSession.EMPRoamingProviderStart != null && chargingSession.EMPRoamingProviderStart is IEMPRoamingProvider sendCDR2)
+                        if (chargingSession.EMPRoamingProviderStart is not null &&
+                            chargingSession.EMPRoamingProviderStart is IEMPRoamingProvider empRoamingProviderForCDR)
                         {
 
-                            _ISendChargeDetailRecords[sendCDR2].Add(cdr);
-                            ChargeDetailRecordsToProcess.Remove(cdr);
+                            cdrTargets[empRoamingProviderForCDR].Add(cdr);
+                            chargeDetailRecordsToProcess.Remove(cdr);
 
-                            SessionsStore.CDRReceived(cdr.SessionId, cdr);
+                            SessionsStore.CDRReceived(cdr.SessionId,
+                                                      cdr);
 
                         }
 
                     }
+
+                    #endregion
 
                 }
 
@@ -6214,15 +6256,15 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Any CDRs left? => Ask all e-mobility providers!
 
-                foreach (var _cdr in ChargeDetailRecordsToProcess.ToList())
+                foreach (var _cdr in chargeDetailRecordsToProcess.ToList())
                 {
 
                     #region We have a valid (start) provider identification
 
                     if (_cdr.ProviderIdStart.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStart.Value, out EMobilityProvider eMobPro))
                     {
-                        _ISendChargeDetailRecords[eMobPro].Add(_cdr);
-                        ChargeDetailRecordsToProcess.Remove(_cdr);
+                        cdrTargets[eMobPro].Add(_cdr);
+                        chargeDetailRecordsToProcess.Remove(_cdr);
                     }
 
                     #endregion
@@ -6231,8 +6273,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                     else if (_cdr.ProviderIdStop.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStop.Value, out eMobPro))
                     {
-                        _ISendChargeDetailRecords[eMobPro].Add(_cdr);
-                        ChargeDetailRecordsToProcess.Remove(_cdr);
+                        cdrTargets[eMobPro].Add(_cdr);
+                        chargeDetailRecordsToProcess.Remove(_cdr);
                     }
 
                     #endregion
@@ -6265,8 +6307,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                     authStartResult.Result == AuthStartResultTypes.Blocked)
                                 {
-                                    _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                    ChargeDetailRecordsToProcess.Remove(_cdr);
+                                    cdrTargets[eMob].Add(_cdr);
+                                    chargeDetailRecordsToProcess.Remove(_cdr);
                                     break;
                                 }
 
@@ -6294,8 +6336,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6321,8 +6363,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6348,8 +6390,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6375,8 +6417,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6402,8 +6444,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6429,8 +6471,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6456,8 +6498,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6483,8 +6525,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6510,8 +6552,8 @@ namespace cloud.charging.open.protocols.WWCP
                             if (authStartResult.Result == AuthStartResultTypes.Authorized ||
                                 authStartResult.Result == AuthStartResultTypes.Blocked)
                             {
-                                _ISendChargeDetailRecords[eMob].Add(_cdr);
-                                ChargeDetailRecordsToProcess.Remove(_cdr);
+                                cdrTargets[eMob].Add(_cdr);
+                                chargeDetailRecordsToProcess.Remove(_cdr);
                                 break;
                             }
 
@@ -6527,13 +6569,13 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Any CDRs left? => bad!
 
-                foreach (var unknownCDR in ChargeDetailRecordsToProcess.ToArray())
+                foreach (var unknownCDR in chargeDetailRecordsToProcess.ToArray())
                 {
 
                     resultMap.Add(SendCDRResult.UnknownSessionId(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                                  unknownCDR));
 
-                    ChargeDetailRecordsToProcess.Remove(unknownCDR);
+                    chargeDetailRecordsToProcess.Remove(unknownCDR);
 
                 }
 
@@ -6542,9 +6584,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #region Send CDRs to IRemoteSendChargeDetailRecord targets...
 
-                SendCDRsResult partResults = null;
+                SendCDRsResult? partResults = null;
 
-                foreach (var sendCDR in _ISendChargeDetailRecords.Where(kvp => kvp.Value.Count > 0))
+                foreach (var sendCDR in cdrTargets.Where(kvp => kvp.Value.Count > 0))
                 {
 
                     partResults = await sendCDR.Key.SendChargeDetailRecords(sendCDR.Value,
@@ -6555,7 +6597,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                             EventTrackingId,
                                                                             RequestTimeout);
 
-                    if (partResults == null)
+                    if (partResults is null)
                     {
 
                         foreach (var _cdr in sendCDR.Value)
@@ -6581,11 +6623,11 @@ namespace cloud.charging.open.protocols.WWCP
                 #region Check if we really received a response for every charge detail record!
 
                 foreach (var cdrresult in resultMap)
-                    ExpectedChargeDetailRecords.Remove(cdrresult.ChargeDetailRecord);
+                    expectedChargeDetailRecords.Remove(cdrresult.ChargeDetailRecord);
 
-                if (ExpectedChargeDetailRecords.Count > 0)
+                if (expectedChargeDetailRecords.Count > 0)
                 {
-                    foreach (var _cdr in ExpectedChargeDetailRecords)
+                    foreach (var _cdr in expectedChargeDetailRecords)
                     {
                         resultMap.Add(SendCDRResult.Error(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                           _cdr,
@@ -6625,7 +6667,7 @@ namespace cloud.charging.open.protocols.WWCP
                 result   = new SendCDRsResult(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                               Id,
                                               this as IReceiveChargeDetailRecords,
-                                              GlobalResults[0].Covert(),
+                                              GlobalResults[0].Convert(),
                                               resultMap,
                                               I18NString.Empty,
                                               null,

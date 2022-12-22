@@ -112,9 +112,8 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory]
         public StartEndDateTime         SessionTime     { get; }
 
-
         /// <summary>
-        /// The duration of the charging session, whenever it is more
+        /// The optional duration of the charging session, whenever it is more
         /// than the time span between its start- and endtime, e.g.
         /// caused by a tariff granularity of 15 minutes.
         /// </summary>
@@ -224,6 +223,20 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Roaming
+
+        /// <summary>
+        /// An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        /// </summary>
+        public IEMPRoamingProvider?             EMPRoamingProvider      { get; internal set; }
+
+        /// <summary>
+        /// An optional EV roaming provider identification, e.g. when you want to force the transmission of a CDR via a given roaming network.
+        /// </summary>
+        public EMPRoamingProvider_Id?           EMPRoamingProviderId    { get; internal set; }
+
+        #endregion
+
         #region Reservation
 
         /// <summary>
@@ -243,6 +256,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         public StartEndDateTime?        ReservationTime    { get; }
+
+        /// <summary>
+        /// The optional reservation fee.
+        /// </summary>
+        [Optional]
+        public Price?                   ReservationFee     { get; }
 
         #endregion
 
@@ -264,7 +283,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The optional fee for parking.
         /// </summary>
         [Optional]
-        public Decimal?           ParkingFee        { get; }
+        public Price?             ParkingFee        { get; }
 
         #endregion
 
@@ -293,15 +312,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Decimal?                                     ConsumedEnergy          { get; }
 
+        /// <summary>
+        /// The optional fee for the consumed energy.
+        /// </summary>
+        [Optional]
+        public Price?                                       ConsumedEnergyFee       { get; }
+
         #endregion
 
+        #region PublicKey/Signatures
 
         public ECPublicKeyParameters? PublicKey { get; }
 
-        private readonly HashSet<String> _Signatures;
+        private readonly HashSet<String> signatures;
 
         public IEnumerable<String> Signatures
-                   => _Signatures;
+                   => signatures;
+
+        #endregion
 
         #endregion
 
@@ -330,6 +358,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AuthenticationStop">The authentication used for stopping this charging process.</param>
         /// <param name="ProviderIdStart">The identification of the e-mobility provider used for starting this charging process.</param>
         /// <param name="ProviderIdStop">The identification of the e-mobility provider used for stopping this charging process.</param>
+        /// 
+        /// <param name="EMPRoamingProvider">An optional EV roaming provider, e.g. when you want to force the transmission of a CDR via a given roaming network.</param>
         /// 
         /// <param name="Reservation">The optional charging reservation used before charging.</param>
         /// <param name="ReservationId">The optional charging reservation identification used before charging.</param>
@@ -365,13 +395,17 @@ namespace cloud.charging.open.protocols.WWCP
                                   EMobilityProvider_Id?                       ProviderIdStart             = null,
                                   EMobilityProvider_Id?                       ProviderIdStop              = null,
 
+                                  IEMPRoamingProvider?                        EMPRoamingProvider          = null,
+                                  EMPRoamingProvider_Id?                      EMPRoamingProviderId        = null,
+
                                   ChargingReservation?                        Reservation                 = null,
                                   ChargingReservation_Id?                     ReservationId               = null,
                                   StartEndDateTime?                           ReservationTime             = null,
+                                  Price?                                      ReservationFee              = null,
 
                                   ParkingSpace_Id?                            ParkingSpaceId              = null,
                                   StartEndDateTime?                           ParkingTime                 = null,
-                                  Decimal?                                    ParkingFee                  = null,
+                                  Price?                                      ParkingFee                  = null,
 
                                   EnergyMeter_Id?                             EnergyMeterId               = null,
                                   IEnumerable<Timestamped<Decimal>>?          EnergyMeteringValues        = null,
@@ -410,17 +444,27 @@ namespace cloud.charging.open.protocols.WWCP
             this.ProviderIdStart             = ProviderIdStart;
             this.ProviderIdStop              = ProviderIdStop;
 
+            this.EMPRoamingProvider          = EMPRoamingProvider;
+            this.EMPRoamingProviderId        = EMPRoamingProviderId;
+
             this.Reservation                 = Reservation;
             this.ReservationId               = ReservationId             ?? Reservation?.Id;
             this.ReservationTime             = ReservationTime;
+            this.ReservationFee              = ReservationFee;
 
             this.ParkingSpaceId              = ParkingSpaceId;
             this.ParkingTime                 = ParkingTime;
             this.ParkingFee                  = ParkingFee;
 
             this.EnergyMeterId               = EnergyMeterId;
-            this.EnergyMeteringValues        = EnergyMeteringValues != null ? EnergyMeteringValues.OrderBy(mv  => mv. Timestamp).ToArray() : Array.Empty<Timestamped<Decimal>>();
-            this.SignedMeteringValues        = SignedMeteringValues != null ? SignedMeteringValues.OrderBy(smv => smv.Timestamp).ToArray() : Array.Empty<SignedMeteringValue<Decimal>>();
+            this.EnergyMeteringValues        = EnergyMeteringValues is not null
+                                                   ? EnergyMeteringValues.OrderBy(mv  => mv. Timestamp).ToArray()
+                                                   : Array.Empty<Timestamped<Decimal>>();
+
+            this.SignedMeteringValues        = SignedMeteringValues is not null
+                                                   ? SignedMeteringValues.OrderBy(smv => smv.Timestamp).ToArray()
+                                                   : Array.Empty<SignedMeteringValue<Decimal>>();
+
             if (SignedMeteringValues.SafeAny() && !EnergyMeteringValues.SafeAny())
                 this.EnergyMeteringValues    = SignedMeteringValues is not null
                                                    ? SignedMeteringValues.Select(svalue => new Timestamped<Decimal>(svalue.Timestamp,
@@ -428,11 +472,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                    : Array.Empty<Timestamped<Decimal>>();
 
             this.ConsumedEnergy              = ConsumedEnergy;
-            if (this.ConsumedEnergy == null && this.EnergyMeteringValues.SafeAny())
+            if (this.ConsumedEnergy is null && this.EnergyMeteringValues.SafeAny())
                 this.ConsumedEnergy          = this.EnergyMeteringValues.Last().Value - this.EnergyMeteringValues.First().Value; // kWh
 
             this.PublicKey                   = PublicKey;
-            this._Signatures                 = Signatures is not null && Signatures.Any()
+            this.signatures                  = Signatures is not null && Signatures.Any()
                                                    ? new HashSet<String>(Signatures)
                                                    : new HashSet<String>();
 
@@ -463,7 +507,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                            SessionTime is not null
                                ? new JProperty("sessionTime",                 JSONObject.Create(
-                                     new JProperty("start",                   SessionTime.StartTime.ToIso8601()),
+                                     new JProperty("start",                   SessionTime.StartTime.    ToIso8601()),
                                      SessionTime.EndTime.HasValue
                                          ? new JProperty("end",               SessionTime.EndTime.Value.ToIso8601())
                                          : null
@@ -476,24 +520,24 @@ namespace cloud.charging.open.protocols.WWCP
 
                            Reservation is not null
                                ? new JProperty("reservation", JSONObject.Create(
-                                                                  new JProperty("reservationId",  Reservation.Id.ToString()),
+                                                                  new JProperty("reservationId",  Reservation.Id.       ToString()),
                                                                   new JProperty("startTime",      Reservation.StartTime.ToIso8601()),
                                                                   new JProperty("duration",       Reservation.ConsumedReservationTime.TotalSeconds)
                                                               ))
                                : ReservationId is not null
-                                     ? new JProperty("reservationId",    ReservationId.ToString())
+                                     ? new JProperty("reservationId",         ReservationId.  ToString())
                                      : null,
 
                            ProviderIdStart.HasValue
-                               ? new JProperty("providerIdStart",        ProviderIdStart.ToString())
+                               ? new JProperty("providerIdStart",             ProviderIdStart.ToString())
                                : null,
 
                            ProviderIdStop.HasValue
-                               ? new JProperty("providerIdStop",         ProviderIdStop.ToString())
+                               ? new JProperty("providerIdStop",              ProviderIdStop. ToString())
                                : null,
 
                            EnergyMeterId.HasValue
-                               ? new JProperty("energyMeterId", EnergyMeterId.ToString())
+                               ? new JProperty("energyMeterId",               EnergyMeterId.  ToString())
                                : null,
 
                            EnergyMeteringValues is not null && EnergyMeteringValues.Any()
@@ -521,7 +565,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                            ChargingProduct is not null
-                               ? new JProperty("chargingProduct",             ChargingProduct.ToJSON())
+                               ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
                                : null
 
 
@@ -529,6 +573,7 @@ namespace cloud.charging.open.protocols.WWCP
                        //new JProperty("publicKey",      PublicKey.KeyId),
                        //new JProperty("lastSignature",  lastSignature),
                        //new JProperty("signature",      Signature)
+
                        );
 
             return CustomChargeDetailRecordSerializer is not null
@@ -568,7 +613,7 @@ namespace cloud.charging.open.protocols.WWCP
             OutputStream.Close();
 
             var Signature        = OutputStream.ToArray().ToHexString();
-            _Signatures.Add(Signature);
+            signatures.Add(Signature);
 
             JSON["signature"] = Signature;
 
@@ -593,11 +638,9 @@ namespace cloud.charging.open.protocols.WWCP
                                            ChargeDetailRecord ChargeDetailRecord2)
         {
 
-            // If both are null, or both are same instance, return true.
             if (ReferenceEquals(ChargeDetailRecord1, ChargeDetailRecord2))
                 return true;
 
-            // If one is null, but not both, return false.
             if (ChargeDetailRecord1 is null || ChargeDetailRecord2 is null)
                 return false;
 
@@ -815,8 +858,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             => ChargeDetailRecord is not null &&
 
-               Id.            Equals(ChargeDetailRecord.Id);
-             //  SessionId.     Equals(ChargeDetailRecord.SessionId)      &&
+               Id.            Equals(ChargeDetailRecord.Id)        &&
+               SessionId.     Equals(ChargeDetailRecord.SessionId) &&
+               SessionTime.   Equals(ChargeDetailRecord.SessionTime);
              //  EVSEId.        Equals(ChargeDetailRecord.EVSEId)         &&
              //  Identification.Equals(ChargeDetailRecord.Identification) &&
              //  SessionStart.  Equals(ChargeDetailRecord.SessionStart)   &&
@@ -868,8 +912,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Id.GetHashCode();
+                return Id.         GetHashCode() * 5 ^
+                       SessionId.  GetHashCode() * 3 ^
+                       SessionTime.GetHashCode();
+
+            }
+        }
 
         #endregion
 
