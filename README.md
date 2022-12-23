@@ -13,7 +13,7 @@ Serveral project make use of this core library:
  - [WWCP OICP](https://github.com/OpenChargingCloud/WWCP_OICP) defines a mapping between WWCP and the [Open InterCharge Protocol](http://www.intercharge.eu) as defined by [Hubject GmbH](http://www.hubject.com) and thus allows you to enable EMP and CPO roaming.
  - [WWCP OCPI](https://github.com/OpenChargingCloud/WWCP_OCPI) defines a mapping between WWCP and the [Open Charge Point Interface](https://github.com/ocpi/ocpi) and thus allows you to enable EMP and CPO roaming via direct connections betwewen those entities.
  - [WWCP OCPP](https://github.com/OpenChargingCloud/WWCP_OCPP) defines a mapping between WWCP and the [Open Charge Point Protocol](http://www.openchargealliance.org) and thus allows you to attach OCPP charging stations.
- -[WWCP ISO15118](https://github.com/OpenChargingCloud/WWCP_ISO15118) defines a mapping between WWCP and [ISO/IEC 15118](https://de.wikipedia.org/wiki/ISO_15118) and thus allows you to communicate between electric vehicles and charging stations.
+ - [WWCP ISO15118](https://github.com/OpenChargingCloud/WWCP_ISO15118) defines a mapping between WWCP and [ISO/IEC 15118](https://de.wikipedia.org/wiki/ISO_15118) and thus allows you to communicate between electric vehicles and charging stations.
 
 
 The following project are compatible solutions:
