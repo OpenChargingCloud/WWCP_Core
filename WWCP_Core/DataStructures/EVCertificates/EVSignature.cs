@@ -21,6 +21,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Security.Cryptography;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -34,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
         public EVCertificate?        Certificate            { get; }
 
 
-        //public String                Id                     { get; }
+        public EVSignature_Id        Id                     { get; private set; }
         public String                Name                   { get; }
         public EVPublicKey?          PublicKey              { get; }
         public SimpleEMailAddress?   EMail                  { get; }
@@ -72,6 +74,21 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
             this.Certificate          = Certificate;
 
         }
+
+        protected void CalcId()
+        {
+
+            var cc = new Newtonsoft.Json.Converters.IsoDateTimeConverter {
+                DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
+            };
+
+            var json1  = JObject.Parse(ToJSON(Embedded: false).ToString(Newtonsoft.Json.Formatting.None, cc));
+            json1.Remove("@id");
+
+            this.Id    = EVSignature_Id.Parse(SHA256.Create().ComputeHash(json1.ToString(Newtonsoft.Json.Formatting.None, cc).ToUTF8Bytes()).ToHexString());
+
+        }
+
 
 
         public abstract JObject ToJSON(Boolean    Embedded   = false,

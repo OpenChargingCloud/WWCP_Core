@@ -77,6 +77,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
             this.RS    = RS;
 
+            CalcId();
+
         }
 
         public ECCSignature(String                Name,
@@ -118,6 +120,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
                 this.S = S.HexStringToByteArray();
             }
 
+            CalcId();
+
         }
 
 
@@ -143,6 +147,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
 
             var json = JSONObject.Create(
+
+                                 new JProperty("@id",                   Id.                       ToString()),
 
                            Embedded
                                ? null

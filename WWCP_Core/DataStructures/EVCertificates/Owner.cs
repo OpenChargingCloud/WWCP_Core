@@ -34,22 +34,22 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
         public const String Context = "https://open.charging.cloud/context/certificates/owner";
 
 
-        public String               Id              { get; }
         public String               Name            { get; }
-        public String               Description     { get; }
+        public String?              Description     { get; }
+        public String?              Id              { get; }
         public SimpleEMailAddress?  EMail           { get; }
         public URL?                 WWW             { get; }
 
-        public Owner(String               Id,
-                     String               Name,
-                     String               Description,
-                     SimpleEMailAddress?  EMail   = null,
-                     URL?                 WWW     = null)
+        public Owner(String               Name,
+                     String?              Description   = null,
+                     String?              Id            = null,
+                     SimpleEMailAddress?  EMail         = null,
+                     URL?                 WWW           = null)
         {
 
-            this.Id            = Id;
             this.Name          = Name;
             this.Description   = Description;
+            this.Id            = Id;
             this.EMail         = EMail;
             this.WWW           = WWW;
 
@@ -61,23 +61,25 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
             var json = JSONObject.Create(
 
-                                 new JProperty("@id",           Id),
-
                            Embedded
                                ? null
                                : new JProperty("@context",      Context),
 
                                  new JProperty("name",          Name),
 
-                           Description.IsNotNullOrEmpty()
+                           Description is not null && Description.IsNotNullOrEmpty()
                                ? new JProperty("description",   Description)
                                : null,
 
-                           EMail.HasValue
+                           Id          is not null
+                               ? new JProperty("@id",           Id)
+                               : null,
+
+                           EMail.      HasValue
                                ? new JProperty("eMail",         EMail.ToString())
                                : null,
 
-                           WWW.         HasValue
+                           WWW.        HasValue
                                ? new JProperty("www",           WWW.  ToString())
                                : null
 

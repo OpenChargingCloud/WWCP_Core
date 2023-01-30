@@ -63,6 +63,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
             this.Data = Data;
 
+            CalcId();
+
         }
 
 
@@ -71,6 +73,8 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
         {
 
             var json = JSONObject.Create(
+
+                                 new JProperty("@id",                   Id.                       ToString()),
 
                            Embedded
                                ? null

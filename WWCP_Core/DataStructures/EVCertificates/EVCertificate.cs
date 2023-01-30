@@ -178,14 +178,14 @@ namespace cloud.charging.open.protocols.WWCP.EVCertificates
 
         public EVCertificate Sign(ECPrivateKeyParameters  PrivateKey,
                                   String                  Name,
-                                  ECCPublicKey?           PublicKey,
-                                  SimpleEMailAddress?     EMailAddress,
-                                  URL?                    WWW,
-                                  DateTime?               NotBefore,
-                                  DateTime?               NotAfter,
-                                  HashingAlgorithm?       HashingAlgorithm,
-                                  EncryptionAlgorithm?    EncryptionAlgorithm,
-                                  Encoding?               Encoding)
+                                  ECCPublicKey?           PublicKey             = null,
+                                  SimpleEMailAddress?     EMailAddress          = null,
+                                  URL?                    WWW                   = null,
+                                  DateTime?               NotBefore             = null,
+                                  DateTime?               NotAfter              = null,
+                                  HashingAlgorithm?       HashingAlgorithm      = null,
+                                  EncryptionAlgorithm?    EncryptionAlgorithm   = null,
+                                  Encoding?               Encoding              = null)
         {
 
             var cc = new Newtonsoft.Json.Converters.IsoDateTimeConverter {
