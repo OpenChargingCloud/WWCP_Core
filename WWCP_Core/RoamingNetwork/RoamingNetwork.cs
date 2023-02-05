@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2022 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2023 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -5452,15 +5452,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             //ToDo: Fail when RFID UID == "00000000000000"
 
-            DebugX.LogT(String.Concat(
-                "RoamingNetwork '",
-                this.Id,
-                "' AuthorizeStart request: ",
-                LocalAuthentication,
-                " @ ",
-                ChargingLocation?.ToString() ?? "-",
-                " -> ",
-                _ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", ")));
+            //DebugX.LogT(String.Concat(
+            //    "RoamingNetwork '",
+            //    this.Id,
+            //    "' AuthorizeStart request: ",
+            //    LocalAuthentication,
+            //    " @ ",
+            //    ChargingLocation?.ToString() ?? "-",
+            //    " -> ",
+            //    _ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", ")));
 
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(Work:          iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
@@ -5490,15 +5490,15 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                        Runtime:      runtime));
 
 
-            DebugX.LogT(String.Concat(
-                "RN AuthStart Response: '",
-                result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ?? "-",
-                "' / '",
-                result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ?? "-",
-                "': ", LocalAuthentication,
-                " @ ",
-                ChargingLocation?.ToString() ?? "-",
-                " => ", result));
+            //DebugX.LogT(String.Concat(
+            //    "RN AuthStart Response: '",
+            //    result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ?? "-",
+            //    "' / '",
+            //    result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ?? "-",
+            //    "': ", LocalAuthentication,
+            //    " @ ",
+            //    ChargingLocation?.ToString() ?? "-",
+            //    " => ", result));
 
             #region If Authorized...
 
