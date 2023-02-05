@@ -5452,8 +5452,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             //ToDo: Fail when RFID UID == "00000000000000"
 
-            DebugX.LogT("RN AuthStart Request: " + LocalAuthentication);
-            DebugX.LogT(_ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", "));
+            DebugX.LogT(String.Concat(
+                "RoamingNetwork '",
+                this.Id,
+                "' AuthorizeStart request: ",
+                LocalAuthentication,
+                " -> ",
+                _ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", ")));
 
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(Work:          iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
@@ -5483,10 +5488,12 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                        Runtime:      runtime));
 
 
-            DebugX.LogT("RN AuthStart Response: " + result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ??
-                                                    result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ??
-                                                    ""  +
-                                                    ": " + LocalAuthentication + " => " + result);
+            DebugX.LogT(String.Concat(
+                "RN AuthStart Response: ",
+                result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ?? "-",
+                result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ?? "-",
+                ": ", LocalAuthentication,
+                " => ", result));
 
             #region If Authorized...
 
