@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -56,15 +52,15 @@ namespace cloud.charging.open.protocols.WWCP
         Task<AuthStartResult>
 
             AuthorizeStart(LocalAuthentication          LocalAuthentication,
-                           ChargingLocation             ChargingLocation      = null,
-                           ChargingProduct              ChargingProduct       = null,
+                           ChargingLocation?            ChargingLocation      = null,
+                           ChargingProduct?             ChargingProduct       = null,
                            ChargingSession_Id?          SessionId             = null,
                            ChargingSession_Id?          CPOPartnerSessionId   = null,
                            ChargingStationOperator_Id?  OperatorId            = null,
 
                            DateTime?                    Timestamp             = null,
                            CancellationToken?           CancellationToken     = null,
-                           EventTracking_Id             EventTrackingId       = null,
+                           EventTracking_Id?            EventTrackingId       = null,
                            TimeSpan?                    RequestTimeout        = null);
 
         #endregion
@@ -88,13 +84,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             AuthorizeStop(ChargingSession_Id           SessionId,
                           LocalAuthentication          LocalAuthentication,
-                          ChargingLocation             ChargingLocation      = null,
+                          ChargingLocation?            ChargingLocation      = null,
                           ChargingSession_Id?          CPOPartnerSessionId   = null,
                           ChargingStationOperator_Id?  OperatorId            = null,
 
                           DateTime?                    Timestamp             = null,
                           CancellationToken?           CancellationToken     = null,
-                          EventTracking_Id             EventTrackingId       = null,
+                          EventTracking_Id?            EventTrackingId       = null,
                           TimeSpan?                    RequestTimeout        = null);
 
         #endregion

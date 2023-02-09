@@ -450,11 +450,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => (new String[] { EVSEId.                   HasValue ? EVSEId.                   Value.ToString() : null,
-                               ChargingStationId.        HasValue ? ChargingStationId.        Value.ToString() : null,
-                               ChargingPoolId.           HasValue ? ChargingPoolId.           Value.ToString() : null,
-                               ChargingStationOperatorId.HasValue ? ChargingStationOperatorId.Value.ToString() : null }).
-                Where(_ => _ != null).
+            => (new String[] {
+                    EVSEId?.                   ToString() ?? String.Empty,
+                    ChargingStationId?.        ToString() ?? String.Empty,
+                    ChargingPoolId?.           ToString() ?? String.Empty,
+                    ChargingStationOperatorId?.ToString() ?? String.Empty
+                }).
+                Where(_ => _.IsNotNullOrEmpty()).
                 AggregateWith(", ");
 
         #endregion
