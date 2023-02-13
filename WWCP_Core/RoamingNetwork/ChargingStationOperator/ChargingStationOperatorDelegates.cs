@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnChargingStationOperatorDataChangedDelegate(DateTime                  Timestamp,
                                                                       IChargingStationOperator  ChargingStationOperator,
-                                                                      String?                   PropertyName,
+                                                                      String                    PropertyName,
                                                                       Object?                   OldValue,
                                                                       Object?                   NewValue);
 

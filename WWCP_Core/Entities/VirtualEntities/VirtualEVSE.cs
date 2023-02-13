@@ -68,45 +68,39 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                Action<VirtualEVSE>?                VirtualEVSEConfigurator   = null,
                                                Action<IEVSE>?                      OnSuccess                 = null,
                                                Action<IChargingStation, EVSE_Id>?  OnError                   = null)
-        {
 
-            #region Initial checks
+            => ChargingStation.CreateEVSE(
+                   EVSEId,
+                   Name,
+                   Description,
+                   EVSEConfigurator,
+                   newEVSE => {
 
-            if (ChargingStation is null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+                       var virtualevse = new VirtualEVSE(
+                                             newEVSE.Id,
+                                             ChargingStation.RoamingNetwork,
+                                             newEVSE.Name,
+                                             newEVSE.Description,
+                                             InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                                             InitialStatus      ?? EVSEStatusTypes.Available,
+                                             EnergyMeterId,
+                                             EllipticCurve,
+                                             PrivateKey,
+                                             PublicKeyCertificates,
+                                             SelfCheckTimeSpan,
+                                             MaxAdminStatusListSize,
+                                             MaxStatusListSize
+                                         );
 
-            #endregion
+                       VirtualEVSEConfigurator?.Invoke(virtualevse);
 
-            return ChargingStation.CreateEVSE(EVSEId,
-                                              Name,
-                                              Description,
-                                              EVSEConfigurator,
-                                              newEVSE => {
+                       return virtualevse;
 
-                                                  var virtualevse = new VirtualEVSE(newEVSE.Id,
-                                                                                    ChargingStation.RoamingNetwork,
-                                                                                    newEVSE.Name,
-                                                                                    newEVSE.Description,
-                                                                                    InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
-                                                                                    InitialStatus      ?? EVSEStatusTypes.Available,
-                                                                                    EnergyMeterId,
-                                                                                    EllipticCurve,
-                                                                                    PrivateKey,
-                                                                                    PublicKeyCertificates,
-                                                                                    SelfCheckTimeSpan,
-                                                                                    MaxAdminStatusListSize,
-                                                                                    MaxStatusListSize);
+                   },
 
-                                                  VirtualEVSEConfigurator?.Invoke(virtualevse);
-
-                                                  return virtualevse;
-
-                                              },
-
-                                              OnSuccess: OnSuccess,
-                                              OnError:   OnError);
-
-        }
+                   OnSuccess: OnSuccess,
+                   OnError:   OnError
+               );
 
         #endregion
 

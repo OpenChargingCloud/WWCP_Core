@@ -651,12 +651,12 @@ namespace cloud.charging.open.protocols.WWCP
         internal async Task UpdateData(DateTime  Timestamp,
                                        Object    Sender,
                                        String    PropertyName,
-                                       Object    OldValue,
-                                       Object    NewValue)
+                                       Object?   OldValue,
+                                       Object?   NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal != null)
+            if (OnDataChangedLocal is not null)
                 await OnDataChangedLocal(Timestamp, Sender as ChargingStationOperator, PropertyName, OldValue, NewValue);
 
         }
@@ -1288,8 +1288,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                    EventTracking_Id  EventTrackingId,
                                                    ChargingPool      ChargingPool,
                                                    String            PropertyName,
-                                                   Object            OldValue,
-                                                   Object            NewValue)
+                                                   Object?           OldValue,
+                                                   Object?           NewValue)
         {
 
             var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
@@ -1795,8 +1795,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                       EventTracking_Id  EventTrackingId,
                                                       IChargingStation  ChargingStation,
                                                       String            PropertyName,
-                                                      Object            OldValue,
-                                                      Object            NewValue)
+                                                      Object?           OldValue,
+                                                      Object?           NewValue)
         {
 
             var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
@@ -2990,8 +2990,8 @@ namespace cloud.charging.open.protocols.WWCP
                                            EventTracking_Id  EventTrackingId,
                                            IEVSE             EVSE,
                                            String            PropertyName,
-                                           Object            OldValue,
-                                           Object            NewValue)
+                                           Object?           OldValue,
+                                           Object?           NewValue)
         {
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;

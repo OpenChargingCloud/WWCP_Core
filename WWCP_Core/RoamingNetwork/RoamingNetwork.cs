@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 using cloud.charging.open.protocols.WWCP.Networking;
+using org.GraphDefined.Vanaheimr.Styx;
 
 #endregion
 
@@ -1335,7 +1336,7 @@ namespace cloud.charging.open.protocols.WWCP
                     chargingStationOperator.OnAdminStatusChanged                       += UpdateCSOAdminStatus;
 
                     chargingStationOperator.OnChargingPoolAddition.   OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
-                    chargingStationOperator.OnChargingPoolAddition.   OnNotification   += (timestamp, cso, pool)            => ChargingPoolAddition.   SendNotification(timestamp, cso, pool);
+                    chargingStationOperator.OnChargingPoolAddition.   OnNotification   += SendChargingPoolAdded;
                     chargingStationOperator.OnChargingPoolDataChanged                  += UpdateChargingPoolData;
                     chargingStationOperator.OnChargingPoolStatusChanged                += UpdateChargingPoolStatus;
                     chargingStationOperator.OnChargingPoolAdminStatusChanged           += UpdateChargingPoolAdminStatus;
@@ -1343,7 +1344,7 @@ namespace cloud.charging.open.protocols.WWCP
                     chargingStationOperator.OnChargingPoolRemoval.    OnNotification   += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
 
                     chargingStationOperator.OnChargingStationAddition.OnVoting         += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
-                    chargingStationOperator.OnChargingStationAddition.OnNotification   += (timestamp, pool, station)        => ChargingStationAddition.SendNotification(timestamp, pool, station);
+                    chargingStationOperator.OnChargingStationAddition.OnNotification   += SendChargingStationAdded;
                     chargingStationOperator.OnChargingStationDataChanged               += UpdateChargingStationData;
                     chargingStationOperator.OnChargingStationStatusChanged             += UpdateChargingStationStatus;
                     chargingStationOperator.OnChargingStationAdminStatusChanged        += UpdateChargingStationAdminStatus;
@@ -1618,7 +1619,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateCSOData(DateTime                  Timestamp,
                                           IChargingStationOperator  ChargingStationOperator,
-                                          String?                   PropertyName,
+                                          String                    PropertyName,
                                           Object?                   OldValue,
                                           Object?                   NewValue)
         {
@@ -1661,6 +1662,21 @@ namespace cloud.charging.open.protocols.WWCP
         public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
             => ChargingPoolAddition;
 
+
+        private void SendChargingPoolAdded(DateTime                  Timestamp,
+                                           IChargingStationOperator  ChargingStationOperator,
+                                           IChargingPool             ChargingPool)
+        {
+
+            ChargingPoolAddition.SendNotification(Timestamp,
+                                                  ChargingStationOperator,
+                                                  ChargingPool);
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              AddStaticData(ChargingPool));
+
+        }
+
         #endregion
 
         #region ChargingPoolRemoval
@@ -1672,6 +1688,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
             => ChargingPoolRemoval;
+
+
+        private void SendChargingPoolRemoved(DateTime                  Timestamp,
+                                             IChargingStationOperator  ChargingStation,
+                                             IChargingPool             ChargingPool)
+        {
+
+            ChargingPoolRemoval.SendNotification(Timestamp,
+                                                 ChargingStation,
+                                                 ChargingPool);
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              DeleteStaticData(ChargingPool));
+
+        }
 
         #endregion
 
@@ -1993,8 +2024,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                    EventTracking_Id  EventTrackingId,
                                                    ChargingPool      ChargingPool,
                                                    String            PropertyName,
-                                                   Object            OldValue,
-                                                   Object            NewValue)
+                                                   Object?           OldValue,
+                                                   Object?           NewValue)
         {
 
             //foreach (var AuthenticationService in _IeMobilityServiceProviders.
@@ -2065,6 +2096,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             => ChargingStationAddition;
 
+        private void SendChargingStationAdded(DateTime          Timestamp,
+                                              IChargingPool     ChargingPool,
+                                              IChargingStation  ChargingStation)
+        {
+
+            ChargingStationAddition.SendNotification(Timestamp,
+                                                     ChargingPool,
+                                                     ChargingStation);
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              AddStaticData(ChargingStation));
+
+        }
+
         #endregion
 
         #region ChargingStationRemoval
@@ -2077,6 +2122,21 @@ namespace cloud.charging.open.protocols.WWCP
         public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
             => ChargingStationRemoval;
+
+
+        private void SendChargingStationRemoved(DateTime          Timestamp,
+                                                IChargingPool     ChargingPool,
+                                                IChargingStation  ChargingStation)
+        {
+
+            ChargingStationRemoval.SendNotification(Timestamp,
+                                                    ChargingPool,
+                                                    ChargingStation);
+
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              DeleteStaticData(ChargingStation));
+
+        }
 
         #endregion
 
@@ -2468,8 +2528,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                       EventTracking_Id  EventTrackingId,
                                                       IChargingStation  ChargingStation,
                                                       String            PropertyName,
-                                                      Object            OldValue,
-                                                      Object            NewValue)
+                                                      Object?           OldValue,
+                                                      Object?           NewValue)
         {
 
             //foreach (var AuthenticationService in _IeMobilityServiceProviders.
@@ -2545,8 +2605,12 @@ namespace cloud.charging.open.protocols.WWCP
                                    IEVSE             EVSE)
         {
 
+            EVSEAddition.SendNotification(Timestamp,
+                                          ChargingStation,
+                                          EVSE);
+
             var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              SetStaticData(EVSE));
+                                                              AddStaticData(EVSE));
 
         }
 
@@ -2568,10 +2632,12 @@ namespace cloud.charging.open.protocols.WWCP
                                      IEVSE             EVSE)
         {
 
+            EVSERemoval.SendNotification(Timestamp,
+                                         ChargingStation,
+                                         EVSE);
+
             var results = _ISendData.WhenAll(iSendData => iSendData.
                                                               DeleteStaticData(EVSE));
-
-            EVSERemoval.SendNotification(Timestamp, ChargingStation, EVSE);
 
         }
 
@@ -3073,8 +3139,8 @@ namespace cloud.charging.open.protocols.WWCP
                                            EventTracking_Id  EventTrackingId,
                                            IEVSE             EVSE,
                                            String            PropertyName,
-                                           Object            OldValue,
-                                           Object            NewValue)
+                                           Object?           OldValue,
+                                           Object?           NewValue)
         {
 
             var results = _ISendData.WhenAll(iSendData => iSendData.

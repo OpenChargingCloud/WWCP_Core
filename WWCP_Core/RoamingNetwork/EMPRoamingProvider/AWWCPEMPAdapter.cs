@@ -98,11 +98,27 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new SemaphoreSlim(1, 1);
         protected readonly      Timer                                                            FlushChargeDetailRecordsTimer;
 
-        protected readonly      Dictionary<IEVSE,                   List<PropertyUpdateInfos>>   EVSEsUpdateLog;
-        protected readonly      Dictionary<IChargingStation,        List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
-        protected readonly      Dictionary<ChargingPool,            List<PropertyUpdateInfos>>   ChargingPoolsUpdateLog;
-        protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
         protected readonly      Dictionary<RoamingNetwork,          List<PropertyUpdateInfos>>   RoamingNetworksUpdateLog;
+
+        protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
+
+        protected readonly      Dictionary<IChargingPool,           List<PropertyUpdateInfos>>   ChargingPoolsUpdateLog;
+        protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToAddQueue;
+        protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToUpdateQueue;
+        protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToRemoveQueue;
+        protected readonly      List<ChargingPoolAdminStatusUpdate>                              ChargingPoolAdminStatusChangesFastQueue;
+        protected readonly      List<ChargingPoolAdminStatusUpdate>                              ChargingPoolAdminStatusChangesDelayedQueue;
+        protected readonly      List<ChargingPoolStatusUpdate>                                   ChargingPoolStatusChangesFastQueue;
+        protected readonly      List<ChargingPoolStatusUpdate>                                   ChargingPoolStatusChangesDelayedQueue;
+
+        protected readonly      HashSet<IChargingStation>                                        ChargingStationsToAddQueue;
+        protected readonly      HashSet<IChargingStation>                                        ChargingStationsToUpdateQueue;
+        protected readonly      HashSet<IChargingStation>                                        ChargingStationsToRemoveQueue;
+        protected readonly      List<ChargingStationAdminStatusUpdate>                           ChargingStationAdminStatusChangesFastQueue;
+        protected readonly      List<ChargingStationAdminStatusUpdate>                           ChargingStationAdminStatusChangesDelayedQueue;
+        protected readonly      List<ChargingStationStatusUpdate>                                ChargingStationStatusChangesFastQueue;
+        protected readonly      List<ChargingStationStatusUpdate>                                ChargingStationStatusChangesDelayedQueue;
+        protected readonly      Dictionary<IChargingStation,        List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
 
         protected readonly      HashSet<IEVSE>                                                   EVSEsToAddQueue;
         protected readonly      HashSet<IEVSE>                                                   EVSEsToUpdateQueue;
@@ -111,6 +127,8 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
         protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
         protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
+        protected readonly      Dictionary<IEVSE,                   List<PropertyUpdateInfos>>   EVSEsUpdateLog;
+
         protected readonly      List<TChargeDetailRecords>                                       ChargeDetailRecordsQueue;
 
         protected readonly      TimeSpan                                                         MaxLockWaitingTime                      = TimeSpan.FromSeconds(120);
@@ -344,9 +362,23 @@ namespace cloud.charging.open.protocols.WWCP
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
             this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
 
-            this.EVSEsUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfos>>();
+            this.ChargingPoolsToAddQueue                         = new HashSet<IChargingPool>();
+            this.ChargingPoolsToUpdateQueue                      = new HashSet<IChargingPool>();
+            this.ChargingPoolsToRemoveQueue                      = new HashSet<IChargingPool>();
+            this.ChargingPoolAdminStatusChangesFastQueue         = new List<ChargingPoolAdminStatusUpdate>();
+            this.ChargingPoolAdminStatusChangesDelayedQueue      = new List<ChargingPoolAdminStatusUpdate>();
+            this.ChargingPoolStatusChangesFastQueue              = new List<ChargingPoolStatusUpdate>();
+            this.ChargingPoolStatusChangesDelayedQueue           = new List<ChargingPoolStatusUpdate>();
+            this.ChargingPoolsUpdateLog                          = new Dictionary<IChargingPool,    List<PropertyUpdateInfos>>();
+
+            this.ChargingStationsToAddQueue                      = new HashSet<IChargingStation>();
+            this.ChargingStationsToUpdateQueue                   = new HashSet<IChargingStation>();
+            this.ChargingStationsToRemoveQueue                   = new HashSet<IChargingStation>();
+            this.ChargingStationAdminStatusChangesFastQueue      = new List<ChargingStationAdminStatusUpdate>();
+            this.ChargingStationAdminStatusChangesDelayedQueue   = new List<ChargingStationAdminStatusUpdate>();
+            this.ChargingStationStatusChangesFastQueue           = new List<ChargingStationStatusUpdate>();
+            this.ChargingStationStatusChangesDelayedQueue        = new List<ChargingStationStatusUpdate>();
             this.ChargingStationsUpdateLog                       = new Dictionary<IChargingStation, List<PropertyUpdateInfos>>();
-            this.ChargingPoolsUpdateLog                          = new Dictionary<ChargingPool,     List<PropertyUpdateInfos>>();
 
             this.EVSEsToAddQueue                                 = new HashSet<IEVSE>();
             this.EVSEsToUpdateQueue                              = new HashSet<IEVSE>();
@@ -355,6 +387,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.EVSEAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
             this.EVSEStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
             this.EVSEStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
+            this.EVSEsUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfos>>();
+
             this.ChargeDetailRecordsQueue                        = new List<TChargeDetailRecords>();
 
         }
@@ -389,10 +423,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (EVSE == null)
-                return PushEVSEDataResult.NoOperation(Id,
-                                                      Sender);
-
             if (DisablePushData)
                 return PushEVSEDataResult.AdminDown(Id,
                                                     Sender,
@@ -442,7 +472,7 @@ namespace cloud.charging.open.protocols.WWCP
                 DataAndStatusLock.Release();
             }
 
-            return PushEVSEDataResult.Enqueued(Id, Sender);
+            return PushEVSEDataResult.Enqueued(Id, Sender, new IEVSE[] { EVSE });
 
         }
 
@@ -474,10 +504,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (EVSE == null)
-                return PushEVSEDataResult.NoOperation(Id,
-                                                      Sender);
-
             if (DisablePushData)
                 return PushEVSEDataResult.AdminDown(Id,
                                                     Sender,
@@ -527,7 +553,7 @@ namespace cloud.charging.open.protocols.WWCP
                 DataAndStatusLock.Release();
             }
 
-            return PushEVSEDataResult.Enqueued(Id, Sender);
+            return PushEVSEDataResult.Enqueued(Id, Sender, new IEVSE[] { EVSE });
 
         }
 

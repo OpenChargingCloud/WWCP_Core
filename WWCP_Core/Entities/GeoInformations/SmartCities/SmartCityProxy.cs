@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -579,7 +579,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -660,7 +660,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -697,7 +697,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -733,7 +733,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -769,7 +769,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -805,7 +805,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -917,7 +917,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -935,7 +935,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.AddStaticData(IChargingStation    ChargingStation,
                                        TransmissionTypes   TransmissionType,
@@ -954,7 +954,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
@@ -997,7 +997,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1034,7 +1034,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1072,7 +1072,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1110,7 +1110,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1147,7 +1147,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1184,7 +1184,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1269,13 +1269,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.SetStaticData(ChargingPool        ChargingPool,
-                                    TransmissionTypes   TransmissionType,
+            ISendPOIData.SetStaticData(IChargingPool       ChargingPool,
+                                       TransmissionTypes   TransmissionType,
 
-                                    DateTime?           Timestamp,
-                                    CancellationToken?  CancellationToken,
-                                    EventTracking_Id    EventTrackingId,
-                                    TimeSpan?           RequestTimeout)
+                                       DateTime?           Timestamp,
+                                       CancellationToken?  CancellationToken,
+                                       EventTracking_Id?   EventTrackingId,
+                                       TimeSpan?           RequestTimeout)
 
         {
 
@@ -1286,7 +1286,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1304,15 +1304,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
-            ISendPOIData.AddStaticData(ChargingPool        ChargingPool,
-                                    TransmissionTypes   TransmissionType,
+            ISendPOIData.AddStaticData(IChargingPool       ChargingPool,
+                                       TransmissionTypes   TransmissionType,
 
-                                    DateTime?           Timestamp,
-                                    CancellationToken?  CancellationToken,
-                                    EventTracking_Id    EventTrackingId,
-                                    TimeSpan?           RequestTimeout)
+                                       DateTime?           Timestamp,
+                                       CancellationToken?  CancellationToken,
+                                       EventTracking_Id?   EventTrackingId,
+                                       TimeSpan?           RequestTimeout)
 
         {
 
@@ -1323,7 +1323,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new IChargingPool[] { ChargingPool }));
 
         }
 
@@ -1346,16 +1346,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(ChargingPool        ChargingPool,
-                                       String              PropertyName,
-                                       Object              OldValue,
-                                       Object              NewValue,
-                                       TransmissionTypes   TransmissionType,
+            ISendPOIData.UpdateStaticData(IChargingPool       ChargingPool,
+                                          String              PropertyName,
+                                          Object              OldValue,
+                                          Object              NewValue,
+                                          TransmissionTypes   TransmissionType,
 
-                                       DateTime?           Timestamp,
-                                       CancellationToken?  CancellationToken,
-                                       EventTracking_Id    EventTrackingId,
-                                       TimeSpan?           RequestTimeout)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id?   EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
@@ -1366,7 +1366,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1386,13 +1386,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(ChargingPool        ChargingPool,
-                                       TransmissionTypes   TransmissionType,
+            ISendPOIData.DeleteStaticData(IChargingPool       ChargingPool,
+                                          TransmissionTypes   TransmissionType,
 
-                                       DateTime?           Timestamp,
-                                       CancellationToken?  CancellationToken,
-                                       EventTracking_Id    EventTrackingId,
-                                       TimeSpan?           RequestTimeout)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id?   EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
@@ -1403,7 +1403,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1424,13 +1424,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
-                                    TransmissionTypes          TransmissionType,
+            ISendPOIData.SetStaticData(IEnumerable<IChargingPool>  ChargingPools,
+                                       TransmissionTypes           TransmissionType,
 
-                                    DateTime?                  Timestamp,
-                                    CancellationToken?         CancellationToken,
-                                    EventTracking_Id           EventTrackingId,
-                                    TimeSpan?                  RequestTimeout)
+                                       DateTime?                   Timestamp,
+                                       CancellationToken?          CancellationToken,
+                                       EventTracking_Id?           EventTrackingId,
+                                       TimeSpan?                   RequestTimeout)
 
         {
 
@@ -1441,7 +1441,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1461,13 +1461,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
-                                    TransmissionTypes          TransmissionType,
+            ISendPOIData.AddStaticData(IEnumerable<IChargingPool>  ChargingPools,
+                                       TransmissionTypes           TransmissionType,
 
-                                    DateTime?                  Timestamp,
-                                    CancellationToken?         CancellationToken,
-                                    EventTracking_Id           EventTrackingId,
-                                    TimeSpan?                  RequestTimeout)
+                                       DateTime?                   Timestamp,
+                                       CancellationToken?          CancellationToken,
+                                       EventTracking_Id?           EventTrackingId,
+                                       TimeSpan?                   RequestTimeout)
 
         {
 
@@ -1478,7 +1478,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1498,13 +1498,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
-                                       TransmissionTypes          TransmissionType,
+            ISendPOIData.UpdateStaticData(IEnumerable<IChargingPool>  ChargingPools,
+                                          TransmissionTypes           TransmissionType,
 
-                                       DateTime?                  Timestamp,
-                                       CancellationToken?         CancellationToken,
-                                       EventTracking_Id           EventTrackingId,
-                                       TimeSpan?                  RequestTimeout)
+                                          DateTime?                   Timestamp,
+                                          CancellationToken?          CancellationToken,
+                                          EventTracking_Id?           EventTrackingId,
+                                          TimeSpan?                   RequestTimeout)
 
         {
 
@@ -1515,7 +1515,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1535,13 +1535,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
-                                       TransmissionTypes          TransmissionType,
+            ISendPOIData.DeleteStaticData(IEnumerable<IChargingPool>  ChargingPools,
+                                          TransmissionTypes           TransmissionType,
 
-                                       DateTime?                  Timestamp,
-                                       CancellationToken?         CancellationToken,
-                                       EventTracking_Id           EventTrackingId,
-                                       TimeSpan?                  RequestTimeout)
+                                          DateTime?                   Timestamp,
+                                          CancellationToken?          CancellationToken,
+                                          EventTracking_Id?           EventTrackingId,
+                                          TimeSpan?                   RequestTimeout)
 
         {
 
@@ -1552,7 +1552,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -1578,7 +1578,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                DateTime?                                   Timestamp,
                                                CancellationToken?                          CancellationToken,
-                                               EventTracking_Id                            EventTrackingId,
+                                               EventTracking_Id?                           EventTrackingId,
                                                TimeSpan?                                   RequestTimeout)
         {
 
@@ -1609,7 +1609,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      DateTime?                              Timestamp,
                                      CancellationToken?                     CancellationToken,
-                                     EventTracking_Id                       EventTrackingId,
+                                     EventTracking_Id?                      EventTrackingId,
                                      TimeSpan?                              RequestTimeout)
 
 
@@ -1650,7 +1650,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -1685,7 +1685,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -1720,7 +1720,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -1755,7 +1755,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -1791,7 +1791,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -1826,7 +1826,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
 
         }
@@ -1862,7 +1862,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -1897,7 +1897,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -1997,7 +1997,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -2032,7 +2032,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -2067,7 +2067,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -2102,7 +2102,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return PushEVSEDataResult.NoOperation(Id, this);
+            return PushEVSEDataResult.NoOperation(Id, this, null);
 
         }
 
@@ -2199,7 +2199,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -2228,7 +2228,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 
@@ -2256,7 +2256,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
 
         }
 

@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -45,8 +42,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                               EventTracking_Id  EventTrackingId,
                                                               IChargingStation  ChargingStation,
                                                               String            PropertyName,
-                                                              Object            OldValue,
-                                                              Object            NewValue);
+                                                              Object?           OldValue,
+                                                              Object?           NewValue);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station changed.

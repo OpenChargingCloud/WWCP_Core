@@ -17,10 +17,7 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -42,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnEVSEDataChangedDelegate(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    IEVSE             EVSE,
-                                                   String?           PropertyName,
+                                                   String            PropertyName,
                                                    Object?           OldValue,
                                                    Object?           NewValue);
 

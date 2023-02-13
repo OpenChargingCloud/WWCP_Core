@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Linq;
 
 #endregion
 
@@ -34,20 +35,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IEVSE                      EVSE        { get; }
         public PushSingleDataResultTypes  Result      { get; }
-        public IEnumerable<String>        Warnings    { get; }
+        public IEnumerable<Warning>       Warnings    { get; }
 
         public PushSingleEVSEDataResult(IEVSE                      EVSE,
                                         PushSingleDataResultTypes  Result,
-                                        IEnumerable<String>        Warnings)
+                                        IEnumerable<Warning>?      Warnings   = null)
         {
 
             this.EVSE      = EVSE;
             this.Result    = Result;
             this.Warnings  = Warnings is not null
-                                 ? Warnings.Where     (warning => warning != null).
-                                            SafeSelect(warning => warning.Trim()).
-                                            Where     (warning => warning.IsNotNullOrEmpty())
-                                 : Array.Empty<String>();
+                                 ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                 : Array.Empty<Warning>();
 
         }
 
@@ -75,6 +74,28 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
+    public class PushSingleChargingPoolDataResult
+    {
+
+        public IChargingPool              ChargingPool    { get; }
+        public PushSingleDataResultTypes  Result          { get; }
+        public IEnumerable<Warning>       Warnings        { get; }
+
+        public PushSingleChargingPoolDataResult(IChargingPool              ChargingPool,
+                                                PushSingleDataResultTypes  Result,
+                                                IEnumerable<Warning>?      Warnings   = null)
+        {
+
+            this.ChargingPool  = ChargingPool;
+            this.Result        = Result;
+            this.Warnings      = Warnings is not null
+                                     ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                     : Array.Empty<Warning>();
+
+        }
+
+    }
+
 
     /// <summary>
     /// A PushData result.
@@ -87,47 +108,47 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unqiue identification of the authenticator.
         /// </summary>
-        public IId                   AuthId             { get; }
+        public IId                                    AuthId             { get; }
 
         /// <summary>
         /// The object implementing SendPOIData.
         /// </summary>
-        public ISendPOIData?         SendPOIData        { get; }
+        public ISendPOIData?                          SendPOIData        { get; }
 
         /// <summary>
         /// The object implementing ReceivePOIData.
         /// </summary>
-        public IReceivePOIData?      ReceivePOIData     { get; }
+        public IReceivePOIData?                       ReceivePOIData     { get; }
 
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public PushDataResultTypes   Result             { get; }
+        public PushDataResultTypes                    Result             { get; }
 
         /// <summary>
         /// The optional description of the result code.
         /// </summary>
-        public String?               Description        { get; }
+        public String?                                Description        { get; }
 
         /// <summary>
         /// The enumeration of successfully uploaded EVSEs.
         /// </summary>
-        public IEnumerable<IEVSE>    SuccessfulEVSEs    { get; }
+        public IEnumerable<PushSingleEVSEDataResult>  SuccessfulEVSEs    { get; }
 
         /// <summary>
         /// The enumeration of rejected EVSEs.
         /// </summary>
-        public IEnumerable<IEVSE>    RejectedEVSEs      { get; }
+        public IEnumerable<PushSingleEVSEDataResult>  RejectedEVSEs      { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<Warning>  Warnings           { get; }
+        public IEnumerable<Warning>                   Warnings           { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?             Runtime            { get;  }
+        public TimeSpan?                              Runtime            { get;  }
 
         #endregion
 
@@ -147,14 +168,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEs">An enumeration of rejected EVSEs.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEDataResult(IId                    AuthId,
-                                    ISendPOIData           SendPOIData,
-                                    PushDataResultTypes    Result,
-                                    String?                Description       = null,
-                                    IEnumerable<IEVSE>?    SuccessfulEVSEs   = null,
-                                    IEnumerable<IEVSE>?    RejectedEVSEs     = null,
-                                    IEnumerable<Warning>?  Warnings          = null,
-                                    TimeSpan?              Runtime           = null)
+        public PushEVSEDataResult(IId                                     AuthId,
+                                  ISendPOIData                            SendPOIData,
+                                  PushDataResultTypes                     Result,
+                                  IEnumerable<PushSingleEVSEDataResult>?  SuccessfulEVSEs   = null,
+                                  IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs     = null,
+                                  String?                                 Description       = null,
+                                  IEnumerable<Warning>?                   Warnings          = null,
+                                  TimeSpan?                               Runtime           = null)
         {
 
             this.AuthId           = AuthId;
@@ -167,11 +188,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.SuccessfulEVSEs  = SuccessfulEVSEs is not null
                                         ? SuccessfulEVSEs.Where(evse    => evse is not null)
-                                        : Array.Empty<IEVSE>();
+                                        : Array.Empty<PushSingleEVSEDataResult>();
 
             this.RejectedEVSEs    = RejectedEVSEs   is not null
                                         ? RejectedEVSEs.  Where(evse    => evse is not null)
-                                        : Array.Empty<IEVSE>();
+                                        : Array.Empty<PushSingleEVSEDataResult>();
 
             this.Warnings         = Warnings        is not null
                                         ? Warnings.       Where(warning => warning.IsNeitherNullNorEmpty())
@@ -197,14 +218,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEs">An enumeration of rejected EVSEs.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEDataResult(IId                    AuthId,
-                                    IReceivePOIData        ReceivePOIData,
-                                    PushDataResultTypes    Result,
-                                    String?                Description       = null,
-                                    IEnumerable<IEVSE>?    SuccessfulEVSEs   = null,
-                                    IEnumerable<IEVSE>?    RejectedEVSEs     = null,
-                                    IEnumerable<Warning>?  Warnings          = null,
-                                    TimeSpan?              Runtime           = null)
+        public PushEVSEDataResult(IId                                     AuthId,
+                                  IReceivePOIData                         ReceivePOIData,
+                                  PushDataResultTypes                     Result,
+                                  IEnumerable<PushSingleEVSEDataResult>?  SuccessfulEVSEs   = null,
+                                  IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs     = null,
+                                  String?                                 Description       = null,
+                                  IEnumerable<Warning>?                   Warnings          = null,
+                                  TimeSpan?                               Runtime           = null)
         {
 
             this.AuthId           = AuthId;
@@ -217,11 +238,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.SuccessfulEVSEs  = SuccessfulEVSEs is not null
                                         ? SuccessfulEVSEs.Where(evse    => evse is not null)
-                                        : Array.Empty<IEVSE>();
+                                        : Array.Empty<PushSingleEVSEDataResult>();
 
             this.RejectedEVSEs    = RejectedEVSEs   is not null
                                         ? RejectedEVSEs.  Where(evse    => evse is not null)
-                                        : Array.Empty<IEVSE>();
+                                        : Array.Empty<PushSingleEVSEDataResult>();
 
             this.Warnings         = Warnings        is not null
                                         ? Warnings.       Where(warning => warning.IsNeitherNullNorEmpty())
@@ -242,17 +263,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IId                    AuthId,
                       ISendPOIData           SendPOIData,
-                      IEnumerable<IEVSE>?    RejectedEVSEs   = null,
-                      String?                Description     = null,
-                      IEnumerable<Warning>?  Warnings        = null,
-                      TimeSpan?              Runtime         = null)
+                      IEnumerable<IEVSE>     RejectedEVSEs,
+                      String?                Description   = null,
+                      IEnumerable<Warning>?  Warnings      = null,
+                      TimeSpan?              Runtime       = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.AdminDown,
+                        Array.Empty<PushSingleEVSEDataResult>(),
+                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.AdminDown, Warnings)),
                         Description,
-                        Array.Empty<EVSE>(),
-                        RejectedEVSEs,
                         Warnings,
                         Runtime);
 
@@ -261,17 +282,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(IId                    AuthId,
                       IReceivePOIData        ReceivePOIData,
-                      IEnumerable<IEVSE>?    RejectedEVSEs   = null,
-                      String?                Description     = null,
-                      IEnumerable<Warning>?  Warnings        = null,
-                      TimeSpan?              Runtime         = null)
+                      IEnumerable<IEVSE>     RejectedEVSEs,
+                      String?                Description   = null,
+                      IEnumerable<Warning>?  Warnings      = null,
+                      TimeSpan?              Runtime       = null)
 
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.AdminDown,
+                        Array.Empty<PushSingleEVSEDataResult>(),
+                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.AdminDown, Warnings)),
                         Description,
-                        Array.Empty<EVSE>(),
-                        RejectedEVSEs,
                         Warnings,
                         Runtime);
 
@@ -283,7 +304,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Success(IId                    AuthId,
                     ISendPOIData           SendPOIData,
-                    IEnumerable<IEVSE>?    SuccessfulEVSEs   = null,
+                    IEnumerable<IEVSE>     SuccessfulEVSEs,
                     String?                Description       = null,
                     IEnumerable<Warning>?  Warnings          = null,
                     TimeSpan?              Runtime           = null)
@@ -291,9 +312,9 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.Success,
+                        SuccessfulEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Success, Warnings)),
+                        Array.Empty<PushSingleEVSEDataResult>(),
                         Description,
-                        SuccessfulEVSEs,
-                        Array.Empty<EVSE>(),
                         Warnings,
                         Runtime);
 
@@ -302,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Success(IId                    AuthId,
                     IReceivePOIData        ReceivePOIData,
-                    IEnumerable<IEVSE>?    SuccessfulEVSEs   = null,
+                    IEnumerable<IEVSE>     SuccessfulEVSEs,
                     String?                Description       = null,
                     IEnumerable<Warning>?  Warnings          = null,
                     TimeSpan?              Runtime           = null)
@@ -310,9 +331,9 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.Success,
+                        SuccessfulEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Success, Warnings)),
+                        Array.Empty<PushSingleEVSEDataResult>(),
                         Description,
-                        SuccessfulEVSEs,
-                        Array.Empty<EVSE>(),
                         Warnings,
                         Runtime);
 
@@ -324,17 +345,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             Enqueued(IId                    AuthId,
                      ISendPOIData           SendPOIData,
-                     IEnumerable<IEVSE>?    EnqueuedEVSEs   = null,
-                     String?                Description     = null,
-                     IEnumerable<Warning>?  Warnings        = null,
-                     TimeSpan?              Runtime         = null)
+                     IEnumerable<IEVSE>     EnqueuedEVSEs,
+                     String?                Description   = null,
+                     IEnumerable<Warning>?  Warnings      = null,
+                     TimeSpan?              Runtime       = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.Enqueued,
+                        EnqueuedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Enqueued, Warnings)),
+                        Array.Empty<PushSingleEVSEDataResult>(),
                         Description,
-                        EnqueuedEVSEs,
-                        Array.Empty<EVSE>(),
                         Warnings,
                         Runtime);
 
@@ -342,17 +363,17 @@ namespace cloud.charging.open.protocols.WWCP
         public static PushEVSEDataResult
             Enqueued(IId                    AuthId,
                      IReceivePOIData        ReceivePOIData,
-                     IEnumerable<IEVSE>?    EnqueuedEVSEs   = null,
-                     String?                Description     = null,
-                     IEnumerable<Warning>?  Warnings        = null,
-                     TimeSpan?              Runtime         = null)
+                     IEnumerable<IEVSE>     EnqueuedEVSEs,
+                     String?                Description   = null,
+                     IEnumerable<Warning>?  Warnings      = null,
+                     TimeSpan?              Runtime       = null)
 
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.Enqueued,
+                        EnqueuedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Enqueued, Warnings)),
+                        Array.Empty<PushSingleEVSEDataResult>(),
                         Description,
-                        EnqueuedEVSEs,
-                        Array.Empty<EVSE>(),
                         Warnings,
                         Runtime);
 
@@ -364,17 +385,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoOperation(IId                    AuthId,
                         ISendPOIData           SendPOIData,
-                        IEnumerable<IEVSE>?    RejectedEVSEs   = null,
-                        String?                Description     = null,
-                        IEnumerable<Warning>?  Warnings        = null,
-                        TimeSpan?              Runtime         = null)
+                        IEnumerable<IEVSE>     RejectedEVSEs,
+                        String?                Description   = null,
+                        IEnumerable<Warning>?  Warnings      = null,
+                        TimeSpan?              Runtime       = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.NoOperation,
+                        Array.Empty<PushSingleEVSEDataResult>(),
+                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.NoOperation, Warnings)),
                         Description,
-                        Array.Empty<EVSE>(),
-                        RejectedEVSEs,
                         Warnings,
                         Runtime);
 
@@ -383,19 +404,42 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoOperation(IId                    AuthId,
                         IReceivePOIData        ReceivePOIData,
-                        IEnumerable<IEVSE>?    RejectedEVSEs   = null,
-                        String?                Description     = null,
-                        IEnumerable<Warning>?  Warnings        = null,
-                        TimeSpan?              Runtime         = null)
+                        IEnumerable<IEVSE>     RejectedEVSEs,
+                        String?                Description   = null,
+                        IEnumerable<Warning>?  Warnings      = null,
+                        TimeSpan?              Runtime       = null)
 
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.NoOperation,
+                        Array.Empty<PushSingleEVSEDataResult>(),
+                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.NoOperation, Warnings)),
                         Description,
-                        Array.Empty<EVSE>(),
-                        RejectedEVSEs,
                         Warnings,
                         Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout
+
+        public static PushEVSEDataResult
+
+            LockTimeout(IId                    AuthId,
+                        ISendPOIData           SendPOIData,
+                        IEnumerable<IEVSE>     RejectedEVSEs,
+                        String?                Description   = null,
+                        IEnumerable<Warning>?  Warnings      = null,
+                        TimeSpan?              Runtime       = null)
+
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.LockTimeout,
+                        Array.Empty<PushSingleEVSEDataResult>(),
+                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Timeout, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -405,7 +449,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Timeout(IId                    AuthId,
                     ISendPOIData           SendPOIData,
-                    IEnumerable<IEVSE>?    RejectedEVSEs,
+                    IEnumerable<IEVSE>     RejectedEVSEs,
                     String?                Description   = null,
                     IEnumerable<Warning>?  Warnings      = null,
                     TimeSpan?              Runtime       = null)
@@ -414,9 +458,9 @@ namespace cloud.charging.open.protocols.WWCP
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.Timeout,
+                        Array.Empty<PushSingleEVSEDataResult>(),
+                        RejectedEVSEs.Select(evse => new PushSingleEVSEDataResult(evse, PushSingleDataResultTypes.Timeout, Warnings)),
                         Description,
-                        Array.Empty<EVSE>(),
-                        RejectedEVSEs,
                         Warnings,
                         Runtime: Runtime);
 
@@ -426,38 +470,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEDataResult
 
-            Error(IId                    AuthId,
-                  ISendPOIData           SendPOIData,
-                  IEnumerable<IEVSE>?    RejectedEVSEs   = null,
-                  String?                Description     = null,
-                  IEnumerable<Warning>?  Warnings        = null,
-                  TimeSpan?              Runtime         = null)
+            Error(IId                                     AuthId,
+                  ISendPOIData                            SendPOIData,
+                  IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs   = null,
+                  String?                                 Description     = null,
+                  IEnumerable<Warning>?                   Warnings        = null,
+                  TimeSpan?                               Runtime         = null)
 
             => new (AuthId,
                     SendPOIData,
                     PushDataResultTypes.Error,
-                    Description,
-                    Array.Empty<EVSE>(),
+                    Array.Empty<PushSingleEVSEDataResult>(),
                     RejectedEVSEs,
+                    Description,
                     Warnings,
                     Runtime);
 
 
         public static PushEVSEDataResult
 
-            Error(IId                    AuthId,
-                  IReceivePOIData        ReceivePOIData,
-                  IEnumerable<IEVSE>?    RejectedEVSEs   = null,
-                  String?                Description     = null,
-                  IEnumerable<Warning>?  Warnings        = null,
-                  TimeSpan?              Runtime         = null)
+            Error(IId                                     AuthId,
+                  IReceivePOIData                         ReceivePOIData,
+                  IEnumerable<PushSingleEVSEDataResult>?  RejectedEVSEs   = null,
+                  String?                                 Description     = null,
+                  IEnumerable<Warning>?                   Warnings        = null,
+                  TimeSpan?                               Runtime         = null)
 
             => new (AuthId,
                     ReceivePOIData,
                     PushDataResultTypes.Error,
-                    Description,
-                    Array.Empty<EVSE>(),
+                    Array.Empty<PushSingleEVSEDataResult>(),
                     RejectedEVSEs,
+                    Description,
                     Warnings,
                     Runtime);
 
@@ -485,43 +529,47 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         #region Properties
+        public IId                                               Id                            { get; }
 
-        public IId                                               Id                 { get; }
+        public ISendPOIData?                                     SendPOIData                   { get; }
 
-        public ISendPOIData?                                     SendPOIData        { get; }
+        public IReceivePOIData?                                  ReceivePOIData                { get; }
 
-        public IReceivePOIData?                                  ReceivePOIData     { get; }
+        /// <summary>
+        /// The enumeration of successfully uploaded charging stations.
+        /// </summary>
+        public IEnumerable<PushSingleChargingStationDataResult>  SuccessfulChargingStations    { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs      { get; }
+        public IEnumerable<PushSingleChargingStationDataResult>  RejectedChargingStations      { get; }
 
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public PushDataResultTypes                               Result             { get; }
+        public PushDataResultTypes                               Result                        { get; }
 
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String?                                           Description        { get; }
+        public String?                                           Description                   { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<Warning>                              Warnings           { get; }
+        public IEnumerable<Warning>                              Warnings                      { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                                         Runtime            { get;  }
+        public TimeSpan?                                         Runtime                       { get;  }
 
         #endregion
 
         #region Constructor(s)
 
-        #region (private) PushChargingStationDataResult(Id,     SendPOIData,    Result,...)
+        #region PushChargingStationDataResult(Id,     SendPOIData,    Result,...)
 
         /// <summary>
         /// Create a new acknowledgement.
@@ -530,38 +578,41 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushChargingStationDataResult(IId                                                Id,
-                                              ISendPOIData                                       SendPOIData,
-                                              PushDataResultTypes                                Result,
-                                              IEnumerable<PushSingleChargingStationDataResult>?  RejectedEVSEs   = null,
-                                              String?                                            Description     = null,
-                                              IEnumerable<Warning>?                              Warnings        = null,
-                                              TimeSpan?                                          Runtime         = null)
+        public PushChargingStationDataResult(IId                                                Id,
+                                             ISendPOIData                                       SendPOIData,
+                                             PushDataResultTypes                                Result,
+                                             IEnumerable<PushSingleChargingStationDataResult>?  SuccessfulChargingStations   = null,
+                                             IEnumerable<PushSingleChargingStationDataResult>?  RejectedChargingStations     = null,
+                                             String?                                            Description                  = null,
+                                             IEnumerable<Warning>?                              Warnings                     = null,
+                                             TimeSpan?                                          Runtime                      = null)
         {
 
-            this.Id             = Id;
+            this.Id                          = Id;
 
-            this.SendPOIData    = SendPOIData;
+            this.SendPOIData                 = SendPOIData;
 
-            this.Result         = Result;
+            this.Result                      = Result;
 
-            this.RejectedEVSEs  = RejectedEVSEs ?? Array.Empty<PushSingleChargingStationDataResult>();
+            this.SuccessfulChargingStations  = SuccessfulChargingStations ?? Array.Empty<PushSingleChargingStationDataResult>();
 
-            this.Description    = Description is not null && Description.IsNotNullOrEmpty()
-                                      ? Description.Trim()
-                                      : null;
+            this.RejectedChargingStations    = RejectedChargingStations   ?? Array.Empty<PushSingleChargingStationDataResult>();
 
-            this.Warnings       = Warnings    is not null
-                                      ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                      : Array.Empty<Warning>();
+            this.Description                 = Description is not null && Description.IsNotNullOrEmpty()
+                                                   ? Description.Trim()
+                                                   : null;
 
-            this.Runtime        = Runtime;
+            this.Warnings                    = Warnings    is not null
+                                                   ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                   : Array.Empty<Warning>();
+
+            this.Runtime                     = Runtime;
 
         }
 
         #endregion
 
-        #region (private) PushChargingStationDataResult(AuthId, ReceivePOIData, Result,...)
+        #region PushChargingStationDataResult(AuthId, ReceivePOIData, Result,...)
 
         /// <summary>
         /// Create a new acknowledgement.
@@ -570,32 +621,35 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushChargingStationDataResult(IId                                                Id,
-                                              IReceivePOIData                                    ReceivePOIData,
-                                              PushDataResultTypes                                Result,
-                                              IEnumerable<PushSingleChargingStationDataResult>?  RejectedEVSEs   = null,
-                                              String?                                            Description     = null,
-                                              IEnumerable<Warning>?                              Warnings        = null,
-                                              TimeSpan?                                          Runtime         = null)
+        public PushChargingStationDataResult(IId                                                Id,
+                                             IReceivePOIData                                    ReceivePOIData,
+                                             PushDataResultTypes                                Result,
+                                             IEnumerable<PushSingleChargingStationDataResult>?  SuccessfulChargingStations   = null,
+                                             IEnumerable<PushSingleChargingStationDataResult>?  RejectedChargingStations     = null,
+                                             String?                                            Description                  = null,
+                                             IEnumerable<Warning>?                              Warnings                     = null,
+                                             TimeSpan?                                          Runtime                      = null)
         {
 
-            this.Id              = Id;
+            this.Id                          = Id;
 
-            this.ReceivePOIData  = ReceivePOIData;
+            this.ReceivePOIData              = ReceivePOIData;
 
-            this.Result          = Result;
+            this.Result                      = Result;
 
-            this.RejectedEVSEs   = RejectedEVSEs ?? Array.Empty<PushSingleChargingStationDataResult>();
+            this.SuccessfulChargingStations  = SuccessfulChargingStations ?? Array.Empty<PushSingleChargingStationDataResult>();
 
-            this.Description     = Description is not null && Description.IsNotNullOrEmpty()
-                                       ? Description.Trim()
-                                       : null;
+            this.RejectedChargingStations    = RejectedChargingStations   ?? Array.Empty<PushSingleChargingStationDataResult>();
 
-            this.Warnings        = Warnings != null
-                                       ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                       : Array.Empty<Warning>();
+            this.Description                 = Description is not null && Description.IsNotNullOrEmpty()
+                                                   ? Description.Trim()
+                                                   : null;
 
-            this.Runtime         = Runtime;
+            this.Warnings                    = Warnings != null
+                                                   ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                   : Array.Empty<Warning>();
+
+            this.Runtime                     = Runtime;
 
         }
 
@@ -608,17 +662,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            AdminDown(IId                                                AuthId,
-                      ISendPOIData                                       SendPOIData,
-                      IEnumerable<PushSingleChargingStationDataResult>?  RejectedEVSEs   = null,
-                      String?                                            Description     = null,
-                      IEnumerable<Warning>?                              Warnings        = null,
-                      TimeSpan?                                          Runtime         = null)
+            AdminDown(IId                            AuthId,
+                      ISendPOIData                   SendPOIData,
+                      IEnumerable<IChargingStation>  RejectedChargingStations,
+                      String?                        Description   = null,
+                      IEnumerable<Warning>?          Warnings      = null,
+                      TimeSpan?                      Runtime       = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.AdminDown,
-                        RejectedEVSEs,
+                        Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.AdminDown, Warnings)),
                         Description,
                         Warnings,
                         Runtime);
@@ -626,17 +681,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            AdminDown(IId                                                AuthId,
-                      IReceivePOIData                                    ReceivePOIData,
-                      IEnumerable<PushSingleChargingStationDataResult>?  RejectedEVSEs   = null,
-                      String?                                            Description     = null,
-                      IEnumerable<Warning>?                              Warnings        = null,
-                      TimeSpan?                                          Runtime         = null)
+            AdminDown(IId                            AuthId,
+                      IReceivePOIData                ReceivePOIData,
+                      IEnumerable<IChargingStation>  RejectedChargingStations,
+                      String?                        Description   = null,
+                      IEnumerable<Warning>?          Warnings      = null,
+                      TimeSpan?                      Runtime       = null)
 
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.AdminDown,
-                        RejectedEVSEs,
+                        Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.AdminDown, Warnings)),
                         Description,
                         Warnings,
                         Runtime);
@@ -647,15 +703,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            Success(IId                    AuthId,
-                    ISendPOIData           SendPOIData,
-                    String?                Description   = null,
-                    IEnumerable<Warning>?  Warnings      = null,
-                    TimeSpan?              Runtime       = null)
+            Success(IId                            AuthId,
+                    ISendPOIData                   SendPOIData,
+                    IEnumerable<IChargingStation>  SuccessfulChargingStations,
+                    String?                        Description   = null,
+                    IEnumerable<Warning>?          Warnings      = null,
+                    TimeSpan?                      Runtime       = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.Success,
+                        SuccessfulChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Success, Warnings)),
                         Array.Empty<PushSingleChargingStationDataResult>(),
                         Description,
                         Warnings,
@@ -664,15 +722,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            Success(IId                    AuthId,
-                    IReceivePOIData        ReceivePOIData,
-                    String?                Description   = null,
-                    IEnumerable<Warning>?  Warnings      = null,
-                    TimeSpan?              Runtime       = null)
+            Success(IId                            AuthId,
+                    IReceivePOIData                ReceivePOIData,
+                    IEnumerable<IChargingStation>  SuccessfulChargingStations,
+                    String?                        Description   = null,
+                    IEnumerable<Warning>?          Warnings      = null,
+                    TimeSpan?                      Runtime       = null)
 
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.Success,
+                        SuccessfulChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Success, Warnings)),
                         Array.Empty<PushSingleChargingStationDataResult>(),
                         Description,
                         Warnings,
@@ -684,15 +744,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            Enqueued(IId                    AuthId,
-                     ISendPOIData           SendPOIData,
-                     String?                Description   = null,
-                     IEnumerable<Warning>?  Warnings      = null,
-                     TimeSpan?              Runtime       = null)
+            Enqueued(IId                            AuthId,
+                     ISendPOIData                   SendPOIData,
+                     IEnumerable<IChargingStation>  SuccessfulChargingStations,
+                     String?                        Description   = null,
+                     IEnumerable<Warning>?          Warnings      = null,
+                     TimeSpan?                      Runtime       = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.Enqueued,
+                        SuccessfulChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Enqueued, Warnings)),
                         Array.Empty<PushSingleChargingStationDataResult>(),
                         Description,
                         Warnings,
@@ -704,16 +766,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            NoOperation(IId                    AuthId,
-                        ISendPOIData           SendPOIData,
-                        String?                Description   = null,
-                        IEnumerable<Warning>?  Warnings      = null,
-                        TimeSpan?              Runtime       = null)
+            NoOperation(IId                            AuthId,
+                        ISendPOIData                   SendPOIData,
+                        IEnumerable<IChargingStation>  RejectedChargingStations,
+                        String?                        Description   = null,
+                        IEnumerable<Warning>?          Warnings      = null,
+                        TimeSpan?                      Runtime       = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.NoOperation,
                         Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.NoOperation, Warnings)),
                         Description,
                         Warnings,
                         Runtime);
@@ -721,19 +785,67 @@ namespace cloud.charging.open.protocols.WWCP
 
          public static PushChargingStationDataResult
 
-            NoOperation(IId                    AuthId,
-                        IReceivePOIData        ReceivePOIData,
-                        String?                Description   = null,
-                        IEnumerable<Warning>?  Warnings      = null,
-                        TimeSpan?              Runtime       = null)
+            NoOperation(IId                            AuthId,
+                        IReceivePOIData                ReceivePOIData,
+                        IEnumerable<IChargingStation>  RejectedChargingStations,
+                        String?                        Description   = null,
+                        IEnumerable<Warning>?          Warnings      = null,
+                        TimeSpan?                      Runtime       = null)
 
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.NoOperation,
                         Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.NoOperation, Warnings)),
                         Description,
                         Warnings,
                         Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout
+
+        public static PushChargingStationDataResult
+
+            LockTimeout(IId                            AuthId,
+                        ISendPOIData                   SendPOIData,
+                        IEnumerable<IChargingStation>  RejectedChargingStations,
+                        String?                        Description   = null,
+                        IEnumerable<Warning>?          Warnings      = null,
+                        TimeSpan?                      Runtime       = null)
+
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.Timeout,
+                        Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.LockTimeout, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
+
+        #endregion
+
+        #region (static) Timeout
+
+        public static PushChargingStationDataResult
+
+            Timeout(IId                            AuthId,
+                    ISendPOIData                   SendPOIData,
+                    IEnumerable<IChargingStation>  RejectedChargingStations,
+                    String?                        Description   = null,
+                    IEnumerable<Warning>?          Warnings      = null,
+                    TimeSpan?                      Runtime       = null)
+
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.Timeout,
+                        Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations.Select(chargingStation => new PushSingleChargingStationDataResult(chargingStation, PushSingleDataResultTypes.Timeout, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -741,17 +853,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            Error(IId                                                AuthId,
-                  ISendPOIData                                       SendPOIData,
-                  IEnumerable<PushSingleChargingStationDataResult>?  RejectedEVSEs   = null,
-                  String?                                            Description     = null,
-                  IEnumerable<Warning>?                              Warnings        = null,
-                  TimeSpan?                                          Runtime         = null)
+            Error(IId                                               AuthId,
+                  ISendPOIData                                      SendPOIData,
+                  IEnumerable<PushSingleChargingStationDataResult>  RejectedChargingStations,
+                  String?                                           Description     = null,
+                  IEnumerable<Warning>?                             Warnings        = null,
+                  TimeSpan?                                         Runtime         = null)
 
                 => new (AuthId,
                         SendPOIData,
                         PushDataResultTypes.Error,
-                        RejectedEVSEs,
+                        Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations,
                         Description,
                         Warnings,
                         Runtime);
@@ -759,17 +872,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushChargingStationDataResult
 
-            Error(IId                                                AuthId,
-                  IReceivePOIData                                    ReceivePOIData,
-                  IEnumerable<PushSingleChargingStationDataResult>?  RejectedEVSEs   = null,
-                  String?                                            Description     = null,
-                  IEnumerable<Warning>?                              Warnings        = null,
-                  TimeSpan?                                          Runtime         = null)
+            Error(IId                                               AuthId,
+                  IReceivePOIData                                   ReceivePOIData,
+                  IEnumerable<PushSingleChargingStationDataResult>  RejectedChargingStations,
+                  String?                                           Description     = null,
+                  IEnumerable<Warning>?                             Warnings        = null,
+                  TimeSpan?                                         Runtime         = null)
 
                 => new (AuthId,
                         ReceivePOIData,
                         PushDataResultTypes.Error,
-                        RejectedEVSEs,
+                        Array.Empty<PushSingleChargingStationDataResult>(),
+                        RejectedChargingStations,
                         Description,
                         Warnings,
                         Runtime);
@@ -784,20 +898,427 @@ namespace cloud.charging.open.protocols.WWCP
                    ? new PushEVSEDataResult(Id,
                                             SendPOIData,
                                             Result,
+                                            Array.Empty<PushSingleEVSEDataResult>(),
+                                            Array.Empty<PushSingleEVSEDataResult>(),
                                             Description,
-                                            Array.Empty<EVSE>(),
-                                            Array.Empty<EVSE>(),
                                             Warnings,
                                             Runtime)
 
                    : new PushEVSEDataResult(Id,
                                             ReceivePOIData,
                                             Result,
+                                            Array.Empty<PushSingleEVSEDataResult>(),
+                                            Array.Empty<PushSingleEVSEDataResult>(),
                                             Description,
-                                            Array.Empty<EVSE>(),
-                                            Array.Empty<EVSE>(),
                                             Warnings,
                                             Runtime);
+
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => String.Concat("Result: " + Result + "; " + Description);
+
+        #endregion
+
+    }
+
+
+    /// <summary>
+    /// A PushData result.
+    /// </summary>
+    public class PushChargingPoolDataResult
+    {
+
+        #region Properties
+
+        public IId                                               Id                         { get; }
+
+        public ISendPOIData?                                     SendPOIData                { get; }
+
+        public IReceivePOIData?                                  ReceivePOIData             { get; }
+
+        /// <summary>
+        /// The enumeration of successfully uploaded charging pools.
+        /// </summary>
+        public IEnumerable<PushSingleChargingPoolDataResult>     SuccessfulChargingPools    { get; }
+
+        /// <summary>
+        /// Warnings or additional information.
+        /// </summary>
+        public IEnumerable<PushSingleChargingPoolDataResult>     RejectedChargingPools      { get; }
+
+        /// <summary>
+        /// The result of the operation.
+        /// </summary>
+        public PushDataResultTypes                               Result                     { get; }
+
+        /// <summary>
+        /// An optional description of the result code.
+        /// </summary>
+        public String?                                           Description                { get; }
+
+        /// <summary>
+        /// Warnings or additional information.
+        /// </summary>
+        public IEnumerable<Warning>                              Warnings                   { get; }
+
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        public TimeSpan?                                         Runtime                    { get;  }
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region PushChargingPoolDataResult(Id,     SendPOIData,    Result,...)
+
+        /// <summary>
+        /// Create a new acknowledgement.
+        /// </summary>
+        /// <param name="Result">The result of the operation.</param>
+        /// <param name="Description">An optional description of the result code.</param>
+        /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public PushChargingPoolDataResult(IId                                             Id,
+                                          ISendPOIData                                    SendPOIData,
+                                          PushDataResultTypes                             Result,
+                                          IEnumerable<PushSingleChargingPoolDataResult>?  SuccessfulChargingPools   = null,
+                                          IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools     = null,
+                                          String?                                         Description               = null,
+                                          IEnumerable<Warning>?                           Warnings                  = null,
+                                          TimeSpan?                                       Runtime                   = null)
+        {
+
+            this.Id                       = Id;
+
+            this.SendPOIData              = SendPOIData;
+
+            this.Result                   = Result;
+
+            this.SuccessfulChargingPools  = SuccessfulChargingPools ?? Array.Empty<PushSingleChargingPoolDataResult>();
+
+            this.RejectedChargingPools    = RejectedChargingPools   ?? Array.Empty<PushSingleChargingPoolDataResult>();
+
+            this.Description              = Description is not null && Description.IsNotNullOrEmpty()
+                                                ? Description.Trim()
+                                                : null;
+
+            this.Warnings                 = Warnings    is not null
+                                                ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                : Array.Empty<Warning>();
+
+            this.Runtime                  = Runtime;
+
+        }
+
+        #endregion
+
+        #region PushChargingPoolDataResult(AuthId, ReceivePOIData, Result,...)
+
+        /// <summary>
+        /// Create a new acknowledgement.
+        /// </summary>
+        /// <param name="Result">The result of the operation.</param>
+        /// <param name="Description">An optional description of the result code.</param>
+        /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public PushChargingPoolDataResult(IId                                             Id,
+                                          IReceivePOIData                                 ReceivePOIData,
+                                          PushDataResultTypes                             Result,
+                                          IEnumerable<PushSingleChargingPoolDataResult>?  SuccessfulChargingPools   = null,
+                                          IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools     = null,
+                                          String?                                         Description               = null,
+                                          IEnumerable<Warning>?                           Warnings                  = null,
+                                          TimeSpan?                                       Runtime                   = null)
+        {
+
+            this.Id                       = Id;
+
+            this.ReceivePOIData           = ReceivePOIData;
+
+            this.Result                   = Result;
+
+            this.SuccessfulChargingPools  = SuccessfulChargingPools ?? Array.Empty<PushSingleChargingPoolDataResult>();
+
+            this.RejectedChargingPools    = RejectedChargingPools   ?? Array.Empty<PushSingleChargingPoolDataResult>();
+
+            this.Description              = Description is not null && Description.IsNotNullOrEmpty()
+                                                ? Description.Trim()
+                                                : null;
+
+            this.Warnings                 = Warnings != null
+                                                ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
+                                                : Array.Empty<Warning>();
+
+            this.Runtime                  = Runtime;
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region (static) AdminDown
+
+        public static PushChargingPoolDataResult
+
+            AdminDown(IId                         AuthId,
+                      ISendPOIData                SendPOIData,
+                      IEnumerable<IChargingPool>  RejectedChargingPools,
+                      String?                     Description   = null,
+                      IEnumerable<Warning>?       Warnings      = null,
+                      TimeSpan?                   Runtime       = null)
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.AdminDown,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.AdminDown, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+
+        public static PushChargingPoolDataResult
+
+            AdminDown(IId                         AuthId,
+                      IReceivePOIData             ReceivePOIData,
+                      IEnumerable<IChargingPool>  RejectedChargingPools,
+                      String?                     Description   = null,
+                      IEnumerable<Warning>?       Warnings      = null,
+                      TimeSpan?                   Runtime       = null)
+
+                => new (AuthId,
+                        ReceivePOIData,
+                        PushDataResultTypes.AdminDown,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.AdminDown, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Success
+
+        public static PushChargingPoolDataResult
+
+            Success(IId                         AuthId,
+                    ISendPOIData                SendPOIData,
+                    IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                    String?                     Description   = null,
+                    IEnumerable<Warning>?       Warnings      = null,
+                    TimeSpan?                   Runtime       = null)
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Success, Warnings)),
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+
+        public static PushChargingPoolDataResult
+
+            Success(IId                         AuthId,
+                    IReceivePOIData             ReceivePOIData,
+                    IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                    String?                     Description   = null,
+                    IEnumerable<Warning>?       Warnings      = null,
+                    TimeSpan?                   Runtime       = null)
+
+                => new (AuthId,
+                        ReceivePOIData,
+                        PushDataResultTypes.Success,
+                        SuccessfulChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Success, Warnings)),
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Enqueued
+
+        public static PushChargingPoolDataResult
+
+            Enqueued(IId                         AuthId,
+                     ISendPOIData                SendPOIData,
+                     IEnumerable<IChargingPool>  SuccessfulChargingPools,
+                     String?                     Description   = null,
+                     IEnumerable<Warning>?       Warnings      = null,
+                     TimeSpan?                   Runtime       = null)
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.Enqueued,
+                        SuccessfulChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Enqueued, Warnings)),
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation
+
+        public static PushChargingPoolDataResult
+
+            NoOperation(IId                         AuthId,
+                        ISendPOIData                SendPOIData,
+                        IEnumerable<IChargingPool>  RejectedChargingPools,
+                        String?                     Description   = null,
+                        IEnumerable<Warning>?       Warnings      = null,
+                        TimeSpan?                   Runtime       = null)
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.NoOperation,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.NoOperation, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+
+         public static PushChargingPoolDataResult
+
+            NoOperation(IId                         AuthId,
+                        IReceivePOIData             ReceivePOIData,
+                        IEnumerable<IChargingPool>  RejectedChargingPools,
+                        String?                     Description   = null,
+                        IEnumerable<Warning>?       Warnings      = null,
+                        TimeSpan?                   Runtime       = null)
+
+                => new (AuthId,
+                        ReceivePOIData,
+                        PushDataResultTypes.NoOperation,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.NoOperation, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout
+
+        public static PushChargingPoolDataResult
+
+            LockTimeout(IId                         AuthId,
+                        ISendPOIData                SendPOIData,
+                        IEnumerable<IChargingPool>  RejectedChargingPools,
+                        String?                     Description   = null,
+                        IEnumerable<Warning>?       Warnings      = null,
+                        TimeSpan?                   Runtime       = null)
+
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.Timeout,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.LockTimeout, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
+
+        #endregion
+
+        #region (static) Timeout
+
+        public static PushChargingPoolDataResult
+
+            Timeout(IId                         AuthId,
+                    ISendPOIData                SendPOIData,
+                    IEnumerable<IChargingPool>  RejectedChargingPools,
+                    String?                     Description   = null,
+                    IEnumerable<Warning>?       Warnings      = null,
+                    TimeSpan?                   Runtime       = null)
+
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.Timeout,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools.Select(chargingPool => new PushSingleChargingPoolDataResult(chargingPool, PushSingleDataResultTypes.Timeout, Warnings)),
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
+
+        #endregion
+
+        #region (static) Error
+
+        public static PushChargingPoolDataResult
+
+            Error(IId                                             AuthId,
+                  ISendPOIData                                    SendPOIData,
+                  IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools   = null,
+                  String?                                         Description             = null,
+                  IEnumerable<Warning>?                           Warnings                = null,
+                  TimeSpan?                                       Runtime                 = null)
+
+                => new (AuthId,
+                        SendPOIData,
+                        PushDataResultTypes.Error,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+
+        public static PushChargingPoolDataResult
+
+            Error(IId                                             AuthId,
+                  IReceivePOIData                                 ReceivePOIData,
+                  IEnumerable<PushSingleChargingPoolDataResult>?  RejectedChargingPools   = null,
+                  String?                                         Description             = null,
+                  IEnumerable<Warning>?                           Warnings                = null,
+                  TimeSpan?                                       Runtime                 = null)
+
+                => new (AuthId,
+                        ReceivePOIData,
+                        PushDataResultTypes.Error,
+                        Array.Empty<PushSingleChargingPoolDataResult>(),
+                        RejectedChargingPools,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        //public PushEVSEDataResult ToPushEVSEDataResult()
+
+        //    => SendPOIData is not null
+
+        //           ? new PushEVSEDataResult(Id,
+        //                                    SendPOIData,
+        //                                    Result,
+        //                                    Description,
+        //                                    Array.Empty<EVSE>(),
+        //                                    Array.Empty<EVSE>(),
+        //                                    Warnings,
+        //                                    Runtime)
+
+        //           : new PushEVSEDataResult(Id,
+        //                                    ReceivePOIData,
+        //                                    Result,
+        //                                    Description,
+        //                                    Array.Empty<EVSE>(),
+        //                                    Array.Empty<EVSE>(),
+        //                                    Warnings,
+        //                                    Runtime);
 
 
         #region (override) ToString()
@@ -848,6 +1369,11 @@ namespace cloud.charging.open.protocols.WWCP
         OutOfService,
 
         /// <summary>
+        /// A lock timeout occured.
+        /// </summary>
+        LockTimeout,
+
+        /// <summary>
         /// A timeout occured.
         /// </summary>
         Timeout,
@@ -891,6 +1417,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Out-Of-Service.
         /// </summary>
         OutOfService,
+
+        /// <summary>
+        /// A lock timeout occured.
+        /// </summary>
+        LockTimeout,
 
         /// <summary>
         /// A timeout occured.

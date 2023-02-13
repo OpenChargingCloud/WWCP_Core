@@ -1462,47 +1462,47 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            var _ChargingStation = new ChargingStation(Id,
-                                                       this,
-                                                       Name,
-                                                       Description,
-                                                       Configurator,
-                                                       RemoteChargingStationCreator,
-                                                       InitialAdminStatus,
-                                                       InitialStatus,
-                                                       MaxAdminStatusListSize,
-                                                       MaxStatusListSize);
+            var chargingStation = new ChargingStation(Id,
+                                                      this,
+                                                      Name,
+                                                      Description,
+                                                      Configurator,
+                                                      RemoteChargingStationCreator,
+                                                      InitialAdminStatus,
+                                                      InitialStatus,
+                                                      MaxAdminStatusListSize,
+                                                      MaxStatusListSize);
 
 
-            if (ChargingStationAddition.SendVoting(Timestamp.Now, this, _ChargingStation) &&
-                chargingStations.TryAdd(_ChargingStation))
+            if (ChargingStationAddition.SendVoting(Timestamp.Now, this, chargingStation) &&
+                chargingStations.TryAdd(chargingStation))
             {
 
-                _ChargingStation.OnDataChanged                  += UpdateChargingStationData;
-                _ChargingStation.OnStatusChanged                += UpdateChargingStationStatus;
-                _ChargingStation.OnAdminStatusChanged           += UpdateChargingStationAdminStatus;
+                chargingStation.OnDataChanged                  += UpdateChargingStationData;
+                chargingStation.OnStatusChanged                += UpdateChargingStationStatus;
+                chargingStation.OnAdminStatusChanged           += UpdateChargingStationAdminStatus;
 
-                _ChargingStation.OnEVSEAddition.OnVoting        += (timestamp, station, evse, vote)  => EVSEAddition.SendVoting      (timestamp, station, evse, vote);
-                _ChargingStation.OnEVSEAddition.OnNotification  += (timestamp, station, evse)        => EVSEAddition.SendNotification(timestamp, station, evse);
-                _ChargingStation.OnEVSEDataChanged              += UpdateEVSEData;
-                _ChargingStation.OnEVSEStatusChanged            += UpdateEVSEStatus;
-                _ChargingStation.OnEVSEAdminStatusChanged       += UpdateEVSEAdminStatus;
-                _ChargingStation.OnEVSERemoval. OnVoting        += (timestamp, station, evse, vote)  => EVSERemoval.SendVoting       (timestamp, station, evse, vote);
-                _ChargingStation.OnEVSERemoval. OnNotification  += (timestamp, station, evse)        => EVSERemoval.SendNotification (timestamp, station, evse);
+                chargingStation.OnEVSEAddition.OnVoting        += (timestamp, station, evse, vote)  => EVSEAddition.SendVoting      (timestamp, station, evse, vote);
+                chargingStation.OnEVSEAddition.OnNotification  += (timestamp, station, evse)        => EVSEAddition.SendNotification(timestamp, station, evse);
+                chargingStation.OnEVSEDataChanged              += UpdateEVSEData;
+                chargingStation.OnEVSEStatusChanged            += UpdateEVSEStatus;
+                chargingStation.OnEVSEAdminStatusChanged       += UpdateEVSEAdminStatus;
+                chargingStation.OnEVSERemoval. OnVoting        += (timestamp, station, evse, vote)  => EVSERemoval.SendVoting       (timestamp, station, evse, vote);
+                chargingStation.OnEVSERemoval. OnNotification  += (timestamp, station, evse)        => EVSERemoval.SendNotification (timestamp, station, evse);
 
 
-                _ChargingStation.OnNewReservation               += SendNewReservation;
-                _ChargingStation.OnReservationCanceled          += SendReservationCanceled;
-                _ChargingStation.OnNewChargingSession           += SendNewChargingSession;
-                _ChargingStation.OnNewChargeDetailRecord        += SendNewChargeDetailRecord;
+                chargingStation.OnNewReservation               += SendNewReservation;
+                chargingStation.OnReservationCanceled          += SendReservationCanceled;
+                chargingStation.OnNewChargingSession           += SendNewChargingSession;
+                chargingStation.OnNewChargeDetailRecord        += SendNewChargeDetailRecord;
 
 
                 if (RemoteChargingStationCreator != null)
                 {
 
-                    _ChargingStation.RemoteChargingStation.OnNewReservation += SendNewReservation;
+                    chargingStation.RemoteChargingStation.OnNewReservation += SendNewReservation;
 
-                    _ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
+                    chargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
 
                         var __EVSE = GetEVSEById(reservation.EVSEId.Value);
 
@@ -1510,7 +1510,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     };
 
-                    _ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
+                    chargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
 
                         var __EVSE = GetEVSEById(session.EVSEId.Value);
 
@@ -1518,7 +1518,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     };
 
-                    _ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
+                    chargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
 
                         var __EVSE = GetEVSEById(cdr.EVSEId.Value);
 
@@ -1530,15 +1530,15 @@ namespace cloud.charging.open.protocols.WWCP
                     };
 
 
-                    _ChargingStation.RemoteChargingStation.OnReservationCanceled += _ChargingStation.SendReservationCanceled;
+                    chargingStation.RemoteChargingStation.OnReservationCanceled += chargingStation.SendReservationCanceled;
 
-                    _ChargingStation.RemoteChargingStation.OnEVSEStatusChanged += (Timestamp,
+                    chargingStation.RemoteChargingStation.OnEVSEStatusChanged += (Timestamp,
                                                                                    EventTrackingId,
                                                                                    EVSE,
                                                                                    OldStatus,
                                                                                    NewStatus)
 
-                        => _ChargingStation.UpdateEVSEStatus(Timestamp,
+                        => chargingStation.UpdateEVSEStatus(Timestamp,
                                                              EventTrackingId,
                                                              GetEVSEById(EVSE.Id),
                                                              OldStatus,
@@ -1546,10 +1546,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                 }
 
-                OnSuccess?.Invoke(_ChargingStation);
-                ChargingStationAddition.SendNotification(Timestamp.Now, this, _ChargingStation);
+                OnSuccess?.Invoke(chargingStation);
+                ChargingStationAddition.SendNotification(Timestamp.Now, this, chargingStation);
 
-                return _ChargingStation;
+                return chargingStation;
 
             }
 
@@ -2168,12 +2168,12 @@ namespace cloud.charging.open.protocols.WWCP
                                            EventTracking_Id  EventTrackingId,
                                            IEVSE             EVSE,
                                            String            PropertyName,
-                                           Object            OldValue,
-                                           Object            NewValue)
+                                           Object?           OldValue,
+                                           Object?           NewValue)
         {
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
-            if (OnEVSEDataChangedLocal != null)
+            if (OnEVSEDataChangedLocal is not null)
                 await OnEVSEDataChangedLocal(Timestamp,
                                              EventTrackingId ?? EventTracking_Id.New,
                                              EVSE,
@@ -2203,7 +2203,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-            if (OnEVSEAdminStatusChangedLocal != null)
+            if (OnEVSEAdminStatusChangedLocal is not null)
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
                                                     EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
@@ -2232,7 +2232,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal != null)
+            if (OnEVSEStatusChangedLocal is not null)
                 await OnEVSEStatusChangedLocal(Timestamp,
                                                EventTrackingId ?? EventTracking_Id.New,
                                                EVSE,

@@ -42,8 +42,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                            EventTracking_Id  EventTrackingId,
                                                            ChargingPool      ChargingPool,
                                                            String            PropertyName,
-                                                           Object            OldValue,
-                                                           Object            NewValue);
+                                                           Object?           OldValue,
+                                                           Object?           NewValue);
 
 
     /// <summary>

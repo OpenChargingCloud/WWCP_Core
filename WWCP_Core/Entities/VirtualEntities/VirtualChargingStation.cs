@@ -69,44 +69,38 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                              Action<VirtualChargingStation>?             VirtualChargingStationConfigurator   = null,
                                                              Action<IChargingStation>?                   OnSuccess                            = null,
                                                              Action<IChargingPool, ChargingStation_Id>?  OnError                              = null)
-        {
 
-            #region Initial checks
+            => ChargingPool.CreateChargingStation(
+                   ChargingStationId,
+                   Name,
+                   Description,
+                   ChargingStationConfigurator,
+                   newStation => {
 
-            if (ChargingPool is null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+                       var virtualstation = new VirtualChargingStation(
+                                                newStation.Id,
+                                                ChargingPool.RoamingNetwork,
+                                                newStation.Name,
+                                                newStation.Description,
+                                                InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                InitialStatus      ?? ChargingStationStatusTypes.Available,
+                                                EllipticCurve,
+                                                PrivateKey,
+                                                PublicKeyCertificates,
+                                                SelfCheckTimeSpan,
+                                                MaxAdminStatusListSize,
+                                                MaxStatusListSize
+                                            );
 
-            #endregion
+                       VirtualChargingStationConfigurator?.Invoke(virtualstation);
 
-            return ChargingPool.CreateChargingStation(ChargingStationId,
-                                                      Name,
-                                                      Description,
-                                                      ChargingStationConfigurator,
-                                                      newStation => {
+                       return virtualstation;
 
-                                                          var virtualstation = new VirtualChargingStation(newStation.Id,
-                                                                                                          ChargingPool.RoamingNetwork,
-                                                                                                          newStation.Name,
-                                                                                                          newStation.Description,
-                                                                                                          InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
-                                                                                                          InitialStatus      ?? ChargingStationStatusTypes.Available,
-                                                                                                          EllipticCurve,
-                                                                                                          PrivateKey,
-                                                                                                          PublicKeyCertificates,
-                                                                                                          SelfCheckTimeSpan,
-                                                                                                          MaxAdminStatusListSize,
-                                                                                                          MaxStatusListSize);
+                   },
 
-                                                          VirtualChargingStationConfigurator?.Invoke(virtualstation);
-
-                                                          return virtualstation;
-
-                                                      },
-
-                                                      OnSuccess: OnSuccess,
-                                                      OnError:   OnError);
-
-        }
+                   OnSuccess: OnSuccess,
+                   OnError:   OnError
+               );
 
         #endregion
 
