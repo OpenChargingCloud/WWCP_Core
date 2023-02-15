@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             SetStaticData(IChargingStation    ChargingStation,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             UpdateStaticData(IChargingStation    ChargingStation,
                              String              PropertyName,
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             DeleteStaticData(IChargingStation    ChargingStation,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -373,7 +373,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             SetStaticData(IEnumerable<IChargingStation>  ChargingStations,
                           TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             AddStaticData(IEnumerable<IChargingStation>  ChargingStations,
                           TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
@@ -421,7 +421,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             UpdateStaticData(IEnumerable<IChargingStation>  ChargingStations,
                              TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             DeleteStaticData(IEnumerable<IChargingStation>  ChargingStations,
                              TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             SetStaticData(IChargingPool       ChargingPool,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             UpdateStaticData(IChargingPool       ChargingPool,
                              String              PropertyName,
@@ -551,7 +551,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             DeleteStaticData(IChargingPool       ChargingPool,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
@@ -576,7 +576,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             SetStaticData(IEnumerable<IChargingPool>  ChargingPools,
                           TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
@@ -600,7 +600,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             AddStaticData(IEnumerable<IChargingPool>  ChargingPools,
                           TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             UpdateStaticData(IEnumerable<IChargingPool>  ChargingPools,
                              TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
@@ -648,7 +648,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             DeleteStaticData(IEnumerable<IChargingPool>  ChargingPools,
                              TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,

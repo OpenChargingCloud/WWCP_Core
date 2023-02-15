@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.SetStaticData(IEVSE               EVSE,
                                        TransmissionTypes   TransmissionType,
@@ -535,14 +535,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
 
         }
 
@@ -560,7 +553,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.AddStaticData(IEVSE               EVSE,
                                        TransmissionTypes   TransmissionType,
@@ -572,14 +565,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
 
         }
 
@@ -601,7 +587,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.UpdateStaticData(IEVSE                EVSE,
                                           String?             PropertyName,
@@ -616,14 +602,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
 
         }
 
@@ -641,26 +620,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.DeleteStaticData(IEVSE               EVSE,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
                                           CancellationToken?  CancellationToken,
-                                          EventTracking_Id    EventTrackingId,
+                                          EventTracking_Id?   EventTrackingId,
                                           TimeSpan?           RequestTimeout)
 
         {
 
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, new IEVSE[] { EVSE }));
 
         }
 
@@ -678,7 +650,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.SetStaticData(IEnumerable<IEVSE>  EVSEs,
                                        TransmissionTypes   TransmissionType,
@@ -690,14 +662,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (EVSEs == null)
-                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
 
         }
 
@@ -714,7 +679,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.AddStaticData(IEnumerable<IEVSE>  EVSEs,
                                        TransmissionTypes   TransmissionType,
@@ -726,14 +691,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (EVSEs == null)
-                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
 
         }
 
@@ -750,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.UpdateStaticData(IEnumerable<IEVSE>  EVSEs,
                                           TransmissionTypes   TransmissionType,
@@ -762,14 +720,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (EVSEs == null)
-                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
 
         }
 
@@ -786,7 +737,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushEVSEDataResult>
+        Task<PushEVSEDataResult>
 
             ISendPOIData.DeleteStaticData(IEnumerable<IEVSE>  EVSEs,
                                           TransmissionTypes   TransmissionType,
@@ -798,14 +749,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (EVSEs == null)
-                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
-
-            #endregion
-
-            return PushEVSEDataResult.NoOperation(Id, this, null);
+            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, EVSEs));
 
         }
 
@@ -898,7 +842,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.SetStaticData(IChargingStation    ChargingStation,
                                        TransmissionTypes   TransmissionType,
@@ -910,14 +854,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
@@ -947,13 +884,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
-
-            #endregion
-
             return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
@@ -975,7 +905,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.UpdateStaticData(IChargingStation     ChargingStation,
                                           String?             PropertyName,
@@ -990,14 +920,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
@@ -1015,7 +938,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.DeleteStaticData(IChargingStation    ChargingStation,
                                           TransmissionTypes   TransmissionType,
@@ -1027,14 +950,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, new IChargingStation[] { ChargingStation }));
 
         }
 
@@ -1053,7 +969,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.SetStaticData(IEnumerable<IChargingStation>  ChargingStations,
                                        TransmissionTypes              TransmissionType,
@@ -1065,14 +981,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStations == null)
-                throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
 
         }
 
@@ -1090,7 +999,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.AddStaticData(IEnumerable<IChargingStation>  ChargingStations,
                                        TransmissionTypes              TransmissionType,
@@ -1103,14 +1012,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStations == null)
-                throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
 
         }
 
@@ -1128,7 +1030,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.UpdateStaticData(IEnumerable<IChargingStation>  ChargingStations,
                                           TransmissionTypes              TransmissionType,
@@ -1140,14 +1042,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStations == null)
-                throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
 
         }
 
@@ -1165,7 +1060,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingStationDataResult>
 
             ISendPOIData.DeleteStaticData(IEnumerable<IChargingStation>  ChargingStations,
                                           TransmissionTypes              TransmissionType,
@@ -1177,14 +1072,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingStations == null)
-                throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingStationDataResult.NoOperation(Id, this, ChargingStations));
 
         }
 
@@ -1267,7 +1155,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             ISendPOIData.SetStaticData(IChargingPool       ChargingPool,
                                        TransmissionTypes   TransmissionType,
@@ -1279,14 +1167,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new IChargingPool[] { ChargingPool }));
 
         }
 
@@ -1316,13 +1197,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
-
-            #endregion
-
             return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new IChargingPool[] { ChargingPool }));
 
         }
@@ -1344,7 +1218,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             ISendPOIData.UpdateStaticData(IChargingPool       ChargingPool,
                                           String              PropertyName,
@@ -1359,14 +1233,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new IChargingPool[] { ChargingPool }));
 
         }
 
@@ -1384,7 +1251,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             ISendPOIData.DeleteStaticData(IChargingPool       ChargingPool,
                                           TransmissionTypes   TransmissionType,
@@ -1396,14 +1263,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, new IChargingPool[] { ChargingPool }));
 
         }
 
@@ -1422,7 +1282,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             ISendPOIData.SetStaticData(IEnumerable<IChargingPool>  ChargingPools,
                                        TransmissionTypes           TransmissionType,
@@ -1434,14 +1294,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPools == null)
-                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
 
         }
 
@@ -1459,7 +1312,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             ISendPOIData.AddStaticData(IEnumerable<IChargingPool>  ChargingPools,
                                        TransmissionTypes           TransmissionType,
@@ -1471,14 +1324,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPools == null)
-                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
 
         }
 
@@ -1496,7 +1342,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             ISendPOIData.UpdateStaticData(IEnumerable<IChargingPool>  ChargingPools,
                                           TransmissionTypes           TransmissionType,
@@ -1508,14 +1354,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPools == null)
-                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
 
         }
 
@@ -1533,7 +1372,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushEVSEDataResult>
+        Task<PushChargingPoolDataResult>
 
             ISendPOIData.DeleteStaticData(IEnumerable<IChargingPool>  ChargingPools,
                                           TransmissionTypes           TransmissionType,
@@ -1545,14 +1384,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (ChargingPools == null)
-                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
-
-            #endregion
-
-            return Task.FromResult(PushEVSEDataResult.NoOperation(Id, this, null));
+            return Task.FromResult(PushChargingPoolDataResult.NoOperation(Id, this, ChargingPools));
 
         }
 
