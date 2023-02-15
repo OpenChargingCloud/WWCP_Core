@@ -736,6 +736,10 @@ namespace cloud.charging.open.protocols.WWCP
         public IChargingPool? CreateChargingPool(ChargingPool_Id?                                             Id                             = null,
                                                  I18NString?                                                  Name                           = null,
                                                  I18NString?                                                  Description                    = null,
+
+                                                 Address?                                                     Address                        = null,
+                                                 GeoCoordinate?                                               GeoLocation                    = null,
+
                                                  Action<IChargingPool>?                                       Configurator                   = null,
                                                  RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
                                                  Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
@@ -775,6 +779,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                 this,
                                                 Name,
                                                 Description,
+
+                                                Address,
+                                                GeoLocation,
+
                                                 Configurator,
                                                 RemoteChargingPoolCreator,
                                                 InitialAdminStatus,
@@ -839,6 +847,10 @@ namespace cloud.charging.open.protocols.WWCP
         public IChargingPool? CreateOrUpdateChargingPool(ChargingPool_Id                                              Id,
                                                          I18NString?                                                  Name                           = null,
                                                          I18NString?                                                  Description                    = null,
+
+                                                         Address?                                                     Address                        = null,
+                                                         GeoCoordinate?                                               GeoLocation                    = null,
+
                                                          Action<IChargingPool>?                                       Configurator                   = null,
                                                          RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
                                                          Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
@@ -870,6 +882,10 @@ namespace cloud.charging.open.protocols.WWCP
                     return CreateChargingPool(Id,
                                               Name,
                                               Description,
+
+                                              Address,
+                                              GeoLocation,
+
                                               Configurator,
                                               RemoteChargingPoolCreator,
                                               InitialAdminStatus,
@@ -895,6 +911,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                 this,
                                                                                 Name,
                                                                                 Description,
+
+                                                                                Address,
+                                                                                GeoLocation,
+
                                                                                 Configurator,
                                                                                 null,
                                                                                 new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),

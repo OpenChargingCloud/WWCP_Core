@@ -975,6 +975,10 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingPool(ChargingPool_Id                             Id,
                             I18NString?                                 Name                         = null,
                             I18NString?                                 Description                  = null,
+
+                            Address?                                    Address                      = null,
+                            GeoCoordinate?                              GeoLocation                  = null,
+
                             Action<ChargingPool>?                       Configurator                 = null,
                             RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator    = null,
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
@@ -986,6 +990,10 @@ namespace cloud.charging.open.protocols.WWCP
                    null,
                    Name,
                    Description,
+
+                   Address,
+                   GeoLocation,
+
                    Configurator,
                    RemoteChargingPoolCreator,
                    InitialAdminStatus,
@@ -1014,6 +1022,10 @@ namespace cloud.charging.open.protocols.WWCP
                             ChargingStationOperator                     Operator,
                             I18NString?                                 Name                             = null,
                             I18NString?                                 Description                      = null,
+
+                            Address?                                    Address                          = null,
+                            GeoCoordinate?                              GeoLocation                      = null,
+
                             Action<ChargingPool>?                       Configurator                     = null,
                             RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator        = null,
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
@@ -1042,6 +1054,9 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             #region Init data and properties
+
+            this.Address                           = Address;
+            this.GeoLocation                       = GeoLocation;
 
             this.Operator                          = Operator;
             this.openingTimes                      = OpeningTimes.Open24Hours;

@@ -50,6 +50,11 @@ namespace cloud.charging.open.protocols.WWCP
         I18NString             Name             { get; }
 
         /// <summary>
+        /// The offical (multi-language) description of the roaming provider.
+        /// </summary>
+        I18NString             Description      { get; }
+
+        /// <summary>
         /// The hosting WWCP roaming network.
         /// </summary>
         IRoamingNetwork        RoamingNetwork   { get; }

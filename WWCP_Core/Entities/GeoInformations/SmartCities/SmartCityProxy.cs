@@ -506,6 +506,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public Boolean  DisablePushStatus                { get; set; }
 
+        public IncludeEVSEIdDelegate IncludeEVSEIds => throw new NotImplementedException();
+
+        public IncludeEVSEDelegate IncludeEVSEs => throw new NotImplementedException();
+
+        public IncludeChargingStationIdDelegate IncludeChargingStationIds => throw new NotImplementedException();
+
+        public IncludeChargingStationDelegate IncludeChargingStations => throw new NotImplementedException();
+
+        public IncludeChargingPoolIdDelegate IncludeChargingPoolIds => throw new NotImplementedException();
+
+        public IncludeChargingPoolDelegate IncludeChargingPools => throw new NotImplementedException();
+
         #endregion
 
 

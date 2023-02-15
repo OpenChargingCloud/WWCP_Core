@@ -55,6 +55,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                        ChargingPool_Id                                     ChargingPoolId,
                                                        I18NString?                                         Name                              = null,
                                                        I18NString?                                         Description                       = null,
+
+                                                       Address?                                            Address                           = null,
+                                                       GeoCoordinate?                                      GeoLocation                       = null,
+
                                                        ChargingPoolAdminStatusTypes?                       InitialAdminStatus                = null,
                                                        ChargingPoolStatusTypes?                            InitialStatus                     = null,
                                                        String                                              EllipticCurve                     = "P-256",
@@ -72,6 +76,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    ChargingPoolId,
                    Name,
                    Description,
+
+                   Address,
+                   GeoLocation,
+
                    ChargingPoolConfigurator,
                    newPool => {
 
@@ -82,6 +90,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 newPool.Description,
                                                 InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
                                                 InitialStatus      ?? ChargingPoolStatusTypes.Available,
+
+                                                Address,
+                                                GeoLocation,
+
                                                 EllipticCurve,
                                                 PrivateKey,
                                                 PublicKeyCertificates,
@@ -156,6 +168,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    I18NString?                    Description                  = null,
                                    ChargingPoolAdminStatusTypes?  InitialAdminStatus           = null,
                                    ChargingPoolStatusTypes?       InitialStatus                = null,
+
+                                   Address?                       Address                      = null,
+                                   GeoCoordinate?                 GeoLocation                  = null,
+
                                    String                         EllipticCurve                = "P-256",
                                    ECPrivateKeyParameters?        PrivateKey                   = null,
                                    PublicKeyCertificates?         PublicKeyCertificates        = null,
@@ -190,6 +206,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             #region Init data and properties
 
             this.chargingStations     = new HashSet<IChargingStation>();
+
+            this.Address              = Address;
+            this.GeoLocation          = GeoLocation;
 
             #endregion
 

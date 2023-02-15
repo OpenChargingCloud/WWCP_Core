@@ -44,10 +44,42 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+
+        /// <summary>
+        /// Only include EVSE identifications matching the given delegate.
+        /// </summary>
+        IncludeEVSEIdDelegate              IncludeEVSEIds                     { get; }
+
+        /// <summary>
+        /// Only include EVSEs matching the given delegate.
+        /// </summary>
+        IncludeEVSEDelegate                IncludeEVSEs                       { get; }
+
+        /// <summary>
+        /// Only include charging station identifications matching the given delegate.
+        /// </summary>
+        IncludeChargingStationIdDelegate   IncludeChargingStationIds          { get; }
+
+        /// <summary>
+        /// Only include charging stations matching the given delegate.
+        /// </summary>
+        IncludeChargingStationDelegate     IncludeChargingStations            { get; }
+
+        /// <summary>
+        /// Only include charging pool identifications matching the given delegate.
+        /// </summary>
+        IncludeChargingPoolIdDelegate      IncludeChargingPoolIds             { get; }
+
+        /// <summary>
+        /// Only include charging pools matching the given delegate.
+        /// </summary>
+        IncludeChargingPoolDelegate        IncludeChargingPools               { get; }
+
+
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  DisablePushData   { get; set; }
+        Boolean                            DisablePushData                    { get; set; }
 
 
         // Push data directly...

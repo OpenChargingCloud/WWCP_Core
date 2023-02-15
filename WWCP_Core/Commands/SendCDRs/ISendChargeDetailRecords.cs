@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
     public interface ISendChargeDetailRecords
     {
 
-        IId               Id                               { get; }
+        IId                               Id                                { get; }
 
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate for filtering charge detail records.
         /// </summary>
-        ChargeDetailRecordFilterDelegate ChargeDetailRecordFilter          { get; }
+        ChargeDetailRecordFilterDelegate  ChargeDetailRecordFilter          { get; }
 
         /// <summary>
         /// An event fired whenever a charge detail record had been sent upstream.

@@ -194,6 +194,10 @@ namespace cloud.charging.open.protocols.WWCP
         IChargingPool? CreateChargingPool(ChargingPool_Id?                                             Id                             = null,
                                           I18NString?                                                  Name                           = null,
                                           I18NString?                                                  Description                    = null,
+
+                                          Address?                                                     Address                        = null,
+                                          GeoCoordinate?                                               GeoLocation                    = null,
+
                                           Action<IChargingPool>?                                       Configurator                   = null,
                                           RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
                                           Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
@@ -215,6 +219,10 @@ namespace cloud.charging.open.protocols.WWCP
         IChargingPool? CreateOrUpdateChargingPool(ChargingPool_Id                                              Id,
                                                   I18NString?                                                  Name                           = null,
                                                   I18NString?                                                  Description                    = null,
+
+                                                  Address?                                                     Address                        = null,
+                                                  GeoCoordinate?                                               GeoLocation                    = null,
+
                                                   Action<IChargingPool>?                                       Configurator                   = null,
                                                   RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
                                                   Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
