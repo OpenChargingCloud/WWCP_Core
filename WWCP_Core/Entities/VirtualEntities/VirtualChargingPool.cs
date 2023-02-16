@@ -29,6 +29,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using social.OpenData.UsersAPI;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP.Virtual
@@ -51,26 +53,28 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualChargingPoolConfigurator">An optional delegate to configure the new virtual charging station.</param>
         /// <param name="OnSuccess">An optional delegate for reporting success.</param>
         /// <param name="OnError">An optional delegate for reporting an error.</param>
-        public static IChargingPool? CreateVirtualPool(this IChargingStationOperator                       ChargingStationOperator,
-                                                       ChargingPool_Id                                     ChargingPoolId,
-                                                       I18NString?                                         Name                              = null,
-                                                       I18NString?                                         Description                       = null,
+        public static AddChargingPoolResult CreateVirtualPool(this IChargingStationOperator                       ChargingStationOperator,
+                                                              ChargingPool_Id                                     ChargingPoolId,
+                                                              I18NString?                                         Name                              = null,
+                                                              I18NString?                                         Description                       = null,
 
-                                                       Address?                                            Address                           = null,
-                                                       GeoCoordinate?                                      GeoLocation                       = null,
+                                                              Address?                                            Address                           = null,
+                                                              GeoCoordinate?                                      GeoLocation                       = null,
 
-                                                       ChargingPoolAdminStatusTypes?                       InitialAdminStatus                = null,
-                                                       ChargingPoolStatusTypes?                            InitialStatus                     = null,
-                                                       String                                              EllipticCurve                     = "P-256",
-                                                       ECPrivateKeyParameters?                             PrivateKey                        = null,
-                                                       PublicKeyCertificates?                              PublicKeyCertificates             = null,
-                                                       TimeSpan?                                           SelfCheckTimeSpan                 = null,
-                                                       UInt16                                              MaxAdminStatusListSize            = VirtualChargingPool.DefaultMaxAdminStatusListSize,
-                                                       UInt16                                              MaxStatusListSize                 = VirtualChargingPool.DefaultMaxStatusListSize,
-                                                       Action<IChargingPool>?                              ChargingPoolConfigurator          = null,
-                                                       Action<VirtualChargingPool>?                        VirtualChargingPoolConfigurator   = null,
-                                                       Action<IChargingPool>?                              OnSuccess                         = null,
-                                                       Action<IChargingStationOperator, ChargingPool_Id>?  OnError                           = null)
+                                                              ChargingPoolAdminStatusTypes?                       InitialAdminStatus                = null,
+                                                              ChargingPoolStatusTypes?                            InitialStatus                     = null,
+                                                              String                                              EllipticCurve                     = "P-256",
+                                                              ECPrivateKeyParameters?                             PrivateKey                        = null,
+                                                              PublicKeyCertificates?                              PublicKeyCertificates             = null,
+                                                              TimeSpan?                                           SelfCheckTimeSpan                 = null,
+                                                              UInt16                                              MaxAdminStatusListSize            = VirtualChargingPool.DefaultMaxAdminStatusListSize,
+                                                              UInt16                                              MaxStatusListSize                 = VirtualChargingPool.DefaultMaxStatusListSize,
+                                                              Action<IChargingPool>?                              ChargingPoolConfigurator          = null,
+                                                              Action<VirtualChargingPool>?                        VirtualChargingPoolConfigurator   = null,
+                                                              Action<IChargingPool>?                              OnSuccess                         = null,
+                                                              Action<IChargingStationOperator, ChargingPool_Id>?  OnError                           = null,
+                                                              EventTracking_Id?                                   EventTrackingId                   = null,
+                                                              User_Id?                                            CurrentUserId                     = null)
 
             => ChargingStationOperator.CreateChargingPool(
                    ChargingPoolId,
@@ -81,13 +85,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    GeoLocation,
 
                    ChargingPoolConfigurator,
-                   newPool => {
+                   newChargingPool => {
 
                        var virtualstation = new VirtualChargingPool(
-                                                newPool.Id,
+                                                newChargingPool.Id,
                                                 ChargingStationOperator.RoamingNetwork,
-                                                newPool.Name,
-                                                newPool.Description,
+                                                newChargingPool.Name,
+                                                newChargingPool.Description,
                                                 InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
                                                 InitialStatus      ?? ChargingPoolStatusTypes.Available,
 
@@ -107,9 +111,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        return virtualstation;
 
                    },
-
-                   OnSuccess: OnSuccess,
-                   OnError:   OnError
+                   InitialAdminStatus ?? ChargingPoolAdminStatusTypes.Operational,
+                   InitialStatus      ?? ChargingPoolStatusTypes.Available,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize,
+                   OnSuccess,
+                   OnError,
+                   null,
+                   EventTrackingId,
+                   CurrentUserId
                );
 
         #endregion

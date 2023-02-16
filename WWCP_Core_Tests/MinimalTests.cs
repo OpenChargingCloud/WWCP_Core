@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
 
             var _rn  = new RoamingNetwork(RoamingNetwork_Id.Parse("Test1"));
             var _op  = _rn.CreateChargingStationOperator(ChargingStationOperator_Id.Parse("DE*822"));
-            var _cp  = _op.CreateChargingPool();
+            var _cp  = _op.CreateChargingPool().ChargingPool;
             _cp.StatusAggregationDelegate = report => {
                                                           var max   = report.Max  (v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);

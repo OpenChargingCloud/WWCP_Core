@@ -99,11 +99,13 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 DE_GEF         is not null)
             {
 
-                var DE_GEF_P1234 = DE_GEF.CreateChargingPool(
-                                              Id:           ChargingPool_Id.Parse("DE*GEF*P1234"),
-                                              Name:         I18NString.Create(Languages.de, "DE*GEF Pool 1234"),
-                                              Description:  I18NString.Create(Languages.de, "powered by GraphDefined Charging Pools GmbH")
-                                          );
+                var DE_GEF_P1234Result = DE_GEF.CreateChargingPool(
+                                             Id:           ChargingPool_Id.Parse("DE*GEF*P1234"),
+                                             Name:         I18NString.Create(Languages.de, "DE*GEF Pool 1234"),
+                                             Description:  I18NString.Create(Languages.de, "powered by GraphDefined Charging Pools GmbH")
+                                         );
+
+                var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 
                 Assert.IsNotNull(DE_GEF_P1234);
 
@@ -149,27 +151,29 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var success = false;
 
-                var DE_GEF_P1234 = DE_GEF.CreateChargingPool(
-                                              Id:                  ChargingPool_Id.Parse("DE*GEF*P1234"),
-                                              Name:                I18NString.Create(Languages.de, "DE*GEF Pool 1234"),
-                                              Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Pools GmbH"),
-                                              InitialAdminStatus:  ChargingPoolAdminStatusTypes.OutOfService,
-                                              InitialStatus:       ChargingPoolStatusTypes.Offline,
-                                              OnSuccess:           chargingPool => success = true,
-                                              Configurator:        chargingPool => {
+                var DE_GEF_P1234Result = DE_GEF.CreateChargingPool(
+                                             Id:                  ChargingPool_Id.Parse("DE*GEF*P1234"),
+                                             Name:                I18NString.Create(Languages.de, "DE*GEF Pool 1234"),
+                                             Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Pools GmbH"),
+                                             InitialAdminStatus:  ChargingPoolAdminStatusTypes.OutOfService,
+                                             InitialStatus:       ChargingPoolStatusTypes.Offline,
+                                             OnSuccess:           chargingPool => success = true,
+                                             Configurator:        chargingPool => {
 
-                                                                       chargingPool.Brands.Add(new Brand(
-                                                                                                   Id:            Brand_Id.Parse("openChargingCloudChargingPool"),
-                                                                                                   Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Pool"),
-                                                                                                   Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
-                                                                                                   Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                                                                   DataLicenses:  new DataLicense[] {
-                                                                                                                      DataLicense.CreativeCommons_BY_SA_4
-                                                                                                                  }
-                                                                                               ));
+                                                                      chargingPool.Brands.Add(new Brand(
+                                                                                                  Id:            Brand_Id.Parse("openChargingCloudChargingPool"),
+                                                                                                  Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Pool"),
+                                                                                                  Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
+                                                                                                  Homepage:      URL.Parse("https://open.charging.cloud"),
+                                                                                                  DataLicenses:  new DataLicense[] {
+                                                                                                                     DataLicense.CreativeCommons_BY_SA_4
+                                                                                                                 }
+                                                                                              ));
 
-                                                                   }
-                                          );
+                                                                  }
+                                         );
+
+                var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 
                 Assert.IsNotNull(DE_GEF_P1234);
                 Assert.IsTrue   (success);
