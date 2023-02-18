@@ -26,14 +26,14 @@ using social.OpenData.UsersAPI;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class UpdateChargingStationResult : AEnitityResult<ChargingStation, ChargingStation_Id>
+    public class UpdateChargingStationResult : AEnitityResult<IChargingStation, ChargingStation_Id>
     {
 
-        public ChargingStation? ChargingStation
+        public IChargingStation? ChargingStation
             => Object;
 
 
-        public UpdateChargingStationResult(ChargingStation   ChargingStation,
+        public UpdateChargingStationResult(IChargingStation  ChargingStation,
                                            EventTracking_Id  EventTrackingId,
                                            Boolean           IsSuccess,
                                            String?           Argument           = null,
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         { }
 
 
-        public static UpdateChargingStationResult Success(ChargingStation   ChargingStation,
+        public static UpdateChargingStationResult Success(IChargingStation  ChargingStation,
                                                           EventTracking_Id  EventTrackingId)
 
             => new (ChargingStation,
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
                     null);
 
 
-        public static UpdateChargingStationResult ArgumentError(ChargingStation   ChargingStation,
+        public static UpdateChargingStationResult ArgumentError(IChargingStation  ChargingStation,
                                                                 EventTracking_Id  EventTrackingId,
                                                                 String            Argument,
                                                                 String            Description)
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Description
                     ));
 
-        public static UpdateChargingStationResult ArgumentError(ChargingStation   ChargingStation,
+        public static UpdateChargingStationResult ArgumentError(IChargingStation  ChargingStation,
                                                                 EventTracking_Id  EventTrackingId,
                                                                 String            Argument,
                                                                 I18NString        Description)
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP
                     Description);
 
 
-        public static UpdateChargingStationResult Failed(ChargingStation   ChargingStation,
+        public static UpdateChargingStationResult Failed(IChargingStation  ChargingStation,
                                                          EventTracking_Id  EventTrackingId,
                                                          String            Description)
 
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Description
                     ));
 
-        public static UpdateChargingStationResult Failed(ChargingStation   ChargingStation,
+        public static UpdateChargingStationResult Failed(IChargingStation  ChargingStation,
                                                          EventTracking_Id  EventTrackingId,
                                                          I18NString        Description)
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
                     null,
                     Description);
 
-        public static UpdateChargingStationResult Failed(ChargingStation   ChargingStation,
+        public static UpdateChargingStationResult Failed(IChargingStation  ChargingStation,
                                                          EventTracking_Id  EventTrackingId,
                                                          Exception         Exception)
 

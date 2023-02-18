@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                     Id:           ChargingStation_Id.Parse("DE*GEF*S1234"),
                                                     Name:         I18NString.Create(Languages.de, "DE*GEF Station 1234"),
                                                     Description:  I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH")
-                                                );
+                                                ).Result.ChargingStation;
 
                 Assert.IsNotNull(DE_GEF_S1234);
 
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                                              ));
 
                                                                          }
-                                                );
+                                                ).Result.ChargingStation;
 
                 Assert.IsNotNull(DE_GEF_S1234);
                 Assert.IsTrue   (success);

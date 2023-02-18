@@ -206,10 +206,10 @@ namespace cloud.charging.open.protocols.WWCP
         IChargingStationOperator?                        GetChargingStationOperatorById    (ChargingStationOperator_Id?              ChargingStationOperatorId);
         Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id               ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
         Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id?              ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
-        IChargingStationOperator?                        RemoveChargingStationOperator     (ChargingStationOperator_Id               ChargingStationOperatorId);
-        IChargingStationOperator?                        RemoveChargingStationOperator     (ChargingStationOperator_Id?              ChargingStationOperatorId);
+        Task<RemoveChargingStationOperatorResult>        RemoveChargingStationOperator     (ChargingStationOperator_Id               ChargingStationOperatorId);
+        //Task<RemoveChargingStationOperatorResult>        RemoveChargingStationOperator     (ChargingStationOperator_Id?              ChargingStationOperatorId);
         Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id               ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
-        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id?              ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+        //Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id?              ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
 
         IEnumerable<ChargingStationOperator_Id>          ChargingStationOperatorIds        (IncludeChargingStationOperatorDelegate?  IncludeChargingStationOperator   = null);
 
@@ -232,15 +232,15 @@ namespace cloud.charging.open.protocols.WWCP
         //                                               UInt64?                                       Take                             = null);
 
 
-        IChargingStationOperator? CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
-                                                                I18NString?                                          Name                                   = null,
-                                                                I18NString?                                          Description                            = null,
-                                                                Action<IChargingStationOperator>?                    Configurator                           = null,
-                                                                RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
-                                                                ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
-                                                                ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
-                                                                Action<IChargingStationOperator>?                    OnSuccess                              = null,
-                                                                Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null);
+        Task<AddChargingStationOperatorResult> CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
+                                                                             I18NString?                                          Name                                   = null,
+                                                                             I18NString?                                          Description                            = null,
+                                                                             Action<IChargingStationOperator>?                    Configurator                           = null,
+                                                                             RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
+                                                                             ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
+                                                                             ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
+                                                                             Action<IChargingStationOperator>?                    OnSuccess                              = null,
+                                                                             Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null);
 
         #endregion
 

@@ -26,14 +26,14 @@ using social.OpenData.UsersAPI;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class UpdateEVSEResult : AEnitityResult<EVSE, EVSE_Id>
+    public class UpdateEVSEResult : AEnitityResult<IEVSE, EVSE_Id>
     {
 
-        public EVSE? EVSE
+        public IEVSE? EVSE
             => Object;
 
 
-        public UpdateEVSEResult(EVSE              EVSE,
+        public UpdateEVSEResult(IEVSE             EVSE,
                                 EventTracking_Id  EventTrackingId,
                                 Boolean           IsSuccess,
                                 String?           Argument           = null,
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
         { }
 
 
-        public static UpdateEVSEResult Success(EVSE              EVSE,
+        public static UpdateEVSEResult Success(IEVSE             EVSE,
                                                EventTracking_Id  EventTrackingId)
 
             => new (EVSE,
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
                     null);
 
 
-        public static UpdateEVSEResult ArgumentError(EVSE              EVSE,
+        public static UpdateEVSEResult ArgumentError(IEVSE             EVSE,
                                                      EventTracking_Id  EventTrackingId,
                                                      String            Argument,
                                                      String            Description)
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Description
                     ));
 
-        public static UpdateEVSEResult ArgumentError(EVSE              EVSE,
+        public static UpdateEVSEResult ArgumentError(IEVSE             EVSE,
                                                      EventTracking_Id  EventTrackingId,
                                                      String            Argument,
                                                      I18NString        Description)
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP
                     Description);
 
 
-        public static UpdateEVSEResult Failed(EVSE              EVSE,
+        public static UpdateEVSEResult Failed(IEVSE             EVSE,
                                               EventTracking_Id  EventTrackingId,
                                               String            Description)
 
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Description
                     ));
 
-        public static UpdateEVSEResult Failed(EVSE              EVSE,
+        public static UpdateEVSEResult Failed(IEVSE             EVSE,
                                               EventTracking_Id  EventTrackingId,
                                               I18NString        Description)
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
                     null,
                     Description);
 
-        public static UpdateEVSEResult Failed(EVSE              EVSE,
+        public static UpdateEVSEResult Failed(IEVSE             EVSE,
                                               EventTracking_Id  EventTrackingId,
                                               Exception         Exception)
 

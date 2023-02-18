@@ -51,23 +51,23 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSEConfigurator">An optional delegate to configure the new EVSE.</param>
         /// <param name="OnSuccess">An optional delegate for reporting success.</param>
         /// <param name="OnError">An optional delegate for reporting an error.</param>
-        public static IEVSE? CreateVirtualEVSE(this IChargingStation               ChargingStation,
-                                               EVSE_Id                             EVSEId,
-                                               I18NString?                         Name                      = null,
-                                               I18NString?                         Description               = null,
-                                               EVSEAdminStatusTypes?               InitialAdminStatus        = null,
-                                               EVSEStatusTypes?                    InitialStatus             = null,
-                                               EnergyMeter_Id?                     EnergyMeterId             = null,
-                                               String                              EllipticCurve             = "P-256",
-                                               ECPrivateKeyParameters?             PrivateKey                = null,
-                                               PublicKeyCertificates?              PublicKeyCertificates     = null,
-                                               TimeSpan?                           SelfCheckTimeSpan         = null,
-                                               UInt16                              MaxAdminStatusListSize    = VirtualEVSE.DefaultMaxAdminStatusListSize,
-                                               UInt16                              MaxStatusListSize         = VirtualEVSE.DefaultMaxStatusListSize,
-                                               Action<IEVSE>?                      EVSEConfigurator          = null,
-                                               Action<VirtualEVSE>?                VirtualEVSEConfigurator   = null,
-                                               Action<IEVSE>?                      OnSuccess                 = null,
-                                               Action<IChargingStation, EVSE_Id>?  OnError                   = null)
+        public static Task<AddEVSEResult> CreateVirtualEVSE(this IChargingStation               ChargingStation,
+                                                            EVSE_Id                             EVSEId,
+                                                            I18NString?                         Name                      = null,
+                                                            I18NString?                         Description               = null,
+                                                            EVSEAdminStatusTypes?               InitialAdminStatus        = null,
+                                                            EVSEStatusTypes?                    InitialStatus             = null,
+                                                            EnergyMeter_Id?                     EnergyMeterId             = null,
+                                                            String                              EllipticCurve             = "P-256",
+                                                            ECPrivateKeyParameters?             PrivateKey                = null,
+                                                            PublicKeyCertificates?              PublicKeyCertificates     = null,
+                                                            TimeSpan?                           SelfCheckTimeSpan         = null,
+                                                            UInt16                              MaxAdminStatusListSize    = VirtualEVSE.DefaultMaxAdminStatusListSize,
+                                                            UInt16                              MaxStatusListSize         = VirtualEVSE.DefaultMaxStatusListSize,
+                                                            Action<IEVSE>?                      EVSEConfigurator          = null,
+                                                            Action<VirtualEVSE>?                VirtualEVSEConfigurator   = null,
+                                                            Action<IEVSE>?                      OnSuccess                 = null,
+                                                            Action<IChargingStation, EVSE_Id>?  OnError                   = null)
 
             => ChargingStation.CreateEVSE(
                    EVSEId,

@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 Id:           EVSE_Id.Parse("DE*GEF*E1234"),
                                                                 Name:         I18NString.Create(Languages.de, "DE*GEF EVSE 1234"),
                                                                 Description:  I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH")
-                                                            );
+                                                            ).Result.EVSE;
 
                 Assert.IsNotNull(DE_GEF_E0001_AAAA_X);
 
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                                                          ));
 
                                                                                      }
-                                                            );
+                                                            ).Result.EVSE;
 
                 Assert.IsNotNull(DE_GEF_E1234_5678_1);
                 Assert.IsTrue   (success);

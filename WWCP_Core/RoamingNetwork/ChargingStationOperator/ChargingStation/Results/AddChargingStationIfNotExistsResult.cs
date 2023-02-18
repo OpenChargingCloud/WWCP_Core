@@ -26,24 +26,24 @@ using social.OpenData.UsersAPI;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class AddChargingStationIfNotExistsResult : AEnitityResult<ChargingStation, ChargingStation_Id>
+    public class AddChargingStationIfNotExistsResult : AEnitityResult<IChargingStation, ChargingStation_Id>
     {
 
-        public ChargingStation? ChargingStation
+        public IChargingStation? ChargingStation
             => Object;
 
-        public ChargingStationOperator?  ChargingStationOperator    { get; internal set; }
+        public IChargingPool?    ChargingPool      { get; internal set; }
 
-        public AddedOrIgnored?           AddedOrIgnored             { get; internal set; }
+        public AddedOrIgnored?   AddedOrIgnored    { get; internal set; }
 
 
-        public AddChargingStationIfNotExistsResult(ChargingStation           ChargingStation,
-                                                   EventTracking_Id          EventTrackingId,
-                                                   Boolean                   IsSuccess,
-                                                   String?                   Argument                  = null,
-                                                   I18NString?               ErrorDescription          = null,
-                                                   ChargingStationOperator?  ChargingStationOperator   = null,
-                                                   AddedOrIgnored?           AddedOrIgnored            = null)
+        public AddChargingStationIfNotExistsResult(IChargingStation  ChargingStation,
+                                                   EventTracking_Id  EventTrackingId,
+                                                   Boolean           IsSuccess,
+                                                   String?           Argument           = null,
+                                                   I18NString?       ErrorDescription   = null,
+                                                   IChargingPool?    ChargingPool       = null,
+                                                   AddedOrIgnored?   AddedOrIgnored     = null)
 
             : base(ChargingStation,
                    EventTrackingId,
@@ -53,27 +53,27 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.ChargingStationOperator  = ChargingStationOperator;
-            this.AddedOrIgnored           = AddedOrIgnored;
+            this.ChargingPool    = ChargingPool;
+            this.AddedOrIgnored  = AddedOrIgnored;
 
         }
 
 
-        public static AddChargingStationIfNotExistsResult Success(ChargingStation           ChargingStation,
-                                                                  AddedOrIgnored            AddedOrIgnored,
-                                                                  EventTracking_Id          EventTrackingId,
-                                                                  ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddChargingStationIfNotExistsResult Success(IChargingStation  ChargingStation,
+                                                                  AddedOrIgnored    AddedOrIgnored,
+                                                                  EventTracking_Id  EventTrackingId,
+                                                                  IChargingPool?    ChargingPool   = null)
 
             => new (ChargingStation,
                     EventTrackingId,
                     true,
                     null,
                     null,
-                    ChargingStationOperator,
+                    ChargingPool,
                     AddedOrIgnored);
 
 
-        public static AddChargingStationIfNotExistsResult ArgumentError(ChargingStation   ChargingStation,
+        public static AddChargingStationIfNotExistsResult ArgumentError(IChargingStation  ChargingStation,
                                                                         EventTracking_Id  EventTrackingId,
                                                                         String            Argument,
                                                                         String            Description)
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Description
                     ));
 
-        public static AddChargingStationIfNotExistsResult ArgumentError(ChargingStation   ChargingStation,
+        public static AddChargingStationIfNotExistsResult ArgumentError(IChargingStation  ChargingStation,
                                                                         EventTracking_Id  EventTrackingId,
                                                                         String            Argument,
                                                                         I18NString        Description)
@@ -99,10 +99,10 @@ namespace cloud.charging.open.protocols.WWCP
                     Description);
 
 
-        public static AddChargingStationIfNotExistsResult Failed(ChargingStation           ChargingStation,
-                                                                 EventTracking_Id          EventTrackingId,
-                                                                 String                    Description,
-                                                                 ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddChargingStationIfNotExistsResult Failed(IChargingStation  ChargingStation,
+                                                                 EventTracking_Id  EventTrackingId,
+                                                                 String            Description,
+                                                                 IChargingPool?    ChargingPool   = null)
 
             => new (ChargingStation,
                     EventTrackingId,
@@ -112,24 +112,24 @@ namespace cloud.charging.open.protocols.WWCP
                         Languages.en,
                         Description
                     ),
-                    ChargingStationOperator);
+                    ChargingPool);
 
-        public static AddChargingStationIfNotExistsResult Failed(ChargingStation           ChargingStation,
-                                                                 EventTracking_Id          EventTrackingId,
-                                                                 I18NString                Description,
-                                                                 ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddChargingStationIfNotExistsResult Failed(IChargingStation  ChargingStation,
+                                                                 EventTracking_Id  EventTrackingId,
+                                                                 I18NString        Description,
+                                                                 IChargingPool?    ChargingPool   = null)
 
             => new (ChargingStation,
                     EventTrackingId,
                     false,
                     null,
                     Description,
-                    ChargingStationOperator);
+                    ChargingPool);
 
-        public static AddChargingStationIfNotExistsResult Failed(ChargingStation           ChargingStation,
-                                                                 EventTracking_Id          EventTrackingId,
-                                                                 Exception                 Exception,
-                                                                 ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddChargingStationIfNotExistsResult Failed(IChargingStation  ChargingStation,
+                                                                 EventTracking_Id  EventTrackingId,
+                                                                 Exception         Exception,
+                                                                 IChargingPool?    ChargingPool   = null)
 
             => new (ChargingStation,
                     EventTrackingId,
@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Languages.en,
                         Exception.Message
                     ),
-                    ChargingStationOperator);
+                    ChargingPool);
 
     }
 

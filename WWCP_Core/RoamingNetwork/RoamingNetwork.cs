@@ -1298,7 +1298,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station operator after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
-        public IChargingStationOperator?
+        public async Task<AddChargingStationOperatorResult>
 
             CreateChargingStationOperator(ChargingStationOperator_Id                           Id,
                                           I18NString?                                          Name                                   = null,
@@ -1312,11 +1312,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            lock (chargingStationOperators)
-            {
+            //lock (chargingStationOperators)
+            //{
 
                 if (chargingStationOperators.ContainsId(Id))
-                    throw new ChargingStationOperatorAlreadyExists(this, Id, Name ?? I18NString.Empty);
+                    return AddChargingStationOperatorResult.Failed(
+                               Id,
+                               EventTracking_Id.New,
+                               "Duplicate charging station operator identification!"
+                           );
+
 
                 var chargingStationOperator = new ChargingStationOperator(Id,
                                                                           this,
@@ -1366,16 +1371,21 @@ namespace cloud.charging.open.protocols.WWCP
                     chargingStationOperator.OnNewChargingSession                       += SendNewChargingSession;
                     chargingStationOperator.OnNewChargeDetailRecord                    += SendNewChargeDetailRecord;
 
-                    return chargingStationOperator;
+                    return AddChargingStationOperatorResult.Success(
+                               chargingStationOperator,
+                               EventTracking_Id.New,
+                               this
+                           );
 
                 }
 
-                //ToDo: Throw a more usefull exception!
-                throw new ChargingStationOperatorAlreadyExists(this,
-                                                               ChargingStationOperatorIds().FirstOrDefault(),
-                                                               Name);
+                return AddChargingStationOperatorResult.Failed(
+                           Id,
+                           EventTracking_Id.New,
+                           ""
+                       );
 
-            }
+            //}
 
         }
 
@@ -1443,28 +1453,55 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveChargingStationOperator    (ChargingStationOperatorId)
 
-        public IChargingStationOperator? RemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
+        public async Task<RemoveChargingStationOperatorResult>
+
+            RemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
+
         {
 
-            if (chargingStationOperators.TryRemove(ChargingStationOperatorId, out var chargingStationOperator))
-                return chargingStationOperator;
-
-            return null;
-
-        }
-
-        public IChargingStationOperator? RemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId)
-        {
-
-            if (ChargingStationOperatorId.HasValue &&
-                chargingStationOperators.TryRemove(ChargingStationOperatorId.Value, out var chargingStationOperator))
+            if (chargingStationOperators.TryRemove(ChargingStationOperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
             {
-                return chargingStationOperator;
+
+                return RemoveChargingStationOperatorResult.Success(
+                           chargingStationOperator,
+                           EventTracking_Id.New,
+                           this
+                       );
+
             }
 
-            return null;
+            return RemoveChargingStationOperatorResult.Failed(
+                       ChargingStationOperatorId,
+                       EventTracking_Id.New,
+                       ""
+                   );
 
         }
+
+        //public async Task<RemoveChargingStationOperatorResult> RemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId)
+        //{
+
+        //    if (ChargingStationOperatorId.HasValue &&
+        //        chargingStationOperators.TryRemove(ChargingStationOperatorId.Value, out var chargingStationOperator) &&
+        //        chargingStationOperator is not null)
+        //    {
+
+        //        return RemoveChargingStationOperatorResult.Success(
+        //                   chargingStationOperator,
+        //                   EventTracking_Id.New,
+        //                   this
+        //               );
+
+        //    }
+
+        //    return RemoveChargingStationOperatorResult.Failed(
+        //               default,
+        //               EventTracking_Id.New,
+        //               ""
+        //           );
+
+        //}
 
         #endregion
 
@@ -1474,18 +1511,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             => chargingStationOperators.TryRemove(ChargingStationOperatorId, out ChargingStationOperator);
 
-        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
-        {
+        //public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        //{
 
-            if (!ChargingStationOperatorId.HasValue)
-            {
-                ChargingStationOperator = null;
-                return false;
-            }
+        //    if (!ChargingStationOperatorId.HasValue)
+        //    {
+        //        ChargingStationOperator = null;
+        //        return false;
+        //    }
 
-            return chargingStationOperators.TryRemove(ChargingStationOperatorId.Value, out ChargingStationOperator);
+        //    return chargingStationOperators.TryRemove(ChargingStationOperatorId.Value, out ChargingStationOperator);
 
-        }
+        //}
 
         #endregion
 

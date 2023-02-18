@@ -26,24 +26,24 @@ using social.OpenData.UsersAPI;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class AddOrUpdateEVSEResult : AEnitityResult<EVSE, EVSE_Id>
+    public class AddOrUpdateEVSEResult : AEnitityResult<IEVSE, EVSE_Id>
     {
 
-        public EVSE? EVSE
+        public IEVSE? EVSE
             => Object;
 
-        public ChargingStationOperator?  ChargingStationOperator    { get; internal set; }
+        public IChargingStation?  ChargingStation    { get; internal set; }
 
-        public AddedOrUpdated?           AddedOrUpdated             { get; internal set; }
+        public AddedOrUpdated?    AddedOrUpdated     { get; internal set; }
 
 
-        public AddOrUpdateEVSEResult(EVSE                      EVSE,
-                                     EventTracking_Id          EventTrackingId,
-                                     Boolean                   IsSuccess,
-                                     String?                   Argument                  = null,
-                                     I18NString?               ErrorDescription          = null,
-                                     ChargingStationOperator?  ChargingStationOperator   = null,
-                                     AddedOrUpdated?           AddedOrUpdated            = null)
+        public AddOrUpdateEVSEResult(IEVSE              EVSE,
+                                     EventTracking_Id   EventTrackingId,
+                                     Boolean            IsSuccess,
+                                     String?            Argument           = null,
+                                     I18NString?        ErrorDescription   = null,
+                                     IChargingStation?  ChargingStation    = null,
+                                     AddedOrUpdated?    AddedOrUpdated     = null)
 
             : base(EVSE,
                    EventTrackingId,
@@ -53,27 +53,48 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.ChargingStationOperator  = ChargingStationOperator;
-            this.AddedOrUpdated           = AddedOrUpdated;
+            this.ChargingStation  = ChargingStation;
+            this.AddedOrUpdated   = AddedOrUpdated;
+
+        }
+
+        public AddOrUpdateEVSEResult(EVSE_Id            Id,
+                                     EventTracking_Id   EventTrackingId,
+                                     Boolean            IsSuccess,
+                                     String?            Argument           = null,
+                                     I18NString?        ErrorDescription   = null,
+                                     IChargingStation?  ChargingStation    = null,
+                                     AddedOrUpdated?    AddedOrUpdated     = null)
+
+            : base(Id,
+                   EventTrackingId,
+                   IsSuccess,
+                   Argument,
+                   ErrorDescription)
+
+        {
+
+            this.ChargingStation  = ChargingStation;
+            this.AddedOrUpdated   = AddedOrUpdated;
 
         }
 
 
-        public static AddOrUpdateEVSEResult Success(EVSE                      EVSE,
-                                                    AddedOrUpdated            AddedOrUpdated,
-                                                    EventTracking_Id          EventTrackingId,
-                                                    ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddOrUpdateEVSEResult Success(IEVSE              EVSE,
+                                                    AddedOrUpdated     AddedOrUpdated,
+                                                    EventTracking_Id   EventTrackingId,
+                                                    IChargingStation?  ChargingStation   = null)
 
             => new (EVSE,
                     EventTrackingId,
                     true,
                     null,
                     null,
-                    ChargingStationOperator,
+                    ChargingStation,
                     AddedOrUpdated);
 
 
-        public static AddOrUpdateEVSEResult ArgumentError(EVSE              EVSE,
+        public static AddOrUpdateEVSEResult ArgumentError(IEVSE             EVSE,
                                                           EventTracking_Id  EventTrackingId,
                                                           String            Argument,
                                                           String            Description)
@@ -87,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Description
                     ));
 
-        public static AddOrUpdateEVSEResult ArgumentError(EVSE              EVSE,
+        public static AddOrUpdateEVSEResult ArgumentError(IEVSE             EVSE,
                                                           EventTracking_Id  EventTrackingId,
                                                           String            Argument,
                                                           I18NString        Description)
@@ -99,10 +120,25 @@ namespace cloud.charging.open.protocols.WWCP
                     Description);
 
 
-        public static AddOrUpdateEVSEResult Failed(EVSE                      EVSE,
-                                                   EventTracking_Id          EventTrackingId,
-                                                   String                    Description,
-                                                   ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddOrUpdateEVSEResult Failed(EVSE_Id            Id,
+                                                   EventTracking_Id   EventTrackingId,
+                                                   String             Description,
+                                                   IChargingStation?  ChargingStation   = null)
+
+            => new (Id,
+                    EventTrackingId,
+                    false,
+                    null,
+                    I18NString.Create(
+                        Languages.en,
+                        Description
+                    ),
+                    ChargingStation);
+
+        public static AddOrUpdateEVSEResult Failed(IEVSE              EVSE,
+                                                   EventTracking_Id   EventTrackingId,
+                                                   String             Description,
+                                                   IChargingStation?  ChargingStation   = null)
 
             => new (EVSE,
                     EventTrackingId,
@@ -112,24 +148,24 @@ namespace cloud.charging.open.protocols.WWCP
                         Languages.en,
                         Description
                     ),
-                    ChargingStationOperator);
+                    ChargingStation);
 
-        public static AddOrUpdateEVSEResult Failed(EVSE                      EVSE,
-                                                   EventTracking_Id          EventTrackingId,
-                                                   I18NString                Description,
-                                                   ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddOrUpdateEVSEResult Failed(IEVSE              EVSE,
+                                                   EventTracking_Id   EventTrackingId,
+                                                   I18NString         Description,
+                                                   IChargingStation?  ChargingStation   = null)
 
             => new (EVSE,
                     EventTrackingId,
                     false,
                     null,
                     Description,
-                    ChargingStationOperator);
+                    ChargingStation);
 
-        public static AddOrUpdateEVSEResult Failed(EVSE                      EVSE,
-                                                   EventTracking_Id          EventTrackingId,
-                                                   Exception                 Exception,
-                                                   ChargingStationOperator?  ChargingStationOperator   = null)
+        public static AddOrUpdateEVSEResult Failed(IEVSE              EVSE,
+                                                   EventTracking_Id   EventTrackingId,
+                                                   Exception          Exception,
+                                                   IChargingStation?  ChargingStation   = null)
 
             => new (EVSE,
                     EventTrackingId,
@@ -139,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Languages.en,
                         Exception.Message
                     ),
-                    ChargingStationOperator);
+                    ChargingStation);
 
     }
 

@@ -1444,19 +1444,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public IChargingStation? CreateChargingStation(ChargingStation_Id                                              Id,
-                                                       I18NString?                                                     Name                           = null,
-                                                       I18NString?                                                     Description                    = null,
-                                                       Action<IChargingStation>?                                       Configurator                   = null,
-                                                       RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
-                                                       Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                       Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                       UInt16?                                                         MaxAdminStatusListSize         = null,
-                                                       UInt16?                                                         MaxStatusListSize              = null,
-                                                       Action<IChargingStation>?                                       OnSuccess                      = null,
-                                                       Action<IChargingPool, ChargingStation_Id>?                      OnError                        = null,
-                                                       Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null)
+        public async Task<AddChargingStationResult> CreateChargingStation(ChargingStation_Id                                              Id,
+                                                                          I18NString?                                                     Name                           = null,
+                                                                          I18NString?                                                     Description                    = null,
+
+                                                                          Address?                                                        Address                        = null,
+                                                                          GeoCoordinate?                                                  GeoLocation                    = null,
+
+                                                                          Action<IChargingStation>?                                       Configurator                   = null,
+                                                                          RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                                          Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                          Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                                          UInt16?                                                         MaxAdminStatusListSize         = null,
+                                                                          UInt16?                                                         MaxStatusListSize              = null,
+                                                                          Action<IChargingStation>?                                       OnSuccess                      = null,
+                                                                          Action<IChargingPool, ChargingStation_Id>?                      OnError                        = null,
+                                                                          Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null)
         {
+
+            //ToDo: Add async lock!
 
             #region Initial checks
 
@@ -1481,6 +1487,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                       this,
                                                       Name,
                                                       Description,
+
+                                                      Address,
+                                                      GeoLocation,
+
                                                       Configurator,
                                                       RemoteChargingStationCreator,
                                                       InitialAdminStatus,
@@ -1564,7 +1574,7 @@ namespace cloud.charging.open.protocols.WWCP
                 OnSuccess?.Invoke(chargingStation);
                 ChargingStationAddition.SendNotification(Timestamp.Now, this, chargingStation);
 
-                return chargingStation;
+                return AddChargingStationResult.Success(chargingStation, EventTracking_Id.New);
 
             }
 
@@ -1595,22 +1605,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public IChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id                                              Id,
-                                                               I18NString?                                                     Name                           = null,
-                                                               I18NString?                                                     Description                    = null,
-                                                               Action<IChargingStation>?                                       Configurator                   = null,
-                                                               RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
-                                                               Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                               Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                               UInt16?                                                         MaxAdminStatusListSize         = null,
-                                                               UInt16?                                                         MaxStatusListSize              = null,
-                                                               Action<IChargingStation>?                                       OnSuccess                      = null,
-                                                               Action<IChargingPool, ChargingStation_Id>?                      OnError                        = null,
-                                                               Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null)
+        public async Task<AddChargingStationResult> CreateOrUpdateChargingStation(ChargingStation_Id                                              Id,
+                                                                                  I18NString?                                                     Name                           = null,
+                                                                                  I18NString?                                                     Description                    = null,
+
+                                                                                  Address?                                                        Address                        = null,
+                                                                                  GeoCoordinate?                                                  GeoLocation                    = null,
+
+                                                                                  Action<IChargingStation>?                                       Configurator                   = null,
+                                                                                  RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                                                  Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                                  Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                                                  UInt16?                                                         MaxAdminStatusListSize         = null,
+                                                                                  UInt16?                                                         MaxStatusListSize              = null,
+                                                                                  Action<IChargingStation>?                                       OnSuccess                      = null,
+                                                                                  Action<IChargingPool, ChargingStation_Id>?                      OnError                        = null,
+                                                                                  Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null)
         {
 
-            lock (chargingStations)
-            {
+            //lock (chargingStations)
+            //{
 
                 #region Initial checks
 
@@ -1626,18 +1640,22 @@ namespace cloud.charging.open.protocols.WWCP
                 #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
 
                 if (!chargingStations.ContainsId(Id))
-                    return CreateChargingStation(Id,
-                                                 Name,
-                                                 Description,
-                                                 Configurator,
-                                                 RemoteChargingStationCreator,
-                                                 InitialAdminStatus,
-                                                 InitialStatus,
-                                                 MaxAdminStatusListSize ?? ChargingStation.DefaultMaxAdminStatusScheduleSize,
-                                                 MaxStatusListSize      ?? ChargingStation.DefaultMaxStatusScheduleSize,
-                                                 OnSuccess,
-                                                 OnError,
-                                                 AllowInconsistentOperatorIds);
+                    return await CreateChargingStation(Id,
+                                                       Name,
+                                                       Description,
+
+                                                       Address,
+                                                       GeoLocation,
+
+                                                       Configurator,
+                                                       RemoteChargingStationCreator,
+                                                       InitialAdminStatus,
+                                                       InitialStatus,
+                                                       MaxAdminStatusListSize ?? ChargingStation.DefaultMaxAdminStatusScheduleSize,
+                                                       MaxStatusListSize      ?? ChargingStation.DefaultMaxStatusScheduleSize,
+                                                       OnSuccess,
+                                                       OnError,
+                                                       AllowInconsistentOperatorIds);
 
                 #endregion
 
@@ -1647,19 +1665,29 @@ namespace cloud.charging.open.protocols.WWCP
                 // Merge existing charging station with new station data...
 
                 if (existingChargingStation is not null)
-                    return existingChargingStation.
-                               UpdateWith(new ChargingStation(Id,
-                                                              this,
-                                                              Name,
-                                                              Description,
-                                                              Configurator,
-                                                              null,
-                                                              new Timestamped<ChargingStationAdminStatusTypes>(DateTime.MinValue, ChargingStationAdminStatusTypes.Operational),
-                                                              new Timestamped<ChargingStationStatusTypes>     (DateTime.MinValue, ChargingStationStatusTypes.     Available)));
+                {
+
+                    var updatedChargingStation = existingChargingStation.
+                                                     UpdateWith(new ChargingStation(Id,
+                                                                                    this,
+                                                                                    Name,
+                                                                                    Description,
+
+                                                                                    Address,
+                                                                                    GeoLocation,
+
+                                                                                    Configurator,
+                                                                                    null,
+                                                                                    new Timestamped<ChargingStationAdminStatusTypes>(DateTime.MinValue, ChargingStationAdminStatusTypes.Operational),
+                                                                                    new Timestamped<ChargingStationStatusTypes>(DateTime.MinValue, ChargingStationStatusTypes.Available)));
+
+                    return AddChargingStationResult.Success(updatedChargingStation, EventTracking_Id.New);
+
+                }
 
                 return null;
 
-            }
+            //}
 
         }
 
@@ -1708,7 +1736,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveChargingStation(ChargingStationId)
 
-        public IChargingStation? RemoveChargingStation(ChargingStation_Id ChargingStationId)
+        public async Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id ChargingStationId)
         {
 
             if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
@@ -1722,7 +1750,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         ChargingStationRemoval.SendNotification(Timestamp.Now, this, chargingStation);
 
-                        return chargingStation;
+                        return RemoveChargingStationResult.Success(chargingStation, EventTracking_Id.New);
 
                     }
 
@@ -1730,7 +1758,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            return null;
+            return RemoveChargingStationResult.Failed(ChargingStationId, EventTracking_Id.New, "");
 
         }
 

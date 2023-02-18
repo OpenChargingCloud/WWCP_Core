@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                 Id:           ChargingStationOperator_Id.Parse("DE*XXX"),
                                                 Name:         I18NString.Create(Languages.de, "XXX CSO"),
                                                 Description:  I18NString.Create(Languages.de, "powered by GraphDefined CSOs GmbH")
-                                            );
+                                            ).Result.ChargingStationOperator;
 
                 Assert.IsNotNull(DE_XXX);
 

@@ -43,8 +43,8 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
         {
 
             var _rn  = new RoamingNetwork(RoamingNetwork_Id.Parse("Test1"));
-            var _op  = _rn.CreateChargingStationOperator(ChargingStationOperator_Id.Parse("DE*822"));
-            var _cp  = _op.CreateChargingPool().ChargingPool;
+            var _op  = _rn.CreateChargingStationOperator(ChargingStationOperator_Id.Parse("DE*822")).Result.ChargingStationOperator;
+            var _cp  = _op.CreateChargingPool().Result.ChargingPool;
             _cp.StatusAggregationDelegate = report => {
                                                           var max   = report.Max  (v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
                                                       };
             _cp.OnStatusChanged += async (ts, EventTrackingId, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 
-            var s1  = _cp.CreateChargingStation(ChargingStation_Id.NewRandom(_op.Id));
+            var s1  = _cp.CreateChargingStation(ChargingStation_Id.NewRandom(_op.Id)).Result.ChargingStation;
             //s1.StatusAggregationDelegate = report => {
             //                                              var max   = report.Max  (v => v.Value);
             //                                              var max_n = report.Where(o => o.Value == max);
@@ -61,10 +61,10 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
             //                                          };
             s1.OnStatusChanged += async (ts, EventTrackingId, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
 
-            var e1 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*1"));
-            var e2 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*2"));
-            var e3 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*3"));
-            var s2 = _cp.CreateChargingStation(ChargingStation_Id.NewRandom(_op.Id));
+            var e1 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*1")).Result.EVSE;
+            var e2 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*2")).Result.EVSE;
+            var e3 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*3")).Result.EVSE;
+            var s2 = _cp.CreateChargingStation(ChargingStation_Id.NewRandom(_op.Id)).Result.ChargingStation;
             //s2.StatusAggregationDelegate = report => {
             //                                              var max   = report.Max  (v => v.Value);
             //                                              var max_n = report.Where(o => o.Value == max);
@@ -72,9 +72,9 @@ namespace cloud.charging.open.protocols.WWCP.UnitTests
             //                                          };
             s2.OnStatusChanged += async (ts, EventTrackingId, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
 
-            var f1 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*1"));
-            var f2 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*2"));
-            var f3 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*3"));
+            var f1 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*1")).Result.EVSE;
+            var f2 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*2")).Result.EVSE;
+            var f3 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*3")).Result.EVSE;
 
 
             e1.Status = EVSEStatusTypes.Available;

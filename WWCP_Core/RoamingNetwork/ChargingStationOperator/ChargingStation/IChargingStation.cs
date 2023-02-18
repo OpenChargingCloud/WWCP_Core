@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
         /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
-        IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null);
+        IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate? IncludeEVSEs = null);
 
         /// <summary>
         /// Return the admin status of all EVSEs registered within this roaming network.
@@ -430,17 +430,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteEVSECreator">An optional delegate to configure a new remote EVSE after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        IEVSE? CreateEVSE(EVSE_Id                             Id,
-                          I18NString?                         Name                         = null,
-                          I18NString?                         Description                  = null,
-                          Action<IEVSE>?                      Configurator                 = null,
-                          RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-                          Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                          Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                          UInt16?                             MaxAdminStatusScheduleSize   = null,
-                          UInt16?                             MaxStatusScheduleSize        = null,
-                          Action<IEVSE>?                      OnSuccess                    = null,
-                          Action<IChargingStation, EVSE_Id>?  OnError                      = null);
+        Task<AddEVSEResult> CreateEVSE(EVSE_Id                             Id,
+                                       I18NString?                         Name                         = null,
+                                       I18NString?                         Description                  = null,
+                                       Action<IEVSE>?                      Configurator                 = null,
+                                       RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                       Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                       Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                       UInt16?                             MaxAdminStatusScheduleSize   = null,
+                                       UInt16?                             MaxStatusScheduleSize        = null,
+                                       Action<IEVSE>?                      OnSuccess                    = null,
+                                       Action<IChargingStation, EVSE_Id>?  OnError                      = null);
 
         /// <summary>
         /// Create and register a new EVSE having the given
@@ -450,17 +450,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new EVSE before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new EVSE after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the EVSE failed.</param>
-        IEVSE? CreateOrUpdateEVSE(EVSE_Id                             Id,
-                                  I18NString?                         Name                         = null,
-                                  I18NString?                         Description                  = null,
-                                  Action<IEVSE>?                      Configurator                 = null,
-                                  RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-                                  Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                                  Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                                  UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
-                                  UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
-                                  Action<IEVSE>?                      OnSuccess                    = null,
-                                  Action<IChargingStation, EVSE_Id>?  OnError                      = null);
+        Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id                             Id,
+                                                       I18NString?                         Name                         = null,
+                                                       I18NString?                         Description                  = null,
+                                                       Action<IEVSE>?                      Configurator                 = null,
+                                                       RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                                       Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                                       Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                                       UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
+                                                       UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
+                                                       Action<IEVSE>?                      OnSuccess                    = null,
+                                                       Action<IChargingStation, EVSE_Id>?  OnError                      = null);
 
 
         #region OnEVSEData/(Admin)StatusChanged
@@ -468,17 +468,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnEVSEDataChangedDelegate OnEVSEDataChanged;
+        event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        event OnEVSEStatusChangedDelegate OnEVSEStatusChanged;
+        event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnEVSEAdminStatusChangedDelegate OnEVSEAdminStatusChanged;
+        event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
 
         #endregion
 

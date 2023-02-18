@@ -1161,6 +1161,10 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingStation(ChargingStation_Id                             Id,
                                I18NString?                                    Name                           = null,
                                I18NString?                                    Description                    = null,
+
+                               Address?                                       Address                        = null,
+                               GeoCoordinate?                                 GeoLocation                    = null,
+
                                Action<ChargingStation>?                       Configurator                   = null,
                                RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
@@ -1172,6 +1176,10 @@ namespace cloud.charging.open.protocols.WWCP
                    null,
                    Name,
                    Description,
+
+                   Address,
+                   GeoLocation,
+
                    Configurator,
                    RemoteChargingStationCreator,
                    InitialAdminStatus,
@@ -1201,6 +1209,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                                I18NString?                                    Name                           = null,
                                I18NString?                                    Description                    = null,
+                               Address?                                       Address                        = null,
+                               GeoCoordinate?                                 GeoLocation                    = null,
+
                                Action<ChargingStation>?                       Configurator                   = null,
                                RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
@@ -1231,6 +1242,9 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init data and properties
 
             this.ChargingPool                        = ChargingPool;
+
+            this.Address                             = Address;
+            this.GeoLocation                         = GeoLocation;
 
             this.Brands                              = new ReactiveSet<Brand>();
             this.Brands.OnSetChanged                += (timestamp, sender, newItems, oldItems) => {
@@ -1665,21 +1679,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteEVSECreator">An optional delegate to configure a new remote EVSE after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public IEVSE? CreateEVSE(EVSE_Id                             Id,
-                                 I18NString?                         Name                         = null,
-                                 I18NString?                         Description                  = null,
-                                 Action<IEVSE>?                      Configurator                 = null,
-                                 RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-                                 Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                                 Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                                 UInt16?                             MaxAdminStatusScheduleSize   = null,
-                                 UInt16?                             MaxStatusScheduleSize        = null,
-                                 Action<IEVSE>?                      OnSuccess                    = null,
-                                 Action<IChargingStation, EVSE_Id>?  OnError                      = null)
+        public async Task<AddEVSEResult> CreateEVSE(EVSE_Id                             Id,
+                                                    I18NString?                         Name                         = null,
+                                                    I18NString?                         Description                  = null,
+                                                    Action<IEVSE>?                      Configurator                 = null,
+                                                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                                    Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                                    UInt16?                             MaxAdminStatusScheduleSize   = null,
+                                                    UInt16?                             MaxStatusScheduleSize        = null,
+                                                    Action<IEVSE>?                      OnSuccess                    = null,
+                                                    Action<IChargingStation, EVSE_Id>?  OnError                      = null)
         {
 
-            lock (evses)
-            {
+            //lock (evses)
+            //{
 
                 #region Initial checks
 
@@ -1780,14 +1794,14 @@ namespace cloud.charging.open.protocols.WWCP
                     OnSuccess?.Invoke(evse);
                     EVSEAddition.SendNotification(now, this, evse);
 
-                    return evse;
+                    return AddEVSEResult.Success(evse, EventTracking_Id.New);
 
                 }
 
                 Debug.WriteLine("EVSE '" + Id + "' was not created!");
                 return null;
 
-            }
+            //}
 
         }
 
@@ -1803,17 +1817,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new EVSE before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new EVSE after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the EVSE failed.</param>
-        public IEVSE? CreateOrUpdateEVSE(EVSE_Id                             Id,
-                                         I18NString?                         Name                         = null,
-                                         I18NString?                         Description                  = null,
-                                         Action<IEVSE>?                      Configurator                 = null,
-                                         RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-                                         Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                                         Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                                         UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
-                                         UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
-                                         Action<IEVSE>?                      OnSuccess                    = null,
-                                         Action<IChargingStation, EVSE_Id>?  OnError                      = null)
+        public async Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id                             Id,
+                                                                    I18NString?                         Name                         = null,
+                                                                    I18NString?                         Description                  = null,
+                                                                    Action<IEVSE>?                      Configurator                 = null,
+                                                                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                                                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                                                    Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                                                    UInt16                              MaxAdminStatusScheduleSize   = EVSE.DefaultMaxAdminStatusScheduleSize,
+                                                                    UInt16                              MaxStatusScheduleSize        = EVSE.DefaultMaxEVSEStatusScheduleSize,
+                                                                    Action<IEVSE>?                      OnSuccess                    = null,
+                                                                    Action<IChargingStation, EVSE_Id>?  OnError                      = null)
         {
 
             #region Initial checks
@@ -1823,28 +1837,38 @@ namespace cloud.charging.open.protocols.WWCP
                 //throw new InvalidChargingStationOperatorId(this,
                 //                                Id.OperatorId);
 
-            InitialAdminStatus = InitialAdminStatus ?? new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
-            InitialStatus      = InitialStatus      ?? new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
+            InitialAdminStatus ??= new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
+            InitialStatus      ??= new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
 
             #endregion
 
-            lock (evses)
-            {
+            //lock (evses)
+            //{
 
                 #region If the EVSE identification is new/unknown: Call CreateEVSE(...)
 
                 if (!evses.ContainsId(Id))
-                    return CreateEVSE(Id,
-                                      Name,
-                                      Description,
-                                      Configurator,
-                                      RemoteEVSECreator,
-                                      InitialAdminStatus,
-                                      InitialStatus,
-                                      MaxAdminStatusScheduleSize,
-                                      MaxStatusScheduleSize,
-                                      OnSuccess,
-                                      OnError);
+                {
+
+                    var result = await CreateEVSE(Id,
+                                                  Name,
+                                                  Description,
+                                                  Configurator,
+                                                  RemoteEVSECreator,
+                                                  InitialAdminStatus,
+                                                  InitialStatus,
+                                                  MaxAdminStatusScheduleSize,
+                                                  MaxStatusScheduleSize,
+                                                  OnSuccess,
+                                                  OnError);
+
+                    return AddOrUpdateEVSEResult.Success(
+                               result.EVSE,
+                               social.OpenData.UsersAPI.AddedOrUpdated.Add,
+                               EventTracking_Id.New
+                           );
+
+                }
 
                 #endregion
 
@@ -1853,53 +1877,69 @@ namespace cloud.charging.open.protocols.WWCP
 
                 // Merge existing EVSE with new EVSE data...
                 if (existingEVSE is not null)
-                    return existingEVSE.
-                               UpdateWith(new EVSE(Id,
-                                                   this,
-                                                   new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
-                                                   new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.     Available),
-                                                   null,
-                                                   null,
+                {
 
-                                                   Name,
-                                                   Description,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
+                    var updatedEVSE  = existingEVSE.UpdateWith(
+                                           new EVSE(Id,
+                                                    this,
+                                                    new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
+                                                    new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.     Available),
+                                                    null,
+                                                    null,
 
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   null,
+                                                    Name,
+                                                    Description,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
 
-                                                   Configurator,
-                                                   RemoteEVSECreator,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
 
-                                                   null,
-                                                   null));
+                                                    Configurator,
+                                                    RemoteEVSECreator,
 
-            }
+                                                    null,
+                                                    null)
+                                           );
 
-            return null;
+                    return AddOrUpdateEVSEResult.Success(
+                               updatedEVSE,
+                               social.OpenData.UsersAPI.AddedOrUpdated.Update,
+                               EventTracking_Id.New
+                           );
+
+                }
+
+            //}
+
+            return AddOrUpdateEVSEResult.Failed(
+                       Id,
+                       EventTracking_Id.New,
+                       "",
+                       this
+                   );
 
         }
 

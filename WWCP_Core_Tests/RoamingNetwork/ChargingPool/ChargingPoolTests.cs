@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                              Id:           ChargingPool_Id.Parse("DE*GEF*P1234"),
                                              Name:         I18NString.Create(Languages.de, "DE*GEF Pool 1234"),
                                              Description:  I18NString.Create(Languages.de, "powered by GraphDefined Charging Pools GmbH")
-                                         );
+                                         ).Result;
 
                 var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                                               ));
 
                                                                   }
-                                         );
+                                         ).Result;
 
                 var DE_GEF_P1234 = DE_GEF_P1234Result.ChargingPool;
 

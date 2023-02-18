@@ -26,10 +26,10 @@ using social.OpenData.UsersAPI;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class AddOrUpdateChargingPoolResult : AEnitityResult<ChargingPool, ChargingPool_Id>
+    public class AddOrUpdateChargingPoolResult : AEnitityResult<IChargingPool, ChargingPool_Id>
     {
 
-        public ChargingPool? ChargingPool
+        public IChargingPool? ChargingPool
             => Object;
 
         public ChargingStationOperator?  ChargingStationOperator    { get; internal set; }
@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.WWCP
         public AddedOrUpdated?           AddedOrUpdated             { get; internal set; }
 
 
-        public AddOrUpdateChargingPoolResult(ChargingPool              ChargingPool,
+        public AddOrUpdateChargingPoolResult(IChargingPool             ChargingPool,
                                              EventTracking_Id          EventTrackingId,
                                              Boolean                   IsSuccess,
                                              String?                   Argument                  = null,
@@ -58,8 +58,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
+        public AddOrUpdateChargingPoolResult(ChargingPool_Id           Id,
+                                             EventTracking_Id          EventTrackingId,
+                                             Boolean                   IsSuccess,
+                                             String?                   Argument                  = null,
+                                             I18NString?               ErrorDescription          = null,
+                                             ChargingStationOperator?  ChargingStationOperator   = null,
+                                             AddedOrUpdated?           AddedOrUpdated            = null)
 
-        public static AddOrUpdateChargingPoolResult Success(ChargingPool              ChargingPool,
+            : base(Id,
+                   EventTrackingId,
+                   IsSuccess,
+                   Argument,
+                   ErrorDescription)
+
+        {
+
+            this.ChargingStationOperator  = ChargingStationOperator;
+            this.AddedOrUpdated           = AddedOrUpdated;
+
+        }
+
+
+        public static AddOrUpdateChargingPoolResult Success(IChargingPool             ChargingPool,
                                                             AddedOrUpdated            AddedOrUpdated,
                                                             EventTracking_Id          EventTrackingId,
                                                             ChargingStationOperator?  ChargingStationOperator   = null)
@@ -73,7 +94,7 @@ namespace cloud.charging.open.protocols.WWCP
                     AddedOrUpdated);
 
 
-        public static AddOrUpdateChargingPoolResult ArgumentError(ChargingPool      ChargingPool,
+        public static AddOrUpdateChargingPoolResult ArgumentError(IChargingPool     ChargingPool,
                                                                   EventTracking_Id  EventTrackingId,
                                                                   String            Argument,
                                                                   String            Description)
@@ -87,7 +108,7 @@ namespace cloud.charging.open.protocols.WWCP
                         Description
                     ));
 
-        public static AddOrUpdateChargingPoolResult ArgumentError(ChargingPool      ChargingPool,
+        public static AddOrUpdateChargingPoolResult ArgumentError(IChargingPool     ChargingPool,
                                                                   EventTracking_Id  EventTrackingId,
                                                                   String            Argument,
                                                                   I18NString        Description)
@@ -99,7 +120,22 @@ namespace cloud.charging.open.protocols.WWCP
                     Description);
 
 
-        public static AddOrUpdateChargingPoolResult Failed(ChargingPool              ChargingPool,
+        public static AddOrUpdateChargingPoolResult Failed(ChargingPool_Id           Id,
+                                                           EventTracking_Id          EventTrackingId,
+                                                           String                    Description,
+                                                           ChargingStationOperator?  ChargingStationOperator   = null)
+
+            => new (Id,
+                    EventTrackingId,
+                    false,
+                    null,
+                    I18NString.Create(
+                        Languages.en,
+                        Description
+                    ),
+                    ChargingStationOperator);
+
+        public static AddOrUpdateChargingPoolResult Failed(IChargingPool             ChargingPool,
                                                            EventTracking_Id          EventTrackingId,
                                                            String                    Description,
                                                            ChargingStationOperator?  ChargingStationOperator   = null)
@@ -114,7 +150,7 @@ namespace cloud.charging.open.protocols.WWCP
                     ),
                     ChargingStationOperator);
 
-        public static AddOrUpdateChargingPoolResult Failed(ChargingPool              ChargingPool,
+        public static AddOrUpdateChargingPoolResult Failed(IChargingPool             ChargingPool,
                                                            EventTracking_Id          EventTrackingId,
                                                            I18NString                Description,
                                                            ChargingStationOperator?  ChargingStationOperator   = null)
@@ -126,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
                     Description,
                     ChargingStationOperator);
 
-        public static AddOrUpdateChargingPoolResult Failed(ChargingPool              ChargingPool,
+        public static AddOrUpdateChargingPoolResult Failed(IChargingPool             ChargingPool,
                                                            EventTracking_Id          EventTrackingId,
                                                            Exception                 Exception,
                                                            ChargingStationOperator?  ChargingStationOperator   = null)
