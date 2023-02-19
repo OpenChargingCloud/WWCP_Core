@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingStation_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStation_Id chargingStationId))
+            if (TryParse(Text, out var chargingStationId))
                 return chargingStationId;
 
             throw new ArgumentException("Illegal charging station identification '" + Text + "'!",
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingStation_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStation_Id chargingStationId))
+            if (TryParse(Text, out var chargingStationId))
                 return chargingStationId;
 
             return null;
