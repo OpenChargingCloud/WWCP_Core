@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P0001")));
                 Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
 
-                Assert.IsTrue   (DE_GEF.        ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P0001")));
+                Assert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P0001")));
                 Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P0001")));
 
             }
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
                     Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
-                    Assert.IsTrue   (DE_GEF.        ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
                     Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
                 }
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.IsTrue   (roamingNetwork.ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
                     Assert.IsNotNull(roamingNetwork.GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
-                    Assert.IsTrue   (DE_GEF.        ContainsChargingPool(ChargingPool_Id.Parse("DE*GEF*P1234")));
+                    Assert.IsTrue   (DE_GEF.        ChargingPoolExists  (ChargingPool_Id.Parse("DE*GEF*P1234")));
                     Assert.IsNotNull(DE_GEF.        GetChargingPoolById (ChargingPool_Id.Parse("DE*GEF*P1234")));
 
 

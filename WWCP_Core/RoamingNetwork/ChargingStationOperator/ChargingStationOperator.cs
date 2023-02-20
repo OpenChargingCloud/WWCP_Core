@@ -29,7 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
-using System.Collections.Concurrent;
+
 using social.OpenData.UsersAPI;
 
 #endregion
@@ -194,6 +194,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// The default max size of the status list.
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize        = 15;
+
+        protected static readonly  SemaphoreSlim  ChargingPoolsSemaphore   = new (1, 1);
+
+        protected static readonly  TimeSpan       SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
 
         #endregion
 
@@ -506,10 +510,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         public ChargingStationOperator(ChargingStationOperator_Id                             Id,
                                        IRoamingNetwork                                        RoamingNetwork,
-                                       Action<ChargingStationOperator>?                       Configurator                           = null,
-                                       RemoteChargingStationOperatorCreatorDelegate?          RemoteChargingStationOperatorCreator   = null,
                                        I18NString?                                            Name                                   = null,
                                        I18NString?                                            Description                            = null,
+                                       Action<ChargingStationOperator>?                       Configurator                           = null,
+                                       RemoteChargingStationOperatorCreatorDelegate?          RemoteChargingStationOperatorCreator   = null,
                                        Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                     = null,
                                        Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                          = null,
                                        UInt16                                                 MaxAdminStatusListSize                 = DefaultMaxAdminStatusListSize,
@@ -973,6 +977,302 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UpdateChargingPool(ChargingPool, SkipUserUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
+
+        /// <summary>
+        /// A delegate called whenever a charging pool was updated.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the charging pool was updated.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldChargingPool">The old charging pool.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
+        public delegate Task OnChargingPoolUpdatedDelegate(DateTime           Timestamp,
+                                                           ChargingPool       ChargingPool,
+                                                           ChargingPool       OldChargingPool,
+                                                           EventTracking_Id?  EventTrackingId         = null,
+                                                           ChargingPool_Id?   CurrentChargingPoolId   = null);
+
+        /// <summary>
+        /// An event fired whenever a charging pool was updated.
+        /// </summary>
+        public event OnChargingPoolUpdatedDelegate OnChargingPoolUpdated;
+
+
+        #region (protected internal) _UpdateChargingPool(ChargingPool,                 SkipUserUpdatedNotifications = false, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charging pool to/within the API.
+        /// </summary>
+        /// <param name="User">A charging pool.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional charging pool identification initiating this command/request.</param>
+        protected internal async Task<UpdateChargingPoolResult> _UpdateChargingPool(ChargingPool                             ChargingPool,
+                                                                                    Boolean                                  SkipUserUpdatedNotifications   = false,
+                                                                                    Action<ChargingPool, EventTracking_Id>?  OnUpdated                      = null,
+                                                                                    EventTracking_Id?                        EventTrackingId                = null,
+                                                                                    User_Id?                                 CurrentUserId                  = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (!_TryGetChargingPoolById(ChargingPool.Id, out var OldChargingPool))
+                return UpdateChargingPoolResult.ArgumentError(ChargingPool,
+                                                              eventTrackingId,
+                                                              nameof(ChargingPool),
+                                                              "The given charging pool '" + ChargingPool.Id + "' does not exists in this API!");
+
+            //if (ChargingPool.API is not null && ChargingPool.API != this)
+            //    return UpdateChargingPoolResult.ArgumentError(ChargingPool,
+            //                                                  eventTrackingId,
+            //                                                  nameof(ChargingPool.API),
+            //                                                  "The given charging pool is not attached to this API!");
+
+            //ChargingPool.API = this;
+
+
+            //await WriteToDatabaseFile(updateChargingPool_MessageType,
+            //                          ChargingPool.ToJSON(),
+            //                          eventTrackingId,
+            //                          CurrentChargingPoolId);
+
+            chargingPools.Remove(OldChargingPool.Id);
+            //ChargingPool.CopyAllLinkedDataFrom(OldChargingPool);
+            chargingPools.TryAdd(ChargingPool);
+
+            OnUpdated?.Invoke(ChargingPool,
+                              eventTrackingId);
+
+            //var OnChargingPoolUpdatedLocal = OnChargingPoolUpdated;
+            //if (OnChargingPoolUpdatedLocal is not null)
+            //    await OnChargingPoolUpdatedLocal.Invoke(Timestamp.Now,
+            //                                            ChargingPool,
+            //                                            OldChargingPool,
+            //                                            eventTrackingId, 
+            //                                            CurrentChargingPoolId);
+
+            //if (!SkipChargingPoolUpdatedNotifications)
+            //    await SendNotifications(ChargingPool,
+            //                            updateChargingPool_MessageType,
+            //                            OldChargingPool,
+            //                            eventTrackingId,
+            //                            CurrentChargingPoolId);
+
+            return UpdateChargingPoolResult.Success(ChargingPool,
+                                                    eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPool(ChargingPool, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
+
+        /// <summary>
+        /// Update the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional charging pool identification initiating this command/request.</param>
+        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
+                                                                       Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
+                                                                       Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
+                                                                       EventTracking_Id?                        EventTrackingId                        = null,
+                                                                       User_Id?                                 CurrentUserId                          = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargingPoolsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _UpdateChargingPool(ChargingPool,
+                                                     SkipChargingPoolUpdatedNotifications,
+                                                     OnUpdated,
+                                                     EventTrackingId,
+                                                     CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return UpdateChargingPoolResult.Failed(ChargingPool,
+                                                           eventTrackingId,
+                                                           e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargingPoolsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return UpdateChargingPoolResult.Failed(ChargingPool,
+                                                   eventTrackingId,
+                                                   "Internal locking failed!");
+
+        }
+
+        #endregion
+
+
+        #region (protected internal) _UpdateChargingPool(ChargingPool, UpdateDelegate, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charging pool.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
+        protected internal async Task<UpdateChargingPoolResult> _UpdateChargingPool(ChargingPool                             ChargingPool,
+                                                                                    Action<ChargingPool.Builder>             UpdateDelegate,
+                                                                                    Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
+                                                                                    Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
+                                                                                    EventTracking_Id?                        EventTrackingId                        = null,
+                                                                                    ChargingPool_Id?                         CurrentChargingPoolId                  = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (!_ChargingPoolExists(ChargingPool.Id))
+                return UpdateChargingPoolResult.ArgumentError(ChargingPool,
+                                                              eventTrackingId,
+                                                              nameof(ChargingPool),
+                                                              "The given charging pool '" + ChargingPool.Id + "' does not exists in this API!");
+
+            //if (ChargingPool.API != this)
+            //    return UpdateChargingPoolResult.ArgumentError(ChargingPool,
+            //                                                  eventTrackingId,
+            //                                                  nameof(ChargingPool.API),
+            //                                                  "The given charging pool is not attached to this API!");
+
+            if (UpdateDelegate is null)
+                return UpdateChargingPoolResult.ArgumentError(ChargingPool,
+                                                              eventTrackingId,
+                                                              nameof(UpdateDelegate),
+                                                              "The given update delegate must not be null!");
+
+
+            return UpdateChargingPoolResult.Failed(ChargingPool,
+                                                   eventTrackingId,
+                                                   "Not yet implemented!");
+
+
+
+            //var builder = ChargingPool.ToBuilder();
+            //UpdateDelegate(builder);
+            //var updatedChargingPool = builder.ToImmutable;
+
+            ////await WriteToDatabaseFile(updateChargingPool_MessageType,
+            ////                          updatedChargingPool.ToJSON(),
+            ////                          eventTrackingId,
+            ////                          CurrentChargingPoolId);
+
+            //chargingPools.Remove(ChargingPool.Id);
+            ////updatedChargingPool.CopyAllLinkedDataFrom(ChargingPool);
+            //chargingPools.TryAdd(updatedChargingPool);
+
+            //OnUpdated?.Invoke(updatedChargingPool,
+            //                  eventTrackingId);
+
+            //var OnChargingPoolUpdatedLocal = OnChargingPoolUpdated;
+            //if (OnChargingPoolUpdatedLocal is not null)
+            //    await OnChargingPoolUpdatedLocal.Invoke(Timestamp.Now,
+            //                                            updatedChargingPool,
+            //                                            ChargingPool,
+            //                                            eventTrackingId,
+            //                                            CurrentChargingPoolId);
+
+            ////if (!SkipChargingPoolUpdatedNotifications)
+            ////    await SendNotifications(updatedChargingPool,
+            ////                            updateChargingPool_MessageType,
+            ////                            ChargingPool,
+            ////                            eventTrackingId,
+            ////                            CurrentChargingPoolId);
+
+            //return UpdateChargingPoolResult.Success(ChargingPool,
+            //                                        eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPool                      (ChargingPool, UpdateDelegate, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charging pool.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
+        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
+                                                                       Action<ChargingPool.Builder>             UpdateDelegate,
+                                                                       Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
+                                                                       Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
+                                                                       EventTracking_Id?                        EventTrackingId                        = null,
+                                                                       ChargingPool_Id?                         CurrentChargingPoolId                  = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await ChargingPoolsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _UpdateChargingPool(ChargingPool,
+                                                     UpdateDelegate,
+                                                     SkipChargingPoolUpdatedNotifications,
+                                                     OnUpdated,
+                                                     eventTrackingId,
+                                                     CurrentChargingPoolId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return UpdateChargingPoolResult.Failed(ChargingPool,
+                                                           eventTrackingId,
+                                                           e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        ChargingPoolsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return UpdateChargingPoolResult.Failed(ChargingPool,
+                                                   eventTrackingId,
+                                                   "Internal locking failed!");
+
+        }
+
+        #endregion
+
+        #endregion
+
 
         #region ChargingPools
 
@@ -1116,27 +1416,103 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ContainsChargingPool(ChargingPool)
+        #region ChargingPoolExists(ChargingPool)
 
         /// <summary>
         /// Check if the given ChargingPool is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        public Boolean ContainsChargingPool(IChargingPool ChargingPool)
+        public Boolean ChargingPoolExists(IChargingPool ChargingPool)
 
             => chargingPools.Contains(ChargingPool);
 
         #endregion
 
-        #region ContainsChargingPool(ChargingPoolId)
+        #region ChargingPoolExists(ChargingPoolId)
 
         /// <summary>
-        /// Check if the given ChargingPool identification is already present within the Charging Station Operator.
+        /// Determines whether the given user identification exists within this API.
         /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
-        public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
+        /// <param name="ChargingPoolId">The unique identification of an user.</param>
+        protected internal Boolean _ChargingPoolExists(ChargingPool_Id ChargingPoolId)
 
-            => chargingPools.ContainsId(ChargingPoolId);
+            => ChargingPoolId.IsNotNullOrEmpty &&
+               chargingPools.ContainsId(ChargingPoolId);
+
+        /// <summary>
+        /// Determines whether the given user identification exists within this API.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of an user.</param>
+        protected internal Boolean _ChargingPoolExists(ChargingPool_Id? ChargingPoolId)
+
+            => ChargingPoolId.HasValue &&
+               ChargingPoolId.Value.IsNotNullOrEmpty &&
+               chargingPools.ContainsId(ChargingPoolId.Value);
+
+
+        /// <summary>
+        /// Determines whether the given user identification exists within this API.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of an user.</param>
+        public Boolean ChargingPoolExists(ChargingPool_Id ChargingPoolId)
+        {
+
+            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _ChargingPoolExists(ChargingPoolId);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargingPoolsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return false;
+
+        }
+
+        /// <summary>
+        /// Determines whether the given user identification exists within this API.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of an user.</param>
+        public Boolean ChargingPoolExists(ChargingPool_Id? ChargingPoolId)
+        {
+
+            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _ChargingPoolExists(ChargingPoolId);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargingPoolsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return false;
+
+        }
 
         #endregion
 
@@ -1150,9 +1526,118 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolById(ChargingPoolId, out ChargingPool)
 
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        //public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
 
-            => chargingPools.TryGet(ChargingPoolId, out ChargingPool);
+        //    => chargingPools.TryGet(ChargingPoolId, out ChargingPool);
+
+        /// <summary>
+        /// Try to get the charging pool having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="ChargingPool">The charging pool.</param>
+        protected internal Boolean _TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        {
+
+            if (!ChargingPoolId.IsNullOrEmpty &&
+                chargingPools.TryGet(ChargingPoolId, out var chargingPool))
+            {
+                ChargingPool = chargingPool;
+                return true;
+            }
+
+            ChargingPool = null;
+            return false;
+
+        }
+
+        /// <summary>
+        /// Try to get the charging pool having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="ChargingPool">The charging pool.</param>
+        protected internal Boolean _TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
+        {
+
+            if (ChargingPoolId.IsNotNullOrEmpty() &&
+               chargingPools.TryGet(ChargingPoolId!.Value, out var chargingPool))
+            {
+                ChargingPool = chargingPool;
+                return true;
+            }
+
+            ChargingPool = null;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Try to get the charging pool having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="ChargingPool">The charging pool.</param>
+        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        {
+
+            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargingPoolsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            ChargingPool = null;
+            return false;
+
+        }
+
+        /// <summary>
+        /// Try to get the charging pool having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="ChargingPool">The charging pool.</param>
+        public Boolean TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
+        {
+
+            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
+
+                }
+                catch
+                { }
+                finally
+                {
+                    try
+                    {
+                        ChargingPoolsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            ChargingPool = null;
+            return false;
+
+        }
 
         #endregion
 

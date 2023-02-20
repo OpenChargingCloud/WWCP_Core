@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
@@ -28,7 +29,8 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 using cloud.charging.open.protocols.WWCP.Networking;
-using org.GraphDefined.Vanaheimr.Styx;
+
+using social.OpenData.UsersAPI;
 
 #endregion
 
@@ -130,6 +132,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// The request timeout.
         /// </summary>
         public readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(60);
+
+
+        protected static readonly  SemaphoreSlim  chargingStationOperatorsSemaphore      = new (1, 1);
+
+        protected static readonly  TimeSpan       SemaphoreSlimTimeout                   = TimeSpan.FromSeconds(5);
+
+        protected static readonly  Byte           MinChargingStationOperatorIdLength     = 5;
+        protected static readonly  Byte           MinChargingStationOperatorNameLength   = 5;
 
         #endregion
 
@@ -1199,67 +1209,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return all charging station operators registered within this roaming network.
         /// </summary>
         public IEnumerable<IChargingStationOperator> ChargingStationOperators
-
-            => chargingStationOperators;
-
-        #endregion
-
-        #region ChargingStationOperatorIds        (IncludeChargingStationOperator = null)
-
-        /// <summary>
-        /// Return all charging station operators registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
-        public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
         {
+            get
+            {
 
-            IncludeChargingStationOperator ??= (chargingStationOperator => true);
+                if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+                {
+                    try
+                    {
 
-            return chargingStationOperators.
-                       Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
-                       Select(chargingStationOperator => chargingStationOperator.Id);
+                        return chargingStationOperators.ToArray();
 
-        }
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            chargingStationOperatorsSemaphore.Release();
+                        }
+                        catch
+                        { }
+                    }
+                }
 
-        #endregion
+                return Array.Empty<IChargingStationOperator>();
 
-        #region ChargingStationOperatorAdminStatus(IncludeChargingStationOperator = null)
-
-        /// <summary>
-        /// Return the admin status of all charging station operators registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
-        public IEnumerable<ChargingStationOperatorAdminStatus> ChargingStationOperatorAdminStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
-        {
-
-            IncludeChargingStationOperator ??= (chargingStationOperator => true);
-
-            return chargingStationOperators.
-                         Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
-                         Select(chargingStationOperator => new ChargingStationOperatorAdminStatus(chargingStationOperator.Id,
-                                                                                                  chargingStationOperator.AdminStatus));
-
-        }
-
-        #endregion
-
-        #region ChargingStationOperatorStatus     (IncludeChargingStationOperator = null)
-
-        /// <summary>
-        /// Return the status of all charging station operators registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
-        public IEnumerable<ChargingStationOperatorStatus> ChargingStationOperatorStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
-
-        {
-
-            IncludeChargingStationOperator ??= (chargingStationOperator => true);
-
-            return chargingStationOperators.
-                         Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
-                         Select(chargingStationOperator => new ChargingStationOperatorStatus(chargingStationOperator.Id,
-                                                                                             chargingStationOperator.Status));
-
+            }
         }
 
         #endregion
@@ -1286,6 +1261,322 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region ChargingStationOperatorIds        (IncludeChargingStationOperator = null)
+
+        /// <summary>
+        /// Return all charging station operators registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
+        public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
+        {
+
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    IncludeChargingStationOperator ??= (chargingStationOperator => true);
+
+                    return chargingStationOperators.
+                               Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
+                               Select(chargingStationOperator => chargingStationOperator.Id);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return Array.Empty<ChargingStationOperator_Id>();
+
+        }
+
+        #endregion
+
+        #region ChargingStationOperatorAdminStatus(IncludeChargingStationOperator = null)
+
+        /// <summary>
+        /// Return the admin status of all charging station operators registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
+        public IEnumerable<ChargingStationOperatorAdminStatus> ChargingStationOperatorAdminStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
+        {
+
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    IncludeChargingStationOperator ??= (chargingStationOperator => true);
+
+                    return chargingStationOperators.
+                               Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
+                               Select(chargingStationOperator => new ChargingStationOperatorAdminStatus(chargingStationOperator.Id,
+                                                                                                        chargingStationOperator.AdminStatus));
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return Array.Empty<ChargingStationOperatorAdminStatus>();
+
+        }
+
+        #endregion
+
+        #region ChargingStationOperatorStatus     (IncludeChargingStationOperator = null)
+
+        /// <summary>
+        /// Return the status of all charging station operators registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingStationOperator">An optional delegate for filtering charging station operators.</param>
+        public IEnumerable<ChargingStationOperatorStatus> ChargingStationOperatorStatus(IncludeChargingStationOperatorDelegate? IncludeChargingStationOperator = null)
+
+        {
+
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    IncludeChargingStationOperator ??= (chargingStationOperator => true);
+
+                    return chargingStationOperators.
+                               Where (chargingStationOperator => IncludeChargingStationOperator(chargingStationOperator)).
+                               Select(chargingStationOperator => new ChargingStationOperatorStatus(chargingStationOperator.Id,
+                                                                                                   chargingStationOperator.Status));
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return Array.Empty<ChargingStationOperatorStatus>();
+
+        }
+
+        #endregion
+
+
+        #region (protected internal) _AddChargingStationOperator(ChargingStationOperator, SkipDefaultNotifications = false, OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given user to the API.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this charging station operator addition.</param>
+        /// <param name="OnAdded">A delegate run whenever the user has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<AddChargingStationOperatorResult>
+
+            _AddChargingStationOperator(IChargingStationOperator                             ChargingStationOperator,
+                                        Boolean                                              SkipNewChargingStationOperatorNotifications   = false,
+                                        Action<IChargingStationOperator, EventTracking_Id>?  OnAdded                                       = null,
+                                        EventTracking_Id?                                    EventTrackingId                               = null,
+                                        User_Id?                                             CurrentUserId                                 = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            //if (User.API is not null && User.API != this)
+            //    return AddUserResult.ArgumentError(User,
+            //                                       eventTrackingId,
+            //                                       nameof(User),
+            //                                       "The given user is already attached to another API!");
+
+            if (chargingStationOperators.ContainsId(ChargingStationOperator.Id))
+                return AddChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           $"The given charging station operator identification '{ChargingStationOperator.Id}' already exists!"
+                       );
+
+            if (ChargingStationOperator.Id.Length < MinChargingStationOperatorIdLength)
+                return AddChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           $"The given charging station operator identification '{ChargingStationOperator.Id}' is too short!"
+                       );
+
+            if (ChargingStationOperator.Name.IsNullOrEmpty())
+                return AddChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(User),
+                           "The given charging station operator name must not be null!"
+                       );
+
+            if (ChargingStationOperator.Name.FirstText().Length < MinChargingStationOperatorNameLength)
+                return AddChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           $"The given charging station operator name '{ChargingStationOperator.Name}' is too short!"
+                       );
+
+            //User.API = this;
+
+
+            //await WriteToDatabaseFile(addUser_MessageType,
+            //                          ChargingStationOperator.ToJSON(false),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            var result = chargingStationOperators.TryAdd(ChargingStationOperator);
+
+            OnAdded?.Invoke(ChargingStationOperator,
+                            eventTrackingId);
+
+            //var OnChargingStationOperatorAddedLocal = OnChargingStationOperatorAdded;
+            //if (OnChargingStationOperatorAddedLocal is not null)
+            //    await OnChargingStationOperatorAddedLocal.Invoke(Timestamp.Now,
+            //                                                     ChargingStationOperator,
+            //                                                     eventTrackingId,
+            //                                                     CurrentUserId);
+
+
+            //if (!SkipNewChargingStationOperatorNotifications)
+            //    await SendNotifications(ChargingStationOperator,
+            //                            addChargingStationOperator_MessageType,
+            //                            null,
+            //                            eventTrackingId,
+            //                            CurrentUserId);
+
+
+            return AddChargingStationOperatorResult.Success(ChargingStationOperator,
+                                                            eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region AddChargingStationOperator (ChargingStationOperator, SkipDefaultNotifications = false, OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this charging station operator addition.</param>
+        /// <param name="OnAdded">A delegate run whenever the user has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddChargingStationOperatorResult> AddChargingStationOperator(IChargingStationOperator                             ChargingStationOperator,
+                                                                                       Boolean                                              SkipNewChargingStationOperatorNotifications   = false,
+                                                                                       Action<IChargingStationOperator, EventTracking_Id>?  OnAdded                                       = null,
+                                                                                       EventTracking_Id?                                    EventTrackingId                               = null,
+                                                                                       User_Id?                                             CurrentUserId                                 = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await chargingStationOperatorsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    var result = await _AddChargingStationOperator(ChargingStationOperator,
+                                                                   SkipNewChargingStationOperatorNotifications,
+                                                                   OnAdded,
+                                                                   eventTrackingId,
+                                                                   CurrentUserId);
+
+                    if (result.IsSuccess &&
+                        result.ChargingStationOperator is not null)
+                    {
+
+                        result.ChargingStationOperator.OnDataChanged                              += UpdateCSOData;
+                        result.ChargingStationOperator.OnStatusChanged                            += UpdateCSOStatus;
+                        result.ChargingStationOperator.OnAdminStatusChanged                       += UpdateCSOAdminStatus;
+
+                        result.ChargingStationOperator.OnChargingPoolAddition.   OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
+                        result.ChargingStationOperator.OnChargingPoolAddition.   OnNotification   += SendChargingPoolAdded;
+                        result.ChargingStationOperator.OnChargingPoolDataChanged                  += UpdateChargingPoolData;
+                        result.ChargingStationOperator.OnChargingPoolStatusChanged                += UpdateChargingPoolStatus;
+                        result.ChargingStationOperator.OnChargingPoolAdminStatusChanged           += UpdateChargingPoolAdminStatus;
+                        result.ChargingStationOperator.OnChargingPoolRemoval.    OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
+                        result.ChargingStationOperator.OnChargingPoolRemoval.    OnNotification   += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
+
+                        result.ChargingStationOperator.OnChargingStationAddition.OnVoting         += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
+                        result.ChargingStationOperator.OnChargingStationAddition.OnNotification   += SendChargingStationAdded;
+                        result.ChargingStationOperator.OnChargingStationDataChanged               += UpdateChargingStationData;
+                        result.ChargingStationOperator.OnChargingStationStatusChanged             += UpdateChargingStationStatus;
+                        result.ChargingStationOperator.OnChargingStationAdminStatusChanged        += UpdateChargingStationAdminStatus;
+                        result.ChargingStationOperator.OnChargingStationRemoval. OnVoting         += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
+                        result.ChargingStationOperator.OnChargingStationRemoval. OnNotification   += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
+
+                        result.ChargingStationOperator.OnEVSEAddition.           OnVoting         += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                        result.ChargingStationOperator.OnEVSEAddition.           OnNotification   += SendEVSEAdded;
+                        result.ChargingStationOperator.OnEVSEDataChanged                          += UpdateEVSEData;
+                        result.ChargingStationOperator.OnEVSEStatusChanged                        += UpdateEVSEStatus;
+                        result.ChargingStationOperator.OnEVSEAdminStatusChanged                   += UpdateEVSEAdminStatus;
+                        result.ChargingStationOperator.OnEVSERemoval.            OnVoting         += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
+                        result.ChargingStationOperator.OnEVSERemoval.            OnNotification   += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
+
+                        result.ChargingStationOperator.OnNewReservation                           += SendNewReservation;
+                        result.ChargingStationOperator.OnReservationCanceled                      += SendReservationCanceled;
+                        result.ChargingStationOperator.OnNewChargingSession                       += SendNewChargingSession;
+                        result.ChargingStationOperator.OnNewChargeDetailRecord                    += SendNewChargeDetailRecord;
+
+                    }
+
+                    return result;
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(AddChargingStationOperator)}({ChargingStationOperator.Id}, ...)" );
+
+                    return AddChargingStationOperatorResult.Failed(ChargingStationOperator,
+                                                                   eventTrackingId,
+                                                                   e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return AddChargingStationOperatorResult.Failed(ChargingStationOperator,
+                                                           eventTrackingId,
+                                                           "Internal locking failed!");
+
+        }
+
+        #endregion
+
+
         #region CreateChargingStationOperator(Id, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
@@ -1308,144 +1599,379 @@ namespace cloud.charging.open.protocols.WWCP
                                           ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
                                           ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
                                           Action<IChargingStationOperator>?                    OnSuccess                              = null,
-                                          Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null)
+                                          Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null,
+                                          EventTracking_Id?                                    EventTrackingId                        = null,
+                                          User_Id?                                             CurrentUserId                          = null)
 
         {
 
-            //lock (chargingStationOperators)
-            //{
-
-                if (chargingStationOperators.ContainsId(Id))
-                    return AddChargingStationOperatorResult.Failed(
-                               Id,
-                               EventTracking_Id.New,
-                               "Duplicate charging station operator identification!"
-                           );
-
-
-                var chargingStationOperator = new ChargingStationOperator(Id,
-                                                                          this,
-                                                                          Configurator,
-                                                                          RemoteChargingStationOperatorCreator,
-                                                                          Name,
-                                                                          Description,
-                                                                          InitialAdminStatus ?? ChargingStationOperatorAdminStatusTypes.Operational,
-                                                                          InitialStatus      ?? ChargingStationOperatorStatusTypes.Available);
-
-
-                if (chargingStationOperators.TryAdd(chargingStationOperator, OnSuccess))
-                {
-
-                    chargingStationOperator.OnDataChanged                              += UpdateCSOData;
-                    chargingStationOperator.OnStatusChanged                            += UpdateCSOStatus;
-                    chargingStationOperator.OnAdminStatusChanged                       += UpdateCSOAdminStatus;
-
-                    chargingStationOperator.OnChargingPoolAddition.   OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
-                    chargingStationOperator.OnChargingPoolAddition.   OnNotification   += SendChargingPoolAdded;
-                    chargingStationOperator.OnChargingPoolDataChanged                  += UpdateChargingPoolData;
-                    chargingStationOperator.OnChargingPoolStatusChanged                += UpdateChargingPoolStatus;
-                    chargingStationOperator.OnChargingPoolAdminStatusChanged           += UpdateChargingPoolAdminStatus;
-                    chargingStationOperator.OnChargingPoolRemoval.    OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
-                    chargingStationOperator.OnChargingPoolRemoval.    OnNotification   += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
-
-                    chargingStationOperator.OnChargingStationAddition.OnVoting         += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
-                    chargingStationOperator.OnChargingStationAddition.OnNotification   += SendChargingStationAdded;
-                    chargingStationOperator.OnChargingStationDataChanged               += UpdateChargingStationData;
-                    chargingStationOperator.OnChargingStationStatusChanged             += UpdateChargingStationStatus;
-                    chargingStationOperator.OnChargingStationAdminStatusChanged        += UpdateChargingStationAdminStatus;
-                    chargingStationOperator.OnChargingStationRemoval. OnVoting         += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
-                    chargingStationOperator.OnChargingStationRemoval. OnNotification   += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
-
-                    chargingStationOperator.OnEVSEAddition.           OnVoting         += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-                    chargingStationOperator.OnEVSEAddition.           OnNotification   += (timestamp, station, evse)        => EVSEAddition.           SendNotification(timestamp, station, evse);
-                    chargingStationOperator.evseAddition.OnNotification                += SendEVSEAdded;
-                    chargingStationOperator.OnEVSEDataChanged                          += UpdateEVSEData;
-                    chargingStationOperator.OnEVSEStatusChanged                        += UpdateEVSEStatus;
-                    chargingStationOperator.OnEVSEAdminStatusChanged                   += UpdateEVSEAdminStatus;
-                    chargingStationOperator.OnEVSERemoval.            OnVoting         += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
-                    chargingStationOperator.OnEVSERemoval.            OnNotification   += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
-
-
-                    chargingStationOperator.OnNewReservation                           += SendNewReservation;
-                    chargingStationOperator.OnReservationCanceled                      += SendReservationCanceled;
-                    chargingStationOperator.OnNewChargingSession                       += SendNewChargingSession;
-                    chargingStationOperator.OnNewChargeDetailRecord                    += SendNewChargeDetailRecord;
-
-                    return AddChargingStationOperatorResult.Success(
-                               chargingStationOperator,
-                               EventTracking_Id.New,
-                               this
-                           );
-
-                }
-
-                return AddChargingStationOperatorResult.Failed(
-                           Id,
-                           EventTracking_Id.New,
-                           ""
-                       );
-
-            //}
+            return await AddChargingStationOperator(
+                             new ChargingStationOperator(
+                                 Id,
+                                 this,
+                                 Name,
+                                 Description,
+                                 Configurator,
+                                 RemoteChargingStationOperatorCreator,
+                                 InitialAdminStatus ?? ChargingStationOperatorAdminStatusTypes.Operational,
+                                 InitialStatus      ?? ChargingStationOperatorStatusTypes.Available
+                             )
+                         );
 
         }
 
         #endregion
 
 
-        #region ContainsChargingStationOperator  (ChargingStationOperator)
-
-        /// <summary>
-        /// Check if the given charging station operator is already present within the roaming network.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        public Boolean ContainsChargingStationOperator(IChargingStationOperator ChargingStationOperator)
-
-            => chargingStationOperators.ContainsId(ChargingStationOperator.Id);
-
-        #endregion
-
-        #region ContainsChargingStationOperator  (ChargingStationOperatorId)
+        #region ChargingStationOperatorExists    (ChargingStationOperator)
 
         /// <summary>
         /// Check if the given charging station operator identification is already present within the roaming network.
         /// </summary>
         /// <param name="ChargingStationOperatorId">The unique identification of the charging station operator.</param>
-        public Boolean ContainsChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
+        public Boolean ChargingStationOperatorExists(IChargingStationOperator  ChargingStationOperator)
+        {
 
-            => chargingStationOperators.ContainsId(ChargingStationOperatorId);
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _ChargingStationOperatorExists(ChargingStationOperator.Id);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(ChargingStationOperatorExists)}({ChargingStationOperator.Id}, ...)");
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ChargingStationOperatorExists    (ChargingStationOperatorId)
+
+        /// <summary>
+        /// Determines whether the given user identification exists within this API.
+        /// </summary>
+        /// <param name="UserId">The unique identification of an user.</param>
+        protected internal Boolean _ChargingStationOperatorExists(ChargingStationOperator_Id UserId)
+
+            => UserId.IsNotNullOrEmpty &&
+               chargingStationOperators.ContainsId(UserId);
+
+        /// <summary>
+        /// Determines whether the given user identification exists within this API.
+        /// </summary>
+        /// <param name="UserId">The unique identification of an user.</param>
+        protected internal Boolean _ChargingStationOperatorExists(ChargingStationOperator_Id? UserId)
+
+            => UserId.HasValue &&
+               UserId.IsNotNullOrEmpty() &&
+               chargingStationOperators.ContainsId(UserId.Value);
+
+
+        /// <summary>
+        /// Check if the given charging station operator identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of the charging station operator.</param>
+        public Boolean ChargingStationOperatorExists(ChargingStationOperator_Id ChargingStationOperatorId)
+        {
+
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _ChargingStationOperatorExists(ChargingStationOperatorId);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(ChargingStationOperatorExists)}({ChargingStationOperatorId}, ...)");
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return false;
+
+        }
+
+        /// <summary>
+        /// Check if the given charging station operator identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of the charging station operator.</param>
+        public Boolean ChargingStationOperatorExists(ChargingStationOperator_Id? ChargingStationOperatorId)
+        {
+
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _ChargingStationOperatorExists(ChargingStationOperatorId);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(ChargingStationOperatorExists)}({ChargingStationOperatorId}, ...)");
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return false;
+
+        }
 
         #endregion
 
         #region GetChargingStationOperatorById   (ChargingStationOperatorId)
 
-        public IChargingStationOperator? GetChargingStationOperatorById(ChargingStationOperator_Id  ChargingStationOperatorId)
+        /// <summary>
+        /// Get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        protected internal IChargingStationOperator? _GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId)
+        {
 
-             => chargingStationOperators.GetById(ChargingStationOperatorId);
+            if (!ChargingStationOperatorId.IsNullOrEmpty &&
+                chargingStationOperators.TryGet(ChargingStationOperatorId, out var chargingStationOperator))
+            {
+                return chargingStationOperator;
+            }
 
+            return null;
+
+        }
+
+        /// <summary>
+        /// Get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        protected internal IChargingStationOperator? _GetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId)
+        {
+
+            if (ChargingStationOperatorId.HasValue &&
+                ChargingStationOperatorId.IsNotNullOrEmpty() &&
+                chargingStationOperators.TryGet(ChargingStationOperatorId.Value, out var chargingStationOperator))
+            {
+                return chargingStationOperator;
+            }
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        public IChargingStationOperator? GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId)
+        {
+
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _GetChargingStationOperatorById(ChargingStationOperatorId);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(GetChargingStationOperatorById)}({ChargingStationOperatorId}, ...)");
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return null;
+
+        }
+
+        /// <summary>
+        /// Get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
         public IChargingStationOperator? GetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId)
+        {
 
-             => ChargingStationOperatorId.HasValue
-                    ? chargingStationOperators.GetById(ChargingStationOperatorId.Value)
-                    : null;
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return _GetChargingStationOperatorById(ChargingStationOperatorId);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(GetChargingStationOperatorById)}({ChargingStationOperatorId}, ...)");
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return null;
+
+        }
 
         #endregion
 
         #region TryGetChargingStationOperatorById(ChargingStationOperatorId, out ChargingStationOperator)
 
+        /// <summary>
+        /// Try to get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="ChargingStationOperator">The charging station operator.</param>
+        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        {
+
+            if (!ChargingStationOperatorId.IsNullOrEmpty &&
+                chargingStationOperators.TryGet(ChargingStationOperatorId, out ChargingStationOperator))
+            {
+                return true;
+            }
+
+            ChargingStationOperator = null;
+            return false;
+
+        }
+
+        /// <summary>
+        /// Try to get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="ChargingStationOperator">The charging station operator.</param>
+        protected internal Boolean _TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        {
+
+            if (ChargingStationOperatorId.HasValue &&
+                ChargingStationOperatorId.IsNotNullOrEmpty() &&
+                chargingStationOperators.TryGet(ChargingStationOperatorId.Value, out ChargingStationOperator))
+            {
+                return true;
+            }
+
+            ChargingStationOperator = null;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Try to get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="ChargingStationOperator">The charging station operator.</param>
         public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
+        {
 
-            => chargingStationOperators.TryGet(ChargingStationOperatorId, out ChargingStationOperator);
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
+            {
+                try
+                {
 
+                    return _TryGetChargingStationOperatorById(ChargingStationOperatorId, out ChargingStationOperator);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(TryGetChargingStationOperatorById)}({ChargingStationOperatorId}, ...)");
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            ChargingStationOperator = null;
+            return false;
+
+        }
+
+        /// <summary>
+        /// Try to get the charging station operator having the given unique identification.
+        /// </summary>
+        /// <param name="ChargingStationOperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="ChargingStationOperator">The charging station operator.</param>
         public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
         {
 
-            if (!ChargingStationOperatorId.HasValue)
+            if (chargingStationOperatorsSemaphore.Wait(SemaphoreSlimTimeout))
             {
-                ChargingStationOperator = null;
-                return false;
+                try
+                {
+
+                    return _TryGetChargingStationOperatorById(ChargingStationOperatorId, out ChargingStationOperator);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(TryGetChargingStationOperatorById)}({ChargingStationOperatorId}, ...)");
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
             }
 
-            return chargingStationOperators.TryGet(ChargingStationOperatorId.Value, out ChargingStationOperator);
+            ChargingStationOperator = null;
+            return false;
 
         }
 
@@ -1848,7 +2374,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGetChargingStationOperatorById(ChargingPool.Operator.Id, out var chargingStationOperator) &&
                 chargingStationOperator is not null)
             {
-                return chargingStationOperator.ContainsChargingPool(ChargingPool.Id);
+                return chargingStationOperator.ChargingPoolExists(ChargingPool.Id);
             }
 
             return false;
@@ -1869,7 +2395,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out var chargingStationOperator) &&
                 chargingStationOperator is not null)
             {
-                return chargingStationOperator.ContainsChargingPool(ChargingPoolId);
+                return chargingStationOperator.ChargingPoolExists(ChargingPoolId);
             }
 
             return false;

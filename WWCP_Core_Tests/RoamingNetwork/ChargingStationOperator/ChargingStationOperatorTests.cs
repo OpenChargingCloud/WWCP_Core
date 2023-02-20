@@ -64,8 +64,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 Assert.AreEqual (1,                                                     roamingNetwork.ChargingStationOperatorIds().Count());
 
 
-                Assert.IsTrue   (roamingNetwork.ContainsChargingStationOperator(ChargingStationOperator_Id.Parse("DE*GEF")));
-                Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById (ChargingStationOperator_Id.Parse("DE*GEF")));
+                Assert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*GEF")));
+                Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*GEF")));
 
             }
 
@@ -105,8 +105,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     Assert.AreEqual (ChargingStationOperatorAdminStatusTypes.Operational,  DE_XXX.AdminStatus);
                     Assert.AreEqual (ChargingStationOperatorStatusTypes.Available,         DE_XXX.Status);
 
-                    Assert.IsTrue   (roamingNetwork.ContainsChargingStationOperator(ChargingStationOperator_Id.Parse("DE*XXX")));
-                    Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById (ChargingStationOperator_Id.Parse("DE*XXX")));
+                    Assert.IsTrue   (roamingNetwork.ChargingStationOperatorExists (ChargingStationOperator_Id.Parse("DE*XXX")));
+                    Assert.IsNotNull(roamingNetwork.GetChargingStationOperatorById(ChargingStationOperator_Id.Parse("DE*XXX")));
 
                 }
 

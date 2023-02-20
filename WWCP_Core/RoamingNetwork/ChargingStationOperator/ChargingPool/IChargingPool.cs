@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The address of this charging pool.
         /// </summary>
-        Address                                 Address                     { get; set; }
+        Address?                                Address                     { get; set; }
 
         /// <summary>
         /// The geographical location of this charging pool.
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The address of the entrance to this charging pool.
         /// (If different from 'Address').
         /// </summary>
-        Address                                 EntranceAddress             { get; set; }
+        Address?                                EntranceAddress             { get; set; }
 
         /// <summary>
         /// The geographical location of the entrance to this charging pool.

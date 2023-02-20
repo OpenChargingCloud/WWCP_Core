@@ -44,7 +44,8 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingPool : AEMobilityEntity<ChargingPool_Id,
                                                  ChargingPoolAdminStatusTypes,
                                                  ChargingPoolStatusTypes>,
-                                IEquatable<ChargingPool>, IComparable<ChargingPool>,
+                                IEquatable<ChargingPool>,
+                                IComparable<ChargingPool>,
                                 IChargingPool
     {
 

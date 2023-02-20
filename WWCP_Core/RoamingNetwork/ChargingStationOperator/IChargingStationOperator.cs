@@ -176,6 +176,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region Events
+
+        #region OnData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        event OnChargingStationOperatorDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        event OnChargingStationOperatorAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status changed.
+        /// </summary>
+        event OnChargingStationOperatorStatusChangedDelegate       OnStatusChanged;
+
+        #endregion
+
+        #endregion
+
 
         #region Charging pools
 
@@ -212,7 +235,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        User_Id?                                                     CurrentUserId                  = null);
 
         /// <summary>
-        /// Create and register or udpate a new charging pool having the given
+        /// Create and register or update a new charging pool having the given
         /// unique charging pool identification.
         /// </summary>
         /// <param name="Id">The unique identification of the new charging pool.</param>
@@ -237,6 +260,19 @@ namespace cloud.charging.open.protocols.WWCP
                                                                        Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                        EventTracking_Id?                                            EventTrackingId                = null,
                                                                        User_Id?                                                     CurrentUserId                  = null);
+
+        /// <summary>
+        /// Update the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
+                                                          Boolean                                  SkipUserUpdatedNotifications   = false,
+                                                          Action<ChargingPool, EventTracking_Id>?  OnUpdated                      = null,
+                                                          EventTracking_Id?                        EventTrackingId                = null,
+                                                          User_Id?                                 CurrentUserId                  = null);
 
         /// <summary>
         /// Return an enumeration of all charging pools.
@@ -298,13 +334,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given ChargingPool is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        Boolean ContainsChargingPool(IChargingPool ChargingPool);
+        Boolean ChargingPoolExists(IChargingPool ChargingPool);
 
         /// <summary>
         /// Check if the given ChargingPool identification is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
-        Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId);
+        Boolean ChargingPoolExists(ChargingPool_Id ChargingPoolId);
 
         IChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId);
 

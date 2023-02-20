@@ -23,6 +23,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
+using social.OpenData.UsersAPI;
+
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
@@ -200,8 +202,8 @@ namespace cloud.charging.open.protocols.WWCP
         #region ChargingStationOperators
 
         IEnumerable<IChargingStationOperator>            ChargingStationOperators { get; }
-        Boolean                                          ContainsChargingStationOperator   (IChargingStationOperator                 ChargingStationOperator);
-        Boolean                                          ContainsChargingStationOperator   (ChargingStationOperator_Id               ChargingStationOperatorId);
+        Boolean                                          ChargingStationOperatorExists     (IChargingStationOperator                 ChargingStationOperator);
+        Boolean                                          ChargingStationOperatorExists     (ChargingStationOperator_Id               ChargingStationOperatorId);
         IChargingStationOperator?                        GetChargingStationOperatorById    (ChargingStationOperator_Id               ChargingStationOperatorId);
         IChargingStationOperator?                        GetChargingStationOperatorById    (ChargingStationOperator_Id?              ChargingStationOperatorId);
         Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id               ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
@@ -240,7 +242,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
                                                                              ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
                                                                              Action<IChargingStationOperator>?                    OnSuccess                              = null,
-                                                                             Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null);
+                                                                             Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null,
+                                                                             EventTracking_Id?                                    EventTrackingId                        = null,
+                                                                             User_Id?                                             CurrentUserId                          = null);
 
         #endregion
 
