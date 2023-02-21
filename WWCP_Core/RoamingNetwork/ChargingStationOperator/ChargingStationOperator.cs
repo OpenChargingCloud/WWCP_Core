@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// All brands registered for this charging station operator.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>         Brands          { get; }
+        public ReactiveSet<Brand>              Brands                           { get; }
 
         #region Logo
 

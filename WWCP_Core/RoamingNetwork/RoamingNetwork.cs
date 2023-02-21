@@ -1379,23 +1379,43 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (protected internal) _AddChargingStationOperator(ChargingStationOperator, SkipDefaultNotifications = false, OnAdded = null, ...)
+        #region AddChargingStationOperator           (ChargingStationOperator,      ..., OnAdded = null, ...)
+
+        /// <summary>
+        /// A delegate called whenever a charging station operator was added.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the charging station operator was added.</param>
+        /// <param name="ChargingStationOperator">The added charging station operator.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public delegate Task OnChargingStationOperatorAddedDelegate(DateTime                  Timestamp,
+                                                                    IChargingStationOperator  ChargingStationOperator,
+                                                                    EventTracking_Id?         EventTrackingId   = null,
+                                                                    User_Id?                  CurrentUserId     = null);
+
+        /// <summary>
+        /// An event fired whenever a charging station operator was added.
+        /// </summary>
+        public event OnChargingStationOperatorAddedDelegate OnChargingStationOperatorAdded;
+
+
+        #region (protected internal) _AddChargingStationOperator(ChargingStationOperator, ..., OnAdded = null, ...)
 
         /// <summary>
         /// Add the given user to the API.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this charging station operator addition.</param>
-        /// <param name="OnAdded">A delegate run whenever the user has been added successfully.</param>
+        /// <param name="OnAdded">A delegate run whenever the charging station operator has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         protected internal async Task<AddChargingStationOperatorResult>
 
-            _AddChargingStationOperator(IChargingStationOperator                             ChargingStationOperator,
-                                        Boolean                                              SkipNewChargingStationOperatorNotifications   = false,
-                                        Action<IChargingStationOperator, EventTracking_Id>?  OnAdded                                       = null,
-                                        EventTracking_Id?                                    EventTrackingId                               = null,
-                                        User_Id?                                             CurrentUserId                                 = null)
+            _AddChargingStationOperator(IChargingStationOperator                 ChargingStationOperator,
+                                        Boolean                                  SkipNewChargingStationOperatorNotifications   = false,
+                                        OnChargingStationOperatorAddedDelegate?  OnAdded                                       = null,
+                                        EventTracking_Id?                        EventTrackingId                               = null,
+                                        User_Id?                                 CurrentUserId                                 = null)
 
         {
 
@@ -1447,10 +1467,13 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            var result = chargingStationOperators.TryAdd(ChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(ChargingStationOperator);
+            var now     = Timestamp.Now;
 
-            OnAdded?.Invoke(ChargingStationOperator,
-                            eventTrackingId);
+            OnAdded?.Invoke(now,
+                            ChargingStationOperator,
+                            eventTrackingId,
+                            CurrentUserId);
 
             //var OnChargingStationOperatorAddedLocal = OnChargingStationOperatorAdded;
             //if (OnChargingStationOperatorAddedLocal is not null)
@@ -1475,21 +1498,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddChargingStationOperator (ChargingStationOperator, SkipDefaultNotifications = false, OnAdded = null, ...)
+        #region AddChargingStationOperator                      (ChargingStationOperator, ..., OnAdded = null, ...)
 
         /// <summary>
         /// Add the given charging station operator.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this charging station operator addition.</param>
-        /// <param name="OnAdded">A delegate run whenever the user has been added successfully.</param>
+        /// <param name="OnAdded">A delegate run whenever the charging station operator has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public async Task<AddChargingStationOperatorResult> AddChargingStationOperator(IChargingStationOperator                             ChargingStationOperator,
-                                                                                       Boolean                                              SkipNewChargingStationOperatorNotifications   = false,
-                                                                                       Action<IChargingStationOperator, EventTracking_Id>?  OnAdded                                       = null,
-                                                                                       EventTracking_Id?                                    EventTrackingId                               = null,
-                                                                                       User_Id?                                             CurrentUserId                                 = null)
+        public async Task<AddChargingStationOperatorResult>
+
+            AddChargingStationOperator(IChargingStationOperator                 ChargingStationOperator,
+                                       Boolean                                  SkipNewChargingStationOperatorNotifications   = false,
+                                       OnChargingStationOperatorAddedDelegate?  OnAdded                                       = null,
+                                       EventTracking_Id?                        EventTrackingId                               = null,
+                                       User_Id?                                 CurrentUserId                                 = null)
+
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -1576,49 +1602,916 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #endregion
 
-        #region CreateChargingStationOperator(Id, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingStationOperatorIfNotExists(ChargingStationOperator,      ..., OnAdded = null, ...)
+
+        #region (protected internal) _AddChargingStationOperatorIfNotExists(ChargingStationOperator, ..., OnAdded = null, ...)
 
         /// <summary>
-        /// Create and register a new charging station operator having the given
-        /// unique charging station operator identification.
+        /// When it has not been created before, add the given user to the API.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging station operator.</param>
-        /// <param name="Name">The offical (multi-language) name of the charging station operator.</param>
-        /// <param name="Description">An optional (multi-language) description of the charging station operator.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging station operator after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
-        public async Task<AddChargingStationOperatorResult>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this charging station operator addition.</param>
+        /// <param name="OnAdded">A delegate run whenever the charging station operator has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<AddChargingStationOperatorIfNotExistsResult>
 
-            CreateChargingStationOperator(ChargingStationOperator_Id                           Id,
-                                          I18NString?                                          Name                                   = null,
-                                          I18NString?                                          Description                            = null,
-                                          Action<IChargingStationOperator>?                    Configurator                           = null,
-                                          RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
-                                          ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
-                                          ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
-                                          Action<IChargingStationOperator>?                    OnSuccess                              = null,
-                                          Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null,
-                                          EventTracking_Id?                                    EventTrackingId                        = null,
-                                          User_Id?                                             CurrentUserId                          = null)
+            _AddChargingStationOperatorIfNotExists(ChargingStationOperator                  ChargingStationOperator,
+                                                   Boolean                                  SkipNewChargingStationOperatorNotifications   = false,
+                                                   OnChargingStationOperatorAddedDelegate?  OnAdded                                       = null,
+                                                   EventTracking_Id?                        EventTrackingId                               = null,
+                                                   User_Id?                                 CurrentUserId                                 = null)
 
         {
 
-            return await AddChargingStationOperator(
-                             new ChargingStationOperator(
-                                 Id,
-                                 this,
-                                 Name,
-                                 Description,
-                                 Configurator,
-                                 RemoteChargingStationOperatorCreator,
-                                 InitialAdminStatus ?? ChargingStationOperatorAdminStatusTypes.Operational,
-                                 InitialStatus      ?? ChargingStationOperatorStatusTypes.Available
-                             )
-                         );
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            //if (User.API is not null && User.API != this)
+            //    return AddChargingStationOperatorIfNotExistsResult.ArgumentError(User,
+            //                                                  eventTrackingId,
+            //                                                  nameof(User),
+            //                                                  "The given user is already attached to another API!");
+
+            if (chargingStationOperators.TryGet(ChargingStationOperator.Id, out var existingChargingStationOperator) && existingChargingStationOperator is not null)
+                return AddChargingStationOperatorIfNotExistsResult.Success(
+                           existingChargingStationOperator,
+                           AddedOrIgnored.Ignored,
+                           eventTrackingId
+                       );
+
+            if (ChargingStationOperator.Id.Length < MinChargingStationOperatorIdLength)
+                return AddChargingStationOperatorIfNotExistsResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(User),
+                           $"The given charging station operator identification '{ChargingStationOperator.Id}' is too short!"
+                       );
+
+            if (ChargingStationOperator.Name.IsNullOrEmpty())
+                return AddChargingStationOperatorIfNotExistsResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           "The given charging station operator name must not be null!"
+                       );
+
+            if (ChargingStationOperator.Name.FirstText().Length < MinChargingStationOperatorNameLength)
+                return AddChargingStationOperatorIfNotExistsResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           $"The given user name '{ChargingStationOperator.Name}' is too short!"
+                       );
+
+            //ChargingStationOperator.API = this;
+
+
+            //await WriteToDatabaseFile(addUserIfNotExists_MessageType,
+            //                          User.ToJSON(false),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            var result  = chargingStationOperators.TryAdd(ChargingStationOperator);
+            var now     = Timestamp.Now;
+
+            OnAdded?.Invoke(now,
+                            ChargingStationOperator,
+                            eventTrackingId,
+                            CurrentUserId);
+
+            //var OnChargingStationOperatorAddedLocal = OnChargingStationOperatorAdded;
+            //if (OnChargingStationOperatorAddedLocal is not null)
+            //    await OnChargingStationOperatorAddedLocal?.Invoke(Timestamp.Now,
+            //                                                      ChargingStationOperator,
+            //                                                      eventTrackingId,
+            //                                                      CurrentUserId);
+
+            //if (!SkipNewChargingStationOperatorNotifications)
+            //    await SendNotifications(ChargingStationOperator,
+            //                            addChargingStationOperatorIfNotExists_MessageType,
+            //                            null,
+            //                            eventTrackingId,
+            //                            CurrentUserId);
+
+
+            return AddChargingStationOperatorIfNotExistsResult.Success(
+                       ChargingStationOperator,
+                       AddedOrIgnored.Added,
+                       eventTrackingId
+                   );
 
         }
+
+        #endregion
+
+        #region AddChargingStationOperatorIfNotExists                      (ChargingStationOperator, ..., OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given user.
+        /// </summary>
+        /// <param name="User">A new user.</param>
+        /// <param name="SkipDefaultNotifications">Do not apply the default notifications settings for new users.</param>
+        /// <param name="OnAdded">A delegate run whenever the user has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddChargingStationOperatorIfNotExistsResult>
+
+            AddChargingStationOperatorIfNotExists(ChargingStationOperator                  ChargingStationOperator,
+                                                  Boolean                                  SkipNewUserNotifications   = false,
+                                                  OnChargingStationOperatorAddedDelegate?  OnAdded                    = null,
+                                                  EventTracking_Id?                        EventTrackingId            = null,
+                                                  User_Id?                                 CurrentUserId              = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await chargingStationOperatorsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _AddChargingStationOperatorIfNotExists(ChargingStationOperator,
+                                                                        SkipNewUserNotifications,
+                                                                        OnAdded,
+                                                                        eventTrackingId,
+                                                                        CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return AddChargingStationOperatorIfNotExistsResult.Failed(
+                               ChargingStationOperator,
+                               eventTrackingId,
+                               e
+                           );
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return AddChargingStationOperatorIfNotExistsResult.Failed(
+                       ChargingStationOperator,
+                       eventTrackingId,
+                       "Internal locking failed!"
+                   );
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region AddOrUpdateChargingStationOperator   (ChargingStationOperator,      ..., OnAdded = null, OnUpdated = null, ...)
+
+        #region (protected internal) _AddOrUpdateChargingStationOperator(ChargingStationOperator, ..., OnAdded = null, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Add or update the given user to/within the API.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this charging station operator addition.</param>
+        /// <param name="OnAdded">A delegate run whenever the charging station operator has been added successfully.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging station operator has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<AddOrUpdateChargingStationOperatorResult>
+
+            _AddOrUpdateChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
+                                                Boolean                                    SkipNewChargingStationOperatorNotifications       = false,
+                                                Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                                OnChargingStationOperatorAddedDelegate?    OnAdded                                           = null,
+                                                OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                                EventTracking_Id?                          EventTrackingId                                   = null,
+                                                User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            //if (ChargingStationOperator.API is not null && ChargingStationOperator.API != this)
+            //    return AddOrUpdateChargingStationOperatorResult.ArgumentError(ChargingStationOperator,
+            //                                               eventTrackingId,
+            //                                               nameof(ChargingStationOperator.API),
+            //                                               "The given user is already attached to another API!");
+
+            if (ChargingStationOperator.Id.Length < MinChargingStationOperatorIdLength)
+                return AddOrUpdateChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           $"The given user identification '{ChargingStationOperator.Id}' is too short!"
+                       );
+
+            if (ChargingStationOperator.Name.IsNullOrEmpty())
+                return AddOrUpdateChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           "The given user name must not be null!"
+                       );
+
+            if (ChargingStationOperator.Name.FirstText().Length < MinChargingStationOperatorNameLength)
+                return AddOrUpdateChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           $"The given user name '{ChargingStationOperator.Name}' is too short!"
+                       );
+
+            //ChargingStationOperator.API = this;
+
+            //await WriteToDatabaseFile(addOrUpdateChargingStationOperator_MessageType,
+            //                          ChargingStationOperator.ToJSON(false),
+            //                          eventTrackingId,
+            //                          CurrentChargingStationOperatorId);
+
+            if (chargingStationOperators.TryGet(ChargingStationOperator.Id, out var OldChargingStationOperator))
+            {
+                chargingStationOperators.Remove(OldChargingStationOperator.Id);
+                //ChargingStationOperator.CopyAllLinkedDataFrom(OldChargingStationOperator);
+            }
+
+            var result  = chargingStationOperators.TryAdd(ChargingStationOperator);
+            var now     = Timestamp.Now;
+
+            if (OldChargingStationOperator is null)
+            {
+
+                OnAdded?.Invoke(now,
+                                ChargingStationOperator,
+                                eventTrackingId,
+                                CurrentUserId);
+
+                var OnChargingStationOperatorAddedLocal = OnChargingStationOperatorAdded;
+                if (OnChargingStationOperatorAddedLocal is not null)
+                    await OnChargingStationOperatorAddedLocal?.Invoke(now,
+                                                                      ChargingStationOperator,
+                                                                      eventTrackingId,
+                                                                      CurrentUserId);
+
+                //if (!SkipNewChargingStationOperatorNotifications)
+                //    await SendNotifications(ChargingStationOperator,
+                //                            addChargingStationOperator_MessageType,
+                //                            null,
+                //                            eventTrackingId,
+                //                            CurrentUserId);
+
+                return AddOrUpdateChargingStationOperatorResult.Success(
+                           ChargingStationOperator,
+                           AddedOrUpdated.Add,
+                           eventTrackingId
+                       );
+
+            }
+            else
+            {
+
+                OnUpdated?.Invoke(now,
+                                  ChargingStationOperator,
+                                  OldChargingStationOperator,
+                                  eventTrackingId,
+                                  CurrentUserId);
+
+                var OnChargingStationOperatorUpdatedLocal = OnChargingStationOperatorUpdated;
+                if (OnChargingStationOperatorUpdatedLocal is not null)
+                    await OnChargingStationOperatorUpdatedLocal.Invoke(now,
+                                                                       ChargingStationOperator,
+                                                                       OldChargingStationOperator,
+                                                                       eventTrackingId,
+                                                                       CurrentUserId);
+
+                //if (!SkipChargingStationOperatorUpdatedNotifications)
+                //    await SendNotifications(ChargingStationOperator,
+                //                            updateChargingStationOperator_MessageType,
+                //                            OldChargingStationOperator,
+                //                            eventTrackingId,
+                //                            CurrentUserId);
+
+                return AddOrUpdateChargingStationOperatorResult.Success(
+                           ChargingStationOperator,
+                           AddedOrUpdated.Update,
+                           eventTrackingId
+                       );
+
+            }
+
+        }
+
+        #endregion
+
+        #region AddOrUpdateChargingStationOperator                      (ChargingStationOperator, ..., OnAdded = null, OnUpdated = null, ...)
+
+        /// <summary>
+        /// Add or update the given user to/within the API.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A user.</param>
+        /// <param name="SkipNewChargingStationOperatorNotifications">Do not send notifications for this user addition.</param>
+        /// <param name="SkipChargingStationOperatorUpdatedNotifications">Do not send the updated user information e-mail to the new user.</param>
+        /// <param name="OnAdded">A delegate run whenever the user has been added successfully.</param>
+        /// <param name="OnUpdated">A delegate run whenever the user has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddOrUpdateChargingStationOperatorResult>
+
+            AddOrUpdateChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
+                                               Boolean                                    SkipNewChargingStationOperatorNotifications       = false,
+                                               Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                               OnChargingStationOperatorAddedDelegate?    OnAdded                                           = null,
+                                               OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                               EventTracking_Id?                          EventTrackingId                                   = null,
+                                               User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await chargingStationOperatorsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _AddOrUpdateChargingStationOperator(ChargingStationOperator,
+                                                                     SkipNewChargingStationOperatorNotifications,
+                                                                     SkipChargingStationOperatorUpdatedNotifications,
+                                                                     OnAdded,
+                                                                     OnUpdated,
+                                                                     eventTrackingId,
+                                                                     CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return AddOrUpdateChargingStationOperatorResult.Failed(
+                               ChargingStationOperator,
+                               eventTrackingId,
+                               e
+                           );
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return AddOrUpdateChargingStationOperatorResult.Failed(
+                       ChargingStationOperator,
+                       eventTrackingId,
+                       "Internal locking failed!"
+                   );
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region UpdateChargingStationOperator        ((New)ChargingStationOperator, ...,                 OnUpdated = null, ...)
+
+        /// <summary>
+        /// A delegate called whenever a charging station operator was updated.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the charging station operator was updated.</param>
+        /// <param name="NewChargingStationOperator">The new/updated charging station operator.</param>
+        /// <param name="OldChargingStationOperator">The old charging station operator.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public delegate Task OnChargingStationOperatorUpdatedDelegate(DateTime                  Timestamp,
+                                                                      IChargingStationOperator  NewChargingStationOperator,
+                                                                      IChargingStationOperator  OldChargingStationOperator,
+                                                                      EventTracking_Id?         EventTrackingId   = null,
+                                                                      User_Id?                  CurrentUserId     = null);
+
+        /// <summary>
+        /// An event fired whenever a charging station operator was updated.
+        /// </summary>
+        public event OnChargingStationOperatorUpdatedDelegate OnChargingStationOperatorUpdated;
+
+
+        #region (protected internal) _UpdateChargingStationOperator(NewChargingStationOperator,                 ..., OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charging station operator to/within the API.
+        /// </summary>
+        /// <param name="NewChargingStationOperator">A charging station operator.</param>
+        /// <param name="SkipChargingStationOperatorUpdatedNotifications">Do not send the updated charging station operator notifications.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging station operator has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<UpdateChargingStationOperatorResult>
+
+            _UpdateChargingStationOperator(ChargingStationOperator                    NewChargingStationOperator,
+                                           Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                           OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                           EventTracking_Id?                          EventTrackingId                                   = null,
+                                           User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (!_TryGetChargingStationOperatorById(NewChargingStationOperator.Id, out var oldChargingStationOperator))
+                return UpdateChargingStationOperatorResult.ArgumentError(
+                           NewChargingStationOperator,
+                           eventTrackingId,
+                           nameof(NewChargingStationOperator),
+                           $"The given user '{NewChargingStationOperator.Id}' does not exists in this API!"
+                       );
+
+            //if (ChargingStationOperator.API is not null && ChargingStationOperator.API != this)
+            //    return UpdateChargingStationOperatorResult.ArgumentError(ChargingStationOperator,
+            //                                          eventTrackingId,
+            //                                          nameof(ChargingStationOperator.API),
+            //                                          "The given user is not attached to this API!");
+
+            //ChargingStationOperator.API = this;
+
+            //await WriteToDatabaseFile(updateChargingStationOperator_MessageType,
+            //                          ChargingStationOperator.ToJSON(),
+            //                          eventTrackingId,
+            //                          CurrentChargingStationOperatorId);
+
+            chargingStationOperators.Remove(oldChargingStationOperator.Id);
+            //ChargingStationOperator.CopyAllLinkedDataFrom(oldChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(NewChargingStationOperator);
+            var now     = Timestamp.Now;
+
+            OnUpdated?.Invoke(now,
+                              NewChargingStationOperator,
+                              oldChargingStationOperator,
+                              eventTrackingId,
+                              CurrentUserId);
+
+            var OnChargingStationOperatorUpdatedLocal = OnChargingStationOperatorUpdated;
+            if (OnChargingStationOperatorUpdatedLocal is not null)
+                await OnChargingStationOperatorUpdatedLocal.Invoke(Timestamp.Now,
+                                                                   NewChargingStationOperator,
+                                                                   oldChargingStationOperator,
+                                                                   eventTrackingId,
+                                                                   CurrentUserId);
+
+            //if (!SkipChargingStationOperatorUpdatedNotifications)
+            //    await SendNotifications(ChargingStationOperator,
+            //                            updateChargingStationOperator_MessageType,
+            //                            oldChargingStationOperator,
+            //                            eventTrackingId,
+            //                            CurrentUserId);
+
+            return UpdateChargingStationOperatorResult.Success(
+                       NewChargingStationOperator,
+                       eventTrackingId
+                   );
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationOperator                      (NewChargingStationOperator,                 ..., OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charging station operator to/within the API.
+        /// </summary>
+        /// <param name="NewChargingStationOperator">A charging station operator.</param>
+        /// <param name="SkipChargingStationOperatorUpdatedNotifications">Do not send the updated charging station operator notifications.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging station operator has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<UpdateChargingStationOperatorResult>
+
+            UpdateChargingStationOperator(ChargingStationOperator                    NewChargingStationOperator,
+                                          Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                          OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                          EventTracking_Id?                          EventTrackingId                                   = null,
+                                          User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await chargingStationOperatorsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _UpdateChargingStationOperator(NewChargingStationOperator,
+                                                                SkipChargingStationOperatorUpdatedNotifications,
+                                                                OnUpdated,
+                                                                EventTrackingId,
+                                                                CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return UpdateChargingStationOperatorResult.Failed(
+                               NewChargingStationOperator,
+                               eventTrackingId,
+                               e
+                           );
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return UpdateChargingStationOperatorResult.Failed(
+                       NewChargingStationOperator,
+                       eventTrackingId,
+                       "Internal locking failed!"
+                   );
+
+        }
+
+        #endregion
+
+
+        #region (protected internal) _UpdateChargingStationOperator(ChargingStationOperator,    UpdateDelegate, ..., OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charging station operator.</param>
+        /// <param name="SkipChargingStationOperatorUpdatedNotifications">Do not send the updated charging station operator notifications.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging station operator has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<UpdateChargingStationOperatorResult>
+
+            _UpdateChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
+                                           Action<ChargingStationOperator.Builder>    UpdateDelegate,
+                                           Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                           OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                           EventTracking_Id?                          EventTrackingId                                   = null,
+                                           User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (!_ChargingStationOperatorExists(ChargingStationOperator.Id))
+                return UpdateChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           $"The given user '{ChargingStationOperator.Id}' does not exists in this API!"
+                       );
+
+            //if (ChargingStationOperator.API != this)
+            //    return UpdateChargingStationOperatorResult.ArgumentError(ChargingStationOperator,
+            //                                          eventTrackingId,
+            //                                          nameof(ChargingStationOperator.API),
+            //                                          "The given user is not attached to this API!");
+
+            if (UpdateDelegate is null)
+                return UpdateChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(UpdateDelegate),
+                           "The given update delegate must not be null!"
+                       );
+
+
+            //var builder = ChargingStationOperator.ToBuilder();
+            //UpdateDelegate(builder);
+            //var updatedChargingStationOperator = builder.ToImmutable;
+            var updatedChargingStationOperator = ChargingStationOperator;
+
+            //await WriteToDatabaseFile(updateChargingStationOperator_MessageType,
+            //                          updatedChargingStationOperator.ToJSON(),
+            //                          eventTrackingId,
+            //                          CurrentChargingStationOperatorId);
+
+            chargingStationOperators.Remove(ChargingStationOperator.Id);
+            //updatedChargingStationOperator.CopyAllLinkedDataFrom(ChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(updatedChargingStationOperator);
+            var now     = Timestamp.Now;
+
+            OnUpdated?.Invoke(now,
+                              updatedChargingStationOperator,
+                              ChargingStationOperator,
+                              eventTrackingId,
+                              CurrentUserId);
+
+            var OnChargingStationOperatorUpdatedLocal = OnChargingStationOperatorUpdated;
+            if (OnChargingStationOperatorUpdatedLocal is not null)
+                await OnChargingStationOperatorUpdatedLocal.Invoke(now,
+                                                                   updatedChargingStationOperator,
+                                                                   ChargingStationOperator,
+                                                                   eventTrackingId,
+                                                                   CurrentUserId);
+
+            //if (!SkipChargingStationOperatorUpdatedNotifications)
+            //    await SendNotifications(updatedChargingStationOperator,
+            //                            updateChargingStationOperator_MessageType,
+            //                            ChargingStationOperator,
+            //                            eventTrackingId,
+            //                            CurrentUserId);
+
+            return UpdateChargingStationOperatorResult.Success(
+                       ChargingStationOperator,
+                       eventTrackingId
+                   );
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationOperator                      (ChargingStationOperator,    UpdateDelegate, ..., OnUpdated = null, ...)
+
+        /// <summary>
+        /// Update the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charging station operator.</param>
+        /// <param name="SkipChargingStationOperatorUpdatedNotifications">Do not send the updated charging station operator notifications.</param>
+        /// <param name="OnUpdated">A delegate run whenever the charging station operator has been updated successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<UpdateChargingStationOperatorResult>
+
+            UpdateChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
+                                          Action<ChargingStationOperator.Builder>    UpdateDelegate,
+                                          Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                          OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                          EventTracking_Id?                          EventTrackingId                                   = null,
+                                          User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await chargingStationOperatorsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _UpdateChargingStationOperator(ChargingStationOperator,
+                                                                UpdateDelegate,
+                                                                SkipChargingStationOperatorUpdatedNotifications,
+                                                                OnUpdated,
+                                                                eventTrackingId,
+                                                                CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return UpdateChargingStationOperatorResult.Failed(
+                               ChargingStationOperator,
+                               eventTrackingId,
+                               e
+                           );
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return UpdateChargingStationOperatorResult.Failed(
+                       ChargingStationOperator,
+                       eventTrackingId,
+                       "Internal locking failed!"
+                   );
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region RemoveChargingStationOperator        (ChargingStationOperator,      ...,                 OnRemoved = null, ...)
+
+        /// <summary>
+        /// A delegate called whenever a user was removed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the user was removed.</param>
+        /// <param name="ChargingStationOperator">The user to be removed.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentChargingStationOperatorId">An optional user identification initiating this command/request.</param>
+        public delegate Task OnChargingStationOperatorRemovedDelegate(DateTime                  Timestamp,
+                                                                      IChargingStationOperator  ChargingStationOperator,
+                                                                      EventTracking_Id?         EventTrackingId                    = null,
+                                                                      User_Id?                  CurrentChargingStationOperatorId   = null);
+
+        /// <summary>
+        /// An event fired whenever a user was removed.
+        /// </summary>
+        public event OnChargingStationOperatorRemovedDelegate OnChargingStationOperatorRemoved;
+
+
+        #region (protected internal virtual) _CanRemoveChargingStationOperator(ChargingStationOperator)
+
+        /// <summary>
+        /// Determines whether the charging station operator can safely be removed from the API.
+        /// </summary>
+        /// <param name="ChargingStationOperator">The charging station operator to be removed.</param>
+        protected internal virtual I18NString? _CanRemoveChargingStationOperator(ChargingStationOperator ChargingStationOperator)
+        {
+
+            //if (ChargingStationOperator.ChargingStationOperator2Organization_OutEdges.Any())
+            //    return new I18NString(Languages.en, "The user is still member of an organization!");
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (protected internal) _RemoveChargingStationOperator(ChargingStationOperator, SkipChargingStationOperatorRemovedNotifications = false, OnRemoved = null, ...)
+
+        /// <summary>
+        /// Remove the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">The charging station operator to be removed.</param>
+        /// <param name="OnRemoved">A delegate run whenever the charging station operator has been removed successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<RemoveChargingStationOperatorResult>
+
+            _RemoveChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
+                                           Boolean                                    SkipChargingStationOperatorRemovedNotifications   = false,
+                                           OnChargingStationOperatorRemovedDelegate?  OnRemoved                                         = null,
+                                           EventTracking_Id?                          EventTrackingId                                   = null,
+                                           User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            //if (ChargingStationOperator.API != this)
+            //    return RemoveChargingStationOperatorResult.ArgumentError(
+            //               ChargingStationOperator,
+            //               eventTrackingId,
+            //               nameof(ChargingStationOperator),
+            //               "The given user is not attached to this API!"
+            //           );
+
+            if (!chargingStationOperators.ContainsId(ChargingStationOperator.Id))
+                return RemoveChargingStationOperatorResult.ArgumentError(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           nameof(ChargingStationOperator),
+                           "The given user does not exists in this API!"
+                       );
+
+
+            var canBeRemoved  = _CanRemoveChargingStationOperator(ChargingStationOperator);
+
+            if (canBeRemoved is not null)
+                return RemoveChargingStationOperatorResult.Failed(
+                           ChargingStationOperator,
+                           eventTrackingId,
+                           canBeRemoved
+                       );
+
+
+            //await WriteToDatabaseFile(deleteChargingStationOperator_MessageType,
+            //                          ChargingStationOperator.ToJSON(false),
+            //                          eventTrackingId,
+            //                          CurrentChargingStationOperatorId);
+
+
+            // ToDo: Remove incoming edges
+
+
+            var result  = chargingStationOperators.Remove(ChargingStationOperator.Id);
+            var now     = Timestamp.Now;
+
+            OnRemoved?.Invoke(now,
+                              ChargingStationOperator,
+                              eventTrackingId,
+                              CurrentUserId);
+
+            var OnChargingStationOperatorRemovedLocal = OnChargingStationOperatorRemoved;
+            if (OnChargingStationOperatorRemovedLocal is not null)
+                await OnChargingStationOperatorRemovedLocal.Invoke(Timestamp.Now,
+                                                                   ChargingStationOperator,
+                                                                   eventTrackingId,
+                                                                   CurrentUserId);
+
+            //if (!SkipChargingStationOperatorRemovedNotifications)
+            //    await SendNotifications(ChargingStationOperator,
+            //                            parentOrganizations,
+            //                            deleteChargingStationOperator_MessageType,
+            //                            eventTrackingId,
+            //                            CurrentChargingStationOperatorId);
+
+
+            return RemoveChargingStationOperatorResult.Success(
+                       ChargingStationOperator,
+                       eventTrackingId
+                   );
+
+        }
+
+        #endregion
+
+        #region RemoveChargingStationOperator                      (ChargingStationOperator, SkipChargingStationOperatorRemovedNotifications = false, OnRemoved = null, ...)
+
+        /// <summary>
+        /// Remove the given charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationOperator">The charging station operator to be removed.</param>
+        /// <param name="OnRemoved">A delegate run whenever the charging station operator has been removed successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<RemoveChargingStationOperatorResult>
+
+            RemoveChargingStationOperator(ChargingStationOperator                    ChargingStationOperator,
+                                          Boolean                                    SkipChargingStationOperatorRemovedNotifications   = false,
+                                          OnChargingStationOperatorRemovedDelegate?  OnRemoved                                         = null,
+                                          EventTracking_Id?                          EventTrackingId                                   = null,
+                                          User_Id?                                   CurrentUserId                                     = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await chargingStationOperatorsSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    return await _RemoveChargingStationOperator(ChargingStationOperator,
+                                                                SkipChargingStationOperatorRemovedNotifications,
+                                                                OnRemoved,
+                                                                eventTrackingId,
+                                                                CurrentUserId);
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e);
+
+                    return RemoveChargingStationOperatorResult.Failed(
+                               ChargingStationOperator,
+                               eventTrackingId,
+                               e
+                           );
+
+                }
+                finally
+                {
+                    try
+                    {
+                        chargingStationOperatorsSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return RemoveChargingStationOperatorResult.Failed(
+                       ChargingStationOperator,
+                       eventTrackingId,
+                       "Internal locking failed!"
+                   );
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -1974,81 +2867,6 @@ namespace cloud.charging.open.protocols.WWCP
             return false;
 
         }
-
-        #endregion
-
-        #region RemoveChargingStationOperator    (ChargingStationOperatorId)
-
-        public async Task<RemoveChargingStationOperatorResult>
-
-            RemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
-
-        {
-
-            if (chargingStationOperators.TryRemove(ChargingStationOperatorId, out var chargingStationOperator) &&
-                chargingStationOperator is not null)
-            {
-
-                return RemoveChargingStationOperatorResult.Success(
-                           chargingStationOperator,
-                           EventTracking_Id.New,
-                           this
-                       );
-
-            }
-
-            return RemoveChargingStationOperatorResult.Failed(
-                       ChargingStationOperatorId,
-                       EventTracking_Id.New,
-                       ""
-                   );
-
-        }
-
-        //public async Task<RemoveChargingStationOperatorResult> RemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId)
-        //{
-
-        //    if (ChargingStationOperatorId.HasValue &&
-        //        chargingStationOperators.TryRemove(ChargingStationOperatorId.Value, out var chargingStationOperator) &&
-        //        chargingStationOperator is not null)
-        //    {
-
-        //        return RemoveChargingStationOperatorResult.Success(
-        //                   chargingStationOperator,
-        //                   EventTracking_Id.New,
-        //                   this
-        //               );
-
-        //    }
-
-        //    return RemoveChargingStationOperatorResult.Failed(
-        //               default,
-        //               EventTracking_Id.New,
-        //               ""
-        //           );
-
-        //}
-
-        #endregion
-
-        #region TryRemoveChargingStationOperator (ChargingStationOperatorId, out ChargingStationOperator)
-
-        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
-
-            => chargingStationOperators.TryRemove(ChargingStationOperatorId, out ChargingStationOperator);
-
-        //public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id? ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator)
-        //{
-
-        //    if (!ChargingStationOperatorId.HasValue)
-        //    {
-        //        ChargingStationOperator = null;
-        //        return false;
-        //    }
-
-        //    return chargingStationOperators.TryRemove(ChargingStationOperatorId.Value, out ChargingStationOperator);
-
-        //}
 
         #endregion
 

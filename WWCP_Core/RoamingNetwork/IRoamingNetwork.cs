@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using social.OpenData.UsersAPI;
+using static cloud.charging.open.protocols.WWCP.RoamingNetwork;
 
 #endregion
 
@@ -86,6 +87,54 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                        CustomChargingPoolSerializer,
                                                                                        CustomChargingStationSerializer,
                                                                                        CustomEVSESerializer)));
+
+        #endregion
+
+
+        #region CreateChargingStationOperator(Id, Name = null, Description = null, Configurator = null, OnCreated = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging station operator having the given
+        /// unique charging station operator identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the new charging station operator.</param>
+        /// <param name="Name">The offical (multi-language) name of the charging station operator.</param>
+        /// <param name="Description">An optional (multi-language) description of the charging station operator.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
+        /// <param name="OnCreated">An optional delegate to configure the new charging station operator after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
+        public static async Task<AddChargingStationOperatorResult>
+
+            CreateChargingStationOperator(this IRoamingNetwork                                                   RoamingNetwork,
+                                          ChargingStationOperator_Id                                             Id,
+                                          I18NString?                                                            Name                                   = null,
+                                          I18NString?                                                            Description                            = null,
+                                          Action<IChargingStationOperator>?                                      Configurator                           = null,
+                                          RemoteChargingStationOperatorCreatorDelegate?                          RemoteChargingStationOperatorCreator   = null,
+                                          ChargingStationOperatorAdminStatusTypes?                               InitialAdminStatus                     = null,
+                                          ChargingStationOperatorStatusTypes?                                    InitialStatus                          = null,
+                                          OnChargingStationOperatorAddedDelegate?                                OnCreated                              = null,
+                                          //Action<RoamingNetwork, ChargingStationOperator_Id, EventTracking_Id>?  OnError                                = null,
+                                          EventTracking_Id?                                                      EventTrackingId                        = null,
+                                          User_Id?                                                               CurrentUserId                          = null)
+
+
+            => await RoamingNetwork.AddChargingStationOperator(
+                         new ChargingStationOperator(
+                             Id,
+                             RoamingNetwork,
+                             Name,
+                             Description,
+                             Configurator,
+                             RemoteChargingStationOperatorCreator,
+                             InitialAdminStatus,
+                             InitialStatus
+                         ),
+                         false,
+                         OnCreated,
+                         EventTrackingId,
+                         CurrentUserId
+                     );
 
         #endregion
 
@@ -201,50 +250,58 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationOperators
 
-        IEnumerable<IChargingStationOperator>            ChargingStationOperators { get; }
-        Boolean                                          ChargingStationOperatorExists     (IChargingStationOperator                 ChargingStationOperator);
-        Boolean                                          ChargingStationOperatorExists     (ChargingStationOperator_Id               ChargingStationOperatorId);
-        IChargingStationOperator?                        GetChargingStationOperatorById    (ChargingStationOperator_Id               ChargingStationOperatorId);
-        IChargingStationOperator?                        GetChargingStationOperatorById    (ChargingStationOperator_Id?              ChargingStationOperatorId);
-        Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id               ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
-        Boolean                                          TryGetChargingStationOperatorById (ChargingStationOperator_Id?              ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
-        Task<RemoveChargingStationOperatorResult>        RemoveChargingStationOperator     (ChargingStationOperator_Id               ChargingStationOperatorId);
-        //Task<RemoveChargingStationOperatorResult>        RemoveChargingStationOperator     (ChargingStationOperator_Id?              ChargingStationOperatorId);
-        Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id               ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
-        //Boolean                                          TryRemoveChargingStationOperator  (ChargingStationOperator_Id?              ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+        Task<AddChargingStationOperatorResult>            AddChargingStationOperator           (IChargingStationOperator                   ChargingStationOperator,
+                                                                                                Boolean                                    SkipNewChargingStationOperatorNotifications       = false,
+                                                                                                OnChargingStationOperatorAddedDelegate?    OnAdded                                           = null,
+                                                                                                EventTracking_Id?                          EventTrackingId                                   = null,
+                                                                                                User_Id?                                   CurrentUserId                                     = null);
 
-        IEnumerable<ChargingStationOperator_Id>          ChargingStationOperatorIds        (IncludeChargingStationOperatorDelegate?  IncludeChargingStationOperator   = null);
+        Task<AddChargingStationOperatorIfNotExistsResult> AddChargingStationOperatorIfNotExists(ChargingStationOperator                    ChargingStationOperator,
+                                                                                                Boolean                                    SkipNewUserNotifications                          = false,
+                                                                                                OnChargingStationOperatorAddedDelegate?    OnAdded                                           = null,
+                                                                                                EventTracking_Id?                          EventTrackingId                                   = null,
+                                                                                                User_Id?                                   CurrentUserId                                     = null);
 
-        IEnumerable<ChargingStationOperatorAdminStatus>  ChargingStationOperatorAdminStatus(IncludeChargingStationOperatorDelegate?  IncludeChargingStationOperator   = null);
+        Task<AddOrUpdateChargingStationOperatorResult>    AddOrUpdateChargingStationOperator   (ChargingStationOperator                    ChargingStationOperator,
+                                                                                                Boolean                                    SkipNewChargingStationOperatorNotifications       = false,
+                                                                                                Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                                                                                OnChargingStationOperatorAddedDelegate?    OnAdded                                           = null,
+                                                                                                OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                                                                                EventTracking_Id?                          EventTrackingId                                   = null,
+                                                                                                User_Id?                                   CurrentUserId                                     = null);
 
-        //IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>>
-        //    ChargingStationOperatorAdminStatusSchedule(IncludeChargingStationOperatorDelegate?       IncludeChargingStationOperator   = null,
-        //                                               Func<DateTime,                     Boolean>?  TimestampFilter                  = null,
-        //                                               Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter                = null,
-        //                                               UInt64?                                       Skip                             = null,
-        //                                               UInt64?                                       Take                             = null);
+        Task<UpdateChargingStationOperatorResult>         UpdateChargingStationOperator        (ChargingStationOperator                    ChargingStationOperator,
+                                                                                                Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                                                                                OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                                                                                EventTracking_Id?                          EventTrackingId                                   = null,
+                                                                                                User_Id?                                   CurrentUserId                                     = null);
 
-        IEnumerable<ChargingStationOperatorStatus>       ChargingStationOperatorStatus     (IncludeChargingStationOperatorDelegate?  IncludeChargingStationOperator   = null);
+        Task<UpdateChargingStationOperatorResult>         UpdateChargingStationOperator        (ChargingStationOperator                    ChargingStationOperator,
+                                                                                                Action<ChargingStationOperator.Builder>    UpdateDelegate,
+                                                                                                Boolean                                    SkipChargingStationOperatorUpdatedNotifications   = false,
+                                                                                                OnChargingStationOperatorUpdatedDelegate?  OnUpdated                                         = null,
+                                                                                                EventTracking_Id?                          EventTrackingId                                   = null,
+                                                                                                User_Id?                                   CurrentUserId                                     = null);
 
-        //IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>>
-        //    ChargingStationOperatorStatusSchedule     (IncludeChargingStationOperatorDelegate?       IncludeChargingStationOperator   = null,
-        //                                               Func<DateTime,                Boolean>?       TimestampFilter                  = null,
-        //                                               Func<ChargingPoolStatusTypes, Boolean>?       StatusFilter                     = null,
-        //                                               UInt64?                                       Skip                             = null,
-        //                                               UInt64?                                       Take                             = null);
+        Task<RemoveChargingStationOperatorResult>         RemoveChargingStationOperator        (ChargingStationOperator                    ChargingStationOperator,
+                                                                                                Boolean                                    SkipChargingStationOperatorRemovedNotifications   = false,
+                                                                                                OnChargingStationOperatorRemovedDelegate?  OnRemoved                                         = null,
+                                                                                                EventTracking_Id?                          EventTrackingId                                   = null,
+                                                                                                User_Id?                                   CurrentUserId                                     = null);
 
 
-        Task<AddChargingStationOperatorResult> CreateChargingStationOperator(ChargingStationOperator_Id                           ChargingStationOperatorId,
-                                                                             I18NString?                                          Name                                   = null,
-                                                                             I18NString?                                          Description                            = null,
-                                                                             Action<IChargingStationOperator>?                    Configurator                           = null,
-                                                                             RemoteChargingStationOperatorCreatorDelegate?        RemoteChargingStationOperatorCreator   = null,
-                                                                             ChargingStationOperatorAdminStatusTypes?             InitialAdminStatus                     = null,
-                                                                             ChargingStationOperatorStatusTypes?                  InitialStatus                          = null,
-                                                                             Action<IChargingStationOperator>?                    OnSuccess                              = null,
-                                                                             Action<RoamingNetwork, ChargingStationOperator_Id>?  OnError                                = null,
-                                                                             EventTracking_Id?                                    EventTrackingId                        = null,
-                                                                             User_Id?                                             CurrentUserId                          = null);
+        IEnumerable<IChargingStationOperator>             ChargingStationOperators             { get; }
+        Boolean                                           ChargingStationOperatorExists        (IChargingStationOperator                   ChargingStationOperator);
+        Boolean                                           ChargingStationOperatorExists        (ChargingStationOperator_Id                 ChargingStationOperatorId);
+        IChargingStationOperator?                         GetChargingStationOperatorById       (ChargingStationOperator_Id                 ChargingStationOperatorId);
+        IChargingStationOperator?                         GetChargingStationOperatorById       (ChargingStationOperator_Id?                ChargingStationOperatorId);
+        Boolean                                           TryGetChargingStationOperatorById    (ChargingStationOperator_Id                 ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+        Boolean                                           TryGetChargingStationOperatorById    (ChargingStationOperator_Id?                ChargingStationOperatorId, out IChargingStationOperator? ChargingStationOperator);
+
+
+        IEnumerable<ChargingStationOperator_Id>           ChargingStationOperatorIds           (IncludeChargingStationOperatorDelegate?    IncludeChargingStationOperator   = null);
+        IEnumerable<ChargingStationOperatorAdminStatus>   ChargingStationOperatorAdminStatus   (IncludeChargingStationOperatorDelegate?    IncludeChargingStationOperator   = null);
+        IEnumerable<ChargingStationOperatorStatus>        ChargingStationOperatorStatus        (IncludeChargingStationOperatorDelegate?    IncludeChargingStationOperator   = null);
 
         #endregion
 
