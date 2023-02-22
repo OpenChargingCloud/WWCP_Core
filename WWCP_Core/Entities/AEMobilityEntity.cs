@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   newValue) =>
             {
 
-                PropertyChanged("Name",
+                PropertyChanged("name",
                                 oldValue,
                                 newValue,
                                 eventTrackingId);
@@ -333,15 +333,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Description           = Description ?? I18NString.Empty;
 
-            this.Name.OnPropertyChanged += async (timestamp,
-                                                  eventTrackingId,
-                                                  sender,
-                                                  propertyName,
-                                                  oldValue,
-                                                  newValue) =>
+            this.Description.OnPropertyChanged += async (timestamp,
+                                                         eventTrackingId,
+                                                         sender,
+                                                         propertyName,
+                                                         oldValue,
+                                                         newValue) =>
             {
 
-                PropertyChanged("Description",
+                PropertyChanged("description",
                                 oldValue,
                                 newValue,
                                 eventTrackingId);

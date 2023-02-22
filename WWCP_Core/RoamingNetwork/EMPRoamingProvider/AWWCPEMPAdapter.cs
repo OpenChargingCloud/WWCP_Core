@@ -26,43 +26,44 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    #region (class) PropertyUpdateInfo
+
+    public class PropertyUpdateInfo
+    {
+
+        public String   PropertyName    { get; }
+        public Object?  OldValue        { get; }
+        public Object?  NewValue        { get; }
+
+        public PropertyUpdateInfo(String   PropertyName,
+                                  Object?  OldValue,
+                                  Object?  NewValue)
+        {
+
+            this.PropertyName  = PropertyName;
+            this.OldValue      = OldValue;
+            this.NewValue      = NewValue;
+
+        }
+
+
+        public override String ToString()
+
+            => String.Concat("Update of '", PropertyName, "' '",
+                                OldValue != null ? OldValue.ToString() : "",
+                                "' -> '",
+                                NewValue != null ? NewValue.ToString() : "",
+                                "'!");
+
+    }
+
+    #endregion
+
+
     public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
                                                                                          EMPRoamingProviderAdminStatusTypes,
                                                                                          EMPRoamingProviderStatusTypes>
     {
-
-        #region (class) PropertyUpdateInfos
-
-        public class PropertyUpdateInfos
-        {
-
-            public String PropertyName  { get; }
-            public Object OldValue      { get; }
-            public Object NewValue      { get; }
-
-            public PropertyUpdateInfos(String PropertyName,
-                                       Object OldValue,
-                                       Object NewValue)
-            {
-
-                this.PropertyName  = PropertyName;
-                this.OldValue      = OldValue;
-                this.NewValue      = NewValue;
-
-            }
-
-
-            public override string ToString()
-
-                => String.Concat("Update of '", PropertyName, "' '",
-                                 OldValue != null ? OldValue.ToString() : "",
-                                 "' -> '",
-                                 NewValue != null ? NewValue.ToString() : "",
-                                 "'!");
-
-        }
-
-        #endregion
 
         #region Data
 
@@ -98,11 +99,11 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new (1, 1);
         protected readonly      Timer                                                            FlushChargeDetailRecordsTimer;
 
-        protected readonly      Dictionary<RoamingNetwork,          List<PropertyUpdateInfos>>   RoamingNetworksUpdateLog;
+        protected readonly      Dictionary<RoamingNetwork,          List<PropertyUpdateInfo>>    RoamingNetworksUpdateLog;
 
-        protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
+        protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfo>>    ChargingStationOperatorsUpdateLog;
 
-        protected readonly      Dictionary<IChargingPool,           List<PropertyUpdateInfos>>   ChargingPoolsUpdateLog;
+        protected readonly      Dictionary<IChargingPool,           List<PropertyUpdateInfo>>    ChargingPoolsUpdateLog;
         protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToAddQueue;
         protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToUpdateQueue;
         protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToRemoveQueue;
@@ -118,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      List<ChargingStationAdminStatusUpdate>                           ChargingStationAdminStatusChangesDelayedQueue;
         protected readonly      List<ChargingStationStatusUpdate>                                ChargingStationStatusChangesFastQueue;
         protected readonly      List<ChargingStationStatusUpdate>                                ChargingStationStatusChangesDelayedQueue;
-        protected readonly      Dictionary<IChargingStation,        List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
+        protected readonly      Dictionary<IChargingStation,        List<PropertyUpdateInfo>>    ChargingStationsUpdateLog;
 
         protected readonly      HashSet<IEVSE>                                                   EVSEsToAddQueue;
         protected readonly      HashSet<IEVSE>                                                   EVSEsToUpdateQueue;
@@ -127,7 +128,7 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
         protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
         protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
-        protected readonly      Dictionary<IEVSE,                   List<PropertyUpdateInfos>>   EVSEsUpdateLog;
+        protected readonly      Dictionary<IEVSE,                   List<PropertyUpdateInfo>>    EVSEsUpdateLog;
 
         protected readonly      List<TChargeDetailRecords>                                       ChargeDetailRecordsQueue;
 
@@ -371,7 +372,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingPoolAdminStatusChangesDelayedQueue      = new List<ChargingPoolAdminStatusUpdate>();
             this.ChargingPoolStatusChangesFastQueue              = new List<ChargingPoolStatusUpdate>();
             this.ChargingPoolStatusChangesDelayedQueue           = new List<ChargingPoolStatusUpdate>();
-            this.ChargingPoolsUpdateLog                          = new Dictionary<IChargingPool,    List<PropertyUpdateInfos>>();
+            this.ChargingPoolsUpdateLog                          = new Dictionary<IChargingPool,    List<PropertyUpdateInfo>>();
 
             this.ChargingStationsToAddQueue                      = new HashSet<IChargingStation>();
             this.ChargingStationsToUpdateQueue                   = new HashSet<IChargingStation>();
@@ -380,7 +381,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingStationAdminStatusChangesDelayedQueue   = new List<ChargingStationAdminStatusUpdate>();
             this.ChargingStationStatusChangesFastQueue           = new List<ChargingStationStatusUpdate>();
             this.ChargingStationStatusChangesDelayedQueue        = new List<ChargingStationStatusUpdate>();
-            this.ChargingStationsUpdateLog                       = new Dictionary<IChargingStation, List<PropertyUpdateInfos>>();
+            this.ChargingStationsUpdateLog                       = new Dictionary<IChargingStation, List<PropertyUpdateInfo>>();
 
             this.EVSEsToAddQueue                                 = new HashSet<IEVSE>();
             this.EVSEsToUpdateQueue                              = new HashSet<IEVSE>();
@@ -389,14 +390,13 @@ namespace cloud.charging.open.protocols.WWCP
             this.EVSEAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
             this.EVSEStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
             this.EVSEStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
-            this.EVSEsUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfos>>();
+            this.EVSEsUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfo>>();
 
             this.ChargeDetailRecordsQueue                        = new List<TChargeDetailRecords>();
 
         }
 
         #endregion
-
 
 
         #region SetStaticData   (Sender, EVSE, ...)
