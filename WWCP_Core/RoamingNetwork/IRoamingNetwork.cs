@@ -307,13 +307,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPools
 
-        IEnumerable<IChargingPool>               ChargingPools { get; }
+        IEnumerable<IChargingPool>               ChargingPools                    { get; }
         Boolean                                  ContainsChargingPool             (IChargingPool                                 ChargingPool);
         Boolean                                  ContainsChargingPool             (ChargingPool_Id                               ChargingPoolId);
         IChargingPool?                           GetChargingPoolById              (ChargingPool_Id                               ChargingPoolId);
+        IChargingPool?                           GetChargingPoolById              (ChargingPool_Id?                              ChargingPoolId);
         Boolean                                  TryGetChargingPoolById           (ChargingPool_Id                               ChargingPoolId, out IChargingPool? ChargingPool);
+        Boolean                                  TryGetChargingPoolById           (ChargingPool_Id?                              ChargingPoolId, out IChargingPool? ChargingPool);
+
         IEnumerable<ChargingPool_Id>             ChargingPoolIds                  (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
         IEnumerable<ChargingPoolAdminStatus>     ChargingPoolAdminStatus          (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
+        IEnumerable<ChargingPoolStatus>          ChargingPoolStatus               (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
+
 
         IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
                                                  ChargingPoolAdminStatusSchedule  (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
@@ -321,7 +326,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
                                                                                    UInt64?                                       Skip                   = null,
                                                                                    UInt64?                                       Take                   = null);
-        IEnumerable<ChargingPoolStatus>          ChargingPoolStatus               (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null);
 
         IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
                                                  ChargingPoolStatusSchedule       (IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
@@ -334,13 +338,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStations
 
-        IEnumerable<IChargingStation>            ChargingStations { get; }
+        IEnumerable<IChargingStation>            ChargingStations                  { get; }
         Boolean                                  ContainsChargingStation           (IChargingStation                                 ChargingStation);
         Boolean                                  ContainsChargingStation           (ChargingStation_Id                               ChargingStationId);
         IChargingStation?                        GetChargingStationById            (ChargingStation_Id                               ChargingStationId);
+        IChargingStation?                        GetChargingStationById            (ChargingStation_Id?                              ChargingStationId);
         Boolean                                  TryGetChargingStationById         (ChargingStation_Id                               ChargingStationId, out IChargingStation? ChargingStation);
+        Boolean                                  TryGetChargingStationById         (ChargingStation_Id?                              ChargingStationId, out IChargingStation? ChargingStation);
+
         IEnumerable<ChargingStation_Id>          ChargingStationIds                (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
         IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus        (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
+        IEnumerable<ChargingStationStatus>       ChargingStationStatus             (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
+
 
         IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>
                                                  ChargingStationAdminStatusSchedule(IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
@@ -348,8 +357,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                     Func<ChargingStationAdminStatusTypes, Boolean>?  AdminStatusFilter         = null,
                                                                                     UInt64?                                          Skip                      = null,
                                                                                     UInt64?                                          Take                      = null);
-
-        IEnumerable<ChargingStationStatus>       ChargingStationStatus             (IncludeChargingStationDelegate?                  IncludeChargingStations   = null);
 
         IEnumerable<Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>
                                                  ChargingStationStatusSchedule     (IncludeChargingStationDelegate?                  IncludeChargingStations   = null,
@@ -382,19 +389,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEs
 
-        IEnumerable<IEVSE>                       EVSEs { get; }
+        IEnumerable<IEVSE>                       EVSEs                  { get; }
 
         Boolean                                  ContainsEVSE           (IEVSE                                 EVSE);
 
         Boolean                                  ContainsEVSE           (EVSE_Id                               EVSEId);
 
         IEVSE?                                   GetEVSEById            (EVSE_Id                               EVSEId);
-
+        IEVSE?                                   GetEVSEById            (EVSE_Id?                              EVSEId);
         Boolean                                  TryGetEVSEById         (EVSE_Id                               EVSEId, out IEVSE? EVSE);
+        Boolean                                  TryGetEVSEById         (EVSE_Id?                              EVSEId, out IEVSE? EVSE);
 
         IEnumerable<EVSE_Id>                     EVSEIds                (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
-
         IEnumerable<EVSEAdminStatus>             EVSEAdminStatus        (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
+        IEnumerable<EVSEStatus>                  EVSEStatus             (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
+
 
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>
                                                  EVSEAdminStatusSchedule(IncludeEVSEDelegate?                  IncludeEVSEs        = null,
@@ -402,8 +411,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                          Func<EVSEAdminStatusTypes, Boolean>?  AdminStatusFilter   = null,
                                                                          UInt64?                               Skip                = null,
                                                                          UInt64?                               Take                = null);
-
-        IEnumerable<EVSEStatus>                  EVSEStatus             (IncludeEVSEDelegate?                  IncludeEVSEs        = null);
 
         IEnumerable<Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>
                                                  EVSEStatusSchedule     (IncludeEVSEDelegate?                  IncludeEVSEs        = null,

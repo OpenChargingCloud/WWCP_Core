@@ -27,64 +27,24 @@ namespace cloud.charging.open.protocols.WWCP
     public interface ISendPOIData
     {
 
-        // Events
-
-        #region OnEVSEDataPush/-Pushed
-
-        ///// <summary>
-        ///// An event fired whenever new EVSE data will be send upstream.
-        ///// </summary>
-        //event OnPushEVSEDataRequestDelegate OnPushEVSEDataRequest;
-
-        ///// <summary>
-        ///// An event fired whenever new EVSE data had been sent upstream.
-        ///// </summary>
-        //event OnPushEVSEDataResponseDelegate OnPushEVSEDataResponse;
-
-        #endregion
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        Boolean  DisablePushData    { get; set; }
 
 
+        #region (Set/Add/Update/Delete) EVSE(s)...
 
         /// <summary>
         /// Only include EVSE identifications matching the given delegate.
         /// </summary>
-        IncludeEVSEIdDelegate              IncludeEVSEIds                     { get; }
+        IncludeEVSEIdDelegate  IncludeEVSEIds    { get; }
 
         /// <summary>
         /// Only include EVSEs matching the given delegate.
         /// </summary>
-        IncludeEVSEDelegate                IncludeEVSEs                       { get; }
+        IncludeEVSEDelegate    IncludeEVSEs      { get; }
 
-        /// <summary>
-        /// Only include charging station identifications matching the given delegate.
-        /// </summary>
-        IncludeChargingStationIdDelegate   IncludeChargingStationIds          { get; }
-
-        /// <summary>
-        /// Only include charging stations matching the given delegate.
-        /// </summary>
-        IncludeChargingStationDelegate     IncludeChargingStations            { get; }
-
-        /// <summary>
-        /// Only include charging pool identifications matching the given delegate.
-        /// </summary>
-        IncludeChargingPoolIdDelegate      IncludeChargingPoolIds             { get; }
-
-        /// <summary>
-        /// Only include charging pools matching the given delegate.
-        /// </summary>
-        IncludeChargingPoolDelegate        IncludeChargingPools               { get; }
-
-
-        /// <summary>
-        /// This service can be disabled, e.g. for debugging reasons.
-        /// </summary>
-        Boolean                            DisablePushData                    { get; set; }
-
-
-        // Push data directly...
-
-        #region (Set/Add/Update/Delete) EVSE(s)...
 
         #region SetStaticData   (EVSE, TransmissionType = Enqueue, ...)
 
@@ -290,6 +250,17 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (Set/Add/Update/Delete) Charging station(s)...
 
+        /// <summary>
+        /// Only include charging station identifications matching the given delegate.
+        /// </summary>
+        IncludeChargingStationIdDelegate  IncludeChargingStationIds    { get; }
+
+        /// <summary>
+        /// Only include charging stations matching the given delegate.
+        /// </summary>
+        IncludeChargingStationDelegate    IncludeChargingStations      { get; }
+
+
         #region SetStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
@@ -492,6 +463,17 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region (Set/Add/Update/Delete) Charging pool(s)...
+
+        /// <summary>
+        /// Only include charging pool identifications matching the given delegate.
+        /// </summary>
+        IncludeChargingPoolIdDelegate  IncludeChargingPoolIds    { get; }
+
+        /// <summary>
+        /// Only include charging pools matching the given delegate.
+        /// </summary>
+        IncludeChargingPoolDelegate    IncludeChargingPools      { get; }
+
 
         #region SetStaticData   (ChargingPool, TransmissionType = Enqueue, ...)
 
@@ -696,12 +678,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (Set/Add/Update/Delete) Charging station operator(s)...
 
+        /// <summary>
+        /// Only include charging pool identifications matching the given delegate.
+        /// </summary>
+        IncludeChargingStationOperatorIdDelegate  IncludeChargingStationOperatorIds    { get; }
+
+        /// <summary>
+        /// Only include charging pools matching the given delegate.
+        /// </summary>
+        IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators      { get; }
+
+
         #region SetStaticData   (ChargingStationOperator, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station operator as new static EVSE data.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -709,12 +703,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            SetStaticData(ChargingStationOperator  ChargingStationOperator,
+            SetStaticData(IChargingStationOperator  ChargingStationOperator,
+                          TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          TimeSpan?                RequestTimeout      = null);
+                          DateTime?                 Timestamp           = null,
+                          CancellationToken?        CancellationToken   = null,
+                          EventTracking_Id?         EventTrackingId     = null,
+                          TimeSpan?                 RequestTimeout      = null);
 
         #endregion
 
@@ -724,6 +719,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Add the EVSE data of the given charging station operator to the static EVSE data.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -731,12 +727,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            AddStaticData(ChargingStationOperator  ChargingStationOperator,
+            AddStaticData(IChargingStationOperator  ChargingStationOperator,
+                          TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id?        EventTrackingId     = null,
-                          TimeSpan?                RequestTimeout      = null);
+                          DateTime?                 Timestamp           = null,
+                          CancellationToken?        CancellationToken   = null,
+                          EventTracking_Id?         EventTrackingId     = null,
+                          TimeSpan?                 RequestTimeout      = null);
 
         #endregion
 
@@ -746,6 +743,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// Update the EVSE data of the given charging station operator.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="PropertyName">The name of the charging station operator property to update.</param>
+        /// <param name="OldValue">The old value of the charging station operator property to update.</param>
+        /// <param name="NewValue">The new value of the charging station operator property to update.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -753,12 +754,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
+            UpdateStaticData(IChargingStationOperator  ChargingStationOperator,
+                             String                    PropertyName,
+                             Object?                   OldValue,
+                             Object?                   NewValue,
+                             TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id?        EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null);
+                             DateTime?                 Timestamp           = null,
+                             CancellationToken?        CancellationToken   = null,
+                             EventTracking_Id?         EventTrackingId     = null,
+                             TimeSpan?                 RequestTimeout      = null);
 
         #endregion
 
@@ -768,6 +773,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Delete the EVSE data of the given charging station operator from the static EVSE data.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -775,12 +781,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
+            DeleteStaticData(IChargingStationOperator  ChargingStationOperator,
+                             TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id?        EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null);
+                             DateTime?                 Timestamp           = null,
+                             CancellationToken?        CancellationToken   = null,
+                             EventTracking_Id?         EventTrackingId     = null,
+                             TimeSpan?                 RequestTimeout      = null);
 
         #endregion
 
@@ -791,6 +798,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data.
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -798,12 +806,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            SetStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                          TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?                             Timestamp           = null,
-                          CancellationToken?                    CancellationToken   = null,
-                          EventTracking_Id?                     EventTrackingId     = null,
-                          TimeSpan?                             RequestTimeout      = null);
+                          DateTime?                              Timestamp           = null,
+                          CancellationToken?                     CancellationToken   = null,
+                          EventTracking_Id?                      EventTrackingId     = null,
+                          TimeSpan?                              RequestTimeout      = null);
 
         #endregion
 
@@ -813,6 +822,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data.
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -820,12 +830,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            AddStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                          TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?                             Timestamp           = null,
-                          CancellationToken?                    CancellationToken   = null,
-                          EventTracking_Id?                     EventTrackingId     = null,
-                          TimeSpan?                             RequestTimeout      = null);
+                          DateTime?                              Timestamp           = null,
+                          CancellationToken?                     CancellationToken   = null,
+                          EventTracking_Id?                      EventTrackingId     = null,
+                          TimeSpan?                              RequestTimeout      = null);
 
         #endregion
 
@@ -835,6 +846,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Update the EVSE data of the given enumeration of charging station operators.
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -842,12 +854,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            UpdateStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                             TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?                             Timestamp           = null,
-                             CancellationToken?                    CancellationToken   = null,
-                             EventTracking_Id?                     EventTrackingId     = null,
-                             TimeSpan?                             RequestTimeout      = null);
+                             DateTime?                              Timestamp           = null,
+                             CancellationToken?                     CancellationToken   = null,
+                             EventTracking_Id?                      EventTrackingId     = null,
+                             TimeSpan?                              RequestTimeout      = null);
         #endregion
 
         #region DeleteStaticData(ChargingStationOperators, ...)
@@ -856,6 +869,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data.
         /// </summary>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -863,12 +877,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            DeleteStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                             TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?                             Timestamp           = null,
-                             CancellationToken?                    CancellationToken   = null,
-                             EventTracking_Id?                     EventTrackingId     = null,
-                             TimeSpan?                             RequestTimeout      = null);
+                             DateTime?                              Timestamp           = null,
+                             CancellationToken?                     CancellationToken   = null,
+                             EventTracking_Id?                      EventTrackingId     = null,
+                             TimeSpan?                              RequestTimeout      = null);
 
         #endregion
 
@@ -879,9 +894,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region SetStaticData   (RoamingNetwork, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given roaming network.
+        /// Upload the static data of the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -889,7 +905,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            SetStaticData(RoamingNetwork      RoamingNetwork,
+            SetStaticData(IRoamingNetwork     RoamingNetwork,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
@@ -901,9 +918,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddStaticData   (RoamingNetwork, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given roaming network.
+        /// Upload the static data of the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -911,7 +929,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            AddStaticData(RoamingNetwork      RoamingNetwork,
+            AddStaticData(IRoamingNetwork     RoamingNetwork,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
@@ -923,9 +942,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateStaticData(RoamingNetwork, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given roaming network.
+        /// Upload the static data of the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="PropertyName">The name of the roaming network property to update.</param>
+        /// <param name="OldValue">The old value of the roaming network property to update.</param>
+        /// <param name="NewValue">The new value of the roaming network property to update.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -933,7 +956,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            UpdateStaticData(RoamingNetwork      RoamingNetwork,
+            UpdateStaticData(IRoamingNetwork     RoamingNetwork,
+                             String              PropertyName,
+                             Object?             OldValue,
+                             Object?             NewValue,
+                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
@@ -945,9 +972,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region DeleteStaticData(RoamingNetwork, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given roaming network.
+        /// Upload the static data of the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -955,7 +983,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            DeleteStaticData(RoamingNetwork      RoamingNetwork,
+            DeleteStaticData(IRoamingNetwork     RoamingNetwork,
+                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,

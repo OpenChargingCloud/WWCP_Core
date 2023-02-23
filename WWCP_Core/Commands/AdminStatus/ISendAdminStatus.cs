@@ -17,12 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -73,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                               DateTime?                           Timestamp           = null,
                               CancellationToken?                  CancellationToken   = null,
-                              EventTracking_Id                    EventTrackingId     = null,
+                              EventTracking_Id?                   EventTrackingId     = null,
                               TimeSpan?                           RequestTimeout      = null);
 
         #endregion
@@ -97,7 +91,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                               DateTime?                                      Timestamp           = null,
                               CancellationToken?                             CancellationToken   = null,
-                              EventTracking_Id                               EventTrackingId     = null,
+                              EventTracking_Id?                              EventTrackingId     = null,
                               TimeSpan?                                      RequestTimeout      = null);
 
         #endregion
@@ -121,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                               DateTime?                                   Timestamp           = null,
                               CancellationToken?                          CancellationToken   = null,
-                              EventTracking_Id                            EventTrackingId     = null,
+                              EventTracking_Id?                           EventTrackingId     = null,
                               TimeSpan?                                   RequestTimeout      = null);
 
         #endregion
@@ -145,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                               DateTime?                                              Timestamp           = null,
                               CancellationToken?                                     CancellationToken   = null,
-                              EventTracking_Id                                       EventTrackingId     = null,
+                              EventTracking_Id?                                      EventTrackingId     = null,
                               TimeSpan?                                              RequestTimeout      = null);
 
         #endregion
@@ -169,7 +163,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                               DateTime?                                     Timestamp           = null,
                               CancellationToken?                            CancellationToken   = null,
-                              EventTracking_Id                              EventTrackingId     = null,
+                              EventTracking_Id?                             EventTrackingId     = null,
                               TimeSpan?                                     RequestTimeout      = null);
 
         #endregion

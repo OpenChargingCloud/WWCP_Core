@@ -50,21 +50,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        /// <summary>
-        /// The default max size of the admin status list.
-        /// </summary>
-        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
-
-        /// <summary>
-        /// The default max size of the status list.
-        /// </summary>
-        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
-
         #endregion
 
         #region Properties
-
-        //public Authorizator_Id AuthorizatorId { get; }
 
         #region Logo
 
@@ -362,22 +350,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.
         /// </summary>
-        public event OnReserveRequestDelegate         OnReserveRequest;
+        public event OnReserveRequestDelegate?             OnReserveRequest;
 
         /// <summary>
         /// An event fired whenever an EVSE was reserved.
         /// </summary>
-        public event OnReserveResponseDelegate        OnReserveResponse;
+        public event OnReserveResponseDelegate?            OnReserveResponse;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
-        public event OnNewReservationDelegate             OnNewReservation;
+        public event OnNewReservationDelegate?             OnNewReservation;
 
         /// <summary>
         /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        public event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -386,23 +374,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        public event OnRemoteStartRequestDelegate   OnRemoteStartRequest;
+        public event OnRemoteStartRequestDelegate?   OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        public event OnRemoteStartResponseDelegate  OnRemoteStartResponse;
+        public event OnRemoteStartResponseDelegate?  OnRemoteStartResponse;
 
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopRequestDelegate    OnRemoteStopRequest;
+        public event OnRemoteStopRequestDelegate?    OnRemoteStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopResponseDelegate   OnRemoteStopResponse;
+        public event OnRemoteStopResponseDelegate?   OnRemoteStopResponse;
 
         #endregion
 
@@ -481,47 +469,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region PushEVSEData/-Status directly...
 
-        #region DisablePushData
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean  DisablePushData           { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean  DisablePushData                  { get; set; }
-
-        #endregion
-
-        #region DisablePushAdminStatus
+        public Boolean  DisablePushAdminStatus    { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean  DisablePushAdminStatus           { get; set; }
-
-        #endregion
-
-        #region DisablePushStatus
-
-        /// <summary>
-        /// This service can be disabled, e.g. for debugging reasons.
-        /// </summary>
-        public Boolean  DisablePushStatus                { get; set; }
-
-        public IncludeEVSEIdDelegate IncludeEVSEIds => throw new NotImplementedException();
-
-        public IncludeEVSEDelegate IncludeEVSEs => throw new NotImplementedException();
-
-        public IncludeChargingStationIdDelegate IncludeChargingStationIds => throw new NotImplementedException();
-
-        public IncludeChargingStationDelegate IncludeChargingStations => throw new NotImplementedException();
-
-        public IncludeChargingPoolIdDelegate IncludeChargingPoolIds => throw new NotImplementedException();
-
-        public IncludeChargingPoolDelegate IncludeChargingPools => throw new NotImplementedException();
-
-        #endregion
+        public Boolean  DisablePushStatus         { get; set; }
 
 
         #region (Set/Add/Update/Delete) EVSE(s)...
+
+        public IncludeEVSEIdDelegate  IncludeEVSEIds    { get; set; }
+
+        public IncludeEVSEDelegate    IncludeEVSEs      { get; set; }
+
 
         #region SetStaticData   (EVSE, TransmissionType = Enqueue, ...)
 
@@ -601,7 +570,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(IEVSE                EVSE,
+            ISendPOIData.UpdateStaticData(IEVSE               EVSE,
                                           String?             PropertyName,
                                           Object?             OldValue,
                                           Object?             NewValue,
@@ -841,6 +810,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region (Set/Add/Update/Delete) Charging station(s)...
+
+        public IncludeChargingStationIdDelegate  IncludeChargingStationIds    { get; set; }
+
+        public IncludeChargingStationDelegate    IncludeChargingStations      { get; set; }
+
 
         #region SetStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
 
@@ -1155,6 +1129,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (Set/Add/Update/Delete) Charging pool(s)...
 
+        public IncludeChargingPoolIdDelegate  IncludeChargingPoolIds    { get; set; }
+
+        public IncludeChargingPoolDelegate    IncludeChargingPools      { get; set; }
+
+
         #region SetStaticData   (ChargingPool, TransmissionType = Enqueue, ...)
 
         /// <summary>
@@ -1465,6 +1444,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (Set/Add/Update/Delete) Charging station operator(s)...
 
+        public IncludeChargingStationOperatorIdDelegate  IncludeChargingStationOperatorIds    { get; set; }
+
+        public IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators      { get; set; }
+
+
         #region SetStaticData   (ChargingStationOperator, ...)
 
         /// <summary>
@@ -1478,21 +1462,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.SetStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.SetStaticData(IChargingStationOperator  ChargingStationOperator,
+                                       TransmissionTypes         TransmissionType,
 
-                                          DateTime?                Timestamp,
-                                          CancellationToken?       CancellationToken,
-                                          EventTracking_Id         EventTrackingId,
-                                          TimeSpan?                RequestTimeout)
+                                       DateTime?                 Timestamp,
+                                       CancellationToken?        CancellationToken,
+                                       EventTracking_Id?         EventTrackingId,
+                                       TimeSpan?                 RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperator == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1513,21 +1491,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.AddStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.AddStaticData(IChargingStationOperator  ChargingStationOperator,
+                                       TransmissionTypes         TransmissionType,
 
-                                          DateTime?                Timestamp,
-                                          CancellationToken?       CancellationToken,
-                                          EventTracking_Id         EventTrackingId,
-                                          TimeSpan?                RequestTimeout)
+                                       DateTime?                 Timestamp,
+                                       CancellationToken?        CancellationToken,
+                                       EventTracking_Id?         EventTrackingId,
+                                       TimeSpan?                 RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperator == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1548,21 +1520,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.UpdateStaticData(IChargingStationOperator  ChargingStationOperator,
+                                          String?                   PropertyName,
+                                          Object?                   OldValue,
+                                          Object?                   NewValue,
+                                          TransmissionTypes         TransmissionType,
 
-                                             DateTime?                Timestamp,
-                                             CancellationToken?       CancellationToken,
-                                             EventTracking_Id         EventTrackingId,
-                                             TimeSpan?                RequestTimeout)
+                                          DateTime?                 Timestamp,
+                                          CancellationToken?        CancellationToken,
+                                          EventTracking_Id          EventTrackingId,
+                                          TimeSpan?                 RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperator == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1583,21 +1552,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
+            ISendPOIData.DeleteStaticData(IChargingStationOperator  ChargingStationOperator,
+                                          TransmissionTypes         TransmissionType,
 
-                                             DateTime?                Timestamp,
-                                             CancellationToken?       CancellationToken,
-                                             EventTracking_Id         EventTrackingId,
-                                             TimeSpan?                RequestTimeout)
+                                          DateTime?                 Timestamp,
+                                          CancellationToken?        CancellationToken,
+                                          EventTracking_Id?         EventTrackingId,
+                                          TimeSpan?                 RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperator == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1619,21 +1582,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.SetStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                       TransmissionTypes                      TransmissionType,
 
-                                          DateTime?                             Timestamp,
-                                          CancellationToken?                    CancellationToken,
-                                          EventTracking_Id                      EventTrackingId,
-                                          TimeSpan?                             RequestTimeout)
+                                       DateTime?                              Timestamp,
+                                       CancellationToken?                     CancellationToken,
+                                       EventTracking_Id?                      EventTrackingId,
+                                       TimeSpan?                              RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperators == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1654,24 +1611,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.AddStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                       TransmissionTypes                      TransmissionType,
 
-                                          DateTime?                             Timestamp,
-                                          CancellationToken?                    CancellationToken,
-                                          EventTracking_Id                      EventTrackingId,
-                                          TimeSpan?                             RequestTimeout)
+                                       DateTime?                              Timestamp,
+                                       CancellationToken?                     CancellationToken,
+                                       EventTracking_Id?                      EventTrackingId,
+                                       TimeSpan?                              RequestTimeout)
 
         {
 
-            #region Initial checks
-
-            if (ChargingStationOperators == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
-
-            #endregion
-
             return PushEVSEDataResult.NoOperation(Id, this, null);
-
 
         }
 
@@ -1690,21 +1640,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.UpdateStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                          TransmissionTypes                      TransmissionType,
 
-                                             DateTime?                             Timestamp,
-                                             CancellationToken?                    CancellationToken,
-                                             EventTracking_Id                      EventTrackingId,
-                                             TimeSpan?                             RequestTimeout)
+                                          DateTime?                              Timestamp,
+                                          CancellationToken?                     CancellationToken,
+                                          EventTracking_Id?                      EventTrackingId,
+                                          TimeSpan?                              RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperators == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1725,21 +1669,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+            ISendPOIData.DeleteStaticData(IEnumerable<IChargingStationOperator>  ChargingStationOperators,
+                                          TransmissionTypes                      TransmissionType,
 
-                                             DateTime?                             Timestamp,
-                                             CancellationToken?                    CancellationToken,
-                                             EventTracking_Id                      EventTrackingId,
-                                             TimeSpan?                             RequestTimeout)
+                                          DateTime?                              Timestamp,
+                                          CancellationToken?                     CancellationToken,
+                                          EventTracking_Id?                      EventTrackingId,
+                                          TimeSpan?                              RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (ChargingStationOperators == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1759,21 +1697,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushChargingStationOperatorAdminStatusResult>
+        async Task<PushChargingStationOperatorAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                                      TransmissionType,
 
                                                DateTime?                                              Timestamp,
                                                CancellationToken?                                     CancellationToken,
-                                               EventTracking_Id                                       EventTrackingId,
+                                               EventTracking_Id?                                      EventTrackingId,
                                                TimeSpan?                                              RequestTimeout)
 
         {
 
-            return Task.FromResult(PushChargingStationOperatorAdminStatusResult.OutOfService(Id,
-                                                                                             this,
-                                                                                             AdminStatusUpdates));
+            return PushChargingStationOperatorAdminStatusResult.NoOperation(Id, this);
 
         }
 
@@ -1797,7 +1733,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                      DateTime?                                         Timestamp,
                                      CancellationToken?                                CancellationToken,
-                                     EventTracking_Id                                  EventTrackingId,
+                                     EventTracking_Id?                                 EventTrackingId,
                                      TimeSpan?                                         RequestTimeout)
 
         {
@@ -1825,21 +1761,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.SetStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.SetStaticData(IRoamingNetwork     RoamingNetwork,
+                                       TransmissionTypes   TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken?  CancellationToken,
-                                          EventTracking_Id    EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                       DateTime?           Timestamp,
+                                       CancellationToken?  CancellationToken,
+                                       EventTracking_Id?   EventTrackingId,
+                                       TimeSpan?           RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1860,21 +1790,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.AddStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.AddStaticData(IRoamingNetwork     RoamingNetwork,
+                                       TransmissionTypes   TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken?  CancellationToken,
-                                          EventTracking_Id    EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                       DateTime?           Timestamp,
+                                       CancellationToken?  CancellationToken,
+                                       EventTracking_Id?   EventTrackingId,
+                                       TimeSpan?           RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1895,21 +1819,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.UpdateStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.UpdateStaticData(IRoamingNetwork     RoamingNetwork,
+                                          String?             PropertyName,
+                                          Object?             OldValue,
+                                          Object?             NewValue,
+                                          TransmissionTypes   TransmissionType,
 
-                                             DateTime?           Timestamp,
-                                             CancellationToken?  CancellationToken,
-                                             EventTracking_Id    EventTrackingId,
-                                             TimeSpan?           RequestTimeout)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id?   EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1930,21 +1851,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEDataResult>
 
-            ISendPOIData.DeleteStaticData(RoamingNetwork      RoamingNetwork,
+            ISendPOIData.DeleteStaticData(IRoamingNetwork     RoamingNetwork,
+                                          TransmissionTypes   TransmissionType,
 
-                                             DateTime?           Timestamp,
-                                             CancellationToken?  CancellationToken,
-                                             EventTracking_Id    EventTrackingId,
-                                             TimeSpan?           RequestTimeout)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id?   EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
-
-            #region Initial checks
-
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-            #endregion
 
             return PushEVSEDataResult.NoOperation(Id, this, null);
 
@@ -1964,21 +1879,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushRoamingNetworkAdminStatusResult>
+        async Task<PushRoamingNetworkAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                             TransmissionType,
 
                                                DateTime?                                     Timestamp,
                                                CancellationToken?                            CancellationToken,
-                                               EventTracking_Id                              EventTrackingId,
+                                               EventTracking_Id?                             EventTrackingId,
                                                TimeSpan?                                     RequestTimeout)
 
         {
 
-            return Task.FromResult(PushRoamingNetworkAdminStatusResult.OutOfService(Id,
-                                                                                    this,
-                                                                                    AdminStatusUpdates));
+            return PushRoamingNetworkAdminStatusResult.NoOperation(Id, this);
 
         }
 
@@ -1998,12 +1911,12 @@ namespace cloud.charging.open.protocols.WWCP
         async Task<PushRoamingNetworkStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
-                                            TransmissionTypes                        TransmissionType,
+                                     TransmissionTypes                        TransmissionType,
 
-                                            DateTime?                                Timestamp,
-                                            CancellationToken?                       CancellationToken,
-                                            EventTracking_Id                         EventTrackingId,
-                                            TimeSpan?                                RequestTimeout)
+                                     DateTime?                                Timestamp,
+                                     CancellationToken?                       CancellationToken,
+                                     EventTracking_Id?                        EventTrackingId,
+                                     TimeSpan?                                RequestTimeout)
 
         {
 

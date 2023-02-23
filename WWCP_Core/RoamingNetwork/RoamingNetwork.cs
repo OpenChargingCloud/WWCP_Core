@@ -31,6 +31,7 @@ using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 using cloud.charging.open.protocols.WWCP.Networking;
 
 using social.OpenData.UsersAPI;
+using Org.BouncyCastle.Math.EC;
 
 #endregion
 
@@ -1470,6 +1471,44 @@ namespace cloud.charging.open.protocols.WWCP
             var result  = chargingStationOperators.TryAdd(ChargingStationOperator);
             var now     = Timestamp.Now;
 
+            if (result)
+            {
+
+                ChargingStationOperator.OnDataChanged                              += UpdateChargingStationOperatorData;
+                ChargingStationOperator.OnStatusChanged                            += UpdateChargingStationOperatorStatus;
+                ChargingStationOperator.OnAdminStatusChanged                       += UpdateChargingStationOperatorAdminStatus;
+
+                ChargingStationOperator.OnChargingPoolAddition.   OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
+                ChargingStationOperator.OnChargingPoolAddition.   OnNotification   += SendChargingPoolAdded;
+                ChargingStationOperator.OnChargingPoolDataChanged                  += UpdateChargingPoolData;
+                ChargingStationOperator.OnChargingPoolStatusChanged                += UpdateChargingPoolStatus;
+                ChargingStationOperator.OnChargingPoolAdminStatusChanged           += UpdateChargingPoolAdminStatus;
+                ChargingStationOperator.OnChargingPoolRemoval.    OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
+                ChargingStationOperator.OnChargingPoolRemoval.    OnNotification   += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
+
+                ChargingStationOperator.OnChargingStationAddition.OnVoting         += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
+                ChargingStationOperator.OnChargingStationAddition.OnNotification   += SendChargingStationAdded;
+                ChargingStationOperator.OnChargingStationDataChanged               += UpdateChargingStationData;
+                ChargingStationOperator.OnChargingStationStatusChanged             += UpdateChargingStationStatus;
+                ChargingStationOperator.OnChargingStationAdminStatusChanged        += UpdateChargingStationAdminStatus;
+                ChargingStationOperator.OnChargingStationRemoval. OnVoting         += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
+                ChargingStationOperator.OnChargingStationRemoval. OnNotification   += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
+
+                ChargingStationOperator.OnEVSEAddition.           OnVoting         += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                ChargingStationOperator.OnEVSEAddition.           OnNotification   += SendEVSEAdded;
+                ChargingStationOperator.OnEVSEDataChanged                          += UpdateEVSEData;
+                ChargingStationOperator.OnEVSEStatusChanged                        += UpdateEVSEStatus;
+                ChargingStationOperator.OnEVSEAdminStatusChanged                   += UpdateEVSEAdminStatus;
+                ChargingStationOperator.OnEVSERemoval.            OnVoting         += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
+                ChargingStationOperator.OnEVSERemoval.            OnNotification   += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
+
+                ChargingStationOperator.OnNewReservation                           += SendNewReservation;
+                ChargingStationOperator.OnReservationCanceled                      += SendReservationCanceled;
+                ChargingStationOperator.OnNewChargingSession                       += SendNewChargingSession;
+                ChargingStationOperator.OnNewChargeDetailRecord                    += SendNewChargeDetailRecord;
+
+            }
+
             OnAdded?.Invoke(now,
                             ChargingStationOperator,
                             eventTrackingId,
@@ -1531,44 +1570,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                    eventTrackingId,
                                                                    CurrentUserId);
 
-                    if (result.IsSuccess &&
-                        result.ChargingStationOperator is not null)
-                    {
-
-                        result.ChargingStationOperator.OnDataChanged                              += UpdateCSOData;
-                        result.ChargingStationOperator.OnStatusChanged                            += UpdateCSOStatus;
-                        result.ChargingStationOperator.OnAdminStatusChanged                       += UpdateCSOAdminStatus;
-
-                        result.ChargingStationOperator.OnChargingPoolAddition.   OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
-                        result.ChargingStationOperator.OnChargingPoolAddition.   OnNotification   += SendChargingPoolAdded;
-                        result.ChargingStationOperator.OnChargingPoolDataChanged                  += UpdateChargingPoolData;
-                        result.ChargingStationOperator.OnChargingPoolStatusChanged                += UpdateChargingPoolStatus;
-                        result.ChargingStationOperator.OnChargingPoolAdminStatusChanged           += UpdateChargingPoolAdminStatus;
-                        result.ChargingStationOperator.OnChargingPoolRemoval.    OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
-                        result.ChargingStationOperator.OnChargingPoolRemoval.    OnNotification   += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
-
-                        result.ChargingStationOperator.OnChargingStationAddition.OnVoting         += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
-                        result.ChargingStationOperator.OnChargingStationAddition.OnNotification   += SendChargingStationAdded;
-                        result.ChargingStationOperator.OnChargingStationDataChanged               += UpdateChargingStationData;
-                        result.ChargingStationOperator.OnChargingStationStatusChanged             += UpdateChargingStationStatus;
-                        result.ChargingStationOperator.OnChargingStationAdminStatusChanged        += UpdateChargingStationAdminStatus;
-                        result.ChargingStationOperator.OnChargingStationRemoval. OnVoting         += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
-                        result.ChargingStationOperator.OnChargingStationRemoval. OnNotification   += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
-
-                        result.ChargingStationOperator.OnEVSEAddition.           OnVoting         += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-                        result.ChargingStationOperator.OnEVSEAddition.           OnNotification   += SendEVSEAdded;
-                        result.ChargingStationOperator.OnEVSEDataChanged                          += UpdateEVSEData;
-                        result.ChargingStationOperator.OnEVSEStatusChanged                        += UpdateEVSEStatus;
-                        result.ChargingStationOperator.OnEVSEAdminStatusChanged                   += UpdateEVSEAdminStatus;
-                        result.ChargingStationOperator.OnEVSERemoval.            OnVoting         += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
-                        result.ChargingStationOperator.OnEVSERemoval.            OnNotification   += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
-
-                        result.ChargingStationOperator.OnNewReservation                           += SendNewReservation;
-                        result.ChargingStationOperator.OnReservationCanceled                      += SendReservationCanceled;
-                        result.ChargingStationOperator.OnNewChargingSession                       += SendNewChargingSession;
-                        result.ChargingStationOperator.OnNewChargeDetailRecord                    += SendNewChargeDetailRecord;
-
-                    }
 
                     return result;
 
@@ -2891,123 +2892,140 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateCSOAdminStatus(Timestamp, ChargingStationOperator, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationOperatorAdminStatus(Timestamp, EventTrackingId, ChargingStationOperator, OldStatus, NewStatus)
 
         /// <summary>
-        /// Update the current Charging Station Operator admin status.
+        /// Update a charging station operator admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStationOperator">The updated Charging Station Operator.</param>
-        /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
-        /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
-        internal async Task UpdateCSOAdminStatus(DateTime                                              Timestamp,
-                                                 IChargingStationOperator                              ChargingStationOperator,
-                                                 Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
-                                                 Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingStationOperator">The updated charging station operator.</param>
+        /// <param name="OldAdminStatus">The old charging station operator admin status.</param>
+        /// <param name="NewAdminStatus">The new charging station operator admin status.</param>
+        internal async Task UpdateChargingStationOperatorAdminStatus(DateTime                                              Timestamp,
+                                                                     EventTracking_Id                                      EventTrackingId,
+                                                                     IChargingStationOperator                              ChargingStationOperator,
+                                                                     Timestamped<ChargingStationOperatorAdminStatusTypes>  OldAdminStatus,
+                                                                     Timestamped<ChargingStationOperatorAdminStatusTypes>  NewAdminStatus)
         {
+
+            try
+            {
+
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new ChargingStationOperatorAdminStatusUpdate[] {
+                                                                                                                   new ChargingStationOperatorAdminStatusUpdate(
+                                                                                                                       ChargingStationOperator.Id,
+                                                                                                                       OldAdminStatus,
+                                                                                                                       NewAdminStatus
+                                                                                                                   )
+                                                                                                               },
+                                                                                                               EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging station operator '{ChargingStationOperator.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+            }
+
 
             var OnChargingStationOperatorAdminStatusChangedLocal = OnChargingStationOperatorAdminStatusChanged;
             if (OnChargingStationOperatorAdminStatusChangedLocal is not null)
                 await OnChargingStationOperatorAdminStatusChangedLocal(Timestamp,
+                                                                       EventTrackingId ?? EventTracking_Id.New,
                                                                        ChargingStationOperator,
-                                                                       OldStatus,
-                                                                       NewStatus);
-
-
-            // Calculate new aggregated roaming network status and send upstream
-            //if (AdminStatusAggregationDelegate != null)
-            //{
-
-            //    var NewAggregatedStatus = new Timestamped<RoamingNetworkAdminStatusType>(AdminStatusAggregationDelegate(new csoAdminStatusReport(_ChargingStationOperators.Values)));
-
-            //    if (NewAggregatedStatus.Value != _AdminStatusHistory.Peek().Value)
-            //    {
-
-            //        var OldAggregatedStatus = _AdminStatusHistory.Peek();
-
-            //        _AdminStatusHistory.Push(NewAggregatedStatus);
-
-            //        var OnAggregatedAdminStatusChangedLocal = OnAggregatedAdminStatusChanged;
-            //        if (OnAggregatedAdminStatusChangedLocal != null)
-            //            OnAggregatedAdminStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
-
-            //    }
-
-            //}
+                                                                       OldAdminStatus,
+                                                                       NewAdminStatus);
 
         }
 
         #endregion
 
-        #region (internal) UpdateCSOStatus     (Timestamp, ChargingStationOperator, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationOperatorStatus     (Timestamp, EventTrackingId, ChargingStationOperator, OldStatus, NewStatus)
 
         /// <summary>
-        /// Update the current Charging Station Operator status.
+        /// Update a charging station operator status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStationOperator">The updated Charging Station Operator.</param>
-        /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
-        /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
-        internal async Task UpdateCSOStatus(DateTime                                         Timestamp,
-                                            IChargingStationOperator                         ChargingStationOperator,
-                                            Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
-                                            Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingStationOperator">The updated charging station operator.</param>
+        /// <param name="OldStatus">The old charging station operator status.</param>
+        /// <param name="NewStatus">The new charging station operator status.</param>
+        internal async Task UpdateChargingStationOperatorStatus(DateTime                                         Timestamp,
+                                                                EventTracking_Id                                 EventTrackingId,
+                                                                IChargingStationOperator                         ChargingStationOperator,
+                                                                Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
+                                                                Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
         {
+
+            try
+            {
+
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new ChargingStationOperatorStatusUpdate[] {
+                                                                                               new ChargingStationOperatorStatusUpdate(
+                                                                                                   ChargingStationOperator.Id,
+                                                                                                   OldStatus,
+                                                                                                   NewStatus
+                                                                                               )
+                                                                                           },
+                                                                                           EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorStatus of charging station operator '{ChargingStationOperator.Id}' from '{OldStatus}' to '{NewStatus}'");
+            }
+
 
             var OnChargingStationOperatorStatusChangedLocal = OnChargingStationOperatorStatusChanged;
             if (OnChargingStationOperatorStatusChangedLocal is not null)
                 await OnChargingStationOperatorStatusChangedLocal(Timestamp,
+                                                                  EventTrackingId ?? EventTracking_Id.New,
                                                                   ChargingStationOperator,
                                                                   OldStatus,
                                                                   NewStatus);
-
-
-            // Calculate new aggregated roaming network status and send upstream
-            //if (StatusAggregationDelegate != null)
-            //{
-
-            //    var NewAggregatedStatus = new Timestamped<RoamingNetworkStatusType>(StatusAggregationDelegate(new csoStatusReport(_ChargingStationOperators.Values)));
-
-            //    if (NewAggregatedStatus.Value != _StatusHistory.Peek().Value)
-            //    {
-
-            //        var OldAggregatedStatus = _StatusHistory.Peek();
-
-            //        _StatusHistory.Push(NewAggregatedStatus);
-
-            //        OnStatusChanged?.Invoke(Timestamp,
-            //                                this,
-            //                                OldAggregatedStatus,
-            //                                NewAggregatedStatus);
-
-            //    }
-
-            //}
 
         }
 
         #endregion
 
-        #region (internal) UpdateCSOData       (Timestamp, ChargingStationOperator, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationOperatorData       (Timestamp, EventTrackingId, ChargingStationOperator, PropertyName, OldValue, NewValue)
 
         /// <summary>
-        /// Update the data of an evse operator.
+        /// Update the data of a charging station operator.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStationOperator">The changed evse operator.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingStationOperator">The changed charging station operator.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateCSOData(DateTime                  Timestamp,
-                                          IChargingStationOperator  ChargingStationOperator,
-                                          String                    PropertyName,
-                                          Object?                   OldValue,
-                                          Object?                   NewValue)
+        internal async Task UpdateChargingStationOperatorData(DateTime                  Timestamp,
+                                                              EventTracking_Id          EventTrackingId,
+                                                              IChargingStationOperator  ChargingStationOperator,
+                                                              String                    PropertyName,
+                                                              Object?                   OldValue,
+                                                              Object?                   NewValue)
         {
+
+            try
+            {
+
+                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateStaticData(ChargingStationOperator,
+                                                                                         PropertyName,
+                                                                                         OldValue,
+                                                                                         NewValue));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorData of charging station operator '{ChargingStationOperator.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+            }
+
 
             var OnChargingStationOperatorDataChangedLocal = OnChargingStationOperatorDataChanged;
             if (OnChargingStationOperatorDataChangedLocal is not null)
                 await OnChargingStationOperatorDataChangedLocal(Timestamp,
+                                                                EventTrackingId ?? EventTracking_Id.New,
                                                                 ChargingStationOperator,
                                                                 PropertyName,
                                                                 OldValue,
@@ -3271,6 +3289,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
+        public Boolean TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
+        {
+
+            if (ChargingPoolId.HasValue &&
+                TryGetChargingStationOperatorById(ChargingPoolId.Value.OperatorId, out var chargingStationOperator) &&
+                chargingStationOperator is not null)
+            {
+                return chargingStationOperator.TryGetChargingPoolById(ChargingPoolId.Value, out ChargingPool);
+            }
+
+            ChargingPool = null;
+            return false;
+
+        }
+
         #endregion
 
 
@@ -3338,24 +3371,43 @@ namespace cloud.charging.open.protocols.WWCP
         /// Update a charging pool admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        /// <param name="OldAdminStatus">The old charging pool admin status.</param>
+        /// <param name="NewAdminStatus">The new charging pool admin status.</param>
         internal async Task UpdateChargingPoolAdminStatus(DateTime                                   Timestamp,
                                                           EventTracking_Id                           EventTrackingId,
-                                                          ChargingPool                               ChargingPool,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
+                                                          IChargingPool                              ChargingPool,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  OldAdminStatus,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  NewAdminStatus)
         {
+
+            try
+            {
+
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new ChargingPoolAdminStatusUpdate[] {
+                                                                                                                   new ChargingPoolAdminStatusUpdate(
+                                                                                                                       ChargingPool.Id,
+                                                                                                                       OldAdminStatus,
+                                                                                                                       NewAdminStatus
+                                                                                                                   )
+                                                                                                               },
+                                                                                                               EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging pool '{ChargingPool.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+            }
+
 
             var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
             if (OnChargingPoolAdminStatusChangedLocal is not null)
                 await OnChargingPoolAdminStatusChangedLocal(Timestamp,
                                                             EventTrackingId ?? EventTracking_Id.New,
                                                             ChargingPool,
-                                                            OldStatus,
-                                                            NewStatus);
+                                                            OldAdminStatus,
+                                                            NewAdminStatus);
 
         }
 
@@ -3367,16 +3419,35 @@ namespace cloud.charging.open.protocols.WWCP
         /// Update a charging pool status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        /// <param name="OldStatus">The old charging pool status.</param>
+        /// <param name="NewStatus">The new charging pool status.</param>
         internal async Task UpdateChargingPoolStatus(DateTime                              Timestamp,
                                                      EventTracking_Id                      EventTrackingId,
-                                                     ChargingPool                          ChargingPool,
+                                                     IChargingPool                         ChargingPool,
                                                      Timestamped<ChargingPoolStatusTypes>  OldStatus,
                                                      Timestamped<ChargingPoolStatusTypes>  NewStatus)
         {
+
+            try
+            {
+
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new ChargingPoolStatusUpdate[] {
+                                                                                               new ChargingPoolStatusUpdate(
+                                                                                                   ChargingPool.Id,
+                                                                                                   OldStatus,
+                                                                                                   NewStatus
+                                                                                               )
+                                                                                           },
+                                                                                           EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolStatus of charging pool '{ChargingPool.Id}' from '{OldStatus}' to '{NewStatus}'");
+            }
+
 
             var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
             if (OnChargingPoolStatusChangedLocal is not null)
@@ -3393,7 +3464,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, OldValue, NewValue)
 
         /// <summary>
-        /// Update the data of an charging pool.
+        /// Update the data of a charging pool.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3403,39 +3474,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateChargingPoolData(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
-                                                   ChargingPool      ChargingPool,
+                                                   IChargingPool     ChargingPool,
                                                    String            PropertyName,
                                                    Object?           OldValue,
                                                    Object?           NewValue)
         {
 
-            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
+            try
+            {
 
-            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
+                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateStaticData(ChargingPool,
+                                                                                         PropertyName,
+                                                                                         OldValue,
+                                                                                         NewValue));
 
-            //}
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolData of charging pool '{ChargingPool.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+            }
 
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              UpdateStaticData(ChargingPool,
-                                                                               PropertyName,
-                                                                               OldValue,
-                                                                               NewValue));
-
-            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
 
             var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
             if (OnChargingPoolDataChangedLocal is not null)
@@ -3839,27 +3897,46 @@ namespace cloud.charging.open.protocols.WWCP
         #region (internal) UpdateChargingStationAdminStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
-        /// Update the current charging station admin status.
+        /// Update a charging station admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The updated charging station.</param>
-        /// <param name="OldStatus">The old aggreagted charging station status.</param>
-        /// <param name="NewStatus">The new aggreagted charging station status.</param>
+        /// <param name="OldAdminStatus">The old charging station admin status.</param>
+        /// <param name="NewAdminStatus">The new charging station admin status.</param>
         internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
                                                              EventTracking_Id                              EventTrackingId,
                                                              IChargingStation                              ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
+                                                             Timestamped<ChargingStationAdminStatusTypes>  OldAdminStatus,
+                                                             Timestamped<ChargingStationAdminStatusTypes>  NewAdminStatus)
         {
+
+            try
+            {
+
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new ChargingStationAdminStatusUpdate[] {
+                                                                                                                   new ChargingStationAdminStatusUpdate(
+                                                                                                                       ChargingStation.Id,
+                                                                                                                       OldAdminStatus,
+                                                                                                                       NewAdminStatus
+                                                                                                                   )
+                                                                                                               },
+                                                                                                               EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of charging station '{ChargingStation.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+            }
+
 
             var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
             if (OnChargingStationAdminStatusChangedLocal is not null)
                 await OnChargingStationAdminStatusChangedLocal(Timestamp,
                                                                EventTrackingId ?? EventTracking_Id.New,
                                                                ChargingStation,
-                                                               OldStatus,
-                                                               NewStatus);
+                                                               OldAdminStatus,
+                                                               NewAdminStatus);
 
         }
 
@@ -3868,19 +3945,38 @@ namespace cloud.charging.open.protocols.WWCP
         #region (internal) UpdateChargingStationStatus     (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
-        /// Update a charging pool admin status.
+        /// Update a charging station status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old charging station status.</param>
+        /// <param name="NewStatus">The new charging station status.</param>
         internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
                                                         EventTracking_Id                         EventTrackingId,
                                                         IChargingStation                         ChargingStation,
                                                         Timestamped<ChargingStationStatusTypes>  OldStatus,
                                                         Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
+
+            try
+            {
+
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new ChargingStationStatusUpdate[] {
+                                                                                               new ChargingStationStatusUpdate(
+                                                                                                   ChargingStation.Id,
+                                                                                                   OldStatus,
+                                                                                                   NewStatus
+                                                                                               )
+                                                                                           },
+                                                                                           EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationStatus of charging station '{ChargingStation.Id}' from '{OldStatus}' to '{NewStatus}'");
+            }
+
 
             var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
             if (OnChargingStationStatusChangedLocal is not null)
@@ -3913,33 +4009,20 @@ namespace cloud.charging.open.protocols.WWCP
                                                       Object?           NewValue)
         {
 
-            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
+            try
+            {
 
-            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
+                var results = _ISendData.WhenAll(iSendData => iSendData.UpdateStaticData(ChargingStation,
+                                                                                         PropertyName,
+                                                                                         OldValue,
+                                                                                         NewValue));
 
-            //}
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationData of charging station '{ChargingStation.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+            }
 
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              UpdateStaticData(ChargingStation,
-                                                                               PropertyName,
-                                                                               OldValue,
-                                                                               NewValue));
-
-            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
 
             var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
             if (OnChargingStationDataChangedLocal is not null)
@@ -4431,7 +4514,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldAdminStatus, NewAdminStatus)
 
         /// <summary>
         /// Update an EVSE admin status.
@@ -4439,30 +4522,41 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
+        /// <param name="OldAdminStatus">The old EVSE admin status.</param>
+        /// <param name="NewAdminStatus">The new EVSE admin status.</param>
         internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
                                                   EventTracking_Id                   EventTrackingId,
                                                   IEVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
+                                                  Timestamped<EVSEAdminStatusTypes>  OldAdminStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
         {
 
-            var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.
-                                                                            UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
-                                                                                                  new EVSEAdminStatusUpdate(EVSE.Id,
-                                                                                                                            OldStatus,
-                                                                                                                            NewStatus)
-                                                                                              },
-                                                                                              EventTrackingId: EventTrackingId));
+            try
+            {
+
+                var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
+                                                                                                                   new EVSEAdminStatusUpdate(
+                                                                                                                       EVSE.Id,
+                                                                                                                       OldAdminStatus,
+                                                                                                                       NewAdminStatus
+                                                                                                                   )
+                                                                                                               },
+                                                                                                               EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of EVSE '{EVSE.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+            }
+
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal is not null)
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
                                                     EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
-                                                    OldStatus,
-                                                    NewStatus);
+                                                    OldAdminStatus,
+                                                    NewAdminStatus);
 
         }
 
@@ -4485,13 +4579,24 @@ namespace cloud.charging.open.protocols.WWCP
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
-            var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
-                                                                  UpdateStatus(new EVSEStatusUpdate[] {
-                                                                                   new EVSEStatusUpdate(EVSE.Id,
-                                                                                                        OldStatus,
-                                                                                                        NewStatus)
-                                                                               },
-                                                                               EventTrackingId: EventTrackingId));
+            try
+            {
+
+                var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new EVSEStatusUpdate[] {
+                                                                                               new EVSEStatusUpdate(
+                                                                                                   EVSE.Id,
+                                                                                                   OldStatus,
+                                                                                                   NewStatus
+                                                                                               )
+                                                                                           },
+                                                                                           EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEStatus of EVSE '{EVSE.Id}' from '{OldStatus}' to '{NewStatus}'");
+            }
+
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal is not null)
@@ -4524,12 +4629,22 @@ namespace cloud.charging.open.protocols.WWCP
                                            Object?           NewValue)
         {
 
-            var results = _ISendData.WhenAll(iSendData => iSendData.
-                                                              UpdateStaticData(EVSE,
-                                                                               PropertyName,
-                                                                               OldValue,
-                                                                               NewValue,
-                                                                               EventTrackingId: EventTrackingId));
+            try
+            {
+
+                var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                                  UpdateStaticData(EVSE,
+                                                                                   PropertyName,
+                                                                                   OldValue,
+                                                                                   NewValue,
+                                                                                   EventTrackingId: EventTrackingId));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEData of EVSE '{EVSE.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+            }
+
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal is not null)

@@ -1288,8 +1288,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
-                                              EventTracking_Id                          EventTrackingId,
+        internal async Task UpdateAdminStatus(DateTime                                   Timestamp,
+                                              EventTracking_Id                           EventTrackingId,
                                               Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
                                               Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
         {
@@ -1315,8 +1315,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         EventTracking_Id                     EventTrackingId,
+        internal async Task UpdateStatus(DateTime                              Timestamp,
+                                         EventTracking_Id                      EventTrackingId,
                                          Timestamped<ChargingPoolStatusTypes>  OldStatus,
                                          Timestamped<ChargingPoolStatusTypes>  NewStatus)
         {

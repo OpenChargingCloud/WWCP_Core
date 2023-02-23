@@ -643,68 +643,87 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="Sender">The changed Charging Station Operator.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime  Timestamp,
-                                       Object    Sender,
-                                       String    PropertyName,
-                                       Object?   OldValue,
-                                       Object?   NewValue)
+        internal async Task UpdateData(DateTime          Timestamp,
+                                       EventTracking_Id  EventTrackingId,
+                                       Object            Sender,
+                                       String            PropertyName,
+                                       Object?           OldValue,
+                                       Object?           NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal is not null)
-                await OnDataChangedLocal(Timestamp, Sender as ChargingStationOperator, PropertyName, OldValue, NewValue);
+                await OnDataChangedLocal(Timestamp,
+                                         EventTrackingId,
+                                         Sender as ChargingStationOperator,
+                                         PropertyName,
+                                         OldValue,
+                                         NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
-                                         Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
-        {
-
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
-                await OnStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
+        internal async Task UpdateAdminStatus(DateTime                                              Timestamp,
+                                              EventTracking_Id                                      EventTrackingId,
                                               Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
                                               Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
-                await OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+            if (OnAdminStatusChangedLocal is not null)
+                await OnAdminStatusChangedLocal(Timestamp,
+                                                EventTrackingId,
+                                                this,
+                                                OldStatus,
+                                                NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateStatus(DateTime                                         Timestamp,
+                                         EventTracking_Id                                 EventTrackingId,
+                                         Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
+                                         Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
+        {
+
+            var OnStatusChangedLocal = OnStatusChanged;
+            if (OnStatusChangedLocal is not null)
+                await OnStatusChangedLocal(Timestamp,
+                                           EventTrackingId,
+                                           this,
+                                           OldStatus,
+                                           NewStatus);
 
         }
 
@@ -1839,7 +1858,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateChargingPoolData(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
-                                                   ChargingPool      ChargingPool,
+                                                   IChargingPool     ChargingPool,
                                                    String            PropertyName,
                                                    Object?           OldValue,
                                                    Object?           NewValue)
@@ -1870,7 +1889,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggregated charging pool status.</param>
         internal async Task UpdateChargingPoolAdminStatus(DateTime                                   Timestamp,
                                                           EventTracking_Id                           EventTrackingId,
-                                                          ChargingPool                               ChargingPool,
+                                                          IChargingPool                              ChargingPool,
                                                           Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
                                                           Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
         {
@@ -1899,7 +1918,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggregated charging pool status.</param>
         internal async Task UpdateChargingPoolStatus(DateTime                              Timestamp,
                                                      EventTracking_Id                      EventTrackingId,
-                                                     ChargingPool                          ChargingPool,
+                                                     IChargingPool                         ChargingPool,
                                                      Timestamped<ChargingPoolStatusTypes>  OldStatus,
                                                      Timestamped<ChargingPoolStatusTypes>  NewStatus)
         {

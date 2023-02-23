@@ -26,40 +26,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    #region (class) PropertyUpdateInfo
-
-    public class PropertyUpdateInfo
-    {
-
-        public String   PropertyName    { get; }
-        public Object?  OldValue        { get; }
-        public Object?  NewValue        { get; }
-
-        public PropertyUpdateInfo(String   PropertyName,
-                                  Object?  OldValue,
-                                  Object?  NewValue)
-        {
-
-            this.PropertyName  = PropertyName;
-            this.OldValue      = OldValue;
-            this.NewValue      = NewValue;
-
-        }
-
-
-        public override String ToString()
-
-            => String.Concat("Update of '", PropertyName, "' '",
-                                OldValue != null ? OldValue.ToString() : "",
-                                "' -> '",
-                                NewValue != null ? NewValue.ToString() : "",
-                                "'!");
-
-    }
-
-    #endregion
-
-
     public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
                                                                                          EMPRoamingProviderAdminStatusTypes,
                                                                                          EMPRoamingProviderStatusTypes>
@@ -143,84 +109,95 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Only include EVSE identifications matching the given delegate.
         /// </summary>
-        public IncludeEVSEIdDelegate              IncludeEVSEIds                     { get; }
+        public IncludeEVSEIdDelegate                     IncludeEVSEIds                       { get; }
 
         /// <summary>
         /// Only include EVSEs matching the given delegate.
         /// </summary>
-        public IncludeEVSEDelegate                IncludeEVSEs                       { get; }
+        public IncludeEVSEDelegate                       IncludeEVSEs                         { get; }
 
         /// <summary>
         /// Only include charging station identifications matching the given delegate.
         /// </summary>
-        public IncludeChargingStationIdDelegate   IncludeChargingStationIds          { get; }
+        public IncludeChargingStationIdDelegate          IncludeChargingStationIds            { get; }
 
         /// <summary>
         /// Only include charging stations matching the given delegate.
         /// </summary>
-        public IncludeChargingStationDelegate     IncludeChargingStations            { get; }
+        public IncludeChargingStationDelegate            IncludeChargingStations              { get; }
 
         /// <summary>
         /// Only include charging pool identifications matching the given delegate.
         /// </summary>
-        public IncludeChargingPoolIdDelegate      IncludeChargingPoolIds             { get; }
+        public IncludeChargingPoolIdDelegate             IncludeChargingPoolIds               { get; }
 
         /// <summary>
         /// Only include charging pools matching the given delegate.
         /// </summary>
-        public IncludeChargingPoolDelegate        IncludeChargingPools               { get; }
+        public IncludeChargingPoolDelegate               IncludeChargingPools                 { get; }
+
+        /// <summary>
+        /// Only include charging station identifications matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationOperatorIdDelegate  IncludeChargingStationOperatorIds    { get; }
+
+        /// <summary>
+        /// Only include charging stations matching the given delegate.
+        /// </summary>
+        public IncludeChargingStationOperatorDelegate    IncludeChargingStationOperators      { get; }
+
 
         ///// <summary>
         ///// A delegate to customize the mapping of EVSE identifications.
         ///// </summary>
-        //public CustomEVSEIdMapperDelegate        CustomEVSEIdMapper                { get; }
+        //public CustomEVSEIdMapperDelegate                CustomEVSEIdMapper                   { get; }
 
         /// <summary>
         /// A delegate for filtering charge detail records.
         /// </summary>
-        public ChargeDetailRecordFilterDelegate   ChargeDetailRecordFilter           { get; }
+        public ChargeDetailRecordFilterDelegate          ChargeDetailRecordFilter             { get; }
 
 
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisablePushData                    { get; set; }
+        public Boolean                                   DisablePushData                      { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisablePushAdminStatus             { get; set; }
+        public Boolean                                   DisablePushAdminStatus               { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisablePushStatus                  { get; set; }
+        public Boolean                                   DisablePushStatus                    { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisableAuthentication              { get; set; }
+        public Boolean                                   DisableAuthentication                { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean                            DisableSendChargeDetailRecords     { get; set; }
+        public Boolean                                   DisableSendChargeDetailRecords       { get; set; }
 
         /// <summary>
         /// The EVSE data updates transmission intervall.
         /// </summary>
-        public TimeSpan                           FlushEVSEDataAndStatusEvery        { get; set; }
+        public TimeSpan                                  FlushEVSEDataAndStatusEvery          { get; set; }
 
         /// <summary>
         /// The EVSE status updates transmission intervall.
         /// </summary>
-        public TimeSpan                           FlushEVSEFastStatusEvery           { get; set; }
+        public TimeSpan                                  FlushEVSEFastStatusEvery             { get; set; }
 
         /// <summary>
         /// The charge detail record transmission intervall.
         /// </summary>
-        public TimeSpan                           FlushChargeDetailRecordsEvery      { get; set; }
+        public TimeSpan                                  FlushChargeDetailRecordsEvery        { get; set; }
 
         #endregion
 
@@ -305,33 +282,35 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
-        protected AWWCPEMPAdapter(EMPRoamingProvider_Id              Id,
-                                  RoamingNetwork                     RoamingNetwork,
+        protected AWWCPEMPAdapter(EMPRoamingProvider_Id                      Id,
+                                  RoamingNetwork                             RoamingNetwork,
 
-                                  I18NString?                        Name                             = null,
-                                  I18NString?                        Description                      = null,
+                                  I18NString?                                Name                                = null,
+                                  I18NString?                                Description                         = null,
 
-                                  IncludeEVSEIdDelegate?             IncludeEVSEIds                   = null,
-                                  IncludeEVSEDelegate?               IncludeEVSEs                     = null,
-                                  IncludeChargingStationIdDelegate?  IncludeChargingStationIds        = null,
-                                  IncludeChargingStationDelegate?    IncludeChargingStations          = null,
-                                  IncludeChargingPoolIdDelegate?     IncludeChargingPoolIds           = null,
-                                  IncludeChargingPoolDelegate?       IncludeChargingPools             = null,
-                                  ChargeDetailRecordFilterDelegate?  ChargeDetailRecordFilter         = null,
+                                  IncludeEVSEIdDelegate?                     IncludeEVSEIds                      = null,
+                                  IncludeEVSEDelegate?                       IncludeEVSEs                        = null,
+                                  IncludeChargingStationIdDelegate?          IncludeChargingStationIds           = null,
+                                  IncludeChargingStationDelegate?            IncludeChargingStations             = null,
+                                  IncludeChargingPoolIdDelegate?             IncludeChargingPoolIds              = null,
+                                  IncludeChargingPoolDelegate?               IncludeChargingPools                = null,
+                                  IncludeChargingStationOperatorIdDelegate?  IncludeChargingStationOperatorIds   = null,
+                                  IncludeChargingStationOperatorDelegate?    IncludeChargingStationOperators     = null,
+                                  ChargeDetailRecordFilterDelegate?          ChargeDetailRecordFilter            = null,
 
-                                  TimeSpan?                          FlushEVSEDataAndStatusEvery      = null,
-                                  TimeSpan?                          FlushEVSEFastStatusEvery         = null,
-                                  TimeSpan?                          FlushChargeDetailRecordsEvery    = null,
+                                  TimeSpan?                                  FlushEVSEDataAndStatusEvery         = null,
+                                  TimeSpan?                                  FlushEVSEFastStatusEvery            = null,
+                                  TimeSpan?                                  FlushChargeDetailRecordsEvery       = null,
 
-                                  Boolean                            DisablePushData                  = false,
-                                  Boolean                            DisablePushAdminStatus           = false,
-                                  Boolean                            DisablePushStatus                = false,
-                                  Boolean                            DisableAuthentication            = false,
-                                  Boolean                            DisableSendChargeDetailRecords   = false,
+                                  Boolean                                    DisablePushData                     = false,
+                                  Boolean                                    DisablePushAdminStatus              = false,
+                                  Boolean                                    DisablePushStatus                   = false,
+                                  Boolean                                    DisableAuthentication               = false,
+                                  Boolean                                    DisableSendChargeDetailRecords      = false,
 
-                                  String                             EllipticCurve                    = "P-256",
-                                  ECPrivateKeyParameters?            PrivateKey                       = null,
-                                  PublicKeyCertificates?             PublicKeyCertificates            = null)
+                                  String                                     EllipticCurve                       = "P-256",
+                                  ECPrivateKeyParameters?                    PrivateKey                          = null,
+                                  PublicKeyCertificates?                     PublicKeyCertificates               = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -343,13 +322,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.IncludeEVSEIds                                  = IncludeEVSEIds                ?? (evseid             => true);
-            this.IncludeEVSEs                                    = IncludeEVSEs                  ?? (evse               => true);
-            this.IncludeChargingStationIds                       = IncludeChargingStationIds     ?? (chargingStationId  => true);
-            this.IncludeChargingStations                         = IncludeChargingStations       ?? (chargingStation    => true);
-            this.IncludeChargingPoolIds                          = IncludeChargingPoolIds        ?? (chargingPoolId     => true);
-            this.IncludeChargingPools                            = IncludeChargingPools          ?? (chargingPool       => true);
-            this.ChargeDetailRecordFilter                        = ChargeDetailRecordFilter      ?? (chargeDetailRecord => ChargeDetailRecordFilters.forward);
+            this.IncludeEVSEIds                                  = IncludeEVSEIds                    ?? (evseid             => true);
+            this.IncludeEVSEs                                    = IncludeEVSEs                      ?? (evse               => true);
+            this.IncludeChargingStationIds                       = IncludeChargingStationIds         ?? (chargingStationId  => true);
+            this.IncludeChargingStations                         = IncludeChargingStations           ?? (chargingStation    => true);
+            this.IncludeChargingPoolIds                          = IncludeChargingPoolIds            ?? (chargingPoolId     => true);
+            this.IncludeChargingPools                            = IncludeChargingPools              ?? (chargingPool       => true);
+            this.IncludeChargingStationOperatorIds               = IncludeChargingStationOperatorIds ?? (chargingStationId  => true);
+            this.IncludeChargingStationOperators                 = IncludeChargingStationOperators   ?? (chargingStation    => true);
+            this.ChargeDetailRecordFilter                        = ChargeDetailRecordFilter          ?? (chargeDetailRecord => ChargeDetailRecordFilters.forward);
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushAdminStatus                          = DisablePushAdminStatus;
@@ -357,9 +338,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.DisableAuthentication                           = DisableAuthentication;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
-            this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery   ?? DefaultFlushEVSEDataAndStatusEvery;
-            this.FlushEVSEFastStatusEvery                        = FlushEVSEFastStatusEvery      ?? DefaultFlushEVSEFastStatusEvery;
-            this.FlushChargeDetailRecordsEvery                   = FlushChargeDetailRecordsEvery ?? DefaultFlushChargeDetailRecordsEvery;
+            this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery       ?? DefaultFlushEVSEDataAndStatusEvery;
+            this.FlushEVSEFastStatusEvery                        = FlushEVSEFastStatusEvery          ?? DefaultFlushEVSEFastStatusEvery;
+            this.FlushChargeDetailRecordsEvery                   = FlushChargeDetailRecordsEvery     ?? DefaultFlushChargeDetailRecordsEvery;
 
             this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);

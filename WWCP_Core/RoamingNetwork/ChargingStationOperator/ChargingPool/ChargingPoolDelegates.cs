@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnChargingPoolDataChangedDelegate(DateTime          Timestamp,
                                                            EventTracking_Id  EventTrackingId,
-                                                           ChargingPool      ChargingPool,
+                                                           IChargingPool     ChargingPool,
                                                            String            PropertyName,
                                                            Object?           OldValue,
                                                            Object?           NewValue);
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
     public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                   Timestamp,
                                                                   EventTracking_Id                           EventTrackingId,
-                                                                  ChargingPool                               ChargingPool,
+                                                                  IChargingPool                              ChargingPool,
                                                                   Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
                                                                   Timestamped<ChargingPoolAdminStatusTypes>  NewStatus);
 
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
     public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                              Timestamp,
                                                              EventTracking_Id                      EventTrackingId,
-                                                             ChargingPool                          ChargingPool,
+                                                             IChargingPool                         ChargingPool,
                                                              Timestamped<ChargingPoolStatusTypes>  OldStatus,
                                                              Timestamped<ChargingPoolStatusTypes>  NewStatus);
 
