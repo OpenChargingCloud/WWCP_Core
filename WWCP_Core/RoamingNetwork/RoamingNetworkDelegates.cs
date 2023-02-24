@@ -35,10 +35,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnRoamingNetworkDataChangedDelegate(DateTime          Timestamp,
                                                              EventTracking_Id  EventTrackingId,
-                                                             RoamingNetwork    RoamingNetwork,
-                                                             String            PropertyName,
-                                                             Object            OldValue,
-                                                             Object            NewValue);
+                                                             IRoamingNetwork   RoamingNetwork,
+                                                             String?           PropertyName,
+                                                             Object?           OldValue,
+                                                             Object?           NewValue);
 
 
     /// <summary>
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
     public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTime                                     Timestamp,
                                                                     EventTracking_Id                             EventTrackingId,
-                                                                    RoamingNetwork                               RoamingNetwork,
+                                                                    IRoamingNetwork                              RoamingNetwork,
                                                                     Timestamped<RoamingNetworkAdminStatusTypes>  OldStatus,
                                                                     Timestamped<RoamingNetworkAdminStatusTypes>  NewStatus);
 
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
     public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                                Timestamp,
                                                                EventTracking_Id                        EventTrackingId,
-                                                               RoamingNetwork                          RoamingNetwork,
+                                                               IRoamingNetwork                         RoamingNetwork,
                                                                Timestamped<RoamingNetworkStatusTypes>  OldStatus,
                                                                Timestamped<RoamingNetworkStatusTypes>  NewStatus);
 
