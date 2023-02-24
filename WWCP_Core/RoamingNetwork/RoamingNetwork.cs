@@ -340,13 +340,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data/(Admin-)Status management
 
-        #region OnData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data changed.
-        /// </summary>
-        public event OnRoamingNetworkDataChangedDelegate?         OnDataChanged;
-
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
@@ -355,12 +348,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnRoamingNetworkAdminStatusChangedDelegate?  OnAggregatedAdminStatusChanged;
+        public event OnRoamingNetworkAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
-        #endregion
 
 
         #region (internal) UpdateData(Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        public event OnRoamingNetworkDataChangedDelegate? OnDataChanged;
+
 
         /// <summary>
         /// Update the static data of the roaming network.
@@ -1409,7 +1407,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a charging station operator was added.
         /// </summary>
-        public event OnChargingStationOperatorAddedDelegate OnChargingStationOperatorAdded;
+        public event OnChargingStationOperatorAddedDelegate? OnChargingStationOperatorAdded;
 
 
         #region (protected internal) _AddChargingStationOperator(ChargingStationOperator, ..., OnAdded = null, ...)
@@ -2020,7 +2018,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a charging station operator was updated.
         /// </summary>
-        public event OnChargingStationOperatorUpdatedDelegate OnChargingStationOperatorUpdated;
+        public event OnChargingStationOperatorUpdatedDelegate? OnChargingStationOperatorUpdated;
 
 
         #region (protected internal) _UpdateChargingStationOperator(NewChargingStationOperator,                 ..., OnUpdated = null, ...)
@@ -2350,7 +2348,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a user was removed.
         /// </summary>
-        public event OnChargingStationOperatorRemovedDelegate OnChargingStationOperatorRemoved;
+        public event OnChargingStationOperatorRemovedDelegate? OnChargingStationOperatorRemoved;
 
 
         #region (protected internal virtual) _CanRemoveChargingStationOperator(ChargingStationOperator)
