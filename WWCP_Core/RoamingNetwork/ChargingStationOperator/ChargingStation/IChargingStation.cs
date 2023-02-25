@@ -187,11 +187,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The user interface features of the charging station.
         /// </summary>
-        UIFeatures? UIFeatures { get; set; }
+        UIFeatures?                             UIFeatures                  { get; set; }
 
         ReactiveSet<AuthenticationModes>        AuthenticationModes         { get; }
         ReactiveSet<PaymentOptions>             PaymentOptions              { get; }
         AccessibilityTypes?                     Accessibility               { get; set; }
+
+
+        /// <summary>
+        /// An optional number/string printed on the outside of the charging station for visual identification.
+        /// </summary>
+        String?                                 PhysicalReference           { get; }
 
         /// <summary>
         /// URIs of photos of this charging station.
@@ -201,7 +207,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The telephone number of the Charging Station Operator hotline.
         /// </summary>
-        I18NString                              HotlinePhoneNumber          { get; }
+        PhoneNumber?                            HotlinePhoneNumber          { get; set; }
 
         /// <summary>
         /// The address of the exit of this charging station.

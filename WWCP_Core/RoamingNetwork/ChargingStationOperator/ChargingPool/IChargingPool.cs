@@ -196,7 +196,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The telephone number of the charging station operator hotline.
         /// </summary>
-        I18NString                              HotlinePhoneNumber          { get; }
+        PhoneNumber?                            HotlinePhoneNumber          { get; }
 
         /// <summary>
         /// The grid connection of the charging pool.

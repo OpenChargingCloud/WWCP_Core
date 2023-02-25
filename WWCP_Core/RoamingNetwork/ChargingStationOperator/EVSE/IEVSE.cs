@@ -127,6 +127,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
+        /// An optional number/string printed on the outside of the EVSE for visual identification.
+        /// </summary>
+        String?                                PhysicalReference            { get; }
+
+        /// <summary>
         /// An optional enumeration of links to photos related to the EVSE.
         /// </summary>
         [Optional, SlowData]

@@ -224,6 +224,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
+
+        /// <summary>
+        /// An optional number/string printed on the outside of the EVSE for visual identification.
+        /// </summary>
+        public String? PhysicalReference { get; }
+
+
         /// <summary>
         /// The time span between self checks.
         /// </summary>
@@ -2068,7 +2075,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ReactiveSet<String> PhotoURIs => throw new NotImplementedException();
 
-        public I18NString HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public PhoneNumber? HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Address ExitAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public GeoCoordinate? ExitLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public GridConnectionTypes? GridConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

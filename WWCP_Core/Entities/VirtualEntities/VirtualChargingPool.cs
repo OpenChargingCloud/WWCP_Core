@@ -1955,7 +1955,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
 
-        public I18NString HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public PhoneNumber? HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public GridConnectionTypes? GridConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Decimal? MaxCurrent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Timestamped<Decimal>? MaxCurrentRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

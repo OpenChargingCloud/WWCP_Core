@@ -430,7 +430,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region PhotoURIs
+        /// <summary>
+        /// An optional number/string printed on the outside of the charging station for visual identification.
+        /// </summary>
+        public String?                                  PhysicalReference       { get; }
 
         /// <summary>
         /// URIs of photos of this charging station.
@@ -438,17 +441,43 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional]
         public ReactiveSet<URL>                         PhotoURLs               { get; }
 
-        #endregion
 
         #region HotlinePhoneNumber
 
+        private PhoneNumber? _HotlinePhoneNumber;
+
         /// <summary>
-        /// The telephone number of the Charging Station Operator hotline.
+        /// The telephone number of the charging station operator hotline.
         /// </summary>
         [Optional]
-        public I18NString HotlinePhoneNumber { get; }
+        public PhoneNumber? HotlinePhoneNumber
+        {
+
+            get
+            {
+                return _HotlinePhoneNumber;
+            }
+
+            set
+            {
+
+                if (_HotlinePhoneNumber != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _HotlinePhoneNumber);
+
+                    else
+                        SetProperty(ref _HotlinePhoneNumber, value);
+
+                }
+
+            }
+
+        }
 
         #endregion
+
 
         #region ExitAddress
 
@@ -1359,23 +1388,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.HotlinePhoneNumber = HotlinePhoneNumber ?? I18NString.Empty;
-
-            this.HotlinePhoneNumber.OnPropertyChanged += async (timestamp,
-                                                                eventTrackingId,
-                                                                sender,
-                                                                propertyName,
-                                                                oldValue,
-                                                                newValue) =>
-            {
-
-                PropertyChanged("HotlinePhoneNumber",
-                                oldValue,
-                                newValue,
-                                eventTrackingId);
-
-            };
-
+            this.HotlinePhoneNumber                = HotlinePhoneNumber;
 
             this.evses                             = new EntityHashSet<ChargingStation, EVSE_Id, IEVSE>(this);
             //this.evses.OnSetChanged               += (timestamp, reactiveSet, newItems, oldItems) =>
@@ -3223,9 +3236,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                          (!Embedded || GeoLocation         != ChargingPool.GeoLocation)         ? new JProperty("geoLocation",          (GeoLocation ?? ChargingPool.GeoLocation).Value.  ToJSON()) : null,
                          (!Embedded || Address             != ChargingPool.Address)             ? new JProperty("address",              (Address     ?? ChargingPool.Address).            ToJSON()) : null,
-                         (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? new JProperty("authenticationModes",  AuthenticationModes.ToJSON()) : null,
-                         (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON()) : null,
-                         (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? new JProperty("openingTimes",         OpeningTimes.       ToJSON()) : null,
+                         (!Embedded || AuthenticationModes != ChargingPool.AuthenticationModes) ? new JProperty("authenticationModes",  AuthenticationModes.ToJSON())   : null,
+                         (!Embedded || HotlinePhoneNumber  != ChargingPool.HotlinePhoneNumber)  ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToString()) : null,
+                         (!Embedded || OpeningTimes        != ChargingPool.OpeningTimes)        ? new JProperty("openingTimes",         OpeningTimes.       ToJSON())   : null,
 
                          ExpandEVSEIds != InfoStatus.Hidden && EVSEs.Any()
                              ? ExpandEVSEIds.Switch(
@@ -3295,7 +3308,7 @@ namespace cloud.charging.open.protocols.WWCP
             PhotoURLs.          Replace(OtherChargingStation.PhotoURLs);
 
             ArrivalInstructions.Set    (OtherChargingStation.ArrivalInstructions);
-            HotlinePhoneNumber. Set    (OtherChargingStation.HotlinePhoneNumber);
+            HotlinePhoneNumber        = OtherChargingStation.HotlinePhoneNumber;
 
             Address                   = OtherChargingStation.Address;
             OpenStreetMapNodeId       = OtherChargingStation.OpenStreetMapNodeId;

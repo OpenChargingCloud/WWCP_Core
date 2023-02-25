@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 #endregion
 
@@ -157,22 +158,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The telephone number of the operator's (sales) office.
         /// </summary>
-        String Telephone { get; set; }
+        PhoneNumber? Telephone { get; set; }
 
         /// <summary>
         /// The e-mail address of the operator's (sales) office.
         /// </summary>
-        String EMailAddress { get; set; }
+        SimpleEMailAddress? EMailAddress { get; set; }
 
         /// <summary>
         /// The homepage of this evse operator.
         /// </summary>
-        String Homepage { get; set; }
+        URL? Homepage { get; set; }
 
         /// <summary>
         /// The telephone number of the Charging Station Operator hotline.
         /// </summary>
-        String HotlinePhoneNumber { get; set; }
+        PhoneNumber? HotlinePhoneNumber { get; set; }
 
         #endregion
 

@@ -384,6 +384,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
+        /// <summary>
+        /// An optional number/string printed on the outside of the EVSE for visual identification.
+        /// </summary>
+        public String? PhysicalReference { get; }
+
+
         #region SocketOutlets
 
         private ReactiveSet<SocketOutlet> _SocketOutlets;

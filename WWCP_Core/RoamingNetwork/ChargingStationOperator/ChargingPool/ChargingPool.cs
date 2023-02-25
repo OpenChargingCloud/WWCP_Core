@@ -451,11 +451,40 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region HotlinePhoneNumber
 
+        private PhoneNumber? _HotlinePhoneNumber;
+
         /// <summary>
         /// The telephone number of the charging station operator hotline.
         /// </summary>
         [Optional]
-        public I18NString                               HotlinePhoneNumber      { get; }
+        public PhoneNumber? HotlinePhoneNumber
+        {
+
+            get
+            {
+                return _HotlinePhoneNumber;
+            }
+
+            set
+            {
+
+                if (_HotlinePhoneNumber != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _HotlinePhoneNumber);
+
+                    else
+                        SetProperty(ref _HotlinePhoneNumber, value);
+
+                    // Delete inherited accessibilities
+                    chargingStations.ForEach(station => station.HotlinePhoneNumber = null);
+
+                }
+
+            }
+
+        }
 
         #endregion
 
@@ -1141,22 +1170,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.HotlinePhoneNumber = HotlinePhoneNumber ?? I18NString.Empty;
-
-            this.HotlinePhoneNumber.OnPropertyChanged += async (timestamp,
-                                                                eventTrackingId,
-                                                                sender,
-                                                                propertyName,
-                                                                oldValue,
-                                                                newValue) =>
-            {
-
-                PropertyChanged("HotlinePhoneNumber",
-                                oldValue,
-                                newValue,
-                                eventTrackingId);
-
-            };
+            this.HotlinePhoneNumber  = HotlinePhoneNumber;
 
             this.ArrivalInstructions = ArrivalInstructions ?? I18NString.Empty;
 
@@ -3365,8 +3379,8 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("authenticationModes",  AuthenticationModes.ToJSON())
                                : null,
 
-                           HotlinePhoneNumber is not null  && HotlinePhoneNumber.Any()
-                               ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToJSON())
+                           HotlinePhoneNumber is not null
+                               ? new JProperty("hotlinePhoneNumber",   HotlinePhoneNumber. ToString())
                                : null,
 
                            OpeningTimes is not null
@@ -3472,7 +3486,7 @@ namespace cloud.charging.open.protocols.WWCP
             UIFeatures                = OtherChargingPool.UIFeatures;
             Accessibility             = OtherChargingPool.Accessibility;
 
-            HotlinePhoneNumber.     Set(OtherChargingPool.HotlinePhoneNumber);
+            HotlinePhoneNumber        = OtherChargingPool.HotlinePhoneNumber;
             GridConnection            = OtherChargingPool.GridConnection;
             ExitAddress               = OtherChargingPool.ExitAddress;
             ExitLocation              = OtherChargingPool.ExitLocation;

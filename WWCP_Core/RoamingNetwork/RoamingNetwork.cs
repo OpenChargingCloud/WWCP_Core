@@ -31,7 +31,6 @@ using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 using cloud.charging.open.protocols.WWCP.Networking;
 
 using social.OpenData.UsersAPI;
-using Org.BouncyCastle.Math.EC;
 
 #endregion
 
