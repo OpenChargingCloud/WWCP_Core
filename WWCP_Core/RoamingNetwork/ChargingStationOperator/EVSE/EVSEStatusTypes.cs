@@ -247,6 +247,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public static readonly EVSEStatusTypes OutOfService      = new("outOfService");
 
+        /// <summary>
+        /// The EVSE is not accessible because of a physical barrier, i.e. a car.
+        /// </summary>
+        public static readonly EVSEStatusTypes Blocked           = new("blocked");
+
+        /// <summary>
+        /// The EVSE was removed.
+        /// </summary>
+        public static readonly EVSEStatusTypes Removed           = new("removed");
+
         #endregion
 
 
