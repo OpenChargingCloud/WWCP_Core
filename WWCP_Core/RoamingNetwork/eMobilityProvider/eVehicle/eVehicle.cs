@@ -324,13 +324,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region HotlinePhoneNumber
 
-        internal String _HotlinePhoneNumber;
+        internal PhoneNumber? _HotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the e-vehicle Operator hotline.
         /// </summary>
         [Optional]
-        public String HotlinePhoneNumber
+        public PhoneNumber? HotlinePhoneNumber
         {
 
             get

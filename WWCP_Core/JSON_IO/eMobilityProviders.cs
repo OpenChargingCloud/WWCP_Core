@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
                          #endregion
 
                          eMobilityProvider.Address is not null
-                             ? new JProperty("address", eMobilityProvider.Address.ToJSON())
+                             ? new JProperty("address",             eMobilityProvider.Address.ToJSON())
                              : null,
 
                          // LogoURI
@@ -111,12 +111,12 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
                                                                     ))
                              : null,
 
-                         eMobilityProvider.Homepage.IsNotNullOrEmpty()
-                             ? new JProperty("homepage",            eMobilityProvider.Homepage)
+                         eMobilityProvider.Homepage.HasValue
+                             ? new JProperty("homepage",            eMobilityProvider.Homepage.ToString())
                              : null,
 
-                         eMobilityProvider.HotlinePhoneNumber.IsNotNullOrEmpty()
-                             ? new JProperty("hotline",             eMobilityProvider.HotlinePhoneNumber)
+                         eMobilityProvider.HotlinePhoneNumber.HasValue
+                             ? new JProperty("hotline",             eMobilityProvider.HotlinePhoneNumber.ToString())
                              : null,
 
                          eMobilityProvider.DataLicenses.Any()

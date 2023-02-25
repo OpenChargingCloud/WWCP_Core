@@ -23,6 +23,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 #endregion
 
@@ -217,13 +219,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Telephone
 
-        private String _Telephone;
+        private PhoneNumber? _Telephone;
 
         /// <summary>
         /// The telephone number of the operator's (sales) office.
         /// </summary>
         [Optional]
-        public String Telephone
+        public PhoneNumber? Telephone
         {
 
             get
@@ -243,13 +245,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMailAddress
 
-        private String _EMailAddress;
+        private SimpleEMailAddress? _EMailAddress;
 
         /// <summary>
         /// The e-mail address of the operator's (sales) office.
         /// </summary>
         [Optional]
-        public String EMailAddress
+        public SimpleEMailAddress? EMailAddress
         {
 
             get
@@ -269,13 +271,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Homepage
 
-        private String _Homepage;
+        private URL? _Homepage;
 
         /// <summary>
         /// The homepage of this evse operator.
         /// </summary>
         [Optional]
-        public String Homepage
+        public URL? Homepage
         {
 
             get
@@ -295,13 +297,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region HotlinePhoneNumber
 
-        private String _HotlinePhoneNumber;
+        private PhoneNumber? _HotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the Charging Station Operator hotline.
         /// </summary>
         [Optional]
-        public String HotlinePhoneNumber
+        public PhoneNumber? HotlinePhoneNumber
         {
 
             get
