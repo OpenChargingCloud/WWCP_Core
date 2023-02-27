@@ -24,14 +24,14 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class AdminStatusPull<T>
+    public class EnergyStatusPull<T>
     {
 
         public IEnumerable<T>        Status      { get; }
         public IEnumerable<Warning>  Warnings    { get; }
 
-        public AdminStatusPull(IEnumerable<T>         Status,
-                               IEnumerable<Warning>?  Warnings   = null)
+        public EnergyStatusPull(IEnumerable<T>         Status,
+                                IEnumerable<Warning>?  Warnings   = null)
         {
 
             this.Status    = Status ?? Array.Empty<T>();

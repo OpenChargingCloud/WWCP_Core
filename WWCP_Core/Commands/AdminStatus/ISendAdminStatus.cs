@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        Boolean  DisablePushAdminStatus   { get; set; }
+        Boolean  DisablePushAdminStatus    { get; set; }
 
 
         #region OnEVSEStatusPush/-Pushed
