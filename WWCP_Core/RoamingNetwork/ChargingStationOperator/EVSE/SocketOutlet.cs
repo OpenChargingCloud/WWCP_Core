@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
     public static class SocketOutletExtetions
     {
 
-        #region ToJSON(this SocketOutlet, IncludeParentIds = true)
+        #region ToJSON(this SocketOutlet,  IncludeParentIds = true)
 
         public static JObject ToJSON(this SocketOutlet  SocketOutlet,
                                      Boolean            IncludeParentIds = true)
@@ -104,25 +104,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// The type of the charging plug.
         /// </summary>
         [Mandatory]
-        public PlugTypes  Plug            { get; }
+        public PlugTypes         Plug             { get; }
+
+        /// <summary>
+        /// The optional socket outlet identification.
+        /// </summary>
+        public SocketOutlet_Id?  Id               { get; }
 
         /// <summary>
         /// Whether the charging plug is lockable or not.
         /// </summary>
         [Optional]
-        public Boolean    Lockable        { get; }
+        public Boolean?          Lockable         { get; }
 
         /// <summary>
         /// Whether the charging plug has an attached cable or not.
         /// </summary>
         [Optional]
-        public Boolean?   CableAttached   { get; }
+        public Boolean?          CableAttached    { get; }
 
         /// <summary>
         /// The length of the charging cable [cm].
         /// </summary>
         [Optional]
-        public Double     CableLength     { get; }
+        public Double?           CableLength      { get; }
 
         #endregion
 
@@ -132,16 +137,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new socket outlet.
         /// </summary>
         /// <param name="Plug">The type of the charging plug.</param>
+        /// <param name="Id">An optional socket outlet identification.</param>
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="CableAttached">The type of the charging cable.</param>
         /// <param name="CableLength">The length of the charging cable [mm].</param>
-        public SocketOutlet(PlugTypes  Plug,
-                            Boolean    Lockable       = true,
-                            Boolean?   CableAttached  = null,
-                            Double     CableLength    = 0)
+        public SocketOutlet(PlugTypes         Plug,
+                            SocketOutlet_Id?  Id              = null,
+                            Boolean?          Lockable        = null,
+                            Boolean?          CableAttached   = null,
+                            Double?           CableLength     = null)
         {
 
             this.Plug           = Plug;
+            this.Id             = Id;
             this.Lockable       = Lockable;
             this.CableAttached  = CableAttached;
             this.CableLength    = CableLength;
@@ -198,45 +206,39 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two socket outlets for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A socket outlet to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            var SocketOutlet = Object as SocketOutlet;
-            if ((Object) SocketOutlet == null)
-                return false;
-
-            return Equals(SocketOutlet);
-
-        }
+            => Object is SocketOutlet socketOutlet &&
+                   Equals(socketOutlet);
 
         #endregion
 
         #region Equals(SocketOutlet)
 
         /// <summary>
-        /// Compares two SocketOutlet for equality.
+        /// Compares two socket outlets for equality.
         /// </summary>
-        /// <param name="SocketOutlet">An SocketOutlet to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SocketOutlet SocketOutlet)
-        {
+        /// <param name="SocketOutlet">A socket outlet to compare with.</param>
+        public Boolean Equals(SocketOutlet? SocketOutlet)
 
-            if ((Object) SocketOutlet == null)
-                return false;
+            => SocketOutlet is not null &&
 
-            return Plug.         Equals(SocketOutlet.Plug)          &&
-                   Lockable.     Equals(SocketOutlet.Lockable)      &&
-                   CableAttached.Equals(SocketOutlet.CableAttached) &&
-                   CableLength.  Equals(SocketOutlet.CableLength);
+               Plug.Equals(SocketOutlet.Plug) &&
 
-        }
+             ((!Id.           HasValue &&  !SocketOutlet.Id.           HasValue) ||
+               (Id.           HasValue &&   SocketOutlet.Id.           HasValue && Id.           Equals(SocketOutlet.Id)))            &&
+
+             ((!Lockable.     HasValue &&  !SocketOutlet.Lockable.     HasValue) ||
+               (Lockable.     HasValue &&   SocketOutlet.Lockable.     HasValue && Lockable.     Equals(SocketOutlet.Lockable)))      &&
+
+             ((!CableAttached.HasValue &&  !SocketOutlet.CableAttached.HasValue) ||
+               (CableAttached.HasValue &&   SocketOutlet.CableAttached.HasValue && CableAttached.Equals(SocketOutlet.CableAttached))) &&
+
+             ((!CableLength.  HasValue &&  !SocketOutlet.CableLength.  HasValue) ||
+               (CableLength.  HasValue &&   SocketOutlet.CableLength.  HasValue && CableLength.  Equals(SocketOutlet.CableLength)));
 
         #endregion
 
@@ -252,10 +254,11 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Plug.         GetHashCode() * 7 ^
-                       Lockable.     GetHashCode() * 5 ^
-                       CableAttached.GetHashCode() * 3 ^
-                       CableLength.  GetHashCode();
+                return Plug.          GetHashCode()       * 11 ^
+                      (Id?.           GetHashCode() ?? 0) *  7 ^
+                      (Lockable?.     GetHashCode() ?? 0) *  5 ^
+                      (CableAttached?.GetHashCode() ?? 0) *  3 ^
+                      (CableLength?.  GetHashCode() ?? 0);
 
             }
         }
@@ -269,10 +272,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Plug,
-                             Lockable               ? ", lockable "             : "",
-                             CableAttached.HasValue ? ", with cable "           : "",
-                             CableLength >  0       ? ", " + CableLength + "cm" : "");
+            => String.Concat(
+                   Plug,
+                   Id.           HasValue ? "(" + Id.ToString() + ") " : "",
+                   Lockable.     HasValue ? ", lockable "              : "",
+                   CableAttached.HasValue ? ", with cable "            : "",
+                   CableLength.  HasValue ? ", " + CableLength + "cm"  : ""
+               );
 
         #endregion
 
