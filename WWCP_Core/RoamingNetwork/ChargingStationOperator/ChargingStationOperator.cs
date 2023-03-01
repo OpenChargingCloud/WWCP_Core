@@ -5376,15 +5376,15 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<RemoteStartResult>
 
             RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct          ChargingProduct        = null,
+                        ChargingProduct?         ChargingProduct        = null,
                         ChargingReservation_Id?  ReservationId          = null,
                         ChargingSession_Id?      SessionId              = null,
                         EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
                         CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
+                        EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
 
         {
@@ -5397,22 +5397,21 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            RemoteStartResult result = null;
+            RemoteStartResult? result = null;
 
             #endregion
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(StartTime,
+                OnRemoteStartRequest?.Invoke(startTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -5443,9 +5442,10 @@ namespace cloud.charging.open.protocols.WWCP
                     AdminStatus.Value == ChargingStationOperatorAdminStatusTypes.InternalUse)
                 {
 
-                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out var chargingPool)) ||
-                        (ChargingLocation.ChargingStationId.HasValue && TryGetChargingPoolByStationId(ChargingLocation.ChargingStationId.Value, out     chargingPool)) ||
-                        (ChargingLocation.ChargingPoolId.   HasValue && TryGetChargingPoolById       (ChargingLocation.ChargingPoolId.   Value, out     chargingPool)))
+                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingPoolByEVSEId   (ChargingLocation.EVSEId.           Value, out var chargingPool) ||
+                         ChargingLocation.ChargingStationId.HasValue && TryGetChargingPoolByStationId(ChargingLocation.ChargingStationId.Value, out     chargingPool) ||
+                         ChargingLocation.ChargingPoolId.   HasValue && TryGetChargingPoolById       (ChargingLocation.ChargingPoolId.   Value, out     chargingPool)) &&
+                         chargingPool is not null)
                     {
 
                         result = await chargingPool.
@@ -5470,7 +5470,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                             // The session can be delivered within the response
                             // or via an explicit message afterwards!
-                            if (result.Session != null)
+                            if (result.Session is not null)
                                 result.Session.ChargingStationOperator = this;
 
                         }
@@ -5482,6 +5482,8 @@ namespace cloud.charging.open.protocols.WWCP
                         result = RemoteStartResult.UnknownLocation();
 
                 }
+                else
+                    result = RemoteStartResult.OutOfService();
 
             }
             catch (Exception e)
@@ -5489,15 +5491,17 @@ namespace cloud.charging.open.protocols.WWCP
                 result = RemoteStartResult.Error(e.Message);
             }
 
+            result ??= RemoteStartResult.Error();
+
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(EndTime,
+                OnRemoteStartResponse?.Invoke(endTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -5512,7 +5516,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               RemoteAuthentication,
                                               RequestTimeout,
                                               result,
-                                              EndTime - StartTime);
+                                              endTime - startTime);
 
             }
             catch (Exception e)

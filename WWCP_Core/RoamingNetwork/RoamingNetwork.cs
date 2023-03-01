@@ -6410,22 +6410,21 @@ namespace cloud.charging.open.protocols.WWCP
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            EventTrackingId ??= EventTracking_Id.New;
 
 
-            RemoteStartResult result = null;
+            RemoteStartResult? result = null;
 
             #endregion
 
             #region Send OnRemoteStartRequest event
 
-            var StartTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var startTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartRequest?.Invoke(StartTime,
+                OnRemoteStartRequest?.Invoke(startTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -6468,10 +6467,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try to lookup the charging station operator given in the EVSE identification...
 
-                    if (TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out var chargingStationOperator) ||
-                        TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out     chargingStationOperator) ||
-                        TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out     chargingStationOperator) ||
-                        TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out     chargingStationOperator))
+                    if ((TryGetChargingStationOperatorById(ChargingLocation.ChargingStationOperatorId,     out var chargingStationOperator) ||
+                         TryGetChargingStationOperatorById(ChargingLocation.EVSEId?.           OperatorId, out     chargingStationOperator) ||
+                         TryGetChargingStationOperatorById(ChargingLocation.ChargingStationId?.OperatorId, out     chargingStationOperator) ||
+                         TryGetChargingStationOperatorById(ChargingLocation.ChargingPoolId?.   OperatorId, out     chargingStationOperator)) &&
+                        chargingStationOperator is not null)
                     {
 
                         result = await chargingStationOperator.
@@ -6552,8 +6552,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...or fail!
 
-                    if (result == null)
-                        result = RemoteStartResult.UnknownOperator();
+                    result ??= RemoteStartResult.UnknownOperator();
 
                     #endregion
 
@@ -6581,12 +6580,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Send OnRemoteStartResponse event
 
-            var EndTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
             try
             {
 
-                OnRemoteStartResponse?.Invoke(EndTime,
+                OnRemoteStartResponse?.Invoke(endTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -6601,7 +6600,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               RemoteAuthentication,
                                               RequestTimeout,
                                               result,
-                                              EndTime - StartTime);
+                                              endTime - startTime);
 
             }
             catch (Exception e)

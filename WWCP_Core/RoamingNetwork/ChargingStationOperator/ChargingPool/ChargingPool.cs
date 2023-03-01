@@ -3008,23 +3008,23 @@ namespace cloud.charging.open.protocols.WWCP
                     AdminStatus.Value == ChargingPoolAdminStatusTypes.InternalUse)
                 {
 
-                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.           Value, out var chargingStation)) ||
-                        (ChargingLocation.ChargingStationId.HasValue && TryGetChargingStationById    (ChargingLocation.ChargingStationId.Value, out     chargingStation)))
+                    if ((ChargingLocation.EVSEId.           HasValue && TryGetChargingStationByEVSEId(ChargingLocation.EVSEId.           Value, out var chargingStation) ||
+                         ChargingLocation.ChargingStationId.HasValue && TryGetChargingStationById    (ChargingLocation.ChargingStationId.Value, out     chargingStation)) &&
+                         chargingStation is not null)
                     {
 
-                        if (chargingStation is not null)
-                            result = await chargingStation.
-                                               RemoteStart(ChargingLocation,
-                                                           ChargingProduct,
-                                                           ReservationId,
-                                                           SessionId,
-                                                           ProviderId,
-                                                           RemoteAuthentication,
+                        result = await chargingStation.
+                                           RemoteStart(ChargingLocation,
+                                                       ChargingProduct,
+                                                       ReservationId,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       RemoteAuthentication,
 
-                                                           Timestamp,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           RequestTimeout);
+                                                       Timestamp,
+                                                       CancellationToken,
+                                                       EventTrackingId,
+                                                       RequestTimeout);
 
 
                         #region In case of success...
