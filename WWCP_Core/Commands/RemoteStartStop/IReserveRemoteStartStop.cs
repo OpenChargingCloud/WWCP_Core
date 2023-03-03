@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public interface IReserveRemoteStartStop
+    public interface IChargingReservations
     {
 
         #region Reservations
@@ -144,53 +144,25 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+    }
+
+    public interface IRemoteStartStop
+    {
+
         #region RemoteStart/-Stop
 
-        #region Events
+        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        event OnRemoteStartRequestDelegate     OnRemoteStartRequest;
+        event OnRemoteStartRequestDelegate OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
+        event OnRemoteStartResponseDelegate OnRemoteStartResponse;
 
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        event OnNewChargingSessionDelegate     OnNewChargingSession;
-
-
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        event OnRemoteStopRequestDelegate      OnRemoteStopRequest;
-
-        /// <summary>
-        /// An event fired whenever a remote stop command completed.
-        /// </summary>
-        event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
-
-
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
-
-        #endregion
-
-        /// <summary>
-        /// Remote charging sessions.
-        /// </summary>
-        IEnumerable<ChargingSession> ChargingSessions { get; }
-
-        Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, out ChargingSession ChargingSession);
-
-
-        #region RemoteStart(ChargingLocation, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 
         /// <summary>
         /// Start a charging session at the given EVSE.
@@ -208,21 +180,32 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStartResult>
 
-            RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct?         ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        EMobilityProvider_Id?    ProviderId             = null,
-                        RemoteAuthentication?    RemoteAuthentication   = null,
+            RemoteStart(ChargingLocation ChargingLocation,
+                        ChargingProduct? ChargingProduct = null,
+                        ChargingReservation_Id? ReservationId = null,
+                        ChargingSession_Id? SessionId = null,
+                        EMobilityProvider_Id? ProviderId = null,
+                        RemoteAuthentication? RemoteAuthentication = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id?        EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null);
+                        DateTime? Timestamp = null,
+                        CancellationToken? CancellationToken = null,
+                        EventTracking_Id? EventTrackingId = null,
+                        TimeSpan? RequestTimeout = null);
 
         #endregion
 
         #region RemoteStop (SessionId, ReservationHandling = null, ProviderId = null, RemoteAuthentication = null, ...)
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        event OnRemoteStopRequestDelegate OnRemoteStopRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        event OnRemoteStopResponseDelegate OnRemoteStopResponse;
+
 
         /// <summary>
         /// Stop the given charging session.
@@ -238,15 +221,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling?   ReservationHandling    = null,
-                       EMobilityProvider_Id?  ProviderId             = null,
-                       RemoteAuthentication?  RemoteAuthentication   = null,
+            RemoteStop(ChargingSession_Id SessionId,
+                       ReservationHandling? ReservationHandling = null,
+                       EMobilityProvider_Id? ProviderId = null,
+                       RemoteAuthentication? RemoteAuthentication = null,
 
-                       DateTime?              Timestamp              = null,
-                       CancellationToken?     CancellationToken      = null,
-                       EventTracking_Id?      EventTrackingId        = null,
-                       TimeSpan?              RequestTimeout         = null);
+                       DateTime? Timestamp = null,
+                       CancellationToken? CancellationToken = null,
+                       EventTracking_Id? EventTrackingId = null,
+                       TimeSpan? RequestTimeout = null);
 
         #endregion
 
@@ -254,8 +237,44 @@ namespace cloud.charging.open.protocols.WWCP
 
     }
 
+    public interface IChargingSessions
+    {
 
-    public interface ILocalReserveRemoteStartStop : IReserveRemoteStartStop
+        #region Charging Sessions
+
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        event OnNewChargingSessionDelegate     OnNewChargingSession;
+
+
+        /// <summary>
+        /// Remote charging sessions.
+        /// </summary>
+        IEnumerable<ChargingSession> ChargingSessions { get; }
+
+        Boolean TryGetChargingSessionById(ChargingSession_Id ChargingSessionId, out ChargingSession? ChargingSession);
+
+        #endregion
+
+    }
+
+    public interface IChargeDetailRecords
+    {
+
+        #region Charge Detail Records
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was created.
+        /// </summary>
+        event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
+
+        #endregion
+
+    }
+
+
+    public interface ILocalChargingReservations : IChargingReservations
     {
 
         #region Reserve(StartTime, Duration, ReservationId = null, ProviderId = null, ...)
@@ -287,7 +306,7 @@ namespace cloud.charging.open.protocols.WWCP
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<AuthenticationToken>?           AuthTokens             = null,
+                    IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
@@ -297,6 +316,11 @@ namespace cloud.charging.open.protocols.WWCP
                     TimeSpan?                          RequestTimeout         = null);
 
         #endregion
+
+    }
+
+    public interface ILocalRemoteStartStop : IRemoteStartStop
+    {
 
         #region RemoteStart(ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, RemoteAuthentication = null, ...)
 

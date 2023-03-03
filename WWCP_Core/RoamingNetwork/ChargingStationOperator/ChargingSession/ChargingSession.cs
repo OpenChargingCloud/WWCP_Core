@@ -528,9 +528,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        private EMobilityProvider _ProviderStart;
+        private IEMobilityProvider? _ProviderStart;
 
-        public EMobilityProvider ProviderStart
+        public IEMobilityProvider? ProviderStart
         {
 
             get
@@ -572,9 +572,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        private EMobilityProvider _ProviderStop;
+        private IEMobilityProvider? _ProviderStop;
 
-        public EMobilityProvider ProviderStop
+        public IEMobilityProvider? ProviderStop
         {
 
             get

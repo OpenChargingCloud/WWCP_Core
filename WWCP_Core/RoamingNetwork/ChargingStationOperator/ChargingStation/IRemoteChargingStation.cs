@@ -28,7 +28,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// The interface of a remote charging station.
     /// </summary>
     public interface IRemoteChargingStation : IChargingStation,
-                                              ILocalReserveRemoteStartStop
+                                              ILocalRemoteStartStop,
+                                              ILocalChargingReservations,
+                                              IChargingSessions,
+                                              IChargeDetailRecords
     {
 
         //ChargingStation_Id                           Id          { get; }

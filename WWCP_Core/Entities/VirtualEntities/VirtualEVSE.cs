@@ -2315,7 +2315,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public IEnumerable<ChargingReservation> Reservations => throw new NotImplementedException();
 
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        TimeSpan IChargingReservations.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
 

@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
-        public static JArray ToJSON(this IEnumerable<RoamingNetwork>                           RoamingNetworks,
+        public static JArray ToJSON(this IEnumerable<IRoamingNetwork>                          RoamingNetworks,
                                     Boolean                                                    Embedded                                  = false,
                                     InfoStatus                                                 ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
                                     InfoStatus                                                 ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
@@ -134,9 +134,13 @@ namespace cloud.charging.open.protocols.WWCP
         public readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(60);
 
 
+        protected static readonly  SemaphoreSlim  eMobilityProvidersSemaphore            = new (1, 1);
         protected static readonly  SemaphoreSlim  chargingStationOperatorsSemaphore      = new (1, 1);
 
         protected static readonly  TimeSpan       SemaphoreSlimTimeout                   = TimeSpan.FromSeconds(5);
+
+        protected static readonly  Byte           MinEMobilityProviderIdLength           = 5;
+        protected static readonly  Byte           MinEMobilityProviderNameLength         = 5;
 
         protected static readonly  Byte           MinChargingStationOperatorIdLength     = 5;
         protected static readonly  Byte           MinChargingStationOperatorNameLength   = 5;
@@ -148,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
         IId IAuthorizeStartStop.AuthId
             => Id;
 
-        IId ISendChargeDetailRecords.Id
+        IId ISendChargeDetailRecords.SendChargeDetailRecordsId
             => Id;
 
         public Boolean DisableAuthentication            { get; set; }
@@ -256,11 +260,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.dataLicenses                                       = new ReactiveSet<DataLicense>();
 
-            this.empRoamingProviders                                = new ConcurrentDictionary<EMPRoamingProvider_Id,               IEMPRoamingProvider>();
-            this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32,                              IEMPRoamingProvider>();
-            this.eMobilityProviders                                 = new EntityHashSet<RoamingNetwork, EMobilityProvider_Id,       EMobilityProvider>      (this);
+            this.empRoamingProviders                                = new ConcurrentDictionary<EMPRoamingProvider_Id,                IEMPRoamingProvider>();
+            this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32,                               IEMPRoamingProvider>();
+            this.eMobilityProviders                                 = new EntityHashSet<IRoamingNetwork, EMobilityProvider_Id,       IEMobilityProvider>      (this);
 
-            this.csoRoamingProviders                                = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
+            this.csoRoamingProviders                                = new ConcurrentDictionary<CSORoamingProvider_Id,                ICSORoamingProvider>();
             this.chargingStationOperators                           = new EntityHashSet<IRoamingNetwork, ChargingStationOperator_Id, IChargingStationOperator>(this);
 
             this.parkingOperators                                   = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
@@ -440,7 +444,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="EMPRoamingProvider">An e-mobility provider roaming provider.</param>
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider roaming provider after its creation.</param>
-        public IEMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingProvider           EMPRoamingProvider,
+        public IEMPRoamingProvider CreateEMPRoamingProvider(IEMPRoamingProvider           EMPRoamingProvider,
                                                             Action<IEMPRoamingProvider>?  Configurator = null)
         {
 
@@ -658,14 +662,39 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMobilityProviders
 
-        private readonly EntityHashSet<RoamingNetwork, EMobilityProvider_Id, EMobilityProvider> eMobilityProviders;
+        private readonly EntityHashSet<IRoamingNetwork, EMobilityProvider_Id, IEMobilityProvider> eMobilityProviders;
 
         /// <summary>
         /// Return all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<EMobilityProvider> EMobilityProviders
+        public IEnumerable<IEMobilityProvider> EMobilityProviders
+        {
+            get
+            {
 
-            => eMobilityProviders;
+                if (eMobilityProvidersSemaphore.Wait(SemaphoreSlimTimeout))
+                {
+                    try
+                    {
+
+                        return eMobilityProviders.ToArray();
+
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            eMobilityProvidersSemaphore.Release();
+                        }
+                        catch
+                        { }
+                    }
+                }
+
+                return Array.Empty<IEMobilityProvider>();
+
+            }
+        }
 
         #endregion
 
@@ -727,25 +756,335 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region OnEMobilityProviderAddition
+        #region EMobilityProviderAddition
 
         /// <summary>
-        /// Called whenever an e-mobility provider will be or was added.
+        /// Called whenever a charging station operator will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEMobilityProviderAddition
+        public IVotingSender<DateTime, IRoamingNetwork, IEMobilityProvider, Boolean> OnEMobilityProviderAddition
             => eMobilityProviders.OnAddition;
 
+        private void SendEMobilityProviderAdded(DateTime            Timestamp,
+                                                IRoamingNetwork     RoamingNetwork,
+                                                IEMobilityProvider  EMobilityProvider)
+        {
+
+            try
+            {
+
+                //var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(EMobilityProvider));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendEMobilityProviderAdded of charging station operator '{EMobilityProvider.Id}' to roaming network '{RoamingNetwork.Id}'");
+            }
+
+        }
+
         #endregion
 
-        #region OnEMobilityProviderRemoval
+        #region (internal) UpdateEMobilityProviderData       (Timestamp, EventTrackingId, EMobilityProvider, PropertyName, OldValue, NewValue)
 
         /// <summary>
-        /// Called whenever an e-mobility provider will be or was removed.
+        /// An event fired whenever the static data of any subordinated Charging Station Operator changed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEMobilityProviderRemoval
-            => eMobilityProviders.OnRemoval;
+        public event OnEMobilityProviderDataChangedDelegate? OnEMobilityProviderDataChanged;
+
+
+        /// <summary>
+        /// Update the data of a charging station operator.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="EMobilityProvider">The changed charging station operator.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal async Task UpdateEMobilityProviderData(DateTime            Timestamp,
+                                                        EventTracking_Id    EventTrackingId,
+                                                        IEMobilityProvider  EMobilityProvider,
+                                                        String              PropertyName,
+                                                        Object?             OldValue,
+                                                        Object?             NewValue)
+        {
+
+            try
+            {
+
+                //var results = _ISendData.WhenAll(iSendData => iSendData.UpdateStaticData(EMobilityProvider,
+                //                                                                         PropertyName,
+                //                                                                         OldValue,
+                //                                                                         NewValue));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEMobilityProviderData of charging station operator '{EMobilityProvider.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+            }
+
+
+            //var OnEMobilityProviderDataChangedLocal = OnEMobilityProviderDataChanged;
+            //if (OnEMobilityProviderDataChangedLocal is not null)
+            //    await OnEMobilityProviderDataChangedLocal(Timestamp,
+            //                                              EventTrackingId ?? EventTracking_Id.New,
+            //                                              EMobilityProvider,
+            //                                              PropertyName,
+            //                                              OldValue,
+            //                                              NewValue);
+
+        }
 
         #endregion
+
+        #region EMobilityProviderRemoval
+
+        /// <summary>
+        /// Called whenever charging station operator will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, IRoamingNetwork, IEMobilityProvider, Boolean> OnEMobilityProviderRemoval
+            => eMobilityProviders.OnRemoval;
+
+        private void SendEMobilityProviderRemoved(DateTime            Timestamp,
+                                                  IRoamingNetwork     RoamingNetwork,
+                                                  IEMobilityProvider  EMobilityProvider)
+        {
+
+            try
+            {
+
+                //var results = _ISendData.WhenAll(iSendData => iSendData.DeleteStaticData(EMobilityProvider));
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.SendEMobilityProviderRemoved of charging station operator '{EMobilityProvider.Id}' from roaming network '{RoamingNetwork.Id}'");
+            }
+
+        }
+
+        #endregion
+
+
+        #region AddEMobilityProvider           (EMobilityProvider,      ..., OnAdded = null, ...)
+
+        /// <summary>
+        /// An event fired whenever a charging station operator was added.
+        /// </summary>
+        public event OnEMobilityProviderAddedDelegate? OnEMobilityProviderAdded;
+
+
+        #region (protected internal) _AddEMobilityProvider(EMobilityProvider, ..., OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given user to the API.
+        /// </summary>
+        /// <param name="EMobilityProvider">A charging station operator.</param>
+        /// <param name="SkipNewEMobilityProviderNotifications">Do not send notifications for this charging station operator addition.</param>
+        /// <param name="OnAdded">A delegate run whenever the charging station operator has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        protected internal async Task<AddEMobilityProviderResult>
+
+            _AddEMobilityProvider(IEMobilityProvider                 EMobilityProvider,
+                                  Boolean                            SkipNewEMobilityProviderNotifications   = false,
+                                  OnEMobilityProviderAddedDelegate?  OnAdded                                 = null,
+                                  EventTracking_Id?                  EventTrackingId                         = null,
+                                  User_Id?                           CurrentUserId                           = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            //if (User.API is not null && User.API != this)
+            //    return AddUserResult.ArgumentError(User,
+            //                                       eventTrackingId,
+            //                                       nameof(User),
+            //                                       "The given user is already attached to another API!");
+
+            if (eMobilityProviders.ContainsId(EMobilityProvider.Id))
+                return AddEMobilityProviderResult.ArgumentError(
+                           EMobilityProvider,
+                           eventTrackingId,
+                           nameof(EMobilityProvider),
+                           $"The given charging station operator identification '{EMobilityProvider.Id}' already exists!"
+                       );
+
+            if (EMobilityProvider.Id.Length < MinEMobilityProviderIdLength)
+                return AddEMobilityProviderResult.ArgumentError(
+                           EMobilityProvider,
+                           eventTrackingId,
+                           nameof(EMobilityProvider),
+                           $"The given charging station operator identification '{EMobilityProvider.Id}' is too short!"
+                       );
+
+            if (EMobilityProvider.Name.IsNullOrEmpty())
+                return AddEMobilityProviderResult.ArgumentError(
+                           EMobilityProvider,
+                           eventTrackingId,
+                           nameof(User),
+                           "The given charging station operator name must not be null!"
+                       );
+
+            if (EMobilityProvider.Name.FirstText().Length < MinEMobilityProviderNameLength)
+                return AddEMobilityProviderResult.ArgumentError(
+                           EMobilityProvider,
+                           eventTrackingId,
+                           nameof(EMobilityProvider),
+                           $"The given charging station operator name '{EMobilityProvider.Name}' is too short!"
+                       );
+
+            //User.API = this;
+
+
+            //await WriteToDatabaseFile(addUser_MessageType,
+            //                          EMobilityProvider.ToJSON(false),
+            //                          eventTrackingId,
+            //                          CurrentUserId);
+
+            var result  = eMobilityProviders.TryAdd(EMobilityProvider);
+            var now     = Timestamp.Now;
+
+            if (result)
+            {
+
+                //EMobilityProvider.OnDataChanged                              += UpdateEMobilityProviderData;
+                //EMobilityProvider.OnStatusChanged                            += UpdateEMobilityProviderStatus;
+                //EMobilityProvider.OnAdminStatusChanged                       += UpdateEMobilityProviderAdminStatus;
+
+                //EMobilityProvider.OnChargingPoolAddition.   OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
+                //EMobilityProvider.OnChargingPoolAddition.   OnNotification   += SendChargingPoolAdded;
+                //EMobilityProvider.OnChargingPoolDataChanged                  += UpdateChargingPoolData;
+                //EMobilityProvider.OnChargingPoolStatusChanged                += UpdateChargingPoolStatus;
+                //EMobilityProvider.OnChargingPoolAdminStatusChanged           += UpdateChargingPoolAdminStatus;
+                //EMobilityProvider.OnChargingPoolRemoval.    OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
+                //EMobilityProvider.OnChargingPoolRemoval.    OnNotification   += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
+
+                //EMobilityProvider.OnChargingStationAddition.OnVoting         += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
+                //EMobilityProvider.OnChargingStationAddition.OnNotification   += SendChargingStationAdded;
+                //EMobilityProvider.OnChargingStationDataChanged               += UpdateChargingStationData;
+                //EMobilityProvider.OnChargingStationStatusChanged             += UpdateChargingStationStatus;
+                //EMobilityProvider.OnChargingStationAdminStatusChanged        += UpdateChargingStationAdminStatus;
+                //EMobilityProvider.OnChargingStationRemoval. OnVoting         += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
+                //EMobilityProvider.OnChargingStationRemoval. OnNotification   += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
+
+                //EMobilityProvider.OnEVSEAddition.           OnVoting         += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                //EMobilityProvider.OnEVSEAddition.           OnNotification   += SendEVSEAdded;
+                //EMobilityProvider.OnEVSEDataChanged                          += UpdateEVSEData;
+                //EMobilityProvider.OnEVSEStatusChanged                        += UpdateEVSEStatus;
+                //EMobilityProvider.OnEVSEAdminStatusChanged                   += UpdateEVSEAdminStatus;
+                //EMobilityProvider.OnEVSERemoval.            OnVoting         += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
+                //EMobilityProvider.OnEVSERemoval.            OnNotification   += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
+
+                    _ISendAdminStatus.Add              (EMobilityProvider);
+                    _ISendStatus.Add                   (EMobilityProvider);
+                    _ISend2RemoteAuthorizeStartStop.Add(EMobilityProvider);
+                    _IRemoteSendChargeDetailRecord.Add (EMobilityProvider);
+
+                EMobilityProvider.OnNewReservation                           += SendNewReservation;
+                EMobilityProvider.OnReservationCanceled                      += SendReservationCanceled;
+                EMobilityProvider.OnNewChargingSession                       += SendNewChargingSession;
+                EMobilityProvider.OnNewChargeDetailRecord                    += SendNewChargeDetailRecord;
+
+            }
+
+            OnAdded?.Invoke(now,
+                            EMobilityProvider,
+                            eventTrackingId,
+                            CurrentUserId);
+
+            //var OnEMobilityProviderAddedLocal = OnEMobilityProviderAdded;
+            //if (OnEMobilityProviderAddedLocal is not null)
+            //    await OnEMobilityProviderAddedLocal.Invoke(Timestamp.Now,
+            //                                                     EMobilityProvider,
+            //                                                     eventTrackingId,
+            //                                                     CurrentUserId);
+
+
+            //if (!SkipNewEMobilityProviderNotifications)
+            //    await SendNotifications(EMobilityProvider,
+            //                            addEMobilityProvider_MessageType,
+            //                            null,
+            //                            eventTrackingId,
+            //                            CurrentUserId);
+
+
+            return AddEMobilityProviderResult.Success(EMobilityProvider,
+                                                            eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region AddEMobilityProvider                      (EMobilityProvider, ..., OnAdded = null, ...)
+
+        /// <summary>
+        /// Add the given charging station operator.
+        /// </summary>
+        /// <param name="EMobilityProvider">A charging station operator.</param>
+        /// <param name="SkipNewEMobilityProviderNotifications">Do not send notifications for this charging station operator addition.</param>
+        /// <param name="OnAdded">A delegate run whenever the charging station operator has been added successfully.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddEMobilityProviderResult>
+
+            AddEMobilityProvider(IEMobilityProvider                 EMobilityProvider,
+                                 Boolean                            SkipNewEMobilityProviderNotifications   = false,
+                                 OnEMobilityProviderAddedDelegate?  OnAdded                                 = null,
+                                 EventTracking_Id?                  EventTrackingId                         = null,
+                                 User_Id?                           CurrentUserId                           = null)
+
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (await eMobilityProvidersSemaphore.WaitAsync(SemaphoreSlimTimeout))
+            {
+                try
+                {
+
+                    var result = await _AddEMobilityProvider(EMobilityProvider,
+                                                             SkipNewEMobilityProviderNotifications,
+                                                             OnAdded,
+                                                             eventTrackingId,
+                                                             CurrentUserId);
+
+
+                    return result;
+
+                }
+                catch (Exception e)
+                {
+
+                    DebugX.LogException(e, $"{nameof(RoamingNetwork)}.{nameof(AddEMobilityProvider)}({EMobilityProvider.Id}, ...)" );
+
+                    return AddEMobilityProviderResult.Failed(EMobilityProvider,
+                                                             eventTrackingId,
+                                                             e);
+
+                }
+                finally
+                {
+                    try
+                    {
+                        eMobilityProvidersSemaphore.Release();
+                    }
+                    catch
+                    { }
+                }
+            }
+
+            return AddEMobilityProviderResult.Failed(EMobilityProvider,
+                                                     eventTrackingId,
+                                                     "Internal locking failed!");
+
+        }
+
+        #endregion
+
+        #endregion
+
+
 
 
         #region CreateNewEMobilityProvider(EMobilityProviderId, Configurator = null)
@@ -754,39 +1093,39 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create and register a new e-mobility (service) provider having the given
         /// unique e-mobility provider identification.
         /// </summary>
-        /// <param name="ProviderId">The unique identification of the new e-mobility provider.</param>
+        /// <param name="Id">The unique identification of the new e-mobility provider.</param>
         /// <param name="Name">The offical (multi-language) name of the e-mobility provider.</param>
         /// <param name="Description">An optional (multi-language) description of the e-mobility provider.</param>
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
-        public EMobilityProvider CreateEMobilityProvider(EMobilityProvider_Id                           ProviderId,
-                                                         I18NString?                                    Name                             = null,
-                                                         I18NString?                                    Description                      = null,
-                                                         eMobilityProviderPriority?                     Priority                         = null,
-                                                         Action<EMobilityProvider>?                     Configurator                     = null,
-                                                         RemoteEMobilityProviderCreatorDelegate?        RemoteEMobilityProviderCreator   = null,
-                                                         EMobilityProviderAdminStatusTypes?             InitialAdminStatus               = null,
-                                                         EMobilityProviderStatusTypes?                  InitialStatus                    = null,
-                                                         Action<EMobilityProvider>?                     OnSuccess                        = null,
-                                                         Action<RoamingNetwork, EMobilityProvider_Id>?  OnError                          = null)
+        public EMobilityProvider CreateEMobilityProvider2(EMobilityProvider_Id                           Id,
+                                                         I18NString?                                     Name                             = null,
+                                                         I18NString?                                     Description                      = null,
+                                                         eMobilityProviderPriority?                      Priority                         = null,
+                                                         Action<IEMobilityProvider>?                     Configurator                     = null,
+                                                         RemoteEMobilityProviderCreatorDelegate?         RemoteEMobilityProviderCreator   = null,
+                                                         EMobilityProviderAdminStatusTypes?              InitialAdminStatus               = null,
+                                                         EMobilityProviderStatusTypes?                   InitialStatus                    = null,
+                                                         Action<IEMobilityProvider>?                     OnSuccess                        = null,
+                                                         Action<IRoamingNetwork, EMobilityProvider_Id>?  OnError                          = null)
         {
 
-            lock (chargingStationOperators)
+            lock (eMobilityProviders)
             {
 
-                var eMobilityProviderProxy = new EMobilityProvider(ProviderId,
-                                                                   this,
-                                                                   Name,
-                                                                   Description,
-                                                                   Configurator,
-                                                                   RemoteEMobilityProviderCreator,
-                                                                   Priority,
-                                                                   InitialAdminStatus ?? EMobilityProviderAdminStatusTypes.Operational,
-                                                                   InitialStatus      ?? EMobilityProviderStatusTypes.Available);
+                var eMobilityProvider = new EMobilityProvider(Id,
+                                                              this,
+                                                              Name,
+                                                              Description,
+                                                              Configurator,
+                                                              RemoteEMobilityProviderCreator,
+                                                              Priority,
+                                                              InitialAdminStatus ?? EMobilityProviderAdminStatusTypes.Operational,
+                                                              InitialStatus      ?? EMobilityProviderStatusTypes.Available);
 
 
-                if (eMobilityProviders.TryAdd(eMobilityProviderProxy, OnSuccess))
+                if (eMobilityProviders.TryAdd(eMobilityProvider, OnSuccess))
                 {
 
                     // _eMobilityProviders.OnDataChanged         += UpdateData;
@@ -796,20 +1135,20 @@ namespace cloud.charging.open.protocols.WWCP
                     //_EMobilityProvider.OnEMobilityStationAddition
 
                     //AddIRemotePushData               (_EMobilityProvider);
-                    _ISendAdminStatus.Add              (eMobilityProviderProxy);
-                    _ISendStatus.Add                   (eMobilityProviderProxy);
-                    _ISend2RemoteAuthorizeStartStop.Add(eMobilityProviderProxy);
-                    _IRemoteSendChargeDetailRecord.Add (eMobilityProviderProxy);
+                    _ISendAdminStatus.Add              (eMobilityProvider);
+                    _ISendStatus.Add                   (eMobilityProvider);
+                    _ISend2RemoteAuthorizeStartStop.Add(eMobilityProvider);
+                    _IRemoteSendChargeDetailRecord.Add (eMobilityProvider);
 
 
                     // Link events!
 
-                    return eMobilityProviderProxy;
+                    return eMobilityProvider;
 
                 }
 
                 throw new eMobilityProviderAlreadyExists(this,
-                                                         ProviderId);
+                                                         Id);
 
             }
 
@@ -850,7 +1189,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given e-mobility provider is already present within the roaming network.
         /// </summary>
         /// <param name="EMobilityProvider">An e-mobility provider.</param>
-        public Boolean ContainsEMobilityProvider(EMobilityProvider EMobilityProvider)
+        public Boolean ContainsEMobilityProvider(IEMobilityProvider EMobilityProvider)
 
             => eMobilityProviders.ContainsId(EMobilityProvider.Id);
 
@@ -870,11 +1209,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetEMobilityProviderById   (EMobilityProviderId)
 
-        public EMobilityProvider? GetEMobilityProviderById(EMobilityProvider_Id  EMobilityProviderId)
+        public IEMobilityProvider? GetEMobilityProviderById(EMobilityProvider_Id  EMobilityProviderId)
 
             => eMobilityProviders.GetById(EMobilityProviderId);
 
-        public EMobilityProvider? GetEMobilityProviderById(EMobilityProvider_Id? EMobilityProviderId)
+        public IEMobilityProvider? GetEMobilityProviderById(EMobilityProvider_Id? EMobilityProviderId)
 
             => EMobilityProviderId.HasValue
                    ? eMobilityProviders.GetById(EMobilityProviderId.Value)
@@ -884,11 +1223,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEMobilityProviderById(EMobilityProviderId, out EMobilityProvider)
 
-        public Boolean TryGetEMobilityProviderById(EMobilityProvider_Id EMobilityProviderId, out EMobilityProvider? EMobilityProvider)
+        public Boolean TryGetEMobilityProviderById(EMobilityProvider_Id EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
 
             => eMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
 
-        public Boolean TryGetEMobilityProviderById(EMobilityProvider_Id? EMobilityProviderId, out EMobilityProvider? EMobilityProvider)
+        public Boolean TryGetEMobilityProviderById(EMobilityProvider_Id? EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
         {
 
             if (!EMobilityProviderId.HasValue)
@@ -905,7 +1244,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveEMobilityProvider    (EMobilityProviderId)
 
-        public EMobilityProvider? RemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId)
+        public IEMobilityProvider? RemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId)
         {
 
             if (eMobilityProviders.TryRemove(EMobilityProviderId, out var eMobilityProvider))
@@ -915,7 +1254,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public EMobilityProvider? RemoveEMobilityProvider(EMobilityProvider_Id? EMobilityProviderId)
+        public IEMobilityProvider? RemoveEMobilityProvider(EMobilityProvider_Id? EMobilityProviderId)
         {
 
             if (EMobilityProviderId is not null &&
@@ -932,11 +1271,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveEMobilityProvider (EMobilityProviderId, out EMobilityProvider)
 
-        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId, out EMobilityProvider? EMobilityProvider)
+        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
 
             => eMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
 
-        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id? EMobilityProviderId, out EMobilityProvider? EMobilityProvider)
+        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id? EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
 
         {
 
@@ -1390,18 +1729,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         #region AddChargingStationOperator           (ChargingStationOperator,      ..., OnAdded = null, ...)
-
-        /// <summary>
-        /// A delegate called whenever a charging station operator was added.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when the charging station operator was added.</param>
-        /// <param name="ChargingStationOperator">The added charging station operator.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargingStationOperatorAddedDelegate(DateTime                  Timestamp,
-                                                                    IChargingStationOperator  ChargingStationOperator,
-                                                                    EventTracking_Id?         EventTrackingId   = null,
-                                                                    User_Id?                  CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charging station operator was added.
@@ -2001,20 +2328,6 @@ namespace cloud.charging.open.protocols.WWCP
         #region UpdateChargingStationOperator        ((New)ChargingStationOperator, ...,                 OnUpdated = null, ...)
 
         /// <summary>
-        /// A delegate called whenever a charging station operator was updated.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when the charging station operator was updated.</param>
-        /// <param name="NewChargingStationOperator">The new/updated charging station operator.</param>
-        /// <param name="OldChargingStationOperator">The old charging station operator.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargingStationOperatorUpdatedDelegate(DateTime                  Timestamp,
-                                                                      IChargingStationOperator  NewChargingStationOperator,
-                                                                      IChargingStationOperator  OldChargingStationOperator,
-                                                                      EventTracking_Id?         EventTrackingId   = null,
-                                                                      User_Id?                  CurrentUserId     = null);
-
-        /// <summary>
         /// An event fired whenever a charging station operator was updated.
         /// </summary>
         public event OnChargingStationOperatorUpdatedDelegate? OnChargingStationOperatorUpdated;
@@ -2331,18 +2644,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region RemoveChargingStationOperator        (ChargingStationOperator,      ...,                 OnRemoved = null, ...)
-
-        /// <summary>
-        /// A delegate called whenever a user was removed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when the user was removed.</param>
-        /// <param name="ChargingStationOperator">The user to be removed.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentChargingStationOperatorId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargingStationOperatorRemovedDelegate(DateTime                  Timestamp,
-                                                                      IChargingStationOperator  ChargingStationOperator,
-                                                                      EventTracking_Id?         EventTrackingId                    = null,
-                                                                      User_Id?                  CurrentChargingStationOperatorId   = null);
 
         /// <summary>
         /// An event fired whenever a user was removed.
@@ -6242,7 +6543,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<ChargingSession> ChargingSessions
             => SessionsStore;
 
-        TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
 
         /// <summary>
         /// Return the charging session specified by the given identification.
@@ -7840,7 +8141,7 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         var empRoamingProviderId      = cdr.EMPRoamingProviderId.ToString();
-                        var empRoamingProviderForCDR  = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.Id.ToString() == empRoamingProviderId) as IEMPRoamingProvider;
+                        var empRoamingProviderForCDR  = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == empRoamingProviderId) as IEMPRoamingProvider;
 
                         if (empRoamingProviderForCDR is not null)
                         {
@@ -7877,7 +8178,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         if (chargingSession.EMPRoamingProviderStart is null &&
                             chargingSession.EMPRoamingProviderIdStart is not null)
-                            chargingSession.EMPRoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.Id.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
+                            chargingSession.EMPRoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
 
                         if (chargingSession.EMPRoamingProviderStart is not null &&
                             chargingSession.EMPRoamingProviderStart is IEMPRoamingProvider empRoamingProviderForCDR)
@@ -7906,7 +8207,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (start) provider identification
 
-                    if (_cdr.ProviderIdStart.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStart.Value, out EMobilityProvider eMobPro))
+                    if (_cdr.ProviderIdStart.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStart.Value, out var eMobPro) && eMobPro is not null)
                     {
                         cdrTargets[eMobPro].Add(_cdr);
                         chargeDetailRecordsToProcess.Remove(_cdr);
@@ -7916,7 +8217,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region We have a valid (stop)  provider identification
 
-                    else if (_cdr.ProviderIdStop.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStop.Value, out eMobPro))
+                    else if (_cdr.ProviderIdStop.HasValue && eMobilityProviders.TryGet(_cdr.ProviderIdStop.Value, out eMobPro) && eMobPro is not null)
                     {
                         cdrTargets[eMobPro].Add(_cdr);
                         chargeDetailRecordsToProcess.Remove(_cdr);

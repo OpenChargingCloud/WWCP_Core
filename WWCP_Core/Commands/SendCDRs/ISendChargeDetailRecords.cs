@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
     public interface ISendChargeDetailRecords
     {
 
-        IId                               Id                                { get; }
+        IId                               SendChargeDetailRecordsId         { get; }
 
 
         /// <summary>

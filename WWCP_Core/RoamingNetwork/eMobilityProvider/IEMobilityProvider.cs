@@ -17,55 +17,111 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
+using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    /// <summary>
-    /// The EV Roaming Provider provided EVSE Operator services interface.
-    /// </summary>
-    public interface IEMobilityProviderUserInterface : IReserveRemoteStartStop
+    public interface IEMobilityProvider : IEntity<EMobilityProvider_Id>,
+                                          IAdminStatus<EMobilityProviderAdminStatusTypes>,
+                                          IStatus<EMobilityProviderStatusTypes>,
+                                          ISendChargeDetailRecords,
+                                          ISend2RemoteEMobilityProvider,
+                                          IEquatable<IEMobilityProvider>,
+                                          IComparable<IEMobilityProvider>,
+                                          IComparable
     {
 
         /// <summary>
-        /// The unique identification of the e-mobility service provider.
+        /// The roaming network of this charging pool.
         /// </summary>
-        EMobilityProvider_Id Id { get; }
-
-        //Authorizator_Id AuthorizatorId { get; }
-
-        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<LocalAuthentication, TokenAuthorizationResultType>> BlockedTokens        { get; }
+        IRoamingNetwork?                RoamingNetwork                   { get; }
 
 
-        // User and credential management
+        Address Address { get; set; }
+        ChargeDetailRecordFilterDelegate ChargeDetailRecordFilter { get; }
+        ReactiveSet<DataLicense> DataLicenses { get; set; }
+        Boolean DisableAuthentication { get; set; }
+        Boolean DisablePushAdminStatus { get; set; }
+        Boolean DisablePushStatus { get; set; }
+        Boolean DisableSendChargeDetailRecords { get; set; }
+        SimpleEMailAddress? EMailAddress { get; set; }
+        IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>> eMobilityStationAdminStatus { get; }
+        IEnumerable<eMobilityStation> eMobilityStations { get; }
+        IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>> eVehicleAdminStatus { get; }
+        IEnumerable<eVehicle> eVehicles { get; }
+        IEnumerable<KeyValuePair<eVehicle_Id, eVehicleStatusTypes>> eVehicleStatus { get; }
+        GeoCoordinate GeoLocation { get; set; }
+        URL? Homepage { get; set; }
+        PhoneNumber? HotlinePhoneNumber { get; set; }
+        String Logo { get; set; }
+        IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition { get; }
+        IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval { get; }
+        IVotingSender<DateTime, EMobilityProvider, eVehicle, Boolean> OnEVehicleAddition { get; }
+        IVotingSender<DateTime, EMobilityProvider, eVehicle, Boolean> OnEVehicleRemoval { get; }
+        eMobilityProviderPriority Priority { get; set; }
+        IRemoteEMobilityProvider RemoteEMobilityProvider { get; }
+        TimeSpan? RequestTimeout { get; }
+        PhoneNumber? Telephone { get; set; }
 
-        #region AddToken   (LocalAuthentication, AuthenticationResult = AuthenticationResult.Allowed)
+        event OnAuthorizeStartRequestDelegate OnAuthorizeStartRequest;
+        event OnAuthorizeStartResponseDelegate OnAuthorizeStartResponse;
+        event OnAuthorizeStopRequestDelegate OnAuthorizeStopRequest;
+        event OnAuthorizeStopResponseDelegate OnAuthorizeStopResponse;
+        event OnCancelReservationRequestDelegate? OnCancelReservationRequest;
+        event OnCancelReservationResponseDelegate? OnCancelReservationResponse;
+        event OnEMobilityStationAdminStatusChangedDelegate OnEMobilityStationAdminStatusChanged;
+        event OnEMobilityStationDataChangedDelegate OnEMobilityStationDataChanged;
+        event OnEVehicleAdminStatusChangedDelegate OnEVehicleAdminStatusChanged;
+        event OnEVehicleDataChangedDelegate OnEVehicleDataChanged;
+        event OnEVehicleGeoLocationChangedDelegate OnEVehicleGeoLocationChanged;
+        event OnEVehicleStatusChangedDelegate OnEVehicleStatusChanged;
+        event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+        event OnNewChargingSessionDelegate OnNewChargingSession;
+        event OnNewReservationDelegate? OnNewReservation;
+        event OnRemoteStartRequestDelegate OnRemoteStartRequest;
+        event OnRemoteStartResponseDelegate OnRemoteStartResponse;
+        event OnRemoteStopRequestDelegate OnRemoteStopRequest;
+        event OnRemoteStopResponseDelegate OnRemoteStopResponse;
+        event OnReservationCanceledDelegate? OnReservationCanceled;
+        event OnReserveRequestDelegate? OnReserveRequest;
+        event OnReserveResponseDelegate? OnReserveResponse;
+        event OnSendCDRsResponseDelegate OnSendCDRsResponse;
 
-        Boolean AddToken(LocalAuthentication           LocalAuthentication,
-                         TokenAuthorizationResultType  AuthenticationResult = TokenAuthorizationResultType.Authorized);
-
-        #endregion
-
-        #region RemoveToken(LocalAuthentication)
-
-        Boolean RemoveToken(LocalAuthentication  LocalAuthentication);
-
-        #endregion
-
-
-        // Outgoing to the roaming network
-
+        Task<AuthStartResult> AuthorizeStart(LocalAuthentication LocalAuthentication, ChargingLocation ChargingLocation = null, ChargingProduct ChargingProduct = null, ChargingSession_Id? SessionId = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
+        Task<AuthStopResult> AuthorizeStop(ChargingSession_Id SessionId, LocalAuthentication LocalAuthentication, ChargingLocation ChargingLocation = null, ChargingSession_Id? CPOPartnerSessionId = null, ChargingStationOperator_Id? OperatorId = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
+        Task<CancelReservationResult> CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, EMobilityProvider_Id? ProviderId = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
+        Boolean ContainseMobilityStation(eMobilityStation eMobilityStation);
+        Boolean ContainseMobilityStation(eMobilityStation_Id eMobilityStationId);
+        Boolean ContainseVehicle(eVehicle eVehicle);
+        Boolean ContainseVehicle(eVehicle_Id eVehicleId);
+        eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id eMobilityStationId = null, Action<eMobilityStation> Configurator = null, RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null, eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational, Action<eMobilityStation> OnSuccess = null, Action<EMobilityProvider, eMobilityStation_Id> OnError = null);
+        eVehicle CreateNeweVehicle(eVehicle_Id eVehicleId = null, Action<eVehicle> Configurator = null, RemoteEVehicleCreatorDelegate RemoteeVehicleCreator = null, eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational, eVehicleStatusTypes Status = eVehicleStatusTypes.Available, Action<eVehicle> OnSuccess = null, Action<EMobilityProvider, eVehicle_Id> OnError = null);
+        eMobilityStation GeteMobilityStationById(eMobilityStation_Id eMobilityStationId);
+        eVehicle GetEVehicleById(eVehicle_Id eVehicleId);
+        Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
+        Task<RemoteStopResult> RemoteStop(ChargingSession_Id SessionId, ReservationHandling? ReservationHandling = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
+        eMobilityStation RemoveeMobilityStation(eMobilityStation_Id eMobilityStationId);
+        eVehicle RemoveEVehicle(eVehicle_Id eVehicleId);
+        Task<ReservationResult> Reserve(ChargingLocation ChargingLocation, ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE, DateTime? ReservationStartTime = null, TimeSpan? Duration = null, ChargingReservation_Id? ReservationId = null, ChargingReservation_Id? LinkedReservationId = null, EMobilityProvider_Id? ProviderId = null, RemoteAuthentication? RemoteAuthentication = null, ChargingProduct? ChargingProduct = null, IEnumerable<AuthenticationToken>? AuthTokens = null, IEnumerable<eMobilityAccount_Id>? eMAIds = null, IEnumerable<UInt32>? PINs = null, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id? EventTrackingId = null, TimeSpan? RequestTimeout = null);
+        Task<SendCDRsResult> SendChargeDetailRecords(IEnumerable<ChargeDetailRecord> ChargeDetailRecords, TransmissionTypes TransmissionType, DateTime? Timestamp = null, CancellationToken? CancellationToken = null, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);
+        void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, eMobilityStationAdminStatusTypes NewStatus, DateTime Timestamp);
+        void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, IEnumerable<Timestamped<eMobilityStationAdminStatusTypes>> StatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
+        void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId, Timestamped<eMobilityStationAdminStatusTypes> NewStatus, Boolean SendUpstream = false);
+        void SetEVehicleAdminStatus(eVehicle_Id eVehicleId, eVehicleAdminStatusTypes NewStatus, DateTime Timestamp);
+        void SetEVehicleAdminStatus(eVehicle_Id eVehicleId, IEnumerable<Timestamped<eVehicleAdminStatusTypes>> StatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
+        void SeteVehicleAdminStatus(eVehicle_Id eVehicleId, Timestamped<eVehicleAdminStatusTypes> NewStatus, Boolean SendUpstream = false);
+        Boolean TryGeteMobilityStationById(eMobilityStation_Id eMobilityStationId, out eMobilityStation eMobilityStation);
+        Boolean TryGetEVehicleById(eVehicle_Id eVehicleId, out eVehicle eVehicle);
+        Boolean TryRemoveeMobilityStation(eMobilityStation_Id eMobilityStationId, out eMobilityStation eMobilityStation);
+        Boolean TryRemoveEVehicle(eVehicle_Id eVehicleId, out eVehicle eVehicle);
 
     }
 

@@ -91,7 +91,10 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IEVSE : IEntity<EVSE_Id>,
                              IAdminStatus<EVSEAdminStatusTypes>,
                              IStatus<EVSEStatusTypes>,
-                             ILocalReserveRemoteStartStop,
+                             ILocalRemoteStartStop,
+                             ILocalChargingReservations,
+                             IChargingSessions,
+                             IChargeDetailRecords,
                              IEquatable<IEVSE>, IComparable<IEVSE>, IComparable,
                              IEnumerable<SocketOutlet>
     {

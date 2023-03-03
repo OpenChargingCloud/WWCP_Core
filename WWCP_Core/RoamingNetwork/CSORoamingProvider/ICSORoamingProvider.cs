@@ -29,7 +29,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// </summary>
     public interface ICSORoamingProvider : IPullEVSEData,
                                            IPullEVSEStatus,
-                                           IReserveRemoteStartStop
+                                           IRemoteStartStop,
+                                           IChargingReservations,
+                                           IChargingSessions,
+                                           IChargeDetailRecords
     {
 
         #region Properties

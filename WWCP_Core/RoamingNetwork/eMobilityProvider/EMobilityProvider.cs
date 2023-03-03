@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// A delegate for filtering e-mobility providers.
     /// </summary>
     /// <param name="EMobilityProvider">A e-mobility provider to include.</param>
-    public delegate Boolean IncludeEMobilityProviderDelegate(EMobilityProvider EMobilityProvider);
+    public delegate Boolean IncludeEMobilityProviderDelegate(IEMobilityProvider EMobilityProvider);
 
 
     /// <summary>
@@ -52,11 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class EMobilityProvider : ACryptoEMobilityEntity<EMobilityProvider_Id,
                                                             EMobilityProviderAdminStatusTypes,
                                                             EMobilityProviderStatusTypes>,
-                                     //IRemoteAuthorizeStartStop,
-                                     ISend2RemoteEMobilityProvider,
-                                     IEquatable <EMobilityProvider>,
-                                     IComparable<EMobilityProvider>,
-                                     IComparable
+                                     IEMobilityProvider
     {
 
         #region Data
@@ -64,12 +60,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 15;
+        public const UInt16 DefaultMaxAdminStatusListSize = 15;
 
         /// <summary>
         /// The default max size of the status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize        = 15;
+        public const UInt16 DefaultMaxStatusListSize = 15;
 
         #endregion
 
@@ -78,7 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
         IId IAuthorizeStartStop.AuthId
             => Id;
 
-        IId ISendChargeDetailRecords.Id
+        IId ISendChargeDetailRecords.SendChargeDetailRecordsId
             => Id;
 
         #region Logo
@@ -378,7 +374,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A delegate for filtering charge detail records.
         /// </summary>
-        public ChargeDetailRecordFilterDelegate  ChargeDetailRecordFilter    { get; }
+        public ChargeDetailRecordFilterDelegate ChargeDetailRecordFilter { get; }
 
         #endregion
 
@@ -387,7 +383,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The remote e-mobility provider.
         /// </summary>
-        public IRemoteEMobilityProvider  RemoteEMobilityProvider    { get; }
+        public IRemoteEMobilityProvider RemoteEMobilityProvider { get; }
 
         #endregion
 
@@ -427,12 +423,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging.
         /// </summary>
-        public event OnAuthorizeStartRequestDelegate   OnAuthorizeStartRequest;
+        public event OnAuthorizeStartRequestDelegate OnAuthorizeStartRequest;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified for charging.
         /// </summary>
-        public event OnAuthorizeStartResponseDelegate  OnAuthorizeStartResponse;
+        public event OnAuthorizeStartResponseDelegate OnAuthorizeStartResponse;
 
         #endregion
 
@@ -441,12 +437,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process.
         /// </summary>
-        public event OnAuthorizeStopRequestDelegate   OnAuthorizeStopRequest;
+        public event OnAuthorizeStopRequestDelegate OnAuthorizeStopRequest;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified to stop a charging process.
         /// </summary>
-        public event OnAuthorizeStopResponseDelegate  OnAuthorizeStopResponse;
+        public event OnAuthorizeStopResponseDelegate OnAuthorizeStopResponse;
 
         #endregion
 
@@ -467,7 +463,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal EMobilityProvider(EMobilityProvider_Id                     Id,
-                                   RoamingNetwork                           RoamingNetwork,
+                                   IRoamingNetwork                          RoamingNetwork,
 
                                    I18NString?                              Name                             = null,
                                    I18NString?                              Description                      = null,
@@ -510,11 +506,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this._DataLicenses                = new ReactiveSet<DataLicense>();
+            this._DataLicenses = new ReactiveSet<DataLicense>();
 
-            this.Priority                     = Priority    ?? new eMobilityProviderPriority(0);
+            this.Priority = Priority ?? new eMobilityProviderPriority(0);
 
-            this.ChargeDetailRecordFilter     = ChargeDetailRecordFilter ?? (cdr => ChargeDetailRecordFilters.forward);
+            this.ChargeDetailRecordFilter = ChargeDetailRecordFilter ?? (cdr => ChargeDetailRecordFilters.forward);
 
             #endregion
 
@@ -572,7 +568,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => _eMobilityStations.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
+                   Select(vehicle => new KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
         #endregion
 
@@ -587,12 +583,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new eMobilityStation before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new eMobilityStation after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the eMobilityStation failed.</param>
-        public eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id                             eMobilityStationId             = null,
-                                                          Action<eMobilityStation>                        Configurator                   = null,
-                                                          RemoteEMobilityStationCreatorDelegate           RemoteeMobilityStationCreator  = null,
-                                                          eMobilityStationAdminStatusTypes                 AdminStatus                    = eMobilityStationAdminStatusTypes.Operational,
-                                                          Action<eMobilityStation>                        OnSuccess                      = null,
-                                                          Action<EMobilityProvider, eMobilityStation_Id>  OnError                        = null)
+        public eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id eMobilityStationId = null,
+                                                          Action<eMobilityStation> Configurator = null,
+                                                          RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null,
+                                                          eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational,
+                                                          Action<eMobilityStation> OnSuccess = null,
+                                                          Action<EMobilityProvider, eMobilityStation_Id> OnError = null)
 
         {
 
@@ -624,8 +620,8 @@ namespace cloud.charging.open.protocols.WWCP
                 if (_eMobilityStations.TryAdd(_eMobilityStation))
                 {
 
-                    _eMobilityStation.OnDataChanged                        += UpdateeMobilityStationData;
-                    _eMobilityStation.OnAdminStatusChanged                 += UpdateeMobilityStationAdminStatus;
+                    _eMobilityStation.OnDataChanged += UpdateeMobilityStationData;
+                    _eMobilityStation.OnAdminStatusChanged += UpdateeMobilityStationAdminStatus;
 
                     //_eMobilityStation.OnNewReservation                     += SendNewReservation;
                     //_eMobilityStation.OnCancelReservationResponse               += SendOnCancelReservationResponse;
@@ -754,9 +750,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus)
 
-        public void SetEMobilityStationAdminStatus(eMobilityStation_Id                            eMobilityStationId,
-                                                   Timestamped<eMobilityStationAdminStatusTypes>  NewStatus,
-                                                   Boolean                                        SendUpstream = false)
+        public void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId,
+                                                   Timestamped<eMobilityStationAdminStatusTypes> NewStatus,
+                                                   Boolean SendUpstream = false)
         {
 
             if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
@@ -771,9 +767,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus, Timestamp)
 
-        public void SetEMobilityStationAdminStatus(eMobilityStation_Id               eMobilityStationId,
-                                                   eMobilityStationAdminStatusTypes  NewStatus,
-                                                   DateTime                          Timestamp)
+        public void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId,
+                                                   eMobilityStationAdminStatusTypes NewStatus,
+                                                   DateTime Timestamp)
         {
 
             if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
@@ -788,9 +784,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEMobilityStationAdminStatus(eMobilityStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetEMobilityStationAdminStatus(eMobilityStation_Id                                        eMobilityStationId,
-                                                   IEnumerable<Timestamped<eMobilityStationAdminStatusTypes>>  StatusList,
-                                                   ChangeMethods                                              ChangeMethod  = ChangeMethods.Replace)
+        public void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId,
+                                                   IEnumerable<Timestamped<eMobilityStationAdminStatusTypes>> StatusList,
+                                                   ChangeMethods ChangeMethod = ChangeMethods.Replace)
         {
 
             if (TryGeteMobilityStationById(eMobilityStationId, out var eMobilityStation) &&
@@ -824,12 +820,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated eMobilityStation changed.
         /// </summary>
-        public event OnEMobilityStationDataChangedDelegate         OnEMobilityStationDataChanged;
+        public event OnEMobilityStationDataChangedDelegate OnEMobilityStationDataChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of any subordinated eMobilityStation changed.
         /// </summary>
-        public event OnEMobilityStationAdminStatusChangedDelegate  OnEMobilityStationAdminStatusChanged;
+        public event OnEMobilityStationAdminStatusChangedDelegate OnEMobilityStationAdminStatusChanged;
 
         #endregion
 
@@ -845,12 +841,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateeMobilityStationData(DateTime          Timestamp,
-                                                       EventTracking_Id  EventTrackingId,
-                                                       eMobilityStation  eMobilityStation,
-                                                       String            PropertyName,
-                                                       Object            OldValue,
-                                                       Object            NewValue)
+        internal async Task UpdateeMobilityStationData(DateTime Timestamp,
+                                                       EventTracking_Id EventTrackingId,
+                                                       eMobilityStation eMobilityStation,
+                                                       String PropertyName,
+                                                       Object OldValue,
+                                                       Object NewValue)
         {
 
             var OnEMobilityStationDataChangedLocal = OnEMobilityStationDataChanged;
@@ -876,11 +872,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMobilityStation">The updated eMobilityStation.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateeMobilityStationAdminStatus(DateTime                                      Timestamp,
-                                                              EventTracking_Id                              EventTrackingId,
-                                                              eMobilityStation                              eMobilityStation,
-                                                              Timestamped<eMobilityStationAdminStatusTypes>  OldStatus,
-                                                              Timestamped<eMobilityStationAdminStatusTypes>  NewStatus)
+        internal async Task UpdateeMobilityStationAdminStatus(DateTime Timestamp,
+                                                              EventTracking_Id EventTrackingId,
+                                                              eMobilityStation eMobilityStation,
+                                                              Timestamped<eMobilityStationAdminStatusTypes> OldStatus,
+                                                              Timestamped<eMobilityStationAdminStatusTypes> NewStatus)
         {
 
             var OnEMobilityStationAdminStatusChangedLocal = OnEMobilityStationAdminStatusChanged;
@@ -942,7 +938,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
+                   Select(vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
         #endregion
 
@@ -952,7 +948,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusTypes>(vehicle.Id, vehicle.Status.Value));
+                   Select(vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusTypes>(vehicle.Id, vehicle.Status.Value));
 
         #endregion
 
@@ -967,13 +963,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new eVehicle before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new eVehicle after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the eVehicle failed.</param>
-        public eVehicle CreateNeweVehicle(eVehicle_Id                             eVehicleId             = null,
-                                          Action<eVehicle>                        Configurator           = null,
-                                          RemoteEVehicleCreatorDelegate           RemoteeVehicleCreator  = null,
-                                          eVehicleAdminStatusTypes                 AdminStatus            = eVehicleAdminStatusTypes.Operational,
-                                          eVehicleStatusTypes                      Status                 = eVehicleStatusTypes.Available,
-                                          Action<eVehicle>                        OnSuccess              = null,
-                                          Action<EMobilityProvider, eVehicle_Id>  OnError                = null)
+        public eVehicle CreateNeweVehicle(eVehicle_Id eVehicleId = null,
+                                          Action<eVehicle> Configurator = null,
+                                          RemoteEVehicleCreatorDelegate RemoteeVehicleCreator = null,
+                                          eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational,
+                                          eVehicleStatusTypes Status = eVehicleStatusTypes.Available,
+                                          Action<eVehicle> OnSuccess = null,
+                                          Action<EMobilityProvider, eVehicle_Id> OnError = null)
 
         {
 
@@ -1006,9 +1002,9 @@ namespace cloud.charging.open.protocols.WWCP
                 if (_eVehicles.TryAdd(_eVehicle))
                 {
 
-                    _eVehicle.OnDataChanged                        += UpdateEVehicleData;
-                    _eVehicle.OnStatusChanged                      += UpdateEVehicleStatus;
-                    _eVehicle.OnAdminStatusChanged                 += UpdateEVehicleAdminStatus;
+                    _eVehicle.OnDataChanged += UpdateEVehicleData;
+                    _eVehicle.OnStatusChanged += UpdateEVehicleStatus;
+                    _eVehicle.OnAdminStatusChanged += UpdateEVehicleAdminStatus;
 
                     //_eVehicle.OnNewReservation                     += SendNewReservation;
                     //_eVehicle.OnCancelReservationResponse               += SendOnCancelReservationResponse;
@@ -1137,9 +1133,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SeteVehicleAdminStatus(eVehicleId, NewStatus)
 
-        public void SeteVehicleAdminStatus(eVehicle_Id                            eVehicleId,
-                                           Timestamped<eVehicleAdminStatusTypes>  NewStatus,
-                                           Boolean                                SendUpstream = false)
+        public void SeteVehicleAdminStatus(eVehicle_Id eVehicleId,
+                                           Timestamped<eVehicleAdminStatusTypes> NewStatus,
+                                           Boolean SendUpstream = false)
         {
 
             if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
@@ -1154,9 +1150,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
 
-        public void SetEVehicleAdminStatus(eVehicle_Id               eVehicleId,
-                                           eVehicleAdminStatusTypes  NewStatus,
-                                           DateTime                  Timestamp)
+        public void SetEVehicleAdminStatus(eVehicle_Id eVehicleId,
+                                           eVehicleAdminStatusTypes NewStatus,
+                                           DateTime Timestamp)
         {
 
             if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
@@ -1171,9 +1167,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetEVehicleAdminStatus(eVehicle_Id                                        eVehicleId,
-                                           IEnumerable<Timestamped<eVehicleAdminStatusTypes>>  StatusList,
-                                           ChangeMethods                                      ChangeMethod  = ChangeMethods.Replace)
+        public void SetEVehicleAdminStatus(eVehicle_Id eVehicleId,
+                                           IEnumerable<Timestamped<eVehicleAdminStatusTypes>> StatusList,
+                                           ChangeMethods ChangeMethod = ChangeMethods.Replace)
         {
 
             if (TryGetEVehicleById(eVehicleId, out var eVehicle) &&
@@ -1207,17 +1203,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data of any subordinated eVehicle changed.
         /// </summary>
-        public event OnEVehicleDataChangedDelegate         OnEVehicleDataChanged;
+        public event OnEVehicleDataChangedDelegate OnEVehicleDataChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of any subordinated eVehicle changed.
         /// </summary>
-        public event OnEVehicleStatusChangedDelegate       OnEVehicleStatusChanged;
+        public event OnEVehicleStatusChangedDelegate OnEVehicleStatusChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of any subordinated eVehicle changed.
         /// </summary>
-        public event OnEVehicleAdminStatusChangedDelegate  OnEVehicleAdminStatusChanged;
+        public event OnEVehicleAdminStatusChangedDelegate OnEVehicleAdminStatusChanged;
 
         #endregion
 
@@ -1241,12 +1237,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVehicleData(DateTime  Timestamp,
-                                               EventTracking_Id  EventTrackingId,
-                                               eVehicle  eVehicle,
-                                               String    PropertyName,
-                                               Object    OldValue,
-                                               Object    NewValue)
+        internal async Task UpdateEVehicleData(DateTime Timestamp,
+                                               EventTracking_Id EventTrackingId,
+                                               eVehicle eVehicle,
+                                               String PropertyName,
+                                               Object OldValue,
+                                               Object NewValue)
         {
 
             var OnEVehicleDataChangedLocal = OnEVehicleDataChanged;
@@ -1266,11 +1262,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleAdminStatus(DateTime                                  Timestamp,
-            EventTracking_Id  EventTrackingId,
-                                                          eVehicle                              eVehicle,
-                                                          Timestamped<eVehicleAdminStatusTypes>  OldStatus,
-                                                          Timestamped<eVehicleAdminStatusTypes>  NewStatus)
+        internal async Task UpdateEVehicleAdminStatus(DateTime Timestamp,
+            EventTracking_Id EventTrackingId,
+                                                          eVehicle eVehicle,
+                                                          Timestamped<eVehicleAdminStatusTypes> OldStatus,
+                                                          Timestamped<eVehicleAdminStatusTypes> NewStatus)
         {
 
             var OnEVehicleAdminStatusChangedLocal = OnEVehicleAdminStatusChanged;
@@ -1290,16 +1286,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleStatus(DateTime                             Timestamp,
-            EventTracking_Id  EventTrackingId,
-                                                     eVehicle                         eVehicle,
-                                                     Timestamped<eVehicleStatusTypes>  OldStatus,
-                                                     Timestamped<eVehicleStatusTypes>  NewStatus)
+        internal async Task UpdateEVehicleStatus(DateTime Timestamp,
+            EventTracking_Id EventTrackingId,
+                                                     eVehicle eVehicle,
+                                                     Timestamped<eVehicleStatusTypes> OldStatus,
+                                                     Timestamped<eVehicleStatusTypes> NewStatus)
         {
 
             var OnEVehicleStatusChangedLocal = OnEVehicleStatusChanged;
             if (OnEVehicleStatusChangedLocal != null)
-                await OnEVehicleStatusChangedLocal(Timestamp, EventTrackingId,eVehicle, OldStatus, NewStatus);
+                await OnEVehicleStatusChangedLocal(Timestamp, EventTrackingId, eVehicle, OldStatus, NewStatus);
 
         }
 
@@ -1314,16 +1310,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldGeoCoordinate">The old aggreagted charging station status.</param>
         /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleGeoLocation(DateTime                    Timestamp,
-            EventTracking_Id  EventTrackingId,
-                                                      eVehicle                    eVehicle,
-                                                      Timestamped<GeoCoordinate>  OldGeoCoordinate,
-                                                      Timestamped<GeoCoordinate>  NewGeoCoordinate)
+        internal async Task UpdateEVehicleGeoLocation(DateTime Timestamp,
+            EventTracking_Id EventTrackingId,
+                                                      eVehicle eVehicle,
+                                                      Timestamped<GeoCoordinate> OldGeoCoordinate,
+                                                      Timestamped<GeoCoordinate> NewGeoCoordinate)
         {
 
             var OnEVehicleGeoLocationChangedLocal = OnEVehicleGeoLocationChanged;
             if (OnEVehicleGeoLocationChangedLocal != null)
-                await OnEVehicleGeoLocationChangedLocal(Timestamp, EventTrackingId,eVehicle, OldGeoCoordinate, NewGeoCoordinate);
+                await OnEVehicleGeoLocationChangedLocal(Timestamp, EventTrackingId, eVehicle, OldGeoCoordinate, NewGeoCoordinate);
 
         }
 
@@ -1699,13 +1695,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
-                                                 TransmissionTypes                   TransmissionType,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate> AdminStatusUpdates,
+                                                 TransmissionTypes TransmissionType,
 
-                                                 DateTime?                           Timestamp,
-                                                 CancellationToken?                  CancellationToken,
-                                                 EventTracking_Id                    EventTrackingId,
-                                                 TimeSpan?                           RequestTimeout)
+                                                 DateTime? Timestamp,
+                                                 CancellationToken? CancellationToken,
+                                                 EventTracking_Id EventTrackingId,
+                                                 TimeSpan? RequestTimeout)
 
         {
 
@@ -1785,13 +1781,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                              TransmissionType,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate> AdminStatusUpdates,
+                                               TransmissionTypes TransmissionType,
 
-                                               DateTime?                                      Timestamp,
-                                               CancellationToken?                             CancellationToken,
-                                               EventTracking_Id                               EventTrackingId,
-                                               TimeSpan?                                      RequestTimeout)
+                                               DateTime? Timestamp,
+                                               CancellationToken? CancellationToken,
+                                               EventTracking_Id EventTrackingId,
+                                               TimeSpan? RequestTimeout)
 
         {
 
@@ -1871,13 +1867,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingPoolAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                           TransmissionType,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate> AdminStatusUpdates,
+                                               TransmissionTypes TransmissionType,
 
-                                               DateTime?                                   Timestamp,
-                                               CancellationToken?                          CancellationToken,
-                                               EventTracking_Id                            EventTrackingId,
-                                               TimeSpan?                                   RequestTimeout)
+                                               DateTime? Timestamp,
+                                               CancellationToken? CancellationToken,
+                                               EventTracking_Id EventTrackingId,
+                                               TimeSpan? RequestTimeout)
 
         {
 
@@ -1957,13 +1953,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationOperatorAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                                      TransmissionType,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate> AdminStatusUpdates,
+                                               TransmissionTypes TransmissionType,
 
-                                               DateTime?                                              Timestamp,
-                                               CancellationToken?                                     CancellationToken,
-                                               EventTracking_Id                                       EventTrackingId,
-                                               TimeSpan?                                              RequestTimeout)
+                                               DateTime? Timestamp,
+                                               CancellationToken? CancellationToken,
+                                               EventTracking_Id EventTrackingId,
+                                               TimeSpan? RequestTimeout)
 
         {
 
@@ -2043,13 +2039,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushRoamingNetworkAdminStatusResult>
 
-            ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
-                                               TransmissionTypes                             TransmissionType,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate> AdminStatusUpdates,
+                                               TransmissionTypes TransmissionType,
 
-                                               DateTime?                                     Timestamp,
-                                               CancellationToken?                            CancellationToken,
-                                               EventTracking_Id                              EventTrackingId,
-                                               TimeSpan?                                     RequestTimeout)
+                                               DateTime? Timestamp,
+                                               CancellationToken? CancellationToken,
+                                               EventTracking_Id EventTrackingId,
+                                               TimeSpan? RequestTimeout)
 
         {
 
@@ -2132,13 +2128,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushEVSEStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
-                                            TransmissionTypes              TransmissionType,
+            ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate> StatusUpdates,
+                                            TransmissionTypes TransmissionType,
 
-                                            DateTime?                      Timestamp,
-                                            CancellationToken?             CancellationToken,
-                                            EventTracking_Id               EventTrackingId,
-                                            TimeSpan?                      RequestTimeout)
+                                            DateTime? Timestamp,
+                                            CancellationToken? CancellationToken,
+                                            EventTracking_Id EventTrackingId,
+                                            TimeSpan? RequestTimeout)
 
         {
 
@@ -2216,13 +2212,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                         TransmissionType,
+            ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate> StatusUpdates,
+                                     TransmissionTypes TransmissionType,
 
-                                     DateTime?                                 Timestamp,
-                                     CancellationToken?                        CancellationToken,
-                                     EventTracking_Id                          EventTrackingId,
-                                     TimeSpan?                                 RequestTimeout)
+                                     DateTime? Timestamp,
+                                     CancellationToken? CancellationToken,
+                                     EventTracking_Id EventTrackingId,
+                                     TimeSpan? RequestTimeout)
 
         {
 
@@ -2300,13 +2296,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingPoolStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                      TransmissionType,
+            ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate> StatusUpdates,
+                                     TransmissionTypes TransmissionType,
 
-                                     DateTime?                              Timestamp,
-                                     CancellationToken?                     CancellationToken,
-                                     EventTracking_Id                       EventTrackingId,
-                                     TimeSpan?                              RequestTimeout)
+                                     DateTime? Timestamp,
+                                     CancellationToken? CancellationToken,
+                                     EventTracking_Id EventTrackingId,
+                                     TimeSpan? RequestTimeout)
 
         {
 
@@ -2384,13 +2380,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushChargingStationOperatorStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                                 TransmissionType,
+            ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate> StatusUpdates,
+                                     TransmissionTypes TransmissionType,
 
-                                     DateTime?                                         Timestamp,
-                                     CancellationToken?                                CancellationToken,
-                                     EventTracking_Id                                  EventTrackingId,
-                                     TimeSpan?                                         RequestTimeout)
+                                     DateTime? Timestamp,
+                                     CancellationToken? CancellationToken,
+                                     EventTracking_Id EventTrackingId,
+                                     TimeSpan? RequestTimeout)
 
         {
 
@@ -2468,13 +2464,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<PushRoamingNetworkStatusResult>
 
-            ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                        TransmissionType,
+            ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate> StatusUpdates,
+                                     TransmissionTypes TransmissionType,
 
-                                     DateTime?                                Timestamp,
-                                     CancellationToken?                       CancellationToken,
-                                     EventTracking_Id                         EventTrackingId,
-                                     TimeSpan?                                RequestTimeout)
+                                     DateTime? Timestamp,
+                                     CancellationToken? CancellationToken,
+                                     EventTracking_Id EventTrackingId,
+                                     TimeSpan? RequestTimeout)
 
         {
 
@@ -2550,7 +2546,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
-        public Boolean  DisableAuthentication            { get; set; }
+        public Boolean DisableAuthentication { get; set; }
 
         #endregion
 
@@ -2572,24 +2568,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartResult>
 
-            AuthorizeStart(LocalAuthentication          LocalAuthentication,
-                           ChargingLocation             ChargingLocation      = null,
-                           ChargingProduct              ChargingProduct       = null,
-                           ChargingSession_Id?          SessionId             = null,
-                           ChargingSession_Id?          CPOPartnerSessionId   = null,
-                           ChargingStationOperator_Id?  OperatorId            = null,
+            AuthorizeStart(LocalAuthentication LocalAuthentication,
+                           ChargingLocation ChargingLocation = null,
+                           ChargingProduct ChargingProduct = null,
+                           ChargingSession_Id? SessionId = null,
+                           ChargingSession_Id? CPOPartnerSessionId = null,
+                           ChargingStationOperator_Id? OperatorId = null,
 
-                           DateTime?                    Timestamp             = null,
-                           CancellationToken?           CancellationToken     = null,
-                           EventTracking_Id             EventTrackingId       = null,
-                           TimeSpan?                    RequestTimeout        = null)
+                           DateTime? Timestamp = null,
+                           CancellationToken? CancellationToken = null,
+                           EventTracking_Id EventTrackingId = null,
+                           TimeSpan? RequestTimeout = null)
 
         {
 
             #region Initial checks
 
             if (LocalAuthentication == null)
-                throw new ArgumentNullException(nameof(LocalAuthentication),  "The given authentication token must not be null!");
+                throw new ArgumentNullException(nameof(LocalAuthentication), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -2661,8 +2657,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                       SessionId,
                                                       Runtime: TimeSpan.Zero);
 
-            var Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            var Runtime  = Endtime - StartTime;
+            var Endtime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var Runtime = Endtime - StartTime;
 
 
             #region Send OnAuthorizeStartResponse event
@@ -2725,21 +2721,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopResult>
 
-            AuthorizeStop(ChargingSession_Id           SessionId,
-                          LocalAuthentication          LocalAuthentication,
-                          ChargingLocation             ChargingLocation      = null,
-                          ChargingSession_Id?          CPOPartnerSessionId   = null,
-                          ChargingStationOperator_Id?  OperatorId            = null,
+            AuthorizeStop(ChargingSession_Id SessionId,
+                          LocalAuthentication LocalAuthentication,
+                          ChargingLocation ChargingLocation = null,
+                          ChargingSession_Id? CPOPartnerSessionId = null,
+                          ChargingStationOperator_Id? OperatorId = null,
 
-                          DateTime?                    Timestamp             = null,
-                          CancellationToken?           CancellationToken     = null,
-                          EventTracking_Id             EventTrackingId       = null,
-                          TimeSpan?                    RequestTimeout        = null)
+                          DateTime? Timestamp = null,
+                          CancellationToken? CancellationToken = null,
+                          EventTracking_Id EventTrackingId = null,
+                          TimeSpan? RequestTimeout = null)
         {
 
             #region Initial checks
 
-            if (LocalAuthentication  == null)
+            if (LocalAuthentication == null)
                 throw new ArgumentNullException(nameof(LocalAuthentication), "The given authentication token must not be null!");
 
 
@@ -2809,8 +2805,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                      SessionId,
                                                      Runtime: TimeSpan.Zero);
 
-            var Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            var Runtime  = Endtime - StartTime;
+            var Endtime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            var Runtime = Endtime - StartTime;
 
 
             #region Send OnAuthorizeStopResponse event
@@ -2865,13 +2861,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<SendCDRsResult>
 
-            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                    TransmissionTypes                TransmissionType,
+            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
+                                    TransmissionTypes TransmissionType,
 
-                                    DateTime?                        Timestamp           = null,
-                                    CancellationToken?               CancellationToken   = null,
-                                    EventTracking_Id                 EventTrackingId     = null,
-                                    TimeSpan?                        RequestTimeout      = null)
+                                    DateTime? Timestamp = null,
+                                    CancellationToken? CancellationToken = null,
+                                    EventTracking_Id EventTrackingId = null,
+                                    TimeSpan? RequestTimeout = null)
         {
 
             if (!DisableSendChargeDetailRecords && RemoteEMobilityProvider != null)
@@ -2928,33 +2924,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a charging location is being reserved.
         /// </summary>
-        public event OnReserveRequestDelegate?             OnReserveRequest;
+        public event OnReserveRequestDelegate? OnReserveRequest;
 
         /// <summary>
         /// An event fired whenever a charging location was reserved.
         /// </summary>
-        public event OnReserveResponseDelegate?            OnReserveResponse;
+        public event OnReserveResponseDelegate? OnReserveResponse;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
-        public event OnNewReservationDelegate?             OnNewReservation;
+        public event OnNewReservationDelegate? OnNewReservation;
 
 
         /// <summary>
         /// An event fired whenever a charging reservation is being canceled.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate? OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate? OnCancelReservationResponse;
 
         /// <summary>
         /// An event fired whenever a charging reservation was canceled.
         /// </summary>
-        public event OnReservationCanceledDelegate?        OnReservationCanceled;
+        public event OnReservationCanceledDelegate? OnReservationCanceled;
 
         #endregion
 
@@ -2982,23 +2978,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingLocation                   ChargingLocation,
-                    ChargingReservationLevel           ReservationLevel       = ChargingReservationLevel.EVSE,
-                    DateTime?                          ReservationStartTime   = null,
-                    TimeSpan?                          Duration               = null,
-                    ChargingReservation_Id?            ReservationId          = null,
-                    ChargingReservation_Id?            LinkedReservationId    = null,
-                    EMobilityProvider_Id?              ProviderId             = null,
-                    RemoteAuthentication?              RemoteAuthentication   = null,
-                    ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<AuthenticationToken>?           AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
-                    IEnumerable<UInt32>?               PINs                   = null,
+            Reserve(ChargingLocation ChargingLocation,
+                    ChargingReservationLevel ReservationLevel = ChargingReservationLevel.EVSE,
+                    DateTime? ReservationStartTime = null,
+                    TimeSpan? Duration = null,
+                    ChargingReservation_Id? ReservationId = null,
+                    ChargingReservation_Id? LinkedReservationId = null,
+                    EMobilityProvider_Id? ProviderId = null,
+                    RemoteAuthentication? RemoteAuthentication = null,
+                    ChargingProduct? ChargingProduct = null,
+                    IEnumerable<AuthenticationToken>? AuthTokens = null,
+                    IEnumerable<eMobilityAccount_Id>? eMAIds = null,
+                    IEnumerable<UInt32>? PINs = null,
 
-                    DateTime?                          Timestamp              = null,
-                    CancellationToken?                 CancellationToken      = null,
-                    EventTracking_Id?                  EventTrackingId        = null,
-                    TimeSpan?                          RequestTimeout         = null)
+                    DateTime? Timestamp = null,
+                    CancellationToken? CancellationToken = null,
+                    EventTracking_Id? EventTrackingId = null,
+                    TimeSpan? RequestTimeout = null)
 
         {
 
@@ -3139,14 +3135,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult>
 
-            CancelReservation(ChargingReservation_Id                 ReservationId,
-                              ChargingReservationCancellationReason  Reason,
-                              EMobilityProvider_Id?                  ProviderId         = null,
+            CancelReservation(ChargingReservation_Id ReservationId,
+                              ChargingReservationCancellationReason Reason,
+                              EMobilityProvider_Id? ProviderId = null,
 
-                              DateTime?                              Timestamp          = null,
-                              CancellationToken?                     CancellationToken  = null,
-                              EventTracking_Id                       EventTrackingId    = null,
-                              TimeSpan?                              RequestTimeout     = null)
+                              DateTime? Timestamp = null,
+                              CancellationToken? CancellationToken = null,
+                              EventTracking_Id EventTrackingId = null,
+                              TimeSpan? RequestTimeout = null)
 
         {
 
@@ -3161,8 +3157,8 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId ??= EventTracking_Id.New;
 
 
-            ChargingReservation?     canceledReservation   = null;
-            CancelReservationResult? result                = null;
+            ChargingReservation? canceledReservation = null;
+            CancelReservationResult? result = null;
 
             #endregion
 
@@ -3262,9 +3258,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendNewReservation     (Timestamp, Sender, Reservation)
 
-        internal void SendNewReservation(DateTime             Timestamp,
-                                         Object               Sender,
-                                         ChargingReservation  Reservation)
+        internal void SendNewReservation(DateTime Timestamp,
+                                         Object Sender,
+                                         ChargingReservation Reservation)
         {
 
             OnNewReservation?.Invoke(Timestamp, Sender, Reservation);
@@ -3275,10 +3271,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (internal) SendReservationCanceled(Timestamp, Sender, Reservation, Reason)
 
-        internal void SendReservationCanceled(DateTime                               Timestamp,
-                                              Object                                 Sender,
-                                              ChargingReservation                    Reservation,
-                                              ChargingReservationCancellationReason  Reason)
+        internal void SendReservationCanceled(DateTime Timestamp,
+                                              Object Sender,
+                                              ChargingReservation Reservation,
+                                              ChargingReservationCancellationReason Reason)
         {
 
             OnReservationCanceled?.Invoke(Timestamp, Sender, Reservation, Reason);
@@ -3317,33 +3313,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        public event OnRemoteStartRequestDelegate     OnRemoteStartRequest;
+        public event OnRemoteStartRequestDelegate OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        public event OnRemoteStartResponseDelegate    OnRemoteStartResponse;
+        public event OnRemoteStartResponseDelegate OnRemoteStartResponse;
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
-        public event OnNewChargingSessionDelegate     OnNewChargingSession;
+        public event OnNewChargingSessionDelegate OnNewChargingSession;
 
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopRequestDelegate      OnRemoteStopRequest;
+        public event OnRemoteStopRequestDelegate OnRemoteStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopResponseDelegate     OnRemoteStopResponse;
+        public event OnRemoteStopResponseDelegate OnRemoteStopResponse;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
         /// </summary>
-        public event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
+        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
 
         #endregion
 
@@ -3364,16 +3360,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartResult>
 
-            RemoteStart(ChargingLocation         ChargingLocation,
-                        ChargingProduct          ChargingProduct        = null,
-                        ChargingReservation_Id?  ReservationId          = null,
-                        ChargingSession_Id?      SessionId              = null,
-                        RemoteAuthentication     RemoteAuthentication   = null,
+            RemoteStart(ChargingLocation ChargingLocation,
+                        ChargingProduct ChargingProduct = null,
+                        ChargingReservation_Id? ReservationId = null,
+                        ChargingSession_Id? SessionId = null,
+                        RemoteAuthentication RemoteAuthentication = null,
 
-                        DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
-                        EventTracking_Id         EventTrackingId        = null,
-                        TimeSpan?                RequestTimeout         = null)
+                        DateTime? Timestamp = null,
+                        CancellationToken? CancellationToken = null,
+                        EventTracking_Id EventTrackingId = null,
+                        TimeSpan? RequestTimeout = null)
 
         {
 
@@ -3501,14 +3497,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id    SessionId,
-                       ReservationHandling?  ReservationHandling    = null,
-                       RemoteAuthentication  RemoteAuthentication   = null,
+            RemoteStop(ChargingSession_Id SessionId,
+                       ReservationHandling? ReservationHandling = null,
+                       RemoteAuthentication RemoteAuthentication = null,
 
-                       DateTime?             Timestamp              = null,
-                       CancellationToken?    CancellationToken      = null,
-                       EventTracking_Id      EventTrackingId        = null,
-                       TimeSpan?             RequestTimeout         = null)
+                       DateTime? Timestamp = null,
+                       CancellationToken? CancellationToken = null,
+                       EventTracking_Id EventTrackingId = null,
+                       TimeSpan? RequestTimeout = null)
 
         {
 
@@ -3627,7 +3623,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
+        public override Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -3648,7 +3644,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="eMobilityProvider">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(EMobilityProvider eMobilityProvider)
+        public Int32 CompareTo(IEMobilityProvider? eMobilityProvider)
         {
 
             if (eMobilityProvider is null)
@@ -3671,7 +3667,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -3693,7 +3689,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityProvider">An eMobilityProvider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EMobilityProvider eMobilityProvider)
+        public Boolean Equals(IEMobilityProvider? eMobilityProvider)
         {
 
             if (eMobilityProvider is null)

@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -44,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The charging session for the remote start operation.
         /// </summary>
-        public ChargingSession         Session           { get; }
+        public ChargingSession?        Session           { get; }
 
         /// <summary>
         /// A optional description of the remote start result.
@@ -55,12 +53,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// An optional additional information on this error,
         /// e.g. the HTTP error response.
         /// </summary>
-        public String                  AdditionalInfo    { get; }
+        public String?                 AdditionalInfo    { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?               Runtime           { get; }
+        public TimeSpan                Runtime           { get; }
 
         #endregion
 
@@ -75,17 +73,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Session">The charging session.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private RemoteStartResult(RemoteStartResultTypes  Result,
-                                  I18NString              Description      = null,
-                                  String                  AdditionalInfo   = null,
-                                  ChargingSession         Session          = null,
+                                  I18NString?             Description      = null,
+                                  String?                 AdditionalInfo   = null,
+                                  ChargingSession?        Session          = null,
                                   TimeSpan?               Runtime          = null)
         {
 
             this.Result          = Result;
             this.Session         = Session;
-            this.Description     = Description;
+            this.Description     = Description ?? I18NString.Empty;
             this.AdditionalInfo  = AdditionalInfo;
-            this.Runtime         = Runtime;
+            this.Runtime         = Runtime     ?? TimeSpan.Zero;
 
         }
 
@@ -381,6 +379,43 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) NoOperation                      (         Description = null, AdditionalInfo = null, Runtime = null)
+
+        /// <summary>
+        /// The remote start request led to an error.
+        /// </summary>
+        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult NoOperation(I18NString?  Description      = null,
+                                                    String?      AdditionalInfo   = null,
+                                                    TimeSpan?    Runtime          = null)
+
+            => new (RemoteStartResultTypes.Error,
+                    Description ?? I18NString.Create(Languages.en, "An error occured!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
+
+
+        /// <summary>
+        /// The remote start request led to an error.
+        /// </summary>
+        /// <param name="Description">A optional description of the remote start result.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static RemoteStartResult NoOperation(String     Description,
+                                                    String?    AdditionalInfo   = null,
+                                                    TimeSpan?  Runtime          = null)
+
+            => new (RemoteStartResultTypes.Error,
+                    Description?.Trim().IsNotNullOrEmpty() == false
+                        ? I18NString.Create(Languages.en, Description)
+                        : I18NString.Create(Languages.en, "An error occured!"),
+                    AdditionalInfo,
+                    Runtime: Runtime);
+
+        #endregion
+
 
         #region ToJSON(ResponseMapper = null)
 
@@ -388,14 +423,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="ResponseMapper">An optional response mapper delegate.</param>
-        public JObject ToJSON(Func<JObject, JObject> ResponseMapper = null)
+        public JObject ToJSON(Func<JObject, JObject>? ResponseMapper = null)
         {
 
             var JSON = JSONObject.Create(
 
                 new JProperty("result",                 Result.     ToString()),
 
-                Session != null
+                Session is not null
                     ? new JProperty("session",          Session.    ToString())
                     : null,
 
@@ -407,13 +442,11 @@ namespace cloud.charging.open.protocols.WWCP
                     ? new JProperty("additionalInfo",   AdditionalInfo)
                     : null,
 
-                Runtime.HasValue
-                    ? new JProperty("runtime",          Math.Round(Runtime.Value.TotalMilliseconds, 0))
-                    : null
+                      new JProperty("runtime",          Math.Round(Runtime.TotalMilliseconds, 0))
 
             );
 
-            return ResponseMapper != null
+            return ResponseMapper is not null
                        ? ResponseMapper(JSON)
                        : JSON;
 
@@ -527,7 +560,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The remote start request led to an error.
         /// </summary>
-        Error
+        Error,
+
+        NoOperation
 
     }
 

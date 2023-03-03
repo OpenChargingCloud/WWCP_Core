@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A remote Charging Station Operator.
     /// </summary>
-    public interface IRemoteParkingOperator : IReserveRemoteStartStop
+    public interface IRemoteParkingOperator : IRemoteStartStop
     {
 
         #region Events towards the remote charging station operator

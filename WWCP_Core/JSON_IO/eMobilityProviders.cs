@@ -44,11 +44,11 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
         /// </summary>
         /// <param name="eMobilityProvider">An e-mobility provider.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
-        public static JObject? ToJSON(this EMobilityProvider  eMobilityProvider,
-                                      Boolean                 Embedded                 = false,
-                                      InfoStatus              ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
-                                      InfoStatus              ExpandBrandIds           = InfoStatus.ShowIdOnly,
-                                      InfoStatus              ExpandDataLicenses       = InfoStatus.ShowIdOnly)
+        public static JObject? ToJSON(this IEMobilityProvider  eMobilityProvider,
+                                      Boolean                  Embedded                 = false,
+                                      InfoStatus               ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
+                                      InfoStatus               ExpandBrandIds           = InfoStatus.ShowIdOnly,
+                                      InfoStatus               ExpandDataLicenses       = InfoStatus.ShowIdOnly)
 
 
             => eMobilityProvider == null
@@ -135,16 +135,16 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
         /// <param name="eMobilityProviders">An enumeration of e-mobility providers.</param>
         /// <param name="Skip">The optional number of e-mobility providers to skip.</param>
         /// <param name="Take">The optional number of e-mobility providers to return.</param>
-        public static JArray ToJSON(this IEnumerable<EMobilityProvider>  eMobilityProviders,
-                                    UInt64?                              Skip                     = null,
-                                    UInt64?                              Take                     = null,
-                                    Boolean                              Embedded                 = false,
-                                    InfoStatus                           ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                           ExpandBrandIds           = InfoStatus.ShowIdOnly,
-                                    InfoStatus                           ExpandDataLicenses       = InfoStatus.ShowIdOnly)
+        public static JArray ToJSON(this IEnumerable<IEMobilityProvider>  eMobilityProviders,
+                                    UInt64?                               Skip                     = null,
+                                    UInt64?                               Take                     = null,
+                                    Boolean                               Embedded                 = false,
+                                    InfoStatus                            ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                            ExpandBrandIds           = InfoStatus.ShowIdOnly,
+                                    InfoStatus                            ExpandDataLicenses       = InfoStatus.ShowIdOnly)
 
 
-            => eMobilityProviders == null
+            => eMobilityProviders is null
 
                    ? new JArray()
 

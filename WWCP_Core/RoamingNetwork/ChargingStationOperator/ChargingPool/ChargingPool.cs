@@ -2829,7 +2829,7 @@ namespace cloud.charging.open.protocols.WWCP
         public IEnumerable<ChargingSession> ChargingSessions
             => RoamingNetwork.SessionsStore.Where(session => session.ChargingPoolId == Id);
 
-        TimeSpan IReserveRemoteStartStop.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
 
         #region TryGetChargingSessionById(SessionId, out ChargingSession)
 

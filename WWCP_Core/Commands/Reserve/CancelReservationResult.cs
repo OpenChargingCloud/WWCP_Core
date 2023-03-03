@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -40,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The reservation.
         /// </summary>
-        public ChargingReservation                    Reservation       { get; }
+        public ChargingReservation?                   Reservation       { get; }
 
         /// <summary>
         /// A reason for the charging reservation cancellation.
@@ -50,24 +44,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The result of a cancel reservation operation.
         /// </summary>
-        public CancelReservationResultTypes               Result            { get; }
+        public CancelReservationResultTypes           Result            { get; }
 
 
         /// <summary>
         /// An optional (error) message.
         /// </summary>
-        public String                                 Message           { get; }
+        public String?                                Message           { get; }
 
         /// <summary>
         /// An optional additional information on this error,
         /// e.g. the HTTP error response.
         /// </summary>
-        public Object                                 AdditionalInfo    { get; }
+        public Object?                                AdditionalInfo    { get; }
 
         /// <summary>
         /// The runtime of this request.
         /// </summary>
-        public TimeSpan?                              Runtime           { get; }
+        public TimeSpan                               Runtime           { get; }
 
         #endregion
 
@@ -83,12 +77,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Message">An optional message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         /// <param name="Runtime">The optional runtime of this request.</param>
-        private CancelReservationResult(CancelReservationResultTypes               Result,
+        private CancelReservationResult(CancelReservationResultTypes           Result,
                                         ChargingReservation_Id                 ReservationId,
                                         ChargingReservationCancellationReason  Reason,
-                                        ChargingReservation                    Reservation      = null,
-                                        String                                 Message          = null,
-                                        Object                                 AdditionalInfo   = null,
+                                        ChargingReservation?                   Reservation      = null,
+                                        String?                                Message          = null,
+                                        Object?                                AdditionalInfo   = null,
                                         TimeSpan?                              Runtime          = null)
         {
 
@@ -98,7 +92,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.Reservation     = Reservation;
             this.Message         = Message;
             this.AdditionalInfo  = AdditionalInfo;
-            this.Runtime         = Runtime;
+            this.Runtime         = Runtime ?? TimeSpan.Zero;
 
         }
 
@@ -325,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Error                 (ReservationId, Reason, Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
-        /// The remote stop request led to an error.
+        /// The cancel reservation request led to an error.
         /// </summary>
         /// <param name="ReservationId">A reservation identification.</param>
         /// <param name="Reason">A reason for the charging reservation cancellation.</param>
@@ -334,18 +328,36 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The optional runtime of the reequest.</param>
         public static CancelReservationResult Error(ChargingReservation_Id                 ReservationId,
                                                     ChargingReservationCancellationReason  Reason,
-                                                    String                                 Message         = null,
-                                                    String                                 AdditionalInfo  = null,
+                                                    String?                                Message         = null,
+                                                    String?                                AdditionalInfo  = null,
                                                     TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultTypes.Error,
-                                           ReservationId,
-                                           Reason,
-                                           Message:         Message,
-                                           AdditionalInfo:  AdditionalInfo,
-                                           Runtime:         Runtime);
+            => new (CancelReservationResultTypes.Error,
+                    ReservationId,
+                    Reason,
+                    null,
+                    Message,
+                    AdditionalInfo,
+                    Runtime);
 
         #endregion
+
+        #region (static) NoOperation(ReservationId, Message = null)
+
+        /// <summary>
+        /// The cancel reservation request led to an error.
+        /// </summary>
+        /// <param name="Message">An optional message.</param>
+        public static CancelReservationResult NoOperation(ChargingReservation_Id  ReservationId,
+                                                          String?                 Message   = null)
+
+            => new (CancelReservationResultTypes.NoOperation,
+                    ReservationId,
+                    ChargingReservationCancellationReason.Aborted,
+                    Message: Message);
+
+        #endregion
+
 
     }
 
@@ -414,9 +426,11 @@ namespace cloud.charging.open.protocols.WWCP
         CommunicationError,
 
         /// <summary>
-        /// The remote stop request led to an error.
+        /// The cancel reservation request led to an error.
         /// </summary>
         Error,
+
+        NoOperation
 
     }
 

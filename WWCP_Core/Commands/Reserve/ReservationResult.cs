@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
@@ -40,18 +34,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The reservation for the reserve operation.
         /// </summary>
-        public ChargingReservation    Reservation       { get; }
+        public ChargingReservation?   Reservation       { get; }
 
         /// <summary>
         /// An optional (error) message.
         /// </summary>
-        public String                 Message           { get; }
+        public String?                Message           { get; }
 
         /// <summary>
         /// An optional additional information on this error,
         /// e.g. the HTTP error response.
         /// </summary>
-        public Object                 AdditionalInfo    { get; }
+        public Object?                AdditionalInfo    { get; }
+
+        /// <summary>
+        /// The runtime of this request.
+        /// </summary>
+        public TimeSpan               Runtime           { get; }
 
         #endregion
 
@@ -63,18 +62,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new successful reserve result.
         /// </summary>
         /// <param name="Reservation">The charging reservation.</param>
-        private ReservationResult(ChargingReservation Reservation)
+        /// <param name="Runtime">The optional runtime of this request.</param>
+        private ReservationResult(ChargingReservation Reservation,
+                                  TimeSpan?           Runtime = null)
         {
 
-            #region Initial checks
-
-            if (Reservation == null)
-                throw new ArgumentNullException(nameof(Reservation), "The given charging reservation must not be null!");
-
-            #endregion
-
-            this.Result       = ReservationResultType.Success;
             this.Reservation  = Reservation;
+            this.Result       = Reservation is not null
+                                    ? ReservationResultType.Success
+                                    : ReservationResultType.Error;
+            this.Runtime      = Runtime ?? TimeSpan.Zero;
 
         }
 
@@ -88,15 +85,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Result">The result of the reserve operation.</param>
         /// <param name="Message">An optional message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The optional runtime of this request.</param>
         private ReservationResult(ReservationResultType  Result,
-                                  String                 Message         = null,
-                                  Object                 AdditionalInfo  = null)
+                                  String?                Message          = null,
+                                  Object?                AdditionalInfo   = null,
+                                  TimeSpan?              Runtime          = null)
         {
 
             this.Result          = Result;
             this.Reservation     = null;
             this.Message         = Message;
             this.AdditionalInfo  = AdditionalInfo;
+            this.Runtime         = Runtime ?? TimeSpan.Zero;
 
         }
 
@@ -302,6 +302,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) NoOperation(Message = null)
+
+        /// <summary>
+        /// The reservation request led to an error.
+        /// </summary>
+        /// <param name="Message">An optional message.</param>
+        public static ReservationResult NoOperation(String? Message = null)
+
+            => new (ReservationResultType.NoOperation,
+                    Message);
+
+        #endregion
+
     }
 
 
@@ -399,7 +412,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The reservation request led to an error.
         /// </summary>
-        Error
+        Error,
+
+        NoOperation
 
     }
 

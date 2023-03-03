@@ -96,7 +96,10 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IChargingStation : IEntity<ChargingStation_Id>,
                                         IAdminStatus<ChargingStationAdminStatusTypes>,
                                         IStatus<ChargingStationStatusTypes>,
-                                        ILocalReserveRemoteStartStop,
+                                        ILocalRemoteStartStop,
+                                        ILocalChargingReservations,
+                                        IChargingSessions,
+                                        IChargeDetailRecords,
                                         IEquatable<IChargingStation>, IComparable<IChargingStation>, IComparable,
                                         IEnumerable<IEVSE>
     {

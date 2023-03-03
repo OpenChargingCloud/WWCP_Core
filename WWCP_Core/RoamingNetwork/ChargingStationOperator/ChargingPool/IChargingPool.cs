@@ -99,7 +99,10 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IChargingPool : IEntity<ChargingPool_Id>,
                                      IAdminStatus<ChargingPoolAdminStatusTypes>,
                                      IStatus<ChargingPoolStatusTypes>,
-                                     ILocalReserveRemoteStartStop,
+                                     ILocalChargingReservations,
+                                     ILocalRemoteStartStop,
+                                     IChargingSessions,
+                                     IChargeDetailRecords,
                                      IEquatable<IChargingPool>, IComparable<IChargingPool>, IComparable,
                                      IEnumerable<IChargingStation>
 
