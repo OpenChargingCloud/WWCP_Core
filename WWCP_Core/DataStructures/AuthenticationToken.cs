@@ -45,8 +45,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The regular expression for parsing an authentication token.
         /// </summary>
-        public static readonly Regex AuthenticationToken_RegEx = new ("^([A-F0-9]{8})$ | ^([A-F0-9]{14})$ | ^([A-F0-9]{20})$",
-                                                                  RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex AuthenticationToken_RegEx = new ("^([a-fA-F0-9]{8})$ | ^([a-fA-F0-9]{14})$ | ^([a-fA-F0-9]{20})$",
+                                                                      RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 

@@ -37,103 +37,103 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The identification of the authorizing entity.
         /// </summary>
-        public IId                          AuthorizatorId                { get; }
+        public IId                               AuthorizatorId                { get; }
 
         /// <summary>
         /// The entity asking for an authorization.
         /// </summary>
-        public ISendAuthorizeStartStop?     ISendAuthorizeStartStop       { get; }
+        public ISendAuthorizeStartStop?          ISendAuthorizeStartStop       { get; }
 
         /// <summary>
         /// The entity giving an authorization.
         /// </summary>
-        public IReceiveAuthorizeStartStop?  IReceiveAuthorizeStartStop    { get; }
+        public IReceiveAuthorizeStartStop?       IReceiveAuthorizeStartStop    { get; }
 
         /// <summary>
         /// The result of the authorize start request.
         /// </summary>
-        public AuthStartResultTypes         Result                        { get; }
+        public AuthStartResultTypes              Result                        { get; }
 
         /// <summary>
         /// The optional charging session identification, when the authorize start operation was successful.
         /// </summary>
-        public ChargingSession_Id?          SessionId                     { get; }
+        public ChargingSession_Id?               SessionId                     { get; }
 
         /// <summary>
         /// The optional EMP partner charging session identification, when the authorize start operation was successful.
         /// </summary>
-        public ChargingSession_Id?          EMPPartnerSessionId           { get; }
+        public ChargingSession_Id?               EMPPartnerSessionId           { get; }
 
         /// <summary>
         /// An optional contract identification.
         /// </summary>
-        public String?                      ContractId                    { get; }
+        public String?                           ContractId                    { get; }
 
         /// <summary>
         /// An optional printed number.
         /// </summary>
-        public String?                      PrintedNumber                 { get; }
+        public String?                           PrintedNumber                 { get; }
 
         /// <summary>
         /// The timestamp when this authorization expires.
         /// </summary>
-        public DateTime?                    ExpiryDate                    { get; }
+        public DateTime?                         ExpiryDate                    { get; }
 
         /// <summary>
         /// The optional maximum allowed charging current.
         /// </summary>
-        public Single?                      MaxkW                         { get;}
+        public Single?                           MaxkW                         { get;}
 
         /// <summary>
         /// The optional maximum allowed charging energy.
         /// </summary>
-        public Single?                      MaxkWh                        { get;}
+        public Single?                           MaxkWh                        { get;}
 
         /// <summary>
         /// The optional maximum allowed charging duration.
         /// </summary>
-        public TimeSpan?                    MaxDuration                   { get; }
+        public TimeSpan?                         MaxDuration                   { get; }
 
         /// <summary>
         /// Optional charging tariff information.
         /// </summary>
-        public IEnumerable<ChargingTariff>  ChargingTariffs               { get; }
+        public IEnumerable<ChargingTariff>       ChargingTariffs               { get; }
 
         /// <summary>
         /// An optional list of authorize stop tokens.
         /// </summary>
-        public IEnumerable<AuthenticationToken>      ListOfAuthStopTokens          { get; }
+        public IEnumerable<AuthenticationToken>  ListOfAuthStopTokens          { get; }
 
         /// <summary>
         /// An optional list of authorize stop PINs.
         /// </summary>
-        public IEnumerable<UInt32>          ListOfAuthStopPINs            { get; }
+        public IEnumerable<UInt32>               ListOfAuthStopPINs            { get; }
 
 
         /// <summary>
         /// The unique identification of the e-mobility provider.
         /// </summary>
-        public EMobilityProvider_Id?        ProviderId                    { get; }
+        public EMobilityProvider_Id?             ProviderId                    { get; }
 
         /// <summary>
         /// A optional description of the authorize start result, e.g. in case of an error.
         /// </summary>
-        public I18NString                   Description                   { get; }
+        public I18NString                        Description                   { get; }
 
         /// <summary>
         /// An optional additional message, e.g. in case of an error.
         /// </summary>
-        public I18NString                   AdditionalInfo                { get; }
+        public I18NString                        AdditionalInfo                { get; }
 
         /// <summary>
         /// Number of transmission retries.
         /// </summary>
-        public Byte                         NumberOfRetries               { get; }
+        public Byte                              NumberOfRetries               { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?                    Runtime                       { get; }
+        public TimeSpan?                         Runtime                       { get; }
 
         #endregion
 
@@ -768,25 +768,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
-            Authorized(IId                           AuthorizatorId,
-                       ISendAuthorizeStartStop       ISendAuthorizeStartStop,
-                       ChargingSession_Id?           SessionId              = null,
-                       ChargingSession_Id?           EMPPartnerSessionId    = null,
-                       String?                       ContractId             = null,
-                       String?                       PrintedNumber          = null,
-                       DateTime?                     ExpiryDate             = null,
-                       Single?                       MaxkW                  = null,
-                       Single?                       MaxkWh                 = null,
-                       TimeSpan?                     MaxDuration            = null,
-                       IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
-                       IEnumerable<AuthenticationToken>?      ListOfAuthStopTokens   = null,
-                       IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
+            Authorized(IId                                AuthorizatorId,
+                       ISendAuthorizeStartStop            ISendAuthorizeStartStop,
+                       ChargingSession_Id?                SessionId              = null,
+                       ChargingSession_Id?                EMPPartnerSessionId    = null,
+                       String?                            ContractId             = null,
+                       String?                            PrintedNumber          = null,
+                       DateTime?                          ExpiryDate             = null,
+                       Single?                            MaxkW                  = null,
+                       Single?                            MaxkWh                 = null,
+                       TimeSpan?                          MaxDuration            = null,
+                       IEnumerable<ChargingTariff>?       ChargingTariffs        = null,
+                       IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens   = null,
+                       IEnumerable<UInt32>?               ListOfAuthStopPINs     = null,
 
-                       EMobilityProvider_Id?         ProviderId             = null,
-                       I18NString?                   Description            = null,
-                       I18NString?                   AdditionalInfo         = null,
-                       Byte                          NumberOfRetries        = 0,
-                       TimeSpan?                     Runtime                = null)
+                       EMobilityProvider_Id?              ProviderId             = null,
+                       I18NString?                        Description            = null,
+                       I18NString?                        AdditionalInfo         = null,
+                       Byte                               NumberOfRetries        = 0,
+                       TimeSpan?                          Runtime                = null)
 
 
                 => new (AuthorizatorId,
@@ -837,25 +837,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
-            Authorized(IId                           AuthorizatorId,
-                       IReceiveAuthorizeStartStop    IReceiveAuthorizeStartStop,
-                       ChargingSession_Id?           SessionId              = null,
-                       ChargingSession_Id?           EMPPartnerSessionId    = null,
-                       String?                       ContractId             = null,
-                       String?                       PrintedNumber          = null,
-                       DateTime?                     ExpiryDate             = null,
-                       Single?                       MaxkW                  = null,
-                       Single?                       MaxkWh                 = null,
-                       TimeSpan?                     MaxDuration            = null,
-                       IEnumerable<ChargingTariff>?  ChargingTariffs        = null,
-                       IEnumerable<AuthenticationToken>?      ListOfAuthStopTokens   = null,
-                       IEnumerable<UInt32>?          ListOfAuthStopPINs     = null,
+            Authorized(IId                                AuthorizatorId,
+                       IReceiveAuthorizeStartStop         IReceiveAuthorizeStartStop,
+                       ChargingSession_Id?                SessionId              = null,
+                       ChargingSession_Id?                EMPPartnerSessionId    = null,
+                       String?                            ContractId             = null,
+                       String?                            PrintedNumber          = null,
+                       DateTime?                          ExpiryDate             = null,
+                       Single?                            MaxkW                  = null,
+                       Single?                            MaxkWh                 = null,
+                       TimeSpan?                          MaxDuration            = null,
+                       IEnumerable<ChargingTariff>?       ChargingTariffs        = null,
+                       IEnumerable<AuthenticationToken>?  ListOfAuthStopTokens   = null,
+                       IEnumerable<UInt32>?               ListOfAuthStopPINs     = null,
 
-                       EMobilityProvider_Id?         ProviderId             = null,
-                       I18NString?                   Description            = null,
-                       I18NString?                   AdditionalInfo         = null,
-                       Byte                          NumberOfRetries        = 0,
-                       TimeSpan?                     Runtime                = null)
+                       EMobilityProvider_Id?              ProviderId             = null,
+                       I18NString?                        Description            = null,
+                       I18NString?                        AdditionalInfo         = null,
+                       Byte                               NumberOfRetries        = 0,
+                       TimeSpan?                          Runtime                = null)
 
 
                 => new (AuthorizatorId,
@@ -892,26 +892,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             NotAuthorized(IId                      AuthorizatorId,
                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                          ChargingSession_Id?      SessionId        = null,
-                          EMobilityProvider_Id?    ProviderId       = null,
-                          I18NString               Description      = null,
-                          I18NString               AdditionalInfo   = null,
-                          TimeSpan?                Runtime          = null)
+                          ChargingSession_Id?      SessionId         = null,
+                          EMobilityProvider_Id?    ProviderId        = null,
+                          I18NString?              Description       = null,
+                          I18NString?              AdditionalInfo    = null,
+                          Byte                     NumberOfRetries   = 0,
+                          TimeSpan?                Runtime           = null)
 
 
-                => new AuthStartResult(AuthorizatorId,
-                                       ISendAuthorizeStartStop,
-                                       AuthStartResultTypes.NotAuthorized,
-                                       SessionId,
-                                       ProviderId:      ProviderId,
-                                       Description:     Description ?? I18NString.Create(Languages.en, "Not authorized!"),
-                                       AdditionalInfo:  AdditionalInfo,
-                                       Runtime:         Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStartResultTypes.NotAuthorized,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "Not authorized!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
 
 
 
@@ -924,26 +927,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             NotAuthorized(IId                         AuthorizatorId,
                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                          ChargingSession_Id?         SessionId        = null,
-                          EMobilityProvider_Id?       ProviderId       = null,
-                          I18NString                  Description      = null,
-                          I18NString                  AdditionalInfo   = null,
-                          TimeSpan?                   Runtime          = null)
+                          ChargingSession_Id?         SessionId         = null,
+                          EMobilityProvider_Id?       ProviderId        = null,
+                          I18NString?                 Description       = null,
+                          I18NString?                 AdditionalInfo    = null,
+                          Byte                        NumberOfRetries   = 0,
+                          TimeSpan?                   Runtime           = null)
 
 
-                => new AuthStartResult(AuthorizatorId,
-                                       IReceiveAuthorizeStartStop,
-                                       AuthStartResultTypes.NotAuthorized,
-                                       SessionId,
-                                       ProviderId:      ProviderId,
-                                       Description:     Description ?? I18NString.Create(Languages.en, "Not authorized!"),
-                                       AdditionalInfo:  AdditionalInfo,
-                                       Runtime:         Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStartResultTypes.NotAuthorized,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "Not authorized!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
 
         #endregion
 
@@ -958,26 +964,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Blocked(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                    ChargingSession_Id?      SessionId        = null,
-                    EMobilityProvider_Id?    ProviderId       = null,
-                    I18NString               Description      = null,
-                    I18NString               AdditionalInfo   = null,
-                    TimeSpan?                Runtime          = null)
+                    ChargingSession_Id?      SessionId         = null,
+                    EMobilityProvider_Id?    ProviderId        = null,
+                    I18NString?              Description       = null,
+                    I18NString?              AdditionalInfo    = null,
+                    Byte                     NumberOfRetries   = 0,
+                    TimeSpan?                Runtime           = null)
 
 
-                => new AuthStartResult(AuthorizatorId,
-                                       ISendAuthorizeStartStop,
-                                       AuthStartResultTypes.Blocked,
-                                       SessionId,
-                                       ProviderId:      ProviderId,
-                                       Description:     Description ?? I18NString.Create(Languages.en, "Blocked!"),
-                                       AdditionalInfo:  AdditionalInfo,
-                                       Runtime:         Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStartResultTypes.Blocked,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "Blocked!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
 
 
 
@@ -990,26 +999,173 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Blocked(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                    ChargingSession_Id?         SessionId        = null,
-                    EMobilityProvider_Id?       ProviderId       = null,
-                    I18NString                  Description      = null,
-                    I18NString                  AdditionalInfo   = null,
-                    TimeSpan?                   Runtime          = null)
+                    ChargingSession_Id?         SessionId         = null,
+                    EMobilityProvider_Id?       ProviderId        = null,
+                    I18NString?                 Description       = null,
+                    I18NString?                 AdditionalInfo    = null,
+                    Byte                        NumberOfRetries   = 0,
+                    TimeSpan?                   Runtime           = null)
 
 
-                => new AuthStartResult(AuthorizatorId,
-                                       IReceiveAuthorizeStartStop,
-                                       AuthStartResultTypes.Blocked,
-                                       SessionId,
-                                       ProviderId:      ProviderId,
-                                       Description:     Description ?? I18NString.Create(Languages.en, "Blocked!"),
-                                       AdditionalInfo:  AdditionalInfo,
-                                       Runtime:         Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStartResultTypes.Blocked,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "Blocked!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
+
+        #endregion
+
+        #region (static) Expired             (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer contract is expired).
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            Expired(IId                      AuthorizatorId,
+                    ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                    ChargingSession_Id?      SessionId         = null,
+                    EMobilityProvider_Id?    ProviderId        = null,
+                    I18NString?              Description       = null,
+                    I18NString?              AdditionalInfo    = null,
+                    Byte                     NumberOfRetries   = 0,
+                    TimeSpan?                Runtime           = null)
+
+
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStartResultTypes.Expired,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "Expired!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
+
+
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer contract is expired).
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            Expired(IId                         AuthorizatorId,
+                    IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                    ChargingSession_Id?         SessionId         = null,
+                    EMobilityProvider_Id?       ProviderId        = null,
+                    I18NString?                 Description       = null,
+                    I18NString?                 AdditionalInfo    = null,
+                    Byte                        NumberOfRetries   = 0,
+                    TimeSpan?                   Runtime           = null)
+
+
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStartResultTypes.Expired,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "Expired!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
+
+        #endregion
+
+        #region (static) NoCredit            (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer has no credit).
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            NoCredit(IId                      AuthorizatorId,
+                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                     ChargingSession_Id?      SessionId         = null,
+                     EMobilityProvider_Id?    ProviderId        = null,
+                     I18NString?              Description       = null,
+                     I18NString?              AdditionalInfo    = null,
+                     Byte                     NumberOfRetries   = 0,
+                     TimeSpan?                Runtime           = null)
+
+
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStartResultTypes.NoCredit,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "No credit!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
+
+
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer has no credit).
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult
+
+            NoCredit(IId                         AuthorizatorId,
+                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                     ChargingSession_Id?         SessionId         = null,
+                     EMobilityProvider_Id?       ProviderId        = null,
+                     I18NString?                 Description       = null,
+                     I18NString?                 AdditionalInfo    = null,
+                     Byte                        NumberOfRetries   = 0,
+                     TimeSpan?                   Runtime           = null)
+
+
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStartResultTypes.NoCredit,
+                        SessionId,
+                        ProviderId:       ProviderId,
+                        Description:      Description ?? I18NString.Create(Languages.en, "No credit!"),
+                        AdditionalInfo:   AdditionalInfo,
+                        NumberOfRetries:  NumberOfRetries,
+                        Runtime:          Runtime);
 
         #endregion
 
@@ -1286,6 +1442,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// The authorize start operation is not allowed (ev customer is blocked).
         /// </summary>
         Blocked,
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer contract is expired).
+        /// </summary>
+        Expired,
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer has no credit).
+        /// </summary>
+        NoCredit,
 
         /// <summary>
         /// The authorize start ran into a timeout between evse operator backend and the charging location.

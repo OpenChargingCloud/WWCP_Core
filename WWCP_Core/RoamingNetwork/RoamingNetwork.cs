@@ -1085,77 +1085,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-
-
-        #region CreateNewEMobilityProvider(EMobilityProviderId, Configurator = null)
-
-        /// <summary>
-        /// Create and register a new e-mobility (service) provider having the given
-        /// unique e-mobility provider identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the new e-mobility provider.</param>
-        /// <param name="Name">The offical (multi-language) name of the e-mobility provider.</param>
-        /// <param name="Description">An optional (multi-language) description of the e-mobility provider.</param>
-        /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
-        public EMobilityProvider CreateEMobilityProvider2(EMobilityProvider_Id                           Id,
-                                                         I18NString?                                     Name                             = null,
-                                                         I18NString?                                     Description                      = null,
-                                                         eMobilityProviderPriority?                      Priority                         = null,
-                                                         Action<IEMobilityProvider>?                     Configurator                     = null,
-                                                         RemoteEMobilityProviderCreatorDelegate?         RemoteEMobilityProviderCreator   = null,
-                                                         EMobilityProviderAdminStatusTypes?              InitialAdminStatus               = null,
-                                                         EMobilityProviderStatusTypes?                   InitialStatus                    = null,
-                                                         Action<IEMobilityProvider>?                     OnSuccess                        = null,
-                                                         Action<IRoamingNetwork, EMobilityProvider_Id>?  OnError                          = null)
-        {
-
-            lock (eMobilityProviders)
-            {
-
-                var eMobilityProvider = new EMobilityProvider(Id,
-                                                              this,
-                                                              Name,
-                                                              Description,
-                                                              Configurator,
-                                                              RemoteEMobilityProviderCreator,
-                                                              Priority,
-                                                              InitialAdminStatus ?? EMobilityProviderAdminStatusTypes.Operational,
-                                                              InitialStatus      ?? EMobilityProviderStatusTypes.Available);
-
-
-                if (eMobilityProviders.TryAdd(eMobilityProvider, OnSuccess))
-                {
-
-                    // _eMobilityProviders.OnDataChanged         += UpdateData;
-                    // _eMobilityProviders.OnStatusChanged       += UpdateStatus;
-                    // _eMobilityProviders.OnAdminStatusChanged  += UpdateAdminStatus;
-
-                    //_EMobilityProvider.OnEMobilityStationAddition
-
-                    //AddIRemotePushData               (_EMobilityProvider);
-                    _ISendAdminStatus.Add              (eMobilityProvider);
-                    _ISendStatus.Add                   (eMobilityProvider);
-                    _ISend2RemoteAuthorizeStartStop.Add(eMobilityProvider);
-                    _IRemoteSendChargeDetailRecord.Add (eMobilityProvider);
-
-
-                    // Link events!
-
-                    return eMobilityProvider;
-
-                }
-
-                throw new eMobilityProviderAlreadyExists(this,
-                                                         Id);
-
-            }
-
-        }
-
-        #endregion
-
         #region RegistereMobilityProvider(Priority, eMobilityServiceProvider)
 
         ///// <summary>
@@ -7337,10 +7266,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (LocalAuthentication is null)
-                throw new ArgumentNullException(nameof(LocalAuthentication),   "The given authentication token must not be null!");
-
-
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
@@ -7397,18 +7322,25 @@ namespace cloud.charging.open.protocols.WWCP
             //    _ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", ")));
 
             var result = await _ISend2RemoteAuthorizeStartStop.
-                                   WhenFirst(Work:          iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
-                                                                                             AuthorizeStart(LocalAuthentication,
-                                                                                                            ChargingLocation,
-                                                                                                            ChargingProduct,
-                                                                                                            SessionId,
-                                                                                                            CPOPartnerSessionId,
-                                                                                                            OperatorId,
+                                   WhenFirst(Work:       async   sendAuthorizeStartStop => {
 
-                                                                                                            Timestamp,
-                                                                                                            CancellationToken,
-                                                                                                            EventTrackingId,
-                                                                                                            RequestTimeout),
+                                                                     var authStartResult = await sendAuthorizeStartStop.AuthorizeStart(
+                                                                                                     LocalAuthentication,
+                                                                                                     ChargingLocation,
+                                                                                                     ChargingProduct,
+                                                                                                     SessionId,
+                                                                                                     CPOPartnerSessionId,
+                                                                                                     OperatorId,
+
+                                                                                                     Timestamp,
+                                                                                                     CancellationToken,
+                                                                                                     EventTrackingId,
+                                                                                                     RequestTimeout
+                                                                                                 );
+
+                                                                     return authStartResult;
+
+                                                                 },
 
                                              VerifyResult:  result2                   => result2.Result == AuthStartResultTypes.Authorized ||
                                                                                          result2.Result == AuthStartResultTypes.Blocked,
@@ -7562,10 +7494,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (LocalAuthentication is null)
-                throw new ArgumentNullException(nameof(LocalAuthentication), "The given parameter must not be null!");
-
-
             if (!Timestamp.HasValue)
                 Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
@@ -7607,7 +7535,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            AuthStopResult result = null;
+            AuthStopResult? result = null;
 
             try
             {
