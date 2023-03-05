@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingProduct_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingProduct_Id chargingProductId))
+            if (TryParse(Text, out var chargingProductId))
                 return chargingProductId;
 
             throw new ArgumentException("Invalid text representation of a charging product identification: '" + Text + "'!",
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingProduct_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingProduct_Id chargingProductId))
+            if (TryParse(Text, out var chargingProductId))
                 return chargingProductId;
 
             return null;
@@ -194,6 +194,29 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingProduct_Id Clone
 
             => new (new String(InternalId?.ToCharArray()));
+
+        #endregion
+
+
+        #region Static defaults
+
+        /// <summary>
+        /// AC1
+        /// </summary>
+        public static ChargingProduct_Id AC1
+            => new ("AC1");
+
+        /// <summary>
+        /// AC3
+        /// </summary>
+        public static ChargingProduct_Id AC3
+            => new ("AC3");
+
+        /// <summary>
+        /// DC
+        /// </summary>
+        public static ChargingProduct_Id DC
+            => new ("DC");
 
         #endregion
 

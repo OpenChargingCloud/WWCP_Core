@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -67,9 +66,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of an e-mobility provider.
     /// </summary>
-    public struct EMobilityProvider_Id : IId,
-                                         IEquatable<EMobilityProvider_Id>,
-                                         IComparable<EMobilityProvider_Id>
+    public readonly struct EMobilityProvider_Id : IId,
+                                                  IEquatable<EMobilityProvider_Id>,
+                                                  IComparable<EMobilityProvider_Id>
 
     {
 
@@ -171,7 +170,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static EMobilityProvider_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out EMobilityProvider_Id providerId))
+            if (TryParse(Text, out var providerId))
                 return providerId;
 
             throw new ArgumentException("Unknown country code in the given text representation of an e-mobility provider identification: '" + Text + "'!",
@@ -196,11 +195,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (CountryCode == null)
-                throw new ArgumentNullException(nameof(CountryCode),  "The given country must not be null!");
-
             if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Suffix),       "The given e-mobility provider identification suffix must not be null or empty!");
+                throw new ArgumentNullException(nameof(Suffix), "The given e-mobility provider identification suffix must not be null or empty!");
 
             #endregion
 
@@ -238,7 +234,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static EMobilityProvider_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out EMobilityProvider_Id providerId))
+            if (TryParse(Text, out var providerId))
                 return providerId;
 
             return default;
@@ -261,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             ProviderId  = default;
-            Text        = Text?.Trim();
+            Text        = Text.Trim();
 
             if (Text.IsNullOrEmpty())
                 return false;
@@ -277,7 +273,7 @@ namespace cloud.charging.open.protocols.WWCP
                     return false;
 
 
-                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out Country countryCode))
+                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out var countryCode))
                 {
 
                     ProviderId = new EMobilityProvider_Id(countryCode,
@@ -320,7 +316,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (CountryCode == null || Suffix.IsNullOrEmpty())
+            if (Suffix.IsNullOrEmpty())
             {
                 ProviderId = default;
                 return false;
@@ -357,9 +353,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewFormat">The new e-mobility provider identification format.</param>
         public EMobilityProvider_Id ChangeFormat(ProviderIdFormats NewFormat)
 
-            => new EMobilityProvider_Id(CountryCode,
-                                        Suffix,
-                                        NewFormat);
+            => new (CountryCode,
+                    Suffix,
+                    NewFormat);
 
         #endregion
 
@@ -370,9 +366,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public EMobilityProvider_Id Clone
 
-            => new EMobilityProvider_Id(CountryCode,
-                                        new String(Suffix.ToCharArray()),
-                                        Format);
+            => new (CountryCode,
+                    new String(Suffix.ToCharArray()),
+                    Format);
 
         #endregion
 

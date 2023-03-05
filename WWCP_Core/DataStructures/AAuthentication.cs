@@ -17,11 +17,7 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
-
-using Org.BouncyCastle.Bcpg.OpenPgp;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -35,16 +31,18 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static Boolean IsDefined(this AAuthentication Authentication)
 
-            => Authentication != null &&
+            => Authentication is not null &&
                (Authentication.AuthToken.                  HasValue ||
                 Authentication.QRCodeIdentification.       HasValue ||
                 Authentication.PlugAndChargeIdentification.HasValue ||
                 Authentication.RemoteIdentification.       HasValue ||
-                Authentication.PIN.               IsNotNullOrEmpty()||
-                Authentication.PublicKey                   != null);
+                Authentication.PIN.                        HasValue ||
+                Authentication.PublicKey.                  HasValue ||
+                Authentication.Certificate.                HasValue);
 
 
         public static Boolean IsNull(this AAuthentication Authentication)
+
             => !IsDefined(Authentication);
 
     }
@@ -63,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An authentication token, e.g. the identification of a RFID card.
         /// </summary>
-        public AuthenticationToken?           AuthToken                      { get; }
+        public AuthenticationToken?  AuthToken                      { get; }
 
         /// <summary>
         /// A e-mobility account identification and its password/PIN.
@@ -84,29 +82,41 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A PIN.
         /// </summary>
-        public String                PIN                            { get; }
+        public PIN?                  PIN                            { get; }
 
         /// <summary>
-        /// A PGP/GPG public key.
+        /// A public key.
         /// </summary>
-        public PgpPublicKey          PublicKey                      { get; }
+        public PublicKey?            PublicKey                      { get; }
+
+        /// <summary>
+        /// A certificate.
+        /// </summary>
+        public Certificate?          Certificate                    { get; }
+
+        /// <summary>
+        /// The (additional) authentication method used.
+        /// </summary>
+        public AuthMethod?           AuthMethod                     { get; }
 
         /// <summary>
         /// An optional multilingual description.
         /// </summary>
-        public I18NString            Description                    { get; }
+        public I18NString?           Description                    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        protected AAuthentication(AuthenticationToken?           AuthToken                     = null,
+        protected AAuthentication(AuthenticationToken?  AuthToken                     = null,
                                   eMAIdWithPIN2?        QRCodeIdentification          = null,
                                   eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                   eMobilityAccount_Id?  RemoteIdentification          = null,
-                                  String                PIN                           = null,
-                                  PgpPublicKey          PublicKey                     = null,
-                                  I18NString            Description                   = null)
+                                  PIN?                  PIN                           = null,
+                                  PublicKey?            PublicKey                     = null,
+                                  Certificate?          Certificate                   = null,
+                                  AuthMethod?           AuthMethod                    = null,
+                                  I18NString?           Description                   = null)
         {
 
             this.AuthToken                    = AuthToken;
@@ -115,6 +125,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.RemoteIdentification         = RemoteIdentification;
             this.PIN                          = PIN;
             this.PublicKey                    = PublicKey;
+            this.Certificate                  = Certificate;
+            this.AuthMethod                   = AuthMethod;
             this.Description                  = Description;
 
         }
@@ -147,15 +159,23 @@ namespace cloud.charging.open.protocols.WWCP
                        ? new JProperty("remoteIdentification",          RemoteIdentification.       Value.ToString())
                        : null,
 
-                   PIN.IsNotNullOrEmpty()
-                       ? new JProperty("PIN",                           PIN.                              ToString())
+                   PIN.HasValue
+                       ? new JProperty("PIN",                           PIN.                        Value.ToString())
                        : null,
 
-                   PublicKey != null
-                       ? new JProperty("publicKey",                     PublicKey.                        ToString())
+                   PublicKey.HasValue
+                       ? new JProperty("publicKey",                     PublicKey.                  Value.ToString())
                        : null,
 
-                   Description.IsNeitherNullNorEmpty()
+                   Certificate.HasValue
+                       ? new JProperty("certificate",                   Certificate.                Value.ToString())
+                       : null,
+
+                   AuthMethod.HasValue
+                       ? new JProperty("authMethod",                    AuthMethod.                 Value.ToString())
+                       : null,
+
+                   Description is not null && Description.IsNeitherNullNorEmpty()
                        ? new JProperty("description",                   Description.                      ToString())
                        : null
 
@@ -277,53 +297,50 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two abstract authentications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">An abstract authentication to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            if (!(Object is AAuthentication AAuthentication))
-                throw new ArgumentException("The given object is not an abstract authentication!");
-
-            return CompareTo(AAuthentication);
-
-        }
+            => Object is AAuthentication aAuthentication
+                   ? CompareTo(aAuthentication)
+                   : throw new ArgumentException("The given object is not abstract authentication!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(AAuthentication)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two abstract authentications.
         /// </summary>
-        /// <param name="AAuthentication">An object to compare with.</param>
-        public Int32 CompareTo(AAuthentication AAuthentication)
+        /// <param name="AAuthentication">An abstract authentication to compare with.</param>
+        public Int32 CompareTo(AAuthentication? AAuthentication)
         {
 
             if (AAuthentication is null)
                 throw new ArgumentNullException(nameof(AAuthentication),  "The given abstract authentication must not be null!");
 
-            if (AuthToken.HasValue && AAuthentication.AuthToken.HasValue)
+            if (AuthToken.                  HasValue && AAuthentication.AuthToken.                  HasValue)
                 return AuthToken.                  Value.CompareTo(AAuthentication.AuthToken.                  Value);
 
-            if (QRCodeIdentification.HasValue && AAuthentication.QRCodeIdentification.HasValue)
+            if (QRCodeIdentification.       HasValue && AAuthentication.QRCodeIdentification.       HasValue)
                 return QRCodeIdentification.       Value.CompareTo(AAuthentication.QRCodeIdentification.       Value);
 
             if (PlugAndChargeIdentification.HasValue && AAuthentication.PlugAndChargeIdentification.HasValue)
                 return PlugAndChargeIdentification.Value.CompareTo(AAuthentication.PlugAndChargeIdentification.Value);
 
-            if (RemoteIdentification.HasValue && AAuthentication.RemoteIdentification.HasValue)
+            if (RemoteIdentification.       HasValue && AAuthentication.RemoteIdentification.       HasValue)
                 return RemoteIdentification.       Value.CompareTo(AAuthentication.RemoteIdentification.       Value);
 
-            if (PIN.IsNotNullOrEmpty()        && AAuthentication.PIN.IsNotNullOrEmpty())
-                return PIN.                              CompareTo(AAuthentication.PIN);
+            if (PIN.                        HasValue && AAuthentication.PIN.                        HasValue)
+                return PIN.                        Value.CompareTo(AAuthentication.PIN.                        Value);
 
-            if (PublicKey != null && AAuthentication.PublicKey != null)
-                return PublicKey.GetFingerprint().ToHexString().CompareTo(AAuthentication.PublicKey.GetFingerprint().ToHexString());
+            if (PublicKey.                  HasValue && AAuthentication.PublicKey.                  HasValue)
+                return PublicKey.                  Value.CompareTo(AAuthentication.PublicKey.                  Value);
+
+            if (Certificate.                HasValue && AAuthentication.Certificate.                HasValue)
+                return Certificate.                Value.CompareTo(AAuthentication.Certificate.                Value);
 
             return String.Compare(ToString(), AAuthentication.ToString(), StringComparison.OrdinalIgnoreCase);
 
@@ -338,59 +355,52 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two abstract authentications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An abstract authentication to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is AAuthentication AAuthentication))
-                return false;
-
-            return Equals(AAuthentication);
-
-        }
+            => Object is AAuthentication aAuthentication &&
+                   Equals(aAuthentication);
 
         #endregion
 
         #region Equals(AAuthentication)
 
         /// <summary>
-        /// Compares two EVSE identifications for equality.
+        /// Compares two abstract authentications for equality.
         /// </summary>
-        /// <param name="AAuthentication">An EVSE identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(AAuthentication AAuthentication)
-        {
+        /// <param name="AAuthentication">An abstract authentication to compare with.</param>
+        public Boolean Equals(AAuthentication? AAuthentication)
 
-            if (AAuthentication is null)
-                return false;
+            => AAuthentication is not null &&
 
-            if (AuthToken.                  HasValue && AAuthentication.AuthToken.                  HasValue)
-                return AuthToken.Value.Equals(AAuthentication.AuthToken.Value);
+            ((!AuthToken.                  HasValue && !AAuthentication.AuthToken.                  HasValue) ||
+              (AuthToken.                  HasValue &&  AAuthentication.AuthToken.                  HasValue && AuthToken.                  Value.Equals(AAuthentication.AuthToken.                  Value))) &&
 
-            if (QRCodeIdentification.       HasValue && AAuthentication.QRCodeIdentification.       HasValue)
-                return QRCodeIdentification.Equals(AAuthentication.QRCodeIdentification);
+            ((!QRCodeIdentification.       HasValue && !AAuthentication.QRCodeIdentification.       HasValue) ||
+              (QRCodeIdentification.       HasValue &&  AAuthentication.QRCodeIdentification.       HasValue && QRCodeIdentification.       Value.Equals(AAuthentication.QRCodeIdentification.       Value))) &&
 
-            if (PlugAndChargeIdentification.HasValue && AAuthentication.PlugAndChargeIdentification.HasValue)
-                return PlugAndChargeIdentification.Value.Equals(AAuthentication.PlugAndChargeIdentification.Value);
+            ((!PlugAndChargeIdentification.HasValue && !AAuthentication.PlugAndChargeIdentification.HasValue) ||
+              (PlugAndChargeIdentification.HasValue &&  AAuthentication.PlugAndChargeIdentification.HasValue && PlugAndChargeIdentification.Value.Equals(AAuthentication.PlugAndChargeIdentification.Value))) &&
 
-            if (RemoteIdentification.       HasValue && AAuthentication.RemoteIdentification.       HasValue)
-                return RemoteIdentification.Value.Equals(AAuthentication.RemoteIdentification.Value);
+            ((!RemoteIdentification.       HasValue && !AAuthentication.RemoteIdentification.       HasValue) ||
+              (RemoteIdentification.       HasValue &&  AAuthentication.RemoteIdentification.       HasValue && RemoteIdentification.       Value.Equals(AAuthentication.RemoteIdentification.       Value))) &&
 
-            if (PIN.              IsNotNullOrEmpty() && AAuthentication.PIN.              IsNotNullOrEmpty())
-                return PIN.Equals(AAuthentication.PIN);
+            ((!PIN.                        HasValue && !AAuthentication.PIN.                        HasValue) ||
+              (PIN.                        HasValue &&  AAuthentication.PIN.                        HasValue && PIN.                        Value.Equals(AAuthentication.PIN.                        Value))) &&
 
-            if (PublicKey != null && AAuthentication.PublicKey != null)
-                return PublicKey.GetFingerprint().ToHexString().Equals(AAuthentication.PublicKey.GetFingerprint().ToHexString());
+            ((!PublicKey.                  HasValue && !AAuthentication.PublicKey.                  HasValue) ||
+              (PublicKey.                  HasValue &&  AAuthentication.PublicKey.                  HasValue && PublicKey.                  Value.Equals(AAuthentication.PublicKey.                  Value))) &&
 
-            return false;
+            ((!Certificate.                HasValue && !AAuthentication.Certificate.                HasValue) ||
+              (Certificate.                HasValue &&  AAuthentication.Certificate.                HasValue && Certificate.                Value.Equals(AAuthentication.Certificate.                Value))) &&
 
-        }
+            ((!AuthMethod.                 HasValue && !AAuthentication.AuthMethod.                 HasValue) ||
+              (AuthMethod.                 HasValue &&  AAuthentication.AuthMethod.                 HasValue && AuthMethod.                 Value.Equals(AAuthentication.AuthMethod.                 Value))) &&
+
+             ((Description is null                  &&  AAuthentication.AuthMethod is null)                   ||
+              (Description is not null              &&  AAuthentication.AuthMethod is not null               && Description.                      Equals(AAuthentication.Description)));
 
         #endregion
 
@@ -406,7 +416,17 @@ namespace cloud.charging.open.protocols.WWCP
         {
             unchecked
             {
-                return ToString().GetHashCode();
+
+                return (AuthToken?.                  GetHashCode() ?? 0) * 23 ^
+                       (QRCodeIdentification?.       GetHashCode() ?? 0) * 19 ^
+                       (PlugAndChargeIdentification?.GetHashCode() ?? 0) * 17 ^
+                       (RemoteIdentification?.       GetHashCode() ?? 0) * 13 ^
+                       (PIN?.                        GetHashCode() ?? 0) * 11 ^
+                       (PublicKey?.                  GetHashCode() ?? 0) *  7 ^
+                       (Certificate?.                GetHashCode() ?? 0) *  5 ^
+                       (AuthMethod?.                 GetHashCode() ?? 0) *  3 ^
+                        Description?.                GetHashCode() ?? 0;
+
             }
         }
 
@@ -418,29 +438,43 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            if (AuthToken.HasValue)
-                return AuthToken.                        ToString();
+            => new String[] {
 
-            if (QRCodeIdentification.HasValue)
-                return QRCodeIdentification.       Value.ToString();
+                   AuthToken.HasValue
+                       ? $"authToken: {AuthToken.Value}"
+                       : String.Empty,
 
-            if (PlugAndChargeIdentification.HasValue)
-                return PlugAndChargeIdentification.Value.ToString();
+                   QRCodeIdentification.HasValue
+                       ? $"QR Code identification: {QRCodeIdentification.Value}"
+                       : String.Empty,
 
-            if (RemoteIdentification.HasValue)
-                return RemoteIdentification.       Value.ToString();
+                   PlugAndChargeIdentification.HasValue
+                       ? $"Plug&Charge identification: {PlugAndChargeIdentification.Value}"
+                       : String.Empty,
 
-            if (PIN.IsNotNullOrEmpty())
-                return PIN;
+                   RemoteIdentification.HasValue
+                       ? $"Remote identification: {RemoteIdentification.Value}"
+                       : String.Empty,
 
-            if (PublicKey != null)
-                return PublicKey.GetFingerprint().ToHexString();
+                   PIN.HasValue
+                       ? $"PIN: {PIN.Value}"
+                       : String.Empty,
 
-            return String.Empty;
+                   PublicKey.HasValue
+                       ? $"Public key: {PublicKey.Value}"
+                       : String.Empty,
 
-        }
+                   Certificate.HasValue
+                       ? $"Certificate: {Certificate.Value}"
+                       : String.Empty,
+
+                   AuthMethod.HasValue
+                       ? $"Auth method: {AuthMethod.Value}"
+                       : String.Empty
+
+               }.Where(_ => _.IsNeitherNullNorEmpty()).
+                 AggregateWith(", ");
 
         #endregion
 
@@ -450,16 +484,17 @@ namespace cloud.charging.open.protocols.WWCP
     public class LocalAuthentication : AAuthentication
     {
 
-
         #region Constructor(s)
 
-        protected internal LocalAuthentication(AuthenticationToken?           AuthToken                     = null,
+        protected internal LocalAuthentication(AuthenticationToken?  AuthToken                     = null,
                                                eMAIdWithPIN2?        QRCodeIdentification          = null,
                                                eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                eMobilityAccount_Id?  RemoteIdentification          = null,
-                                               String                PIN                           = null,
-                                               PgpPublicKey          PublicKey                     = null,
-                                               I18NString            Description                   = null)
+                                               PIN?                  PIN                           = null,
+                                               PublicKey?            PublicKey                     = null,
+                                               Certificate?          Certificate                   = null,
+                                               AuthMethod?           AuthMethod                    = null,
+                                               I18NString?           Description                   = null)
 
             : base(AuthToken,
                    QRCodeIdentification,
@@ -467,6 +502,8 @@ namespace cloud.charging.open.protocols.WWCP
                    RemoteIdentification,
                    PIN,
                    PublicKey,
+                   Certificate,
+                   AuthMethod,
                    Description)
 
         { }
@@ -482,10 +519,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AuthToken">An authentication token.</param>
         /// <param name="Description">An optional multilingual description.</param>
         public static LocalAuthentication FromAuthToken(AuthenticationToken  AuthToken,
-                                                        I18NString  Description  = null)
+                                                        AuthMethod?          AuthMethod    = null,
+                                                        I18NString?          Description   = null)
 
-            => new LocalAuthentication(AuthToken:   AuthToken,
-                                       Description: Description);
+            => new (AuthToken:    AuthToken,
+                    AuthMethod:   AuthMethod,
+                    Description:  Description);
 
         #endregion
 
@@ -602,71 +641,104 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="PIN">An PIN.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromPIN(String      PIN,
-                                                  I18NString  Description  = null)
+        public static LocalAuthentication FromPIN(PIN          PIN,
+                                                  I18NString?  Description   = null)
 
-            => PIN?.Trim().IsNotNullOrEmpty() == true
-                   ? new LocalAuthentication(PIN:          PIN,
-                                             Description:  Description)
-                   : null;
+            => new (PIN:          PIN,
+                    Description:  Description);
 
         #endregion
 
         #region (static) FromPublicKey                  (PublicKey,                              Description = null)
 
         /// <summary>
-        /// Create a new authentication info based on the given
-        /// PGP/GPG public key.
+        /// Create a new authentication info based on the given public key.
         /// </summary>
-        /// <param name="PublicKey">A PGP/GPG public key.</param>
+        /// <param name="PublicKey">A public key.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromPublicKey(PgpPublicKey  PublicKey,
-                                                        I18NString    Description  = null)
+        public static LocalAuthentication FromPublicKey(PublicKey    PublicKey,
+                                                        I18NString?  Description   = null)
 
-            => new LocalAuthentication(PublicKey:   PublicKey,
-                                       Description: Description);
+            => new (PublicKey:   PublicKey,
+                    Description: Description);
+
+        #endregion
+
+        #region (static) FromCertificate                (Certificate,                            Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given certificate.
+        /// </summary>
+        /// <param name="Certificate">A certificate.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static LocalAuthentication FromCertificate(Certificate  Certificate,
+                                                          I18NString?  Description   = null)
+
+            => new (Certificate: Certificate,
+                    Description: Description);
 
         #endregion
 
 
         public static LocalAuthentication Parse(JObject JSON)
+        {
 
-            => new LocalAuthentication(
-                   JSON["authToken"]                   != null ? AuthenticationToken.         Parse(JSON["authToken"]?.                  Value<String>()) : new AuthenticationToken?(),
-                   null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
-                   JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<String>()  : null,
-                   null, //JSON["remoteIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["description"]                 != null ? I18NString.         Parse(JSON["description"] as JObject)                       : I18NString.Empty
-                );
+            var authToken                    = JSON["authToken"]?.                  Value<String>();
+            var qrCodeIdentification         = JSON["QRCodeIdentification"] as JObject;
+            var plugAndChargeIdentification  = JSON["plugAndChargeIdentification"]?.Value<String>();
+            var remoteIdentification         = JSON["remoteIdentification"]?.       Value<String>();
+            var pin                          = JSON["PIN"]?.                        Value<String>();
+            var publicKey                    = JSON["publicKey"]?.                  Value<String>();
+            var certificate                  = JSON["certificate"]?.                Value<String>();
+
+            var authMethod                   = JSON["authMethod"]?.                 Value<String>();
+            var description                  = JSON["description"] as JObject;
+
+            return new(
+                       authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
+                       null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                       plugAndChargeIdentification is not null ? eMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
+                       remoteIdentification        is not null ? eMobilityAccount_Id.Parse(remoteIdentification)        : null,
+                       pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
+                       publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
+                       certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
+
+                       authMethod                  is not null ? null : null,
+                       description                 is not null ? I18NString.         Parse(description)                 : I18NString.Empty
+                   );
+
+        }
 
 
         public RemoteAuthentication ToRemote
 
-            => new RemoteAuthentication(AuthToken,
-                                        QRCodeIdentification,
-                                        PlugAndChargeIdentification,
-                                        RemoteIdentification,
-                                        PIN,
-                                        PublicKey,
-                                        Description);
+            => new (AuthToken,
+                    QRCodeIdentification,
+                    PlugAndChargeIdentification,
+                    RemoteIdentification,
+                    PIN,
+                    PublicKey,
+                    Certificate,
+
+                    AuthMethod,
+                    Description);
 
     }
 
     public class RemoteAuthentication : AAuthentication
     {
 
-
         #region Constructor(s)
 
-        protected internal RemoteAuthentication(AuthenticationToken?           AuthToken                     = null,
+        protected internal RemoteAuthentication(AuthenticationToken?  AuthToken                     = null,
                                                 eMAIdWithPIN2?        QRCodeIdentification          = null,
                                                 eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
                                                 eMobilityAccount_Id?  RemoteIdentification          = null,
-                                                String                PIN                           = null,
-                                                PgpPublicKey          PublicKey                     = null,
-                                                I18NString            Description                   = null)
+                                                PIN?                  PIN                           = null,
+                                                PublicKey?            PublicKey                     = null,
+                                                Certificate?          Certificate                   = null,
+                                                AuthMethod?           AuthMethod                    = null,
+                                                I18NString?           Description                   = null)
 
             : base(AuthToken,
                    QRCodeIdentification,
@@ -674,6 +746,8 @@ namespace cloud.charging.open.protocols.WWCP
                    RemoteIdentification,
                    PIN,
                    PublicKey,
+                   Certificate,
+                   AuthMethod,
                    Description)
 
         { }
@@ -689,10 +763,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AuthToken">An authentication token.</param>
         /// <param name="Description">An optional multilingual description.</param>
         public static RemoteAuthentication FromAuthToken(AuthenticationToken  AuthToken,
-                                                         I18NString  Description  = null)
+                                                         AuthMethod?          AuthMethod    = null,
+                                                         I18NString?          Description   = null)
 
-            => new RemoteAuthentication(AuthToken:   AuthToken,
-                                        Description: Description);
+            => new (AuthToken:    AuthToken,
+                    AuthMethod:   AuthMethod,
+                    Description:  Description);
 
         #endregion
 
@@ -809,55 +885,87 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="PIN">An PIN.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromPIN(String      PIN,
-                                                   I18NString  Description  = null)
+        public static RemoteAuthentication FromPIN(PIN          PIN,
+                                                   I18NString?  Description   = null)
 
-            => PIN?.Trim().IsNotNullOrEmpty() == true
-                   ? new RemoteAuthentication(PIN:          PIN,
-                                              Description:  Description)
-                   : null;
+            => new (PIN:          PIN,
+                    Description:  Description);
 
         #endregion
 
         #region (static) FromPublicKey                  (PublicKey,                              Description = null)
 
         /// <summary>
-        /// Create a new authentication info based on the given
-        /// PGP/GPG public key.
+        /// Create a new authentication info based on the given public key.
         /// </summary>
-        /// <param name="PublicKey">A PGP/GPG public key.</param>
+        /// <param name="PublicKey">A public key.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromPublicKey(PgpPublicKey  PublicKey,
-                                                         I18NString    Description  = null)
+        public static RemoteAuthentication FromPublicKey(PublicKey    PublicKey,
+                                                         I18NString?  Description   = null)
 
-            => new RemoteAuthentication(PublicKey:   PublicKey,
-                                        Description: Description);
+            => new (PublicKey:   PublicKey,
+                    Description: Description);
+
+        #endregion
+
+        #region (static) FromCertificate                (Certificate,                            Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given certificate.
+        /// </summary>
+        /// <param name="Certificate">A certificate.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static RemoteAuthentication FromCertificate(Certificate  Certificate,
+                                                           I18NString?  Description   = null)
+
+            => new (Certificate: Certificate,
+                    Description: Description);
 
         #endregion
 
 
         public static RemoteAuthentication Parse(JObject JSON)
+        {
 
-            => new RemoteAuthentication(
-                   JSON["authToken"]                   != null ? AuthenticationToken.         Parse(JSON["authToken"]?.                  Value<String>()) : new AuthenticationToken?(),
-                   null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
-                   JSON["plugAndChargeIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["plugAndChargeIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["remoteIdentification"]        != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.       Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["PIN"]                         != null ?                           JSON["PIN"]?.                        Value<String>()  : null,
-                   null, //JSON["remoteIdentification"] != null ? eMobilityAccount_Id.Parse(JSON["remoteIdentification"]?.Value<String>()) : new eMobilityAccount_Id?(),
-                   JSON["description"]                 != null ? I18NString.         Parse(JSON["description"] as JObject)                       : I18NString.Empty
-                );
+            var authToken                    = JSON["authToken"]?.                  Value<String>();
+            var qrCodeIdentification         = JSON["QRCodeIdentification"] as JObject;
+            var plugAndChargeIdentification  = JSON["plugAndChargeIdentification"]?.Value<String>();
+            var remoteIdentification         = JSON["remoteIdentification"]?.       Value<String>();
+            var pin                          = JSON["PIN"]?.                        Value<String>();
+            var publicKey                    = JSON["publicKey"]?.                  Value<String>();
+            var certificate                  = JSON["certificate"]?.                Value<String>();
+
+            var authMethod                   = JSON["authMethod"]?.                 Value<String>();
+            var description                  = JSON["description"] as JObject;
+
+            return new(
+                       authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
+                       null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
+                       plugAndChargeIdentification is not null ? eMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
+                       remoteIdentification        is not null ? eMobilityAccount_Id.Parse(remoteIdentification)        : null,
+                       pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
+                       publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
+                       certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
+
+                       authMethod                  is not null ? null : null,
+                       description                 is not null ? I18NString.         Parse(description)                 : I18NString.Empty
+                   );
+
+        }
 
 
         public LocalAuthentication ToLocal
 
-            => new LocalAuthentication(AuthToken,
-                                       QRCodeIdentification,
-                                       PlugAndChargeIdentification,
-                                       RemoteIdentification,
-                                       PIN,
-                                       PublicKey,
-                                       Description);
+            => new (AuthToken,
+                    QRCodeIdentification,
+                    PlugAndChargeIdentification,
+                    RemoteIdentification,
+                    PIN,
+                    PublicKey,
+                    Certificate,
+
+                    AuthMethod,
+                    Description);
 
     }
 

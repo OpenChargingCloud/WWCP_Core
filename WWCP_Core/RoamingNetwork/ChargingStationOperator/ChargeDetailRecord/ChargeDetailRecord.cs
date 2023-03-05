@@ -188,10 +188,15 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingTariff?              ChargingTariff               { get; }
 
         /// <summary>
-        /// The charging price.
+        /// The charging price (excluding VAT).
         /// </summary>
         [Optional]
         public Decimal?                     ChargingPrice                { get; }
+
+        /// <summary>
+        /// The ISO 4217 code of the currency used for this charge detail record.
+        /// </summary>
+        public Currency?                    Currency                     { get; }
 
         #endregion
 
@@ -208,6 +213,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         public AAuthentication?                 AuthenticationStop     { get; }
+
+        /// <summary>
+        /// Authentication (verification) method used for starting.
+        /// </summary>
+        public AuthMethod?                      AuthMethodStart        { get; }
+
+        /// <summary>
+        /// Authentication (verification) method used for stopping.
+        /// </summary>
+        public AuthMethod?                      AuthMethodStop         { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
@@ -299,13 +314,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// An optional enumeration of energy meter values.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Decimal>>?           EnergyMeteringValues    { get; }
+        public IEnumerable<Timestamped<Decimal>>            EnergyMeteringValues    { get; }
 
         /// <summary>
         /// An optional enumeration of energy metering values with digital signatures per measurement.
         /// </summary>
         [Optional]
-        public IEnumerable<SignedMeteringValue<Decimal>>?   SignedMeteringValues    { get; }
+        public IEnumerable<SignedMeteringValue<Decimal>>    SignedMeteringValues    { get; }
 
         /// <summary>
         /// The consumed energy in kWh.
@@ -351,8 +366,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolId">The identification of the charging pool used for charging.</param>
         /// <param name="ChargingStationOperator">The charging station operator used for charging.</param>
         /// <param name="ChargingStationOperatorId">The identification of the charging station operator used for charging.</param>
+        /// 
         /// <param name="ChargingProduct">The consumed charging product.</param>
         /// <param name="ChargingPrice">The charging price.</param>
+        /// <param name="Currency">The ISO 4217 code of the currency used for this charge detail record.</param>
         /// 
         /// <param name="AuthenticationStart">The authentication used for starting this charging process.</param>
         /// <param name="AuthenticationStop">The authentication used for stopping this charging process.</param>
@@ -387,11 +404,15 @@ namespace cloud.charging.open.protocols.WWCP
                                   ChargingPool_Id?                            ChargingPoolId              = null,
                                   ChargingStationOperator?                    ChargingStationOperator     = null,
                                   ChargingStationOperator_Id?                 ChargingStationOperatorId   = null,
+
                                   ChargingProduct?                            ChargingProduct             = null,
                                   Decimal?                                    ChargingPrice               = null,
+                                  Currency?                                   Currency                    = null,
 
                                   AAuthentication?                            AuthenticationStart         = null,
                                   AAuthentication?                            AuthenticationStop          = null,
+                                  AuthMethod?                                 AuthMethodStart             = null,
+                                  AuthMethod?                                 AuthMethodStop              = null,
                                   EMobilityProvider_Id?                       ProviderIdStart             = null,
                                   EMobilityProvider_Id?                       ProviderIdStop              = null,
 
@@ -426,21 +447,25 @@ namespace cloud.charging.open.protocols.WWCP
             this.Id                          = Id;
             this.SessionId                   = SessionId;
             this.SessionTime                 = SessionTime;
-            this.Duration                    = Duration;
+            this.Duration                    = Duration                  ?? SessionTime.Duration;
 
             this.EVSE                        = EVSE;
-            this.EVSEId                      = EVSEId                    ?? EVSE?.Id;
-            this.ChargingStation             = ChargingStation;
-            this.ChargingStationId           = ChargingStationId         ?? ChargingStation?.Id;
-            this.ChargingPool                = ChargingPool;
-            this.ChargingPoolId              = ChargingPoolId            ?? ChargingPool?.Id;
-            this.ChargingStationOperator     = ChargingStationOperator;
-            this.ChargingStationOperatorId   = ChargingStationOperatorId ?? ChargingStationOperator?.Id;
+            this.EVSEId                      = EVSEId                    ?? this.EVSE?.                   Id;
+            this.ChargingStation             = ChargingStation           ?? this.EVSE?.                   ChargingStation;
+            this.ChargingStationId           = ChargingStationId         ?? this.ChargingStation?.        Id;
+            this.ChargingPool                = ChargingPool              ?? this.ChargingStation?.        ChargingPool;
+            this.ChargingPoolId              = ChargingPoolId            ?? this.ChargingPool?.           Id;
+            this.ChargingStationOperator     = ChargingStationOperator   ?? this.ChargingPool?.           Operator;
+            this.ChargingStationOperatorId   = ChargingStationOperatorId ?? this.ChargingStationOperator?.Id;
+
             this.ChargingProduct             = ChargingProduct;
             this.ChargingPrice               = ChargingPrice;
+            this.Currency                    = Currency;
 
             this.AuthenticationStart         = AuthenticationStart;
             this.AuthenticationStop          = AuthenticationStop;
+            this.AuthMethodStart             = AuthMethodStart;
+            this.AuthMethodStop              = AuthMethodStop;
             this.ProviderIdStart             = ProviderIdStart;
             this.ProviderIdStop              = ProviderIdStop;
 
@@ -465,14 +490,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ? SignedMeteringValues.OrderBy(smv => smv.Timestamp).ToArray()
                                                    : Array.Empty<SignedMeteringValue<Decimal>>();
 
-            if (SignedMeteringValues.SafeAny() && !EnergyMeteringValues.SafeAny())
+            if (this.SignedMeteringValues.Any() && !this.EnergyMeteringValues.Any())
                 this.EnergyMeteringValues    = SignedMeteringValues is not null
                                                    ? SignedMeteringValues.Select(svalue => new Timestamped<Decimal>(svalue.Timestamp,
                                                                                                                     svalue.MeterValue))
                                                    : Array.Empty<Timestamped<Decimal>>();
 
             this.ConsumedEnergy              = ConsumedEnergy;
-            if (this.ConsumedEnergy is null && this.EnergyMeteringValues.SafeAny())
+            if (this.ConsumedEnergy is null && this.EnergyMeteringValues.Any())
                 this.ConsumedEnergy          = this.EnergyMeteringValues.Last().Value - this.EnergyMeteringValues.First().Value; // kWh
 
             this.PublicKey                   = PublicKey;
