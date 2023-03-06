@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EnergyMeterValues
 
-        private readonly List<Timestamped<Decimal>> _EnergyMeterValues;
+        private readonly List<EnergyMeteringValue> _EnergyMeterValues;
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
@@ -374,23 +374,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Decimal>> EnergyMeteringValues
+        public IEnumerable<EnergyMeteringValue> EnergyMeteringValues
             => _EnergyMeterValues;
-
-        #endregion
-
-        #region SignedMeteringValues
-
-        private readonly List<SignedMeteringValue<Decimal>> _SignedMeteringValues;
-
-        /// <summary>
-        /// An optional enumeration of signed intermediate energy meter values.
-        /// This values indicate the consumed energy between the current
-        /// and the last timestamp in watt-hours [Wh].
-        /// </summary>
-        [Optional]
-        public IEnumerable<SignedMeteringValue<Decimal>> SignedMeteringValues
-            => _SignedMeteringValues;
 
         #endregion
 
@@ -817,26 +802,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The current timestamp.</param>
         /// <param name="ChargingSession">The unique charging session identification.</param>
         /// <param name="EnergyMeterValue">A timestamped energy meter value.</param>
-        public delegate void OnNewEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, Timestamped<Double> EnergyMeterValue);
+        public delegate void OnNewEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, EnergyMeteringValue EnergyMeterValue);
 
         /// <summary>
         /// An event sent whenever a new energy meter value was received.
         /// </summary>
         public event OnNewEnergyMeterValueDelegate OnNewEnergyMeterValue;
-
-
-        /// <summary>
-        /// An event sent whenever a new energy meter value was received.
-        /// </summary>
-        /// <param name="Timestamp">The current timestamp.</param>
-        /// <param name="ChargingSession">The unique charging session identification.</param>
-        /// <param name="EnergyMeterValue">A timestamped energy meter value.</param>
-        public delegate void OnNewSignedEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, SignedMeteringValue<Decimal> EnergyMeterValue);
-
-        /// <summary>
-        /// An event sent whenever a new energy meter value was received.
-        /// </summary>
-        public event OnNewSignedEnergyMeterValueDelegate OnNewSignedEnergyMeterValue;
 
         #endregion
 
@@ -859,7 +830,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Id                  = Id;
             this.SessionTime         = new StartEndDateTime(Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
-            this._EnergyMeterValues  = new List<Timestamped<Decimal>>();
+            this._EnergyMeterValues  = new List<EnergyMeteringValue>();
             this._StopRequests       = new List<SessionStopRequest>();
 
         }
@@ -867,7 +838,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public void AddEnergyMeterValue(Timestamped<Decimal> Value)
+        public void AddEnergyMeterValue(EnergyMeteringValue Value)
         {
             _EnergyMeterValues.Add(Value);
         }

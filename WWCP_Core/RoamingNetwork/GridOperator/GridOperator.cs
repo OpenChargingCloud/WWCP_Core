@@ -267,13 +267,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private List<DataLicense> _DataLicenses;
+        private List<OpenDataLicense> _DataLicenses;
 
         /// <summary>
         /// The license of the charging station operator data.
         /// </summary>
         [Mandatory]
-        public IEnumerable<DataLicense> DataLicenses
+        public IEnumerable<OpenDataLicense> DataLicenses
             => _DataLicenses;
 
         #endregion
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this._DataLicenses                = new List<DataLicense>();
+            this._DataLicenses                = new List<OpenDataLicense>();
 
             this.Priority                     = Priority    ?? new GridOperatorPriority(0);
 

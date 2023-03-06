@@ -17,108 +17,98 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
+
 using Newtonsoft.Json.Linq;
+
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Bcpg;
-using System.IO;
-using System.Text.RegularExpressions;
-using Org.BouncyCastle.Crypto.Parameters;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
+using System.Runtime.CompilerServices;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class SignedMeteringValue<T> {
+    public class EnergyMeteringValue
+    {
 
-        public DateTime            Timestamp        { get; }
-        public T                   MeterValue       { get; }
-        public EnergyMeter_Id      MeterId          { get; }
-        public EVSE_Id             EVSEId           { get; }
-        public AAuthentication     UserId           { get; }
-        public PgpPublicKey        PublicKey        { get; }
-        public String              lastSignature    { get; }
-        public String              Signature        { get; private set; }
+        public DateTime  Timestamp     { get; }
+        public Decimal   Value         { get; }
+        public String?   SignedData    { get; }
+        public String?   Signature     { get; }
 
 
-        public SignedMeteringValue(DateTime            Timestamp,
-                                   T                   MeterValue,
-                                   EnergyMeter_Id      MeterId,
-                                   EVSE_Id             EVSEId,
-                                   AAuthentication     UserId,
-                                   PgpPublicKey        PublicKey,
-                                   String              lastSignature  = "",
-                                   String              Signature      = "")
+        public EnergyMeteringValue(DateTime  Timestamp,
+                                   Decimal   Value,
+                                   String?   SignedData   = null,
+                                   String?   Signature    = null)
         {
 
-            this.Timestamp      = Timestamp;
-            this.MeterValue     = MeterValue;
-            this.MeterId        = MeterId;
-            this.EVSEId         = EVSEId;
-            this.UserId         = UserId;
-            this.PublicKey      = PublicKey;
-            this.lastSignature  = lastSignature != null ? lastSignature.Trim() : "";
-            this.Signature      = Signature     != null ? Signature.    Trim() : "";
-
-            if (UserId == null)
-                new ArgumentNullException(nameof(UserId), "A signed meter value must have some kind of user identification!");
+            this.Timestamp   = Timestamp;
+            this.Value       = Value;
+            this.SignedData  = SignedData;
+            this.Signature   = Signature;
 
         }
 
 
         public JObject ToJSON()
-
-            => JSONObject.Create(
-                           new JProperty("timestamp",      Timestamp.ToIso8601()),
-                           new JProperty("meterValue",     MeterValue),
-                           new JProperty("meterId",        MeterId.ToString()),
-                           new JProperty("evseId",         EVSEId. ToString()),
-                           new JProperty("userId",         UserId),
-                           new JProperty("publicKey",      PublicKey.GetFingerprint().ToHexString()),
-                           new JProperty("lastSignature",  lastSignature),
-                           new JProperty("signature",      Signature)
-                       );
-
-
-        public SignedMeteringValue<T> Sign(PgpSecretKey  SecretKey,
-                                           String        Passphrase)
         {
 
-            var SignatureGenerator = new PgpSignatureGenerator(SecretKey.PublicKey.Algorithm,
-                                                               HashAlgorithmTag.Sha512);
+            var json = JSONObject.Create(
 
-            SignatureGenerator.InitSign(PgpSignature.BinaryDocument,
-                                        SecretKey.ExtractPrivateKey(Passphrase.ToCharArray()));
+                                 new JProperty("timestamp",    Timestamp.ToIso8601()),
+                                 new JProperty("value",        Value),
 
-            var JSON             = ToJSON();
-            var JSONText         = JSON.ToString().Replace(Environment.NewLine, " ");
-            var JSONBlob         = JSON.ToUTF8Bytes();
+                           SignedData is not null && SignedData.IsNotNullOrEmpty()
+                               ? new JProperty("signedData",   SignedData)
+                               : null,
 
-            SignatureGenerator.Update(JSONBlob, 0, JSONBlob.Length);
+                           Signature is not null && SignedData.IsNotNullOrEmpty()
+                               ? new JProperty("signature",    Signature)
+                               : null
 
-            var _Signature       = SignatureGenerator.Generate();
-            var OutputStream     = new MemoryStream();
-            var SignatureStream  = new BcpgOutputStream(new ArmoredOutputStream(OutputStream));
+                       );
 
-            _Signature.Encode(SignatureStream);
-
-            SignatureStream.Flush();
-            SignatureStream.Close();
-
-            OutputStream.Flush();
-            OutputStream.Close();
-
-            JSON["signature"] = this.Signature = OutputStream.ToArray().ToHexString();
-
-            return this;
+            return json;
 
         }
+
+
+        //public SignedMeteringValue<T> Sign(PgpSecretKey  SecretKey,
+        //                                   String        Passphrase)
+        //{
+
+        //    var SignatureGenerator = new PgpSignatureGenerator(SecretKey.PublicKey.Algorithm,
+        //                                                       HashAlgorithmTag.Sha512);
+
+        //    SignatureGenerator.InitSign(PgpSignature.BinaryDocument,
+        //                                SecretKey.ExtractPrivateKey(Passphrase.ToCharArray()));
+
+        //    var JSON             = ToJSON();
+        //    var JSONText         = JSON.ToString().Replace(Environment.NewLine, " ");
+        //    var JSONBlob         = JSON.ToUTF8Bytes();
+
+        //    SignatureGenerator.Update(JSONBlob, 0, JSONBlob.Length);
+
+        //    var _Signature       = SignatureGenerator.Generate();
+        //    var OutputStream     = new MemoryStream();
+        //    var SignatureStream  = new BcpgOutputStream(new ArmoredOutputStream(OutputStream));
+
+        //    _Signature.Encode(SignatureStream);
+
+        //    SignatureStream.Flush();
+        //    SignatureStream.Close();
+
+        //    OutputStream.Flush();
+        //    OutputStream.Close();
+
+        //    JSON["signature"] = this.Signature = OutputStream.ToArray().ToHexString();
+
+        //    return this;
+
+        //}
 
     }
 

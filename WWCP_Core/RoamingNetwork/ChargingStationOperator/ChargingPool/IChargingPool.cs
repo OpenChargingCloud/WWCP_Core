@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The license of the charging pool data.
         /// </summary>
-        ReactiveSet<DataLicense>                DataLicenses                { get; }
+        ReactiveSet<OpenDataLicense>                DataLicenses                { get; }
 
         /// <summary>
         /// The official language at this charging pool.

@@ -105,13 +105,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private ReactiveSet<DataLicense> _DataLicenses;
+        private ReactiveSet<OpenDataLicense> _DataLicenses;
 
         /// <summary>
         /// The license of the charging station operator data.
         /// </summary>
         [Mandatory]
-        public ReactiveSet<DataLicense> DataLicenses
+        public ReactiveSet<OpenDataLicense> DataLicenses
         {
 
             get
@@ -506,7 +506,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this._DataLicenses = new ReactiveSet<DataLicense>();
+            this._DataLicenses = new ReactiveSet<OpenDataLicense>();
 
             this.Priority = Priority ?? new eMobilityProviderPriority(0);
 

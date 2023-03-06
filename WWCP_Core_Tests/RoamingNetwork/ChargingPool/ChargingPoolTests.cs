@@ -165,8 +165,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                                                   Name:          I18NString.Create(Languages.de, "Open Charging Cloud Charging Pool"),
                                                                                                   Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
                                                                                                   Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                                                                  DataLicenses:  new DataLicense[] {
-                                                                                                                     DataLicense.CreativeCommons_BY_SA_4
+                                                                                                  DataLicenses:  new OpenDataLicense[] {
+                                                                                                                     OpenDataLicense.CreativeCommons_BY_SA_4
                                                                                                                  }
                                                                                               ));
 
@@ -204,8 +204,8 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                 Name:          I18NString.Create(Languages.de, "Open Charging Cloud 3223"),
                                                 Logo:          URL.Parse("https://open.charging.cloud/logos.json"),
                                                 Homepage:      URL.Parse("https://open.charging.cloud"),
-                                                DataLicenses:  new DataLicense[] {
-                                                                   DataLicense.CreativeCommons_BY_SA_4
+                                                DataLicenses:  new OpenDataLicense[] {
+                                                                   OpenDataLicense.CreativeCommons_BY_SA_4
                                                                }
                                             ));
 

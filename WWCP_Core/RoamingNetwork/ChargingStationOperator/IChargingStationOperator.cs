@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The license of the charging station operator data.
         /// </summary>
-        ReactiveSet<DataLicense> DataLicenses { get; }
+        ReactiveSet<OpenDataLicense> DataLicenses { get; }
 
         /// <summary>
         /// The address of the operators headquarter.
@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                         Brand                                                               Brand                         = null,
                                                         Priority?                                                           Priority                      = null,
                                                         ChargingTariff                                                      Tariff                        = null,
-                                                        IEnumerable<DataLicense>                                            DataLicenses                  = null,
+                                                        IEnumerable<OpenDataLicense>                                            DataLicenses                  = null,
 
                                                         IEnumerable<IChargingStation>                                       Members                       = null,
                                                         IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
@@ -989,7 +989,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Brand                                          Brand                         = null,
                                   Priority?                                      Priority                      = null,
                                   ChargingTariff                                 Tariff                        = null,
-                                  IEnumerable<DataLicense>                       DataLicenses                  = null,
+                                  IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
 
                                   IEnumerable<EVSE>                              Members                       = null,
                                   IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -1028,7 +1028,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   Brand                                          Brand                         = null,
                                   Priority?                                      Priority                      = null,
                                   ChargingTariff                                 Tariff                        = null,
-                                  IEnumerable<DataLicense>                       DataLicenses                  = null,
+                                  IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
 
                                   IEnumerable<EVSE>                              Members                       = null,
                                   IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -1067,7 +1067,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Brand                                          Brand                         = null,
                                        Priority?                                      Priority                      = null,
                                        ChargingTariff                                 Tariff                        = null,
-                                       IEnumerable<DataLicense>                       DataLicenses                  = null,
+                                       IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
 
                                        IEnumerable<EVSE>                              Members                       = null,
                                        IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -1106,7 +1106,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        Brand                                          Brand                         = null,
                                        Priority?                                      Priority                      = null,
                                        ChargingTariff                                 Tariff                        = null,
-                                       IEnumerable<DataLicense>                       DataLicenses                  = null,
+                                       IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
 
                                        IEnumerable<EVSE>                              Members                       = null,
                                        IEnumerable<EVSE_Id>                           MemberIds                     = null,

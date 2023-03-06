@@ -311,16 +311,15 @@ namespace cloud.charging.open.protocols.WWCP
         public EnergyMeter_Id?                              EnergyMeterId           { get; }
 
         /// <summary>
-        /// An optional enumeration of energy meter values.
+        /// The optional energy meter.
         /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<Decimal>>            EnergyMeteringValues    { get; }
+        public EnergyMeter?                                 EnergyMeter             { get; }
 
         /// <summary>
-        /// An optional enumeration of energy metering values with digital signatures per measurement.
+        /// An optional enumeration of (signed) energy meter values.
         /// </summary>
         [Optional]
-        public IEnumerable<SignedMeteringValue<Decimal>>    SignedMeteringValues    { get; }
+        public IEnumerable<EnergyMeteringValue>             EnergyMeteringValues    { get; }
 
         /// <summary>
         /// The consumed energy in kWh.
@@ -337,6 +336,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region PublicKey/Signatures
 
+        /// <summary>
+        /// The public key used to sign this charge detail record.
+        /// Normally this is the public key of the energy meter or charging station.
+        /// </summary>
         public ECPublicKeyParameters? PublicKey { get; }
 
         private readonly HashSet<String> signatures;
@@ -429,9 +432,10 @@ namespace cloud.charging.open.protocols.WWCP
                                   Price?                                      ParkingFee                  = null,
 
                                   EnergyMeter_Id?                             EnergyMeterId               = null,
-                                  IEnumerable<Timestamped<Decimal>>?          EnergyMeteringValues        = null,
-                                  IEnumerable<SignedMeteringValue<Decimal>>?  SignedMeteringValues        = null,
+                                  EnergyMeter?                                EnergyMeter                 = null,
+                                  IEnumerable<EnergyMeteringValue>?           EnergyMeteringValues        = null,
                                   Decimal?                                    ConsumedEnergy              = null,
+                                  Price?                                      ConsumedEnergyFee           = null,
 
                                   JObject?                                    CustomData                  = null,
                                   UserDefinedDictionary?                      InternalData                = null,
@@ -481,24 +485,16 @@ namespace cloud.charging.open.protocols.WWCP
             this.ParkingTime                 = ParkingTime;
             this.ParkingFee                  = ParkingFee;
 
-            this.EnergyMeterId               = EnergyMeterId;
+            this.EnergyMeterId               = EnergyMeterId            ?? EnergyMeter?.Id;
+            this.EnergyMeter                 = EnergyMeter;
             this.EnergyMeteringValues        = EnergyMeteringValues is not null
-                                                   ? EnergyMeteringValues.OrderBy(mv  => mv. Timestamp).ToArray()
-                                                   : Array.Empty<Timestamped<Decimal>>();
-
-            this.SignedMeteringValues        = SignedMeteringValues is not null
-                                                   ? SignedMeteringValues.OrderBy(smv => smv.Timestamp).ToArray()
-                                                   : Array.Empty<SignedMeteringValue<Decimal>>();
-
-            if (this.SignedMeteringValues.Any() && !this.EnergyMeteringValues.Any())
-                this.EnergyMeteringValues    = SignedMeteringValues is not null
-                                                   ? SignedMeteringValues.Select(svalue => new Timestamped<Decimal>(svalue.Timestamp,
-                                                                                                                    svalue.MeterValue))
-                                                   : Array.Empty<Timestamped<Decimal>>();
+                                                   ? EnergyMeteringValues.OrderBy(energyMeteringValue => energyMeteringValue.Timestamp).ToArray()
+                                                   : Array.Empty<EnergyMeteringValue>();
 
             this.ConsumedEnergy              = ConsumedEnergy;
             if (this.ConsumedEnergy is null && this.EnergyMeteringValues.Any())
                 this.ConsumedEnergy          = this.EnergyMeteringValues.Last().Value - this.EnergyMeteringValues.First().Value; // kWh
+            this.ConsumedEnergyFee           = ConsumedEnergyFee;
 
             this.PublicKey                   = PublicKey;
             this.signatures                  = Signatures is not null && Signatures.Any()
@@ -566,12 +562,7 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            EnergyMeteringValues is not null && EnergyMeteringValues.Any()
-                               ? new JProperty("meterValues", JSONArray.Create(
-                                       EnergyMeteringValues.Select(meterValue => JSONObject.Create(
-                                           new JProperty("timestamp",  meterValue.Timestamp.ToIso8601()),
-                                           new JProperty("value",      meterValue.Value)
-                                       ))
-                                   ))
+                               ? new JProperty("energyMeteringValues",        new JArray(EnergyMeteringValues.Select(energyMeteringValue => energyMeteringValue.ToJSON())))
                                : null,
 
 

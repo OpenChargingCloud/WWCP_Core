@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        ReactiveSet<DataLicense>               DataLicenses                 { get; }
+        ReactiveSet<OpenDataLicense>               DataLicenses                 { get; }
 
         /// <summary>
         /// An enumeration of all supported charging modes of this EVSE.

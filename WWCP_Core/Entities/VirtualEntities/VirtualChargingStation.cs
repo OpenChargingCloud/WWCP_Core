@@ -2055,7 +2055,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ConcurrentDictionary<Brand_Id, Brand> Brands => throw new NotImplementedException();
 
-        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
+        public ReactiveSet<OpenDataLicense> DataLicenses => throw new NotImplementedException();
 
         public String? OpenStreetMapNodeId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Address? EntranceAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -2419,12 +2419,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public Task<AddEVSEResult> CreateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddEVSEResult> CreateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, IEnumerable<SocketOutlet>? SocketOutlets = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16 MaxAdminStatusScheduleSize = 50, UInt16 MaxStatusScheduleSize = 50, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, IEnumerable<SocketOutlet>? SocketOutlets = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16 MaxAdminStatusScheduleSize = 50, UInt16 MaxStatusScheduleSize = 50, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }

@@ -57,6 +57,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                             I18NString?                         Description               = null,
                                                             EVSEAdminStatusTypes?               InitialAdminStatus        = null,
                                                             EVSEStatusTypes?                    InitialStatus             = null,
+                                                            IEnumerable<SocketOutlet>?          SocketOutlets             = null,
                                                             EnergyMeter_Id?                     EnergyMeterId             = null,
                                                             String                              EllipticCurve             = "P-256",
                                                             ECPrivateKeyParameters?             PrivateKey                = null,
@@ -73,6 +74,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EVSEId,
                    Name,
                    Description,
+                   SocketOutlets,
                    EVSEConfigurator,
                    newEVSE => {
 
@@ -612,7 +614,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 try
                 {
 
-                    ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Timestamp.Now, 1));
+                    ChargingSession.AddEnergyMeterValue(new EnergyMeteringValue(Timestamp.Now, 1));
 
                 }
                 catch (Exception e)
@@ -1587,7 +1589,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             AuthenticationStart  = RemoteAuthentication
                         };
 
-                        chargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
+                        chargingSession.AddEnergyMeterValue(new EnergyMeteringValue(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                         EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
                         Status = EVSEStatusTypes.Charging;
@@ -1642,7 +1644,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                             firstReservation.ChargingSession = ChargingSession;
 
-                            chargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
+                            chargingSession.AddEnergyMeterValue(new EnergyMeteringValue(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, 0));
                             EnergyMeterTimer.Change(EnergyMeterInterval, EnergyMeterInterval);
 
                             Status = EVSEStatusTypes.Charging;
@@ -1851,41 +1853,28 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                             var Duration             = Now - __ChargingSession.SessionTime.StartTime;
                             var Consumption          = (Decimal) Math.Round(Duration.TotalHours * MaxPower, 2);
 
-                            ChargingSession.AddEnergyMeterValue(new Timestamped<Decimal>(Now, Consumption));
+                            ChargingSession.AddEnergyMeterValue(new EnergyMeteringValue(Now, Consumption));
 
-                            var _ChargeDetailRecord  = new ChargeDetailRecord(Id:                        ChargeDetailRecord_Id.Parse(__ChargingSession.Id.ToString()),
-                                                                              SessionId:                 __ChargingSession.Id,
-                                                                              Reservation:               __ChargingSession.Reservation,
-                                                                              EVSEId:                    __ChargingSession.EVSEId,
-                                                                              EVSE:                      __ChargingSession.EVSE,
-                                                                              ChargingStation:           __ChargingSession.EVSE?.ChargingStation,
-                                                                              ChargingPool:              __ChargingSession.EVSE?.ChargingStation?.ChargingPool,
-                                                                              ChargingStationOperator:   __ChargingSession.EVSE?.Operator,
-                                                                              ChargingProduct:           __ChargingSession.ChargingProduct,
-                                                                              ProviderIdStart:           __ChargingSession.ProviderIdStart,
-                                                                              ProviderIdStop:            __ChargingSession.ProviderIdStop,
-                                                                              SessionTime:               __ChargingSession.SessionTime,
+                            var _ChargeDetailRecord  = new ChargeDetailRecord(
+                                                           Id:                        ChargeDetailRecord_Id.Parse(__ChargingSession.Id.ToString()),
+                                                           SessionId:                 __ChargingSession.Id,
+                                                           Reservation:               __ChargingSession.Reservation,
+                                                           EVSEId:                    __ChargingSession.EVSEId,
+                                                           EVSE:                      __ChargingSession.EVSE,
+                                                           ChargingStation:           __ChargingSession.EVSE?.ChargingStation,
+                                                           ChargingPool:              __ChargingSession.EVSE?.ChargingStation?.ChargingPool,
+                                                           ChargingStationOperator:   __ChargingSession.EVSE?.Operator,
+                                                           ChargingProduct:           __ChargingSession.ChargingProduct,
+                                                           ProviderIdStart:           __ChargingSession.ProviderIdStart,
+                                                           ProviderIdStop:            __ChargingSession.ProviderIdStop,
+                                                           SessionTime:               __ChargingSession.SessionTime,
 
-                                                                              AuthenticationStart:       __ChargingSession.AuthenticationStart,
-                                                                              AuthenticationStop:        __ChargingSession.AuthenticationStop,
+                                                           AuthenticationStart:       __ChargingSession.AuthenticationStart,
+                                                           AuthenticationStop:        __ChargingSession.AuthenticationStop,
 
-                                                                              EnergyMeterId:             EnergyMeterId,
-                                                                              EnergyMeteringValues:      __ChargingSession.EnergyMeteringValues
-                                                                              //SignedMeteringValues:      ChargingSession.EnergyMeteringValues.Select(metervalue =>
-                                                                              //                               new SignedMeteringValue(metervalue.Timestamp,
-                                                                              //                                                       metervalue.Value,
-                                                                              //                                                       EnergyMeterId.Value,
-                                                                              //                                                       Id,
-                                                                              //                                                       _ChargingSession.IdentificationStart,
-                                                                              //                                                       PublicKeyRing.First()).
-                                                                              //                                   Sign(SecretKeyRing.First(),
-                                                                              //                                        Passphrase))
-                                                                                                               //                      PublicKeys.First().First()).
-                                                                                                               //  Sign(SecretKeys.First().First(),
-                                                                                                               //       Passphrase),
-
-
-                                                                             );
+                                                           EnergyMeterId:             EnergyMeterId,
+                                                           EnergyMeteringValues:      __ChargingSession.EnergyMeteringValues
+                                                       );
 
                             // Will do: Status = EVSEStatusType.Available
                             ChargingSession = null;
@@ -2289,7 +2278,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ChargingStation? ChargingStation => throw new NotImplementedException();
 
-        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
+        public ReactiveSet<OpenDataLicense> DataLicenses => throw new NotImplementedException();
 
         public EnergyMeter? EnergyMeter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

@@ -1938,7 +1938,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ReactiveSet<Brand> Brands => throw new NotImplementedException();
 
-        public ReactiveSet<DataLicense> DataLicenses => throw new NotImplementedException();
+        public ReactiveSet<OpenDataLicense> DataLicenses => throw new NotImplementedException();
 
         public Languages? LocationLanguage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Address EntranceAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

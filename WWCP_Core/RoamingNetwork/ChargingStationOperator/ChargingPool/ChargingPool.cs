@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The license of the charging pool data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<DataLicense>  DataLicenses           { get; }
+        public ReactiveSet<OpenDataLicense>  DataLicenses           { get; }
 
 
         #region LocationLanguage
@@ -1100,7 +1100,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.DataLicenses                       = new ReactiveSet<DataLicense>();
+            this.DataLicenses                       = new ReactiveSet<OpenDataLicense>();
             this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 

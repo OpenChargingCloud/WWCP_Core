@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         Address Address { get; set; }
         ChargeDetailRecordFilterDelegate ChargeDetailRecordFilter { get; }
-        ReactiveSet<DataLicense> DataLicenses { get; set; }
+        ReactiveSet<OpenDataLicense> DataLicenses { get; set; }
         Boolean DisableAuthentication { get; set; }
         Boolean DisablePushAdminStatus { get; set; }
         Boolean DisablePushStatus { get; set; }

@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The license of the charging station data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<DataLicense>                         DataLicenses    { get; }
+        public ReactiveSet<OpenDataLicense>                         DataLicenses    { get; }
 
 
         #region Address
@@ -1284,7 +1284,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.DataLicenses                        = new ReactiveSet<DataLicense>();
+            this.DataLicenses                        = new ReactiveSet<OpenDataLicense>();
             this.DataLicenses.OnSetChanged          += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1695,6 +1695,7 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<AddEVSEResult> CreateEVSE(EVSE_Id                             Id,
                                                     I18NString?                         Name                         = null,
                                                     I18NString?                         Description                  = null,
+                                                    IEnumerable<SocketOutlet>?          SocketOutlets                = null,
                                                     Action<IEVSE>?                      Configurator                 = null,
                                                     RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
                                                     Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
@@ -1725,49 +1726,53 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
                 var now   = Timestamp.Now;
-                var evse  = new EVSE(Id,
-                                     this,
 
-                                     InitialAdminStatus,
-                                     InitialStatus,
-                                     MaxAdminStatusScheduleSize,
-                                     MaxStatusScheduleSize,
+                var evse  = new EVSE(
+                                Id:                           Id,
+                                ChargingStation:              this,
 
-                                     Name,
-                                     Description,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
+                                InitialAdminStatus:           InitialAdminStatus,
+                                InitialStatus:                InitialStatus,
+                                MaxAdminStatusScheduleSize:   MaxAdminStatusScheduleSize,
+                                MaxStatusScheduleSize:        MaxStatusScheduleSize,
 
-                                     null,
-                                     null,
-                                     null,
-                                     null,
+                                Name:                         Name,
+                                Description:                  Description,
 
-                                     Configurator,
-                                     RemoteEVSECreator,
+                                PhotoURLs:                    null,
+                                Brands:                       null,
+                                DataLicenses:                 null,
+                                ChargingModes:                null,
+                                ChargingTariffs:              null,
+                                CurrentType:                  null,
+                                AverageVoltage:               null,
+                                MaxCurrent:                   null,
+                                MaxCurrentRealTime:           null,
+                                MaxCurrentPrognoses:          null,
+                                MaxPower:                     null,
+                                MaxPowerRealTime:             null,
+                                MaxPowerPrognoses:            null,
+                                MaxCapacity:                  null,
+                                MaxCapacityRealTime:          null,
+                                MaxCapacityPrognoses:         null,
+                                EnergyMix:                    null,
+                                EnergyMixRealTime:            null,
+                                EnergyMixPrognoses:           null,
+                                EnergyMeter:                  null,
+                                IsFreeOfCharge:               null,
+                                SocketOutlets:                SocketOutlets,
 
-                                     null,
-                                     null);
+                                ChargingSession:              null,
+                                LastStatusUpdate:             null,
+                                DataSource:                   null,
+                                LastChange:                   null,
+
+                                Configurator:                 null,
+                                RemoteEVSECreator:            RemoteEVSECreator,
+
+                                CustomData:                   null,
+                                InternalData:                 null
+                            );
 
                 if (EVSEAddition.SendVoting(now, this, evse) &&
                     evses.TryAdd(evse))
@@ -1833,6 +1838,7 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id                             Id,
                                                                     I18NString?                         Name                         = null,
                                                                     I18NString?                         Description                  = null,
+                                                                    IEnumerable<SocketOutlet>?          SocketOutlets                = null,
                                                                     Action<IEVSE>?                      Configurator                 = null,
                                                                     RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
                                                                     Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
@@ -1866,6 +1872,7 @@ namespace cloud.charging.open.protocols.WWCP
                     var result = await CreateEVSE(Id,
                                                   Name,
                                                   Description,
+                                                  SocketOutlets,
                                                   Configurator,
                                                   RemoteEVSECreator,
                                                   InitialAdminStatus,

@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         new RoamingNetwork_Id       Id                          { get; }
 
-        ReactiveSet<DataLicense>    DataLicenses                { get; }
+        ReactiveSet<OpenDataLicense>    DataLicenses                { get; }
 
 
 

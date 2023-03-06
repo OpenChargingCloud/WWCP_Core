@@ -164,13 +164,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private ReactiveSet<DataLicense> dataLicenses;
+        private ReactiveSet<OpenDataLicense> dataLicenses;
 
         /// <summary>
         /// The license of the roaming network data.
         /// </summary>
         [Mandatory]
-        public ReactiveSet<DataLicense> DataLicenses
+        public ReactiveSet<OpenDataLicense> DataLicenses
             => dataLicenses;
 
         #endregion
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.dataLicenses                                       = new ReactiveSet<DataLicense>();
+            this.dataLicenses                                       = new ReactiveSet<OpenDataLicense>();
 
             this.empRoamingProviders                                = new ConcurrentDictionary<EMPRoamingProvider_Id,                IEMPRoamingProvider>();
             this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32,                               IEMPRoamingProvider>();

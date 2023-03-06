@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The license of the charging station data.
         /// </summary>
-        ReactiveSet<DataLicense>                DataLicenses                { get; }
+        ReactiveSet<OpenDataLicense>                DataLicenses                { get; }
 
 
         /// <summary>
@@ -442,6 +442,7 @@ namespace cloud.charging.open.protocols.WWCP
         Task<AddEVSEResult> CreateEVSE(EVSE_Id                             Id,
                                        I18NString?                         Name                         = null,
                                        I18NString?                         Description                  = null,
+                                       IEnumerable<SocketOutlet>?          SocketOutlets                = null,
                                        Action<IEVSE>?                      Configurator                 = null,
                                        RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
                                        Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
@@ -462,6 +463,7 @@ namespace cloud.charging.open.protocols.WWCP
         Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id                             Id,
                                                        I18NString?                         Name                         = null,
                                                        I18NString?                         Description                  = null,
+                                                       IEnumerable<SocketOutlet>?          SocketOutlets                = null,
                                                        Action<IEVSE>?                      Configurator                 = null,
                                                        RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
                                                        Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,

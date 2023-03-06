@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<DataLicense>                 DataLicenses            { get; }
+        public ReactiveSet<OpenDataLicense>                 DataLicenses            { get; }
 
         /// <summary>
         /// An enumeration of all supported charging modes of this EVSE.
@@ -805,7 +805,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     ReactiveSet<URL>?                   PhotoURLs                    = null,
                     ReactiveSet<Brand>?                 Brands                       = null,
-                    ReactiveSet<DataLicense>?           DataLicenses                 = null,
+                    ReactiveSet<OpenDataLicense>?           DataLicenses                 = null,
                     ReactiveSet<ChargingModes>?         ChargingModes                = null,
                     ReactiveSet<ChargingTariff>?        ChargingTariffs              = null,
                     CurrentTypes?                       CurrentType                  = null,
@@ -878,8 +878,8 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.DataLicenses                       = DataLicenses is null
-                                                          ? new ReactiveSet<DataLicense>()
-                                                          : new ReactiveSet<DataLicense>(DataLicenses);
+                                                          ? new ReactiveSet<OpenDataLicense>()
+                                                          : new ReactiveSet<OpenDataLicense>(DataLicenses);
             this.DataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
