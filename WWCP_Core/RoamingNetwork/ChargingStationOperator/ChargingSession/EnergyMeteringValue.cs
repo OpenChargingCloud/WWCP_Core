@@ -17,13 +17,9 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
-
 using Newtonsoft.Json.Linq;
 
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using Org.BouncyCastle.Bcpg;
-using System.Runtime.CompilerServices;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
