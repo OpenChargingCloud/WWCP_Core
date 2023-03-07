@@ -2278,7 +2278,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ChargingStation? ChargingStation => throw new NotImplementedException();
 
-        public ReactiveSet<OpenDataLicense> DataLicenses => throw new NotImplementedException();
+        public ReactiveSet<OpenDataLicense> OpenDataLicenses => throw new NotImplementedException();
 
         public EnergyMeter? EnergyMeter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

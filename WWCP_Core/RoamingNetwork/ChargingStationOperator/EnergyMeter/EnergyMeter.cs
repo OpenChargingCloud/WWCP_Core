@@ -778,7 +778,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => EnergyMeter is not null &&
 
-               Id.Equals(EnergyMeter.Id) &&
+               Id.                    Equals(EnergyMeter.Id) &&
                LastUpdate.ToIso8601().Equals(EnergyMeter.LastUpdate.ToIso8601()) &&
 
              ((Model                     is     null &&  EnergyMeter.Model                     is     null) ||
@@ -799,7 +799,7 @@ namespace cloud.charging.open.protocols.WWCP
             ((!ManufacturerURL.          HasValue    && !EnergyMeter.ManufacturerURL.          HasValue)    ||
              ( ManufacturerURL.          HasValue    &&  EnergyMeter.ManufacturerURL.          HasValue    && ManufacturerURL.          Value.Equals(EnergyMeter.ManufacturerURL.          Value))) &&
 
-            ((!PublicKeyCertificateChain.HasValue    &&  EnergyMeter.PublicKeyCertificateChain.HasValue)    ||
+            ((!PublicKeyCertificateChain.HasValue    && !EnergyMeter.PublicKeyCertificateChain.HasValue)    ||
               (PublicKeyCertificateChain.HasValue    &&  EnergyMeter.PublicKeyCertificateChain.HasValue    && PublicKeyCertificateChain.Value.Equals(EnergyMeter.PublicKeyCertificateChain.Value))) &&
 
              ((Description               is     null &&  EnergyMeter.Description               is     null) ||
@@ -809,7 +809,7 @@ namespace cloud.charging.open.protocols.WWCP
                PublicKeys.           All(publicKey            => EnergyMeter.PublicKeys.           Contains(publicKey)) &&
 
                TransparencySoftwares.Count().Equals(EnergyMeter.TransparencySoftwares.Count())                          &&
-               TransparencySoftwares.All(transparencySoftware => EnergyMeter.TransparencySoftwares.Contains(transparencySoftware));
+               TransparencySoftwares.All(transparencySoftwareStatus => EnergyMeter.TransparencySoftwares.Contains(transparencySoftwareStatus));
 
         #endregion
 
