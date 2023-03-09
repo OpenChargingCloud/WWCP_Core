@@ -7266,13 +7266,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
+            Timestamp         ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            CancellationToken ??= new CancellationTokenSource().Token;
+            EventTrackingId   ??= EventTracking_Id.New;
+            RequestTimeout    ??= this.RequestTimeout;
 
             #endregion
 
@@ -7345,7 +7342,7 @@ namespace cloud.charging.open.protocols.WWCP
                                              VerifyResult:  result2                   => result2.Result == AuthStartResultTypes.Authorized ||
                                                                                          result2.Result == AuthStartResultTypes.Blocked,
 
-                                             Timeout:       RequestTimeout ?? this.RequestTimeout,
+                                             Timeout:       RequestTimeout.Value,
 
                                              OnException:   null,
 
@@ -7494,13 +7491,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            EventTrackingId ??= EventTracking_Id.New;
+            Timestamp         ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            CancellationToken ??= new CancellationTokenSource().Token;
+            EventTrackingId   ??= EventTracking_Id.New;
+            RequestTimeout    ??= this.RequestTimeout;
 
             #endregion
 
@@ -7880,20 +7874,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            ChargeDetailRecords ??= Array.Empty<ChargeDetailRecord>();
-
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
+            Timestamp         ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            CancellationToken ??= new CancellationTokenSource().Token;
+            EventTrackingId   ??= EventTracking_Id.New;
+            RequestTimeout    ??= this.RequestTimeout;
 
             #endregion
 
@@ -7933,11 +7917,13 @@ namespace cloud.charging.open.protocols.WWCP
 
                 Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
                 Runtime  = Endtime - StartTime;
-                result   = SendCDRsResult.AdminDown(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                    Id,
-                                                    this as ISendChargeDetailRecords,
-                                                    ChargeDetailRecords,
-                                                    Runtime: Runtime);
+                result   = SendCDRsResult.AdminDown(
+                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                               Id,
+                               this as ISendChargeDetailRecords,
+                               ChargeDetailRecords,
+                               Runtime: Runtime
+                           );
 
             }
 
@@ -7950,11 +7936,13 @@ namespace cloud.charging.open.protocols.WWCP
 
                 Endtime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
                 Runtime  = Endtime - StartTime;
-                result   = SendCDRsResult.NoOperation(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
-                                                      Id,
-                                                      this as ISendChargeDetailRecords,
-                                                      ChargeDetailRecords,
-                                                      Runtime: Runtime);
+                result   = SendCDRsResult.NoOperation(
+                               org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
+                               Id,
+                               this as ISendChargeDetailRecords,
+                               ChargeDetailRecords,
+                               Runtime: Runtime
+                           );
 
             }
 

@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -44,12 +42,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The entity asking for an authorization.
         /// </summary>
-        public ISendAuthorizeStartStop      ISendAuthorizeStartStop       { get; }
+        public ISendAuthorizeStartStop?     ISendAuthorizeStartStop       { get; }
 
         /// <summary>
         /// The entity giving an authorization.
         /// </summary>
-        public IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop    { get; }
+        public IReceiveAuthorizeStartStop?  IReceiveAuthorizeStartStop    { get; }
 
         /// <summary>
         /// The result of the authorize stop request.
@@ -74,7 +72,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional additional message.
         /// </summary>
-        public I18NString                   AdditionalInfo                { get; }
+        public I18NString?                  AdditionalInfo                { get; }
+
+        /// <summary>
+        /// Number of transmission retries.
+        /// </summary>
+        public Byte                         NumberOfRetries               { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -99,16 +102,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private AuthStopResult(IId                          AuthorizatorId,
                                AuthStopResultTypes          Result,
-                               ISendAuthorizeStartStop      ISendAuthorizeStartStop      = null,
-                               IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop   = null,
+                               ISendAuthorizeStartStop?     ISendAuthorizeStartStop      = null,
+                               IReceiveAuthorizeStartStop?  IReceiveAuthorizeStartStop   = null,
 
                                ChargingSession_Id?          SessionId                    = null,
                                EMobilityProvider_Id?        ProviderId                   = null,
-                               I18NString                   Description                  = null,
-                               I18NString                   AdditionalInfo               = null,
+                               I18NString?                  Description                  = null,
+                               I18NString?                  AdditionalInfo               = null,
+                               Byte                         NumberOfRetries              = 0,
                                TimeSpan?                    Runtime                      = null)
         {
 
@@ -120,6 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ProviderId                  = ProviderId     ?? new EMobilityProvider_Id?();
             this.Description                 = Description    ?? I18NString.Empty;
             this.AdditionalInfo              = AdditionalInfo;
+            this.NumberOfRetries             = NumberOfRetries;
             this.Runtime                     = Runtime;
 
         }
@@ -139,15 +145,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         protected AuthStopResult(IId                      AuthorizatorId,
                                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                                  AuthStopResultTypes      Result,
-                                 ChargingSession_Id?      SessionId        = null,
-                                 EMobilityProvider_Id?    ProviderId       = null,
-                                 I18NString               Description      = null,
-                                 I18NString               AdditionalInfo   = null,
-                                 TimeSpan?                Runtime          = null)
+                                 ChargingSession_Id?      SessionId         = null,
+                                 EMobilityProvider_Id?    ProviderId        = null,
+                                 I18NString?              Description       = null,
+                                 I18NString?              AdditionalInfo    = null,
+                                 Byte                     NumberOfRetries   = 0,
+                                 TimeSpan?                Runtime           = null)
 
             : this(AuthorizatorId,
                    Result,
@@ -157,6 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+                   NumberOfRetries,
                    Runtime)
 
         { }
@@ -176,15 +185,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         protected AuthStopResult(IId                         AuthorizatorId,
                                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                                  AuthStopResultTypes         Result,
-                                 ChargingSession_Id?         SessionId        = null,
-                                 EMobilityProvider_Id?       ProviderId       = null,
-                                 I18NString                  Description      = null,
-                                 I18NString                  AdditionalInfo   = null,
-                                 TimeSpan?                   Runtime          = null)
+                                 ChargingSession_Id?         SessionId         = null,
+                                 EMobilityProvider_Id?       ProviderId        = null,
+                                 I18NString?                 Description       = null,
+                                 I18NString?                 AdditionalInfo    = null,
+                                 Byte                        NumberOfRetries   = 0,
+                                 TimeSpan?                   Runtime           = null)
 
             : this(AuthorizatorId,
                    Result,
@@ -194,6 +205,7 @@ namespace cloud.charging.open.protocols.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+                   NumberOfRetries,
                    Runtime)
 
         { }
@@ -218,16 +230,16 @@ namespace cloud.charging.open.protocols.WWCP
             Unspecified(IId                      AuthorizatorId,
                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                         ChargingSession_Id?      SessionId     = null,
-                        I18NString               Description   = null,
+                        I18NString?              Description   = null,
                         TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.Unspecified,
-                                      SessionId,
-                                      Description:  Description,
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.Unspecified,
+                        SessionId,
+                        Description:  Description,
+                        Runtime:      Runtime);
 
 
 
@@ -244,16 +256,16 @@ namespace cloud.charging.open.protocols.WWCP
             Unspecified(IId                         AuthorizatorId,
                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                         ChargingSession_Id?         SessionId     = null,
-                        I18NString                  Description   = null,
+                        I18NString?                 Description   = null,
                         TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.Unspecified,
-                                      SessionId,
-                                      Description:  Description,
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.Unspecified,
+                        SessionId,
+                        Description:  Description,
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -272,16 +284,16 @@ namespace cloud.charging.open.protocols.WWCP
             AdminDown(IId                      AuthorizatorId,
                       ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                       ChargingSession_Id?      SessionId     = null,
-                      I18NString               Description   = null,
+                      I18NString?              Description   = null,
                       TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.AdminDown,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.AdminDown,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
+                        Runtime:      Runtime);
 
 
 
@@ -298,16 +310,16 @@ namespace cloud.charging.open.protocols.WWCP
             AdminDown(IId                         AuthorizatorId,
                       IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                       ChargingSession_Id?         SessionId     = null,
-                      I18NString                  Description   = null,
+                      I18NString?                 Description   = null,
                       TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.AdminDown,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.AdminDown,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "The authentication service was disabled by the administrator!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -326,16 +338,16 @@ namespace cloud.charging.open.protocols.WWCP
             UnknownLocation(IId                      AuthorizatorId,
                             ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                             ChargingSession_Id?      SessionId     = null,
-                            I18NString               Description   = null,
+                            I18NString?              Description   = null,
                             TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.UnknownLocation,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.UnknownLocation,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
+                        Runtime:      Runtime);
 
 
 
@@ -352,16 +364,16 @@ namespace cloud.charging.open.protocols.WWCP
             UnknownLocation(IId                         AuthorizatorId,
                             IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                             ChargingSession_Id?         SessionId     = null,
-                            I18NString                  Description   = null,
+                            I18NString?                 Description   = null,
                             TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.UnknownLocation,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.UnknownLocation,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Unknown location!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -380,16 +392,16 @@ namespace cloud.charging.open.protocols.WWCP
             InvalidToken(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                          ChargingSession_Id?      SessionId     = null,
-                         I18NString               Description   = null,
+                         I18NString?              Description   = null,
                          TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.InvalidToken,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.InvalidToken,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
+                        Runtime:      Runtime);
 
 
 
@@ -406,16 +418,16 @@ namespace cloud.charging.open.protocols.WWCP
             InvalidToken(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                          ChargingSession_Id?         SessionId     = null,
-                         I18NString                  Description   = null,
+                         I18NString?                 Description   = null,
                          TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.InvalidToken,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.InvalidToken,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid token!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -434,16 +446,16 @@ namespace cloud.charging.open.protocols.WWCP
             InvalidSessionId(IId                      AuthorizatorId,
                              ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                              ChargingSession_Id?      SessionId     = null,
-                             I18NString               Description   = null,
+                             I18NString?              Description   = null,
                              TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.InvalidSessionId,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.InvalidSessionId,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
+                        Runtime:      Runtime);
 
 
 
@@ -460,16 +472,16 @@ namespace cloud.charging.open.protocols.WWCP
             InvalidSessionId(IId                         AuthorizatorId,
                              IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                              ChargingSession_Id?         SessionId     = null,
-                             I18NString                  Description   = null,
+                             I18NString?                 Description   = null,
                              TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.InvalidSessionId,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.InvalidSessionId,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Invalid session identification!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -488,16 +500,16 @@ namespace cloud.charging.open.protocols.WWCP
             AlreadyStopped(IId                      AuthorizatorId,
                            ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                            ChargingSession_Id?      SessionId     = null,
-                           I18NString               Description   = null,
+                           I18NString?              Description   = null,
                            TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.AlreadyStopped,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.AlreadyStopped,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
+                        Runtime:      Runtime);
 
 
 
@@ -514,16 +526,16 @@ namespace cloud.charging.open.protocols.WWCP
             AlreadyStopped(IId                         AuthorizatorId,
                            IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                            ChargingSession_Id?         SessionId     = null,
-                           I18NString                  Description   = null,
+                           I18NString?                 Description   = null,
                            TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.AlreadyStopped,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.AlreadyStopped,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Already stopped!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -542,16 +554,16 @@ namespace cloud.charging.open.protocols.WWCP
             OutOfService(IId                      AuthorizatorId,
                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                          ChargingSession_Id?      SessionId     = null,
-                         I18NString               Description   = null,
+                         I18NString?              Description   = null,
                          TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.OutOfService,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.OutOfService,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
+                        Runtime:      Runtime);
 
 
 
@@ -568,16 +580,16 @@ namespace cloud.charging.open.protocols.WWCP
             OutOfService(IId                         AuthorizatorId,
                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                          ChargingSession_Id?         SessionId     = null,
-                         I18NString                  Description   = null,
+                         I18NString?                 Description   = null,
                          TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.OutOfService,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.OutOfService,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Out of service!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -597,21 +609,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             Authorized(IId                      AuthorizatorId,
                        ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                       ChargingSession_Id?      SessionId        = null,
-                       EMobilityProvider_Id?    ProviderId       = null,
-                       I18NString               Description      = null,
-                       I18NString               AdditionalInfo   = null,
-                       TimeSpan?                Runtime          = null)
+                       ChargingSession_Id?      SessionId         = null,
+                       EMobilityProvider_Id?    ProviderId        = null,
+                       I18NString?              Description       = null,
+                       I18NString?              AdditionalInfo    = null,
+                       Byte                     NumberOfRetries   = 0,
+                       TimeSpan?                Runtime           = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.Authorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description ?? I18NString.Create(Languages.en, "Success!"),
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.Authorized,
+                        SessionId,
+                        ProviderId,
+                        Description ?? I18NString.Create(Languages.en, "Success!"),
+                        AdditionalInfo,
+                        NumberOfRetries,
+                        Runtime);
 
 
 
@@ -629,21 +643,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             Authorized(IId                         AuthorizatorId,
                        IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                       ChargingSession_Id?         SessionId        = null,
-                       EMobilityProvider_Id?       ProviderId       = null,
-                       I18NString                  Description      = null,
-                       I18NString                  AdditionalInfo   = null,
-                       TimeSpan?                   Runtime          = null)
+                       ChargingSession_Id?         SessionId         = null,
+                       EMobilityProvider_Id?       ProviderId        = null,
+                       I18NString?                 Description       = null,
+                       I18NString?                 AdditionalInfo    = null,
+                       Byte                        NumberOfRetries   = 0,
+                       TimeSpan?                   Runtime           = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.Authorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description ?? I18NString.Create(Languages.en, "Success!"),
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.Authorized,
+                        SessionId,
+                        ProviderId,
+                        Description ?? I18NString.Create(Languages.en, "Success!"),
+                        AdditionalInfo,
+                        NumberOfRetries,
+                        Runtime);
 
         #endregion
 
@@ -663,21 +679,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             NotAuthorized(IId                      AuthorizatorId,
                           ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                          ChargingSession_Id?      SessionId        = null,
-                          EMobilityProvider_Id?    ProviderId       = null,
-                          I18NString               Description      = null,
-                          I18NString               AdditionalInfo   = null,
-                          TimeSpan?                Runtime          = null)
+                          ChargingSession_Id?      SessionId         = null,
+                          EMobilityProvider_Id?    ProviderId        = null,
+                          I18NString?              Description       = null,
+                          I18NString?              AdditionalInfo    = null,
+                          Byte                     NumberOfRetries   = 0,
+                          TimeSpan?                Runtime           = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.NotAuthorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description ?? I18NString.Create(Languages.en, "Not Authorized"),
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.NotAuthorized,
+                        SessionId,
+                        ProviderId,
+                        Description ?? I18NString.Create(Languages.en, "Not Authorized"),
+                        AdditionalInfo,
+                        NumberOfRetries,
+                        Runtime);
 
 
 
@@ -695,21 +713,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             NotAuthorized(IId                         AuthorizatorId,
                           IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                          ChargingSession_Id?         SessionId        = null,
-                          EMobilityProvider_Id?       ProviderId       = null,
-                          I18NString                  Description      = null,
-                          I18NString                  AdditionalInfo   = null,
-                          TimeSpan?                   Runtime          = null)
+                          ChargingSession_Id?         SessionId         = null,
+                          EMobilityProvider_Id?       ProviderId        = null,
+                          I18NString?                 Description       = null,
+                          I18NString?                 AdditionalInfo    = null,
+                          Byte                        NumberOfRetries   = 0,
+                          TimeSpan?                   Runtime           = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.NotAuthorized,
-                                      SessionId,
-                                      ProviderId,
-                                      Description ?? I18NString.Create(Languages.en, "Not Authorized"),
-                                      AdditionalInfo,
-                                      Runtime: Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.NotAuthorized,
+                        SessionId,
+                        ProviderId,
+                        Description ?? I18NString.Create(Languages.en, "Not Authorized"),
+                        AdditionalInfo,
+                        NumberOfRetries,
+                        Runtime);
 
         #endregion
 
@@ -729,21 +749,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             Blocked(IId                      AuthorizatorId,
                     ISendAuthorizeStartStop  ISendAuthorizeStartStop,
-                    ChargingSession_Id?      SessionId        = null,
-                    EMobilityProvider_Id?    ProviderId       = null,
-                    I18NString               Description      = null,
-                    I18NString               AdditionalInfo   = null,
-                    TimeSpan?                Runtime          = null)
+                    ChargingSession_Id?      SessionId         = null,
+                    EMobilityProvider_Id?    ProviderId        = null,
+                    I18NString?              Description       = null,
+                    I18NString?              AdditionalInfo    = null,
+                    Byte                     NumberOfRetries   = 0,
+                    TimeSpan?                Runtime           = null)
 
 
-            => new AuthStopResult(AuthorizatorId,
-                                  ISendAuthorizeStartStop,
-                                  AuthStopResultTypes.Blocked,
-                                  SessionId,
-                                  ProviderId,
-                                  Description ?? I18NString.Create(Languages.en, "Blocked!"),
-                                  AdditionalInfo,
-                                  Runtime: Runtime);
+            => new (AuthorizatorId,
+                    ISendAuthorizeStartStop,
+                    AuthStopResultTypes.Blocked,
+                    SessionId,
+                    ProviderId,
+                    Description ?? I18NString.Create(Languages.en, "Blocked!"),
+                    AdditionalInfo,
+                    NumberOfRetries,
+                    Runtime);
 
 
 
@@ -761,21 +783,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             Blocked(IId                         AuthorizatorId,
                     IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
-                    ChargingSession_Id?         SessionId        = null,
-                    EMobilityProvider_Id?       ProviderId       = null,
-                    I18NString                  Description      = null,
-                    I18NString                  AdditionalInfo   = null,
-                    TimeSpan?                   Runtime          = null)
+                    ChargingSession_Id?         SessionId         = null,
+                    EMobilityProvider_Id?       ProviderId        = null,
+                    I18NString?                 Description       = null,
+                    I18NString?                 AdditionalInfo    = null,
+                    Byte                        NumberOfRetries   = 0,
+                    TimeSpan?                   Runtime           = null)
 
 
-            => new AuthStopResult(AuthorizatorId,
-                                  IReceiveAuthorizeStartStop,
-                                  AuthStopResultTypes.Blocked,
-                                  SessionId,
-                                  ProviderId,
-                                  Description ?? I18NString.Create(Languages.en, "Blocked!"),
-                                  AdditionalInfo,
-                                  Runtime: Runtime);
+            => new (AuthorizatorId,
+                    IReceiveAuthorizeStartStop,
+                    AuthStopResultTypes.Blocked,
+                    SessionId,
+                    ProviderId,
+                    Description ?? I18NString.Create(Languages.en, "Blocked!"),
+                    AdditionalInfo,
+                    NumberOfRetries,
+                    Runtime);
 
         #endregion
 
@@ -794,16 +818,16 @@ namespace cloud.charging.open.protocols.WWCP
             CommunicationTimeout(IId                      AuthorizatorId,
                                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                                  ChargingSession_Id?      SessionId     = null,
-                                 I18NString               Description   = null,
+                                 I18NString?              Description   = null,
                                  TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.CommunicationTimeout,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.CommunicationTimeout,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
+                        Runtime:      Runtime);
 
 
 
@@ -820,16 +844,16 @@ namespace cloud.charging.open.protocols.WWCP
             CommunicationTimeout(IId                         AuthorizatorId,
                                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                                  ChargingSession_Id?         SessionId     = null,
-                                 I18NString                  Description   = null,
+                                 I18NString?                 Description   = null,
                                  TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.CommunicationTimeout,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.CommunicationTimeout,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Communication timeout!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -848,16 +872,16 @@ namespace cloud.charging.open.protocols.WWCP
             StopChargingTimeout(IId                      AuthorizatorId,
                                 ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                                 ChargingSession_Id?      SessionId     = null,
-                                I18NString               Description   = null,
+                                I18NString?              Description   = null,
                                 TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.StopChargingTimeout,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.StopChargingTimeout,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
+                        Runtime:      Runtime);
 
 
 
@@ -874,16 +898,16 @@ namespace cloud.charging.open.protocols.WWCP
             StopChargingTimeout(IId                         AuthorizatorId,
                                 IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                                 ChargingSession_Id?         SessionId     = null,
-                                I18NString                  Description   = null,
+                                I18NString?                 Description   = null,
                                 TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.StopChargingTimeout,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.StopChargingTimeout,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Stop charging timeout!"),
+                        Runtime:      Runtime);
 
         #endregion
 
@@ -902,16 +926,16 @@ namespace cloud.charging.open.protocols.WWCP
             Error(IId                      AuthorizatorId,
                   ISendAuthorizeStartStop  ISendAuthorizeStartStop,
                   ChargingSession_Id?      SessionId     = null,
-                  I18NString               Description   = null,
+                  I18NString?              Description   = null,
                   TimeSpan?                Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      ISendAuthorizeStartStop,
-                                      AuthStopResultTypes.Error,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        ISendAuthorizeStartStop,
+                        AuthStopResultTypes.Error,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
+                        Runtime:      Runtime);
 
 
 
@@ -928,16 +952,16 @@ namespace cloud.charging.open.protocols.WWCP
             Error(IId                         AuthorizatorId,
                   IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
                   ChargingSession_Id?         SessionId     = null,
-                  I18NString                  Description   = null,
+                  I18NString?                 Description   = null,
                   TimeSpan?                   Runtime       = null)
 
 
-                => new AuthStopResult(AuthorizatorId,
-                                      IReceiveAuthorizeStartStop,
-                                      AuthStopResultTypes.Error,
-                                      SessionId,
-                                      Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
-                                      Runtime:      Runtime);
+                => new (AuthorizatorId,
+                        IReceiveAuthorizeStartStop,
+                        AuthStopResultTypes.Error,
+                        SessionId,
+                        Description:  Description ?? I18NString.Create(Languages.en, "Error!"),
+                        Runtime:      Runtime);
 
         #endregion
 
