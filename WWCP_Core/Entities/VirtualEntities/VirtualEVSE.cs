@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     public static class VirtualEVSEExtensions
     {
 
-        #region CreateVirtualEVSE(this ChargingStation, EVSEId = null, EVSEConfigurator = null, VirtualEVSEConfigurator = null, OnSuccess = null, OnError = null)
+        #region CreateVirtualEVSE(this ChargingStation, Id = null, EVSEConfigurator = null, VirtualEVSEConfigurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create a new virtual charging station.
@@ -52,46 +52,119 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="OnSuccess">An optional delegate for reporting success.</param>
         /// <param name="OnError">An optional delegate for reporting an error.</param>
         public static Task<AddEVSEResult> CreateVirtualEVSE(this IChargingStation               ChargingStation,
-                                                            EVSE_Id                             EVSEId,
-                                                            I18NString?                         Name                      = null,
-                                                            I18NString?                         Description               = null,
-                                                            EVSEAdminStatusTypes?               InitialAdminStatus        = null,
-                                                            EVSEStatusTypes?                    InitialStatus             = null,
-                                                            IEnumerable<SocketOutlet>?          SocketOutlets             = null,
-                                                            EnergyMeter_Id?                     EnergyMeterId             = null,
-                                                            String                              EllipticCurve             = "P-256",
-                                                            ECPrivateKeyParameters?             PrivateKey                = null,
-                                                            PublicKeyCertificates?              PublicKeyCertificates     = null,
-                                                            TimeSpan?                           SelfCheckTimeSpan         = null,
-                                                            UInt16                              MaxAdminStatusListSize    = VirtualEVSE.DefaultMaxAdminStatusListSize,
-                                                            UInt16                              MaxStatusListSize         = VirtualEVSE.DefaultMaxStatusListSize,
-                                                            Action<IEVSE>?                      EVSEConfigurator          = null,
-                                                            Action<VirtualEVSE>?                VirtualEVSEConfigurator   = null,
-                                                            Action<IEVSE>?                      OnSuccess                 = null,
-                                                            Action<IChargingStation, EVSE_Id>?  OnError                   = null)
+                                                            EVSE_Id                             Id,
+                                                            I18NString?                         Name                         = null,
+                                                            I18NString?                         Description                  = null,
+
+                                                            Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                                            Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                                            UInt16                              MaxAdminStatusListSize       = VirtualEVSE.DefaultMaxAdminStatusListSize,
+                                                            UInt16                              MaxStatusListSize            = VirtualEVSE.DefaultMaxStatusListSize,
+
+                                                            IEnumerable<URL>?                   PhotoURLs                    = null,
+                                                            IEnumerable<Brand>?                 Brands                       = null,
+                                                            IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
+                                                            IEnumerable<ChargingModes>?         ChargingModes                = null,
+                                                            IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
+                                                            CurrentTypes?                       CurrentType                  = null,
+                                                            Decimal?                            AverageVoltage               = null,
+                                                            Decimal?                            MaxCurrent                   = null,
+                                                            Timestamped<Decimal>?               MaxCurrentRealTime           = null,
+                                                            IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
+                                                            Decimal?                            MaxPower                     = null,
+                                                            Timestamped<Decimal>?               MaxPowerRealTime             = null,
+                                                            IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
+                                                            Decimal?                            MaxCapacity                  = null,
+                                                            Timestamped<Decimal>?               MaxCapacityRealTime          = null,
+                                                            IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
+                                                            EnergyMix?                          EnergyMix                    = null,
+                                                            Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
+                                                            EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
+                                                            EnergyMeter?                        EnergyMeter                  = null,
+                                                            Boolean?                            IsFreeOfCharge               = null,
+                                                            IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+
+                                                            ChargingSession?                    ChargingSession              = null,
+                                                            DateTime?                           LastStatusUpdate             = null,
+                                                            String?                             DataSource                   = null,
+                                                            DateTime?                           LastChange                   = null,
+
+                                                            Action<IEVSE>?                      Configurator                 = null,
+                                                            Action<VirtualEVSE>?                VirtualEVSEConfigurator      = null,
+                                                            RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+
+                                                            JObject?                            CustomData                   = null,
+                                                            UserDefinedDictionary?              InternalData                 = null,
+
+                                                            String                              EllipticCurve                = "P-256",
+                                                            ECPrivateKeyParameters?             PrivateKey                   = null,
+                                                            PublicKeyCertificates?              PublicKeyCertificates        = null,
+                                                            TimeSpan?                           SelfCheckTimeSpan            = null,
+
+                                                            Action<IEVSE>?                      OnSuccess                    = null,
+                                                            Action<IChargingStation, EVSE_Id>?  OnError                      = null)
 
             => ChargingStation.CreateEVSE(
-                   EVSEId,
+                   Id,
                    Name,
                    Description,
+
+                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus      ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize,
+
+                   PhotoURLs,
+                   Brands,
+                   OpenDataLicenses,
+                   ChargingModes,
+                   ChargingTariffs,
+                   CurrentType,
+                   AverageVoltage,
+                   MaxCurrent,
+                   MaxCurrentRealTime,
+                   MaxCurrentPrognoses,
+                   MaxPower,
+                   MaxPowerRealTime,
+                   MaxPowerPrognoses,
+                   MaxCapacity,
+                   MaxCapacityRealTime,
+                   MaxCapacityPrognoses,
+                   EnergyMix,
+                   EnergyMixRealTime,
+                   EnergyMixPrognoses,
+                   EnergyMeter,
+                   IsFreeOfCharge,
                    SocketOutlets,
-                   EVSEConfigurator,
+
+                   ChargingSession,
+                   LastStatusUpdate,
+                   DataSource,
+                   LastChange,
+
+                   CustomData,
+                   InternalData,
+
+                   Configurator,
                    newEVSE => {
 
                        var virtualevse = new VirtualEVSE(
+
                                              newEVSE.Id,
                                              ChargingStation.RoamingNetwork,
                                              newEVSE.Name,
                                              newEVSE.Description,
-                                             InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
-                                             InitialStatus      ?? EVSEStatusTypes.Available,
-                                             EnergyMeterId,
+
+                                             InitialAdminStatus,
+                                             InitialStatus,
+                                             MaxAdminStatusListSize,
+                                             MaxStatusListSize,
+
+                                             EnergyMeter,
                                              EllipticCurve,
                                              PrivateKey,
                                              PublicKeyCertificates,
-                                             SelfCheckTimeSpan,
-                                             MaxAdminStatusListSize,
-                                             MaxStatusListSize
+                                             SelfCheckTimeSpan
                                          );
 
                        VirtualEVSEConfigurator?.Invoke(virtualevse);
@@ -100,8 +173,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    },
 
-                   OnSuccess: OnSuccess,
-                   OnError:   OnError
+                   OnSuccess,
+                   OnError
+
                );
 
         #endregion
@@ -423,30 +497,30 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public TimeSpan SelfCheckTimeSpan { get; }
 
 
-        #region EnergyMeterId
+        #region EnergyMeter
 
-        private EnergyMeter_Id? _EnergyMeterId;
+        private EnergyMeter? _EnergyMeter;
 
         /// <summary>
         /// The energy meter identification.
         /// </summary>
         [Optional]
-        public EnergyMeter_Id? EnergyMeterId
+        public EnergyMeter? EnergyMeter
         {
 
             get
             {
-                return _EnergyMeterId;
+                return _EnergyMeter;
             }
 
             set
             {
 
                 if (value != null)
-                    SetProperty(ref _EnergyMeterId, value);
+                    SetProperty(ref _EnergyMeter, value);
 
                 else
-                    DeleteProperty(ref _EnergyMeterId);
+                    DeleteProperty(ref _EnergyMeter);
 
             }
 
@@ -466,19 +540,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Id">The unique identification of this EVSE.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
         /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
-        internal VirtualEVSE(EVSE_Id                  Id,
-                             IRoamingNetwork          RoamingNetwork,
-                             I18NString?              Name                     = null,
-                             I18NString?              Description              = null,
-                             EVSEAdminStatusTypes?    InitialAdminStatus       = null,
-                             EVSEStatusTypes?         InitialStatus            = null,
-                             EnergyMeter_Id?          EnergyMeterId            = null,
-                             String?                  EllipticCurve            = null,
-                             ECPrivateKeyParameters?  PrivateKey               = null,
-                             PublicKeyCertificates?   PublicKeyCertificates    = null,
-                             TimeSpan?                SelfCheckTimeSpan        = null,
-                             UInt16?                  MaxAdminStatusListSize   = null,
-                             UInt16?                  MaxStatusListSize        = null)
+        internal VirtualEVSE(EVSE_Id                             Id,
+                             IRoamingNetwork                     RoamingNetwork,
+                             I18NString?                         Name                     = null,
+                             I18NString?                         Description              = null,
+
+                             Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus       = null,
+                             Timestamped<EVSEStatusTypes>?       InitialStatus            = null,
+                             UInt16?                             MaxAdminStatusListSize   = null,
+                             UInt16?                             MaxStatusListSize        = null,
+
+                             EnergyMeter?                        EnergyMeter              = null,
+                             String?                             EllipticCurve            = null,
+                             ECPrivateKeyParameters?             PrivateKey               = null,
+                             PublicKeyCertificates?              PublicKeyCertificates    = null,
+                             TimeSpan?                           SelfCheckTimeSpan        = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -500,11 +576,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-            this.EnergyMeterId          = EnergyMeterId;
+            this._EnergyMeter           = EnergyMeter;
 
             this.SelfCheckTimeSpan      = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
 
-            this.reservations          = new Dictionary<ChargingReservation_Id, ChargingReservation>();
+            this.reservations           = new Dictionary<ChargingReservation_Id, ChargingReservation>();
 
             #endregion
 
@@ -534,7 +610,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                        new JProperty("signCertificates", false)
                                                                    ),
                                                   EVSEId:          Id,
-                                                  EnergyMeterId:   EnergyMeterId);
+                                                  EnergyMeterId:   EnergyMeter?.Id);
 
             }
 
@@ -1872,7 +1948,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                            AuthenticationStart:       __ChargingSession.AuthenticationStart,
                                                            AuthenticationStop:        __ChargingSession.AuthenticationStop,
 
-                                                           EnergyMeterId:             EnergyMeterId,
+                                                           EnergyMeterId:             EnergyMeter?.Id,
                                                            EnergyMeteringValues:      __ChargingSession.EnergyMeteringValues
                                                        );
 
@@ -2280,7 +2356,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ReactiveSet<OpenDataLicense> OpenDataLicenses => throw new NotImplementedException();
 
-        public EnergyMeter? EnergyMeter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }

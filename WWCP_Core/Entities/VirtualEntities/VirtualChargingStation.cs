@@ -529,18 +529,20 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public VirtualEVSE CreateVirtualEVSE(EVSE_Id                        EVSEId,
                                              I18NString?                    Name                     = null,
                                              I18NString?                    Description              = null,
+
                                              EVSEAdminStatusTypes?          InitialAdminStatus       = null,
                                              EVSEStatusTypes?               InitialStatus            = null,
-                                             EnergyMeter_Id?                EnergyMeterId            = null,
+                                             UInt16                         MaxAdminStatusListSize   = VirtualEVSE.DefaultMaxAdminStatusListSize,
+                                             UInt16                         MaxStatusListSize        = VirtualEVSE.DefaultMaxStatusListSize,
+
+                                             EnergyMeter?                   EnergyMeter              = null,
                                              String?                        EllipticCurve            = null,
                                              ECPrivateKeyParameters?        PrivateKey               = null,
                                              PublicKeyCertificates?         PublicKeyCertificates    = null,
                                              TimeSpan?                      SelfCheckTimeSpan        = null,
                                              Action<VirtualEVSE>?           Configurator             = null,
                                              Action<VirtualEVSE>?           OnSuccess                = null,
-                                             Action<VirtualEVSE, EVSE_Id>?  OnError                  = null,
-                                             UInt16                         MaxAdminStatusListSize   = VirtualEVSE.DefaultMaxAdminStatusListSize,
-                                             UInt16                         MaxStatusListSize        = VirtualEVSE.DefaultMaxStatusListSize)
+                                             Action<VirtualEVSE, EVSE_Id>?  OnError                  = null)
         {
 
             #region Initial checks
@@ -561,15 +563,17 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                   RoamingNetwork,
                                                   Name,
                                                   Description,
+
                                                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
                                                   InitialStatus      ?? EVSEStatusTypes.Available,
-                                                  EnergyMeterId,
+                                                  MaxAdminStatusListSize,
+                                                  MaxStatusListSize,
+
+                                                  EnergyMeter,
                                                   EllipticCurve,
                                                   PrivateKey,
                                                   PublicKeyCertificates,
-                                                  SelfCheckTimeSpan,
-                                                  MaxAdminStatusListSize,
-                                                  MaxStatusListSize);
+                                                  SelfCheckTimeSpan);
 
             Configurator?.Invoke(newVirtualEVSE);
 
@@ -2419,18 +2423,18 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public Task<AddEVSEResult> CreateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, IEnumerable<SocketOutlet>? SocketOutlets = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddEVSEResult> CreateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<SocketOutlet>? SocketOutlets = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, IEnumerable<SocketOutlet>? SocketOutlets = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16 MaxAdminStatusScheduleSize = 50, UInt16 MaxStatusScheduleSize = 50, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<SocketOutlet>? SocketOutlets = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }
+
 
         #endregion
-
 
     }
 

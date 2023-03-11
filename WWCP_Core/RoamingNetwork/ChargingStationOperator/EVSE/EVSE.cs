@@ -782,7 +782,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="PhotoURLs">An optional enumeration of links to photos related to the EVSE.</param>
         /// <param name="Brands">An optional enumeration of brands registered for this EVSE.</param>
-        /// <param name="DataLicenses">An optional enumeration of data license(s) of this EVSE.</param>
+        /// <param name="OpenDataLicenses">An optional enumeration of data license(s) of this EVSE.</param>
         /// <param name="ChargingModes">An optional enumeration of the supported charging modes of this EVSE.</param>
         /// 
         /// <param name="DataSource"></param>
@@ -794,20 +794,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="InternalData">Optional internal data.</param>
         public EVSE(EVSE_Id                             Id,
                     ChargingStation                     ChargingStation,
+                    I18NString?                         Name                         = null,
+                    I18NString?                         Description                  = null,
 
                     Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
                     Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
                     UInt16?                             MaxAdminStatusScheduleSize   = null,
                     UInt16?                             MaxStatusScheduleSize        = null,
 
-                    I18NString?                         Name                         = null,
-                    I18NString?                         Description                  = null,
-
-                    ReactiveSet<URL>?                   PhotoURLs                    = null,
-                    ReactiveSet<Brand>?                 Brands                       = null,
-                    ReactiveSet<OpenDataLicense>?           DataLicenses                 = null,
-                    ReactiveSet<ChargingModes>?         ChargingModes                = null,
-                    ReactiveSet<ChargingTariff>?        ChargingTariffs              = null,
+                    IEnumerable<URL>?                   PhotoURLs                    = null,
+                    IEnumerable<Brand>?                 Brands                       = null,
+                    IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
+                    IEnumerable<ChargingModes>?         ChargingModes                = null,
+                    IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
                     CurrentTypes?                       CurrentType                  = null,
                     Decimal?                            AverageVoltage               = null,
                     Decimal?                            MaxCurrent                   = null,
@@ -877,9 +876,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.OpenDataLicenses                       = DataLicenses is null
+            this.OpenDataLicenses                       = OpenDataLicenses is null
                                                           ? new ReactiveSet<OpenDataLicense>()
-                                                          : new ReactiveSet<OpenDataLicense>(DataLicenses);
+                                                          : new ReactiveSet<OpenDataLicense>(OpenDataLicenses);
             this.OpenDataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -966,6 +965,8 @@ namespace cloud.charging.open.protocols.WWCP
             this.energyMixPrognoses                 = EnergyMixPrognoses;
 
             this.energyMeter                        = EnergyMeter;
+
+            this.IsFreeOfCharge                     = IsFreeOfCharge ?? false;
 
             this.SocketOutlets                      = SocketOutlets is null
                                                           ? new ReactiveSet<SocketOutlet>()
