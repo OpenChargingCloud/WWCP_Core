@@ -17,12 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -71,7 +65,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -93,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -116,13 +110,13 @@ namespace cloud.charging.open.protocols.WWCP
         Task<PushEVSEDataResult>
 
             UpdateStaticData(EVSE                EVSE,
-                             String              PropertyName        = null,
-                             Object              OldValue            = null,
-                             Object              NewValue            = null,
+                             String?             PropertyName        = null,
+                             Object?             OldValue            = null,
+                             Object?             NewValue            = null,
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -144,7 +138,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -165,10 +159,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             SetStaticData(IEnumerable<EVSE>   EVSEs,
 
-                          DateTime?           Timestamp          = null,
-                          CancellationToken?  CancellationToken  = null,
-                          EventTracking_Id    EventTrackingId    = null,
-                          TimeSpan?           RequestTimeout     = null);
+                          DateTime?           Timestamp           = null,
+                          CancellationToken?  CancellationToken   = null,
+                          EventTracking_Id?   EventTrackingId     = null,
+                          TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -187,10 +181,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             AddStaticData(IEnumerable<EVSE>   EVSEs,
 
-                          DateTime?           Timestamp          = null,
-                          CancellationToken?  CancellationToken  = null,
-                          EventTracking_Id    EventTrackingId    = null,
-                          TimeSpan?           RequestTimeout     = null);
+                          DateTime?           Timestamp           = null,
+                          CancellationToken?  CancellationToken   = null,
+                          EventTracking_Id?   EventTrackingId     = null,
+                          TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -209,10 +203,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             UpdateStaticData(IEnumerable<EVSE>   EVSEs,
 
-                             DateTime?           Timestamp          = null,
-                             CancellationToken?  CancellationToken  = null,
-                             EventTracking_Id    EventTrackingId    = null,
-                             TimeSpan?           RequestTimeout     = null);
+                             DateTime?           Timestamp           = null,
+                             CancellationToken?  CancellationToken   = null,
+                             EventTracking_Id?   EventTrackingId     = null,
+                             TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -231,10 +225,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             DeleteStaticData(IEnumerable<EVSE>   EVSEs,
 
-                             DateTime?           Timestamp          = null,
-                             CancellationToken?  CancellationToken  = null,
-                             EventTracking_Id    EventTrackingId    = null,
-                             TimeSpan?           RequestTimeout     = null);
+                             DateTime?           Timestamp           = null,
+                             CancellationToken?  CancellationToken   = null,
+                             EventTracking_Id?   EventTrackingId     = null,
+                             TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -259,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -281,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -303,13 +297,13 @@ namespace cloud.charging.open.protocols.WWCP
         Task<PushEVSEDataResult>
 
             UpdateStaticData(ChargingStation     ChargingStation,
-                             String              PropertyName        = null,
-                             Object              OldValue            = null,
-                             Object              NewValue            = null,
+                             String?             PropertyName        = null,
+                             Object?             OldValue            = null,
+                             Object?             NewValue            = null,
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -331,7 +325,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -354,7 +348,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                     Timestamp           = null,
                           CancellationToken?            CancellationToken   = null,
-                          EventTracking_Id              EventTrackingId     = null,
+                          EventTracking_Id?             EventTrackingId     = null,
                           TimeSpan?                     RequestTimeout      = null);
 
         #endregion
@@ -376,7 +370,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                     Timestamp           = null,
                           CancellationToken?            CancellationToken   = null,
-                          EventTracking_Id              EventTrackingId     = null,
+                          EventTracking_Id?             EventTrackingId     = null,
                           TimeSpan?                     RequestTimeout      = null);
 
         #endregion
@@ -398,7 +392,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                     Timestamp           = null,
                              CancellationToken?            CancellationToken   = null,
-                             EventTracking_Id              EventTrackingId     = null,
+                             EventTracking_Id?             EventTrackingId     = null,
                              TimeSpan?                     RequestTimeout      = null);
 
         #endregion
@@ -420,7 +414,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                     Timestamp           = null,
                              CancellationToken?            CancellationToken   = null,
-                             EventTracking_Id              EventTrackingId     = null,
+                             EventTracking_Id?             EventTrackingId     = null,
                              TimeSpan?                     RequestTimeout      = null);
 
         #endregion
@@ -446,7 +440,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -468,7 +462,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -490,13 +484,13 @@ namespace cloud.charging.open.protocols.WWCP
         Task<PushEVSEDataResult>
 
             UpdateStaticData(ChargingPool        ChargingPool,
-                             String              PropertyName        = null,
-                             Object              OldValue            = null,
-                             Object              NewValue            = null,
+                             String?             PropertyName        = null,
+                             Object?             OldValue            = null,
+                             Object?             NewValue            = null,
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -518,7 +512,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -541,7 +535,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                  Timestamp           = null,
                           CancellationToken?         CancellationToken   = null,
-                          EventTracking_Id           EventTrackingId     = null,
+                          EventTracking_Id?          EventTrackingId     = null,
                           TimeSpan?                  RequestTimeout      = null);
 
         #endregion
@@ -563,7 +557,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                  Timestamp           = null,
                           CancellationToken?         CancellationToken   = null,
-                          EventTracking_Id           EventTrackingId     = null,
+                          EventTracking_Id?          EventTrackingId     = null,
                           TimeSpan?                  RequestTimeout      = null);
 
         #endregion
@@ -585,7 +579,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                  Timestamp           = null,
                              CancellationToken?         CancellationToken   = null,
-                             EventTracking_Id           EventTrackingId     = null,
+                             EventTracking_Id?          EventTrackingId     = null,
                              TimeSpan?                  RequestTimeout      = null);
 
         #endregion
@@ -607,7 +601,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                  Timestamp           = null,
                              CancellationToken?         CancellationToken   = null,
-                             EventTracking_Id           EventTrackingId     = null,
+                             EventTracking_Id?          EventTrackingId     = null,
                              TimeSpan?                  RequestTimeout      = null);
 
         #endregion
@@ -633,7 +627,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                Timestamp           = null,
                           CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id         EventTrackingId     = null,
+                          EventTracking_Id?        EventTrackingId     = null,
                           TimeSpan?                RequestTimeout      = null);
 
         #endregion
@@ -655,7 +649,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                Timestamp           = null,
                           CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id         EventTrackingId     = null,
+                          EventTracking_Id?        EventTrackingId     = null,
                           TimeSpan?                RequestTimeout      = null);
 
         #endregion
@@ -677,7 +671,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                Timestamp           = null,
                              CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id         EventTrackingId     = null,
+                             EventTracking_Id?        EventTrackingId     = null,
                              TimeSpan?                RequestTimeout      = null);
 
         #endregion
@@ -699,7 +693,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                Timestamp           = null,
                              CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id         EventTrackingId     = null,
+                             EventTracking_Id?        EventTrackingId     = null,
                              TimeSpan?                RequestTimeout      = null);
 
         #endregion
@@ -722,7 +716,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                             Timestamp           = null,
                           CancellationToken?                    CancellationToken   = null,
-                          EventTracking_Id                      EventTrackingId     = null,
+                          EventTracking_Id?                     EventTrackingId     = null,
                           TimeSpan?                             RequestTimeout      = null);
 
         #endregion
@@ -744,7 +738,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?                             Timestamp           = null,
                           CancellationToken?                    CancellationToken   = null,
-                          EventTracking_Id                      EventTrackingId     = null,
+                          EventTracking_Id?                     EventTrackingId     = null,
                           TimeSpan?                             RequestTimeout      = null);
 
         #endregion
@@ -766,7 +760,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                             Timestamp           = null,
                              CancellationToken?                    CancellationToken   = null,
-                             EventTracking_Id                      EventTrackingId     = null,
+                             EventTracking_Id?                     EventTrackingId     = null,
                              TimeSpan?                             RequestTimeout      = null);
         #endregion
 
@@ -787,7 +781,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?                             Timestamp           = null,
                              CancellationToken?                    CancellationToken   = null,
-                             EventTracking_Id                      EventTrackingId     = null,
+                             EventTracking_Id?                     EventTrackingId     = null,
                              TimeSpan?                             RequestTimeout      = null);
 
         #endregion
@@ -813,7 +807,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -835,7 +829,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
+                          EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -857,7 +851,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
@@ -879,7 +873,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                              DateTime?           Timestamp           = null,
                              CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
+                             EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
         #endregion
