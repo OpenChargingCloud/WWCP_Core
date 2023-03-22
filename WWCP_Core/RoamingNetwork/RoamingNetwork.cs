@@ -4672,7 +4672,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldAdminStatus, NewAdminStatus)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, NewAdminStatus, OldAdminStatus = null)
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
@@ -4686,13 +4686,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldAdminStatus">The old EVSE admin status.</param>
         /// <param name="NewAdminStatus">The new EVSE admin status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
-                                                  EventTracking_Id                   EventTrackingId,
-                                                  IEVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>  OldAdminStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
+        /// <param name="OldAdminStatus">The optional old EVSE admin status.</param>
+        internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
+                                                  EventTracking_Id                    EventTrackingId,
+                                                  IEVSE                               EVSE,
+                                                  Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null)
         {
 
             try
@@ -4701,8 +4701,8 @@ namespace cloud.charging.open.protocols.WWCP
                 var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
                                                                                                                    new EVSEAdminStatusUpdate(
                                                                                                                        EVSE.Id,
-                                                                                                                       OldAdminStatus,
-                                                                                                                       NewAdminStatus
+                                                                                                                       NewAdminStatus,
+                                                                                                                       OldAdminStatus
                                                                                                                    )
                                                                                                                },
                                                                                                                EventTrackingId: EventTrackingId));
@@ -4710,7 +4710,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of EVSE '{EVSE.Id}' from '{OldAdminStatus}' to '{NewAdminStatus}'");
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of EVSE '{EVSE.Id}' from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'");
             }
 
 
@@ -4719,8 +4719,8 @@ namespace cloud.charging.open.protocols.WWCP
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
                                                     EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
-                                                    OldAdminStatus,
-                                                    NewAdminStatus);
+                                                    NewAdminStatus,
+                                                    OldAdminStatus);
 
         }
 
@@ -4903,11 +4903,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
-                                             EventTracking_Id              EventTrackingId,
-                                             IEVSE                         EVSE,
-                                             Timestamped<EVSEStatusTypes>  OldStatus,
-                                             Timestamped<EVSEStatusTypes>  NewStatus)
+        internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
+                                             EventTracking_Id               EventTrackingId,
+                                             IEVSE                          EVSE,
+                                             Timestamped<EVSEStatusTypes>   NewStatus,
+                                             Timestamped<EVSEStatusTypes>?  OldStatus   = null)
         {
 
             try
@@ -4916,8 +4916,8 @@ namespace cloud.charging.open.protocols.WWCP
                 var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.UpdateStatus(new EVSEStatusUpdate[] {
                                                                                                new EVSEStatusUpdate(
                                                                                                    EVSE.Id,
-                                                                                                   OldStatus,
-                                                                                                   NewStatus
+                                                                                                   NewStatus,
+                                                                                                   OldStatus
                                                                                                )
                                                                                            },
                                                                                            EventTrackingId: EventTrackingId));
@@ -4934,8 +4934,8 @@ namespace cloud.charging.open.protocols.WWCP
                 await OnEVSEStatusChangedLocal(Timestamp,
                                                EventTrackingId ?? EventTracking_Id.New,
                                                EVSE,
-                                               OldStatus,
-                                               NewStatus);
+                                               NewStatus,
+                                               OldStatus);
 
         }
 

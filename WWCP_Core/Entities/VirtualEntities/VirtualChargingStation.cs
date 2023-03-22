@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        #region (internal) UpdateEVSEData(Timestamp, RemoteEVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEData       (Timestamp, RemoteEVSE, NewValue, OldValue = null)
 
         /// <summary>
         /// Update the data of a remote EVSE.
@@ -639,22 +639,22 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         internal void UpdateEVSEData(DateTime  Timestamp,
                                      IEVSE     RemoteEVSE,
                                      String?   PropertyName,
-                                     Object?   OldValue,
-                                     Object?   NewValue)
+                                     Object?   NewValue,
+                                     Object?   OldValue   = null)
         {
 
             OnEVSEDataChanged?.Invoke(Timestamp,
                                       EventTracking_Id.New,
                                       RemoteEVSE,
                                       PropertyName,
-                                      OldValue,
-                                      NewValue);
+                                      NewValue,
+                                      OldValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus = null)
 
         /// <summary>
         /// Update the current charging station status.
@@ -662,13 +662,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="RemoteEVSE">The updated remote EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
-                                                  EventTracking_Id                   EventTrackingId,
-                                                  IEVSE                              RemoteEVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
+        /// <param name="OldStatus">The optional old EVSE status.</param>
+        internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
+                                                  EventTracking_Id                    EventTrackingId,
+                                                  IEVSE                               RemoteEVSE,
+                                                  Timestamped<EVSEAdminStatusTypes>   NewStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
@@ -676,14 +676,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
                                                     EventTrackingId,
                                                     RemoteEVSE,
-                                                    OldStatus,
-                                                    NewStatus);
+                                                    NewStatus,
+                                                    OldStatus);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus = null)
 
         /// <summary>
         /// Update the remote EVSE station status.
@@ -691,13 +691,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="RemoteEVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
-                                             EventTracking_Id              EventTrackingId,
-                                             IEVSE                         RemoteEVSE,
-                                             Timestamped<EVSEStatusTypes>  OldStatus,
-                                             Timestamped<EVSEStatusTypes>  NewStatus)
+        /// <param name="OldStatus">The optional old EVSE status.</param>
+        internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
+                                             EventTracking_Id               EventTrackingId,
+                                             IEVSE                          RemoteEVSE,
+                                             Timestamped<EVSEStatusTypes>   NewStatus,
+                                             Timestamped<EVSEStatusTypes>?  OldStatus   = null)
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
@@ -705,8 +705,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                 await OnEVSEStatusChangedLocal(Timestamp,
                                                EventTrackingId,
                                                RemoteEVSE,
-                                               OldStatus,
-                                               NewStatus);
+                                               NewStatus,
+                                               OldStatus);
 
         }
 

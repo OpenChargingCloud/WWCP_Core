@@ -3548,23 +3548,23 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, NewValue,  OldValue  = null)
 
         /// <summary>
-        /// Update the data of an EVSE.
+        /// Update the static data of an EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The changed EVSE.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
+        /// <param name="OldValue">The optional old value of the changed property.</param>
         internal async Task UpdateEVSEData(DateTime          Timestamp,
                                            EventTracking_Id  EventTrackingId,
                                            IEVSE             EVSE,
                                            String            PropertyName,
-                                           Object?           OldValue,
-                                           Object?           NewValue)
+                                           Object?           NewValue,
+                                           Object?           OldValue   = null)
         {
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
@@ -3573,28 +3573,28 @@ namespace cloud.charging.open.protocols.WWCP
                                              EventTrackingId ?? EventTracking_Id.New,
                                              EVSE,
                                              PropertyName,
-                                             OldValue,
-                                             NewValue);
+                                             NewValue,
+                                             OldValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, NewStatus, OldStatus = null)
 
         /// <summary>
-        /// Update an EVSE admin status.
+        /// Update the current admin status of an EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
-                                                  EventTracking_Id                   EventTrackingId,
-                                                  IEVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
+        /// <param name="OldStatus">The optional old EVSE status.</param>
+        internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
+                                                  EventTracking_Id                    EventTrackingId,
+                                                  IEVSE                               EVSE,
+                                                  Timestamped<EVSEAdminStatusTypes>   NewStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
@@ -3602,28 +3602,28 @@ namespace cloud.charging.open.protocols.WWCP
                 await OnEVSEAdminStatusChangedLocal(Timestamp,
                                                     EventTrackingId ?? EventTracking_Id.New,
                                                     EVSE,
-                                                    OldStatus,
-                                                    NewStatus);
+                                                    NewStatus,
+                                                    OldStatus);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, NewStatus, OldStatus = null)
 
         /// <summary>
-        /// Update an EVSE status.
+        /// Update the current status of an EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
-                                             EventTracking_Id              EventTrackingId,
-                                             IEVSE                         EVSE,
-                                             Timestamped<EVSEStatusTypes>  OldStatus,
-                                             Timestamped<EVSEStatusTypes>  NewStatus)
+        /// <param name="OldStatus">The optional old EVSE status.</param>
+        internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
+                                             EventTracking_Id               EventTrackingId,
+                                             IEVSE                          EVSE,
+                                             Timestamped<EVSEStatusTypes>   NewStatus,
+                                             Timestamped<EVSEStatusTypes>?  OldStatus   = null)
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
@@ -3631,8 +3631,8 @@ namespace cloud.charging.open.protocols.WWCP
                 await OnEVSEStatusChangedLocal(Timestamp,
                                                EventTrackingId ?? EventTracking_Id.New,
                                                EVSE,
-                                               OldStatus,
-                                               NewStatus);
+                                               NewStatus,
+                                               OldStatus);
 
         }
 
