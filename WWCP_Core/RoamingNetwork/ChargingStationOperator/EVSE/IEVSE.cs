@@ -170,10 +170,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         CurrentTypes                           CurrentType                  { get; set; }
 
+
         /// <summary>
-        /// The average voltage of this EVSE.
+        /// The average voltage of this EVSE [Volt].
         /// </summary>
         Decimal?                               AverageVoltage               { get; set; }
+
+        /// <summary>
+        /// The real-time average voltage of this EVSE [Volt].
+        /// </summary>
+        Timestamped<Decimal>?                  AverageVoltageRealTime       { get; set; }
+
+        /// <summary>
+        /// Prognoses on future values of the average voltage of this EVSE [Volt].
+        /// </summary>
+        ReactiveSet<Timestamped<Decimal>>      AverageVoltagePrognoses      { get; }
 
 
         /// <summary>

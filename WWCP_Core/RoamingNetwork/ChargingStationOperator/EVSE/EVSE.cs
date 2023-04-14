@@ -96,54 +96,54 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        public ChargingStation?                         ChargingStation         { get; }
+        public ChargingStation?                         ChargingStation             { get; }
 
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE?                             RemoteEVSE              { get; }
+        public IRemoteEVSE?                             RemoteEVSE                  { get; }
 
 
         /// <summary>
         /// An optional number/string printed on the outside of the EVSE for visual identification.
         /// </summary>
-        public String?                                  PhysicalReference       { get; }
+        public String?                                  PhysicalReference           { get; }
 
         /// <summary>
         /// An optional enumeration of links to photos related to the EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<URL>                         PhotoURLs               { get; }
+        public ReactiveSet<URL>                         PhotoURLs                   { get; }
 
         /// <summary>
         /// An enumeration of all brands registered for this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>                       Brands                  { get; }
+        public ReactiveSet<Brand>                       Brands                      { get; }
 
         /// <summary>
         /// An enumeration of all data license(s) of this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<OpenDataLicense>             OpenDataLicenses        { get; }
+        public ReactiveSet<OpenDataLicense>             OpenDataLicenses            { get; }
 
         /// <summary>
         /// An enumeration of all supported charging modes of this EVSE.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<ChargingModes>               ChargingModes           { get; }
+        public ReactiveSet<ChargingModes>               ChargingModes               { get; }
 
         /// <summary>
         /// An enumeration of all available charging tariffs at this EVSE.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<ChargingTariff>              ChargingTariffs         { get; }
+        public ReactiveSet<ChargingTariff>              ChargingTariffs             { get; }
 
         /// <summary>
         /// The power socket outlets.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<SocketOutlet>                SocketOutlets           { get; set; }
+        public ReactiveSet<SocketOutlet>                SocketOutlets               { get; set; }
 
 
         #region CurrentType
@@ -176,12 +176,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         #region AverageVoltage
 
         private Decimal? averageVoltage;
 
         /// <summary>
-        /// The average voltage.
+        /// The average voltage [Volt].
         /// </summary>
         [Optional, SlowData]
         public Decimal? AverageVoltage
@@ -215,6 +216,49 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #region AverageVoltageRealTime
+
+        private Timestamped<Decimal>? averageVoltageRealTime;
+
+        /// <summary>
+        /// The real-time average voltage [Volt].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? AverageVoltageRealTime
+        {
+
+            get
+            {
+                return averageVoltageRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!averageVoltageRealTime.HasValue || Math.Abs(averageVoltageRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref averageVoltageRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref averageVoltage);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the average voltage [Volt].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        AverageVoltagePrognoses     { get; }
 
 
         #region MaxCurrent
@@ -301,7 +345,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Prognoses on future values of the maximum current [Ampere].
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
+        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses         { get; }
 
 
         #region MaxPower
@@ -382,7 +426,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Prognoses on future values of the maximum power [kWatt].
         /// </summary>
         [Optional, FastData]
-        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses       { get; }
+        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses           { get; }
 
 
         #region MaxCapacity
@@ -468,7 +512,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Prognoses on future values of the maximum capacity [kWh].
         /// </summary>
         [Optional]
-        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses    { get; }
+        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses        { get; }
 
 
         #region EnergyMix
@@ -913,7 +957,22 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.currentType                        = CurrentType ?? CurrentTypes.AC_ThreePhases;
+
             this.averageVoltage                     = AverageVoltage;
+            this.averageVoltageRealTime             = AverageVoltageRealTime;
+
+            this.AverageVoltagePrognoses            = AverageVoltagePrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(AverageVoltagePrognoses);
+            this.AverageVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("AverageVoltagePrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
 
             this.maxCurrent                         = MaxCurrent;
             this.maxCurrentRealTime                 = MaxCurrentRealTime;
@@ -1043,19 +1102,21 @@ namespace cloud.charging.open.protocols.WWCP
         public EVSE UpdateWith(EVSE OtherEVSE)
         {
 
-            Name.                Set    (OtherEVSE.Name);
-            Description.         Set    (OtherEVSE.Description);
+            Name.                   Set    (OtherEVSE.Name);
+            Description.            Set    (OtherEVSE.Description);
 
-            Brands.              Replace(OtherEVSE.Brands);
-            ChargingModes.       Replace(OtherEVSE.ChargingModes);
-            SocketOutlets.       Replace(OtherEVSE.SocketOutlets);
-            OpenDataLicenses.        Replace(OtherEVSE.OpenDataLicenses);
-            MaxCurrentPrognoses. Replace(OtherEVSE.MaxCurrentPrognoses);
-            MaxPowerPrognoses.   Replace(OtherEVSE.MaxPowerPrognoses);
-            MaxCapacityPrognoses.Replace(OtherEVSE.MaxCapacityPrognoses);
+            Brands.                 Replace(OtherEVSE.Brands);
+            ChargingModes.          Replace(OtherEVSE.ChargingModes);
+            SocketOutlets.          Replace(OtherEVSE.SocketOutlets);
+            OpenDataLicenses.       Replace(OtherEVSE.OpenDataLicenses);
+            AverageVoltagePrognoses.Replace(OtherEVSE.AverageVoltagePrognoses);
+            MaxCurrentPrognoses.    Replace(OtherEVSE.MaxCurrentPrognoses);
+            MaxPowerPrognoses.      Replace(OtherEVSE.MaxPowerPrognoses);
+            MaxCapacityPrognoses.   Replace(OtherEVSE.MaxCapacityPrognoses);
 
             CurrentType                = OtherEVSE.CurrentType;
             AverageVoltage             = OtherEVSE.AverageVoltage;
+            AverageVoltageRealTime     = OtherEVSE.AverageVoltageRealTime;
             MaxCurrent                 = OtherEVSE.MaxCurrent;
             MaxCurrentRealTime         = OtherEVSE.MaxCurrentRealTime;
             MaxPower                   = OtherEVSE.MaxPower;
