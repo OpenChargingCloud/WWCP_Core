@@ -1950,7 +1950,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public GeoCoordinate? EntranceLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public I18NString ArrivalInstructions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         OpeningTimes IChargingPool.OpeningTimes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public UIFeatures? UIFeatures { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ReactiveSet<UIFeatures> UIFeatures => throw new NotImplementedException();
 
         public ReactiveSet<AuthenticationModes> AuthenticationModes => throw new NotImplementedException();
 
@@ -1990,6 +1990,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public Func<ChargingStationStatusReport, ChargingPoolStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
+
+        public ReactiveSet<Features> Features => throw new NotImplementedException();
+
+        public ReactiveSet<Facilities> Facilities => throw new NotImplementedException();
 
         public Boolean Equals(IChargingPool? other)
         {

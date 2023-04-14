@@ -46,13 +46,16 @@ namespace cloud.charging.open.protocols.WWCP
     public enum PaymentOptions
     {
 
-        Unspecified,
         Free,
-        Direct,         // e.g. Cash, Card, SMS
-        SMS,
+        Contract,
+        Direct,
+
+        // Direct payment methods in detail
         Cash,
         CreditCard,
-        Contract
+        DebitCard,
+        PrepaidCard,
+        SMS
 
     }
 

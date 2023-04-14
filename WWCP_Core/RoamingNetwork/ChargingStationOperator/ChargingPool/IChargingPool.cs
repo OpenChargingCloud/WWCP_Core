@@ -113,6 +113,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The roaming network of this charging pool.
         /// </summary>
+        [Mandatory]
         IRoamingNetwork?                        RoamingNetwork              { get; }
 
         /// <summary>
@@ -124,6 +125,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The charging station sub operator of this charging pool.
         /// </summary>
+        [Optional]
         ChargingStationOperator?                SubOperator                 { get; }
 
         /// <summary>
@@ -136,143 +138,196 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// All brands registered for this charging pool.
         /// </summary>
+        [Optional]
         ReactiveSet<Brand>                      Brands                      { get; }
 
         /// <summary>
         /// The license of the charging pool data.
         /// </summary>
+        [Optional]
         ReactiveSet<OpenDataLicense>            DataLicenses                { get; }
 
         /// <summary>
         /// The official language at this charging pool.
         /// </summary>
+        [Optional]
         Languages?                              LocationLanguage            { get; set; }
 
         /// <summary>
         /// The address of this charging pool.
         /// </summary>
+        [Optional]
         Address?                                Address                     { get; set; }
 
         /// <summary>
         /// The geographical location of this charging pool.
         /// </summary>
+        [Optional]
         GeoCoordinate?                          GeoLocation                 { get; set; }
 
         /// <summary>
         /// The address of the entrance to this charging pool.
         /// (If different from 'Address').
         /// </summary>
+        [Optional]
         Address?                                EntranceAddress             { get; set; }
 
         /// <summary>
         /// The geographical location of the entrance to this charging pool.
         /// (If different from 'GeoLocation').
         /// </summary>
+        [Optional]
         GeoCoordinate?                          EntranceLocation            { get; set; }
 
         /// <summary>
         /// An optional (multi-language) description of how to find the charging pool.
         /// </summary>
+        [Optional]
         I18NString                              ArrivalInstructions         { get; }
 
         /// <summary>
         /// The opening times of this charging pool.
         /// </summary>
+        [Optional]
         OpeningTimes                            OpeningTimes                { get; set; }
 
         /// <summary>
         /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
         /// </summary>
+        [Optional]
         Boolean?                                ChargingWhenClosed          { get; set; }
 
         /// <summary>
-        /// The user interface features of the charging station.
+        /// User interface features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. an external payment terminal.
         /// </summary>
-        UIFeatures?                             UIFeatures                  { get; set; }
+        [Optional]
+        ReactiveSet<UIFeatures>                 UIFeatures                  { get; }
 
+        /// <summary>
+        /// The authentication options an EV driver can use.
+        /// </summary>
+        [Optional]
         ReactiveSet<AuthenticationModes>        AuthenticationModes         { get; }
 
+        /// <summary>
+        /// The payment options an EV driver can use.
+        /// </summary>
+        [Optional]
         ReactiveSet<PaymentOptions>             PaymentOptions              { get; }
 
+        /// <summary>
+        /// The accessibility of the charging station.
+        /// </summary>
+        [Optional]
         AccessibilityTypes?                     Accessibility               { get; set; }
+
+        /// <summary>
+        /// Charging features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. hasARoof.
+        /// </summary>
+        [Optional]
+        ReactiveSet<Features>                   Features                    { get; }
+
+        /// <summary>
+        /// Charging facilities of the charging pool, e.g. a supermarket.
+        /// </summary>
+        [Optional]
+        ReactiveSet<Facilities>                 Facilities                  { get; }
+
 
         /// <summary>
         /// URIs of photos of this charging pool.
         /// </summary>
+        [Optional]
         ReactiveSet<URL>                        PhotoURLs                   { get; }
 
         /// <summary>
         /// The telephone number of the charging station operator hotline.
         /// </summary>
+        [Optional]
         PhoneNumber?                            HotlinePhoneNumber          { get; }
 
         /// <summary>
         /// The grid connection of the charging pool.
         /// </summary>
+        [Optional]
         GridConnectionTypes?                    GridConnection              { get; set; }
 
 
         /// <summary>
         /// The maximum current [Ampere].
         /// </summary>
+        [Optional]
         Decimal?                                MaxCurrent                  { get; set; }
 
         /// <summary>
         /// The real-time maximum current [Ampere].
         /// </summary>
+        [Optional]
         Timestamped<Decimal>?                   MaxCurrentRealTime          { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the maximum current [Ampere].
         /// </summary>
+        [Optional]
         ReactiveSet<Timestamped<Decimal>>       MaxCurrentPrognoses         { get; }
 
 
         /// <summary>
         /// The maximum power [kWatt].
         /// </summary>
+        [Optional]
         Decimal?                                MaxPower                    { get; set; }
 
         /// <summary>
         /// The real-time maximum power [kWatt].
         /// </summary>
+        [Optional]
         Timestamped<Decimal>?                   MaxPowerRealTime            { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the maximum power [kWatt].
         /// </summary>
+        [Optional]
         ReactiveSet<Timestamped<Decimal>>       MaxPowerPrognoses           { get; }
 
 
         /// <summary>
         /// The maximum capacity [kWh].
         /// </summary>
+        [Optional]
         Decimal?                                MaxCapacity                 { get; set; }
 
         /// <summary>
         /// The real-time maximum capacity [kWh].
         /// </summary>
+        [Optional]
         Timestamped<Decimal>?                   MaxCapacityRealTime         { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the maximum capacity [kWh].
         /// </summary>
+        [Optional]
         ReactiveSet<Timestamped<Decimal>>       MaxCapacityPrognoses        { get; }
 
 
         /// <summary>
         /// The energy mix.
         /// </summary>
+        [Optional]
         EnergyMix?                              EnergyMix                   { get; set; }
 
         /// <summary>
         /// The current energy mix.
         /// </summary>
+        [Optional]
         Timestamped<EnergyMix>?                 EnergyMixRealTime           { get; set; }
 
         /// <summary>
         /// Prognoses on future values of the energy mix.
         /// </summary>
+        [Optional]
         EnergyMixPrognosis?                     EnergyMixPrognoses          { get; set; }
 
 
@@ -280,23 +335,21 @@ namespace cloud.charging.open.protocols.WWCP
         /// The address of the exit of this charging pool.
         /// (If different from 'Address').
         /// </summary>
+        [Optional]
         Address                                 ExitAddress                 { get; set; }
 
         /// <summary>
         /// The geographical location of the exit of this charging pool.
         /// (If different from 'GeoLocation').
         /// </summary>
+        [Optional]
         GeoCoordinate?                          ExitLocation                { get; set; }
-
-
-        Partly                                  IsHubjectCompatible         { get; }
-
-        Partly                                  DynamicInfoAvailable        { get; }
 
 
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
+        [Optional]
         Func<ChargingStationStatusReport, ChargingPoolStatusTypes>? StatusAggregationDelegate { get; set; }
 
         #endregion

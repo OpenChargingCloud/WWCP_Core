@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             public override JObject ToJSON()
 
-                => new JObject(
+                => new (
                        new JProperty("type",       Type),
                        new JProperty("cardTypes",  new JArray(CardTypes.Select(cardType => cardType.ToString()))),
                        new JProperty("brandIds",   new JArray(BrandIds. Select(brandId  => brandId. ToString())))
@@ -123,17 +123,6 @@ namespace cloud.charging.open.protocols.WWCP
                                  CardTypes.AggregateWith(", "),
                                  " / ",
                                  BrandIds. AggregateWith(", "));
-
-        }
-
-        public class NFC : AuthenticationModes
-        {
-
-            public NFC()
-
-                : base("NFC")
-
-            { }
 
         }
 
@@ -186,7 +175,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             public CreditCard()
 
-                : base("Credit Card")
+                : base("CreditCard")
+
+            { }
+
+        }
+
+        public class DebitCard : AuthenticationModes
+        {
+
+            public DebitCard()
+
+                : base("DebitCard")
 
             { }
 
@@ -197,29 +197,41 @@ namespace cloud.charging.open.protocols.WWCP
 
             public PrepaidCard()
 
-                : base("Prepaid Card")
+                : base("PrepaidCard")
 
             { }
 
         }
 
-        public class LocalCurrency : AuthenticationModes
+        public class NFC : AuthenticationModes
         {
 
-            public LocalCurrency()
+            public NFC()
 
-                : base("Local currency")
+                : base("NFC")
 
             { }
 
         }
 
-        public class DirectPayment : AuthenticationModes
+        public class Bluetooth : AuthenticationModes
         {
 
-            public DirectPayment()
+            public Bluetooth()
 
-                : base("Direct payment")
+                : base("Bluetooth")
+
+            { }
+
+        }
+
+
+        public class WLAN : AuthenticationModes
+        {
+
+            public WLAN()
+
+                : base("WLAN")
 
             { }
 
@@ -231,6 +243,22 @@ namespace cloud.charging.open.protocols.WWCP
             public NoAuthenticationRequired()
 
                 : base("No authentication required")
+
+            { }
+
+        }
+
+
+        /// <summary>
+        /// Only for OICP compatibility! Do not use!
+        /// </summary>
+        [Obsolete]
+        public class DirectPayment : AuthenticationModes
+        {
+
+            public DirectPayment()
+
+                : base("DirectPayment")
 
             { }
 

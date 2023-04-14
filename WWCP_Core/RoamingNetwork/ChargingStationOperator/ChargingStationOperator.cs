@@ -225,24 +225,24 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Logo
 
-        private String _Logo;
+        private URL? logo;
 
         /// <summary>
         /// The logo of this evse operator.
         /// </summary>
         [Optional]
-        public String Logo
+        public URL? Logo
         {
 
             get
             {
-                return _Logo;
+                return logo;
             }
 
             set
             {
-                if (_Logo != value)
-                    SetProperty(ref _Logo, value);
+                if (logo != value)
+                    SetProperty(ref logo, value);
             }
 
         }

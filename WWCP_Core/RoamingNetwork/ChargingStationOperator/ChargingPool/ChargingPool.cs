@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The opening times of this charging pool.
         /// </summary>
-        [Optional]
+        [Mandatory]
         public OpeningTimes OpeningTimes
         {
 
@@ -361,45 +361,20 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region UIFeatures
 
-        private UIFeatures? uiFeatures;
-
         /// <summary>
-        /// The user interface features of the charging station.
+        /// User interface features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. an external payment terminal.
         /// </summary>
         [Optional]
-        public UIFeatures? UIFeatures
-        {
-
-            get
-            {
-                return uiFeatures;
-            }
-
-            set
-            {
-
-                if (uiFeatures != value)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref uiFeatures);
-
-                    else
-                        SetProperty(ref uiFeatures, value);
-
-                    // Delete inherited user interface features
-                    chargingStations.ForEach(station => station.UIFeatures = null);
-
-                }
-
-            }
-
-        }
+        public ReactiveSet<UIFeatures>                  UIFeatures              { get; }
 
         #endregion
 
         #region AuthenticationModes
 
+        /// <summary>
+        /// The authentication options an EV driver can use.
+        /// </summary>
         [Optional]
         public ReactiveSet<AuthenticationModes>         AuthenticationModes     { get; }
 
@@ -407,6 +382,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region PaymentOptions
 
+        /// <summary>
+        /// The payment options an EV driver can use.
+        /// </summary>
         [Optional]
         public ReactiveSet<PaymentOptions>              PaymentOptions          { get; }
 
@@ -414,28 +392,31 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Accessibility
 
-        private AccessibilityTypes? _Accessibility;
+        private AccessibilityTypes? accessibility;
 
+        /// <summary>
+        /// The accessibility of the charging station.
+        /// </summary>
         [Optional]
         public AccessibilityTypes? Accessibility
         {
 
             get
             {
-                return _Accessibility;
+                return accessibility;
             }
 
             set
             {
 
-                if (_Accessibility != value)
+                if (accessibility != value)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _Accessibility);
+                        DeleteProperty(ref accessibility);
 
                     else
-                        SetProperty(ref _Accessibility, value);
+                        SetProperty(ref accessibility, value);
 
                     // Delete inherited accessibilities
                     chargingStations.ForEach(station => station.Accessibility = null);
@@ -447,6 +428,28 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #region Features
+
+        /// <summary>
+        /// Charging features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. hasARoof.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<Features>                    Features                { get; }
+
+        #endregion
+
+        #region Facilities
+
+        /// <summary>
+        /// Charging facilities of the charging pool, e.g. a supermarket.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<Facilities>                  Facilities              { get; }
+
+        #endregion
+
 
         #region PhotoURLs
 
@@ -971,25 +974,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region IsHubjectCompatible
-
-        [Optional]
-        public Partly IsHubjectCompatible
-
-            => PartlyHelper.Generate(chargingStations.Select(station => station.IsHubjectCompatible));
-
-        #endregion
-
-        #region DynamicInfoAvailable
-
-        [Optional]
-        public Partly DynamicInfoAvailable
-
-            => PartlyHelper.Generate(chargingStations.Select(station => station.DynamicInfoAvailable));
-
-        #endregion
-
-
         #region StatusAggregationDelegate
 
         /// <summary>
@@ -1119,6 +1103,16 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
+            this.UIFeatures                         = new ReactiveSet<UIFeatures>();
+            this.UIFeatures.OnSetChanged           += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("UIFeatures",
+                                oldItems,
+                                newItems);
+
+            };
+
             this.AuthenticationModes                = new ReactiveSet<AuthenticationModes>();
             this.AuthenticationModes.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
             {
@@ -1138,6 +1132,27 @@ namespace cloud.charging.open.protocols.WWCP
                                 newItems);
 
             };
+
+            this.Features                           = new ReactiveSet<Features>();
+            this.Features.OnSetChanged             += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("Features",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.Facilities                         = new ReactiveSet<Facilities>();
+            this.Facilities.OnSetChanged           += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("Facilities",
+                                oldItems,
+                                newItems);
+
+            };
+
 
             this.PhotoURLs                          = new ReactiveSet<URL>();
             this.PhotoURLs.OnSetChanged            += (timestamp, reactiveSet, newItems, oldItems) =>
@@ -3495,9 +3510,12 @@ namespace cloud.charging.open.protocols.WWCP
             Description.            Set(OtherChargingPool.Description);
 
             Brands.             Replace(OtherChargingPool.Brands);
+            UIFeatures.         Replace(OtherChargingPool.UIFeatures);
             AuthenticationModes.Replace(OtherChargingPool.AuthenticationModes);
             PaymentOptions.     Replace(OtherChargingPool.PaymentOptions);
             PhotoURLs.          Replace(OtherChargingPool.PhotoURLs);
+            Features.           Replace(OtherChargingPool.Features);
+            Facilities.         Replace(OtherChargingPool.Facilities);
 
             LocationLanguage          = OtherChargingPool.LocationLanguage;
             Address                   = OtherChargingPool.Address;
@@ -3506,7 +3524,6 @@ namespace cloud.charging.open.protocols.WWCP
             EntranceLocation          = OtherChargingPool.EntranceLocation;
             ArrivalInstructions.    Set(OtherChargingPool.ArrivalInstructions);
             OpeningTimes              = OtherChargingPool.OpeningTimes;
-            UIFeatures                = OtherChargingPool.UIFeatures;
             Accessibility             = OtherChargingPool.Accessibility;
 
             HotlinePhoneNumber        = OtherChargingPool.HotlinePhoneNumber;

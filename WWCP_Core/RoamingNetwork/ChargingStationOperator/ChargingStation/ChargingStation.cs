@@ -79,46 +79,45 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming network of this charging station.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork?             RoamingNetwork
+        public IRoamingNetwork?              RoamingNetwork
             => Operator?.RoamingNetwork;
 
         /// <summary>
         /// The charging station operator of this charging station.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator?     Operator
+        public ChargingStationOperator?      Operator
             => ChargingPool?.Operator;
 
         /// <summary>
         /// The charging station sub operator of this charging station.
         /// </summary>
         [Optional]
-        public ChargingStationOperator?     SubOperator                 { get; }
+        public ChargingStationOperator?      SubOperator                 { get; }
 
         /// <summary>
         /// The charging pool.
         /// </summary>
         [InternalUseOnly]
-        public ChargingPool?                ChargingPool                { get; }
+        public ChargingPool?                 ChargingPool                { get; }
 
         /// <summary>
         /// An optional remote charging station.
         /// </summary>
-        public IRemoteChargingStation?      RemoteChargingStation       { get; }
-
+        public IRemoteChargingStation?       RemoteChargingStation       { get; }
 
 
         /// <summary>
         /// All brands registered for this charging station.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>                               Brands          { get; }
+        public ReactiveSet<Brand>            Brands          { get; }
 
         /// <summary>
         /// The license of the charging station data.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<OpenDataLicense>                         DataLicenses    { get; }
+        public ReactiveSet<OpenDataLicense>  DataLicenses    { get; }
 
 
         #region Address
@@ -341,46 +340,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region UIFeatures
 
-        private UIFeatures? uiFeatures;
-
         /// <summary>
-        /// The user interface features of the charging station.
+        /// User interface features of the charging station.
         /// </summary>
         [Optional]
-        public UIFeatures? UIFeatures
-        {
-
-            get
-            {
-
-                return uiFeatures != null
-                           ? uiFeatures
-                           : ChargingPool?.UIFeatures;
-
-            }
-
-            set
-            {
-
-                if (value != uiFeatures && value != ChargingPool?.UIFeatures)
-                {
-
-                    if (value != null)
-                        DeleteProperty(ref uiFeatures);
-
-                    else
-                        SetProperty(ref uiFeatures, value);
-
-                }
-
-            }
-
-        }
+        public ReactiveSet<UIFeatures>                  UIFeatures              { get; }
 
         #endregion
 
         #region AuthenticationModes
 
+        /// <summary>
+        /// The authentication options an EV driver can use.
+        /// </summary>
         [Mandatory]
         public ReactiveSet<AuthenticationModes>         AuthenticationModes     { get; }
 
@@ -388,6 +360,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region PaymentOptions
 
+        /// <summary>
+        /// The payment options an EV driver can use.
+        /// </summary>
         [Mandatory]
         public ReactiveSet<PaymentOptions>              PaymentOptions          { get; }
 
@@ -397,6 +372,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         private AccessibilityTypes? _Accessibility;
 
+        /// <summary>
+        /// The accessibility of the charging station.
+        /// </summary>
         [Optional]
         public AccessibilityTypes? Accessibility
         {
@@ -429,6 +407,17 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #region Features
+
+        /// <summary>
+        /// Charging features of the charging station.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<Features>                    Features                { get; }
+
+        #endregion
+
 
         /// <summary>
         /// An optional number/string printed on the outside of the charging station for visual identification.
@@ -948,8 +937,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-
-
         #region MaxReservationDuration
 
         private TimeSpan maxReservationDuration;
@@ -1295,6 +1282,15 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
 
+            this.UIFeatures                          = new ReactiveSet<UIFeatures>();
+            this.UIFeatures.OnSetChanged            += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("UIFeatures",
+                                oldItems,
+                                newItems);
+
+            };
+
             this.AuthenticationModes                 = new ReactiveSet<AuthenticationModes>();
             this.AuthenticationModes.OnSetChanged   += (timestamp, sender, newItems, oldItems) => {
 
@@ -1308,6 +1304,15 @@ namespace cloud.charging.open.protocols.WWCP
             this.PaymentOptions.OnSetChanged        += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("PaymentOptions",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.Features                            = new ReactiveSet<Features>();
+            this.Features.OnSetChanged              += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("Features",
                                 oldItems,
                                 newItems);
 
@@ -3424,9 +3429,11 @@ namespace cloud.charging.open.protocols.WWCP
             Description.        Set    (OtherChargingStation.Description);
 
             Brands.             Replace(OtherChargingStation.Brands);
+            UIFeatures.         Replace(OtherChargingStation.UIFeatures);
             AuthenticationModes.Replace(OtherChargingStation.AuthenticationModes);
             PaymentOptions.     Replace(OtherChargingStation.PaymentOptions);
             PhotoURLs.          Replace(OtherChargingStation.PhotoURLs);
+            Features.           Replace(OtherChargingStation.Features);
 
             ArrivalInstructions.Set    (OtherChargingStation.ArrivalInstructions);
             HotlinePhoneNumber        = OtherChargingStation.HotlinePhoneNumber;
@@ -3438,7 +3445,6 @@ namespace cloud.charging.open.protocols.WWCP
             EntranceLocation          = OtherChargingStation.EntranceLocation;
             OpeningTimes              = OtherChargingStation.OpeningTimes;
             //ParkingSpaces             = OtherChargingStation.ParkingSpaces;
-            UIFeatures                = OtherChargingStation.UIFeatures;
             Accessibility             = OtherChargingStation.Accessibility;
             GridConnection            = OtherChargingStation.GridConnection;
             ExitAddress               = OtherChargingStation.ExitAddress;

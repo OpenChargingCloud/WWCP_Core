@@ -188,13 +188,29 @@ namespace cloud.charging.open.protocols.WWCP
         ReactiveSet<ParkingSpace>               ParkingSpaces               { get; }
 
         /// <summary>
-        /// The user interface features of the charging station.
+        /// User interface features of the charging station.
         /// </summary>
-        UIFeatures?                             UIFeatures                  { get; set; }
+        ReactiveSet<UIFeatures>                 UIFeatures                  { get; }
 
+        /// <summary>
+        /// The authentication options an EV driver can use.
+        /// </summary>
         ReactiveSet<AuthenticationModes>        AuthenticationModes         { get; }
+
+        /// <summary>
+        /// The payment options an EV driver can use.
+        /// </summary>
         ReactiveSet<PaymentOptions>             PaymentOptions              { get; }
+
+        /// <summary>
+        /// The accessibility of the charging station.
+        /// </summary>
         AccessibilityTypes?                     Accessibility               { get; set; }
+
+        /// <summary>
+        /// Charging features of the charging station.
+        /// </summary>
+        ReactiveSet<Features>                   Features                    { get; }
 
 
         /// <summary>
@@ -301,11 +317,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Charging at this EVSE is ALWAYS free of charge.
         /// </summary>
         Boolean                                 IsFreeOfCharge              { get; set; }
-
-
-        Boolean                                 IsHubjectCompatible         { get; set; }
-
-        Boolean                                 DynamicInfoAvailable        { get; set; }
 
 
         /// <summary>

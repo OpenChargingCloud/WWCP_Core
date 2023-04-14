@@ -137,47 +137,47 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The logo of this evse operator.
         /// </summary>
-        String Logo { get; set; }
+        URL?                            Logo                             { get; set; }
 
         /// <summary>
         /// All brands registered for this charging pool.
         /// </summary>
-        ReactiveSet<Brand> Brands { get; }
+        ReactiveSet<Brand>              Brands                           { get; }
 
         /// <summary>
         /// The license of the charging station operator data.
         /// </summary>
-        ReactiveSet<OpenDataLicense> DataLicenses { get; }
+        ReactiveSet<OpenDataLicense>    DataLicenses                     { get; }
 
         /// <summary>
         /// The address of the operators headquarter.
         /// </summary>
-        Address Address { get; set; }
+        Address                         Address                          { get; set; }
 
         /// <summary>
         /// The geographical location of this operator.
         /// </summary>
-        GeoCoordinate GeoLocation { get; set; }
+        GeoCoordinate                   GeoLocation                      { get; set; }
 
         /// <summary>
         /// The telephone number of the operator's (sales) office.
         /// </summary>
-        PhoneNumber? Telephone { get; set; }
+        PhoneNumber?                    Telephone                        { get; set; }
 
         /// <summary>
         /// The e-mail address of the operator's (sales) office.
         /// </summary>
-        SimpleEMailAddress? EMailAddress { get; set; }
+        SimpleEMailAddress?             EMailAddress                     { get; set; }
 
         /// <summary>
         /// The homepage of this evse operator.
         /// </summary>
-        URL? Homepage { get; set; }
+        URL?                            Homepage                         { get; set; }
 
         /// <summary>
         /// The telephone number of the Charging Station Operator hotline.
         /// </summary>
-        PhoneNumber? HotlinePhoneNumber { get; set; }
+        PhoneNumber?                    HotlinePhoneNumber               { get; set; }
 
         #endregion
 

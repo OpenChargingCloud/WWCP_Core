@@ -2117,7 +2117,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public ReactiveSet<ParkingSpace> ParkingSpaces => throw new NotImplementedException();
 
-        public UIFeatures? UIFeatures { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ReactiveSet<UIFeatures> UIFeatures => throw new NotImplementedException();
 
         public ReactiveSet<AuthenticationModes> AuthenticationModes => throw new NotImplementedException();
 
@@ -2170,6 +2170,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IChargingReservations.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ReactiveSet<Features> Features => throw new NotImplementedException();
 
         public Boolean Equals(IChargingStation? other)
         {
