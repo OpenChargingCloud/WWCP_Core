@@ -853,6 +853,8 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
                     CurrentTypes?                       CurrentType                  = null,
                     Decimal?                            AverageVoltage               = null,
+                    Timestamped<Decimal>?               AverageVoltageRealTime       = null,
+                    IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
                     Decimal?                            MaxCurrent                   = null,
                     Timestamped<Decimal>?               MaxCurrentRealTime           = null,
                     IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,

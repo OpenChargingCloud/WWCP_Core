@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                             IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
                                                             CurrentTypes?                       CurrentType                  = null,
                                                             Decimal?                            AverageVoltage               = null,
+                                                            Timestamped<Decimal>?               AverageVoltageRealTime       = null,
+                                                            IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
                                                             Decimal?                            MaxCurrent                   = null,
                                                             Timestamped<Decimal>?               MaxCurrentRealTime           = null,
                                                             IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
@@ -121,6 +123,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    ChargingTariffs,
                    CurrentType,
                    AverageVoltage,
+                   AverageVoltageRealTime,
+                   AverageVoltagePrognoses,
                    MaxCurrent,
                    MaxCurrentRealTime,
                    MaxCurrentPrognoses,
@@ -207,6 +211,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public const UInt16 DefaultMaxStatusListSize        = 50;
 
 
+        private readonly Decimal EPSILON = 0.01m;
+
+
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
@@ -291,34 +298,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        #region AverageVoltage
-
-        private Double _AverageVoltage;
-
-        /// <summary>
-        /// The average voltage.
-        /// </summary>
-        [Mandatory]
-        public Double AverageVoltage
-        {
-
-            get
-            {
-                return _AverageVoltage;
-            }
-
-            set
-            {
-
-                if (_AverageVoltage != value)
-                    SetProperty(ref _AverageVoltage, value);
-
-            }
-
-        }
-
-        #endregion
-
         #region CurrentType
 
         private CurrentTypes _CurrentType;
@@ -347,9 +326,122 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
+
+        #region AverageVoltage
+
+        //private Double averageVoltage;
+
+        ///// <summary>
+        ///// The average voltage.
+        ///// </summary>
+        //[Mandatory]
+        //public Double AverageVoltage
+        //{
+
+        //    get
+        //    {
+        //        return averageVoltage;
+        //    }
+
+        //    set
+        //    {
+
+        //        if (averageVoltage != value)
+        //            SetProperty(ref averageVoltage, value);
+
+        //    }
+
+        //}
+
+        #endregion
+
+        #region AverageVoltage
+
+        private Decimal? averageVoltage;
+
+        /// <summary>
+        /// The average voltage [Volt].
+        /// </summary>
+        [Optional, SlowData]
+        public Decimal? AverageVoltage
+        {
+
+            get
+            {
+                return averageVoltage;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!averageVoltage.HasValue)
+                        averageVoltage = value;
+
+                    else if (Math.Abs(averageVoltage.Value - value.Value) > EPSILON)
+                        SetProperty(ref averageVoltage,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref averageVoltage);
+
+            }
+
+        }
+
+        #endregion
+
+        #region AverageVoltageRealTime
+
+        private Timestamped<Decimal>? averageVoltageRealTime;
+
+        /// <summary>
+        /// The real-time average voltage [Volt].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? AverageVoltageRealTime
+        {
+
+            get
+            {
+                return averageVoltageRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!averageVoltageRealTime.HasValue || Math.Abs(averageVoltageRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref averageVoltageRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref averageVoltage);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the average voltage [Volt].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        AverageVoltagePrognoses     { get; }
+
+
         #region MaxCurrent
 
-        private Double _MaxCurrent;
+        private Double maxCurrent;
 
         /// <summary>
         /// The maximum current [Ampere].
@@ -360,14 +452,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             get
             {
-                return _MaxCurrent;
+                return maxCurrent;
             }
 
             set
             {
 
-                if (_MaxCurrent != value)
-                    SetProperty(ref _MaxCurrent, value);
+                if (maxCurrent != value)
+                    SetProperty(ref maxCurrent, value);
 
             }
 
@@ -377,7 +469,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region MaxPower
 
-        private Double _MaxPower;
+        private Double maxPower;
 
         /// <summary>
         /// The maximum power [kWatt].
@@ -388,14 +480,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             get
             {
-                return _MaxPower;
+                return maxPower;
             }
 
             set
             {
 
-                if (_MaxPower != value)
-                    SetProperty(ref _MaxPower, value);
+                if (maxPower != value)
+                    SetProperty(ref maxPower, value);
 
             }
 
@@ -405,7 +497,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region RealTimePower
 
-        private Double _RealTimePower;
+        private Double realTimePower;
 
         /// <summary>
         /// The current real-time power delivery [Watt].
@@ -416,14 +508,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             get
             {
-                return _RealTimePower;
+                return realTimePower;
             }
 
             set
             {
 
-                if (_RealTimePower != value)
-                    SetProperty(ref _RealTimePower, value);
+                if (realTimePower != value)
+                    SetProperty(ref realTimePower, value);
 
             }
 
@@ -433,7 +525,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region MaxCapacity
 
-        private Double? _MaxCapacity;
+        private Double? maxCapacity;
 
         /// <summary>
         /// The maximum capacity [kWh].
@@ -444,14 +536,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             get
             {
-                return _MaxCapacity;
+                return maxCapacity;
             }
 
             set
             {
 
-                if (_MaxCapacity != value)
-                    SetProperty(ref _MaxCapacity, value);
+                if (maxCapacity != value)
+                    SetProperty(ref maxCapacity, value);
 
             }
 
