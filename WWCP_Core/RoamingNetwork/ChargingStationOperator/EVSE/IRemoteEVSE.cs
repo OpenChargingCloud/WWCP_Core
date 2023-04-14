@@ -42,9 +42,6 @@ namespace cloud.charging.open.protocols.WWCP
         //IRemoteChargingStation ChargingStation { get; }
         ChargingStationOperator_Id OperatorId { get; }
 
-        IEnumerator<SocketOutlet> GetEnumerator();
-
-        Int32   CompareTo(Object Object);
         Boolean Equals(Object Object);
 
         Int32   GetHashCode();

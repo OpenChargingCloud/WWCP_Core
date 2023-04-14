@@ -84,19 +84,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging station operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator?                 Operator
+        public IChargingStationOperator?                Operator
             => ChargingStation?.Operator;
 
         /// <summary>
         /// The charging pool of this EVSE.
         /// </summary>
-        public ChargingPool?                            ChargingPool
+        public IChargingPool?                           ChargingPool
             => ChargingStation?.ChargingPool;
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        public ChargingStation?                         ChargingStation             { get; }
+        public IChargingStation?                        ChargingStation             { get; }
 
         /// <summary>
         /// An optional remote EVSE.
@@ -138,12 +138,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional, SlowData]
         public ReactiveSet<ChargingTariff>              ChargingTariffs             { get; }
-
-        /// <summary>
-        /// The power socket outlets.
-        /// </summary>
-        [Mandatory, SlowData]
-        public ReactiveSet<SocketOutlet>                SocketOutlets               { get; set; }
 
 
         #region CurrentType
@@ -710,7 +704,14 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        public DateTime?                                LastStatusUpdate        { get; set; }
+        /// <summary>
+        /// The power socket outlets.
+        /// </summary>
+        [Mandatory, SlowData]
+        public ReactiveSet<SocketOutlet>                SocketOutlets               { get; set; }
+
+
+        public DateTime?                                LastStatusUpdate            { get; set; }
 
         #endregion
 
@@ -1101,7 +1102,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Update this EVSE with the data of the other EVSE.
         /// </summary>
         /// <param name="OtherEVSE">Another EVSE.</param>
-        public EVSE UpdateWith(EVSE OtherEVSE)
+        public IEVSE UpdateWith(IEVSE OtherEVSE)
         {
 
             Name.                   Set    (OtherEVSE.Name);
@@ -2359,14 +2360,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of the given EVSE.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public JObject ToJSON(Boolean                                 Embedded                          = false,
-                              InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<EVSE>?  CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean                                  Embedded                          = false,
+                              InfoStatus                               ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<IEVSE>?  CustomEVSESerializer              = null)
 
         {
 
@@ -2647,7 +2648,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two EVSEs.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">An EVSE to compare with.</param>
         public override Int32 CompareTo(Object? Object)
 
             => Object is EVSE evse

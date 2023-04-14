@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections;
+using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
@@ -27,9 +28,8 @@ using Org.BouncyCastle.Crypto.Parameters;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -526,23 +526,47 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Configurator">An optional delegate to configure the new EVSE after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public VirtualEVSE CreateVirtualEVSE(EVSE_Id                        EVSEId,
-                                             I18NString?                    Name                     = null,
-                                             I18NString?                    Description              = null,
+        public VirtualEVSE? CreateVirtualEVSE(EVSE_Id                             EVSEId,
+                                              I18NString?                         Name                         = null,
+                                              I18NString?                         Description                  = null,
 
-                                             EVSEAdminStatusTypes?          InitialAdminStatus       = null,
-                                             EVSEStatusTypes?               InitialStatus            = null,
-                                             UInt16                         MaxAdminStatusListSize   = VirtualEVSE.DefaultMaxAdminStatusListSize,
-                                             UInt16                         MaxStatusListSize        = VirtualEVSE.DefaultMaxStatusListSize,
+                                              EVSEAdminStatusTypes?               InitialAdminStatus           = null,
+                                              EVSEStatusTypes?                    InitialStatus                = null,
+                                              UInt16                              MaxAdminStatusListSize       = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
+                                              UInt16                              MaxStatusListSize            = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
-                                             EnergyMeter?                   EnergyMeter              = null,
-                                             String?                        EllipticCurve            = null,
-                                             ECPrivateKeyParameters?        PrivateKey               = null,
-                                             PublicKeyCertificates?         PublicKeyCertificates    = null,
-                                             TimeSpan?                      SelfCheckTimeSpan        = null,
-                                             Action<VirtualEVSE>?           Configurator             = null,
-                                             Action<VirtualEVSE>?           OnSuccess                = null,
-                                             Action<VirtualEVSE, EVSE_Id>?  OnError                  = null)
+                                              IEnumerable<URL>?                   PhotoURLs                    = null,
+                                              IEnumerable<Brand>?                 Brands                       = null,
+                                              IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
+                                              IEnumerable<ChargingModes>?         ChargingModes                = null,
+                                              IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
+                                              CurrentTypes?                       CurrentType                  = null,
+                                              Decimal?                            AverageVoltage               = null,
+                                              Timestamped<Decimal>?               AverageVoltageRealTime       = null,
+                                              IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
+                                              Decimal?                            MaxCurrent                   = null,
+                                              Timestamped<Decimal>?               MaxCurrentRealTime           = null,
+                                              IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
+                                              Decimal?                            MaxPower                     = null,
+                                              Timestamped<Decimal>?               MaxPowerRealTime             = null,
+                                              IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
+                                              Decimal?                            MaxCapacity                  = null,
+                                              Timestamped<Decimal>?               MaxCapacityRealTime          = null,
+                                              IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
+                                              EnergyMix?                          EnergyMix                    = null,
+                                              Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
+                                              EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
+                                              EnergyMeter?                        EnergyMeter                  = null,
+                                              Boolean?                            IsFreeOfCharge               = null,
+                                              IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+
+                                              String?                             EllipticCurve                = null,
+                                              ECPrivateKeyParameters?             PrivateKey                   = null,
+                                              PublicKeyCertificates?              PublicKeyCertificates        = null,
+                                              TimeSpan?                           SelfCheckTimeSpan            = null,
+                                              Action<VirtualEVSE>?                Configurator                 = null,
+                                              Action<VirtualEVSE>?                OnSuccess                    = null,
+                                              Action<VirtualEVSE, EVSE_Id>?       OnError                      = null)
         {
 
             #region Initial checks
@@ -560,7 +584,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             var now             = Timestamp.Now;
             var newVirtualEVSE  = new VirtualEVSE(EVSEId,
-                                                  RoamingNetwork,
+                                                  this,
                                                   Name,
                                                   Description,
 
@@ -569,7 +593,31 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                   MaxAdminStatusListSize,
                                                   MaxStatusListSize,
 
+                                                  PhotoURLs,
+                                                  Brands,
+                                                  OpenDataLicenses,
+                                                  ChargingModes,
+                                                  ChargingTariffs,
+                                                  CurrentType,
+                                                  AverageVoltage,
+                                                  AverageVoltageRealTime,
+                                                  AverageVoltagePrognoses,
+                                                  MaxCurrent,
+                                                  MaxCurrentRealTime,
+                                                  MaxCurrentPrognoses,
+                                                  MaxPower,
+                                                  MaxPowerRealTime,
+                                                  MaxPowerPrognoses,
+                                                  MaxCapacity,
+                                                  MaxCapacityRealTime,
+                                                  MaxCapacityPrognoses,
+                                                  EnergyMix,
+                                                  EnergyMixRealTime,
+                                                  EnergyMixPrognoses,
                                                   EnergyMeter,
+                                                  IsFreeOfCharge,
+                                                  SocketOutlets,
+
                                                   EllipticCurve,
                                                   PrivateKey,
                                                   PublicKeyCertificates,
@@ -2002,15 +2050,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
 
 
-        public JObject ToJSON(Boolean                                            Embedded                          = false,
-                              InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
-                              InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
-                              CustomJObjectSerializerDelegate<EVSE>?             CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean                                             Embedded                          = false,
+                              InfoStatus                                          ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandEVSEIds                     = InfoStatus.Expanded,
+                              InfoStatus                                          ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<IChargingStation>?  CustomChargingStationSerializer   = null,
+                              CustomJObjectSerializerDelegate<IEVSE>?             CustomEVSESerializer              = null)
         {
             throw new NotImplementedException();
         }

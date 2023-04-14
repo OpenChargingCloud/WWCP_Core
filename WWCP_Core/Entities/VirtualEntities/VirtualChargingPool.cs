@@ -1986,11 +1986,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
 
-        public JObject ToJSON(Boolean Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationIds = InfoStatus.Expanded, InfoStatus ExpandEVSEIds = InfoStatus.Hidden, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<ChargingPool>? CustomChargingPoolSerializer = null, CustomJObjectSerializerDelegate<ChargingStation>? CustomChargingStationSerializer = null, CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
-        {
-            throw new NotImplementedException();
-        }
-
         public Boolean Equals(IChargingPool? other)
         {
             throw new NotImplementedException();
@@ -2127,6 +2122,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         }
 
         public Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id ChargingStationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JObject ToJSON(Boolean Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationIds = InfoStatus.Expanded, InfoStatus ExpandEVSEIds = InfoStatus.Hidden, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<IChargingPool>? CustomChargingPoolSerializer = null, CustomJObjectSerializerDelegate<IChargingStation>? CustomChargingStationSerializer = null, CustomJObjectSerializerDelegate<IEVSE>? CustomEVSESerializer = null)
         {
             throw new NotImplementedException();
         }

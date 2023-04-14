@@ -3268,15 +3268,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of the given charging station.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public JObject ToJSON(Boolean                                            Embedded                          = false,
-                              InfoStatus                                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandEVSEIds                     = InfoStatus.Expanded,
-                              InfoStatus                                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                                         ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
-                              CustomJObjectSerializerDelegate<EVSE>?             CustomEVSESerializer              = null)
+        public JObject ToJSON(Boolean                                             Embedded                          = false,
+                              InfoStatus                                          ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandEVSEIds                     = InfoStatus.Expanded,
+                              InfoStatus                                          ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                          ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<IChargingStation>?  CustomChargingStationSerializer   = null,
+                              CustomJObjectSerializerDelegate<IEVSE>?             CustomEVSESerializer              = null)
         {
 
             try

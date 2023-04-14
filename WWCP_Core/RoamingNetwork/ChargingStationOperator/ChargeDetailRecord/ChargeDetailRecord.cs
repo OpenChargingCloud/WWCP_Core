@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging station of the charging station used for charging.
         /// </summary>
         [Optional]
-        public ChargingStation?             ChargingStation              { get; }
+        public IChargingStation?            ChargingStation              { get; }
 
         /// <summary>
         /// The identification of the charging station used for charging.
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging pool of the charging pool used for charging.
         /// </summary>
         [Optional]
-        public ChargingPool?                ChargingPool                 { get; }
+        public IChargingPool?               ChargingPool                 { get; }
 
         /// <summary>
         /// The identification of the charging pool used for charging.
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging station operator used for charging.
         /// </summary>
         [Optional]
-        public ChargingStationOperator?     ChargingStationOperator      { get; }
+        public IChargingStationOperator?    ChargingStationOperator      { get; }
 
         /// <summary>
         /// The identification of the charging station operator used for charging.
@@ -394,54 +394,54 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ConsumedEnergy">The consumed energy, whenever it is more than the energy difference between the first and last energy meter value, e.g. caused by a tariff granularity of 1 kWh.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public ChargeDetailRecord(ChargeDetailRecord_Id                       Id,
-                                  ChargingSession_Id                          SessionId,
-                                  StartEndDateTime                            SessionTime,
-                                  TimeSpan?                                   Duration                    = null,
+        public ChargeDetailRecord(ChargeDetailRecord_Id              Id,
+                                  ChargingSession_Id                 SessionId,
+                                  StartEndDateTime                   SessionTime,
+                                  TimeSpan?                          Duration                    = null,
 
-                                  IEVSE?                                      EVSE                        = null,
-                                  EVSE_Id?                                    EVSEId                      = null,
-                                  ChargingStation?                            ChargingStation             = null,
-                                  ChargingStation_Id?                         ChargingStationId           = null,
-                                  ChargingPool?                               ChargingPool                = null,
-                                  ChargingPool_Id?                            ChargingPoolId              = null,
-                                  ChargingStationOperator?                    ChargingStationOperator     = null,
-                                  ChargingStationOperator_Id?                 ChargingStationOperatorId   = null,
+                                  IEVSE?                             EVSE                        = null,
+                                  EVSE_Id?                           EVSEId                      = null,
+                                  IChargingStation?                  ChargingStation             = null,
+                                  ChargingStation_Id?                ChargingStationId           = null,
+                                  IChargingPool?                     ChargingPool                = null,
+                                  ChargingPool_Id?                   ChargingPoolId              = null,
+                                  IChargingStationOperator?          ChargingStationOperator     = null,
+                                  ChargingStationOperator_Id?        ChargingStationOperatorId   = null,
 
-                                  ChargingProduct?                            ChargingProduct             = null,
-                                  Decimal?                                    ChargingPrice               = null,
-                                  Currency?                                   Currency                    = null,
+                                  ChargingProduct?                   ChargingProduct             = null,
+                                  Decimal?                           ChargingPrice               = null,
+                                  Currency?                          Currency                    = null,
 
-                                  AAuthentication?                            AuthenticationStart         = null,
-                                  AAuthentication?                            AuthenticationStop          = null,
-                                  AuthMethod?                                 AuthMethodStart             = null,
-                                  AuthMethod?                                 AuthMethodStop              = null,
-                                  EMobilityProvider_Id?                       ProviderIdStart             = null,
-                                  EMobilityProvider_Id?                       ProviderIdStop              = null,
+                                  AAuthentication?                   AuthenticationStart         = null,
+                                  AAuthentication?                   AuthenticationStop          = null,
+                                  AuthMethod?                        AuthMethodStart             = null,
+                                  AuthMethod?                        AuthMethodStop              = null,
+                                  EMobilityProvider_Id?              ProviderIdStart             = null,
+                                  EMobilityProvider_Id?              ProviderIdStop              = null,
 
-                                  IEMPRoamingProvider?                        EMPRoamingProvider          = null,
-                                  EMPRoamingProvider_Id?                      EMPRoamingProviderId        = null,
+                                  IEMPRoamingProvider?               EMPRoamingProvider          = null,
+                                  EMPRoamingProvider_Id?             EMPRoamingProviderId        = null,
 
-                                  ChargingReservation?                        Reservation                 = null,
-                                  ChargingReservation_Id?                     ReservationId               = null,
-                                  StartEndDateTime?                           ReservationTime             = null,
-                                  Price?                                      ReservationFee              = null,
+                                  ChargingReservation?               Reservation                 = null,
+                                  ChargingReservation_Id?            ReservationId               = null,
+                                  StartEndDateTime?                  ReservationTime             = null,
+                                  Price?                             ReservationFee              = null,
 
-                                  ParkingSpace_Id?                            ParkingSpaceId              = null,
-                                  StartEndDateTime?                           ParkingTime                 = null,
-                                  Price?                                      ParkingFee                  = null,
+                                  ParkingSpace_Id?                   ParkingSpaceId              = null,
+                                  StartEndDateTime?                  ParkingTime                 = null,
+                                  Price?                             ParkingFee                  = null,
 
-                                  EnergyMeter_Id?                             EnergyMeterId               = null,
-                                  EnergyMeter?                                EnergyMeter                 = null,
-                                  IEnumerable<EnergyMeteringValue>?           EnergyMeteringValues        = null,
-                                  Decimal?                                    ConsumedEnergy              = null,
-                                  Price?                                      ConsumedEnergyFee           = null,
+                                  EnergyMeter_Id?                    EnergyMeterId               = null,
+                                  EnergyMeter?                       EnergyMeter                 = null,
+                                  IEnumerable<EnergyMeteringValue>?  EnergyMeteringValues        = null,
+                                  Decimal?                           ConsumedEnergy              = null,
+                                  Price?                             ConsumedEnergyFee           = null,
 
-                                  JObject?                                    CustomData                  = null,
-                                  UserDefinedDictionary?                      InternalData                = null,
+                                  JObject?                           CustomData                  = null,
+                                  UserDefinedDictionary?             InternalData                = null,
 
-                                  ECPublicKeyParameters?                      PublicKey                   = null,
-                                  IEnumerable<String>?                        Signatures                  = null)
+                                  ECPublicKeyParameters?             PublicKey                   = null,
+                                  IEnumerable<String>?               Signatures                  = null)
 
             : base(CustomData,
                    InternalData)

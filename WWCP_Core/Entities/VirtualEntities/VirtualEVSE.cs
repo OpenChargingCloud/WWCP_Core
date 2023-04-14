@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System.Collections.Concurrent;
-
 using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.Security;
@@ -26,8 +24,8 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -58,8 +56,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                             Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
                                                             Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                                                            UInt16                              MaxAdminStatusListSize       = VirtualEVSE.DefaultMaxAdminStatusListSize,
-                                                            UInt16                              MaxStatusListSize            = VirtualEVSE.DefaultMaxStatusListSize,
+                                                            UInt16                              MaxAdminStatusScheduleSize   = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
+                                                            UInt16                              MaxStatusScheduleSize        = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
                                                             IEnumerable<URL>?                   PhotoURLs                    = null,
                                                             IEnumerable<Brand>?                 Brands                       = null,
@@ -113,8 +111,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
                    InitialStatus      ?? EVSEStatusTypes.Available,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
 
                    PhotoURLs,
                    Brands,
@@ -155,20 +153,45 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        var virtualevse = new VirtualEVSE(
 
                                              newEVSE.Id,
-                                             ChargingStation.RoamingNetwork,
+                                             ChargingStation,
                                              newEVSE.Name,
                                              newEVSE.Description,
 
                                              InitialAdminStatus,
                                              InitialStatus,
-                                             MaxAdminStatusListSize,
-                                             MaxStatusListSize,
+                                             MaxAdminStatusScheduleSize,
+                                             MaxStatusScheduleSize,
 
+                                             PhotoURLs,
+                                             Brands,
+                                             OpenDataLicenses,
+                                             ChargingModes,
+                                             ChargingTariffs,
+                                             CurrentType,
+                                             AverageVoltage,
+                                             AverageVoltageRealTime,
+                                             AverageVoltagePrognoses,
+                                             MaxCurrent,
+                                             MaxCurrentRealTime,
+                                             MaxCurrentPrognoses,
+                                             MaxPower,
+                                             MaxPowerRealTime,
+                                             MaxPowerPrognoses,
+                                             MaxCapacity,
+                                             MaxCapacityRealTime,
+                                             MaxCapacityPrognoses,
+                                             EnergyMix,
+                                             EnergyMixRealTime,
+                                             EnergyMixPrognoses,
                                              EnergyMeter,
+                                             IsFreeOfCharge,
+                                             SocketOutlets,
+
                                              EllipticCurve,
                                              PrivateKey,
                                              PublicKeyCertificates,
                                              SelfCheckTimeSpan
+
                                          );
 
                        VirtualEVSEConfigurator?.Invoke(virtualevse);
@@ -201,30 +224,32 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region Data
 
         /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const            String    JSONLDContext                            = "https://open.charging.cloud/contexts/wwcp+json/EVSE";
+
+
+        private readonly        Decimal   EPSILON                                  = 0.01m;
+
+        /// <summary>
         /// The default max size of the admin status history.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
+        public const            UInt16    DefaultMaxEVSEAdminStatusScheduleSize    = 50;
 
         /// <summary>
         /// The default max size of the status history.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize        = 50;
-
-
-        private readonly Decimal EPSILON = 0.01m;
-
+        public const            UInt16    DefaultMaxEVSEStatusScheduleSize         = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public  static readonly TimeSpan  MaxReservationDuration    = TimeSpan.FromMinutes(15);
+        public  static readonly TimeSpan  DefaultMaxReservationDuration            = TimeSpan.FromMinutes(15);
 
         /// <summary>
         /// The default time span between self checks.
         /// </summary>
-        public  static readonly TimeSpan  DefaultSelfCheckTimeSpan  = TimeSpan.FromSeconds(15);
-
-        private static readonly Random    _random                   = new Random();
+        public  static readonly TimeSpan  DefaultSelfCheckTimeSpan                 = TimeSpan.FromSeconds(15);
 
         private        readonly Object    EnergyMeterLock;
         private                 Timer     EnergyMeterTimer;
@@ -240,85 +265,81 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// The identification of the operator of this virtual EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator_Id OperatorId
+        public ChargingStationOperator_Id               OperatorId
             => Id.OperatorId;
 
-        #region Description
+        public IChargingStationOperator?                Operator
+            => ChargingStation?.Operator;
 
-        private I18NString _Description;
+        public IChargingPool?                           ChargingPool
+            => ChargingStation?.ChargingPool;
 
-        /// <summary>
-        /// An description of this EVSE.
-        /// </summary>
-        [Mandatory]
-        public I18NString Description
-        {
+        public IChargingStation?                        ChargingStation             { get; }
 
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-                if (_Description != value)
-                    SetProperty(ref _Description, value);
-            }
-
-        }
-
-        #endregion
+        public IRemoteEVSE?                             RemoteEVSE
+            => null;
 
 
-        #region ChargingModes
-
-        private ReactiveSet<ChargingModes> _ChargingModes;
 
         /// <summary>
-        /// Charging modes.
+        /// An optional number/string printed on the outside of the EVSE for visual identification.
         /// </summary>
-        [Mandatory]
-        public ReactiveSet<ChargingModes> ChargingModes
-        {
+        public String?                                  PhysicalReference           { get; }
 
-            get
-            {
-                return _ChargingModes;
-            }
+        /// <summary>
+        /// An optional enumeration of links to photos related to the EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<URL>                         PhotoURLs                   { get; }
 
-            set
-            {
+        /// <summary>
+        /// An enumeration of all brands registered for this EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<Brand>                       Brands                      { get; }
 
-                if (_ChargingModes != value)
-                    SetProperty(ref _ChargingModes, value);
+        /// <summary>
+        /// An enumeration of all data license(s) of this EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<OpenDataLicense>             OpenDataLicenses            { get; }
 
-            }
+        /// <summary>
+        /// An enumeration of all supported charging modes of this EVSE.
+        /// </summary>
+        [Mandatory, SlowData]
+        public ReactiveSet<ChargingModes>               ChargingModes               { get; }
 
-        }
+        /// <summary>
+        /// An enumeration of all available charging tariffs at this EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<ChargingTariff>              ChargingTariffs             { get; }
 
-        #endregion
 
         #region CurrentType
 
-        private CurrentTypes _CurrentType;
+        private CurrentTypes currentType;
 
         /// <summary>
         /// The type of the current.
         /// </summary>
-        [Mandatory]
+        [Mandatory, SlowData]
         public CurrentTypes CurrentType
         {
 
             get
             {
-                return _CurrentType;
+                return currentType;
             }
 
             set
             {
 
-                if (_CurrentType != value)
-                    SetProperty(ref _CurrentType, value);
+                if (currentType != value)
+                    SetProperty(ref currentType,
+                                value,
+                                EventTracking_Id.New);
 
             }
 
@@ -326,34 +347,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-
-        #region AverageVoltage
-
-        //private Double averageVoltage;
-
-        ///// <summary>
-        ///// The average voltage.
-        ///// </summary>
-        //[Mandatory]
-        //public Double AverageVoltage
-        //{
-
-        //    get
-        //    {
-        //        return averageVoltage;
-        //    }
-
-        //    set
-        //    {
-
-        //        if (averageVoltage != value)
-        //            SetProperty(ref averageVoltage, value);
-
-        //    }
-
-        //}
-
-        #endregion
 
         #region AverageVoltage
 
@@ -441,13 +434,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region MaxCurrent
 
-        private Double maxCurrent;
+        private Decimal? maxCurrent;
 
         /// <summary>
         /// The maximum current [Ampere].
         /// </summary>
         [Mandatory]
-        public Double MaxCurrent
+        public Decimal? MaxCurrent
         {
 
             get
@@ -458,8 +451,20 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             set
             {
 
-                if (maxCurrent != value)
-                    SetProperty(ref maxCurrent, value);
+                if (value is not null)
+                {
+
+                    if (!maxCurrent.HasValue)
+                        maxCurrent = value;
+
+                    else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCurrent,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCurrent);
 
             }
 
@@ -467,15 +472,59 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        #region MaxPower
+        #region MaxCurrentRealTime
 
-        private Double maxPower;
+        private Timestamped<Decimal>? maxCurrentRealTime;
 
         /// <summary>
-        /// The maximum power [kWatt].
+        /// The real-time maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxCurrentRealTime
+        {
+
+            get
+            {
+                return maxCurrentRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxCurrentRealTime.HasValue || Math.Abs(maxCurrentRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref maxCurrentRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCurrent);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
+
+
+        #region MaxPower
+
+        private Decimal? maxPower;
+
+        /// <summary>
+        /// The maximum power [kW].
         /// </summary>
         [Mandatory]
-        public Double MaxPower
+        public Decimal? MaxPower
         {
 
             get
@@ -486,8 +535,20 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             set
             {
 
-                if (maxPower != value)
-                    SetProperty(ref maxPower, value);
+                if (value is not null)
+                {
+
+                    if (!maxPower.HasValue)
+                        maxPower = value;
+
+                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxPower,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxPower);
 
             }
 
@@ -495,27 +556,36 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        #region RealTimePower
+        #region MaxPowerRealTime
 
-        private Double realTimePower;
+        private Timestamped<Decimal>? maxPowerRealTime;
 
         /// <summary>
-        /// The current real-time power delivery [Watt].
+        /// The real-time maximum power [kW].
         /// </summary>
-        [Mandatory]
-        public Double RealTimePower
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxPowerRealTime
         {
 
             get
             {
-                return realTimePower;
+                return maxPowerRealTime;
             }
 
             set
             {
 
-                if (realTimePower != value)
-                    SetProperty(ref realTimePower, value);
+                if (value is not null)
+                {
+
+                    if (!maxPowerRealTime.HasValue || Math.Abs(maxPowerRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref maxPowerRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxPower);
 
             }
 
@@ -523,15 +593,22 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
+        /// <summary>
+        /// Prognoses on future values of the maximum power [kW].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses     { get; }
+
+
         #region MaxCapacity
 
-        private Double? maxCapacity;
+        private Decimal? maxCapacity;
 
         /// <summary>
         /// The maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public Double? MaxCapacity
+        public Decimal? MaxCapacity
         {
 
             get
@@ -542,8 +619,169 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             set
             {
 
-                if (maxCapacity != value)
-                    SetProperty(ref maxCapacity, value);
+                if (value is not null)
+                {
+
+                    if (!maxCapacity.HasValue)
+                        maxCapacity = value;
+
+                    else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCapacity,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCapacity);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCapacityRealTime
+
+        private Timestamped<Decimal>? maxCapacityRealTime;
+
+        /// <summary>
+        /// The real-time maximum capacity [kWh].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxCapacityRealTime
+        {
+
+            get
+            {
+                return maxCapacityRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxCapacityRealTime.HasValue || Math.Abs(maxCapacityRealTime.Value.Value - value.Value.Value) > EPSILON)
+                        SetProperty(ref maxCapacityRealTime,
+                                    value,
+                                    EventTracking_Id.New);
+
+                }
+                else
+                    DeleteProperty(ref maxCapacity);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum capacity [kWh].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses     { get; }
+
+
+        #region EnergyMix
+
+        private EnergyMix? energyMix;
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+        [Optional, SlowData]
+        public EnergyMix? EnergyMix
+        {
+
+            get
+            {
+                return energyMix ?? ChargingStation?.EnergyMix;
+            }
+
+            set
+            {
+
+                if (value != energyMix && value != ChargingStation?.EnergyMix)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref energyMix);
+
+                    else
+                        SetProperty(ref energyMix, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergyMixRealTime
+
+        private Timestamped<EnergyMix>? energyMixRealTime;
+
+        /// <summary>
+        /// The current energy mix.
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<EnergyMix>? EnergyMixRealTime
+        {
+
+            get
+            {
+                return energyMixRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref energyMixRealTime,
+                                value,
+                                EventTracking_Id.New);
+
+                else
+                    DeleteProperty(ref energyMixRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergyMixPrognoses
+
+        private EnergyMixPrognosis? energyMixPrognoses;
+
+        /// <summary>
+        /// Prognoses on future values of the energy mix.
+        /// </summary>
+        [Optional, FastData]
+        public EnergyMixPrognosis? EnergyMixPrognoses
+        {
+
+            get
+            {
+                return energyMixPrognoses ?? ChargingStation?.EnergyMixPrognoses;
+            }
+
+            set
+            {
+
+                if (value != energyMixPrognoses && value != ChargingStation?.EnergyMixPrognoses)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref energyMixPrognoses);
+
+                    else
+                        SetProperty(ref energyMixPrognoses, value);
+
+                }
 
             }
 
@@ -552,10 +790,93 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
+        #region MaxReservationDuration
+
+        private TimeSpan maxReservationDuration;
+
         /// <summary>
-        /// An optional number/string printed on the outside of the EVSE for visual identification.
+        /// The maximum reservation time at this EVSE.
         /// </summary>
-        public String? PhysicalReference { get; }
+        [Optional, SlowData]
+        public TimeSpan MaxReservationDuration
+        {
+
+            get
+            {
+                return maxReservationDuration;
+            }
+
+            set
+            {
+                if (maxReservationDuration.TotalSeconds != value.TotalSeconds)
+                    SetProperty(ref maxReservationDuration,
+                                value,
+                                EventTracking_Id.New);
+            }
+
+        }
+
+        #endregion
+
+        #region IsFreeOfCharge
+
+        private Boolean isFreeOfCharge;
+
+        /// <summary>
+        /// Charging at this EVSE is ALWAYS free of charge.
+        /// </summary>
+        [Optional, SlowData]
+        public Boolean IsFreeOfCharge
+        {
+
+            get
+            {
+                return isFreeOfCharge;
+            }
+
+            set
+            {
+                if (isFreeOfCharge != value)
+                    SetProperty(ref isFreeOfCharge,
+                                value,
+                                EventTracking_Id.New);
+            }
+
+        }
+
+        #endregion
+
+
+        #region EnergyMeter
+
+        private EnergyMeter? energyMeter;
+
+        /// <summary>
+        /// The smart energy meter attached to this EVSE.
+        /// </summary>
+        [Optional, SlowData]
+        public EnergyMeter? EnergyMeter
+        {
+
+            get
+            {
+                return energyMeter;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref energyMeter, value);
+
+                else
+                    DeleteProperty(ref energyMeter);
+
+            }
+
+        }
+
+        #endregion
 
 
         #region SocketOutlets
@@ -583,42 +904,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
+        public DateTime?               LastStatusUpdate         { get; set; }
+
+
         /// <summary>
         /// The time span between self checks.
         /// </summary>
-        public TimeSpan SelfCheckTimeSpan { get; }
+        public TimeSpan                SelfCheckTimeSpan        { get; }
 
 
-        #region EnergyMeter
 
-        private EnergyMeter? _EnergyMeter;
-
-        /// <summary>
-        /// The energy meter identification.
-        /// </summary>
-        [Optional]
-        public EnergyMeter? EnergyMeter
-        {
-
-            get
-            {
-                return _EnergyMeter;
-            }
-
-            set
-            {
-
-                if (value != null)
-                    SetProperty(ref _EnergyMeter, value);
-
-                else
-                    DeleteProperty(ref _EnergyMeter);
-
-            }
-
-        }
-
-        #endregion
 
         public TimeSpan                EnergyMeterInterval      { get; }
 
@@ -630,45 +925,212 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Create a new virtual EVSE.
         /// </summary>
         /// <param name="Id">The unique identification of this EVSE.</param>
-        /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
-        /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The maximum size of the EVSE admin status schedule.</param>
+        /// <param name="MaxStatusScheduleSize">The maximum size of the EVSE status schedule.</param>
         internal VirtualEVSE(EVSE_Id                             Id,
-                             IRoamingNetwork                     RoamingNetwork,
-                             I18NString?                         Name                     = null,
-                             I18NString?                         Description              = null,
+                             IChargingStation                    ChargingStation,
+                             I18NString?                         Name                         = null,
+                             I18NString?                         Description                  = null,
 
-                             Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus       = null,
-                             Timestamped<EVSEStatusTypes>?       InitialStatus            = null,
-                             UInt16?                             MaxAdminStatusListSize   = null,
-                             UInt16?                             MaxStatusListSize        = null,
+                             Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                             Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                             UInt16?                             MaxAdminStatusScheduleSize   = null,
+                             UInt16?                             MaxStatusScheduleSize        = null,
 
-                             EnergyMeter?                        EnergyMeter              = null,
-                             String?                             EllipticCurve            = null,
-                             ECPrivateKeyParameters?             PrivateKey               = null,
-                             PublicKeyCertificates?              PublicKeyCertificates    = null,
-                             TimeSpan?                           SelfCheckTimeSpan        = null)
+                             IEnumerable<URL>?                   PhotoURLs                    = null,
+                             IEnumerable<Brand>?                 Brands                       = null,
+                             IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
+                             IEnumerable<ChargingModes>?         ChargingModes                = null,
+                             IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
+                             CurrentTypes?                       CurrentType                  = null,
+                             Decimal?                            AverageVoltage               = null,
+                             Timestamped<Decimal>?               AverageVoltageRealTime       = null,
+                             IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
+                             Decimal?                            MaxCurrent                   = null,
+                             Timestamped<Decimal>?               MaxCurrentRealTime           = null,
+                             IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
+                             Decimal?                            MaxPower                     = null,
+                             Timestamped<Decimal>?               MaxPowerRealTime             = null,
+                             IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
+                             Decimal?                            MaxCapacity                  = null,
+                             Timestamped<Decimal>?               MaxCapacityRealTime          = null,
+                             IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
+                             EnergyMix?                          EnergyMix                    = null,
+                             Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
+                             EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
+                             EnergyMeter?                        EnergyMeter                  = null,
+                             Boolean?                            IsFreeOfCharge               = null,
+                             IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+
+                             String?                             EllipticCurve                = null,
+                             ECPrivateKeyParameters?             PrivateKey                   = null,
+                             PublicKeyCertificates?              PublicKeyCertificates        = null,
+                             TimeSpan?                           SelfCheckTimeSpan            = null)
 
             : base(Id,
-                   RoamingNetwork,
+                   ChargingStation.RoamingNetwork,
                    Name,
                    Description,
                    EllipticCurve,
                    PrivateKey,
                    PublicKeyCertificates,
-                   InitialAdminStatus     ?? EVSEAdminStatusTypes.Operational,
-                   InitialStatus          ?? EVSEStatusTypes.Available,
-                   MaxAdminStatusListSize ?? DefaultMaxAdminStatusListSize,
-                   MaxStatusListSize      ?? DefaultMaxStatusListSize)
+                   InitialAdminStatus         ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus              ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxEVSEAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxEVSEStatusScheduleSize)
 
         {
 
             #region Init data and properties
 
-            this._Description           = Description ?? I18NString.Empty;
-            this._ChargingModes         = new ReactiveSet<ChargingModes>();
+            this.ChargingStation                    = ChargingStation;
+
+
+            this.PhotoURLs                          = PhotoURLs is null
+                                                          ? new ReactiveSet<URL>()
+                                                          : new ReactiveSet<URL>(PhotoURLs);
+            this.PhotoURLs.OnSetChanged            += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("PhotoURLs",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.Brands                             = Brands is null
+                                                          ? new ReactiveSet<Brand>()
+                                                          : new ReactiveSet<Brand>(Brands);
+            this.Brands.OnSetChanged               += (timestamp, sender, newItems, oldItems) => {
+
+                PropertyChanged("DataLicenses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.OpenDataLicenses                       = OpenDataLicenses is null
+                                                          ? new ReactiveSet<OpenDataLicense>()
+                                                          : new ReactiveSet<OpenDataLicense>(OpenDataLicenses);
+            this.OpenDataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("DataLicenses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.ChargingModes                      = ChargingModes is null
+                                                          ? new ReactiveSet<ChargingModes>()
+                                                          : new ReactiveSet<ChargingModes>(ChargingModes);
+            this.ChargingModes.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("ChargingModes",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.ChargingTariffs                    = ChargingTariffs is null
+                                                          ? new ReactiveSet<ChargingTariff>()
+                                                          : new ReactiveSet<ChargingTariff>(ChargingTariffs);
+            this.ChargingTariffs.OnSetChanged      += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("ChargingTariffs",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.currentType                        = CurrentType ?? CurrentTypes.AC_ThreePhases;
+
+            this.averageVoltage                     = AverageVoltage;
+            this.averageVoltageRealTime             = AverageVoltageRealTime;
+
+            this.AverageVoltagePrognoses            = AverageVoltagePrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(AverageVoltagePrognoses);
+            this.AverageVoltagePrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("AverageVoltagePrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+
+            this.maxCurrent                         = MaxCurrent;
+            this.maxCurrentRealTime                 = MaxCurrentRealTime;
+
+            this.MaxCurrentPrognoses                = MaxCurrentPrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxCurrentPrognoses);
+            this.MaxCurrentPrognoses.OnSetChanged  += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCurrentPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.maxPower                           = MaxPower;
+            this.maxPowerRealTime                   = MaxPowerRealTime;
+
+            this.MaxPowerPrognoses                  = MaxPowerPrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxPowerPrognoses);
+            this.MaxPowerPrognoses.OnSetChanged    += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxPowerPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.maxCapacity                        = MaxCapacity;
+            this.maxCapacityRealTime                = MaxCapacityRealTime;
+
+            this.MaxCapacityPrognoses               = MaxCapacityPrognoses is null
+                                                          ? new ReactiveSet<Timestamped<Decimal>>()
+                                                          : new ReactiveSet<Timestamped<Decimal>>(MaxCapacityPrognoses);
+            this.MaxCapacityPrognoses.OnSetChanged += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("MaxCapacityPrognoses",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.energyMix                          = EnergyMix;
+            this.energyMixRealTime                  = EnergyMixRealTime;
+            this.energyMixPrognoses                 = EnergyMixPrognoses;
+
+            this.energyMeter                        = EnergyMeter;
+
+            this.IsFreeOfCharge                     = IsFreeOfCharge ?? false;
+
+            this.SocketOutlets                      = SocketOutlets is null
+                                                          ? new ReactiveSet<SocketOutlet>()
+                                                          : new ReactiveSet<SocketOutlet>(SocketOutlets);
+            this.SocketOutlets.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            {
+
+                PropertyChanged("SocketOutlets",
+                                oldItems,
+                                newItems);
+
+            };
+
+            this.ChargingModes          = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-            this._EnergyMeter           = EnergyMeter;
+            this.energyMeter           = EnergyMeter;
 
             this.SelfCheckTimeSpan      = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
 
@@ -804,6 +1266,55 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
+
+        #region UpdateWith(OtherEVSE)
+
+        /// <summary>
+        /// Update this EVSE with the data of the other EVSE.
+        /// </summary>
+        /// <param name="OtherEVSE">Another EVSE.</param>
+        public IEVSE UpdateWith(IEVSE OtherEVSE)
+        {
+
+            Name.                   Set    (OtherEVSE.Name);
+            Description.            Set    (OtherEVSE.Description);
+
+            Brands.                 Replace(OtherEVSE.Brands);
+            ChargingModes.          Replace(OtherEVSE.ChargingModes);
+            SocketOutlets.          Replace(OtherEVSE.SocketOutlets);
+            OpenDataLicenses.       Replace(OtherEVSE.OpenDataLicenses);
+            AverageVoltagePrognoses.Replace(OtherEVSE.AverageVoltagePrognoses);
+            MaxCurrentPrognoses.    Replace(OtherEVSE.MaxCurrentPrognoses);
+            MaxPowerPrognoses.      Replace(OtherEVSE.MaxPowerPrognoses);
+            MaxCapacityPrognoses.   Replace(OtherEVSE.MaxCapacityPrognoses);
+
+            CurrentType                = OtherEVSE.CurrentType;
+            AverageVoltage             = OtherEVSE.AverageVoltage;
+            AverageVoltageRealTime     = OtherEVSE.AverageVoltageRealTime;
+            MaxCurrent                 = OtherEVSE.MaxCurrent;
+            MaxCurrentRealTime         = OtherEVSE.MaxCurrentRealTime;
+            MaxPower                   = OtherEVSE.MaxPower;
+            MaxPowerRealTime           = OtherEVSE.MaxPowerRealTime;
+            MaxCapacity                = OtherEVSE.MaxCapacity;
+            MaxCapacityRealTime        = OtherEVSE.MaxCapacityRealTime;
+            EnergyMix                  = OtherEVSE.EnergyMix;               //ToDo: Implement Equality!
+            EnergyMixRealTime          = OtherEVSE.EnergyMixRealTime;       //ToDo: Implement Equality!
+            EnergyMixPrognoses         = OtherEVSE.EnergyMixPrognoses;      //ToDo: Implement Equality!
+            EnergyMeter                = OtherEVSE.EnergyMeter;             //ToDo: Implement Equality!
+            IsFreeOfCharge             = OtherEVSE.IsFreeOfCharge;
+            MaxReservationDuration     = OtherEVSE.MaxReservationDuration;
+
+            if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
+                AdminStatus            = OtherEVSE.AdminStatus;
+
+            if (OtherEVSE.Status.     Timestamp > Status.     Timestamp)
+                Status                 = OtherEVSE.Status;
+
+            return this;
+
+        }
+
+        #endregion
 
 
         #region Data/(Admin-)Status management
@@ -1177,7 +1688,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                       ChargingProduct:         ChargingProduct,
                                                       AuthTokens:              AuthTokens,
                                                       eMAIds:                  eMAIds,
-                                                      PINs:                    PINs ?? (new UInt32[] { (UInt32) (_random.Next(1000000) + 100000) })
+                                                      PINs:                    PINs ?? (new[] { RandomExtensions.RandomUInt32(1000000) + 100000U })
                                                   );
 
                                  reservations.Add(newReservation.Id, newReservation);
@@ -2008,41 +2519,43 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                         #region Matching session identification...
 
-                        if (chargingSession.Id == SessionId)
+                        if (chargingSession?.Id == SessionId)
                         {
 
                             EnergyMeterTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                             var __ChargingSession    = chargingSession;
-                            var Now                  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-                            var SessionTime          = __ChargingSession.SessionTime;
-                            SessionTime.EndTime = Now;
-                            __ChargingSession.SessionTime.EndTime = Now;
-                            var Duration             = Now - __ChargingSession.SessionTime.StartTime;
-                            var Consumption          = (Decimal) Math.Round(Duration.TotalHours * MaxPower, 2);
+                            var now                  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+                            var sessionTime          = __ChargingSession.SessionTime;
+                            sessionTime.EndTime      = now;
+                            __ChargingSession.SessionTime.EndTime = now;
+                            var duration             = now - __ChargingSession.SessionTime.StartTime;
+                            var consumption          = MaxPower.HasValue
+                                                           ? Math.Round(((Decimal) duration.TotalHours) * MaxPower.Value, 2)
+                                                           : 0;
 
-                            ChargingSession.AddEnergyMeterValue(new EnergyMeteringValue(Now, Consumption));
+                            __ChargingSession.AddEnergyMeterValue(new EnergyMeteringValue(now, consumption));
 
-                            var _ChargeDetailRecord  = new ChargeDetailRecord(
-                                                           Id:                        ChargeDetailRecord_Id.Parse(__ChargingSession.Id.ToString()),
-                                                           SessionId:                 __ChargingSession.Id,
-                                                           Reservation:               __ChargingSession.Reservation,
-                                                           EVSEId:                    __ChargingSession.EVSEId,
-                                                           EVSE:                      __ChargingSession.EVSE,
-                                                           ChargingStation:           __ChargingSession.EVSE?.ChargingStation,
-                                                           ChargingPool:              __ChargingSession.EVSE?.ChargingStation?.ChargingPool,
-                                                           ChargingStationOperator:   __ChargingSession.EVSE?.Operator,
-                                                           ChargingProduct:           __ChargingSession.ChargingProduct,
-                                                           ProviderIdStart:           __ChargingSession.ProviderIdStart,
-                                                           ProviderIdStop:            __ChargingSession.ProviderIdStop,
-                                                           SessionTime:               __ChargingSession.SessionTime,
+                            var chargeDetailRecord  = new ChargeDetailRecord(
+                                                          Id:                        ChargeDetailRecord_Id.Parse(__ChargingSession.Id.ToString()),
+                                                          SessionId:                 __ChargingSession.Id,
+                                                          Reservation:               __ChargingSession.Reservation,
+                                                          EVSEId:                    __ChargingSession.EVSEId,
+                                                          EVSE:                      __ChargingSession.EVSE,
+                                                          ChargingStation:           __ChargingSession.EVSE?.ChargingStation,
+                                                          ChargingPool:              __ChargingSession.EVSE?.ChargingStation?.ChargingPool,
+                                                          ChargingStationOperator:   __ChargingSession.EVSE?.Operator,
+                                                          ChargingProduct:           __ChargingSession.ChargingProduct,
+                                                          ProviderIdStart:           __ChargingSession.ProviderIdStart,
+                                                          ProviderIdStop:            __ChargingSession.ProviderIdStop,
+                                                          SessionTime:               __ChargingSession.SessionTime,
 
-                                                           AuthenticationStart:       __ChargingSession.AuthenticationStart,
-                                                           AuthenticationStop:        __ChargingSession.AuthenticationStop,
+                                                          AuthenticationStart:       __ChargingSession.AuthenticationStart,
+                                                          AuthenticationStop:        __ChargingSession.AuthenticationStop,
 
-                                                           EnergyMeterId:             EnergyMeter?.Id,
-                                                           EnergyMeteringValues:      __ChargingSession.EnergyMeteringValues
-                                                       );
+                                                          EnergyMeterId:             EnergyMeter?.Id,
+                                                          EnergyMeteringValues:      __ChargingSession.EnergyMeteringValues
+                                                      );
 
                             // Will do: Status = EVSEStatusType.Available
                             ChargingSession = null;
@@ -2072,7 +2585,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                               null,
                                                               __ChargingSession.Reservation?.Id,
                                                               ReservationHandling,
-                                                              _ChargeDetailRecord);
+                                                              chargeDetailRecord);
 
                         }
 
@@ -2168,6 +2681,198 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
+        #region ToJSON(this EVSE, Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation of the given EVSE.
+        /// </summary>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
+        public JObject ToJSON(Boolean                                  Embedded                          = false,
+                              InfoStatus                               ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                               ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<IEVSE>?  CustomEVSESerializer              = null)
+
+            => ToJSON(Embedded,
+                      ExpandRoamingNetworkId,
+                      ExpandChargingStationOperatorId,
+                      ExpandChargingPoolId,
+                      ExpandChargingStationId,
+                      ExpandBrandIds,
+                      ExpandDataLicenses,
+                      CustomEVSESerializer,
+                      null);
+
+
+        /// <summary>
+        /// Return a JSON representation of the given EVSE.
+        /// </summary>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
+        public JObject ToJSON(Boolean                                        Embedded                          = false,
+                              InfoStatus                                     ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus                                     ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus                                     ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus                                     ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                              InfoStatus                                     ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus                                     ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                              CustomJObjectSerializerDelegate<IEVSE>?        CustomEVSESerializer              = null,
+                              CustomJObjectSerializerDelegate<VirtualEVSE>?  CustomVirtualEVSESerializer       = null)
+
+        {
+
+            try
+            {
+
+                var json = JSONObject.Create(
+
+                               new JProperty("@id", Id.ToString()),
+
+                               !Embedded
+                                   ? new JProperty("@context", JSONLDContext)
+                                   : null,
+
+                               Description.IsNeitherNullNorEmpty()
+                                   ? new JProperty("description", Description.ToJSON())
+                                   : null,
+
+                               Brands.SafeAny()
+                                     ? ExpandBrandIds.Switch(
+                                           () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
+                                           () => new JProperty("brand",   Brands.ToJSON()))
+                                     : null,
+
+                               (!Embedded || (ChargingStation is not null && DataSource       != ChargingStation.DataSource))
+                                   ? new JProperty("dataSource", DataSource)
+                                   : null,
+
+                               (!Embedded || (ChargingStation is not null && OpenDataLicenses != ChargingStation.DataLicenses))
+                                   ? ExpandDataLicenses.Switch(
+                                         () => new JProperty("openDataLicenseIds", new JArray(OpenDataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                         () => new JProperty("openDataLicenses", OpenDataLicenses.ToJSON()))
+                                   : null,
+
+                               ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork is not null
+                                   ? ExpandRoamingNetworkId.Switch(
+                                         () => new JProperty("roamingNetworkId",                  RoamingNetwork.Id.ToString()),
+                                         () => new JProperty("roamingNetwork",                    RoamingNetwork.ToJSON(Embedded:                          true,
+                                                                                                                        ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
+                                                                                                                        ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                        ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                        ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                        ExpandBrandIds:                    InfoStatus.Hidden,
+                                                                                                                        ExpandDataLicenses:                InfoStatus.Hidden)))
+                                   : null,
+
+                               ExpandChargingStationOperatorId != InfoStatus.Hidden && Operator is not null
+                                   ? ExpandChargingStationOperatorId.Switch(
+                                         () => new JProperty("chargingStationOperatorperatorId",  Operator.Id.ToString()),
+                                         () => new JProperty("chargingStationOperatorperator",    Operator.ToJSON(Embedded:                          true,
+                                                                                                                  ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                  ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                  ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                  ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                  ExpandBrandIds:                    InfoStatus.Hidden,
+                                                                                                                  ExpandDataLicenses:                InfoStatus.Hidden)))
+                                   : null,
+
+                               ExpandChargingPoolId != InfoStatus.Hidden && ChargingPool is not null
+                                   ? ExpandChargingPoolId.Switch(
+                                         () => new JProperty("chargingPoolId",                    ChargingPool.Id.ToString()),
+                                         () => new JProperty("chargingPool",                      ChargingPool.ToJSON(Embedded:                          true,
+                                                                                                                      ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                      ExpandChargingStationOperatorId:   InfoStatus.Hidden,
+                                                                                                                      ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                      ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                      ExpandBrandIds:                    InfoStatus.Hidden,
+                                                                                                                      ExpandDataLicenses:                InfoStatus.Hidden)))
+                                   : null,
+
+                               ExpandChargingStationId != InfoStatus.Hidden && ChargingStation is not null
+                                   ? ExpandChargingStationId.Switch(
+                                         () => new JProperty("chargingStationId",                 ChargingStation.Id.ToString()),
+                                         () => new JProperty("chargingStation",                   ChargingStation.ToJSON(Embedded:                          true,
+                                                                                                                         ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                         ExpandChargingStationOperatorId:   InfoStatus.Hidden,
+                                                                                                                         ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                         ExpandBrandIds:                    InfoStatus.Hidden,
+                                                                                                                         ExpandDataLicenses:                InfoStatus.Hidden)))
+                                   : null,
+
+                               !Embedded && ChargingStation is not null && ChargingPool is not null && (ChargingStation.GeoLocation.HasValue || ChargingPool.GeoLocation.HasValue)
+                                   ? new JProperty("geoLocation",          (ChargingStation.GeoLocation ?? ChargingPool.GeoLocation)?.ToJSON())
+                                   : null,
+
+                               !Embedded && ChargingStation is not null && ChargingPool is not null && (ChargingStation.Address is not null  || ChargingPool.Address is not null)
+                                   ? new JProperty("address",              (ChargingStation.Address ?? ChargingPool.Address)?.ToJSON())
+                                   : null,
+
+                               !Embedded && ChargingStation is not null && ChargingStation.AuthenticationModes.Any()
+                                   ? new JProperty("authenticationModes",  ChargingStation.AuthenticationModes.ToJSON())
+                                   : null,
+
+                               ChargingModes.SafeAny()
+                                   ? new JProperty("chargingModes", new JArray(ChargingModes.SafeSelect(chargingMode => chargingMode.ToText())))
+                                   : null,
+
+                               new JProperty("currentType", CurrentType.ToText()),
+
+                               AverageVoltage.HasValue && AverageVoltage   > 0
+                                   ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value, 2))
+                                   : null,
+
+                               MaxCurrent.    HasValue && MaxCurrent       > 0
+                                   ? new JProperty("maxCurrent",     Math.Round(MaxCurrent.    Value, 2))
+                                   : null,
+
+                               MaxPower.      HasValue && MaxPower.   HasValue
+                                   ? new JProperty("maxPower",       Math.Round(MaxPower.      Value, 2))
+                                   : null,
+
+                               MaxCapacity.   HasValue && MaxCapacity.HasValue
+                                   ? new JProperty("maxCapacity",    Math.Round(MaxCapacity.   Value, 2))
+                                   : null,
+
+                               SocketOutlets.Count > 0
+                                   ? new JProperty("socketOutlets", new JArray(SocketOutlets.ToJSON()))
+                                   : null,
+
+                               EnergyMeter is not null
+                                   ? new JProperty("energyMeter", EnergyMeter.ToJSON())
+                                   : null,
+
+                               !Embedded && ChargingStation?.OpeningTimes is not null
+                                   ? new JProperty("openingTimes", ChargingStation.OpeningTimes.ToJSON())
+                                   : null
+
+                         );
+
+                return CustomVirtualEVSESerializer is not null
+                           ? CustomVirtualEVSESerializer(this, json)
+                           : json;
+
+                var ss = CustomEVSESerializer is not null
+                           ? CustomEVSESerializer(this, json)
+                           : json;
+
+            }
+            catch (Exception e)
+            {
+                return new JObject(
+                           new JProperty("@id",         Id.ToString()),
+                           new JProperty("@context",    JSONLDContext),
+                           new JProperty("exception",   e.Message),
+                           new JProperty("stackTrace",  e.StackTrace)
+                       );
+            }
+
+        }
+
+        #endregion
+
+
         #region IEnumerable<SocketOutlet> Members
 
         /// <summary>
@@ -2195,7 +2900,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (VirtualEVSE VirtualEVSE1, VirtualEVSE VirtualEVSE2)
+        public static Boolean operator == (VirtualEVSE? VirtualEVSE1,
+                                           VirtualEVSE? VirtualEVSE2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -2220,7 +2926,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (VirtualEVSE VirtualEVSE1, VirtualEVSE VirtualEVSE2)
+        public static Boolean operator != (VirtualEVSE? VirtualEVSE1,
+                                           VirtualEVSE? VirtualEVSE2)
+
             => !(VirtualEVSE1 == VirtualEVSE2);
 
         #endregion
@@ -2233,7 +2941,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (VirtualEVSE VirtualEVSE1, VirtualEVSE VirtualEVSE2)
+        public static Boolean operator < (VirtualEVSE? VirtualEVSE1,
+                                          VirtualEVSE? VirtualEVSE2)
         {
 
             if (VirtualEVSE1 is null)
@@ -2253,7 +2962,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (VirtualEVSE VirtualEVSE1, VirtualEVSE VirtualEVSE2)
+        public static Boolean operator <= (VirtualEVSE? VirtualEVSE1,
+                                           VirtualEVSE? VirtualEVSE2)
+
             => !(VirtualEVSE1 > VirtualEVSE2);
 
         #endregion
@@ -2266,7 +2977,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (VirtualEVSE VirtualEVSE1, VirtualEVSE VirtualEVSE2)
+        public static Boolean operator > (VirtualEVSE? VirtualEVSE1,
+                                          VirtualEVSE? VirtualEVSE2)
         {
 
             if (VirtualEVSE1 is null)
@@ -2286,7 +2998,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSE1">A virtual EVSE.</param>
         /// <param name="VirtualEVSE2">Another virtual EVSE.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (VirtualEVSE VirtualEVSE1, VirtualEVSE VirtualEVSE2)
+        public static Boolean operator >= (VirtualEVSE? VirtualEVSE1,
+                                           VirtualEVSE? VirtualEVSE2)
+
             => !(VirtualEVSE1 < VirtualEVSE2);
 
         #endregion
@@ -2298,35 +3012,43 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two virtual EVSEs.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">An EVSE to compare with.</param>
+        public override Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is VirtualEVSE VirtualEVSE))
-                throw new ArgumentException("The given object is not a virtual EVSE!");
-
-            return CompareTo(VirtualEVSE);
-
-        }
+            => Object is VirtualEVSE virtualEVSE
+                   ? CompareTo(virtualEVSE)
+                   : throw new ArgumentException("The given object is not a virtual EVSE!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(VirtualEVSE)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two virtual EVSEs.
         /// </summary>
-        /// <param name="VirtualEVSE">An virtual EVSE to compare with.</param>
-        public Int32 CompareTo(VirtualEVSE VirtualEVSE)
+        /// <param name="VirtualEVSE">An EVSE to compare with.</param>
+        public Int32 CompareTo(VirtualEVSE? VirtualEVSE)
         {
 
             if (VirtualEVSE is null)
                 throw new ArgumentNullException(nameof(VirtualEVSE),  "The given virtual EVSE must not be null!");
+
+            return Id.CompareTo(VirtualEVSE.Id);
+
+        }
+
+        /// <summary>
+        /// Compares two virtual EVSEs.
+        /// </summary>
+        /// <param name="VirtualEVSE">An EVSE to compare with.</param>
+        public Int32 CompareTo(IEVSE? VirtualEVSE)
+        {
+
+            if (VirtualEVSE is null)
+                throw new ArgumentNullException(nameof(VirtualEVSE), "The given virtual EVSE must not be null!");
 
             return Id.CompareTo(VirtualEVSE.Id);
 
@@ -2341,22 +3063,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two virtual EVSEs for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A virtual EVSE to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is VirtualEVSE VirtualEVSE))
-                return false;
-
-            return Equals(VirtualEVSE);
-
-        }
+            => Object is EVSE evse &&
+                   Equals(evse);
 
         #endregion
 
@@ -2366,8 +3079,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// Compares two virtual EVSEs for equality.
         /// </summary>
         /// <param name="VirtualEVSE">A virtual EVSE to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(VirtualEVSE VirtualEVSE)
+        public Boolean Equals(VirtualEVSE? VirtualEVSE)
         {
 
             if (VirtualEVSE is null)
@@ -2376,6 +3088,15 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             return Id.Equals(VirtualEVSE.Id);
 
         }
+
+        /// <summary>
+        /// Compares two (virtual) EVSEs for equality.
+        /// </summary>
+        /// <param name="IEVSE">An EVSE to compare with.</param>
+        public Boolean Equals(IEVSE? IEVSE)
+
+            => IEVSE is not null &&
+                   Id.Equals(IEVSE.Id);
 
         #endregion
 
@@ -2403,81 +3124,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-
-        public Int32 CompareTo(EVSE? EVSE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Boolean Equals(EVSE? EVSE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public JObject ToJSON(Boolean Embedded = false, InfoStatus ExpandRoamingNetworkId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationOperatorId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingPoolId = InfoStatus.ShowIdOnly, InfoStatus ExpandChargingStationId = InfoStatus.ShowIdOnly, InfoStatus ExpandBrandIds = InfoStatus.ShowIdOnly, InfoStatus ExpandDataLicenses = InfoStatus.ShowIdOnly, CustomJObjectSerializerDelegate<EVSE>? CustomEVSESerializer = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public EVSE UpdateWith(EVSE OtherEVSE)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Boolean Equals(IEVSE? other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Int32 CompareTo(IEVSE? other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ChargingStationOperator? Operator => throw new NotImplementedException();
-
-        public IRemoteEVSE? RemoteEVSE => throw new NotImplementedException();
-
-        Decimal? IEVSE.AverageVoltage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Brand> Brands => throw new NotImplementedException();
-
-        public ChargingPool? ChargingPool => throw new NotImplementedException();
-
-        public ChargingStation? ChargingStation => throw new NotImplementedException();
-
-        public ReactiveSet<OpenDataLicense> OpenDataLicenses => throw new NotImplementedException();
-
-        public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Boolean IsFreeOfCharge { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTime? LastStatusUpdate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        Decimal? IEVSE.MaxCapacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxCapacityPrognoses => throw new NotImplementedException();
-
-        public Timestamped<Decimal>? MaxCapacityRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        Decimal? IEVSE.MaxCurrent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxCurrentPrognoses => throw new NotImplementedException();
-
-        public Timestamped<Decimal>? MaxCurrentRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        Decimal? IEVSE.MaxPower { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxPowerPrognoses => throw new NotImplementedException();
-
-        public Timestamped<Decimal>? MaxPowerRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IEnumerable<ChargingReservation> Reservations => throw new NotImplementedException();
-
-        public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        TimeSpan IChargingReservations.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
-
-        public ReactiveSet<ChargingProduct> ChargingProducts => throw new NotImplementedException();
-
-        public ReactiveSet<ChargingTariff> ChargingTariffs => throw new NotImplementedException();
     }
 
 }

@@ -130,24 +130,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
-        public static JArray ToJSON(this IEnumerable<IRoamingNetwork>                          RoamingNetworks,
-                                    UInt64?                                                    Skip                                      = null,
-                                    UInt64?                                                    Take                                      = null,
-                                    Boolean                                                    Embedded                                  = false,
-                                    InfoStatus                                                 ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                 ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                 ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                 ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                 ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                                                 ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+        public static JArray ToJSON(this IEnumerable<IRoamingNetwork>                           RoamingNetworks,
+                                    UInt64?                                                     Skip                                      = null,
+                                    UInt64?                                                     Take                                      = null,
+                                    Boolean                                                     Embedded                                  = false,
+                                    InfoStatus                                                  ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                  ExpandRoamingNetworkIds                   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                  ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                  ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                  ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                  ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
 
-                                    InfoStatus                                                 ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+                                    InfoStatus                                                  ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
 
-                                    CustomJObjectSerializerDelegate<RoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
-                                    CustomJObjectSerializerDelegate<ChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
-                                    CustomJObjectSerializerDelegate<ChargingPool>?             CustomChargingPoolSerializer              = null,
-                                    CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
-                                    CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null)
+                                    CustomJObjectSerializerDelegate<IRoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
+                                    CustomJObjectSerializerDelegate<IChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
+                                    CustomJObjectSerializerDelegate<IChargingPool>?             CustomChargingPoolSerializer              = null,
+                                    CustomJObjectSerializerDelegate<IChargingStation>?          CustomChargingStationSerializer           = null,
+                                    CustomJObjectSerializerDelegate<IEVSE>?                     CustomEVSESerializer                      = null)
 
 
         => RoamingNetworks is null || !RoamingNetworks.Any()
@@ -298,14 +298,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique roaming network identification.
         /// </summary>
-        new RoamingNetwork_Id       Id                          { get; }
+        new RoamingNetwork_Id         Id                          { get; }
 
-        ReactiveSet<OpenDataLicense>    DataLicenses                { get; }
+        ReactiveSet<OpenDataLicense>  DataLicenses                { get; }
 
 
 
-        ChargingReservationsStore   ReservationsStore           { get; }
-        ChargingSessionsStore       SessionsStore               { get; }
+        ChargingReservationsStore     ReservationsStore           { get; }
+        ChargingSessionsStore         SessionsStore               { get; }
 
 
         #region EMPRoamingProviders
@@ -851,20 +851,23 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-
-        JObject ToJSON(Boolean                                                    Embedded                                  = false,
-                       InfoStatus                                                 ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                 ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                 ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                 ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                 ExpandBrandIds                            = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                 ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
-                       InfoStatus                                                 ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
-                       CustomJObjectSerializerDelegate<RoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
-                       CustomJObjectSerializerDelegate<ChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
-                       CustomJObjectSerializerDelegate<ChargingPool>?             CustomChargingPoolSerializer              = null,
-                       CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
-                       CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null);
+        /// <summary>
+        /// Return a JSON representation of the given roaming network.
+        /// </summary>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network API.</param>
+        JObject ToJSON(Boolean                                                     Embedded                                  = false,
+                       InfoStatus                                                  ExpandChargingStationOperatorIds          = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                  ExpandChargingPoolIds                     = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                  ExpandChargingStationIds                  = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                  ExpandEVSEIds                             = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                  ExpandBrandIds                            = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                  ExpandDataLicenses                        = InfoStatus.ShowIdOnly,
+                       InfoStatus                                                  ExpandEMobilityProviderId                 = InfoStatus.ShowIdOnly,
+                       CustomJObjectSerializerDelegate<IRoamingNetwork>?           CustomRoamingNetworkSerializer            = null,
+                       CustomJObjectSerializerDelegate<IChargingStationOperator>?  CustomChargingStationOperatorSerializer   = null,
+                       CustomJObjectSerializerDelegate<IChargingPool>?             CustomChargingPoolSerializer              = null,
+                       CustomJObjectSerializerDelegate<IChargingStation>?          CustomChargingStationSerializer           = null,
+                       CustomJObjectSerializerDelegate<IEVSE>?                     CustomEVSESerializer                      = null);
 
 
     }
