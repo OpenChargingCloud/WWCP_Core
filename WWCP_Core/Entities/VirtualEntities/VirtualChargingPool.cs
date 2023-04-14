@@ -162,8 +162,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// The identification of the operator of this virtual EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator_Id OperatorId
+        public ChargingStationOperator_Id  OperatorId
             => Id.OperatorId;
+
+        /// <summary>
+        /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
+        /// </summary>
+        public Boolean?                    ChargingWhenClosed          { get; set; }
 
         #endregion
 

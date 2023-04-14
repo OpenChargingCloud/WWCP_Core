@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The license of the charging pool data.
         /// </summary>
-        ReactiveSet<OpenDataLicense>                DataLicenses                { get; }
+        ReactiveSet<OpenDataLicense>            DataLicenses                { get; }
 
         /// <summary>
         /// The official language at this charging pool.
@@ -179,6 +179,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// The opening times of this charging pool.
         /// </summary>
         OpeningTimes                            OpeningTimes                { get; set; }
+
+        /// <summary>
+        /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
+        /// </summary>
+        Boolean?                                ChargingWhenClosed          { get; set; }
 
         /// <summary>
         /// The user interface features of the charging station.

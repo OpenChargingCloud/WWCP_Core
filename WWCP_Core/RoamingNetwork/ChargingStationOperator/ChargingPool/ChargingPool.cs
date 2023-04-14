@@ -82,34 +82,34 @@ namespace cloud.charging.open.protocols.WWCP
         /// The roaming network of this charging pool.
         /// </summary>
         [InternalUseOnly]
-        public IRoamingNetwork?          RoamingNetwork
+        public IRoamingNetwork?              RoamingNetwork
             => Operator?.RoamingNetwork;
 
         /// <summary>
         /// The charging station operator of this charging pool.
         /// </summary>
         [Optional]
-        public ChargingStationOperator?  Operator               { get; }
+        public ChargingStationOperator?      Operator               { get; }
 
         /// <summary>
         /// The charging station sub operator of this charging pool.
         /// </summary>
         [Optional]
-        public ChargingStationOperator?  SubOperator            { get; }
+        public ChargingStationOperator?      SubOperator            { get; }
 
 
         /// <summary>
         /// The remote charging pool.
         /// </summary>
         [Optional]
-        public IRemoteChargingPool?      RemoteChargingPool     { get; }
+        public IRemoteChargingPool?          RemoteChargingPool     { get; }
 
 
         /// <summary>
         /// All brands registered for this charging pool.
         /// </summary>
         [Optional, SlowData]
-        public ReactiveSet<Brand>        Brands                 { get; }
+        public ReactiveSet<Brand>            Brands                 { get; }
 
         /// <summary>
         /// The license of the charging pool data.
@@ -347,6 +347,15 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
         }
+
+        #endregion
+
+        #region ChargingWhenClosed
+
+        /// <summary>
+        /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
+        /// </summary>
+        public Boolean?  ChargingWhenClosed    { get; set; }
 
         #endregion
 
