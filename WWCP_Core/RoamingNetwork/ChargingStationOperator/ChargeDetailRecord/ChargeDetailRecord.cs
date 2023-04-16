@@ -188,15 +188,10 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingTariff?              ChargingTariff               { get; }
 
         /// <summary>
-        /// The charging price (excluding VAT).
+        /// The charging price.
         /// </summary>
         [Optional]
-        public Decimal?                     ChargingPrice                { get; }
-
-        /// <summary>
-        /// The ISO 4217 code of the currency used for this charge detail record.
-        /// </summary>
-        public Currency?                    Currency                     { get; }
+        public Price?                       ChargingPrice                { get; }
 
         #endregion
 
@@ -372,7 +367,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// 
         /// <param name="ChargingProduct">The consumed charging product.</param>
         /// <param name="ChargingPrice">The charging price.</param>
-        /// <param name="Currency">The ISO 4217 code of the currency used for this charge detail record.</param>
         /// 
         /// <param name="AuthenticationStart">The authentication used for starting this charging process.</param>
         /// <param name="AuthenticationStop">The authentication used for stopping this charging process.</param>
@@ -409,8 +403,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   ChargingStationOperator_Id?        ChargingStationOperatorId   = null,
 
                                   ChargingProduct?                   ChargingProduct             = null,
-                                  Decimal?                           ChargingPrice               = null,
-                                  Currency?                          Currency                    = null,
+                                  Price?                             ChargingPrice               = null,
 
                                   AAuthentication?                   AuthenticationStart         = null,
                                   AAuthentication?                   AuthenticationStop          = null,
@@ -464,7 +457,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingProduct             = ChargingProduct;
             this.ChargingPrice               = ChargingPrice;
-            this.Currency                    = Currency;
 
             this.AuthenticationStart         = AuthenticationStart;
             this.AuthenticationStop          = AuthenticationStop;

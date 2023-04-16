@@ -40,13 +40,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// The base price (e.g. excluding VAT)
         /// </summary>
         [Mandatory]
-        public Decimal   Base    { get; }
+        public Decimal    Base        { get; }
 
         /// <summary>
         /// The additional VAT.
         /// </summary>
         [Optional]
-        public Decimal?  VAT     { get; }
+        public Decimal?   VAT         { get; }
+
+        /// <summary>
+        /// The ISO 4217 code of the currency used for this charge detail record.
+        /// </summary>
+        public Currency?  Currency    { get; }
+
 
         /// <summary>
         /// The total price.
@@ -62,13 +68,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new price e.g. for a charging session.
         /// </summary>
         /// <param name="Base">The base price (e.g. excluding VAT)</param>
-        /// <param name="VAT">The additional VAT.</param>
-        public Price(Decimal   Base,
-                     Decimal?  VAT   = null)
+        /// <param name="VAT">The optional additional VAT.</param>
+        /// <param name="Currency">The optional currency.</param>
+        public Price(Decimal    Base,
+                     Decimal?   VAT        = null,
+                     Currency?  Currency   = null)
         {
 
-            this.Base  = Base;
-            this.VAT   = VAT;
+            this.Base      = Base;
+            this.VAT       = VAT;
+            this.Currency  = Currency;
 
         }
 
@@ -170,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP
                     return false;
                 }
 
-                #region Parse Base    [mandatory]
+                #region Parse Base            [mandatory]
 
                 if (!JSON.ParseMandatory("base",
                                          "base price",
@@ -195,9 +204,24 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+                #region Parse Curreny         [optional]
+
+                if (JSON.ParseOptional("curreny",
+                                       "curreny",
+                                       org.GraphDefined.Vanaheimr.Illias.Currency.TryParse,
+                                       out Currency? Currency,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 Price = new Price(Base,
-                                  VAT);
+                                  VAT,
+                                  Currency);
 
 
                 if (CustomPriceParser is not null)
@@ -229,10 +253,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("base",  Base),
+                                 new JProperty("base",       Base),
 
                            VAT.HasValue
-                               ? new JProperty("vat",   VAT)
+                               ? new JProperty("vat",        VAT)
+                               : null,
+
+                           Currency is not null
+                               ? new JProperty("currency",   Currency.ISOCode)
                                : null
 
                        );
@@ -242,6 +270,18 @@ namespace cloud.charging.open.protocols.WWCP
                        : JSON;
 
         }
+
+        #endregion
+
+
+        #region Static Definitions
+
+        public static Price EURO(Decimal   Base,
+                                Decimal?  VAT = null)
+
+            => new (Base,
+                    VAT,
+                    Currency.EUR);
 
         #endregion
 
