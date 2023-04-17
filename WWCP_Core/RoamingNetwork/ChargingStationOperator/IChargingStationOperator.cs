@@ -1284,6 +1284,19 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean TryGetChargingTariff(ChargingTariff_Id    Id,
                                      out ChargingTariff?  ChargingTariff);
 
+        IEnumerable<ChargingTariff>     GetChargingTariffs  (ChargingPool_Id?       ChargingPoolId        = null,
+                                                             ChargingStation_Id?    ChargingStationId     = null,
+                                                             EVSE_Id?               EVSEId                = null,
+                                                             ChargingConnector_Id?  ChargingConnectorId   = null,
+                                                             EMobilityProvider_Id?  EMobilityProviderId   = null);
+
+        IEnumerable<ChargingTariff_Id>  GetChargingTariffIds(ChargingPool_Id?       ChargingPoolId        = null,
+                                                             ChargingStation_Id?    ChargingStationId     = null,
+                                                             EVSE_Id?               EVSEId                = null,
+                                                             ChargingConnector_Id?  ChargingConnectorId   = null,
+                                                             EMobilityProvider_Id?  EMobilityProviderId   = null);
+
+
         IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffRemoval { get; }
 
         /// <summary>

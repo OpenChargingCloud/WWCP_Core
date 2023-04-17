@@ -4466,6 +4466,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        public IEnumerable<ChargingTariff>    GetChargingTariffs  (ChargingPool_Id?       ChargingPoolId        = null,
+                                                                   ChargingStation_Id?    ChargingStationId     = null,
+                                                                   EVSE_Id?               EVSEId                = null,
+                                                                   ChargingConnector_Id?  ChargingConnectorId   = null,
+                                                                   EMobilityProvider_Id?  EMobilityProviderId   = null)
+        {
+
+            return Array.Empty<ChargingTariff>();
+
+        }
+
+        public IEnumerable<ChargingTariff_Id> GetChargingTariffIds(ChargingPool_Id?       ChargingPoolId        = null,
+                                                                   ChargingStation_Id?    ChargingStationId     = null,
+                                                                   EVSE_Id?               EVSEId                = null,
+                                                                   ChargingConnector_Id?  ChargingConnectorId   = null,
+                                                                   EMobilityProvider_Id?  EMobilityProviderId   = null)
+        {
+
+            return Array.Empty<ChargingTariff_Id>();
+
+        }
+
 
         #region ChargingTariffRemoval
 
