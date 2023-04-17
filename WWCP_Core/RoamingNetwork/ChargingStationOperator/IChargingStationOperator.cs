@@ -1179,6 +1179,9 @@ namespace cloud.charging.open.protocols.WWCP
         IEnumerable<ChargingTariff> ChargingTariffs { get; }
 
 
+        URL? TermsAndConditionsURL { get; }
+
+
         /// <summary>
         /// Create and register a new charging tariff having the given
         /// unique charging tariff identification.

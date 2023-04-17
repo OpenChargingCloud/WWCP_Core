@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                        EnergyMeter?                        EnergyMeter                  = null,
                                        Boolean?                            IsFreeOfCharge               = null,
-                                       IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+                                       IEnumerable<ChargingConnector>?          SocketOutlets                = null,
 
                                        ChargingSession?                    ChargingSession              = null,
                                        DateTime?                           LastStatusUpdate             = null,
@@ -536,7 +536,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                                        EnergyMeter?                        EnergyMeter                  = null,
                                                        Boolean?                            IsFreeOfCharge               = null,
-                                                       IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+                                                       IEnumerable<ChargingConnector>?          SocketOutlets                = null,
 
                                                        ChargingSession?                    ChargingSession              = null,
                                                        DateTime?                           LastStatusUpdate             = null,

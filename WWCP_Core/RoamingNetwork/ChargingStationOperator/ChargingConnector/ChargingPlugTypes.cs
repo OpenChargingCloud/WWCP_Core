@@ -15,20 +15,38 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The type of plugs.
+    /// Extension methods for charging plugs.
     /// </summary>
-    [Flags]
-    public enum PlugTypes
+    public static class ChargingPlugTypesExtensions
+    {
+
+        /// <summary>
+        /// Whether the charging connector is DC or AC.
+        /// </summary>
+        /// <param name="PlugType">A charging plug.</param>
+        public static Boolean IsDC(this ChargingPlugTypes PlugType)
+
+            => PlugType switch {
+
+                    ChargingPlugTypes.CCSCombo1Plug_CableAttached or
+                    ChargingPlugTypes.CCSCombo2Plug_CableAttached or
+                    ChargingPlugTypes.CHAdeMO => true,
+
+                    _ => false,
+
+               };
+
+    }
+
+
+    /// <summary>
+    /// The type of charging plugs.
+    /// </summary>
+    public enum ChargingPlugTypes
     {
 
         Unspecified,

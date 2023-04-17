@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The power socket outlets.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<SocketOutlet>                SocketOutlets               { get; set; }
+        public ReactiveSet<ChargingConnector>                ChargingConnectors               { get; set; }
 
 
         public DateTime?                                LastStatusUpdate            { get; set; }
@@ -870,7 +870,7 @@ namespace cloud.charging.open.protocols.WWCP
                     EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                     EnergyMeter?                        EnergyMeter                  = null,
                     Boolean?                            IsFreeOfCharge               = null,
-                    IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+                    IEnumerable<ChargingConnector>?          ChargingConnectors                = null,
 
                     ChargingSession?                    ChargingSession              = null,
                     DateTime?                           LastStatusUpdate             = null,
@@ -1030,13 +1030,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.IsFreeOfCharge                     = IsFreeOfCharge ?? false;
 
-            this.SocketOutlets                      = SocketOutlets is null
-                                                          ? new ReactiveSet<SocketOutlet>()
-                                                          : new ReactiveSet<SocketOutlet>(SocketOutlets);
-            this.SocketOutlets.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            this.ChargingConnectors                      = ChargingConnectors is null
+                                                          ? new ReactiveSet<ChargingConnector>()
+                                                          : new ReactiveSet<ChargingConnector>(ChargingConnectors);
+            this.ChargingConnectors.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
-                PropertyChanged("SocketOutlets",
+                PropertyChanged("ChargingConnectors",
                                 oldItems,
                                 newItems);
 
@@ -1110,7 +1110,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             Brands.                 Replace(OtherEVSE.Brands);
             ChargingModes.          Replace(OtherEVSE.ChargingModes);
-            SocketOutlets.          Replace(OtherEVSE.SocketOutlets);
+            ChargingConnectors.          Replace(OtherEVSE.ChargingConnectors);
             OpenDataLicenses.       Replace(OtherEVSE.OpenDataLicenses);
             AverageVoltagePrognoses.Replace(OtherEVSE.AverageVoltagePrognoses);
             MaxCurrentPrognoses.    Replace(OtherEVSE.MaxCurrentPrognoses);
@@ -2483,8 +2483,8 @@ namespace cloud.charging.open.protocols.WWCP
                                    ? new JProperty("maxCapacity",    Math.Round(MaxCapacity.   Value, 2))
                                    : null,
 
-                               SocketOutlets.Count > 0
-                                   ? new JProperty("socketOutlets", new JArray(SocketOutlets.ToJSON()))
+                               ChargingConnectors.Count > 0
+                                   ? new JProperty("socketOutlets", new JArray(ChargingConnectors.ToJSON()))
                                    : null,
 
                                EnergyMeter is not null
@@ -2517,19 +2517,19 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region IEnumerable<SocketOutlet> Members
+        #region IEnumerable<ChargingConnector> Members
 
         /// <summary>
         /// Return a socket outlet enumerator.
         /// </summary>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => SocketOutlets.GetEnumerator();
+            => ChargingConnectors.GetEnumerator();
 
         /// <summary>
         /// Return a socket outlet enumerator.
         /// </summary>
-        public IEnumerator<SocketOutlet> GetEnumerator()
-            => SocketOutlets.GetEnumerator();
+        public IEnumerator<ChargingConnector> GetEnumerator()
+            => ChargingConnectors.GetEnumerator();
 
         #endregion
 

@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
                              IChargingSessions,
                              IChargeDetailRecords,
                              IEquatable<IEVSE>, IComparable<IEVSE>, IComparable,
-                             IEnumerable<SocketOutlet>
+                             IEnumerable<ChargingConnector>
     {
 
         #region Properties
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The power socket outlets of this EVSE.
         /// </summary>
         [Mandatory, SlowData]
-        ReactiveSet<SocketOutlet>              SocketOutlets                { get; set; }
+        ReactiveSet<ChargingConnector>              ChargingConnectors                { get; set; }
 
 
 

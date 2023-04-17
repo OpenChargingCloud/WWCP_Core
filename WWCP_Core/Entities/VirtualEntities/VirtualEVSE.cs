@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                             EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                                             EnergyMeter?                        EnergyMeter                  = null,
                                                             Boolean?                            IsFreeOfCharge               = null,
-                                                            IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+                                                            IEnumerable<ChargingConnector>?     ChargingConnectors           = null,
 
                                                             ChargingSession?                    ChargingSession              = null,
                                                             DateTime?                           LastStatusUpdate             = null,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    EnergyMixPrognoses,
                    EnergyMeter,
                    IsFreeOfCharge,
-                   SocketOutlets,
+                   ChargingConnectors,
 
                    ChargingSession,
                    LastStatusUpdate,
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              EnergyMixPrognoses,
                                              EnergyMeter,
                                              IsFreeOfCharge,
-                                             SocketOutlets,
+                                             ChargingConnectors,
 
                                              EllipticCurve,
                                              PrivateKey,
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                       EVSEAdminStatusTypes,
                                                       EVSEStatusTypes>,
                                IEquatable<VirtualEVSE>, IComparable<VirtualEVSE>, IComparable,
-                               IEnumerable<SocketOutlet>,
+                               IEnumerable<ChargingConnector>,
                                IRemoteEVSE
     {
 
@@ -879,23 +879,23 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        #region SocketOutlets
+        #region ChargingConnectors
 
-        private ReactiveSet<SocketOutlet> _SocketOutlets;
+        private ReactiveSet<ChargingConnector> _ChargingConnectors;
 
-        public ReactiveSet<SocketOutlet> SocketOutlets
+        public ReactiveSet<ChargingConnector> ChargingConnectors
         {
 
             get
             {
-                return _SocketOutlets;
+                return _ChargingConnectors;
             }
 
             set
             {
 
-                if (_SocketOutlets != value)
-                    SetProperty(ref _SocketOutlets, value);
+                if (_ChargingConnectors != value)
+                    SetProperty(ref _ChargingConnectors, value);
 
             }
 
@@ -960,7 +960,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                              EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                              EnergyMeter?                        EnergyMeter                  = null,
                              Boolean?                            IsFreeOfCharge               = null,
-                             IEnumerable<SocketOutlet>?          SocketOutlets                = null,
+                             IEnumerable<ChargingConnector>?          ChargingConnectors                = null,
 
                              String?                             EllipticCurve                = null,
                              ECPrivateKeyParameters?             PrivateKey                   = null,
@@ -1115,20 +1115,20 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             this.IsFreeOfCharge                     = IsFreeOfCharge ?? false;
 
-            this.SocketOutlets                      = SocketOutlets is null
-                                                          ? new ReactiveSet<SocketOutlet>()
-                                                          : new ReactiveSet<SocketOutlet>(SocketOutlets);
-            this.SocketOutlets.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            this.ChargingConnectors                      = ChargingConnectors is null
+                                                          ? new ReactiveSet<ChargingConnector>()
+                                                          : new ReactiveSet<ChargingConnector>(ChargingConnectors);
+            this.ChargingConnectors.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
-                PropertyChanged("SocketOutlets",
+                PropertyChanged("ChargingConnectors",
                                 oldItems,
                                 newItems);
 
             };
 
             this.ChargingModes          = new ReactiveSet<ChargingModes>();
-            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
+            this._ChargingConnectors         = new ReactiveSet<ChargingConnector>();
 
             this.energyMeter           = EnergyMeter;
 
@@ -1281,7 +1281,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             Brands.                 Replace(OtherEVSE.Brands);
             ChargingModes.          Replace(OtherEVSE.ChargingModes);
-            SocketOutlets.          Replace(OtherEVSE.SocketOutlets);
+            ChargingConnectors.          Replace(OtherEVSE.ChargingConnectors);
             OpenDataLicenses.       Replace(OtherEVSE.OpenDataLicenses);
             AverageVoltagePrognoses.Replace(OtherEVSE.AverageVoltagePrognoses);
             MaxCurrentPrognoses.    Replace(OtherEVSE.MaxCurrentPrognoses);
@@ -2835,8 +2835,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                    ? new JProperty("maxCapacity",    Math.Round(MaxCapacity.   Value, 2))
                                    : null,
 
-                               SocketOutlets.Count > 0
-                                   ? new JProperty("socketOutlets", new JArray(SocketOutlets.ToJSON()))
+                               ChargingConnectors.Count > 0
+                                   ? new JProperty("socketOutlets", new JArray(ChargingConnectors.ToJSON()))
                                    : null,
 
                                EnergyMeter is not null
@@ -2873,19 +2873,19 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        #region IEnumerable<SocketOutlet> Members
+        #region IEnumerable<ChargingConnector> Members
 
         /// <summary>
         /// Return a socket outlet enumerator.
         /// </summary>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => _SocketOutlets.GetEnumerator();
+            => _ChargingConnectors.GetEnumerator();
 
         /// <summary>
         /// Return a socket outlet enumerator.
         /// </summary>
-        public IEnumerator<SocketOutlet> GetEnumerator()
-            => _SocketOutlets.GetEnumerator();
+        public IEnumerator<ChargingConnector> GetEnumerator()
+            => _ChargingConnectors.GetEnumerator();
 
         #endregion
 

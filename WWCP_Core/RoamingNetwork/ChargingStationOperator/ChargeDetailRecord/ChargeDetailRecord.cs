@@ -125,28 +125,16 @@ namespace cloud.charging.open.protocols.WWCP
         #region Location / Operator
 
         /// <summary>
-        /// The EVSE used for charging.
+        /// The charging station operator used for charging.
         /// </summary>
         [Optional]
-        public IEVSE?                       EVSE                         { get; }
+        public IChargingStationOperator?    ChargingStationOperator      { get; }
 
         /// <summary>
-        /// The identification of the EVSE used for charging.
+        /// The identification of the charging station operator used for charging.
         /// </summary>
         [Optional]
-        public EVSE_Id?                     EVSEId                       { get; }
-
-        /// <summary>
-        /// The charging station of the charging station used for charging.
-        /// </summary>
-        [Optional]
-        public IChargingStation?            ChargingStation              { get; }
-
-        /// <summary>
-        /// The identification of the charging station used for charging.
-        /// </summary>
-        [Optional]
-        public ChargingStation_Id?          ChargingStationId            { get; }
+        public ChargingStationOperator_Id?  ChargingStationOperatorId    { get; }
 
         /// <summary>
         /// The charging pool of the charging pool used for charging.
@@ -161,16 +149,40 @@ namespace cloud.charging.open.protocols.WWCP
         public ChargingPool_Id?             ChargingPoolId               { get; }
 
         /// <summary>
-        /// The charging station operator used for charging.
+        /// The charging station of the charging station used for charging.
         /// </summary>
         [Optional]
-        public IChargingStationOperator?    ChargingStationOperator      { get; }
+        public IChargingStation?            ChargingStation              { get; }
 
         /// <summary>
-        /// The identification of the charging station operator used for charging.
+        /// The identification of the charging station used for charging.
         /// </summary>
         [Optional]
-        public ChargingStationOperator_Id?  ChargingStationOperatorId    { get; }
+        public ChargingStation_Id?          ChargingStationId            { get; }
+
+        /// <summary>
+        /// The EVSE used for charging.
+        /// </summary>
+        [Optional]
+        public IEVSE?                       EVSE                         { get; }
+
+        /// <summary>
+        /// The identification of the EVSE used for charging.
+        /// </summary>
+        [Optional]
+        public EVSE_Id?                     EVSEId                       { get; }
+
+        /// <summary>
+        /// The connector used for charging.
+        /// </summary>
+        [Optional]
+        public IChargingConnector?          Connector                    { get; }
+
+        /// <summary>
+        /// The identification of the connector used for charging.
+        /// </summary>
+        [Optional]
+        public ChargingConnector_Id?        ConnectorId                  { get; }
 
         #endregion
 

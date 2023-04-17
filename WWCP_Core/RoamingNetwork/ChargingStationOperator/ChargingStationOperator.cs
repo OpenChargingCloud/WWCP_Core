@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region DataLicense
 
-        private ReactiveSet<OpenDataLicense> _DataLicenses;
+        private ReactiveSet<OpenDataLicense> dataLicenses;
 
         /// <summary>
         /// The license of the charging station operator data.
@@ -263,8 +263,8 @@ namespace cloud.charging.open.protocols.WWCP
             get
             {
 
-                return _DataLicenses != null && _DataLicenses.Any()
-                           ? _DataLicenses
+                return dataLicenses != null && dataLicenses.Any()
+                           ? dataLicenses
                            : RoamingNetwork?.DataLicenses;
 
             }
@@ -272,20 +272,20 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value != _DataLicenses && value != RoamingNetwork?.DataLicenses)
+                if (value != dataLicenses && value != RoamingNetwork?.DataLicenses)
                 {
 
                     if (value.IsNullOrEmpty())
-                        DeleteProperty(ref _DataLicenses);
+                        DeleteProperty(ref dataLicenses);
 
                     else
                     {
 
-                        if (_DataLicenses == null)
-                            SetProperty(ref _DataLicenses, value);
+                        if (dataLicenses == null)
+                            SetProperty(ref dataLicenses, value);
 
                         else
-                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+                            SetProperty(ref dataLicenses, dataLicenses.Set(value));
 
                     }
 
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Address
 
-        private Address _Address;
+        private Address address;
 
         /// <summary>
         /// The address of the operators headquarter.
@@ -310,17 +310,17 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _Address;
+                return address;
             }
 
             set
             {
 
                 if (value == null)
-                    _Address = value;
+                    address = value;
 
-                if (_Address != value)
-                    SetProperty(ref _Address, value);
+                if (address != value)
+                    SetProperty(ref address, value);
 
             }
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GeoLocation
 
-        private GeoCoordinate _GeoLocation;
+        private GeoCoordinate geoLocation;
 
         /// <summary>
         /// The geographical location of this operator.
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _GeoLocation;
+                return geoLocation;
             }
 
             set
@@ -350,8 +350,8 @@ namespace cloud.charging.open.protocols.WWCP
                 if (value == null)
                     value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
 
-                if (_GeoLocation != value)
-                    SetProperty(ref _GeoLocation, value);
+                if (geoLocation != value)
+                    SetProperty(ref geoLocation, value);
 
             }
 
@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Telephone
 
-        private PhoneNumber? _Telephone;
+        private PhoneNumber? telephone;
 
         /// <summary>
         /// The telephone number of the operator's (sales) office.
@@ -372,13 +372,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _Telephone;
+                return telephone;
             }
 
             set
             {
-                if (_Telephone != value)
-                    SetProperty(ref _Telephone, value);
+                if (telephone != value)
+                    SetProperty(ref telephone, value);
             }
 
         }
@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMailAddress
 
-        private SimpleEMailAddress? _EMailAddress;
+        private SimpleEMailAddress? eMailAddress;
 
         /// <summary>
         /// The e-mail address of the operator's (sales) office.
@@ -398,13 +398,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _EMailAddress;
+                return eMailAddress;
             }
 
             set
             {
-                if (_EMailAddress != value)
-                    SetProperty(ref _EMailAddress, value);
+                if (eMailAddress != value)
+                    SetProperty(ref eMailAddress, value);
             }
 
         }
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Homepage
 
-        private URL? _Homepage;
+        private URL? homepage;
 
         /// <summary>
         /// The homepage of this charging station operator.
@@ -424,13 +424,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _Homepage;
+                return homepage;
             }
 
             set
             {
-                if (_Homepage != value)
-                    SetProperty(ref _Homepage, value);
+                if (homepage != value)
+                    SetProperty(ref homepage, value);
             }
 
         }
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region HotlinePhoneNumber
 
-        private PhoneNumber? _HotlinePhoneNumber;
+        private PhoneNumber? hotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the Charging Station Operator hotline.
@@ -450,13 +450,39 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _HotlinePhoneNumber;
+                return hotlinePhoneNumber;
             }
 
             set
             {
-                if (_HotlinePhoneNumber != value)
-                    SetProperty(ref _HotlinePhoneNumber, value);
+                if (hotlinePhoneNumber != value)
+                    SetProperty(ref hotlinePhoneNumber, value);
+            }
+
+        }
+
+        #endregion
+
+        #region TermsAndConditionsURL
+
+        private URL? termsAndConditionsURL;
+
+        /// <summary>
+        /// The optional URL to terms and conditions for charging.
+        /// </summary>
+        [Optional]
+        public URL? TermsAndConditionsURL
+        {
+
+            get
+            {
+                return termsAndConditionsURL;
+            }
+
+            set
+            {
+                if (termsAndConditionsURL != value)
+                    SetProperty(ref termsAndConditionsURL, value);
             }
 
         }
@@ -551,7 +577,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init data and properties
 
             this.Brands                       = new ReactiveSet<Brand>();
-            this._DataLicenses                = new ReactiveSet<OpenDataLicense>();
+            this.dataLicenses                = new ReactiveSet<OpenDataLicense>();
 
             #region InvalidEVSEIds
 

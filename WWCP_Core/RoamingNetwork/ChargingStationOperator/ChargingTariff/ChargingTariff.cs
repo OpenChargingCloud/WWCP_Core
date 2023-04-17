@@ -110,17 +110,17 @@ namespace cloud.charging.open.protocols.WWCP
                                      (group.AutoIncludeStations != null && group.AutoIncludeStations(station.Operator.GetChargingStationById(station.Id))))
                                      foreach (var evse in station)
                                         results.Add(new String[] {
-                                                        evse.Id.                            ToString(),
-                                                     //   station.Brand.Name.                 FirstText(),
-                                                        station.Name.                       FirstText(),
+                                                        evse.Id.                             ToString(),
+                                                     //   station.Brand.Name.                  FirstText(),
+                                                        station.Name.                        FirstText(),
                                                         station.Address.Street,
                                                         station.Address.HouseNumber,
                                                         station.Address.PostalCode,
-                                                        station.Address.City.               FirstText(),
-                                                        station.Address.Country.CountryName.FirstText(),
-                                                        evse.MaxPower.                      ToString() + " kW",
-                                                        evse.SocketOutlets.First().Plug.    ToString(),
-                                                        group.Tariff.Name.                  FirstText()
+                                                        station.Address.City.                FirstText(),
+                                                        station.Address.Country.CountryName. FirstText(),
+                                                        evse.MaxPower.                       ToString() + " kW",
+                                                        evse.ChargingConnectors.First().Plug.ToString(),
+                                                        group.Tariff.Name.                   FirstText()
                                                     });
 
                              foreach (var evse in station)
@@ -128,32 +128,32 @@ namespace cloud.charging.open.protocols.WWCP
                                      if (group.AllowedMemberIds.Contains(evse.Id) ||
                                          (group.AutoIncludeEVSEs != null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEById(evse.Id))))
                                          results.Add(new String[] {
-                                                         evse.Id.                            ToString(),
-                                                      //   station.Brand.Name.                 FirstText(),
-                                                         station.Name.                       FirstText(),
+                                                         evse.Id.                             ToString(),
+                                                      //   station.Brand.Name.                  FirstText(),
+                                                         station.Name.                        FirstText(),
                                                          station.Address.Street,
                                                          station.Address.HouseNumber,
                                                          station.Address.PostalCode,
-                                                         station.Address.City.               FirstText(),
-                                                         station.Address.Country.CountryName.FirstText(),
-                                                         evse.MaxPower.                      ToString() + " kW",
-                                                         evse.SocketOutlets.First().Plug.    ToString(),
-                                                         group.Tariff.Name.                  FirstText()
+                                                         station.Address.City.                FirstText(),
+                                                         station.Address.Country.CountryName. FirstText(),
+                                                         evse.MaxPower.                       ToString() + " kW",
+                                                         evse.ChargingConnectors.First().Plug.ToString(),
+                                                         group.Tariff.Name.                   FirstText()
                                                      });
 
                              if (results.Count == 0)
                                  foreach (var evse in station)
                                      results.Add(new String[] {
-                                                     evse.Id.                            ToString(),
-                                                   //  station.Brand.Name.                 FirstText(),
-                                                     station.Name.                       FirstText(),
+                                                     evse.Id.                             ToString(),
+                                                   //  station.Brand.Name.                  FirstText(),
+                                                     station.Name.                        FirstText(),
                                                      station.Address.Street,
                                                      station.Address.HouseNumber,
                                                      station.Address.PostalCode,
-                                                     station.Address.City.               FirstText(),
-                                                     station.Address.Country.CountryName.FirstText(),
-                                                     evse.MaxPower.                      ToString() + " kW",
-                                                     evse.SocketOutlets.First().Plug.    ToString(),
+                                                     station.Address.City.                FirstText(),
+                                                     station.Address.Country.CountryName. FirstText(),
+                                                     evse.MaxPower.                       ToString() + " kW",
+                                                     evse.ChargingConnectors.First().Plug.ToString(),
                                                      "-"
                                                  });
 
