@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections;
+using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
@@ -27,11 +28,11 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 using social.OpenData.UsersAPI;
-using org.GraphDefined.Vanaheimr.Hermod.Mail;
+
+using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 
 #endregion
 
@@ -195,10 +196,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// The default max size of the status list.
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize        = 15;
-
-        //protected static readonly  SemaphoreSlim  ChargingPoolsSemaphore   = new (1, 1);
-
-        //protected static readonly  TimeSpan       SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
 
         #endregion
 
@@ -551,7 +548,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             : base(Id,
                    RoamingNetwork,
-                   Name        ?? I18NString.Create(Languages.en, "Charging Station Operator " + Id.ToString()),
+                   Name ?? I18NString.Create(Languages.en, "Charging Station Operator " + Id.ToString()),
                    Description,
                    null,
                    null,
@@ -592,8 +589,8 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
             this.chargingPools                = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this);
-            this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
-            this._EVSEGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
+            this.chargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
+            this.evseGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
             this.chargingTariffs             = new EntityHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
             this.chargingTariffGroups        = new EntityHashSet <ChargingStationOperator, ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
@@ -758,9 +755,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Charging pools
+        #region Charging Pools
 
-        #region ChargingPools
+        #region Data
 
         private readonly EntityHashSet<IChargingStationOperator, ChargingPool_Id, IChargingPool> chargingPools;
 
@@ -1010,21 +1007,33 @@ namespace cloud.charging.open.protocols.WWCP
                 chargingPool.OnAdminStatusChanged                      += UpdateChargingPoolAdminStatus;
                 chargingPool.OnStatusChanged                           += UpdateChargingPoolStatus;
 
-                chargingPool.OnChargingStationAddition.OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
-                chargingPool.OnChargingStationAddition.OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationAddition.SendNotification(timestamp, evseoperator, pool);
+                chargingPool.OnChargingStationAddition.OnVoting        += (timestamp, chargingPool, chargingStation, vote) => ChargingStationAddition.SendVoting(timestamp, chargingPool, chargingStation, vote);
+                chargingPool.OnChargingStationAddition.OnNotification  += (timestamp, chargingPool, chargingStation)       => {
+                    chargingStationLookup.TryAdd(chargingStation.Id, chargingStation);
+                    ChargingStationAddition.SendNotification(timestamp, chargingPool, chargingStation);
+                };
                 chargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
                 chargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
                 chargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
-                chargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationRemoval. SendVoting      (timestamp, evseoperator, pool, vote);
-                chargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
+                chargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, chargingPool, chargingStation, vote) => ChargingStationRemoval. SendVoting(timestamp, chargingPool, chargingStation, vote);
+                chargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, chargingPool, chargingStation)       => {
+                    chargingStationLookup.TryRemove(chargingStation.Id, out _);
+                    ChargingStationRemoval.SendNotification(timestamp, chargingPool, chargingStation);
+                };
 
-                chargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote)         => evseAddition.           SendVoting      (timestamp, station, evse, vote);
-                chargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)               => evseAddition.           SendNotification(timestamp, station, evse);
+                chargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote) => evseAddition.SendVoting(timestamp, station, evse, vote);
+                chargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)       => {
+                    evseLookup.TryAdd(evse.Id, evse);
+                    evseAddition.SendNotification(timestamp, station, evse);
+                };
                 chargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
                 chargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
                 chargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
-                chargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote)         => evseRemoval .           SendVoting      (timestamp, station, evse, vote);
-                chargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)               => evseRemoval .           SendNotification(timestamp, station, evse);
+                chargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote) => evseRemoval .SendVoting(timestamp, station, evse, vote);
+                chargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)       => {
+                    evseLookup.TryRemove(evse.Id, out _);
+                    evseRemoval.SendNotification(timestamp, station, evse);
+                };
 
 
                 chargingPool.OnNewReservation                          += SendNewReservation;
@@ -1715,7 +1724,22 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Charging stations
+        //ToDo: Charging Pool Groups
+
+        #region Charging Stations
+
+        #region Data
+
+        private readonly ConcurrentDictionary<ChargingStation_Id, IChargingStation> chargingStationLookup = new();
+
+        /// <summary>
+        /// Return an enumeration of all charging stations.
+        /// </summary>
+        public IEnumerable<IChargingStation> ChargingStations
+
+            => chargingStationLookup.Values;
+
+        #endregion
 
         #region ChargingStationAddition
 
@@ -1730,17 +1754,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ChargingStationRemoval
 
-        #region ChargingStations
+        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
-        /// Return an enumeration of all charging stations.
+        /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IEnumerable<IChargingStation> ChargingStations
+        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
-            => chargingPools.SelectMany(chargingPool => chargingPool.ChargingStations);
+            => ChargingStationRemoval;
 
         #endregion
+
 
         #region ChargingStationIds                (IncludeChargingStations = null)
 
@@ -1753,7 +1779,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeChargingStations ??= (chargingStation => true);
 
-            return ChargingStations.
+            return chargingStationLookup.Values.
                        Where (chargingStation => IncludeChargingStations(chargingStation)).
                        Select(chargingStation => chargingStation.Id);
 
@@ -1772,7 +1798,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeChargingStations ??= (chargingStation => true);
 
-            return ChargingStations.
+            return chargingStationLookup.Values.
                        Where (chargingStation => IncludeChargingStations(chargingStation)).
                        Select(chargingStation => new ChargingStationAdminStatus(chargingStation.Id,
                                                                                 chargingStation.AdminStatus));
@@ -1803,7 +1829,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeChargingStations ??= (chargingStation => true);
 
-            return ChargingStations.
+            return chargingStationLookup.Values.
                          Where (chargingStation => IncludeChargingStations(chargingStation)).
                          Select(chargingStation => new Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
                                                        chargingStation.Id,
@@ -1827,7 +1853,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeChargingStations ??= (chargingStation => true);
 
-            return ChargingStations.
+            return chargingStationLookup.Values.
                        Where (chargingStation => IncludeChargingStations  (chargingStation)).
                        Select(chargingStation => new ChargingStationStatus(chargingStation.Id,
                                                                            chargingStation.Status));
@@ -1858,7 +1884,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeChargingStations ??= (chargingStation => true);
 
-            return ChargingStations.
+            return chargingStationLookup.Values.
                          Where (chargingStation => IncludeChargingStations(chargingStation)).
                          Select(chargingStation => new Tuple<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>(
                                                        chargingStation.Id,
@@ -1880,7 +1906,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">A charging station.</param>
         public Boolean ContainsChargingStation(IChargingStation ChargingStation)
 
-            => chargingPools.Any(chargingPool => chargingPool.ContainsChargingStation(ChargingStation.Id));
+            => chargingStationLookup.ContainsKey(ChargingStation.Id);
 
         #endregion
 
@@ -1892,26 +1918,64 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
 
-            => chargingPools.Any(chargingPool => chargingPool.ContainsChargingStation(ChargingStationId));
+            => chargingStationLookup.ContainsKey(ChargingStationId);
+
+
+        /// <summary>
+        /// Check if the given ChargingStation identification is already present within the Charging Station Operator.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
+        public Boolean ContainsChargingStation(ChargingStation_Id? ChargingStationId)
+
+            => ChargingStationId.HasValue &&
+                   chargingStationLookup.ContainsKey(ChargingStationId.Value);
 
         #endregion
 
         #region GetChargingStationById       (ChargingStationId)
 
         public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
+        {
 
-            => ChargingStations.FirstOrDefault(chargingStation => chargingStation.Id == ChargingStationId);
+            if (chargingStationLookup.TryGetValue(ChargingStationId, out var chargingStation))
+                return chargingStation;
+
+            return null;
+
+        }
+
+        public IChargingStation? GetChargingStationById(ChargingStation_Id? ChargingStationId)
+        {
+
+            if (ChargingStationId.HasValue &&
+                chargingStationLookup.TryGetValue(ChargingStationId.Value, out var chargingStation))
+            {
+                return chargingStation;
+            }
+
+            return null;
+
+        }
 
         #endregion
 
         #region TryGetChargingStationById    (ChargingStationId, out ChargingStation ChargingStation)
 
         public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
+
+            => chargingStationLookup.TryGetValue(ChargingStationId, out ChargingStation);
+
+
+        public Boolean TryGetChargingStationById(ChargingStation_Id? ChargingStationId, out IChargingStation? ChargingStation)
         {
 
-            ChargingStation = ChargingStations.FirstOrDefault(chargingStation => chargingStation.Id == ChargingStationId);
+            if (!ChargingStationId.HasValue)
+            {
+                ChargingStation = null;
+                return false;
+            }
 
-            return ChargingStation is not null;
+            return chargingStationLookup.TryGetValue(ChargingStationId.Value, out ChargingStation);
 
         }
 
@@ -2193,23 +2257,22 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #endregion
 
-        #region ChargingStationRemoval
+        #region Charging Station Groups
 
-        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
+        #region Data
+
+        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> chargingStationGroups;
 
         /// <summary>
-        /// Called whenever a charging station will be or was removed.
+        /// All charging station groups registered within this charging station operator.
         /// </summary>
-        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
+        public IEnumerable<ChargingStationGroup> ChargingStationGroups
 
-            => ChargingStationRemoval;
-
-        #endregion
+            => chargingStationGroups;
 
         #endregion
-
-        #region Charging station groups
 
         #region ChargingStationGroupAddition
 
@@ -2224,17 +2287,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ChargingStationGroupRemoval
 
-        #region ChargingStationGroups
-
-        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
 
         /// <summary>
-        /// All charging station groups registered within this charging station operator.
+        /// Called whenever a charging station group will be or was removed.
         /// </summary>
-        public IEnumerable<ChargingStationGroup> ChargingStationGroups
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
 
-            => _ChargingStationGroups;
+            => ChargingStationGroupRemoval;
 
         #endregion
 
@@ -2281,12 +2343,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            lock (_ChargingStationGroups)
+            lock (chargingStationGroups)
             {
 
                 #region Initial checks
 
-                if (_ChargingStationGroups.ContainsId(Id))
+                if (chargingStationGroups.ContainsId(Id))
                 {
 
                     if (OnError != null)
@@ -2320,7 +2382,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 if (ChargingStationGroupAddition.SendVoting(Timestamp.Now, this, _ChargingStationGroup) &&
-                    _ChargingStationGroups.TryAdd(_ChargingStationGroup))
+                    chargingStationGroups.TryAdd(_ChargingStationGroup))
                 {
 
                     _ChargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -2456,7 +2518,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            lock (_ChargingStationGroups)
+            lock (chargingStationGroups)
             {
 
                 #region Initial checks
@@ -2466,7 +2528,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (_ChargingStationGroups.TryGet(Id, out ChargingStationGroup _ChargingStationGroup))
+                if (chargingStationGroups.TryGet(Id, out ChargingStationGroup _ChargingStationGroup))
                     return _ChargingStationGroup;
 
                 return CreateChargingStationGroup(Id,
@@ -2566,23 +2628,10 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetChargingStationGroup(ChargingStationGroup_Id   Id,
                                                   out ChargingStationGroup  ChargingStationGroup)
 
-            => _ChargingStationGroups.TryGet(Id, out ChargingStationGroup);
+            => chargingStationGroups.TryGet(Id, out ChargingStationGroup);
 
         #endregion
 
-
-        #region ChargingStationGroupRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
-
-        /// <summary>
-        /// Called whenever a charging station group will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
-
-            => ChargingStationGroupRemoval;
-
-        #endregion
 
         #region RemoveChargingStationGroup(ChargingStationGroupId, OnSuccess = null, OnError = null)
 
@@ -2597,14 +2646,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                                Action<ChargingStationOperator, ChargingStationGroup_Id>  OnError     = null)
         {
 
-            lock (_ChargingStationGroups)
+            lock (chargingStationGroups)
             {
 
-                if (_ChargingStationGroups.TryGet(ChargingStationGroupId, out ChargingStationGroup ChargingStationGroup) &&
+                if (chargingStationGroups.TryGet(ChargingStationGroupId, out ChargingStationGroup ChargingStationGroup) &&
                     ChargingStationGroupRemoval.SendVoting(Timestamp.Now,
                                                            this,
                                                            ChargingStationGroup) &&
-                    _ChargingStationGroups.TryRemove(ChargingStationGroupId, out ChargingStationGroup _ChargingStationGroup))
+                    chargingStationGroups.TryRemove(ChargingStationGroupId, out ChargingStationGroup _ChargingStationGroup))
                 {
 
                     OnSuccess?.Invoke(this, ChargingStationGroup);
@@ -2640,13 +2689,13 @@ namespace cloud.charging.open.protocols.WWCP
                                                                Action<ChargingStationOperator, ChargingStationGroup>  OnError     = null)
         {
 
-            lock (_ChargingStationGroups)
+            lock (chargingStationGroups)
             {
 
                 if (ChargingStationGroupRemoval.SendVoting(Timestamp.Now,
                                                            this,
                                                            ChargingStationGroup) &&
-                    _ChargingStationGroups.TryRemove(ChargingStationGroup.Id, out ChargingStationGroup _ChargingStationGroup))
+                    chargingStationGroups.TryRemove(ChargingStationGroup.Id, out ChargingStationGroup _ChargingStationGroup))
                 {
 
                     OnSuccess?.Invoke(this, _ChargingStationGroup);
@@ -2672,6 +2721,19 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #region EVSEs
+
+        #region Data
+
+        private readonly ConcurrentDictionary<EVSE_Id, IEVSE> evseLookup = new();
+
+        /// <summary>
+        /// Return an enumeration of all EVSEs.
+        /// </summary>
+        public IEnumerable<IEVSE> EVSEs
+
+            => evseLookup.Values;
+
+        #endregion
 
         #region EVSEAddition
 
@@ -2706,26 +2768,15 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region EVSEs
+        #region InvalidEVSEIds
 
         /// <summary>
-        /// Return an enumeration of all EVSEs.
+        /// A list of invalid EVSE Ids.
         /// </summary>
-        public IEnumerable<IEVSE> EVSEs
-        {
-            get
-            {
-                lock (chargingPools)
-                {
-
-                    return ChargingPools.SelectMany(chargingPool => chargingPool.EVSEs).
-                                         ToArray();
-
-                }
-            }
-        }
+        public ReactiveSet<EVSE_Id> InvalidEVSEIds { get; }
 
         #endregion
+
 
         #region EVSEIds                (IncludeEVSEs = null)
 
@@ -2738,7 +2789,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeEVSEs ??= (evse => true);
 
-            return EVSEs.
+            return evseLookup.Values.
                        Where (evse => IncludeEVSEs(evse)).
                        Select(evse => evse.Id);
 
@@ -2757,7 +2808,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeEVSEs ??= (evse => true);
 
-            return EVSEs.
+            return evseLookup.Values.
                        Where (evse => IncludeEVSEs(evse)).
                        Select(evse => new EVSEAdminStatus(evse.Id,
                                                           evse.AdminStatus));
@@ -2787,7 +2838,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeEVSEs ??= (evse => true);
 
-            return EVSEs.
+            return evseLookup.Values.
                        Where (evse => IncludeEVSEs(evse)).
                        Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
                                           evse.Id,
@@ -2811,7 +2862,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeEVSEs ??= (evse => true);
 
-            return EVSEs.
+            return evseLookup.Values.
                        Where (evse => IncludeEVSEs  (evse)).
                        Select(evse => new EVSEStatus(evse.Id,
                                                      evse.Status));
@@ -2842,7 +2893,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             IncludeEVSEs ??= (evse => true);
 
-            return EVSEs.
+            return evseLookup.Values.
                        Where (evse => IncludeEVSEs(evse)).
                        Select(evse => new Tuple<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
                                           evse.Id,
@@ -2864,7 +2915,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
 
-            => chargingPools.Any(chargingPool => chargingPool.ContainsEVSE(EVSE.Id));
+            => evseLookup.ContainsKey(EVSE.Id);
 
         #endregion
 
@@ -2876,63 +2927,52 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
 
-            => chargingPools.Any(chargingPool => chargingPool.ContainsEVSE(EVSEId));
+            => evseLookup.ContainsKey(EVSEId);
 
         /// <summary>
         /// Check if the given EVSE identification is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id? EVSEId)
-        {
 
-            if (!EVSEId.HasValue)
-                return false;
-
-            return chargingPools.Any(chargingPool => chargingPool.ContainsEVSE(EVSEId.Value));
-
-        }
+            => EVSEId.HasValue &&
+                   evseLookup.ContainsKey(EVSEId.Value);
 
         #endregion
 
         #region GetEVSEById(EVSEId)
 
         public IEVSE? GetEVSEById(EVSE_Id EVSEId)
+        {
 
-            => EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
+            if (evseLookup.TryGetValue(EVSEId, out var evse))
+                return evse;
+
+            return null;
+
+        }
 
         public IEVSE? GetEVSEById(EVSE_Id? EVSEId)
+        {
 
-            => EVSEId.HasValue
-                   ? GetEVSEById(EVSEId.Value)
-                   : null;
+            if (EVSEId.HasValue &&
+                evseLookup.TryGetValue(EVSEId.Value, out var evse))
+            {
+                return evse;
+            }
+
+            return null;
+
+        }
 
         #endregion
 
         #region TryGetEVSEById(EVSEId, out EVSE)
 
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
-        {
 
-            while (true)
-            {
-                try
-                {
+            => evseLookup.TryGetValue(EVSEId, out EVSE);
 
-                    EVSE = EVSEs.ToArray().FirstOrDefault(evse => evse.Id == EVSEId);
-
-                    return EVSE is not null;
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e);
-                }
-            }
-
-            EVSE = null;
-            return false;
-
-        }
 
         public Boolean TryGetEVSEById(EVSE_Id? EVSEId, out IEVSE? EVSE)
         {
@@ -2943,36 +2983,41 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            EVSE = EVSEs.ToArray().FirstOrDefault(evse => evse.Id == EVSEId);
-
-            return EVSE is not null;
+            return evseLookup.TryGetValue(EVSEId.Value, out EVSE);
 
         }
 
         #endregion
 
-        #region TryGetChargingStationByEVSEId(EVSEId, out Station)
+        #region TryGetChargingStationByEVSEId(EVSEId, out ChargingStation)
 
-        public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IChargingStation? Station)
+        public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IChargingStation? ChargingStation)
         {
-            lock (ChargingStations)
+
+            if (evseLookup.TryGetValue(EVSEId, out var evse))
             {
-
-                foreach (var station in ChargingStations)
-                {
-
-                    if (station.TryGetEVSEById(EVSEId, out var evse))
-                    {
-                        Station = station;
-                        return true;
-                    }
-
-                }
-
-                Station = null;
-                return false;
-
+                ChargingStation = evse.ChargingStation;
+                return ChargingStation is not null;
             }
+
+            ChargingStation = null;
+            return false;
+
+        }
+
+        public Boolean TryGetChargingStationByEVSEId(EVSE_Id? EVSEId, out IChargingStation? ChargingStation)
+        {
+
+            if (EVSEId.HasValue &&
+                evseLookup.TryGetValue(EVSEId.Value, out var evse))
+            {
+                ChargingStation = evse.ChargingStation;
+                return ChargingStation is not null;
+            }
+
+            ChargingStation = null;
+            return false;
+
         }
 
         #endregion
@@ -2981,38 +3026,32 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGetChargingPoolByEVSEId(EVSE_Id EVSEId, out IChargingPool? ChargingPool)
         {
-            lock (chargingPools)
+
+            if (evseLookup.TryGetValue(EVSEId, out var evse))
             {
-                lock (ChargingStations)
-                {
-
-                    foreach (var chargingPool in chargingPools)
-                    {
-                        foreach (var chargingStation in chargingPool.ChargingStations)
-                        {
-                            if (chargingStation.TryGetEVSEById(EVSEId, out _))
-                            {
-                                ChargingPool = chargingPool;
-                                return true;
-                            }
-                        }
-                    }
-
-                    ChargingPool = null;
-                    return false;
-
-                }
+                ChargingPool = evse.ChargingStation?.ChargingPool;
+                return ChargingPool is not null;
             }
+
+            ChargingPool = null;
+            return false;
+
         }
 
-        #endregion
+        public Boolean TryGetChargingPoolByEVSEId(EVSE_Id? EVSEId, out IChargingPool? ChargingPool)
+        {
 
-        #region InvalidEVSEIds
+            if (EVSEId.HasValue &&
+                evseLookup.TryGetValue(EVSEId.Value, out var evse))
+            {
+                ChargingPool = evse.ChargingStation?.ChargingPool;
+                return ChargingPool is not null;
+            }
 
-        /// <summary>
-        /// A list of invalid EVSE Ids.
-        /// </summary>
-        public ReactiveSet<EVSE_Id> InvalidEVSEIds { get; }
+            ChargingPool = null;
+            return false;
+
+        }
 
         #endregion
 
@@ -3430,7 +3469,20 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSE groups
+        #region EVSE Groups
+
+        #region Data
+
+        private readonly EntityHashSet<ChargingStationOperator, EVSEGroup_Id, EVSEGroup> evseGroups;
+
+        /// <summary>
+        /// All EVSE groups registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<EVSEGroup> EVSEGroups
+
+            => evseGroups;
+
+        #endregion
 
         #region EVSEGroupAddition
 
@@ -3445,17 +3497,16 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region EVSEGroupRemoval
 
-        #region EVSEGroups
-
-        private readonly EntityHashSet<ChargingStationOperator, EVSEGroup_Id, EVSEGroup> _EVSEGroups;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> EVSEGroupRemoval;
 
         /// <summary>
-        /// All EVSE groups registered within this charging station operator.
+        /// Called whenever a EVSE group will be or was removed.
         /// </summary>
-        public IEnumerable<EVSEGroup> EVSEGroups
+        public IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupRemoval
 
-            => _EVSEGroups;
+            => EVSEGroupRemoval;
 
         #endregion
 
@@ -3503,12 +3554,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            lock (_EVSEGroups)
+            lock (evseGroups)
             {
 
                 #region Initial checks
 
-                if (_EVSEGroups.ContainsId(Id))
+                if (evseGroups.ContainsId(Id))
                 {
 
                     if (OnError != null)
@@ -3543,7 +3594,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 if (EVSEGroupAddition.SendVoting(Timestamp.Now, this, _EVSEGroup) &&
-                    _EVSEGroups.TryAdd(_EVSEGroup))
+                    evseGroups.TryAdd(_EVSEGroup))
                 {
 
                     _EVSEGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -3692,7 +3743,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            lock (_EVSEGroups)
+            lock (evseGroups)
             {
 
                 #region Initial checks
@@ -3702,7 +3753,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                if (_EVSEGroups.TryGet(Id, out EVSEGroup _EVSEGroup))
+                if (evseGroups.TryGet(Id, out EVSEGroup _EVSEGroup))
                     return _EVSEGroup;
 
                 return CreateEVSEGroup(Id,
@@ -3815,23 +3866,10 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetEVSEGroup(EVSEGroup_Id    Id,
                                        out EVSEGroup?  EVSEGroup)
 
-            => _EVSEGroups.TryGet(Id, out EVSEGroup);
+            => evseGroups.TryGet(Id, out EVSEGroup);
 
         #endregion
 
-
-        #region EVSEGroupRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> EVSEGroupRemoval;
-
-        /// <summary>
-        /// Called whenever a EVSE group will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupRemoval
-
-            => EVSEGroupRemoval;
-
-        #endregion
 
         #region RemoveEVSEGroup(EVSEGroupId, OnSuccess = null, OnError = null)
 
@@ -3846,14 +3884,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                                Action<ChargingStationOperator, EVSEGroup_Id>  OnError     = null)
         {
 
-            lock (_EVSEGroups)
+            lock (evseGroups)
             {
 
-                if (_EVSEGroups.TryGet(EVSEGroupId, out EVSEGroup EVSEGroup) &&
+                if (evseGroups.TryGet(EVSEGroupId, out EVSEGroup EVSEGroup) &&
                     EVSEGroupRemoval.SendVoting(Timestamp.Now,
                                                            this,
                                                            EVSEGroup) &&
-                    _EVSEGroups.TryRemove(EVSEGroupId, out EVSEGroup _EVSEGroup))
+                    evseGroups.TryRemove(EVSEGroupId, out EVSEGroup _EVSEGroup))
                 {
 
                     OnSuccess?.Invoke(this, EVSEGroup);
@@ -3889,13 +3927,13 @@ namespace cloud.charging.open.protocols.WWCP
                                                                Action<ChargingStationOperator, EVSEGroup>  OnError     = null)
         {
 
-            lock (_EVSEGroups)
+            lock (evseGroups)
             {
 
                 if (EVSEGroupRemoval.SendVoting(Timestamp.Now,
                                                            this,
                                                            EVSEGroup) &&
-                    _EVSEGroups.TryRemove(EVSEGroup.Id, out EVSEGroup _EVSEGroup))
+                    evseGroups.TryRemove(EVSEGroup.Id, out EVSEGroup _EVSEGroup))
                 {
 
                     OnSuccess?.Invoke(this, _EVSEGroup);
@@ -5565,7 +5603,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ToJSON(this ChargingStationOperator,                      Embedded = false, ...)
+        #region ToJSON(Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given charging station operator.
@@ -5757,6 +5795,113 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region Operator overloading
+
+        #region Operator == (ChargingStationOperator1, ChargingStationOperator2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationOperator1">A charging station operator.</param>
+        /// <param name="ChargingStationOperator2">Another charging station operator.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (ChargingStationOperator ChargingStationOperator1,
+                                           ChargingStationOperator ChargingStationOperator2)
+        {
+
+            if (Object.ReferenceEquals(ChargingStationOperator1, ChargingStationOperator2))
+                return true;
+
+            if (ChargingStationOperator1 is null || ChargingStationOperator2 is null)
+                return false;
+
+            return ChargingStationOperator1.Equals(ChargingStationOperator2);
+
+        }
+
+        #endregion
+
+        #region Operator != (ChargingStationOperator1, ChargingStationOperator2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationOperator1">A charging station operator.</param>
+        /// <param name="ChargingStationOperator2">Another charging station operator.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (ChargingStationOperator ChargingStationOperator1,
+                                           ChargingStationOperator ChargingStationOperator2)
+
+            => !(ChargingStationOperator1 == ChargingStationOperator2);
+
+        #endregion
+
+        #region Operator <  (ChargingStationOperator1, ChargingStationOperator2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationOperator1">A charging station operator.</param>
+        /// <param name="ChargingStationOperator2">Another charging station operator.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (ChargingStationOperator ChargingStationOperator1,
+                                          ChargingStationOperator ChargingStationOperator2)
+
+            => ChargingStationOperator1 is null
+                   ? throw new ArgumentNullException(nameof(ChargingStationOperator1), "The given charging station operator must not be null!")
+                   : ChargingStationOperator1.CompareTo(ChargingStationOperator2) < 0;
+
+        #endregion
+
+        #region Operator <= (ChargingStationOperator1, ChargingStationOperator2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationOperator1">A charging station operator.</param>
+        /// <param name="ChargingStationOperator2">Another charging station operator.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (ChargingStationOperator ChargingStationOperator1,
+                                           ChargingStationOperator ChargingStationOperator2)
+
+            => !(ChargingStationOperator1 > ChargingStationOperator2);
+
+        #endregion
+
+        #region Operator >  (ChargingStationOperator1, ChargingStationOperator2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationOperator1">A charging station operator.</param>
+        /// <param name="ChargingStationOperator2">Another charging station operator.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (ChargingStationOperator ChargingStationOperator1,
+                                          ChargingStationOperator ChargingStationOperator2)
+
+            => ChargingStationOperator1 is null
+                   ? throw new ArgumentNullException(nameof(ChargingStationOperator1), "The given charging station operator must not be null!")
+                   : ChargingStationOperator1.CompareTo(ChargingStationOperator2) > 0;
+
+        #endregion
+
+        #region Operator >= (ChargingStationOperator1, ChargingStationOperator2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationOperator1">A charging station operator.</param>
+        /// <param name="ChargingStationOperator2">Another charging station operator.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (ChargingStationOperator ChargingStationOperator1,
+                                           ChargingStationOperator ChargingStationOperator2)
+
+            => !(ChargingStationOperator1 < ChargingStationOperator2);
+
+        #endregion
+
+        #endregion
+
         #region IComparable<ChargingStationOperator> Members
 
         #region CompareTo(Object)
@@ -5784,7 +5929,7 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (ChargingStationOperator is null)
-                throw new ArgumentNullException("The given Charging Station Operator must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
 
             return Id.CompareTo(ChargingStationOperator.Id);
 
@@ -5820,6 +5965,7 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingStationOperator? ChargingStationOperator)
 
             => ChargingStationOperator is not null &&
+
                Id.Equals(ChargingStationOperator.Id);
 
         #endregion
@@ -5832,6 +5978,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
+
             => Id.GetHashCode();
 
         #endregion
@@ -5843,15 +5990,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat("'",
-                             Name.FirstText(),
-                             "' (",
-                             Id.ToString(),
-                             ") in ",
-                             RoamingNetwork.Id.ToString());
+            => String.Concat(
+                   "'",
+                   Name.FirstText(),
+                   "' (",
+                   Id.ToString(),
+                   ") in ",
+                   RoamingNetwork.Id.ToString()
+               );
 
         #endregion
-
 
     }
 

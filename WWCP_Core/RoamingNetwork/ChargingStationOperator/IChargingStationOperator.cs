@@ -548,9 +548,6 @@ namespace cloud.charging.open.protocols.WWCP
         event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
 
 
-        Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IChargingStation? Station);
-
-
         #region SetChargingStationAdminStatus
 
         void SetChargingStationAdminStatus(ChargingStation_Id               ChargingStationId,
@@ -859,6 +856,12 @@ namespace cloud.charging.open.protocols.WWCP
         IEVSE? GetEVSEById(EVSE_Id EVSEId);
 
         Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE);
+
+        Boolean TryGetChargingStationByEVSEId(EVSE_Id  EVSEId, out IChargingStation? ChargingStation);
+        Boolean TryGetChargingStationByEVSEId(EVSE_Id? EVSEId, out IChargingStation? ChargingStation);
+
+        Boolean TryGetChargingPoolByEVSEId(EVSE_Id  EVSEId, out IChargingPool? ChargingPool);
+        Boolean TryGetChargingPoolByEVSEId(EVSE_Id? EVSEId, out IChargingPool? ChargingPool);
 
 
         #region OnEVSEData/(Admin)StatusChanged
