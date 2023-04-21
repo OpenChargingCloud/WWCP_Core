@@ -196,9 +196,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize        = 15;
 
-        protected static readonly  SemaphoreSlim  ChargingPoolsSemaphore   = new (1, 1);
+        //protected static readonly  SemaphoreSlim  ChargingPoolsSemaphore   = new (1, 1);
 
-        protected static readonly  TimeSpan       SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
+        //protected static readonly  TimeSpan       SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
 
         #endregion
 
@@ -760,6 +760,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Charging pools
 
+        #region ChargingPools
+
+        private readonly EntityHashSet<IChargingStationOperator, ChargingPool_Id, IChargingPool> chargingPools;
+
+        /// <summary>
+        /// Return an enumeration of all charging pools.
+        /// </summary>
+        public IEnumerable<IChargingPool> ChargingPools
+
+            => chargingPools;
+
+        #endregion
+
         #region ChargingPoolAddition
 
         internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolAddition;
@@ -770,6 +783,148 @@ namespace cloud.charging.open.protocols.WWCP
         public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
 
             => ChargingPoolAddition;
+
+        #endregion
+
+        #region ChargingPoolRemoval
+
+        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolRemoval;
+
+        /// <summary>
+        /// Called whenever an charging pool will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
+
+            => ChargingPoolRemoval;
+
+        #endregion
+
+
+        #region ChargingPoolIds                (IncludeChargingPools = null)
+
+        /// <summary>
+        /// Return an enumeration of all charging pool identifications.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+        {
+
+            IncludeChargingPools ??= (chargingPool => true);
+
+            return chargingPools.
+                       Where (chargingPool => IncludeChargingPools(chargingPool)).
+                       Select(chargingPool => chargingPool.Id);
+
+        }
+
+        #endregion
+
+        #region ChargingPoolAdminStatus        (IncludeChargingPools = null)
+
+        /// <summary>
+        /// Return an enumeration of all charging pool admin status.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+        {
+
+            IncludeChargingPools ??= (chargingPool => true);
+
+            return chargingPools.
+                       Where (chargingPool => IncludeChargingPools(chargingPool)).
+                       Select(chargingPool => new ChargingPoolAdminStatus(chargingPool.Id,
+                                                                          chargingPool.AdminStatus));
+        }
+
+        #endregion
+
+        #region ChargingPoolAdminStatusSchedule(IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of admin status entries per pool to skip.</param>
+        /// <param name="Take">The number of admin status entries per pool to return.</param>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
+
+            ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
+                                            Func<DateTime,                     Boolean>?  TimestampFilter        = null,
+                                            Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
+                                            UInt64?                                       Skip                   = null,
+                                            UInt64?                                       Take                   = null)
+
+        {
+
+            IncludeChargingPools ??= (chargingPool => true);
+
+            return chargingPools.
+                         Where (chargingPool => IncludeChargingPools(chargingPool)).
+                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>(
+                                                    chargingPool.Id,
+                                                    chargingPool.AdminStatusSchedule(TimestampFilter,
+                                                                                     AdminStatusFilter,
+                                                                                     Skip,
+                                                                                     Take)));
+
+        }
+
+        #endregion
+
+        #region ChargingPoolStatus             (IncludeChargingPools = null)
+
+        /// <summary>
+        /// Return an enumeration of all charging pool status.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
+        {
+
+            IncludeChargingPools ??= (chargingPool => true);
+
+            return chargingPools.
+                       Where (chargingPool => IncludeChargingPools  (chargingPool)).
+                       Select(chargingPool => new ChargingPoolStatus(chargingPool.Id,
+                                                                     chargingPool.Status));
+
+        }
+
+        #endregion
+
+        #region ChargingPoolStatusSchedule     (IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
+        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
+        /// <param name="StatusFilter">An optional admin status value filter.</param>
+        /// <param name="Skip">The number of status entries per pool to skip.</param>
+        /// <param name="Take">The number of status entries per pool to return.</param>
+        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
+
+            ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?             IncludeChargingPools   = null,
+                                       Func<DateTime,                Boolean>?  TimestampFilter        = null,
+                                       Func<ChargingPoolStatusTypes, Boolean>?  StatusFilter           = null,
+                                       UInt64?                                  Skip                   = null,
+                                       UInt64?                                  Take                   = null)
+
+        {
+
+            IncludeChargingPools ??= (chargingPool => true);
+
+            return chargingPools.
+                         Where (chargingPool => IncludeChargingPools(chargingPool)).
+                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>(
+                                                    chargingPool.Id,
+                                                    chargingPool.StatusSchedule(TimestampFilter,
+                                                                                StatusFilter,
+                                                                                Skip,
+                                                                                Take)));
+
+        }
 
         #endregion
 
@@ -928,100 +1083,96 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                     User_Id?                                                     CurrentUserId                  = null)
         {
 
-            //lock (chargingPools)
-            //{
+            #region Initial checks
 
-                #region Initial checks
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
 
-                AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
+            if (this.Id != Id.OperatorId && !AllowInconsistentOperatorIds(this.Id, Id))
+                return null;
+            //throw new InvalidChargingPoolOperatorId(this,
+            //                                        Id.OperatorId);
 
-                if (this.Id != Id.OperatorId && !AllowInconsistentOperatorIds(this.Id, Id))
-                    return null;
-                //throw new InvalidChargingPoolOperatorId(this,
-                //                                        Id.OperatorId);
+            #endregion
 
-                #endregion
+            #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
 
-                #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
+            if (!chargingPools.ContainsId(Id))
+            {
 
-                if (!chargingPools.ContainsId(Id))
+                var result = await CreateChargingPool(Id,
+                                                        Name,
+                                                        Description,
+
+                                                        Address,
+                                                        GeoLocation,
+
+                                                        Configurator,
+                                                        RemoteChargingPoolCreator,
+                                                        InitialAdminStatus,
+                                                        InitialStatus,
+                                                        MaxAdminStatusListSize,
+                                                        MaxStatusListSize,
+                                                        OnSuccess,
+                                                        OnError,
+                                                        AllowInconsistentOperatorIds);
+
+                return AddOrUpdateChargingPoolResult.Success(
+                            result.ChargingPool,
+                            AddedOrUpdated.Add,
+                            EventTracking_Id.New
+                        );
+
+            }
+
+            #endregion
+
+
+            // Merge existing charging pool with new pool data...
+
+            try
+            {
+
+                var existingChargingPool = chargingPools.GetById(Id);
+
+                if (existingChargingPool is not null)
                 {
 
-                    var result = await CreateChargingPool(Id,
-                                                          Name,
-                                                          Description,
+                    var result = existingChargingPool.UpdateWith(new ChargingPool(Id,
+                                                                                    this,
+                                                                                    Name,
+                                                                                    Description,
 
-                                                          Address,
-                                                          GeoLocation,
+                                                                                    Address,
+                                                                                    GeoLocation,
 
-                                                          Configurator,
-                                                          RemoteChargingPoolCreator,
-                                                          InitialAdminStatus,
-                                                          InitialStatus,
-                                                          MaxAdminStatusListSize,
-                                                          MaxStatusListSize,
-                                                          OnSuccess,
-                                                          OnError,
-                                                          AllowInconsistentOperatorIds);
+                                                                                    Configurator,
+                                                                                    null,
+                                                                                    new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
+                                                                                    new Timestamped<ChargingPoolStatusTypes>     (DateTime.MinValue, ChargingPoolStatusTypes.     Available)));
 
                     return AddOrUpdateChargingPoolResult.Success(
-                               result.ChargingPool,
-                               AddedOrUpdated.Add,
-                               EventTracking_Id.New
-                           );
+                                result,
+                                AddedOrUpdated.Update,
+                                EventTracking_Id.New
+                            );
 
                 }
 
-                #endregion
+            } catch (Exception e)
+            {
+                DebugX.Log("CSO.CreateOrUpdateChargingPool(...) failed: " + e.Message);
+            }
 
-
-                // Merge existing charging pool with new pool data...
-
-                try
-                {
-
-                    var existingChargingPool = chargingPools.GetById(Id);
-
-                    if (existingChargingPool is not null)
-                    {
-
-                        var result = existingChargingPool.UpdateWith(new ChargingPool(Id,
-                                                                                      this,
-                                                                                      Name,
-                                                                                      Description,
-
-                                                                                      Address,
-                                                                                      GeoLocation,
-
-                                                                                      Configurator,
-                                                                                      null,
-                                                                                      new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
-                                                                                      new Timestamped<ChargingPoolStatusTypes>     (DateTime.MinValue, ChargingPoolStatusTypes.     Available)));
-
-                        return AddOrUpdateChargingPoolResult.Success(
-                                   result,
-                                   AddedOrUpdated.Update,
-                                   EventTracking_Id.New
-                               );
-
-                    }
-
-                } catch (Exception e)
-                {
-                    DebugX.Log("CSO.CreateOrUpdateChargingPool(...) failed: " + e.Message);
-                }
-
-                return AddOrUpdateChargingPoolResult.Failed(
-                           Id,
-                           EventTracking_Id.New,
-                           ""
-                       );
-
-            //}
+            return AddOrUpdateChargingPoolResult.Failed(
+                        Id,
+                        EventTracking_Id.New,
+                        ""
+                    );
 
         }
 
         #endregion
+
 
         #region UpdateChargingPool(ChargingPool, SkipUserUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
 
@@ -1045,7 +1196,7 @@ namespace cloud.charging.open.protocols.WWCP
         public event OnChargingPoolUpdatedDelegate OnChargingPoolUpdated;
 
 
-        #region (protected internal) _UpdateChargingPool(ChargingPool,                 SkipUserUpdatedNotifications = false, OnUpdated = null, ...)
+        #region UpdateChargingPool(ChargingPool,                 SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
 
         /// <summary>
         /// Update the given charging pool to/within the API.
@@ -1054,16 +1205,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional charging pool identification initiating this command/request.</param>
-        protected internal async Task<UpdateChargingPoolResult> _UpdateChargingPool(ChargingPool                             ChargingPool,
-                                                                                    Boolean                                  SkipUserUpdatedNotifications   = false,
-                                                                                    Action<ChargingPool, EventTracking_Id>?  OnUpdated                      = null,
-                                                                                    EventTracking_Id?                        EventTrackingId                = null,
-                                                                                    User_Id?                                 CurrentUserId                  = null)
+        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
+                                                                       Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
+                                                                       Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
+                                                                       EventTracking_Id?                        EventTrackingId                        = null,
+                                                                       User_Id?                                 CurrentUserId                          = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (!_TryGetChargingPoolById(ChargingPool.Id, out var OldChargingPool))
+            if (!TryGetChargingPoolById(ChargingPool.Id, out var OldChargingPool))
                 return UpdateChargingPoolResult.ArgumentError(ChargingPool,
                                                               eventTrackingId,
                                                               nameof(ChargingPool),
@@ -1112,67 +1263,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPool(ChargingPool, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
-
-        /// <summary>
-        /// Update the given charging pool.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentUserId">An optional charging pool identification initiating this command/request.</param>
-        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
-                                                                       Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
-                                                                       Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
-                                                                       EventTracking_Id?                        EventTrackingId                        = null,
-                                                                       User_Id?                                 CurrentUserId                          = null)
-        {
-
-            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
-
-            if (await ChargingPoolsSemaphore.WaitAsync(SemaphoreSlimTimeout))
-            {
-                try
-                {
-
-                    return await _UpdateChargingPool(ChargingPool,
-                                                     SkipChargingPoolUpdatedNotifications,
-                                                     OnUpdated,
-                                                     EventTrackingId,
-                                                     CurrentUserId);
-
-                }
-                catch (Exception e)
-                {
-
-                    DebugX.LogException(e);
-
-                    return UpdateChargingPoolResult.Failed(ChargingPool,
-                                                           eventTrackingId,
-                                                           e);
-
-                }
-                finally
-                {
-                    try
-                    {
-                        ChargingPoolsSemaphore.Release();
-                    }
-                    catch
-                    { }
-                }
-            }
-
-            return UpdateChargingPoolResult.Failed(ChargingPool,
-                                                   eventTrackingId,
-                                                   "Internal locking failed!");
-
-        }
-
-        #endregion
-
-
-        #region (protected internal) _UpdateChargingPool(ChargingPool, UpdateDelegate, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
+        #region UpdateChargingPool(ChargingPool, UpdateDelegate, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
 
         /// <summary>
         /// Update the given charging pool.
@@ -1182,17 +1273,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
-        protected internal async Task<UpdateChargingPoolResult> _UpdateChargingPool(ChargingPool                             ChargingPool,
-                                                                                    Action<ChargingPool.Builder>             UpdateDelegate,
-                                                                                    Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
-                                                                                    Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
-                                                                                    EventTracking_Id?                        EventTrackingId                        = null,
-                                                                                    ChargingPool_Id?                         CurrentChargingPoolId                  = null)
+        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
+                                                                       Action<ChargingPool.Builder>             UpdateDelegate,
+                                                                       Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
+                                                                       Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
+                                                                       EventTracking_Id?                        EventTrackingId                        = null,
+                                                                       ChargingPool_Id?                         CurrentChargingPoolId                  = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (!_ChargingPoolExists(ChargingPool.Id))
+            if (!ChargingPoolExists(ChargingPool.Id))
                 return UpdateChargingPoolResult.ArgumentError(ChargingPool,
                                                               eventTrackingId,
                                                               nameof(ChargingPool),
@@ -1255,210 +1346,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPool                      (ChargingPool, UpdateDelegate, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
-
-        /// <summary>
-        /// Update the given charging pool.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="UpdateDelegate">A delegate to update the given charging pool.</param>
-        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
-        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
-                                                                       Action<ChargingPool.Builder>             UpdateDelegate,
-                                                                       Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
-                                                                       Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
-                                                                       EventTracking_Id?                        EventTrackingId                        = null,
-                                                                       ChargingPool_Id?                         CurrentChargingPoolId                  = null)
-        {
-
-            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
-
-            if (await ChargingPoolsSemaphore.WaitAsync(SemaphoreSlimTimeout))
-            {
-                try
-                {
-
-                    return await _UpdateChargingPool(ChargingPool,
-                                                     UpdateDelegate,
-                                                     SkipChargingPoolUpdatedNotifications,
-                                                     OnUpdated,
-                                                     eventTrackingId,
-                                                     CurrentChargingPoolId);
-
-                }
-                catch (Exception e)
-                {
-
-                    DebugX.LogException(e);
-
-                    return UpdateChargingPoolResult.Failed(ChargingPool,
-                                                           eventTrackingId,
-                                                           e);
-
-                }
-                finally
-                {
-                    try
-                    {
-                        ChargingPoolsSemaphore.Release();
-                    }
-                    catch
-                    { }
-                }
-            }
-
-            return UpdateChargingPoolResult.Failed(ChargingPool,
-                                                   eventTrackingId,
-                                                   "Internal locking failed!");
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region ChargingPools
-
-        private readonly EntityHashSet<IChargingStationOperator, ChargingPool_Id, IChargingPool> chargingPools;
-
-        /// <summary>
-        /// Return an enumeration of all charging pools.
-        /// </summary>
-        public IEnumerable<IChargingPool> ChargingPools
-
-            => chargingPools;
-
-        #endregion
-
-        #region ChargingPoolIds                (IncludeChargingPools = null)
-
-        /// <summary>
-        /// Return an enumeration of all charging pool identifications.
-        /// </summary>
-        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate? IncludeChargingPools = null)
-        {
-
-            IncludeChargingPools ??= (chargingPool => true);
-
-            return chargingPools.
-                       Where (chargingPool => IncludeChargingPools(chargingPool)).
-                       Select(chargingPool => chargingPool.Id);
-
-        }
-
-        #endregion
-
-        #region ChargingPoolAdminStatus        (IncludeChargingPools = null)
-
-        /// <summary>
-        /// Return an enumeration of all charging pool admin status.
-        /// </summary>
-        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
-        {
-
-            IncludeChargingPools ??= (chargingPool => true);
-
-            return chargingPools.
-                       Where (chargingPool => IncludeChargingPools(chargingPool)).
-                       Select(chargingPool => new ChargingPoolAdminStatus(chargingPool.Id,
-                                                                          chargingPool.AdminStatus));
-        }
-
-        #endregion
-
-        #region ChargingPoolAdminStatusSchedule(IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
-
-        /// <summary>
-        /// Return the admin status of all charging pools registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="AdminStatusFilter">An optional admin status value filter.</param>
-        /// <param name="Skip">The number of admin status entries per pool to skip.</param>
-        /// <param name="Take">The number of admin status entries per pool to return.</param>
-        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>
-
-            ChargingPoolAdminStatusSchedule(IncludeChargingPoolDelegate?                  IncludeChargingPools   = null,
-                                            Func<DateTime,                     Boolean>?  TimestampFilter        = null,
-                                            Func<ChargingPoolAdminStatusTypes, Boolean>?  AdminStatusFilter      = null,
-                                            UInt64?                                       Skip                   = null,
-                                            UInt64?                                       Take                   = null)
-
-        {
-
-            IncludeChargingPools ??= (chargingPool => true);
-
-            return chargingPools.
-                         Where (chargingPool => IncludeChargingPools(chargingPool)).
-                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>(
-                                                    chargingPool.Id,
-                                                    chargingPool.AdminStatusSchedule(TimestampFilter,
-                                                                                     AdminStatusFilter,
-                                                                                     Skip,
-                                                                                     Take)));
-
-        }
-
-        #endregion
-
-        #region ChargingPoolStatus             (IncludeChargingPools = null)
-
-        /// <summary>
-        /// Return an enumeration of all charging pool status.
-        /// </summary>
-        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
-        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate? IncludeChargingPools = null)
-        {
-
-            IncludeChargingPools ??= (chargingPool => true);
-
-            return chargingPools.
-                       Where (chargingPool => IncludeChargingPools  (chargingPool)).
-                       Select(chargingPool => new ChargingPoolStatus(chargingPool.Id,
-                                                                     chargingPool.Status));
-
-        }
-
-        #endregion
-
-        #region ChargingPoolStatusSchedule     (IncludeChargingPools = null, TimestampFilter  = null, StatusFilter = null, HistorySize = null)
-
-        /// <summary>
-        /// Return the admin status of all charging pools registered within this roaming network.
-        /// </summary>
-        /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
-        /// <param name="TimestampFilter">An optional status timestamp filter.</param>
-        /// <param name="StatusFilter">An optional admin status value filter.</param>
-        /// <param name="Skip">The number of status entries per pool to skip.</param>
-        /// <param name="Take">The number of status entries per pool to return.</param>
-        public IEnumerable<Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>
-
-            ChargingPoolStatusSchedule(IncludeChargingPoolDelegate?             IncludeChargingPools   = null,
-                                       Func<DateTime,                Boolean>?  TimestampFilter        = null,
-                                       Func<ChargingPoolStatusTypes, Boolean>?  StatusFilter           = null,
-                                       UInt64?                                  Skip                   = null,
-                                       UInt64?                                  Take                   = null)
-
-        {
-
-            IncludeChargingPools ??= (chargingPool => true);
-
-            return chargingPools.
-                         Where (chargingPool => IncludeChargingPools(chargingPool)).
-                         Select(chargingPool => new Tuple<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>(
-                                                    chargingPool.Id,
-                                                    chargingPool.StatusSchedule(TimestampFilter,
-                                                                                StatusFilter,
-                                                                                Skip,
-                                                                                Take)));
-
-        }
-
         #endregion
 
 
@@ -1470,7 +1357,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPool">A charging pool.</param>
         public Boolean ChargingPoolExists(IChargingPool ChargingPool)
 
-            => chargingPools.Contains(ChargingPool);
+            => ChargingPools.Contains(ChargingPool);
 
         #endregion
 
@@ -1480,7 +1367,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Determines whether the given user identification exists within this API.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of an user.</param>
-        protected internal Boolean _ChargingPoolExists(ChargingPool_Id ChargingPoolId)
+        public Boolean ChargingPoolExists(ChargingPool_Id ChargingPoolId)
 
             => ChargingPoolId.IsNotNullOrEmpty &&
                chargingPools.ContainsId(ChargingPoolId);
@@ -1489,76 +1376,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Determines whether the given user identification exists within this API.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of an user.</param>
-        protected internal Boolean _ChargingPoolExists(ChargingPool_Id? ChargingPoolId)
+        public Boolean ChargingPoolExists(ChargingPool_Id? ChargingPoolId)
 
             => ChargingPoolId.HasValue &&
                ChargingPoolId.Value.IsNotNullOrEmpty &&
                chargingPools.ContainsId(ChargingPoolId.Value);
-
-
-        /// <summary>
-        /// Determines whether the given user identification exists within this API.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of an user.</param>
-        public Boolean ChargingPoolExists(ChargingPool_Id ChargingPoolId)
-        {
-
-            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
-            {
-                try
-                {
-
-                    return _ChargingPoolExists(ChargingPoolId);
-
-                }
-                catch
-                { }
-                finally
-                {
-                    try
-                    {
-                        ChargingPoolsSemaphore.Release();
-                    }
-                    catch
-                    { }
-                }
-            }
-
-            return false;
-
-        }
-
-        /// <summary>
-        /// Determines whether the given user identification exists within this API.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of an user.</param>
-        public Boolean ChargingPoolExists(ChargingPool_Id? ChargingPoolId)
-        {
-
-            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
-            {
-                try
-                {
-
-                    return _ChargingPoolExists(ChargingPoolId);
-
-                }
-                catch
-                { }
-                finally
-                {
-                    try
-                    {
-                        ChargingPoolsSemaphore.Release();
-                    }
-                    catch
-                    { }
-                }
-            }
-
-            return false;
-
-        }
 
         #endregion
 
@@ -1572,16 +1394,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetChargingPoolById(ChargingPoolId, out ChargingPool)
 
-        //public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
-
-        //    => chargingPools.TryGet(ChargingPoolId, out ChargingPool);
-
         /// <summary>
         /// Try to get the charging pool having the given unique identification.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="ChargingPool">The charging pool.</param>
-        protected internal Boolean _TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
         {
 
             if (!ChargingPoolId.IsNullOrEmpty &&
@@ -1601,7 +1419,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="ChargingPool">The charging pool.</param>
-        protected internal Boolean _TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
+        public Boolean TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
         {
 
             if (ChargingPoolId.IsNotNullOrEmpty() &&
@@ -1609,75 +1427,6 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 ChargingPool = chargingPool;
                 return true;
-            }
-
-            ChargingPool = null;
-            return false;
-
-        }
-
-
-        /// <summary>
-        /// Try to get the charging pool having the given unique identification.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
-        /// <param name="ChargingPool">The charging pool.</param>
-        public Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
-        {
-
-            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
-            {
-                try
-                {
-
-                    return _TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
-
-                }
-                catch
-                { }
-                finally
-                {
-                    try
-                    {
-                        ChargingPoolsSemaphore.Release();
-                    }
-                    catch
-                    { }
-                }
-            }
-
-            ChargingPool = null;
-            return false;
-
-        }
-
-        /// <summary>
-        /// Try to get the charging pool having the given unique identification.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
-        /// <param name="ChargingPool">The charging pool.</param>
-        public Boolean TryGetChargingPoolById(ChargingPool_Id? ChargingPoolId, out IChargingPool? ChargingPool)
-        {
-
-            if (ChargingPoolsSemaphore.Wait(SemaphoreSlimTimeout))
-            {
-                try
-                {
-
-                    return _TryGetChargingPoolById(ChargingPoolId, out ChargingPool);
-
-                }
-                catch
-                { }
-                finally
-                {
-                    try
-                    {
-                        ChargingPoolsSemaphore.Release();
-                    }
-                    catch
-                    { }
-                }
             }
 
             ChargingPool = null;
@@ -1707,6 +1456,19 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #region IEnumerable<ChargingPool> Members
+
+        IEnumerator IEnumerable.GetEnumerator()
+
+            => chargingPools.GetEnumerator();
+
+        public IEnumerator<IChargingPool> GetEnumerator()
+
+            => chargingPools.GetEnumerator();
+
+        #endregion
+
 
         #region RemoveChargingPool(ChargingPoolId)
 
@@ -1788,6 +1550,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                            ChargingPoolId,
@@ -1795,8 +1558,11 @@ namespace cloud.charging.open.protocols.WWCP
                                                Boolean                                    SendUpstream = false)
         {
 
-            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
+            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool) &&
+                chargingPool is not null)
+            {
                 chargingPool.AdminStatus = NewStatus;
+            }
 
         }
 
@@ -1821,9 +1587,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
+        public void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
                                                IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList,
-                                               ChangeMethods                                          ChangeMethod  = ChangeMethods.Replace)
+                                               ChangeMethods                                           ChangeMethod  = ChangeMethods.Replace)
         {
 
             if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool) &&
@@ -1831,21 +1597,6 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 chargingPool.SetAdminStatus(StatusList, ChangeMethod);
             }
-
-            //if (SendUpstream)
-            //{
-            //
-            //    RoamingNetwork.
-            //        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(Timestamp.Now,
-            //                                               ChargingStationOperatorId:    Id,
-            //                                               ChargingStationOperatorName:  Name,
-            //                                               NewStatus:         new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>(),
-            //                                               ChangedStatus:     new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>() {
-            //                                                                          new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>(ChargingPoolId, NewStatus.Value)
-            //                                                                      },
-            //                                               RemovedIds:        new List<ChargingPool_Id>()));
-            //
-            //}
 
         }
 
@@ -1959,33 +1710,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                        NewStatus);
 
         }
-
-        #endregion
-
-
-        #region IEnumerable<ChargingPool> Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-
-            => chargingPools.GetEnumerator();
-
-        public IEnumerator<IChargingPool> GetEnumerator()
-
-            => chargingPools.GetEnumerator();
-
-        #endregion
-
-
-        #region ChargingPoolRemoval
-
-        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolRemoval;
-
-        /// <summary>
-        /// Called whenever an charging pool will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
-
-            => ChargingPoolRemoval;
 
         #endregion
 
@@ -2988,8 +2712,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return an enumeration of all EVSEs.
         /// </summary>
         public IEnumerable<IEVSE> EVSEs
+        {
+            get
+            {
+                lock (chargingPools)
+                {
 
-            => chargingPools.SelectMany(chargingPool => chargingPool.EVSEs);
+                    return ChargingPools.SelectMany(chargingPool => chargingPool.EVSEs).
+                                         ToArray();
+
+                }
+            }
+        }
 
         #endregion
 
@@ -3166,6 +2900,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             => EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
 
+        public IEVSE? GetEVSEById(EVSE_Id? EVSEId)
+
+            => EVSEId.HasValue
+                   ? GetEVSEById(EVSEId.Value)
+                   : null;
+
         #endregion
 
         #region TryGetEVSEById(EVSEId, out EVSE)
@@ -3173,9 +2913,24 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
         {
 
-            EVSE = EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
+            while (true)
+            {
+                try
+                {
 
-            return EVSE is not null;
+                    EVSE = EVSEs.ToArray().FirstOrDefault(evse => evse.Id == EVSEId);
+
+                    return EVSE is not null;
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e);
+                }
+            }
+
+            EVSE = null;
+            return false;
 
         }
 
@@ -3188,7 +2943,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            EVSE = EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
+            EVSE = EVSEs.ToArray().FirstOrDefault(evse => evse.Id == EVSEId);
 
             return EVSE is not null;
 
@@ -3200,45 +2955,54 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGetChargingStationByEVSEId(EVSE_Id EVSEId, out IChargingStation? Station)
         {
-
-            foreach (var station in ChargingStations)
+            lock (ChargingStations)
             {
 
-                if (station.TryGetEVSEById(EVSEId, out var evse))
+                foreach (var station in ChargingStations)
                 {
-                    Station = station;
-                    return true;
+
+                    if (station.TryGetEVSEById(EVSEId, out var evse))
+                    {
+                        Station = station;
+                        return true;
+                    }
+
                 }
 
+                Station = null;
+                return false;
+
             }
-
-            Station = null;
-            return false;
-
         }
 
         #endregion
 
-        #region TryGetChargingPoolByEVSEId(EVSEId, out ChargingPool)
+        #region TryGetChargingPoolByEVSEId   (EVSEId, out ChargingPool)
 
         public Boolean TryGetChargingPoolByEVSEId(EVSE_Id EVSEId, out IChargingPool? ChargingPool)
         {
-
-            foreach (var chargingPool in chargingPools)
+            lock (chargingPools)
             {
-                foreach (var chargingStation in chargingPool.ChargingStations)
+                lock (ChargingStations)
                 {
-                    if (chargingStation.TryGetEVSEById(EVSEId, out _))
+
+                    foreach (var chargingPool in chargingPools)
                     {
-                        ChargingPool = chargingPool;
-                        return true;
+                        foreach (var chargingStation in chargingPool.ChargingStations)
+                        {
+                            if (chargingStation.TryGetEVSEById(EVSEId, out _))
+                            {
+                                ChargingPool = chargingPool;
+                                return true;
+                            }
+                        }
                     }
+
+                    ChargingPool = null;
+                    return false;
+
                 }
             }
-
-            ChargingPool = null;
-            return false;
-
         }
 
         #endregion

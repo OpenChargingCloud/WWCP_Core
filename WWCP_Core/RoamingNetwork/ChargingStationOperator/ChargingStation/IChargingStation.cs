@@ -482,7 +482,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                        EnergyMeter?                        EnergyMeter                  = null,
                                        Boolean?                            IsFreeOfCharge               = null,
-                                       IEnumerable<ChargingConnector>?          SocketOutlets                = null,
+                                       IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
 
                                        ChargingSession?                    ChargingSession              = null,
                                        DateTime?                           LastStatusUpdate             = null,
@@ -536,7 +536,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                                        EnergyMeter?                        EnergyMeter                  = null,
                                                        Boolean?                            IsFreeOfCharge               = null,
-                                                       IEnumerable<ChargingConnector>?          SocketOutlets                = null,
+                                                       IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
 
                                                        ChargingSession?                    ChargingSession              = null,
                                                        DateTime?                           LastStatusUpdate             = null,
@@ -570,29 +570,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        //#region SocketOutletAddition
+        //#region ChargingConnectorAddition
 
-        //internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+        //internal readonly IVotingNotificator<DateTime, EVSE, ChargingConnector, Boolean> ChargingConnectorAddition;
 
         ///// <summary>
         ///// Called whenever a socket outlet will be or was added.
         ///// </summary>
-        //public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        //public IVotingSender<DateTime, EVSE, ChargingConnector, Boolean> OnChargingConnectorAddition
 
-        //    => SocketOutletAddition;
+        //    => ChargingConnectorAddition;
 
         //#endregion
 
-        //#region SocketOutletRemoval
+        //#region ChargingConnectorRemoval
 
-        //internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
+        //internal readonly IVotingNotificator<DateTime, EVSE, ChargingConnector, Boolean> ChargingConnectorRemoval;
 
         ///// <summary>
         ///// Called whenever a socket outlet will be or was removed.
         ///// </summary>
-        //public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        //public IVotingSender<DateTime, EVSE, ChargingConnector, Boolean> OnChargingConnectorRemoval
 
-        //    => SocketOutletRemoval;
+        //    => ChargingConnectorRemoval;
 
         //#endregion
 

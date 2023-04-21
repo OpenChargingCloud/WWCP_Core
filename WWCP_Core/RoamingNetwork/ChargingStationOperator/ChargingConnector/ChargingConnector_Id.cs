@@ -118,6 +118,25 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region (static) Parse   (Number)
+
+        /// <summary>
+        /// Parse the given number as a charging connector identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging connector identification.</param>
+        public static ChargingConnector_Id Parse(UInt16 Number)
+        {
+
+            if (TryParse(Number, out var chargingConnectorId))
+                return chargingConnectorId;
+
+            throw new ArgumentException("Invalid numeric representation of a charging connector identification: '" + Number + "'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
         #region (static) TryParse(Text)
 
         /// <summary>
@@ -136,7 +155,25 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (static) TryParse(Text, out ChargingConnectorId)
+        #region (static) TryParse(Number)
+
+        /// <summary>
+        /// Try to parse the given number as a charging connector identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging connector identification.</param>
+        public static ChargingConnector_Id? TryParse(UInt16 Number)
+        {
+
+            if (TryParse(Number, out var chargingConnectorId))
+                return chargingConnectorId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text,   out ChargingConnectorId)
 
         /// <summary>
         /// Try to parse the given text as a charging connector identification.
@@ -160,6 +197,31 @@ namespace cloud.charging.open.protocols.WWCP
                 catch (Exception)
                 { }
             }
+
+            ChargingConnectorId = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Number, out ChargingConnectorId)
+
+        /// <summary>
+        /// Try to parse the given number as a charging connector identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a charging connector identification.</param>
+        /// <param name="ChargingConnectorId">The parsed charging connector identification.</param>
+        public static Boolean TryParse(UInt16 Number, out ChargingConnector_Id ChargingConnectorId)
+        {
+
+            try
+            {
+                ChargingConnectorId = new ChargingConnector_Id(Number.ToString());
+                return true;
+            }
+            catch (Exception)
+            { }
 
             ChargingConnectorId = default;
             return false;

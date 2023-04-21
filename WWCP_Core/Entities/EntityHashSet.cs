@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections;
+using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
@@ -28,291 +29,109 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class EntityHashSet<THost, TId, T> : IEnumerable<T>
+    public class EntityHashSet<TParentDataStructure, TId, TEntity> : IEnumerable<TEntity>
 
-        where T   : IEntity<TId>
-        where TId : IId
+        where TEntity : IEntity<TId>
+        where TId     : IId
 
     {
 
         #region Data
 
-        private readonly THost               host;
+        private readonly TParentDataStructure          parentDataStructure;
 
-        private readonly Dictionary<TId, T>  lookup;
-
-        private readonly Object              lockObject = new ();
+        private readonly ConcurrentDictionary<TId, TEntity>  lookup;
 
         #endregion
 
         #region Events
 
-        private readonly IVotingNotificator<DateTime, THost, T, Boolean> addition;
+        private readonly IVotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean> addition;
 
         /// <summary>
         /// Called whenever a parking operator will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, THost, T, Boolean> OnAddition
+        public IVotingSender<DateTime, TParentDataStructure, TEntity, Boolean> OnAddition
             => addition;
 
 
-        private readonly IVotingNotificator<DateTime, THost, T, Boolean> removal;
+        private readonly IVotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean> removal;
 
         /// <summary>
         /// Called whenever a parking operator will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, THost, T, Boolean> OnRemoval
+        public IVotingSender<DateTime, TParentDataStructure, TEntity, Boolean> OnRemoval
             => removal;
 
         #endregion
 
         #region Constructor(s)
 
-        public EntityHashSet(THost Host)
+        public EntityHashSet(TParentDataStructure ParentDataStructure)
         {
 
-            this.host           = Host;
-            this.lookup         = new Dictionary<TId, T>();
+            this.parentDataStructure  = ParentDataStructure;
+            this.lookup               = new ConcurrentDictionary<TId, TEntity>();
 
-            this.addition       = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
-            this.removal        = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
+            this.addition             = new VotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean>(() => new VetoVote(), true);
+            this.removal              = new VotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean>(() => new VetoVote(), true);
 
         }
 
         #endregion
 
-
-        #region ContainsId(...)
-
-        public Boolean ContainsId(TId Id)
-            => lookup.ContainsKey(Id);
-
-        #endregion
-
-        #region Contains(...)
-
-        public Boolean Contains(T Entity)
-            => lookup.ContainsValue(Entity);
-
-        #endregion
 
         #region TryAdd(Entity, ...)
 
-        public Boolean TryAdd(T Entity)
+        public Boolean TryAdd(TEntity Entity)
         {
-            lock (lockObject)
+
+            if (addition.SendVoting(Timestamp.Now, parentDataStructure, Entity))
             {
-
-                if (addition.SendVoting(Timestamp.Now, host, Entity))
-                {
-                    lookup.Add(Entity.Id, Entity);
-                    addition.SendNotification(Timestamp.Now, host, Entity);
-                    return true;
-                }
-
-                return false;
-
+                lookup.TryAdd(Entity.Id, Entity);
+                addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+                return true;
             }
+
+            return false;
+
         }
 
-        public Boolean TryAdd(T          Entity,
-                              Action<T>  OnSuccess)
+        public Boolean TryAdd(TEntity          Entity,
+                              Action<TEntity>  OnSuccess)
         {
-            lock (lockObject)
+
+            if (TryAdd(Entity))
             {
-
-                if (TryAdd(Entity))
-                {
-                    OnSuccess?.Invoke(Entity);
-                    return true;
-                }
-
-                return false;
-
+                OnSuccess?.Invoke(Entity);
+                return true;
             }
+
+            return false;
+
         }
 
-        public Boolean TryAdd(T                    Entity,
-                              Action<DateTime, T>  OnSuccess)
+        public Boolean TryAdd(TEntity                    Entity,
+                              Action<DateTime, TEntity>  OnSuccess)
         {
-            lock (lockObject)
+
+            if (TryAdd(Entity))
             {
-
-                if (TryAdd(Entity))
-                {
-                    OnSuccess?.Invoke(Timestamp.Now, Entity);
-                    return true;
-                }
-
-                return false;
-
+                OnSuccess?.Invoke(Timestamp.Now, Entity);
+                return true;
             }
+
+            return false;
+
         }
 
-        public Boolean TryAdd(T                           Entity,
-                              Action<DateTime, THost, T>  OnSuccess)
-        {
-            lock (lockObject)
-            {
-
-                if (TryAdd(Entity))
-                {
-                    OnSuccess?.Invoke(Timestamp.Now, host, Entity);
-                    return true;
-                }
-
-                return false;
-
-            }
-        }
-
-        #endregion
-
-        #region TryAdd(Entities, ...)
-
-        public Boolean TryAdd(IEnumerable<T> Entities)
-        {
-            lock (lockObject)
-            {
-
-                if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, host, Entity)))
-                {
-
-                    foreach (var Entity in Entities)
-                    {
-                        lookup.Add(Entity.Id, Entity);
-                        addition.SendNotification(Timestamp.Now, host, Entity);
-                    }
-
-                    return true;
-
-                }
-
-                return false;
-
-            }
-        }
-
-        public Boolean TryAdd(IEnumerable<T>          Entities,
-                              Action<IEnumerable<T>>  OnSuccess)
-        {
-            lock (lockObject)
-            {
-
-                if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, host, Entity)))
-                {
-
-                    foreach (var Entity in Entities)
-                    {
-                        lookup.Add(Entity.Id, Entity);
-                        addition.SendNotification(Timestamp.Now, host, Entity);
-                    }
-
-                    OnSuccess?.Invoke(Entities);
-                    return true;
-
-                }
-
-                return false;
-
-            }
-        }
-
-        public Boolean TryAdd(IEnumerable<T>                    Entities,
-                              Action<DateTime, IEnumerable<T>>  OnSuccess)
-        {
-            lock (lockObject)
-            {
-
-                if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, host, Entity)))
-                {
-
-                    foreach (var Entity in Entities)
-                    {
-                        lookup.Add(Entity.Id, Entity);
-                        addition.SendNotification(Timestamp.Now, host, Entity);
-                    }
-
-                    OnSuccess?.Invoke(Timestamp.Now, Entities);
-                    return true;
-
-                }
-
-                return false;
-
-            }
-        }
-
-        public Boolean TryAdd(IEnumerable<T>                           Entities,
-                              Action<DateTime, THost, IEnumerable<T>>  OnSuccess)
-        {
-            lock (lockObject)
-            {
-
-                if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, host, Entity)))
-                {
-
-                    foreach (var Entity in Entities)
-                    {
-                        lookup.Add(Entity.Id, Entity);
-                        addition.SendNotification(Timestamp.Now, host, Entity);
-                    }
-
-                    OnSuccess?.Invoke(Timestamp.Now, host, Entities);
-                    return true;
-
-                }
-
-                return false;
-
-            }
-        }
-
-        #endregion
-
-        #region GetById(Id)
-
-        public T? GetById(TId Id)
-        {
-            lock (lockObject)
-            {
-
-                if (lookup.TryGetValue(Id, out T? entity))
-                    return entity;
-
-                return default;
-
-            }
-        }
-
-        #endregion
-
-        #region TryGet(Id, out Entity)
-
-        public Boolean TryGet(TId Id, out T? Entity)
-        {
-            lock (lockObject)
-            {
-
-                if (lookup.TryGetValue(Id, out Entity))
-                    return true;
-
-                Entity = default;
-                return false;
-
-            }
-        }
-
-        #endregion
-
-        #region TryRemove(Id, out Entity)
-
-        public Boolean TryRemove(TId Id, out T? Entity)
+        public Boolean TryAdd(TEntity                           Entity,
+                              Action<DateTime, TParentDataStructure, TEntity>  OnSuccess)
         {
 
-            if (lookup.TryGetValue(Id, out Entity))
+            if (TryAdd(Entity))
             {
-                lookup.Remove(Id);
+                OnSuccess?.Invoke(Timestamp.Now, parentDataStructure, Entity);
                 return true;
             }
 
@@ -322,24 +141,180 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Remove(...)
+        #region TryAdd(Entities, ...)
 
-        public T? Remove(TId Id)
+        public Boolean TryAdd(IEnumerable<TEntity> Entities)
         {
 
-            if (lookup.TryGetValue(Id, out T? entity))
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
             {
-                lookup.Remove(Id);
-                return entity;
+
+                foreach (var Entity in Entities)
+                {
+                    lookup.TryAdd(Entity.Id, Entity);
+                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+                }
+
+                return true;
+
             }
+
+            return false;
+
+        }
+
+        public Boolean TryAdd(IEnumerable<TEntity>          Entities,
+                              Action<IEnumerable<TEntity>>  OnSuccess)
+        {
+
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
+            {
+
+                foreach (var Entity in Entities)
+                {
+                    lookup.TryAdd(Entity.Id, Entity);
+                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+                }
+
+                OnSuccess?.Invoke(Entities);
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        public Boolean TryAdd(IEnumerable<TEntity>                    Entities,
+                              Action<DateTime, IEnumerable<TEntity>>  OnSuccess)
+        {
+
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
+            {
+
+                foreach (var Entity in Entities)
+                {
+                    lookup.TryAdd(Entity.Id, Entity);
+                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+                }
+
+                OnSuccess?.Invoke(Timestamp.Now, Entities);
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        public Boolean TryAdd(IEnumerable<TEntity>                           Entities,
+                              Action<DateTime, TParentDataStructure, IEnumerable<TEntity>>  OnSuccess)
+        {
+
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
+            {
+
+                foreach (var Entity in Entities)
+                {
+                    lookup.TryAdd(Entity.Id, Entity);
+                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+                }
+
+                OnSuccess?.Invoke(Timestamp.Now, parentDataStructure, Entities);
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ContainsId(...)
+
+        public Boolean ContainsId(TId Id)
+
+            => lookup.ContainsKey(Id);
+
+        #endregion
+
+        #region Contains(...)
+
+        public Boolean Contains(TEntity Entity)
+        {
+
+            foreach (var entity in lookup)
+            {
+                if (entity.Equals(Entity))
+                    return true;
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region GetById(Id)
+
+        public TEntity? GetById(TId Id)
+        {
+
+            if (lookup.TryGetValue(Id, out var entity))
+                return entity;
 
             return default;
 
         }
 
-        public Boolean Remove(T Entity)
+        #endregion
 
-            => lookup.Remove(Entity.Id);
+        #region TryGet(Id, out Entity)
+
+        public Boolean TryGet(TId Id, out TEntity? Entity)
+        {
+
+            if (lookup.TryGetValue(Id, out Entity))
+                return true;
+
+            Entity = default;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region Remove   (Id)
+
+        public TEntity? Remove(TId Id)
+        {
+
+            if (lookup.TryRemove(Id, out var entity))
+                return entity;
+
+            return default;
+
+        }
+
+        #endregion
+
+        #region TryRemove(Id, out Entity)
+
+        public Boolean TryRemove(TId Id, out TEntity? Entity)
+
+            => lookup.TryRemove(Id, out Entity);
+
+
+        #endregion
+
+        #region TryRemove(Entity)
+
+        public Boolean TryRemove(TEntity Entity)
+
+            => lookup.TryRemove(Entity.Id, out _);
 
         #endregion
 
@@ -355,10 +330,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region IEnumerable<T> Members
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<TEntity> GetEnumerator()
+
             => lookup.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
+
             => lookup.Values.GetEnumerator();
 
         #endregion

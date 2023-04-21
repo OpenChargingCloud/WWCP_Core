@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.WWCP
                              IChargingSessions,
                              IChargeDetailRecords,
                              IEquatable<IEVSE>, IComparable<IEVSE>, IComparable,
-                             IEnumerable<ChargingConnector>
+                             IEnumerable<IChargingConnector>
     {
 
         #region Properties
@@ -275,7 +275,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The power socket outlets of this EVSE.
         /// </summary>
         [Mandatory, SlowData]
-        ReactiveSet<ChargingConnector>              ChargingConnectors                { get; set; }
+        ReactiveSet<IChargingConnector>        ChargingConnectors           { get; set; }
 
 
 
@@ -325,14 +325,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of the given EVSE.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        JObject ToJSON(Boolean                                  Embedded                          = false,
-                       InfoStatus                               ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                       InfoStatus                               ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                       InfoStatus                               ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                       InfoStatus                               ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                       InfoStatus                               ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                       InfoStatus                               ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                       CustomJObjectSerializerDelegate<IEVSE>?  CustomEVSESerializer              = null);
+        JObject? ToJSON(Boolean                                  Embedded                          = false,
+                        InfoStatus                               ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                        InfoStatus                               ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                        InfoStatus                               ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                        InfoStatus                               ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                        InfoStatus                               ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                        InfoStatus                               ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                        CustomJObjectSerializerDelegate<IEVSE>?  CustomEVSESerializer              = null);
 
 
     }

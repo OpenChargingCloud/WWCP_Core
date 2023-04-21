@@ -15,16 +15,34 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace cloud.charging.open.protocols.WWCP
 {
 
     public interface IChargingConnector
     {
-        ChargingConnector_Id?  Id               { get; }
-        Boolean?               CableAttached    { get; }
-        Double?                CableLength      { get; }
-        Boolean?               Lockable         { get; }
-        ChargingPlugTypes              Plug             { get; }
+
+        /// <summary>
+        /// The EVSE of this charging connector.
+        /// </summary>
+        [InternalUseOnly]
+        IEVSE?                ParentEVSE       { get; set; }
+
+        ChargingConnector_Id  Id               { get; }
+        Boolean?              CableAttached    { get; }
+        Double?               CableLength      { get; }
+        Boolean?              Lockable         { get; }
+        ChargingPlugTypes     Plug             { get; }
+
+        JObject? ToJSON(Boolean                                              Embedded                            = false,
+                        CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null);
 
     }
 

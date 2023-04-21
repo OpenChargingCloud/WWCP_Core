@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The power socket outlets.
         /// </summary>
         [Mandatory, SlowData]
-        public ReactiveSet<ChargingConnector>                ChargingConnectors               { get; set; }
+        public ReactiveSet<IChargingConnector>          ChargingConnectors          { get; set; }
 
 
         public DateTime?                                LastStatusUpdate            { get; set; }
@@ -870,7 +870,7 @@ namespace cloud.charging.open.protocols.WWCP
                     EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                     EnergyMeter?                        EnergyMeter                  = null,
                     Boolean?                            IsFreeOfCharge               = null,
-                    IEnumerable<ChargingConnector>?          ChargingConnectors                = null,
+                    IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
 
                     ChargingSession?                    ChargingSession              = null,
                     DateTime?                           LastStatusUpdate             = null,
@@ -923,10 +923,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.OpenDataLicenses                       = OpenDataLicenses is null
-                                                          ? new ReactiveSet<OpenDataLicense>()
-                                                          : new ReactiveSet<OpenDataLicense>(OpenDataLicenses);
-            this.OpenDataLicenses.OnSetChanged         += (timestamp, reactiveSet, newItems, oldItems) =>
+            this.OpenDataLicenses                   = OpenDataLicenses is null
+                                                      ? new ReactiveSet<OpenDataLicense>()
+                                                      : new ReactiveSet<OpenDataLicense>(OpenDataLicenses);
+            this.OpenDataLicenses.OnSetChanged     += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
                 PropertyChanged("DataLicenses",
@@ -1030,10 +1030,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.IsFreeOfCharge                     = IsFreeOfCharge ?? false;
 
-            this.ChargingConnectors                      = ChargingConnectors is null
-                                                          ? new ReactiveSet<ChargingConnector>()
-                                                          : new ReactiveSet<ChargingConnector>(ChargingConnectors);
-            this.ChargingConnectors.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
+            this.ChargingConnectors                 = ChargingConnectors is null
+                                                          ? new ReactiveSet<IChargingConnector>()
+                                                          : new ReactiveSet<IChargingConnector>(ChargingConnectors);
+            this.ChargingConnectors.OnSetChanged   += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
                 PropertyChanged("ChargingConnectors",
@@ -1041,6 +1041,9 @@ namespace cloud.charging.open.protocols.WWCP
                                 newItems);
 
             };
+
+            foreach (var chargingConnector in ChargingConnectors)
+                chargingConnector.ParentEVSE = this;
 
             #endregion
 
@@ -2360,15 +2363,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a JSON representation of the given EVSE.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
-        public JObject ToJSON(Boolean                                  Embedded                          = false,
-                              InfoStatus                               ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                              InfoStatus                               ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                              InfoStatus                               ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                              InfoStatus                               ExpandChargingStationId           = InfoStatus.ShowIdOnly,
-                              InfoStatus                               ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                              InfoStatus                               ExpandDataLicenses                = InfoStatus.ShowIdOnly,
-                              CustomJObjectSerializerDelegate<IEVSE>?  CustomEVSESerializer              = null)
-
+        public JObject? ToJSON(Boolean                                  Embedded                          = false,
+                               InfoStatus                               ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                               InfoStatus                               ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                               InfoStatus                               ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                               InfoStatus                               ExpandChargingStationId           = InfoStatus.ShowIdOnly,
+                               InfoStatus                               ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                               InfoStatus                               ExpandDataLicenses                = InfoStatus.ShowIdOnly,
+                               CustomJObjectSerializerDelegate<IEVSE>?  CustomEVSESerializer              = null)
         {
 
             try
@@ -2376,21 +2378,21 @@ namespace cloud.charging.open.protocols.WWCP
 
                 var json = JSONObject.Create(
 
-                               new JProperty("@id", Id.ToString()),
+                                     new JProperty("@id",               Id.ToString()),
 
                                !Embedded
-                                   ? new JProperty("@context", JSONLDContext)
+                                   ? new JProperty("@context",          JSONLDContext)
                                    : null,
 
                                Description.IsNeitherNullNorEmpty()
-                                   ? new JProperty("description", Description.ToJSON())
+                                   ? new JProperty("description",       Description.ToJSON())
                                    : null,
 
                                Brands.SafeAny()
-                                     ? ExpandBrandIds.Switch(
-                                           () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
-                                           () => new JProperty("brand",   Brands.ToJSON()))
-                                     : null,
+                                   ? ExpandBrandIds.Switch(
+                                         () => new JProperty("brandId", Brands.Select(brand => brand.Id.ToString())),
+                                         () => new JProperty("brand",   Brands.ToJSON()))
+                                   : null,
 
                                (!Embedded || (ChargingStation is not null && DataSource       != ChargingStation.DataSource))
                                    ? new JProperty("dataSource", DataSource)
@@ -2398,8 +2400,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                (!Embedded || (ChargingStation is not null && OpenDataLicenses != ChargingStation.DataLicenses))
                                    ? ExpandDataLicenses.Switch(
-                                         () => new JProperty("openDataLicenseIds", new JArray(OpenDataLicenses.SafeSelect(license => license.Id.ToString()))),
-                                         () => new JProperty("openDataLicenses", OpenDataLicenses.ToJSON()))
+                                         () => new JProperty("openDataLicenseIds",                new JArray(OpenDataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                         () => new JProperty("openDataLicenses",                  OpenDataLicenses.ToJSON()))
                                    : null,
 
                                ExpandRoamingNetworkId != InfoStatus.Hidden && RoamingNetwork is not null
@@ -2458,41 +2460,41 @@ namespace cloud.charging.open.protocols.WWCP
                                    : null,
 
                                !Embedded && ChargingStation is not null && ChargingStation.AuthenticationModes.Any()
-                                   ? new JProperty("authenticationModes",  ChargingStation.AuthenticationModes.ToJSON())
+                                   ? new JProperty("authenticationModes",   ChargingStation.AuthenticationModes.ToJSON())
                                    : null,
 
                                ChargingModes.SafeAny()
-                                   ? new JProperty("chargingModes", new JArray(ChargingModes.SafeSelect(chargingMode => chargingMode.ToText())))
+                                   ? new JProperty("chargingModes",         new JArray(ChargingModes.SafeSelect(chargingMode => chargingMode.ToText())))
                                    : null,
 
                                new JProperty("currentType", CurrentType.ToText()),
 
                                AverageVoltage.HasValue && AverageVoltage   > 0
-                                   ? new JProperty("averageVoltage", Math.Round(AverageVoltage.Value, 2))
+                                   ? new JProperty("averageVoltage",        Math.Round(AverageVoltage.Value, 2))
                                    : null,
 
                                MaxCurrent.    HasValue && MaxCurrent       > 0
-                                   ? new JProperty("maxCurrent",     Math.Round(MaxCurrent.    Value, 2))
+                                   ? new JProperty("maxCurrent",            Math.Round(MaxCurrent.    Value, 2))
                                    : null,
 
                                MaxPower.      HasValue && MaxPower.   HasValue
-                                   ? new JProperty("maxPower",       Math.Round(MaxPower.      Value, 2))
+                                   ? new JProperty("maxPower",              Math.Round(MaxPower.      Value, 2))
                                    : null,
 
                                MaxCapacity.   HasValue && MaxCapacity.HasValue
-                                   ? new JProperty("maxCapacity",    Math.Round(MaxCapacity.   Value, 2))
+                                   ? new JProperty("maxCapacity",           Math.Round(MaxCapacity.   Value, 2))
                                    : null,
 
                                ChargingConnectors.Count > 0
-                                   ? new JProperty("socketOutlets", new JArray(ChargingConnectors.ToJSON()))
+                                   ? new JProperty("socketOutlets",         new JArray(ChargingConnectors.ToJSON(Embedded: false)))
                                    : null,
 
                                EnergyMeter is not null
-                                   ? new JProperty("energyMeter", EnergyMeter.ToJSON())
+                                   ? new JProperty("energyMeter",           EnergyMeter.ToJSON())
                                    : null,
 
                                !Embedded && ChargingStation?.OpeningTimes is not null
-                                   ? new JProperty("openingTimes", ChargingStation.OpeningTimes.ToJSON())
+                                   ? new JProperty("openingTimes",          ChargingStation.OpeningTimes.ToJSON())
                                    : null
 
                          );
@@ -2504,13 +2506,10 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                return new JObject(
-                           new JProperty("@id",         Id.ToString()),
-                           new JProperty("@context",    JSONLDContext),
-                           new JProperty("exception",   e.Message),
-                           new JProperty("stackTrace",  e.StackTrace)
-                       );
+                DebugX.LogException(e, "EVSE.ToJSON(...)");
             }
+
+            return null;
 
         }
 
@@ -2528,10 +2527,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Return a socket outlet enumerator.
         /// </summary>
-        public IEnumerator<ChargingConnector> GetEnumerator()
+        public IEnumerator<IChargingConnector> GetEnumerator()
             => ChargingConnectors.GetEnumerator();
 
         #endregion
+
 
         #region Operator overloading
 

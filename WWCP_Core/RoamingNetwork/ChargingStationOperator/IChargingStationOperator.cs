@@ -856,9 +856,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         Boolean ContainsEVSE(EVSE_Id EVSEId);
 
-        IEVSE GetEVSEById(EVSE_Id EVSEId);
+        IEVSE? GetEVSEById(EVSE_Id EVSEId);
 
-        Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE EVSE);
+        Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE);
 
 
         #region OnEVSEData/(Admin)StatusChanged

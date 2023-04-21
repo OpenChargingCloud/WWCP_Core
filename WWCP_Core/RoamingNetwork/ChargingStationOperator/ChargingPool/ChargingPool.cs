@@ -1383,8 +1383,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return all charging stations registered within this charing pool.
         /// </summary>
         public IEnumerable<IChargingStation> ChargingStations
-
-            => chargingStations;
+        {
+            get
+            {
+                lock (chargingStations)
+                {
+                    return chargingStations.ToArray();
+                }
+            }
+        }
 
         #endregion
 
@@ -1394,14 +1401,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return an enumeration of all charging station identifications.
         /// </summary>
         /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate? IncludeStations = null)
 
-            => IncludeStations == null
+            => IncludeStations is null
 
-                   ? chargingStations.
+                   ? ChargingStations.
                          Select    (station => station.Id)
 
-                   : chargingStations.
+                   : ChargingStations.
                          Where     (station => IncludeStations(station)).
                          Select    (station => station.Id);
 
@@ -1413,14 +1420,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return an enumeration of all charging station admin status.
         /// </summary>
         /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate? IncludeStations = null)
 
-            => IncludeStations == null
+            => IncludeStations is null
 
-                   ? chargingStations.
+                   ? ChargingStations.
                          Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus))
 
-                   : chargingStations.
+                   : ChargingStations.
                          Where     (station => IncludeStations(station)).
                          Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus));
 
@@ -1432,14 +1439,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return an enumeration of all charging station status.
         /// </summary>
         /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
-        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate? IncludeStations = null)
 
-            => IncludeStations == null
+            => IncludeStations is null
 
-                   ? chargingStations.
+                   ? ChargingStations.
                          Select    (station => new ChargingStationStatus(station.Id, station.Status))
 
-                   : chargingStations.
+                   : ChargingStations.
                          Where     (station => IncludeStations(station)).
                          Select    (station => new ChargingStationStatus(station.Id, station.Status));
 
@@ -1733,7 +1740,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region ContainsChargingStation(ChargingStation)
+        #region ContainsChargingStation  (ChargingStation)
 
         /// <summary>
         /// Check if the given ChargingStation is already present within the charging pool.
@@ -1745,7 +1752,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ContainsChargingStation(ChargingStationId)
+        #region ContainsChargingStation  (ChargingStationId)
 
         /// <summary>
         /// Check if the given ChargingStation identification is already present within the charging pool.
@@ -1757,7 +1764,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetChargingStationById(ChargingStationId)
+        #region GetChargingStationById   (ChargingStationId)
 
         public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
 
@@ -1773,7 +1780,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region RemoveChargingStation(ChargingStationId)
+
+        #region RemoveChargingStation    (ChargingStationId)
 
         public async Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id ChargingStationId)
         {
@@ -1803,7 +1811,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryRemoveChargingStation(ChargingStationId, out ChargingStation)
+        #region TryRemoveChargingStation (ChargingStationId, out ChargingStation)
 
         public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
         {
@@ -1857,7 +1865,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateChargingStationData        (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data of a charging station.
@@ -1889,7 +1897,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateChargingStationStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationStatus     (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the curent status of a charging station.
@@ -2016,9 +2024,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// within this charging pool.
         /// </summary>
         public IEnumerable<IEVSE> EVSEs
+        {
+            get
+            {
+                lock (chargingStations)
+                {
 
-            => chargingStations.
-                   SelectMany(station => station.EVSEs);
+                    return chargingStations.SelectMany(station => station.EVSEs).
+                                            ToArray();
+
+                }
+            }
+        }
 
         #endregion
 
@@ -2221,14 +2238,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEVSEById(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE EVSE)
+        public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
         {
 
-            EVSE = chargingStations.
+            EVSE = ChargingStations.
                        SelectMany    (station => station.EVSEs).
-                       FirstOrDefault(_EVSE   => _EVSE.Id == EVSEId);
+                       FirstOrDefault(evse    => evse.Id == EVSEId);
 
-            return EVSE != null;
+            return EVSE is not null;
 
         }
 

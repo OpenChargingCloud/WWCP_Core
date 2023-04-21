@@ -1557,8 +1557,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// within this charging station.
         /// </summary>
         public IEnumerable<IEVSE> EVSEs
-
-            => evses;
+        {
+            get
+            {
+                lock (evses)
+                {
+                    return evses.ToArray();
+                }
+            }
+        }
 
         #endregion
 
@@ -1729,7 +1736,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                     EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                                     EnergyMeter?                        EnergyMeter                  = null,
                                                     Boolean?                            IsFreeOfCharge               = null,
-                                                    IEnumerable<ChargingConnector>?          SocketOutlets                = null,
+                                                    IEnumerable<IChargingConnector>?    SocketOutlets                = null,
 
                                                     ChargingSession?                    ChargingSession              = null,
                                                     DateTime?                           LastStatusUpdate             = null,
@@ -1907,7 +1914,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                     EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                                                     EnergyMeter?                        EnergyMeter                  = null,
                                                                     Boolean?                            IsFreeOfCharge               = null,
-                                                                    IEnumerable<ChargingConnector>?          SocketOutlets                = null,
+                                                                    IEnumerable<IChargingConnector>?    SocketOutlets                = null,
 
                                                                     ChargingSession?                    ChargingSession              = null,
                                                                     DateTime?                           LastStatusUpdate             = null,

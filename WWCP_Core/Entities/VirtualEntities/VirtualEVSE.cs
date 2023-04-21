@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                             EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                                                             EnergyMeter?                        EnergyMeter                  = null,
                                                             Boolean?                            IsFreeOfCharge               = null,
-                                                            IEnumerable<ChargingConnector>?     ChargingConnectors           = null,
+                                                            IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
 
                                                             ChargingSession?                    ChargingSession              = null,
                                                             DateTime?                           LastStatusUpdate             = null,
@@ -217,7 +217,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                       EVSEAdminStatusTypes,
                                                       EVSEStatusTypes>,
                                IEquatable<VirtualEVSE>, IComparable<VirtualEVSE>, IComparable,
-                               IEnumerable<ChargingConnector>,
                                IRemoteEVSE
     {
 
@@ -881,9 +880,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region ChargingConnectors
 
-        private ReactiveSet<ChargingConnector> _ChargingConnectors;
+        private ReactiveSet<IChargingConnector> _ChargingConnectors;
 
-        public ReactiveSet<ChargingConnector> ChargingConnectors
+        public ReactiveSet<IChargingConnector> ChargingConnectors
         {
 
             get
@@ -960,7 +959,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                              EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
                              EnergyMeter?                        EnergyMeter                  = null,
                              Boolean?                            IsFreeOfCharge               = null,
-                             IEnumerable<ChargingConnector>?          ChargingConnectors                = null,
+                             IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
 
                              String?                             EllipticCurve                = null,
                              ECPrivateKeyParameters?             PrivateKey                   = null,
@@ -1116,8 +1115,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this.IsFreeOfCharge                     = IsFreeOfCharge ?? false;
 
             this.ChargingConnectors                      = ChargingConnectors is null
-                                                          ? new ReactiveSet<ChargingConnector>()
-                                                          : new ReactiveSet<ChargingConnector>(ChargingConnectors);
+                                                          ? new ReactiveSet<IChargingConnector>()
+                                                          : new ReactiveSet<IChargingConnector>(ChargingConnectors);
             this.ChargingConnectors.OnSetChanged        += (timestamp, reactiveSet, newItems, oldItems) =>
             {
 
@@ -1128,9 +1127,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             };
 
             this.ChargingModes          = new ReactiveSet<ChargingModes>();
-            this._ChargingConnectors         = new ReactiveSet<ChargingConnector>();
+            this._ChargingConnectors    = new ReactiveSet<IChargingConnector>();
 
-            this.energyMeter           = EnergyMeter;
+            this.energyMeter            = EnergyMeter;
 
             this.SelfCheckTimeSpan      = SelfCheckTimeSpan != null && SelfCheckTimeSpan.HasValue ? SelfCheckTimeSpan.Value : DefaultSelfCheckTimeSpan;
 
@@ -2884,7 +2883,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// Return a socket outlet enumerator.
         /// </summary>
-        public IEnumerator<ChargingConnector> GetEnumerator()
+        public IEnumerator<IChargingConnector> GetEnumerator()
             => _ChargingConnectors.GetEnumerator();
 
         #endregion

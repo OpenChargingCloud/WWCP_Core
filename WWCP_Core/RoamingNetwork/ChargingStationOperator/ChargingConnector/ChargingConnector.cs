@@ -31,22 +31,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ToJSON(this ChargingConnectors, IncludeParentIds = true)
 
-        public static JArray ToJSON(this IEnumerable<ChargingConnector>  ChargingConnectors,
-                                    Boolean                              IncludeParentIds = true)
-        {
+        public static JArray ToJSON(this IEnumerable<IChargingConnector>  ChargingConnectors,
+                                    Boolean                               Embedded = false)
 
-            #region Initial checks
-
-            if (ChargingConnectors == null)
-                return new JArray();
-
-            #endregion
-
-            return ChargingConnectors != null && ChargingConnectors.Any()
-                       ? new JArray(ChargingConnectors.SafeSelect(chargingConnector => chargingConnector.ToJSON(IncludeParentIds)))
-                       : new JArray();
-
-        }
+            => ChargingConnectors is not null && ChargingConnectors.Any()
+                   ? new JArray(ChargingConnectors.SafeSelect(chargingConnector => chargingConnector.ToJSON(Embedded)))
+                   : new JArray();
 
         #endregion
 
@@ -61,36 +51,52 @@ namespace cloud.charging.open.protocols.WWCP
                                      IChargingConnector
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String  JSONLDContext  = "https://open.charging.cloud/contexts/wwcp+json/ChargingConnector";
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The parent EVSE of this charging connector.
+        /// </summary>
+        [InternalUseOnly]
+        public IEVSE?                ParentEVSE       { get; set; }
+
+        /// <summary>
+        /// The optional charging connector identification.
+        /// </summary>
+        [Mandatory]
+        public ChargingConnector_Id  Id               { get; }
 
         /// <summary>
         /// The type of the charging plug.
         /// </summary>
         [Mandatory]
-        public ChargingPlugTypes              Plug             { get; }
-
-        /// <summary>
-        /// The optional charging connector identification.
-        /// </summary>
-        public ChargingConnector_Id?  Id               { get; }
+        public ChargingPlugTypes     Plug             { get; }
 
         /// <summary>
         /// Whether the charging plug is lockable or not.
         /// </summary>
         [Optional]
-        public Boolean?               Lockable         { get; }
+        public Boolean?              Lockable         { get; }
 
         /// <summary>
         /// Whether the charging plug has an attached cable or not.
         /// </summary>
         [Optional]
-        public Boolean?               CableAttached    { get; }
+        public Boolean?              CableAttached    { get; }
 
         /// <summary>
         /// The length of the charging cable [cm].
         /// </summary>
         [Optional]
-        public Double?                CableLength      { get; }
+        public Double?               CableLength      { get; }
 
         /// <summary>
         /// Whether the charging connector is DC or AC.
@@ -106,46 +112,138 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Create a new charging connector.
         /// </summary>
+        /// <param name="Id">A charging connector identification.</param>
         /// <param name="Plug">The type of the charging plug.</param>
-        /// <param name="Id">An optional charging connector identification.</param>
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="CableAttached">The type of the charging cable.</param>
         /// <param name="CableLength">The length of the charging cable [mm].</param>
-        public ChargingConnector(ChargingPlugTypes Plug,
-                            ChargingConnector_Id? Id = null,
-                            Boolean? Lockable = null,
-                            Boolean? CableAttached = null,
-                            Double? CableLength = null)
+        public ChargingConnector(ChargingConnector_Id  Id,
+                                 ChargingPlugTypes     Plug,
+                                 Boolean?              Lockable        = null,
+                                 Boolean?              CableAttached   = null,
+                                 Double?               CableLength     = null)
         {
 
-            this.Plug = Plug;
-            this.Id = Id;
-            this.Lockable = Lockable;
-            this.CableAttached = CableAttached;
-            this.CableLength = CableLength;
+            this.Id             = Id;
+            this.Plug           = Plug;
+            this.Lockable       = Lockable;
+            this.CableAttached  = CableAttached;
+            this.CableLength    = CableLength;
+
+        }
+
+        /// <summary>
+        /// Create a new charging connector.
+        /// </summary>
+        /// <param name="Id">A charging connector identification.</param>
+        /// <param name="Plug">The type of the charging plug.</param>
+        /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
+        /// <param name="CableAttached">The type of the charging cable.</param>
+        /// <param name="CableLength">The length of the charging cable [mm].</param>
+        public ChargingConnector(IEVSE?                ParentEVSE,
+                                 ChargingConnector_Id  Id,
+                                 ChargingPlugTypes     Plug,
+                                 Boolean?              Lockable        = null,
+                                 Boolean?              CableAttached   = null,
+                                 Double?               CableLength     = null)
+        {
+
+            this.ParentEVSE     = ParentEVSE;
+            this.Id             = Id;
+            this.Plug           = Plug;
+            this.Lockable       = Lockable;
+            this.CableAttached  = CableAttached;
+            this.CableLength    = CableLength;
+
+        }
+
+        /// <summary>
+        /// Create a new charging connector.
+        /// </summary>
+        /// <param name="Plug">The type of the charging plug.</param>
+        /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
+        /// <param name="CableAttached">The type of the charging cable.</param>
+        /// <param name="CableLength">The length of the charging cable [mm].</param>
+        public ChargingConnector(ChargingPlugTypes  Plug,
+                                 Boolean?           Lockable        = null,
+                                 Boolean?           CableAttached   = null,
+                                 Double?            CableLength     = null)
+        {
+
+            this.Id             = ChargingConnector_Id.Parse(1);
+            this.Plug           = Plug;
+            this.Lockable       = Lockable;
+            this.CableAttached  = CableAttached;
+            this.CableLength    = CableLength;
+
+        }
+
+        /// <summary>
+        /// Create a new charging connector.
+        /// </summary>
+        /// <param name="Plug">The type of the charging plug.</param>
+        /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
+        /// <param name="CableAttached">The type of the charging cable.</param>
+        /// <param name="CableLength">The length of the charging cable [mm].</param>
+        public ChargingConnector(IEVSE?             ParentEVSE,
+                                 ChargingPlugTypes  Plug,
+                                 Boolean?           Lockable        = null,
+                                 Boolean?           CableAttached   = null,
+                                 Double?            CableLength     = null)
+        {
+
+            this.ParentEVSE     = ParentEVSE;
+            this.Id             = ChargingConnector_Id.Parse(1);
+            this.Plug           = Plug;
+            this.Lockable       = Lockable;
+            this.CableAttached  = CableAttached;
+            this.CableLength    = CableLength;
 
         }
 
         #endregion
 
 
-        #region ToJSON(this ChargingConnector,  IncludeParentIds = true)
+        #region ToJSON(this ChargingConnector, Embedded = false, CustomChargingConnectorSerializer = null)
 
-        public JObject ToJSON(Boolean IncludeParentIds = true)
+        public JObject? ToJSON(Boolean                                              Embedded                            = false,
+                               CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null)
+        {
 
-            => JSONObject.Create(
+            try
+            {
 
-                         new JProperty("Plug",            Plug.         ToString()),
+                var json = JSONObject.Create(
 
-                   CableAttached.HasValue
-                       ? new JProperty("cableAttached",   CableAttached.ToString())
-                       : null,
+                                 new JProperty("@id",             Id.ToString()),
 
-                   CableLength > 0
-                       ? new JProperty("cableLength",     CableLength.  ToString())
-                       : null
+                           !Embedded
+                               ? new JProperty("@context",        JSONLDContext)
+                               : null,
 
-               );
+                                 new JProperty("plug",            Plug.         ToString()),
+
+                           CableAttached.HasValue
+                               ? new JProperty("cableAttached",   CableAttached.ToString())
+                               : null,
+
+                           CableLength > 0
+                               ? new JProperty("cableLength",     CableLength.  ToString())
+                               : null);
+
+                return CustomChargingConnectorSerializer is not null
+                           ? CustomChargingConnectorSerializer(this, json)
+                           : json;
+
+            }
+            catch (Exception e)
+            {
+                DebugX.LogException(e, "ChargingConnector.ToJSON(...)");
+            }
+
+            return null;
+
+        }
 
         #endregion
 
@@ -220,10 +318,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             => ChargingConnector is not null &&
 
+               Id.  Equals(ChargingConnector.Id)   &&
                Plug.Equals(ChargingConnector.Plug) &&
-
-             ((!Id.           HasValue && !ChargingConnector.Id.           HasValue) ||
-               (Id.           HasValue &&  ChargingConnector.Id.           HasValue && Id.           Equals(ChargingConnector.Id)))            &&
 
              ((!Lockable.     HasValue && !ChargingConnector.Lockable.     HasValue) ||
                (Lockable.     HasValue &&  ChargingConnector.Lockable.     HasValue && Lockable.     Equals(ChargingConnector.Lockable)))      &&
@@ -248,8 +344,8 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Plug.          GetHashCode()       * 11 ^
-                      (Id?.           GetHashCode() ?? 0) *  7 ^
+                return Id.            GetHashCode()       * 11 ^
+                       Plug.          GetHashCode()       *  7 ^
                       (Lockable?.     GetHashCode() ?? 0) *  5 ^
                       (CableAttached?.GetHashCode() ?? 0) *  3 ^
                       (CableLength?.  GetHashCode() ?? 0);
@@ -267,8 +363,8 @@ namespace cloud.charging.open.protocols.WWCP
         public override String ToString()
 
             => String.Concat(
+                   Id, ": ",
                    Plug,
-                   Id.           HasValue ? "(" + Id.ToString() + ") " : "",
                    Lockable.     HasValue ? ", lockable " : "",
                    CableAttached.HasValue ? ", with cable " : "",
                    CableLength.  HasValue ? ", " + CableLength + "cm" : ""
