@@ -1042,8 +1042,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            foreach (var chargingConnector in ChargingConnectors)
+            foreach (var chargingConnector in this.ChargingConnectors)
                 chargingConnector.ParentEVSE = this;
+
+            this.ChargingSession                    = ChargingSession;
+            this.LastStatusUpdate                   = LastStatusUpdate;
 
             #endregion
 
