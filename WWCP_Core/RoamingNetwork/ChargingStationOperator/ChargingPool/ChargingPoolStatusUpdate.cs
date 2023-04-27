@@ -28,7 +28,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// A charging pool status update.
     /// </summary>
     public struct ChargingPoolStatusUpdate : IEquatable <ChargingPoolStatusUpdate>,
-                                             IComparable<ChargingPoolStatusUpdate>
+                                             IComparable<ChargingPoolStatusUpdate>,
+                                             IComparable
     {
 
         #region Properties
@@ -190,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging pool status updates.
         /// </summary>
         /// <param name="Object">A charging pool status update to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
 
             => Object is ChargingPoolStatusUpdate chargingPoolStatusUpdate
                    ? CompareTo(chargingPoolStatusUpdate)

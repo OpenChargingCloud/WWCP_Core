@@ -692,7 +692,7 @@
 
 //        #endregion
 
-//        #region (internal) UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
+//        #region (internal) UpdateStatus(timestamp, eventTrackingId, newStatus, oldStatus)
 
 //        /// <summary>
 //        /// Update the current status.
@@ -971,9 +971,9 @@
 //                                     Object       NewValue)
 //        {
 
-//            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
-//            if (OnEVSEDataChangedLocal != null)
-//                OnEVSEDataChangedLocal(Timestamp, RemoteEVSE, PropertyName, OldValue, NewValue);
+//            var onEVSEDataChanged = OnEVSEDataChanged;
+//            if (onEVSEDataChanged != null)
+//                onEVSEDataChanged(Timestamp, RemoteEVSE, PropertyName, OldValue, NewValue);
 
 //        }
 
@@ -996,9 +996,9 @@
 //                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
 //        {
 
-//            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-//            if (OnEVSEAdminStatusChangedLocal != null)
-//                await OnEVSEAdminStatusChangedLocal(Timestamp,
+//            var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
+//            if (onEVSEAdminStatusChanged != null)
+//                await onEVSEAdminStatusChanged(Timestamp,
 //                                                    EventTrackingId,
 //                                                    RemoteEVSE,
 //                                                    OldStatus,
@@ -1025,9 +1025,9 @@
 //                                             Timestamped<EVSEStatusTypes>  NewStatus)
 //        {
 
-//            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-//            if (OnEVSEStatusChangedLocal != null)
-//                await OnEVSEStatusChangedLocal(Timestamp,
+//            var onEVSEStatusChanged = OnEVSEStatusChanged;
+//            if (onEVSEStatusChanged != null)
+//                await onEVSEStatusChanged(Timestamp,
 //                                               EventTrackingId,
 //                                               RemoteEVSE,
 //                                               OldStatus,

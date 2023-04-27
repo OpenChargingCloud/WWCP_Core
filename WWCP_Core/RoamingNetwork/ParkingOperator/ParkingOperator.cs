@@ -523,9 +523,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        Object    NewValue)
         {
 
-            var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal != null)
-                await OnDataChangedLocal(Timestamp, Sender as ParkingOperator, PropertyName, OldValue, NewValue);
+            var onDataChanged = OnDataChanged;
+            if (onDataChanged != null)
+                await onDataChanged(Timestamp, Sender as ParkingOperator, PropertyName, OldValue, NewValue);
 
         }
 
@@ -544,9 +544,9 @@ namespace cloud.charging.open.protocols.WWCP
                                          Timestamped<ParkingOperatorStatusTypes>  NewStatus)
         {
 
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
-                await OnStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+            var onStatusChanged = OnStatusChanged;
+            if (onStatusChanged != null)
+                await onStatusChanged(Timestamp, this, OldStatus, NewStatus);
 
         }
 
@@ -565,9 +565,9 @@ namespace cloud.charging.open.protocols.WWCP
                                               Timestamped<ParkingOperatorAdminStatusTypes>  NewStatus)
         {
 
-            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
-                await OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+            var onAdminStatusChanged = OnAdminStatusChanged;
+            if (onAdminStatusChanged != null)
+                await onAdminStatusChanged(Timestamp, this, OldStatus, NewStatus);
 
         }
 

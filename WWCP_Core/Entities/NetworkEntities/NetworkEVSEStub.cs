@@ -551,11 +551,11 @@
 
 //            #region Link events
 
-//            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-//                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+//            this._StatusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+//                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
 
-//            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-//                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+//            this._AdminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+//                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
 
 
 //            //this.SocketOutletAddition.OnVoting        += (timestamp, evse, outlet, vote)
@@ -747,9 +747,9 @@
 //                                              Timestamped<EVSEAdminStatusTypes>  NewStatus)
 //        {
 
-//            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-//            if (OnAdminStatusChangedLocal != null)
-//                await OnAdminStatusChangedLocal(Timestamp,
+//            var onAdminStatusChanged = OnAdminStatusChanged;
+//            if (onAdminStatusChanged != null)
+//                await onAdminStatusChanged(Timestamp,
 //                                                EventTrackingId,
 //                                                this,
 //                                                OldStatus,
@@ -774,9 +774,9 @@
 //                                         Timestamped<EVSEStatusTypes>  NewStatus)
 //        {
 
-//            var OnStatusChangedLocal = OnStatusChanged;
-//            if (OnStatusChangedLocal != null)
-//                await OnStatusChangedLocal(Timestamp,
+//            var onStatusChanged = OnStatusChanged;
+//            if (onStatusChanged != null)
+//                await onStatusChanged(Timestamp,
 //                                           EventTrackingId,
 //                                           this,
 //                                           OldStatus,

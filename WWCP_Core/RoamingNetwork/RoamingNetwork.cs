@@ -380,9 +380,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        Object?           NewValue)
         {
 
-            var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal is not null)
-                await OnDataChangedLocal(Timestamp,
+            var onDataChanged = OnDataChanged;
+            if (onDataChanged is not null)
+                await onDataChanged(Timestamp,
                                          EventTrackingId,
                                          Sender as RoamingNetwork,
                                          PropertyName,
@@ -820,7 +820,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEMobilityProviderData of charging station operator '{EMobilityProvider.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEMobilityProviderData of charging station operator '{EMobilityProvider.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
 
@@ -1611,7 +1611,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorData of charging station operator '{ChargingStationOperator.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationOperatorData of charging station operator '{ChargingStationOperator.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
 
@@ -3408,7 +3408,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolData of charging pool '{ChargingPool.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingPoolData of charging pool '{ChargingPool.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
         }
@@ -3896,7 +3896,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationData of charging station '{ChargingStation.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateChargingStationData of charging station '{ChargingStation.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
 
         }
@@ -4413,8 +4413,8 @@ namespace cloud.charging.open.protocols.WWCP
                                            EventTracking_Id  EventTrackingId,
                                            IEVSE             EVSE,
                                            String            PropertyName,
-                                           Object?           OldValue,
-                                           Object?           NewValue)
+                                           Object?           NewValue,
+                                           Object?           OldValue   = null)
         {
 
             try
@@ -4423,25 +4423,25 @@ namespace cloud.charging.open.protocols.WWCP
                 var results = _ISendData.WhenAll(iSendData => iSendData.
                                                                   UpdateStaticData(EVSE,
                                                                                    PropertyName,
-                                                                                   OldValue,
                                                                                    NewValue,
+                                                                                   OldValue,
                                                                                    EventTrackingId: EventTrackingId));
+
+
+                var onEVSEDataChanged = OnEVSEDataChanged;
+                if (onEVSEDataChanged is not null)
+                    await onEVSEDataChanged(Timestamp,
+                                            EventTrackingId,
+                                            EVSE,
+                                            PropertyName,
+                                            NewValue,
+                                            OldValue);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEData of EVSE '{EVSE.Id}' property name '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+                DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEData of EVSE '{EVSE.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
             }
-
-
-            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
-            if (OnEVSEDataChangedLocal is not null)
-                await OnEVSEDataChangedLocal(Timestamp,
-                                             EventTrackingId ?? EventTracking_Id.New,
-                                             EVSE,
-                                             PropertyName,
-                                             OldValue,
-                                             NewValue);
 
         }
 
@@ -4707,20 +4707,20 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                                                },
                                                                                                                EventTrackingId: EventTrackingId));
 
+
+                var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
+                if (onEVSEAdminStatusChanged is not null)
+                    await onEVSEAdminStatusChanged(Timestamp,
+                                                   EventTrackingId,
+                                                   EVSE,
+                                                   NewAdminStatus,
+                                                   OldAdminStatus);
+
             }
             catch (Exception e)
             {
                 DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEAdminStatus of EVSE '{EVSE.Id}' from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'");
             }
-
-
-            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-            if (OnEVSEAdminStatusChangedLocal is not null)
-                await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId ?? EventTracking_Id.New,
-                                                    EVSE,
-                                                    NewAdminStatus,
-                                                    OldAdminStatus);
 
         }
 
@@ -4922,20 +4922,20 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                            },
                                                                                            EventTrackingId: EventTrackingId));
 
+
+                var onEVSEStatusChanged = OnEVSEStatusChanged;
+                if (onEVSEStatusChanged is not null)
+                    await onEVSEStatusChanged(Timestamp,
+                                              EventTrackingId,
+                                              EVSE,
+                                              NewStatus,
+                                              OldStatus);
+
             }
             catch (Exception e)
             {
                 DebugX.Log(e, $"RoamingNetwork '{Id}'.UpdateEVSEStatus of EVSE '{EVSE.Id}' from '{OldStatus}' to '{NewStatus}'");
             }
-
-
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal is not null)
-                await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId ?? EventTracking_Id.New,
-                                               EVSE,
-                                               NewStatus,
-                                               OldStatus);
 
         }
 

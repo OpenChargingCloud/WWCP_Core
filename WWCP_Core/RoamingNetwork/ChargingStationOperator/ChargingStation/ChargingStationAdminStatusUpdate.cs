@@ -28,7 +28,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// A charging station admin status update.
     /// </summary>
     public readonly struct ChargingStationAdminStatusUpdate : IEquatable<ChargingStationAdminStatusUpdate>,
-                                                              IComparable<ChargingStationAdminStatusUpdate>
+                                                              IComparable<ChargingStationAdminStatusUpdate>,
+                                                              IComparable
     {
 
         #region Properties
@@ -190,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging station admin status updates.
         /// </summary>
         /// <param name="Object">A charging station admin status update to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
 
             => Object is ChargingStationAdminStatusUpdate chargingStationAdminStatusUpdate
                    ? CompareTo(chargingStationAdminStatusUpdate)

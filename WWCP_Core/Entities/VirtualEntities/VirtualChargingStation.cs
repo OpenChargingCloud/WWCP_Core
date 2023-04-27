@@ -330,11 +330,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
 
-            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
 
             #endregion
 
@@ -719,9 +719,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                   Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null)
         {
 
-            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-            if (OnEVSEAdminStatusChangedLocal is not null)
-                await OnEVSEAdminStatusChangedLocal(Timestamp,
+            var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
+            if (onEVSEAdminStatusChanged is not null)
+                await onEVSEAdminStatusChanged(Timestamp,
                                                     EventTrackingId,
                                                     RemoteEVSE,
                                                     NewStatus,
@@ -748,9 +748,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              Timestamped<EVSEStatusTypes>?  OldStatus   = null)
         {
 
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal is not null)
-                await OnEVSEStatusChangedLocal(Timestamp,
+            var onEVSEStatusChanged = OnEVSEStatusChanged;
+            if (onEVSEStatusChanged is not null)
+                await onEVSEStatusChanged(Timestamp,
                                                EventTrackingId,
                                                RemoteEVSE,
                                                NewStatus,

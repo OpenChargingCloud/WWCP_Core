@@ -262,11 +262,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
 
-            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
 
             #endregion
 

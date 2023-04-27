@@ -1171,11 +1171,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
 
-            this.statusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
 
             #endregion
 
@@ -1353,9 +1353,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
-            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal is not null)
-                await OnAdminStatusChangedLocal(Timestamp,
+            var onAdminStatusChanged = OnAdminStatusChanged;
+            if (onAdminStatusChanged is not null)
+                await onAdminStatusChanged(Timestamp,
                                                 EventTrackingId,
                                                 this,
                                                 OldStatus,
@@ -1380,9 +1380,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                          Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal is not null)
-                await OnStatusChangedLocal(Timestamp,
+            var onStatusChanged = OnStatusChanged;
+            if (onStatusChanged is not null)
+                await onStatusChanged(Timestamp,
                                            EventTrackingId,
                                            this,
                                            OldStatus,

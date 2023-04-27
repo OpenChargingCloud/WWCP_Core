@@ -1054,13 +1054,16 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
-            this.OnPropertyChanged                      += UpdateData;
 
-            this.adminStatusSchedule.OnStatusChanged    += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                            => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            this.statusSchedule.OnStatusChanged         += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                            => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            this.OnPropertyChanged                   += (timestamp, eventTrackingId, sender, propertyName, oldValue, newValue)
+                                                         => UpdateData       (timestamp, eventTrackingId, propertyName, oldValue, newValue);
+
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                         => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                         => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
 
             #endregion
 
@@ -1071,8 +1074,8 @@ namespace cloud.charging.open.protocols.WWCP
             if (this.RemoteEVSE is not null)
             {
 
-                this.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus) => { AdminStatus = NewStatus; return Task.CompletedTask; };
-                this.RemoteEVSE.OnStatusChanged         += (Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus) => { Status      = NewStatus; return Task.CompletedTask; };
+                this.RemoteEVSE.OnAdminStatusChanged    += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus) => { AdminStatus = newStatus; return Task.CompletedTask; };
+                this.RemoteEVSE.OnStatusChanged         += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus) => { Status      = newStatus; return Task.CompletedTask; };
 
                 this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)         => OnNewReservation.     Invoke(Timestamp, RemoteEVSE, Reservation);
                 this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
@@ -1154,87 +1157,112 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data/(Admin-)Status
 
-        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, PropertyName, NewValue, OldValue = null)
 
         /// <summary>
         /// Update the static data of the EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="Sender">The changed EVSE.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime Timestamp,
-                                       EventTracking_Id EventTrackingId,
-                                       Object Sender,
-                                       String PropertyName,
-                                       Object OldValue,
-                                       Object NewValue)
+        /// <param name="OldValue">The optional old value of the changed property.</param>
+        internal async Task UpdateData(DateTime          Timestamp,
+                                       EventTracking_Id  EventTrackingId,
+                                       String            PropertyName,
+                                       Object?           NewValue,
+                                       Object?           OldValue   = null)
         {
 
-            var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal is not null)
-                await OnDataChangedLocal(Timestamp,
-                                         EventTrackingId ?? EventTracking_Id.New,
-                                         this,
-                                         PropertyName,
-                                         OldValue,
-                                         NewValue);
+            try
+            {
+
+                var onEVSEDataChanged = OnDataChanged;
+                if (onEVSEDataChanged is not null)
+                    await onEVSEDataChanged(Timestamp,
+                                            EventTrackingId,
+                                            this,
+                                            PropertyName,
+                                            NewValue,
+                                            OldValue);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"EVSE '{Id}'.UpdateEVSEData of property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+            }
 
         }
 
         #endregion
 
-        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, NewAdminStatus, OldAdminStatus = null)
 
         /// <summary>
         /// Update the current status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="OldStatus">The old EVSE admin status.</param>
-        /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime Timestamp,
-                                              EventTracking_Id EventTrackingId,
-                                              Timestamped<EVSEAdminStatusTypes> OldStatus,
-                                              Timestamped<EVSEAdminStatusTypes> NewStatus)
+        /// <param name="NewAdminStatus">The new EVSE admin status.</param>
+        /// <param name="OldAdminStatus">The optional old EVSE admin status.</param>
+        internal async Task UpdateAdminStatus(DateTime                            Timestamp,
+                                              EventTracking_Id                    EventTrackingId,
+                                              Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
+                                              Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null)
         {
 
-            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal is not null)
-                await OnAdminStatusChangedLocal(Timestamp,
-                                                EventTrackingId ?? EventTracking_Id.New,
-                                                this,
-                                                OldStatus,
-                                                NewStatus);
+            try
+            {
+
+                var onEVSEAdminStatusChanged = OnAdminStatusChanged;
+                if (onEVSEAdminStatusChanged is not null)
+                    await onEVSEAdminStatusChanged(Timestamp,
+                                                   EventTrackingId,
+                                                   this,
+                                                   NewAdminStatus,
+                                                   OldAdminStatus);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"EVSE '{Id}'.UpdateEVSEAdminStatus from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'");
+            }
 
         }
 
         #endregion
 
-        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, NewStatus, OldStatus = null)
 
         /// <summary>
         /// Update the current status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime Timestamp,
-                                         EventTracking_Id EventTrackingId,
-                                         Timestamped<EVSEStatusTypes> OldStatus,
-                                         Timestamped<EVSEStatusTypes> NewStatus)
+        /// <param name="OldStatus">The optional old EVSE status.</param>
+        internal async Task UpdateStatus(DateTime                       Timestamp,
+                                         EventTracking_Id               EventTrackingId,
+                                         Timestamped<EVSEStatusTypes>   NewStatus,
+                                         Timestamped<EVSEStatusTypes>?  OldStatus   = null)
         {
 
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal is not null)
-                await OnStatusChangedLocal(Timestamp,
-                                           EventTrackingId ?? EventTracking_Id.New,
-                                           this,
-                                           OldStatus,
-                                           NewStatus);
+            try
+            {
+
+                var onEVSEStatusChanged = OnStatusChanged;
+                if (onEVSEStatusChanged is not null)
+                    await onEVSEStatusChanged(Timestamp,
+                                              EventTrackingId,
+                                              this,
+                                              NewStatus,
+                                              OldStatus);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"EVSE '{Id}'.UpdateEVSEStatus from '{OldStatus}' to '{NewStatus}'");
+            }
 
         }
 

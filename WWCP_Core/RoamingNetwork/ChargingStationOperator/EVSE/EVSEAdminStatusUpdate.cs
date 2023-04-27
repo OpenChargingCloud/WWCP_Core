@@ -28,7 +28,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// An EVSE admin status update.
     /// </summary>
     public readonly struct EVSEAdminStatusUpdate : IEquatable<EVSEAdminStatusUpdate>,
-                                                   IComparable<EVSEAdminStatusUpdate>
+                                                   IComparable<EVSEAdminStatusUpdate>,
+                                                   IComparable
     {
 
         #region Properties
@@ -190,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two EVSE admin status updates.
         /// </summary>
         /// <param name="Object">An EVSE admin status update to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
 
             => Object is EVSEAdminStatusUpdate evseAdminStatusUpdate
                    ? CompareTo(evseAdminStatusUpdate)

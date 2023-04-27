@@ -33,6 +33,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Mail;
 using social.OpenData.UsersAPI;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+using NUnit.Framework.Internal;
 
 #endregion
 
@@ -628,11 +629,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             //this.OnPropertyChanged += UpdateData;
 
-            //this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          //=> UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            //this._StatusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          //=> UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
 
-            //this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          //=> UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+            //this._AdminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
+                                                          //=> UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
 
             #endregion
 
@@ -686,9 +687,9 @@ namespace cloud.charging.open.protocols.WWCP
                                        Object?           NewValue)
         {
 
-            var OnDataChangedLocal = OnDataChanged;
-            if (OnDataChangedLocal is not null)
-                await OnDataChangedLocal(Timestamp,
+            var onDataChanged = OnDataChanged;
+            if (onDataChanged is not null)
+                await onDataChanged(Timestamp,
                                          EventTrackingId,
                                          Sender as ChargingStationOperator,
                                          PropertyName,
@@ -714,9 +715,9 @@ namespace cloud.charging.open.protocols.WWCP
                                               Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
         {
 
-            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal is not null)
-                await OnAdminStatusChangedLocal(Timestamp,
+            var onAdminStatusChanged = OnAdminStatusChanged;
+            if (onAdminStatusChanged is not null)
+                await onAdminStatusChanged(Timestamp,
                                                 EventTrackingId,
                                                 this,
                                                 OldStatus,
@@ -741,9 +742,9 @@ namespace cloud.charging.open.protocols.WWCP
                                          Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
         {
 
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal is not null)
-                await OnStatusChangedLocal(Timestamp,
+            var onStatusChanged = OnStatusChanged;
+            if (onStatusChanged is not null)
+                await onStatusChanged(Timestamp,
                                            EventTrackingId,
                                            this,
                                            OldStatus,
@@ -3377,7 +3378,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, NewValue,  OldValue  = null)
+        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, NewValue,       OldValue       = null)
 
         /// <summary>
         /// Update the static data of an EVSE.
@@ -3396,20 +3397,29 @@ namespace cloud.charging.open.protocols.WWCP
                                            Object?           OldValue   = null)
         {
 
-            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
-            if (OnEVSEDataChangedLocal is not null)
-                await OnEVSEDataChangedLocal(Timestamp,
-                                             EventTrackingId ?? EventTracking_Id.New,
-                                             EVSE,
-                                             PropertyName,
-                                             NewValue,
-                                             OldValue);
+            try
+            {
+
+                var onEVSEDataChanged = OnEVSEDataChanged;
+                if (onEVSEDataChanged is not null)
+                    await onEVSEDataChanged(Timestamp,
+                                            EventTrackingId,
+                                            EVSE,
+                                            PropertyName,
+                                            NewValue,
+                                            OldValue);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"ChargingStationOperator '{Id}'.UpdateEVSEData of EVSE '{EVSE.Id}' property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+            }
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, NewStatus, OldStatus = null)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, NewAdminStatus, OldAdminStatus = null)
 
         /// <summary>
         /// Update the current admin status of an EVSE.
@@ -3417,28 +3427,37 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        /// <param name="OldStatus">The optional old EVSE status.</param>
+        /// <param name="NewAdminStatus">The new EVSE admin status.</param>
+        /// <param name="OldAdminStatus">The optional old EVSE admin status.</param>
         internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
                                                   EventTracking_Id                    EventTrackingId,
                                                   IEVSE                               EVSE,
-                                                  Timestamped<EVSEAdminStatusTypes>   NewStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null)
+                                                  Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null)
         {
 
-            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-            if (OnEVSEAdminStatusChangedLocal is not null)
-                await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId ?? EventTracking_Id.New,
-                                                    EVSE,
-                                                    NewStatus,
-                                                    OldStatus);
+            try
+            {
+
+                var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
+                if (onEVSEAdminStatusChanged is not null)
+                    await onEVSEAdminStatusChanged(Timestamp,
+                                                   EventTrackingId,
+                                                   EVSE,
+                                                   NewAdminStatus,
+                                                   OldAdminStatus);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"ChargingStationOperator '{Id}'.UpdateEVSEAdminStatus of EVSE '{EVSE.Id}' from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'");
+            }
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, NewStatus, OldStatus = null)
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, NewStatus,      OldStatus      = null)
 
         /// <summary>
         /// Update the current status of an EVSE.
@@ -3455,13 +3474,22 @@ namespace cloud.charging.open.protocols.WWCP
                                              Timestamped<EVSEStatusTypes>?  OldStatus   = null)
         {
 
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal is not null)
-                await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId ?? EventTracking_Id.New,
-                                               EVSE,
-                                               NewStatus,
-                                               OldStatus);
+            try
+            {
+
+                var onEVSEStatusChanged = OnEVSEStatusChanged;
+                if (onEVSEStatusChanged is not null)
+                    await onEVSEStatusChanged(Timestamp,
+                                              EventTrackingId,
+                                              EVSE,
+                                              NewStatus,
+                                              OldStatus);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, $"ChargingStationOperator '{Id}'.UpdateEVSEStatus of EVSE '{EVSE.Id}' from '{OldStatus}' to '{NewStatus}'");
+            }
 
         }
 
