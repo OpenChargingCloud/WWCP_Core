@@ -44,12 +44,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An object implementing ISendStatus.
         /// </summary>
-        public ISendAdminStatus                    ISendAdminStatus                  { get; }
+        public ISendAdminStatus?                   ISendAdminStatus                  { get; }
 
         /// <summary>
         /// An object implementing IReceiveStatus.
         /// </summary>
-        public IReceiveAdminStatus                 IReceiveAdminStatus               { get; }
+        public IReceiveAdminStatus?                IReceiveAdminStatus               { get; }
 
         /// <summary>
         /// The result of the operation.
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String                              Description                       { get; }
+        public String?                             Description                       { get; }
 
         /// <summary>
         /// An enumeration of rejected EVSE admin status updates.
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region (private)  PushEVSEAdminStatusResult(AuthId,                 Result, ...)
+        #region (private)  PushEVSEAdminStatusResult(AuthId,                      Result, ...)
 
         /// <summary>
         /// Create a new PushEVSEAdminStatus result.
@@ -91,28 +91,28 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEAdminStatusUpdates">An enumeration of rejected EVSE status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushEVSEAdminStatusResult(IId                                 AuthId,
-                                          PushEVSEAdminStatusResultTypes      Result,
-                                          String                              Description                 = null,
-                                          IEnumerable<EVSEAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates   = null,
-                                          IEnumerable<Warning>                Warnings                    = null,
-                                          TimeSpan?                           Runtime                     = null)
+        private PushEVSEAdminStatusResult(IId                                  AuthId,
+                                          PushEVSEAdminStatusResultTypes       Result,
+                                          String?                              Description                      = null,
+                                          IEnumerable<EVSEAdminStatusUpdate>?  RejectedEVSEAdminStatusUpdates   = null,
+                                          IEnumerable<Warning>?                Warnings                         = null,
+                                          TimeSpan?                            Runtime                          = null)
         {
 
             this.AuthId                          = AuthId;
             this.Result                          = Result;
 
             this.Description                     = Description.IsNotNullOrEmpty()
-                                                       ? Description.Trim()
+                                                       ? Description?.Trim()
                                                        : null;
 
-            this.RejectedEVSEAdminStatusUpdates  = RejectedEVSEAdminStatusUpdates != null
-                                                       ? RejectedEVSEAdminStatusUpdates.Where(evse => evse != null)
-                                                       : new EVSEAdminStatusUpdate[0];
+            this.RejectedEVSEAdminStatusUpdates  = RejectedEVSEAdminStatusUpdates is not null
+                                                       ? RejectedEVSEAdminStatusUpdates
+                                                       : Array.Empty<EVSEAdminStatusUpdate>();
 
             this.Warnings                        = Warnings != null
                                                        ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                                       : new Warning[0];
+                                                       : Array.Empty<Warning>();
 
             this.Runtime                         = Runtime;
 
@@ -132,13 +132,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEAdminStatusUpdates">An enumeration of rejected EVSE status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEAdminStatusResult(IId                            AuthId,
-                                      ISendAdminStatus                    ISendAdminStatus,
-                                      PushEVSEAdminStatusResultTypes      Result,
-                                      String                              Description                      = null,
-                                      IEnumerable<EVSEAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates   = null,
-                                      IEnumerable<Warning>                Warnings                         = null,
-                                      TimeSpan?                           Runtime                          = null)
+        internal PushEVSEAdminStatusResult(IId                             AuthId,
+                                      ISendAdminStatus                     ISendAdminStatus,
+                                      PushEVSEAdminStatusResultTypes       Result,
+                                      String?                              Description                      = null,
+                                      IEnumerable<EVSEAdminStatusUpdate>?  RejectedEVSEAdminStatusUpdates   = null,
+                                      IEnumerable<Warning>?                Warnings                         = null,
+                                      TimeSpan?                            Runtime                          = null)
 
             : this(AuthId,
                    Result,
@@ -167,13 +167,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RejectedEVSEAdminStatusUpdates">An enumeration of rejected EVSE status updates.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEAdminStatusResult(IId                                 AuthId,
-                                           IReceiveAdminStatus                 IReceiveAdminStatus,
-                                           PushEVSEAdminStatusResultTypes      Result,
-                                           String                              Description                      = null,
-                                           IEnumerable<EVSEAdminStatusUpdate>  RejectedEVSEAdminStatusUpdates   = null,
-                                           IEnumerable<Warning>                Warnings                         = null,
-                                           TimeSpan?                           Runtime                          = null)
+        internal PushEVSEAdminStatusResult(IId                                  AuthId,
+                                           IReceiveAdminStatus                  IReceiveAdminStatus,
+                                           PushEVSEAdminStatusResultTypes       Result,
+                                           String?                              Description                      = null,
+                                           IEnumerable<EVSEAdminStatusUpdate>?  RejectedEVSEAdminStatusUpdates   = null,
+                                           IEnumerable<Warning>?                Warnings                         = null,
+                                           TimeSpan?                            Runtime                          = null)
 
             : this(AuthId,
                    Result,
@@ -197,37 +197,36 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEAdminStatusResult
 
-            Success(IId                   AuthId,
-                    ISendAdminStatus           ISendAdminStatus,
-                    String                Description    = null,
-                    IEnumerable<Warning>  Warnings       = null,
-                    TimeSpan?             Runtime        = null)
+            Success(IId                    AuthId,
+                    ISendAdminStatus       ISendAdminStatus,
+                    String?                Description   = null,
+                    IEnumerable<Warning>?  Warnings      = null,
+                    TimeSpan?              Runtime       = null)
 
-            => new PushEVSEAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushEVSEAdminStatusResultTypes.Success,
-                                        Description,
-                                        new EVSEAdminStatusUpdate[0],
-                                        Warnings,
-                                        Runtime);
-
+                => new (AuthId,
+                        ISendAdminStatus,
+                        PushEVSEAdminStatusResultTypes.Success,
+                        Description,
+                        Array.Empty<EVSEAdminStatusUpdate>(),
+                        Warnings,
+                        Runtime);
 
 
         public static PushEVSEAdminStatusResult
 
-            Success(IId                   AuthId,
-                    IReceiveAdminStatus        IReceiveAdminStatus,
-                    String                Description    = null,
-                    IEnumerable<Warning>  Warnings       = null,
-                    TimeSpan?             Runtime        = null)
+            Success(IId                    AuthId,
+                    IReceiveAdminStatus    IReceiveAdminStatus,
+                    String?                Description   = null,
+                    IEnumerable<Warning>?  Warnings      = null,
+                    TimeSpan?              Runtime       = null)
 
-            => new PushEVSEAdminStatusResult(AuthId,
-                                             IReceiveAdminStatus,
-                                             PushEVSEAdminStatusResultTypes.Success,
-                                             Description,
-                                             new EVSEAdminStatusUpdate[0],
-                                             Warnings,
-                                             Runtime);
+                => new (AuthId,
+                        IReceiveAdminStatus,
+                        PushEVSEAdminStatusResultTypes.Success,
+                        Description,
+                        Array.Empty<EVSEAdminStatusUpdate>(),
+                        Warnings,
+                        Runtime);
 
         #endregion
 
@@ -527,36 +526,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static PushEVSEAdminStatusResult
 
-            Error(IId                            AuthId,
-                  ISendAdminStatus                    ISendAdminStatus,
-                  IEnumerable<EVSEAdminStatusUpdate>  RejectedEVSEs  = null,
-                  String                         Description    = null,
-                  IEnumerable<Warning>           Warnings       = null,
-                  TimeSpan?                      Runtime        = null)
+            Error(IId                                  AuthId,
+                  ISendAdminStatus                     ISendAdminStatus,
+                  IEnumerable<EVSEAdminStatusUpdate>?  RejectedEVSEs   = null,
+                  String?                              Description     = null,
+                  IEnumerable<Warning>?                Warnings        = null,
+                  TimeSpan?                            Runtime         = null)
 
-            => new PushEVSEAdminStatusResult(AuthId,
-                                        ISendAdminStatus,
-                                        PushEVSEAdminStatusResultTypes.Error,
-                                        Description,
-                                        RejectedEVSEs,
-                                        Warnings,
-                                        Runtime);
+                => new (AuthId,
+                        ISendAdminStatus,
+                        PushEVSEAdminStatusResultTypes.Error,
+                        Description,
+                        RejectedEVSEs,
+                        Warnings,
+                        Runtime);
 
 
-        public static PushEVSEAdminStatusResult Error(IId                            AuthId,
-                                                 IReceiveAdminStatus                 IReceiveAdminStatus,
-                                                 IEnumerable<EVSEAdminStatusUpdate>  RejectedEVSEs  = null,
-                                                 String                         Description    = null,
-                                                 IEnumerable<Warning>           Warnings       = null,
-                                                 TimeSpan?                      Runtime        = null)
+        public static PushEVSEAdminStatusResult
 
-            => new PushEVSEAdminStatusResult(AuthId,
-                                        IReceiveAdminStatus,
-                                        PushEVSEAdminStatusResultTypes.Error,
-                                        Description,
-                                        RejectedEVSEs,
-                                        Warnings,
-                                        Runtime);
+            Error(IId                                  AuthId,
+                  IReceiveAdminStatus                  IReceiveAdminStatus,
+                  IEnumerable<EVSEAdminStatusUpdate>?  RejectedEVSEs   = null,
+                  String?                              Description     = null,
+                  IEnumerable<Warning>?                Warnings        = null,
+                  TimeSpan?                            Runtime         = null)
+
+                => new (AuthId,
+                        IReceiveAdminStatus,
+                        PushEVSEAdminStatusResultTypes.Error,
+                        Description,
+                        RejectedEVSEs,
+                        Warnings,
+                        Runtime);
 
         #endregion
 

@@ -30,6 +30,7 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IEMPRoamingProvider : ISendPOIData,
                                            ISendAdminStatus,
                                            ISendStatus,
+                                           ISendEnergyStatus,
                                            ISendAuthorizeStartStop,
                                            ISendChargeDetailRecords
 

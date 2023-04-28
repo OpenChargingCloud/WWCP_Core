@@ -28,7 +28,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// An EVSE energy status update.
     /// </summary>
     public readonly struct EVSEEnergyStatusUpdate : IEquatable<EVSEEnergyStatusUpdate>,
-                                                    IComparable<EVSEEnergyStatusUpdate>
+                                                    IComparable<EVSEEnergyStatusUpdate>,
+                                                    IComparable
     {
 
         #region Properties
@@ -36,27 +37,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id              Id           { get; }
+        public EVSE_Id                  Id               { get; }
 
         /// <summary>
         /// The old timestamped energy usage of the EVSE.
         /// </summary>
-        public Timestamped<Double>  OldEnergyUsage        { get; }
+        public Timestamped<EnergyInfo>  OldEnergyInfo    { get; }
 
         /// <summary>
         /// The new timestamped energy usage of the EVSE.
         /// </summary>
-        public Timestamped<Double>  NewEnergyUsage        { get; }
-
-        /// <summary>
-        /// The old timestamped available energy of the EVSE.
-        /// </summary>
-        public Timestamped<Double>  OldAvailableEnergy    { get; }
-
-        /// <summary>
-        /// The new timestamped available energy of the EVSE.
-        /// </summary>
-        public Timestamped<Double>  NewAvailableEnergy    { get; }
+        public Timestamped<EnergyInfo>  NewEnergyInfo    { get; }
 
         #endregion
 
@@ -66,23 +57,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new EVSE energy status update.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="OldEnergyUsage">The old timestamped energy usage of the EVSE.</param>
-        /// <param name="NewEnergyUsage">The new timestamped energy usage of the EVSE.</param>
-        /// <param name="OldAvailableEnergy">The old timestamped available energy of the EVSE.</param>
-        /// <param name="NewAvailableEnergy">The new timestamped available energy of the EVSE.</param>
-        public EVSEEnergyStatusUpdate(EVSE_Id              Id,
-                                      Timestamped<Double>  OldEnergyUsage,
-                                      Timestamped<Double>  NewEnergyUsage,
-                                      Timestamped<Double>  OldAvailableEnergy,
-                                      Timestamped<Double>  NewAvailableEnergy)
+        /// <param name="OldEnergyInfo">The old timestamped energy information of the EVSE.</param>
+        /// <param name="NewEnergyInfo">The new timestamped energy information of the EVSE.</param>
+        public EVSEEnergyStatusUpdate(EVSE_Id                  Id,
+                                      Timestamped<EnergyInfo>  OldEnergyInfo,
+                                      Timestamped<EnergyInfo>  NewEnergyInfo)
 
         {
 
-            this.Id                  = Id;
-            this.OldEnergyUsage      = OldEnergyUsage;
-            this.NewEnergyUsage      = NewEnergyUsage;
-            this.OldAvailableEnergy  = OldAvailableEnergy;
-            this.NewAvailableEnergy  = NewAvailableEnergy;
+            this.Id             = Id;
+            this.OldEnergyInfo  = OldEnergyInfo;
+            this.NewEnergyInfo  = NewEnergyInfo;
 
         }
 
@@ -191,7 +176,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two EVSE energy status updates.
         /// </summary>
         /// <param name="Object">An EVSE status update to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
 
             => Object is EVSEEnergyStatusUpdate evseEnergyStatusUpdate
                    ? CompareTo(evseEnergyStatusUpdate)
@@ -209,19 +194,13 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate)
         {
 
-            var c = Id.                CompareTo(EVSEEnergyStatusUpdate.Id);
+            var c = Id.           CompareTo(EVSEEnergyStatusUpdate.Id);
 
             if (c == 0)
-                c = NewEnergyUsage.    CompareTo(EVSEEnergyStatusUpdate.NewEnergyUsage);
+                c = NewEnergyInfo.CompareTo(EVSEEnergyStatusUpdate.NewEnergyInfo);
 
             if (c == 0)
-                c = OldEnergyUsage.    CompareTo(EVSEEnergyStatusUpdate.OldEnergyUsage);
-
-            if (c == 0)
-                c = OldAvailableEnergy.CompareTo(EVSEEnergyStatusUpdate.OldAvailableEnergy);
-
-            if (c == 0)
-                c = NewAvailableEnergy.CompareTo(EVSEEnergyStatusUpdate.NewAvailableEnergy);
+                c = OldEnergyInfo.CompareTo(EVSEEnergyStatusUpdate.OldEnergyInfo);
 
             return c;
 
@@ -254,11 +233,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEEnergyStatusUpdate">An EVSE status update to compare with.</param>
         public Boolean Equals(EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate)
 
-            => Id.                Equals(EVSEEnergyStatusUpdate.Id)                 &&
-               OldEnergyUsage.    Equals(EVSEEnergyStatusUpdate.OldEnergyUsage)     &&
-               NewEnergyUsage.    Equals(EVSEEnergyStatusUpdate.NewEnergyUsage)     &&
-               OldAvailableEnergy.Equals(EVSEEnergyStatusUpdate.OldAvailableEnergy) &&
-               NewAvailableEnergy.Equals(EVSEEnergyStatusUpdate.NewAvailableEnergy);
+            => Id.           Equals(EVSEEnergyStatusUpdate.Id)            &&
+               OldEnergyInfo.Equals(EVSEEnergyStatusUpdate.OldEnergyInfo) &&
+               NewEnergyInfo.Equals(EVSEEnergyStatusUpdate.NewEnergyInfo);
 
         #endregion
 
@@ -275,11 +252,9 @@ namespace cloud.charging.open.protocols.WWCP
             unchecked
             {
 
-                return Id.                GetHashCode() * 11 ^
-                       OldEnergyUsage.    GetHashCode() *  7 ^
-                       NewEnergyUsage.    GetHashCode() *  5 ^
-                       OldAvailableEnergy.GetHashCode() *  3 ^
-                       NewAvailableEnergy.GetHashCode();
+                return Id.           GetHashCode() * 5 ^
+                       OldEnergyInfo.GetHashCode() * 3 ^
+                       NewEnergyInfo.GetHashCode();
 
             }
         }
@@ -293,16 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   Id, ": ",
-                   OldEnergyUsage,
-                   " -> ",
-                   NewEnergyUsage,
-                   ", ",
-                   OldAvailableEnergy,
-                   " -> ",
-                   NewAvailableEnergy
-               );
+            => $"{Id}: {OldEnergyInfo} -> {NewEnergyInfo}";
 
         #endregion
 

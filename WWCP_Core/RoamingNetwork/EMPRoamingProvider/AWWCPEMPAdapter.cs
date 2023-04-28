@@ -31,8 +31,10 @@ namespace cloud.charging.open.protocols.WWCP
     public abstract class AWWCPEMPAdapter<TChargeDetailRecords> : ACryptoEMobilityEntity<EMPRoamingProvider_Id,
                                                                                          EMPRoamingProviderAdminStatusTypes,
                                                                                          EMPRoamingProviderStatusTypes>,
+                                                                  //IEMPRoamingProvider,
                                                                   ISendPOIData,
                                                                   ISendAdminStatus,
+                                                                  ISendEnergyStatus,
                                                                   ISendStatus
     {
 
@@ -1047,7 +1049,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (Set/Add/Update/Delete) Charging pool(s)...
 
-        #region SetStaticData   (ChargingPool, TransmissionType = Enqueue, ...)
+        #region SetStaticData   (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging pool as new static EVSE data at the OICP server.
@@ -1083,7 +1085,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddStaticData   (ChargingPool, TransmissionType = Enqueue, ...)
+        #region AddStaticData   (ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given charging pool.
@@ -1119,7 +1121,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateStaticData(ChargingPool, PropertyName, NewValue, OldValue = null, ...)
+        #region UpdateStaticData(ChargingPool,  PropertyName, NewValue, OldValue = null, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging pool within the static EVSE data at the OICP server.
@@ -1161,7 +1163,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteStaticData(ChargingPool, TransmissionType = Enqueue, ...)
+        #region DeleteStaticData(ChargingPool,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given charging pool from the static EVSE data at the OICP server.
@@ -1343,7 +1345,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateAdminStatus (AdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool admin status updates.
@@ -1375,7 +1377,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateStatus      (StatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool status updates.
@@ -1407,11 +1409,43 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UpdateEnergyStatus(EnergyStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging pool energy status updates.
+        /// </summary>
+        /// <param name="EnergyStatusUpdates">An enumeration of charging pool energy status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool energy status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public virtual Task<PushChargingPoolEnergyStatusResult>
+
+            UpdateEnergyStatus(IEnumerable<ChargingPoolEnergyStatusUpdate>  EnergyStatusUpdates,
+                               TransmissionTypes                            TransmissionType    = TransmissionTypes.Enqueue,
+
+                               DateTime?                                    Timestamp           = null,
+                               CancellationToken?                           CancellationToken   = null,
+                               EventTracking_Id?                            EventTrackingId     = null,
+                               TimeSpan?                                    RequestTimeout      = null)
+
+
+                => Task.FromResult(
+                       PushChargingPoolEnergyStatusResult.NoOperation(
+                           Id,
+                           this
+                       )
+                   );
+
+        #endregion
+
         #endregion
 
         #region (Set/Add/Update/Delete) Charging station(s)...
 
-        #region SetStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
+        #region SetStaticData   (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station as new static EVSE data at the OICP server.
@@ -1447,7 +1481,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
+        #region AddStaticData   (ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging station to the static EVSE data at the OICP server.
@@ -1483,7 +1517,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateStaticData(ChargingStation, PropertyName, NewValue, OldValue = null, ...)
+        #region UpdateStaticData(ChargingStation,  PropertyName, NewValue, OldValue = null, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging station within the static EVSE data at the OICP server.
@@ -1525,7 +1559,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteStaticData(ChargingStation, TransmissionType = Enqueue, ...)
+        #region DeleteStaticData(ChargingStation,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the EVSE data of the given charging station from the static EVSE data at the OICP server.
@@ -1707,7 +1741,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateAdminStatus (AdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station admin status updates.
@@ -1739,7 +1773,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateStatus      (StatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station status updates.
@@ -1771,11 +1805,43 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UpdateEnergyStatus(EnergyStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station energy status updates.
+        /// </summary>
+        /// <param name="EnergyStatusUpdates">An enumeration of charging station energy status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station energy status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public virtual Task<PushChargingStationEnergyStatusResult>
+
+            UpdateEnergyStatus(IEnumerable<ChargingStationEnergyStatusUpdate>  EnergyStatusUpdates,
+                               TransmissionTypes                               TransmissionType    = TransmissionTypes.Enqueue,
+
+                               DateTime?                                       Timestamp           = null,
+                               CancellationToken?                              CancellationToken   = null,
+                               EventTracking_Id?                               EventTrackingId     = null,
+                               TimeSpan?                                       RequestTimeout      = null)
+
+
+                => Task.FromResult(
+                       PushChargingStationEnergyStatusResult.NoOperation(
+                           Id,
+                           this
+                       )
+                   );
+
+        #endregion
+
         #endregion
 
         #region (Set/Add/Update/Delete) EVSE(s)...
 
-        #region SetStaticData   (EVSE, TransmissionType = Enqueue, ...)
+        #region SetStaticData   (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the given EVSE as new static EVSE data at the OICP server.
@@ -1811,7 +1877,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddStaticData   (EVSE, TransmissionType = Enqueue, ...)
+        #region AddStaticData   (EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the given EVSE to the static EVSE data at the OICP server.
@@ -1847,7 +1913,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateStaticData(EVSE, PropertyName, NewValue, OldValue = null, ...)
+        #region UpdateStaticData(EVSE,  PropertyName, NewValue, OldValue = null, ...)
 
         /// <summary>
         /// Update the static data of the given EVSE.
@@ -1890,7 +1956,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DeleteStaticData(EVSE, TransmissionType = Enqueue, ...)
+        #region DeleteStaticData(EVSE,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the static data of the given EVSE.
@@ -2072,7 +2138,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region UpdateAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
+        #region UpdateAdminStatus (AdminStatusUpdates,  TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE admin status updates.
@@ -2104,7 +2170,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
+        #region UpdateStatus      (StatusUpdates,       TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE status updates.
@@ -2129,6 +2195,38 @@ namespace cloud.charging.open.protocols.WWCP
 
                 => Task.FromResult(
                        PushEVSEStatusResult.NoOperation(
+                           Id,
+                           this
+                       )
+                   );
+
+        #endregion
+
+        #region UpdateEnergyStatus(EnergyStatusUpdates, TransmissionType = Enqueue, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE energy status updates.
+        /// </summary>
+        /// <param name="EnergyStatusUpdates">An enumeration of EVSE energy status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE energy status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public virtual Task<PushEVSEEnergyStatusResult>
+
+            UpdateEnergyStatus(IEnumerable<EVSEEnergyStatusUpdate>  EnergyStatusUpdates,
+                               TransmissionTypes                    TransmissionType    = TransmissionTypes.Enqueue,
+
+                               DateTime?                            Timestamp           = null,
+                               CancellationToken?                   CancellationToken   = null,
+                               EventTracking_Id?                    EventTrackingId     = null,
+                               TimeSpan?                            RequestTimeout      = null)
+
+
+                => Task.FromResult(
+                       PushEVSEEnergyStatusResult.NoOperation(
                            Id,
                            this
                        )
@@ -2533,6 +2631,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    Warnings);
 
         }
+
 
     }
 
