@@ -20,6 +20,8 @@
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 #endregion
 
@@ -37,14 +39,19 @@ namespace cloud.charging.open.protocols.WWCP
         #region Data
 
         /// <summary>
-        /// The default service check intervall.
+        /// The default EVSE data & status intervall.
         /// </summary>
         public  readonly static TimeSpan                                                         DefaultFlushEVSEDataAndStatusEvery      = TimeSpan.FromSeconds(31);
 
         /// <summary>
-        /// The default status check intervall.
+        /// The default EVSE fast status intervall.
         /// </summary>
         public  readonly static TimeSpan                                                         DefaultFlushEVSEFastStatusEvery         = TimeSpan.FromSeconds(3);
+
+        /// <summary>
+        /// The default EVSe status refresh intervall.
+        /// </summary>
+        public  readonly static TimeSpan                                                         DefaultEVSEStatusRefreshEvery           = TimeSpan.FromHours(6);
 
         /// <summary>
         /// The default CDR check intervall.
@@ -68,38 +75,37 @@ namespace cloud.charging.open.protocols.WWCP
         protected readonly      SemaphoreSlim                                                    FlushChargeDetailRecordsLock            = new (1, 1);
         protected readonly      Timer                                                            FlushChargeDetailRecordsTimer;
 
-        protected readonly      Dictionary<RoamingNetwork,          List<PropertyUpdateInfo>>    RoamingNetworksUpdateLog;
+        protected readonly      Dictionary<IRoamingNetwork,         List<PropertyUpdateInfo>>    roamingNetworksUpdateLog;
+        protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfo>>    chargingStationOperatorsUpdateLog;
 
-        protected readonly      Dictionary<ChargingStationOperator, List<PropertyUpdateInfo>>    ChargingStationOperatorsUpdateLog;
+        protected readonly      Dictionary<IChargingPool,           List<PropertyUpdateInfo>>    chargingPoolsUpdateLog;
+        protected readonly      HashSet<IChargingPool>                                           chargingPoolsToAddQueue;
+        protected readonly      HashSet<IChargingPool>                                           chargingPoolsToUpdateQueue;
+        protected readonly      HashSet<IChargingPool>                                           chargingPoolsToRemoveQueue;
+        protected readonly      List<ChargingPoolAdminStatusUpdate>                              chargingPoolAdminStatusChangesFastQueue;
+        protected readonly      List<ChargingPoolAdminStatusUpdate>                              chargingPoolAdminStatusChangesDelayedQueue;
+        protected readonly      List<ChargingPoolStatusUpdate>                                   chargingPoolStatusChangesFastQueue;
+        protected readonly      List<ChargingPoolStatusUpdate>                                   chargingPoolStatusChangesDelayedQueue;
 
-        protected readonly      Dictionary<IChargingPool,           List<PropertyUpdateInfo>>    ChargingPoolsUpdateLog;
-        protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToAddQueue;
-        protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToUpdateQueue;
-        protected readonly      HashSet<IChargingPool>                                           ChargingPoolsToRemoveQueue;
-        protected readonly      List<ChargingPoolAdminStatusUpdate>                              ChargingPoolAdminStatusChangesFastQueue;
-        protected readonly      List<ChargingPoolAdminStatusUpdate>                              ChargingPoolAdminStatusChangesDelayedQueue;
-        protected readonly      List<ChargingPoolStatusUpdate>                                   ChargingPoolStatusChangesFastQueue;
-        protected readonly      List<ChargingPoolStatusUpdate>                                   ChargingPoolStatusChangesDelayedQueue;
+        protected readonly      HashSet<IChargingStation>                                        chargingStationsToAddQueue;
+        protected readonly      HashSet<IChargingStation>                                        chargingStationsToUpdateQueue;
+        protected readonly      HashSet<IChargingStation>                                        chargingStationsToRemoveQueue;
+        protected readonly      List<ChargingStationAdminStatusUpdate>                           chargingStationAdminStatusChangesFastQueue;
+        protected readonly      List<ChargingStationAdminStatusUpdate>                           chargingStationAdminStatusChangesDelayedQueue;
+        protected readonly      List<ChargingStationStatusUpdate>                                chargingStationStatusChangesFastQueue;
+        protected readonly      List<ChargingStationStatusUpdate>                                chargingStationStatusChangesDelayedQueue;
+        protected readonly      Dictionary<IChargingStation,        List<PropertyUpdateInfo>>    chargingStationsUpdateLog;
 
-        protected readonly      HashSet<IChargingStation>                                        ChargingStationsToAddQueue;
-        protected readonly      HashSet<IChargingStation>                                        ChargingStationsToUpdateQueue;
-        protected readonly      HashSet<IChargingStation>                                        ChargingStationsToRemoveQueue;
-        protected readonly      List<ChargingStationAdminStatusUpdate>                           ChargingStationAdminStatusChangesFastQueue;
-        protected readonly      List<ChargingStationAdminStatusUpdate>                           ChargingStationAdminStatusChangesDelayedQueue;
-        protected readonly      List<ChargingStationStatusUpdate>                                ChargingStationStatusChangesFastQueue;
-        protected readonly      List<ChargingStationStatusUpdate>                                ChargingStationStatusChangesDelayedQueue;
-        protected readonly      Dictionary<IChargingStation,        List<PropertyUpdateInfo>>    ChargingStationsUpdateLog;
+        protected readonly      HashSet<IEVSE>                                                   evsesToAddQueue;
+        protected readonly      HashSet<IEVSE>                                                   evsesToUpdateQueue;
+        protected readonly      HashSet<IEVSE>                                                   evsesToRemoveQueue;
+        protected readonly      List<EVSEAdminStatusUpdate>                                      evseAdminStatusChangesFastQueue;
+        protected readonly      List<EVSEAdminStatusUpdate>                                      evseAdminStatusChangesDelayedQueue;
+        protected readonly      List<EVSEStatusUpdate>                                           evseStatusChangesFastQueue;
+        protected readonly      List<EVSEStatusUpdate>                                           evseStatusChangesDelayedQueue;
+        protected readonly      Dictionary<IEVSE,                   List<PropertyUpdateInfo>>    evsesUpdateLog;
 
-        protected readonly      HashSet<IEVSE>                                                   EVSEsToAddQueue;
-        protected readonly      HashSet<IEVSE>                                                   EVSEsToUpdateQueue;
-        protected readonly      HashSet<IEVSE>                                                   EVSEsToRemoveQueue;
-        protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesFastQueue;
-        protected readonly      List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
-        protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
-        protected readonly      List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
-        protected readonly      Dictionary<IEVSE,                   List<PropertyUpdateInfo>>    EVSEsUpdateLog;
-
-        protected readonly      List<TChargeDetailRecords>                                       ChargeDetailRecordsQueue;
+        protected readonly      List<TChargeDetailRecords>                                       chargeDetailRecordsQueue;
 
         protected readonly      TimeSpan                                                         MaxLockWaitingTime                      = TimeSpan.FromSeconds(120);
 
@@ -173,6 +179,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
+        public Boolean                                   DisableEVSEStatusRefresh             { get; set; }
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean                                   DisablePushEnergyStatus              { get; set; }
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
         public Boolean                                   DisableAuthentication                { get; set; }
 
         /// <summary>
@@ -204,11 +220,34 @@ namespace cloud.charging.open.protocols.WWCP
         public TimeSpan                                  FlushEVSEFastStatusEvery             { get; set; }
 
         /// <summary>
+        /// The EVSE status refresh intervall.
+        /// </summary>
+        public TimeSpan                                  EVSEStatusRefreshEvery               { get; set; }
+
+        /// <summary>
         /// The charge detail record transmission intervall.
         /// </summary>
         public TimeSpan                                  FlushChargeDetailRecordsEvery        { get; set; }
 
         #endregion
+
+        #region Logging
+
+        public Boolean?                                   IsDevelopment            { get; }
+        public IEnumerable<String>?                       DevelopmentServers       { get; }
+        public Boolean?                                   DisableLogging           { get; set; }
+        public String?                                    LoggingPath              { get; }
+        public String?                                    LoggingContext           { get; }
+        public String?                                    LogfileName              { get; }
+        public LogfileCreatorDelegate?                    LogfileCreator           { get; }
+
+        public String?                                    ClientsLoggingPath       { get; }
+        public String?                                    ClientsLoggingContext    { get; }
+        public LogfileCreatorDelegate?                    ClientsLogfileCreator    { get; }
+
+        #endregion
+
+        public DNSClient?  DNSClient    { get; }
 
         #endregion
 
@@ -294,7 +333,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
         protected AWWCPEMPAdapter(EMPRoamingProvider_Id                      Id,
-                                  RoamingNetwork                             RoamingNetwork,
+                                  IRoamingNetwork                            RoamingNetwork,
 
                                   I18NString?                                Name                                = null,
                                   I18NString?                                Description                         = null,
@@ -311,17 +350,33 @@ namespace cloud.charging.open.protocols.WWCP
 
                                   TimeSpan?                                  FlushEVSEDataAndStatusEvery         = null,
                                   TimeSpan?                                  FlushEVSEFastStatusEvery            = null,
+                                  TimeSpan?                                  EVSEStatusRefreshEvery              = null,
                                   TimeSpan?                                  FlushChargeDetailRecordsEvery       = null,
 
                                   Boolean                                    DisablePushData                     = false,
                                   Boolean                                    DisablePushAdminStatus              = false,
                                   Boolean                                    DisablePushStatus                   = false,
+                                  Boolean                                    DisableEVSEStatusRefresh            = false,
+                                  Boolean                                    DisablePushEnergyStatus             = false,
                                   Boolean                                    DisableAuthentication               = false,
                                   Boolean                                    DisableSendChargeDetailRecords      = false,
 
                                   String                                     EllipticCurve                       = "P-256",
                                   ECPrivateKeyParameters?                    PrivateKey                          = null,
-                                  PublicKeyCertificates?                     PublicKeyCertificates               = null)
+                                  PublicKeyCertificates?                     PublicKeyCertificates               = null,
+
+                                  Boolean?                                   IsDevelopment                       = null,
+                                  IEnumerable<String>?                       DevelopmentServers                  = null,
+                                  Boolean?                                   DisableLogging                      = false,
+                                  String?                                    LoggingPath                         = null,
+                                  String?                                    LoggingContext                      = null,
+                                  String?                                    LogfileName                         = null,
+                                  LogfileCreatorDelegate?                    LogfileCreator                      = null,
+
+                                  String?                                    ClientsLoggingPath                  = null,
+                                  String?                                    ClientsLoggingContext               = null,
+                                  LogfileCreatorDelegate?                    ClientsLogfileCreator               = null,
+                                  DNSClient?                                 DNSClient                           = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -346,45 +401,61 @@ namespace cloud.charging.open.protocols.WWCP
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushAdminStatus                          = DisablePushAdminStatus;
             this.DisablePushStatus                               = DisablePushStatus;
+            this.DisableEVSEStatusRefresh                        = DisableEVSEStatusRefresh;
+            this.DisablePushEnergyStatus                         = DisablePushEnergyStatus;
             this.DisableAuthentication                           = DisableAuthentication;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
             this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery       ?? DefaultFlushEVSEDataAndStatusEvery;
             this.FlushEVSEFastStatusEvery                        = FlushEVSEFastStatusEvery          ?? DefaultFlushEVSEFastStatusEvery;
+            this.EVSEStatusRefreshEvery                          = EVSEStatusRefreshEvery            ?? DefaultEVSEStatusRefreshEvery;
             this.FlushChargeDetailRecordsEvery                   = FlushChargeDetailRecordsEvery     ?? DefaultFlushChargeDetailRecordsEvery;
 
             this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
             this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
 
-            this.ChargingPoolsToAddQueue                         = new HashSet<IChargingPool>();
-            this.ChargingPoolsToUpdateQueue                      = new HashSet<IChargingPool>();
-            this.ChargingPoolsToRemoveQueue                      = new HashSet<IChargingPool>();
-            this.ChargingPoolAdminStatusChangesFastQueue         = new List<ChargingPoolAdminStatusUpdate>();
-            this.ChargingPoolAdminStatusChangesDelayedQueue      = new List<ChargingPoolAdminStatusUpdate>();
-            this.ChargingPoolStatusChangesFastQueue              = new List<ChargingPoolStatusUpdate>();
-            this.ChargingPoolStatusChangesDelayedQueue           = new List<ChargingPoolStatusUpdate>();
-            this.ChargingPoolsUpdateLog                          = new Dictionary<IChargingPool,    List<PropertyUpdateInfo>>();
+            this.chargingPoolsToAddQueue                         = new HashSet<IChargingPool>();
+            this.chargingPoolsToUpdateQueue                      = new HashSet<IChargingPool>();
+            this.chargingPoolsToRemoveQueue                      = new HashSet<IChargingPool>();
+            this.chargingPoolAdminStatusChangesFastQueue         = new List<ChargingPoolAdminStatusUpdate>();
+            this.chargingPoolAdminStatusChangesDelayedQueue      = new List<ChargingPoolAdminStatusUpdate>();
+            this.chargingPoolStatusChangesFastQueue              = new List<ChargingPoolStatusUpdate>();
+            this.chargingPoolStatusChangesDelayedQueue           = new List<ChargingPoolStatusUpdate>();
+            this.chargingPoolsUpdateLog                          = new Dictionary<IChargingPool,    List<PropertyUpdateInfo>>();
 
-            this.ChargingStationsToAddQueue                      = new HashSet<IChargingStation>();
-            this.ChargingStationsToUpdateQueue                   = new HashSet<IChargingStation>();
-            this.ChargingStationsToRemoveQueue                   = new HashSet<IChargingStation>();
-            this.ChargingStationAdminStatusChangesFastQueue      = new List<ChargingStationAdminStatusUpdate>();
-            this.ChargingStationAdminStatusChangesDelayedQueue   = new List<ChargingStationAdminStatusUpdate>();
-            this.ChargingStationStatusChangesFastQueue           = new List<ChargingStationStatusUpdate>();
-            this.ChargingStationStatusChangesDelayedQueue        = new List<ChargingStationStatusUpdate>();
-            this.ChargingStationsUpdateLog                       = new Dictionary<IChargingStation, List<PropertyUpdateInfo>>();
+            this.chargingStationsToAddQueue                      = new HashSet<IChargingStation>();
+            this.chargingStationsToUpdateQueue                   = new HashSet<IChargingStation>();
+            this.chargingStationsToRemoveQueue                   = new HashSet<IChargingStation>();
+            this.chargingStationAdminStatusChangesFastQueue      = new List<ChargingStationAdminStatusUpdate>();
+            this.chargingStationAdminStatusChangesDelayedQueue   = new List<ChargingStationAdminStatusUpdate>();
+            this.chargingStationStatusChangesFastQueue           = new List<ChargingStationStatusUpdate>();
+            this.chargingStationStatusChangesDelayedQueue        = new List<ChargingStationStatusUpdate>();
+            this.chargingStationsUpdateLog                       = new Dictionary<IChargingStation, List<PropertyUpdateInfo>>();
 
-            this.EVSEsToAddQueue                                 = new HashSet<IEVSE>();
-            this.EVSEsToUpdateQueue                              = new HashSet<IEVSE>();
-            this.EVSEsToRemoveQueue                              = new HashSet<IEVSE>();
-            this.EVSEAdminStatusChangesFastQueue                 = new List<EVSEAdminStatusUpdate>();
-            this.EVSEAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
-            this.EVSEStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
-            this.EVSEStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
-            this.EVSEsUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfo>>();
+            this.evsesToAddQueue                                 = new HashSet<IEVSE>();
+            this.evsesToUpdateQueue                              = new HashSet<IEVSE>();
+            this.evsesToRemoveQueue                              = new HashSet<IEVSE>();
+            this.evseAdminStatusChangesFastQueue                 = new List<EVSEAdminStatusUpdate>();
+            this.evseAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
+            this.evseStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
+            this.evseStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
+            this.evsesUpdateLog                                  = new Dictionary<IEVSE,            List<PropertyUpdateInfo>>();
 
-            this.ChargeDetailRecordsQueue                        = new List<TChargeDetailRecords>();
+            this.chargeDetailRecordsQueue                        = new List<TChargeDetailRecords>();
+
+            this.IsDevelopment                                   = IsDevelopment;
+            this.DevelopmentServers                              = DevelopmentServers;
+            this.DisableLogging                                  = DisableLogging;
+            this.LoggingPath                                     = LoggingPath;
+            this.LoggingContext                                  = LoggingContext;
+            this.LogfileName                                     = LogfileName;
+            this.LogfileCreator                                  = LogfileCreator;
+
+            this.ClientsLoggingPath                              = ClientsLoggingPath;
+            this.ClientsLoggingContext                           = ClientsLoggingContext;
+            this.ClientsLogfileCreator                           = ClientsLogfileCreator;
+            this.DNSClient                                       = DNSClient;
 
         }
 
@@ -2069,7 +2140,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        #region UpdateAdminStatus(Sender, AdminStatusUpdates, ...)
+        #region [obsolete] UpdateAdminStatus(Sender, AdminStatusUpdates, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE admin status updates.
@@ -2143,11 +2214,11 @@ namespace cloud.charging.open.protocols.WWCP
                     {
 
                         // Delay the status update until the EVSE data had been uploaded!
-                        if (!DisablePushData && EVSEsToAddQueue.Any(evse => evse.Id == Update.Id))
-                            EVSEAdminStatusChangesDelayedQueue.Add(Update);
+                        if (!DisablePushData && evsesToAddQueue.Any(evse => evse.Id == Update.Id))
+                            evseAdminStatusChangesDelayedQueue.Add(Update);
 
                         else
-                            EVSEAdminStatusChangesFastQueue.Add(Update);
+                            evseAdminStatusChangesFastQueue.Add(Update);
 
                     }
 
@@ -2392,10 +2463,10 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #endregion
 
-                    var ChargeDetailRecordsQueueCopy = ChargeDetailRecordsQueue.ToArray();
-                    ChargeDetailRecordsQueue.Clear();
+                    var chargeDetailRecordsQueueCopy = chargeDetailRecordsQueue.ToArray();
+                    chargeDetailRecordsQueue.Clear();
 
-                    await FlushChargeDetailRecordsQueues(ChargeDetailRecordsQueueCopy);
+                    await FlushChargeDetailRecordsQueues(chargeDetailRecordsQueueCopy);
 
                     #region Send Finished Event...
 

@@ -17,12 +17,13 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -47,6 +48,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
+        /// <summary>
+        /// The roaming network of this entity.
+        /// </summary>
+        [Mandatory]
         public IRoamingNetwork          RoamingNetwork           { get; }
 
         public String                   EllipticCurve            { get; }
@@ -104,7 +109,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.RoamingNetwork         = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The roaming network must not be null!");
+            this.RoamingNetwork         = RoamingNetwork;
             this.EllipticCurve          = EllipticCurve  ?? "P-256";
             this.ECP                    = ECNamedCurveTable.GetByName(this.EllipticCurve);
             this.ECSpec                 = new ECDomainParameters(ECP.Curve, ECP.G, ECP.N, ECP.H, ECP.GetSeed());

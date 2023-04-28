@@ -19,8 +19,8 @@
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -261,8 +261,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        public ulong Length => 0;
-        public bool  IsNullOrEmpty => false;
+        public UInt64   Length
+            => 0;
+
+        public Boolean  IsNullOrEmpty
+            => false;
 
         #endregion
 
