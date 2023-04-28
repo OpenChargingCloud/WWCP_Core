@@ -262,11 +262,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
-            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             #endregion
 
@@ -498,17 +498,17 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// An event fired whenever the static data of the charging station changed.
         /// </summary>
-        public event OnRemoteChargingPoolDataChangedDelegate         OnDataChanged;
+        public event OnRemoteChargingPoolDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of the charging station changed.
         /// </summary>
-        public event OnRemoteChargingPoolAdminStatusChangedDelegate  OnAdminStatusChanged;
+        public event OnRemoteChargingPoolAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of the charging station changed.
         /// </summary>
-        public event OnRemoteChargingPoolStatusChangedDelegate       OnStatusChanged;
+        public event OnRemoteChargingPoolStatusChangedDelegate?       OnStatusChanged;
 
         #endregion
 
@@ -521,17 +521,19 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                   Timestamp,
-                                              EventTracking_Id                           EventTrackingId,
-                                              Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
-                                              Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                    Timestamp,
+                                              EventTracking_Id                            EventTrackingId,
+                                              Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
+                                              Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
+                                              String?                                     DataSource   = null)
         {
 
             OnAdminStatusChanged?.Invoke(Timestamp,
                                          EventTrackingId,
                                          this,
+                                         NewStatus,
                                          OldStatus,
-                                         NewStatus);
+                                         DataSource);
 
         }
 
@@ -545,17 +547,19 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                              Timestamp,
-                                         EventTracking_Id                      EventTrackingId,
-                                         Timestamped<ChargingPoolStatusTypes>  OldStatus,
-                                         Timestamped<ChargingPoolStatusTypes>  NewStatus)
+        internal async Task UpdateStatus(DateTime                               Timestamp,
+                                         EventTracking_Id                       EventTrackingId,
+                                         Timestamped<ChargingPoolStatusTypes>   NewStatus,
+                                         Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                         String?                                DataSource   = null)
         {
 
             OnStatusChanged?.Invoke(Timestamp,
                                     EventTrackingId,
                                     this,
+                                    NewStatus,
                                     OldStatus,
-                                    NewStatus);
+                                    DataSource);
 
         }
 

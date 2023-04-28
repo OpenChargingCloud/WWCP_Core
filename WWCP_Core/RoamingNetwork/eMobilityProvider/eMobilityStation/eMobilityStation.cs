@@ -631,8 +631,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             //// eMobilityStation events
             //this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => ChargingPool.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
@@ -693,18 +693,20 @@ namespace cloud.charging.open.protocols.WWCP
                                        EventTracking_Id  EventTrackingId,
                                        Object            Sender,
                                        String            PropertyName,
-                                       Object            OldValue,
-                                       Object            NewValue)
+                                       Object?           NewValue,
+                                       Object?           OldValue     = null,
+                                       String?           DataSource   = null)
         {
 
             var onDataChanged = OnDataChanged;
-            if (onDataChanged != null)
+            if (onDataChanged is not null)
                 await onDataChanged(Timestamp,
-                                         EventTrackingId,
-                                         Sender as eMobilityStation,
-                                         PropertyName,
-                                         OldValue,
-                                         NewValue);
+                                    EventTrackingId,
+                                    Sender as eMobilityStation,
+                                    PropertyName,
+                                    NewValue,
+                                    OldValue,
+                                    DataSource);
 
         }
 
@@ -719,13 +721,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old e-mobility station admin status.</param>
         /// <param name="NewStatus">The new e-mobility station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                      Timestamp,
-                                              EventTracking_Id                              EventTrackingId,
-                                              Timestamped<eMobilityStationAdminStatusTypes>  OldStatus,
-                                              Timestamped<eMobilityStationAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                        Timestamp,
+                                              EventTracking_Id                                EventTrackingId,
+                                              Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
+                                              Timestamped<eMobilityStationAdminStatusTypes>?  OldStatus    = null,
+                                              String?                                         DataSource   = null)
         {
 
-            await OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);
+            await OnAdminStatusChanged?.Invoke(Timestamp,
+                                               EventTrackingId,
+                                               this,
+                                               NewStatus,
+                                               OldStatus,
+                                               DataSource);
 
         }
 
@@ -1084,18 +1092,20 @@ namespace cloud.charging.open.protocols.WWCP
                                                EventTracking_Id  EventTrackingId,
                                                eVehicle          eVehicle,
                                                String            PropertyName,
-                                               Object            OldValue,
-                                               Object            NewValue)
+                                               Object?           NewValue,
+                                               Object?           OldValue     = null,
+                                               String?           DataSource   = null)
         {
 
-            var OnEVehicleDataChangedLocal = OnEVehicleDataChanged;
-            if (OnEVehicleDataChangedLocal != null)
-                await OnEVehicleDataChangedLocal(Timestamp,
+            var onEVehicleDataChanged = OnEVehicleDataChanged;
+            if (onEVehicleDataChanged is not null)
+                await onEVehicleDataChanged(Timestamp,
                                                  EventTrackingId,
                                                  eVehicle,
                                                  PropertyName,
+                                                 NewValue,
                                                  OldValue,
-                                                 NewValue);
+                                                 DataSource);
 
         }
 
@@ -1111,20 +1121,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleAdminStatus(DateTime                              Timestamp,
-                                                      EventTracking_Id                      EventTrackingId,
-                                                      eVehicle                              eVehicle,
-                                                      Timestamped<eVehicleAdminStatusTypes>  OldStatus,
-                                                      Timestamped<eVehicleAdminStatusTypes>  NewStatus)
+        internal async Task UpdateEVehicleAdminStatus(DateTime                                Timestamp,
+                                                      EventTracking_Id                        EventTrackingId,
+                                                      eVehicle                                eVehicle,
+                                                      Timestamped<eVehicleAdminStatusTypes>   NewStatus,
+                                                      Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
+                                                      String?                                 DataSource   = null)
         {
 
             var OnEVehicleAdminStatusChangedLocal = OnEVehicleAdminStatusChanged;
-            if (OnEVehicleAdminStatusChangedLocal != null)
+            if (OnEVehicleAdminStatusChangedLocal is not null)
                 await OnEVehicleAdminStatusChangedLocal(Timestamp,
                                                         EventTrackingId,
                                                         eVehicle,
+                                                        NewStatus,
                                                         OldStatus,
-                                                        NewStatus);
+                                                        DataSource);
 
         }
 
@@ -1140,20 +1152,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleStatus(DateTime                         Timestamp,
-                                                 EventTracking_Id                 EventTrackingId,
-                                                 eVehicle                         eVehicle,
-                                                 Timestamped<eVehicleStatusTypes>  OldStatus,
-                                                 Timestamped<eVehicleStatusTypes>  NewStatus)
+        internal async Task UpdateEVehicleStatus(DateTime                           Timestamp,
+                                                 EventTracking_Id                   EventTrackingId,
+                                                 eVehicle                           eVehicle,
+                                                 Timestamped<eVehicleStatusTypes>   NewStatus,
+                                                 Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
+                                                 String?                            DataSource   = null)
         {
 
             var OnEVehicleStatusChangedLocal = OnEVehicleStatusChanged;
-            if (OnEVehicleStatusChangedLocal != null)
+            if (OnEVehicleStatusChangedLocal is not null)
                 await OnEVehicleStatusChangedLocal(Timestamp,
                                                    EventTrackingId,
                                                    eVehicle,
+                                                   NewStatus,
                                                    OldStatus,
-                                                   NewStatus);
+                                                   DataSource);
 
         }
 
@@ -1169,20 +1183,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldGeoCoordinate">The old aggreagted charging station status.</param>
         /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleGeoLocation(DateTime                    Timestamp,
-                                                      EventTracking_Id            EventTrackingId,
-                                                      eVehicle                    eVehicle,
-                                                      Timestamped<GeoCoordinate>  OldGeoCoordinate,
-                                                      Timestamped<GeoCoordinate>  NewGeoCoordinate)
+        internal async Task UpdateEVehicleGeoLocation(DateTime                     Timestamp,
+                                                      EventTracking_Id             EventTrackingId,
+                                                      eVehicle                     eVehicle,
+                                                      Timestamped<GeoCoordinate>   NewGeoCoordinate,
+                                                      Timestamped<GeoCoordinate>?  OldGeoCoordinate   = null,
+                                                      String?                      DataSource         = null)
         {
 
             var OnEVehicleGeoLocationChangedLocal = OnEVehicleGeoLocationChanged;
-            if (OnEVehicleGeoLocationChangedLocal != null)
+            if (OnEVehicleGeoLocationChangedLocal is not null)
                 await OnEVehicleGeoLocationChangedLocal(Timestamp,
                                                         EventTrackingId,
                                                         eVehicle,
+                                                        NewGeoCoordinate,
                                                         OldGeoCoordinate,
-                                                        NewGeoCoordinate);
+                                                        DataSource);
 
         }
 

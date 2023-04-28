@@ -45,8 +45,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                EventTracking_Id  EventTrackingId,
                                                                eMobilityStation  eMobilityStation,
                                                                String            PropertyName,
-                                                               Object            OldValue,
-                                                               Object            NewValue);
+                                                               Object?           NewValue,
+                                                               Object?           OldValue     = null,
+                                                               String?           DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the admin status of the charging station changed.
@@ -56,10 +57,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eMobilityStation">The updated charging station.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-    public delegate Task OnEMobilityStationAdminStatusChangedDelegate(DateTime                                      Timestamp,
-                                                                      EventTracking_Id                              EventTrackingId,
-                                                                      eMobilityStation                              eMobilityStation,
-                                                                      Timestamped<eMobilityStationAdminStatusTypes>  OldStatus,
-                                                                      Timestamped<eMobilityStationAdminStatusTypes>  NewStatus);
+    public delegate Task OnEMobilityStationAdminStatusChangedDelegate(DateTime                                        Timestamp,
+                                                                      EventTracking_Id                                EventTrackingId,
+                                                                      eMobilityStation                                eMobilityStation,
+                                                                      Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
+                                                                      Timestamped<eMobilityStationAdminStatusTypes>?  OldStatus    = null,
+                                                                      String?                                         DataSource   = null);
 
 }

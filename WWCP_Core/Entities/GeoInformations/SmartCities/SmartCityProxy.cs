@@ -571,9 +571,10 @@ namespace cloud.charging.open.protocols.WWCP
         Task<PushEVSEDataResult>
 
             ISendPOIData.UpdateStaticData(IEVSE               EVSE,
-                                          String?             PropertyName,
-                                          Object?             OldValue,
+                                          String              PropertyName,
                                           Object?             NewValue,
+                                          Object?             OldValue,
+                                          String?             DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -893,10 +894,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingStationDataResult>
 
-            ISendPOIData.UpdateStaticData(IChargingStation     ChargingStation,
-                                          String?             PropertyName,
-                                          Object?             OldValue,
+            ISendPOIData.UpdateStaticData(IChargingStation    ChargingStation,
+                                          String              PropertyName,
                                           Object?             NewValue,
+                                          Object?             OldValue,
+                                          String?             DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -1213,8 +1215,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             ISendPOIData.UpdateStaticData(IChargingPool       ChargingPool,
                                           String              PropertyName,
-                                          Object              OldValue,
-                                          Object              NewValue,
+                                          Object?             NewValue,
+                                          Object?             OldValue,
+                                          String?             DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -1521,9 +1524,10 @@ namespace cloud.charging.open.protocols.WWCP
         async Task<PushEVSEDataResult>
 
             ISendPOIData.UpdateStaticData(IChargingStationOperator  ChargingStationOperator,
-                                          String?                   PropertyName,
-                                          Object?                   OldValue,
+                                          String                    PropertyName,
                                           Object?                   NewValue,
+                                          Object?                   OldValue,
+                                          String?                   DataSource,
                                           TransmissionTypes         TransmissionType,
 
                                           DateTime?                 Timestamp,
@@ -1820,9 +1824,10 @@ namespace cloud.charging.open.protocols.WWCP
         async Task<PushEVSEDataResult>
 
             ISendPOIData.UpdateStaticData(IRoamingNetwork     RoamingNetwork,
-                                          String?             PropertyName,
-                                          Object?             OldValue,
+                                          String              PropertyName,
                                           Object?             NewValue,
+                                          Object?             OldValue,
+                                          String?             DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,

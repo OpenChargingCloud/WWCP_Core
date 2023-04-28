@@ -161,8 +161,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (currentType != value)
                     SetProperty(ref currentType,
-                                value,
-                                EventTracking_Id.New);
+                                value);
 
             }
 
@@ -198,8 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     else if (Math.Abs(averageVoltage.Value - value.Value) > EPSILON)
                         SetProperty(ref averageVoltage,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -235,8 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (!averageVoltageRealTime.HasValue || Math.Abs(averageVoltageRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref averageVoltageRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -279,13 +276,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (!maxCurrent.HasValue)
                         SetProperty(ref maxCurrent,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                     else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
                         SetProperty(ref maxCurrent,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -321,8 +316,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (!maxCurrentRealTime.HasValue || Math.Abs(maxCurrentRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxCurrentRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
 
@@ -366,8 +360,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (!maxPower.HasValue || Math.Abs(maxPower.Value - value.Value) > EPSILON)
                         SetProperty(ref maxPower,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -403,8 +396,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (!maxPowerRealTime.HasValue || Math.Abs(maxPowerRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxPowerRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -447,13 +439,11 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (!maxCapacity.HasValue)
                         SetProperty(ref maxCapacity,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                     else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
                         SetProperty(ref maxCapacity,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -489,8 +479,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (!maxCapacityRealTime.HasValue || Math.Abs(maxCapacityRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxCapacityRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -566,8 +555,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (value is not null)
                     SetProperty(ref energyMixRealTime,
-                                value,
-                                EventTracking_Id.New);
+                                value);
 
                 else
                     DeleteProperty(ref energyMixRealTime);
@@ -635,8 +623,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 if (maxReservationDuration.TotalSeconds != value.TotalSeconds)
                     SetProperty(ref maxReservationDuration,
-                                value,
-                                EventTracking_Id.New);
+                                value);
             }
 
         }
@@ -663,8 +650,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
                 if (isFreeOfCharge != value)
                     SetProperty(ref isFreeOfCharge,
-                                value,
-                                EventTracking_Id.New);
+                                value);
             }
 
         }
@@ -1054,16 +1040,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
+            this.OnPropertyChanged                   += (timestamp, eventTrackingId, sender, propertyName, newValue, oldValue, dataSource)
+                                                         => UpdateData       (timestamp, eventTrackingId, propertyName, newValue, oldValue, dataSource);
 
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                         => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
-            this.OnPropertyChanged                   += (timestamp, eventTrackingId, sender, propertyName, oldValue, newValue)
-                                                         => UpdateData       (timestamp, eventTrackingId, propertyName, oldValue, newValue);
-
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                         => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
-
-            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                         => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                         => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             #endregion
 
@@ -1074,8 +1058,8 @@ namespace cloud.charging.open.protocols.WWCP
             if (this.RemoteEVSE is not null)
             {
 
-                this.RemoteEVSE.OnAdminStatusChanged    += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus) => { AdminStatus = newStatus; return Task.CompletedTask; };
-                this.RemoteEVSE.OnStatusChanged         += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus) => { Status      = newStatus; return Task.CompletedTask; };
+                this.RemoteEVSE.OnAdminStatusChanged    += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus, dataSource) => { adminStatusSchedule.Insert(newStatus, dataSource); return Task.CompletedTask; };
+                this.RemoteEVSE.OnStatusChanged         += (timestamp, eventTrackingId, remoteEVSE, newStatus, oldStatus, dataSource) => { statusSchedule.     Insert(newStatus, dataSource); return Task.CompletedTask; };
 
                 this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)         => OnNewReservation.     Invoke(Timestamp, RemoteEVSE, Reservation);
                 this.RemoteEVSE.OnReservationCanceled   += (Timestamp, RemoteEVSE, Reservation, Reason) => OnReservationCanceled.Invoke(Timestamp, RemoteEVSE, Reservation, Reason);
@@ -1157,7 +1141,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data/(Admin-)Status
 
-        #region (internal) UpdateData       (Timestamp, EventTrackingId, PropertyName, NewValue, OldValue = null)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, PropertyName, NewValue, OldValue = null, DataSource = null)
 
         /// <summary>
         /// Update the static data of the EVSE.
@@ -1167,11 +1151,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The optional old value of the changed property.</param>
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
         internal async Task UpdateData(DateTime          Timestamp,
                                        EventTracking_Id  EventTrackingId,
                                        String            PropertyName,
                                        Object?           NewValue,
-                                       Object?           OldValue   = null)
+                                       Object?           OldValue     = null,
+                                       String?           DataSource   = null)
         {
 
             try
@@ -1184,19 +1170,24 @@ namespace cloud.charging.open.protocols.WWCP
                                             this,
                                             PropertyName,
                                             NewValue,
-                                            OldValue);
+                                            OldValue,
+                                            DataSource);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"EVSE '{Id}'.UpdateEVSEData of property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'");
+
+                DebugX.Log(e,
+                           $"EVSE '{Id}'.UpdateEVSEData of property '{PropertyName}' from '{OldValue?.ToString() ?? "-"}' to '{NewValue?.ToString() ?? "-"}'" +
+                           DataSource is not null ? $" ({DataSource})" : "");
+
             }
 
         }
 
         #endregion
 
-        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, NewAdminStatus, OldAdminStatus = null)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, NewAdminStatus, OldAdminStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current status.
@@ -1205,10 +1196,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NewAdminStatus">The new EVSE admin status.</param>
         /// <param name="OldAdminStatus">The optional old EVSE admin status.</param>
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
         internal async Task UpdateAdminStatus(DateTime                            Timestamp,
                                               EventTracking_Id                    EventTrackingId,
                                               Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
-                                              Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null)
+                                              Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
+                                              String?                             DataSource       = null)
         {
 
             try
@@ -1220,19 +1213,24 @@ namespace cloud.charging.open.protocols.WWCP
                                                    EventTrackingId,
                                                    this,
                                                    NewAdminStatus,
-                                                   OldAdminStatus);
+                                                   OldAdminStatus,
+                                                   DataSource);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"EVSE '{Id}'.UpdateEVSEAdminStatus from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'");
+
+                DebugX.Log(e,
+                           $"EVSE '{Id}'.UpdateEVSEAdminStatus from '{OldAdminStatus?.ToString() ?? "-"}' to '{NewAdminStatus}'" +
+                           DataSource is not null ? $" ({DataSource})" : "");
+
             }
 
         }
 
         #endregion
 
-        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, NewStatus, OldStatus = null)
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current status.
@@ -1241,10 +1239,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
         /// <param name="OldStatus">The optional old EVSE status.</param>
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
         internal async Task UpdateStatus(DateTime                       Timestamp,
                                          EventTracking_Id               EventTrackingId,
                                          Timestamped<EVSEStatusTypes>   NewStatus,
-                                         Timestamped<EVSEStatusTypes>?  OldStatus   = null)
+                                         Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                         String?                        DataSource   = null)
         {
 
             try
@@ -1256,12 +1256,17 @@ namespace cloud.charging.open.protocols.WWCP
                                               EventTrackingId,
                                               this,
                                               NewStatus,
-                                              OldStatus);
+                                              OldStatus,
+                                              DataSource);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, $"EVSE '{Id}'.UpdateEVSEStatus from '{OldStatus}' to '{NewStatus}'");
+
+                DebugX.Log(e,
+                           $"EVSE '{Id}'.UpdateEVSEStatus from '{OldStatus}' to '{NewStatus}'" +
+                           DataSource is not null ? $" ({DataSource})" : "");
+
             }
 
         }

@@ -37,17 +37,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the charging station.
         /// </summary>
-        public ChargingStation_Id                       Id          { get; }
-
-        /// <summary>
-        /// The old timestamped status of the charging station.
-        /// </summary>
-        public Timestamped<ChargingStationStatusTypes>  OldStatus   { get; }
+        public ChargingStation_Id                        Id            { get; }
 
         /// <summary>
         /// The new timestamped status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationStatusTypes>  NewStatus   { get; }
+        public Timestamped<ChargingStationStatusTypes>   NewStatus     { get; }
+
+        /// <summary>
+        /// The old timestamped status of the charging station.
+        /// </summary>
+        public Timestamped<ChargingStationStatusTypes>?  OldStatus     { get; }
+
+        /// <summary>
+        /// An optional data source or context for this charging station status update.
+        /// </summary>
+        public String?                                   DataSource    { get; }
 
         #endregion
 
@@ -57,34 +62,50 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new charging station status update.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station.</param>
-        /// <param name="OldStatus">The old timestamped status of the charging station.</param>
         /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-        public ChargingStationStatusUpdate(ChargingStation_Id                       Id,
-                                           Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                           Timestamped<ChargingStationStatusTypes>  NewStatus)
+        /// <param name="OldStatus">The optional old timestamped status of the charging station.</param>
+        /// <param name="DataSource">An optional data source or context for this charging station status update.</param>
+        public ChargingStationStatusUpdate(ChargingStation_Id                        Id,
+                                           Timestamped<ChargingStationStatusTypes>   NewStatus,
+                                           Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                           String?                                   DataSource   = null)
 
         {
 
-            this.Id         = Id;
-            this.OldStatus  = OldStatus;
-            this.NewStatus  = NewStatus;
+            this.Id          = Id;
+            this.NewStatus   = NewStatus;
+            this.OldStatus   = OldStatus;
+            this.DataSource  = DataSource;
+
+            unchecked
+            {
+
+                hashCode = Id.         GetHashCode()       * 7 ^
+                           NewStatus.  GetHashCode()       * 5 ^
+                          (OldStatus?. GetHashCode() ?? 0) * 3 ^
+                          (DataSource?.GetHashCode() ?? 0);
+
+            }
 
         }
 
         #endregion
 
 
-        #region (static) Snapshot(ChargingStation)
+        #region (static) Snapshot(ChargingStation, DataSource = null)
 
         /// <summary>
         /// Take a snapshot of the current charging station status.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public static ChargingStationStatusUpdate Snapshot(IChargingStation ChargingStation)
+        /// <param name="DataSource">An optional data source or context for this charging station status update.</param>
+        public static ChargingStationStatusUpdate Snapshot(IChargingStation  ChargingStation,
+                                                           String?           DataSource   = null)
 
             => new (ChargingStation.Id,
                     ChargingStation.Status,
-                    ChargingStation.StatusSchedule().Skip(1).FirstOrDefault());
+                    ChargingStation.StatusSchedule().Skip(1).FirstOrDefault(),
+                    DataSource);
 
         #endregion
 
@@ -209,13 +230,16 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingStationStatusUpdate ChargingStationStatusUpdate)
         {
 
-            var c = Id.       CompareTo(ChargingStationStatusUpdate.Id);
+            var c = Id.             CompareTo(ChargingStationStatusUpdate.Id);
 
             if (c == 0)
-                c = NewStatus.CompareTo(ChargingStationStatusUpdate.NewStatus);
+                c = NewStatus.      CompareTo(ChargingStationStatusUpdate.NewStatus);
 
-            if (c == 0)
-                c = OldStatus.CompareTo(ChargingStationStatusUpdate.OldStatus);
+            if (c == 0 && OldStatus.HasValue && ChargingStationStatusUpdate.OldStatus.HasValue)
+                c = OldStatus.Value.CompareTo(ChargingStationStatusUpdate.OldStatus.Value);
+
+            if (c == 0 && DataSource is not null && ChargingStationStatusUpdate.DataSource is not null)
+                c = DataSource.     CompareTo(ChargingStationStatusUpdate.DataSource);
 
             return c;
 
@@ -249,8 +273,13 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(ChargingStationStatusUpdate ChargingStationStatusUpdate)
 
             => Id.       Equals(ChargingStationStatusUpdate.Id)        &&
-               OldStatus.Equals(ChargingStationStatusUpdate.OldStatus) &&
-               NewStatus.Equals(ChargingStationStatusUpdate.NewStatus);
+               NewStatus.Equals(ChargingStationStatusUpdate.NewStatus) &&
+
+            ((!OldStatus.HasValue     && !ChargingStationStatusUpdate.OldStatus.HasValue) ||
+              (OldStatus.HasValue     &&  ChargingStationStatusUpdate.OldStatus.HasValue     && OldStatus.Value.Equals(ChargingStationStatusUpdate.OldStatus.Value))) &&
+
+            (( DataSource is null     &&  ChargingStationStatusUpdate.DataSource is null) ||
+              (DataSource is not null &&  ChargingStationStatusUpdate.DataSource is not null && DataSource.     Equals(ChargingStationStatusUpdate.DataSource)));
 
         #endregion
 
@@ -258,21 +287,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.       GetHashCode() * 5 ^
-                       OldStatus.GetHashCode() * 3 ^
-                       NewStatus.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -283,10 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id, ": ",
-                             OldStatus,
-                             " -> ",
-                             NewStatus);
+            => $"{Id}: {(OldStatus.HasValue ? $"'{OldStatus.Value}' -> " : "")}'{NewStatus}'{(DataSource is not null ? $" ({DataSource})" : "")}";
 
         #endregion
 

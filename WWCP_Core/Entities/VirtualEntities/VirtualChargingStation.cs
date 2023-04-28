@@ -330,11 +330,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
-            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             #endregion
 
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current status.
@@ -383,23 +383,25 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                      Timestamp,
-                                              EventTracking_Id                              EventTrackingId,
-                                              Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
-                                              Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                       Timestamp,
+                                              EventTracking_Id                               EventTrackingId,
+                                              Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
+                                              Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
+                                              String?                                        DataSource   = null)
         {
 
             OnAdminStatusChanged?.Invoke(Timestamp,
                                          EventTrackingId,
                                          this,
+                                         NewStatus,
                                          OldStatus,
-                                         NewStatus);
+                                         DataSource);
 
         }
 
         #endregion
 
-        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current status.
@@ -407,17 +409,19 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                                 Timestamp,
-                                         EventTracking_Id                         EventTrackingId,
-                                         Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                         Timestamped<ChargingStationStatusTypes>  NewStatus)
+        internal async Task UpdateStatus(DateTime                                  Timestamp,
+                                         EventTracking_Id                          EventTrackingId,
+                                         Timestamped<ChargingStationStatusTypes>   NewStatus,
+                                         Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                         String?                                   DataSource   = null)
         {
 
             OnStatusChanged?.Invoke(Timestamp,
                                     EventTrackingId,
                                     this,
+                                    NewStatus,
                                     OldStatus,
-                                    NewStatus);
+                                    DataSource);
 
         }
 
@@ -674,7 +678,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
-        #region (internal) UpdateEVSEData       (Timestamp, RemoteEVSE, NewValue, OldValue = null)
+        #region (internal) UpdateEVSEData       (Timestamp, RemoteEVSE, NewValue, OldValue = null, DataSource = null)
 
         /// <summary>
         /// Update the data of a remote EVSE.
@@ -686,9 +690,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="NewValue">The new value of the changed property.</param>
         internal void UpdateEVSEData(DateTime  Timestamp,
                                      IEVSE     RemoteEVSE,
-                                     String?   PropertyName,
+                                     String    PropertyName,
                                      Object?   NewValue,
-                                     Object?   OldValue   = null)
+                                     Object?   OldValue     = null,
+                                     String?   DataSource   = null)
         {
 
             OnEVSEDataChanged?.Invoke(Timestamp,
@@ -696,13 +701,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                       RemoteEVSE,
                                       PropertyName,
                                       NewValue,
-                                      OldValue);
+                                      OldValue,
+                                      DataSource);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus = null)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current charging station status.
@@ -716,7 +722,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                   EventTracking_Id                    EventTrackingId,
                                                   IEVSE                               RemoteEVSE,
                                                   Timestamped<EVSEAdminStatusTypes>   NewStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null)
+                                                  Timestamped<EVSEAdminStatusTypes>?  OldStatus    = null,
+                                                  String?                             DataSource   = null)
         {
 
             var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
@@ -725,13 +732,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                     EventTrackingId,
                                                     RemoteEVSE,
                                                     NewStatus,
-                                                    OldStatus);
+                                                    OldStatus,
+                                                    DataSource);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus = null)
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, RemoteEVSE, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the remote EVSE station status.
@@ -745,7 +753,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              EventTracking_Id               EventTrackingId,
                                              IEVSE                          RemoteEVSE,
                                              Timestamped<EVSEStatusTypes>   NewStatus,
-                                             Timestamped<EVSEStatusTypes>?  OldStatus   = null)
+                                             Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                             String?                        DataSource   = null)
         {
 
             var onEVSEStatusChanged = OnEVSEStatusChanged;
@@ -754,7 +763,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                EventTrackingId,
                                                RemoteEVSE,
                                                NewStatus,
-                                               OldStatus);
+                                               OldStatus,
+                                               DataSource);
 
         }
 

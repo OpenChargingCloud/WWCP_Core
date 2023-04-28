@@ -235,8 +235,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                          EventTrackingId,
                                                          ChargingStation,
                                                          PropertyName,
+                                                         NewValue,
                                                          OldValue,
-                                                         NewValue) => {
+                                                         dataSource) => {
 
                         chargingStationDataChanges.Add(String.Concat(ChargingStation.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -249,8 +250,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                         EventTrackingId,
                                                                         ChargingStation,
                                                                         PropertyName,
+                                                                        NewValue,
                                                                         OldValue,
-                                                                        NewValue) => {
+                                                                        dataSource) => {
 
                         chargingPoolChargingStationDataChanges.Add(String.Concat(ChargingStation.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -263,8 +265,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                   EventTrackingId,
                                                                   ChargingStation,
                                                                   PropertyName,
+                                                                  NewValue,
                                                                   OldValue,
-                                                                  NewValue) => {
+                                                                  dataSource) => {
 
                         chargingStationOperatorChargingStationDataChanges.Add(String.Concat(ChargingStation.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -277,8 +280,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                           EventTrackingId,
                                                                           ChargingStation,
                                                                           PropertyName,
+                                                                          NewValue,
                                                                           OldValue,
-                                                                          NewValue) => {
+                                                                          dataSource) => {
 
                         roamingNetworkChargingStationDataChanges.Add(String.Concat(ChargingStation.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -301,7 +305,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_S1234.MaxPowerRealTime   = 345.67m;
                     DE_GEF_S1234.MaxPowerRealTime   = 456.78m;
 
-                    DE_GEF_S1234.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
+                    DE_GEF_S1234.MaxPowerPrognoses.Replace(new[] {
                                                                new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(1), 567.89m),
                                                                new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(2), 678.91m),
                                                                new Timestamped<Decimal>(Timestamp.Now + TimeSpan.FromMinutes(3), 789.12m)

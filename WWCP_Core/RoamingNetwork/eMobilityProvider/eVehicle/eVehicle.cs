@@ -472,14 +472,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
-        internal eVehicle(eVehicle_Id                    Id,
-                          EMobilityProvider         Provider,
-                          Action<eVehicle>               Configurator            = null,
-                          RemoteEVehicleCreatorDelegate  RemoteEVehicleCreator   = null,
-                          eVehicleAdminStatusTypes        AdminStatus             = eVehicleAdminStatusTypes.Operational,
-                          eVehicleStatusTypes             Status                  = eVehicleStatusTypes.Available,
-                          UInt16                         MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                          UInt16                         MaxStatusListSize       = DefaultMaxStatusListSize)
+        internal eVehicle(eVehicle_Id                     Id,
+                          EMobilityProvider               Provider,
+                          Action<eVehicle>?               Configurator             = null,
+                          RemoteEVehicleCreatorDelegate?  RemoteEVehicleCreator    = null,
+                          eVehicleAdminStatusTypes        AdminStatus              = eVehicleAdminStatusTypes.Operational,
+                          eVehicleStatusTypes             Status                   = eVehicleStatusTypes.Available,
+                          UInt16                          MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                          UInt16                          MaxStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id)
 
@@ -513,11 +513,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
-            this.statusSchedule.OnStatusChanged      += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             #endregion
 
@@ -574,17 +574,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        public event OnEVehicleDataChangedDelegate         OnDataChanged;
+        public event OnEVehicleDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
-        public event OnEVehicleStatusChangedDelegate       OnStatusChanged;
+        public event OnEVehicleStatusChangedDelegate?       OnStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnEVehicleAdminStatusChangedDelegate  OnAdminStatusChanged;
+        public event OnEVehicleAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         #endregion
 
@@ -604,18 +604,20 @@ namespace cloud.charging.open.protocols.WWCP
                                        EventTracking_Id  EventTrackingId,
                                        Object            Sender,
                                        String            PropertyName,
-                                       Object            OldValue,
-                                       Object            NewValue)
+                                       Object?           NewValue,
+                                       Object?           OldValue     = null,
+                                       String?           DataSource   = null)
         {
 
             var onDataChanged = OnDataChanged;
-            if (onDataChanged != null)
+            if (onDataChanged is not null)
                 await onDataChanged(Timestamp,
-                                         EventTrackingId,
-                                         Sender as eVehicle,
-                                         PropertyName,
-                                         OldValue,
-                                         NewValue);
+                                    EventTrackingId,
+                                    Sender as eVehicle,
+                                    PropertyName,
+                                    NewValue,
+                                    OldValue,
+                                    DataSource);
 
         }
 
@@ -630,17 +632,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                              Timestamp,
-                                              EventTracking_Id                      EventTrackingId,
-                                              Timestamped<eVehicleAdminStatusTypes>  OldStatus,
-                                              Timestamped<eVehicleAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                Timestamp,
+                                              EventTracking_Id                        EventTrackingId,
+                                              Timestamped<eVehicleAdminStatusTypes>   NewStatus,
+                                              Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
+                                              String?                                 DataSource   = null)
         {
 
             await OnAdminStatusChanged?.Invoke(Timestamp,
                                                EventTrackingId,
                                                this,
+                                               NewStatus,
                                                OldStatus,
-                                               NewStatus);
+                                               DataSource);
 
         }
 
@@ -655,17 +659,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                         Timestamp,
-                                         EventTracking_Id                 EventTrackingId,
-                                         Timestamped<eVehicleStatusTypes>  OldStatus,
-                                         Timestamped<eVehicleStatusTypes>  NewStatus)
+        internal async Task UpdateStatus(DateTime                           Timestamp,
+                                         EventTracking_Id                   EventTrackingId,
+                                         Timestamped<eVehicleStatusTypes>   NewStatus,
+                                         Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
+                                         String?                            DataSource   = null)
         {
 
             await OnStatusChanged?.Invoke(Timestamp,
                                           EventTrackingId,
                                           this,
+                                          NewStatus,
                                           OldStatus,
-                                          NewStatus);
+                                          DataSource);
 
         }
 

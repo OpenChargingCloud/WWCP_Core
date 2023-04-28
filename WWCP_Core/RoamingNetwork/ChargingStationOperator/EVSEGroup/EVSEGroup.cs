@@ -45,8 +45,9 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnAdminStatus2ChangedDelegate(DateTime Timestamp,
                                                       EventTracking_Id EventTrackingId,
                                                       EVSEGroup EVSEGroup,
-                                                      Timestamped<EVSEGroupAdminStatusTypes> OldStatus,
-                                                      Timestamped<EVSEGroupAdminStatusTypes> NewStatus);
+                                                      Timestamped<EVSEGroupAdminStatusTypes> NewStatus,
+                                                      Timestamped<EVSEGroupAdminStatusTypes>? OldStatus = null,
+                                                      String? DataSource = null);
 
     /// <summary>
     /// A delegate called whenever the status changed.
@@ -58,8 +59,9 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate Task OnStatus2ChangedDelegate(DateTime Timestamp,
                                                  EventTracking_Id EventTrackingId,
                                                  EVSEGroup EVSEGroup,
-                                                 Timestamped<EVSEGroupStatusTypes> OldStatus,
-                                                 Timestamped<EVSEGroupStatusTypes> NewStatus);
+                                                 Timestamped<EVSEGroupStatusTypes>   NewStatus,
+                                                 Timestamped<EVSEGroupStatusTypes>?  OldStatus    = null,
+                                                 String?                             DataSource   = null);
 
 
     //public class AutoIncludeMemberIds
@@ -398,8 +400,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                         => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                         => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             // EVSEGroup events
             //this.OnChargingStationAddition.OnVoting       += (timestamp, evseoperator, pool, vote) => EVSEOperator.ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
@@ -480,13 +482,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                Timestamp,
-                                              EventTracking_Id                        EventTrackingId,
-                                              Timestamped<EVSEGroupAdminStatusTypes>  OldStatus,
-                                              Timestamped<EVSEGroupAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                 Timestamp,
+                                              EventTracking_Id                         EventTrackingId,
+                                              Timestamped<EVSEGroupAdminStatusTypes>   NewStatus,
+                                              Timestamped<EVSEGroupAdminStatusTypes>?  OldStatus    = null,
+                                              String?                                  DataSource   = null)
         {
 
-            await OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);
+            await OnAdminStatusChanged?.Invoke(Timestamp,
+                                               EventTrackingId,
+                                               this,
+                                               NewStatus,
+                                               OldStatus,
+                                               DataSource);
 
         }
 

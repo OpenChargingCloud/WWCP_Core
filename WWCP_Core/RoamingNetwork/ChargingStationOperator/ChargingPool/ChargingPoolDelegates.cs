@@ -36,14 +36,16 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingPool">The updated charging pool.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
-    /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
+    /// <param name="OldValue">The optional old value of the changed property.</param>
+    /// <param name="DataSource">An optional data source or context for this charging pool data change.</param>
     public delegate Task OnChargingPoolDataChangedDelegate(DateTime          Timestamp,
                                                            EventTracking_Id  EventTrackingId,
                                                            IChargingPool     ChargingPool,
                                                            String            PropertyName,
-                                                           Object?           OldValue,
-                                                           Object?           NewValue);
+                                                           Object?           NewValue,
+                                                           Object?           OldValue     = null,
+                                                           String?           DataSource   = null);
 
 
     /// <summary>
@@ -52,13 +54,15 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingPool">The updated charging pool.</param>
-    /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
-    public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                   Timestamp,
-                                                                  EventTracking_Id                           EventTrackingId,
-                                                                  IChargingPool                              ChargingPool,
-                                                                  Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
-                                                                  Timestamped<ChargingPoolAdminStatusTypes>  NewStatus);
+    /// <param name="OldStatus">The optional old timestamped status of the charging pool.</param>
+    /// <param name="DataSource">An optional data source or context for this charging pool admin status change.</param>
+    public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                    Timestamp,
+                                                                  EventTracking_Id                            EventTrackingId,
+                                                                  IChargingPool                               ChargingPool,
+                                                                  Timestamped<ChargingPoolAdminStatusTypes>   OldStatus,
+                                                                  Timestamped<ChargingPoolAdminStatusTypes>?  NewStatus    = null,
+                                                                  String?                                     DataSource   = null);
 
 
     /// <summary>
@@ -67,12 +71,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingPool">The updated charging pool.</param>
-    /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
-    public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                              Timestamp,
-                                                             EventTracking_Id                      EventTrackingId,
-                                                             IChargingPool                         ChargingPool,
-                                                             Timestamped<ChargingPoolStatusTypes>  OldStatus,
-                                                             Timestamped<ChargingPoolStatusTypes>  NewStatus);
+    /// <param name="OldStatus">The optional old timestamped status of the charging pool.</param>
+    /// <param name="DataSource">An optional data source or context for this charging pool status change.</param>
+    public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                               Timestamp,
+                                                             EventTracking_Id                       EventTrackingId,
+                                                             IChargingPool                          ChargingPool,
+                                                             Timestamped<ChargingPoolStatusTypes>   NewStatus,
+                                                             Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                                             String?                                DataSource   = null);
 
 }

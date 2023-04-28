@@ -31,9 +31,10 @@ namespace cloud.charging.open.protocols.WWCP
 
     public delegate void CPDisconnectedDelegate(IRemoteChargingPool ChargingPool);
 
-    public delegate void CPStateChangedDelegate(IRemoteChargingPool ChargingPool,
-                                                ChargingPoolStatusTypes OldState,
-                                                ChargingPoolStatusTypes NewState);
+    public delegate void CPStateChangedDelegate(IRemoteChargingPool       ChargingPool,
+                                                ChargingPoolStatusTypes   NewStatus,
+                                                ChargingPoolStatusTypes?  OldStatus    = null,
+                                                String?                   DataSource   = null);
 
 
 
@@ -47,11 +48,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate void OnRemoteChargingPoolDataChangedDelegate(DateTime                Timestamp,
-                                                                    IRemoteChargingPool  ChargingPool,
-                                                                    String                  PropertyName,
-                                                                    Object                  OldValue,
-                                                                    Object                  NewValue);
+    public delegate void OnRemoteChargingPoolDataChangedDelegate(DateTime             Timestamp,
+                                                                 IRemoteChargingPool  ChargingPool,
+                                                                 String               PropertyName,
+                                                                 Object?              NewValue,
+                                                                 Object?              OldValue     = null,
+                                                                 String?              DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the admin status of the charging station changed.
@@ -60,11 +62,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingPool">The charging station.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingPoolAdminStatusChangedDelegate(DateTime                                      Timestamp,
-                                                                           EventTracking_Id                              EventTrackingId,
-                                                                           IRemoteChargingPool                        RemoteChargingPool,
-                                                                           Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
-                                                                           Timestamped<ChargingPoolAdminStatusTypes>  NewStatus);
+    public delegate void OnRemoteChargingPoolAdminStatusChangedDelegate(DateTime                                    Timestamp,
+                                                                        EventTracking_Id                            EventTrackingId,
+                                                                        IRemoteChargingPool                         RemoteChargingPool,
+                                                                        Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
+                                                                        Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
+                                                                        String?                                     DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station changed.
@@ -73,10 +76,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingPool">The charging station.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingPoolStatusChangedDelegate(DateTime                                 Timestamp,
-                                                                      EventTracking_Id                         EventTrackingId,
-                                                                      IRemoteChargingPool                   RemoteChargingPool,
-                                                                      Timestamped<ChargingPoolStatusTypes>  OldStatus,
-                                                                      Timestamped<ChargingPoolStatusTypes>  NewStatus);
+    public delegate void OnRemoteChargingPoolStatusChangedDelegate(DateTime                               Timestamp,
+                                                                   EventTracking_Id                       EventTrackingId,
+                                                                   IRemoteChargingPool                    RemoteChargingPool,
+                                                                   Timestamped<ChargingPoolStatusTypes>   NewStatus,
+                                                                   Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                                                   String?                                DataSource   = null);
 
 }

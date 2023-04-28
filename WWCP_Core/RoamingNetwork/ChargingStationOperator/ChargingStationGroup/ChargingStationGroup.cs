@@ -42,11 +42,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate Task OnAdminStatusChangedDelegate(DateTime Timestamp,
-                                                      EventTracking_Id EventTrackingId,
-                                                      ChargingStationGroup ChargingStationGroup,
-                                                      Timestamped<ChargingStationGroupAdminStatusTypes> OldStatus,
-                                                      Timestamped<ChargingStationGroupAdminStatusTypes> NewStatus);
+    public delegate Task OnAdminStatusChangedDelegate(DateTime                                            Timestamp,
+                                                      EventTracking_Id                                    EventTrackingId,
+                                                      ChargingStationGroup                                ChargingStationGroup,
+                                                      Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
+                                                      Timestamped<ChargingStationGroupAdminStatusTypes>?  OldStatus    = null,
+                                                      String?                                             DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the status changed.
@@ -55,27 +56,28 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStationGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate Task OnStatusChangedDelegate(DateTime Timestamp,
-                                                 EventTracking_Id EventTrackingId,
-                                                 ChargingStationGroup ChargingStationGroup,
-                                                 Timestamped<ChargingStationGroupStatusTypes> OldStatus,
-                                                 Timestamped<ChargingStationGroupStatusTypes> NewStatus);
+    public delegate Task OnStatusChangedDelegate(DateTime                                       Timestamp,
+                                                 EventTracking_Id                               EventTrackingId,
+                                                 ChargingStationGroup                           ChargingStationGroup,
+                                                 Timestamped<ChargingStationGroupStatusTypes>   NewStatus,
+                                                 Timestamped<ChargingStationGroupStatusTypes>?  OldStatus    = null,
+                                                 String?                                        DataSource   = null);
 
 
     public class AutoIncludeMemberIds
     {
 
-        private List<ChargingStation_Id> _AllowedMemberIds;
+        private List<ChargingStation_Id> allowedMemberIds;
 
         public AutoIncludeMemberIds(IEnumerable<ChargingStation_Id> AllowedMemberIds)
         {
 
-            this._AllowedMemberIds = new List<ChargingStation_Id>(AllowedMemberIds);
+            this.allowedMemberIds = new List<ChargingStation_Id>(AllowedMemberIds);
 
         }
 
         public Boolean Allowed(ChargingStation_Id StationId)
-            => _AllowedMemberIds.Contains(StationId);
+            => allowedMemberIds.Contains(StationId);
 
 
     }
@@ -458,8 +460,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                         => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                         => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             // ChargingStationGroup events
             //this.OnChargingStationAddition.OnVoting       += (timestamp, evseoperator, pool, vote) => EVSEOperator.ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
@@ -517,13 +519,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                          Timestamp,
-                                              EventTracking_Id                                  EventTrackingId,
-                                              Timestamped<ChargingStationGroupAdminStatusTypes>  OldStatus,
-                                              Timestamped<ChargingStationGroupAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                            Timestamp,
+                                              EventTracking_Id                                    EventTrackingId,
+                                              Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
+                                              Timestamped<ChargingStationGroupAdminStatusTypes>?  OldStatus    = null,
+                                              String?                                             DataSource   = null)
         {
 
-            await OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);
+            await OnAdminStatusChanged?.Invoke(Timestamp,
+                                               EventTrackingId,
+                                               this,
+                                               NewStatus,
+                                               OldStatus,
+                                               DataSource);
 
         }
 
@@ -629,24 +637,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The changed charging station.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
         internal void UpdateChargingStationData(DateTime          Timestamp,
                                                 EventTracking_Id  EventTrackingId,
                                                 ChargingStation   ChargingStation,
                                                 String            PropertyName,
-                                                Object            OldValue,
-                                                Object            NewValue)
+                                                Object?           NewValue,
+                                                Object?           OldValue     = null,
+                                                String?           DataSource   = null)
         {
 
-            var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
-            if (OnChargingStationDataChangedLocal != null)
-                OnChargingStationDataChangedLocal(Timestamp,
-                                                  EventTrackingId,
-                                                  ChargingStation,
-                                                  PropertyName,
-                                                  OldValue,
-                                                  NewValue);
+            var onChargingStationDataChanged = OnChargingStationDataChanged;
+            if (onChargingStationDataChanged is not null)
+                onChargingStationDataChanged(Timestamp,
+                                             EventTrackingId,
+                                             ChargingStation,
+                                             PropertyName,
+                                             NewValue,
+                                             OldValue,
+                                             DataSource);
 
         }
 
@@ -662,20 +672,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal void UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
-                                                       EventTracking_Id                              EventTrackingId,
-                                                       ChargingStation                               ChargingStation,
-                                                       Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
-                                                       Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
+        internal void UpdateChargingStationAdminStatus(DateTime                                       Timestamp,
+                                                       EventTracking_Id                               EventTrackingId,
+                                                       ChargingStation                                ChargingStation,
+                                                       Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
+                                                       Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
+                                                       String?                                        DataSource   = null)
         {
 
-            var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
-            if (OnChargingStationAdminStatusChangedLocal != null)
-                OnChargingStationAdminStatusChangedLocal(Timestamp,
-                                                         EventTrackingId,
-                                                         ChargingStation,
-                                                         OldStatus,
-                                                         NewStatus);
+            var onChargingStationAdminStatusChanged = OnChargingStationAdminStatusChanged;
+            if (onChargingStationAdminStatusChanged is not null)
+                onChargingStationAdminStatusChanged(Timestamp,
+                                                    EventTrackingId,
+                                                    ChargingStation,
+                                                    NewStatus,
+                                                    OldStatus,
+                                                    DataSource);
 
         }
 
@@ -691,20 +703,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old charging station status.</param>
         /// <param name="NewStatus">The new charging station status.</param>
-        internal void UpdateChargingStationStatus(DateTime                                 Timestamp,
-                                                  EventTracking_Id                         EventTrackingId,
-                                                  ChargingStation                          ChargingStation,
-                                                  Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                                  Timestamped<ChargingStationStatusTypes>  NewStatus)
+        internal void UpdateChargingStationStatus(DateTime                                  Timestamp,
+                                                  EventTracking_Id                          EventTrackingId,
+                                                  ChargingStation                           ChargingStation,
+                                                  Timestamped<ChargingStationStatusTypes>   NewStatus,
+                                                  Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                                  String?                                   DataSource   = null)
         {
 
-            var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
-            if (OnChargingStationStatusChangedLocal != null)
-                OnChargingStationStatusChangedLocal(Timestamp,
-                                                    EventTrackingId,
-                                                    ChargingStation,
-                                                    OldStatus,
-                                                    NewStatus);
+            var onChargingStationStatusChanged = OnChargingStationStatusChanged;
+            if (onChargingStationStatusChanged is not null)
+                onChargingStationStatusChanged(Timestamp,
+                                               EventTrackingId,
+                                               ChargingStation,
+                                               NewStatus,
+                                               OldStatus,
+                                               DataSource);
 
          //   if (StatusAggregationDelegate != null)
          //       _StatusSchedule.Insert(Timestamp,

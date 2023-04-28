@@ -130,11 +130,18 @@ namespace cloud.charging.open.protocols.WWCP
                                : null,
 
                            new JProperty("energySources",         new JArray(
-                               EnergySources.       Select(energysource        => energysource.       ToJSON())
-                           )),
+                               EnergySources.       Select(energysource        => new JObject(
+                                                                                      new JProperty("timestamp",   energysource.       Timestamp.  ToIso8601()),
+                                                                                      new JProperty("category",    energysource.       Value.Value.ToString()),
+                                                                                      new JProperty("percentage",  energysource.       Value.Percent)
+                                                                                  ))),
 
                            new JProperty("environmentalImpacts",  new JArray(
-                               EnvironmentalImpacts.Select(environmentalImpact => environmentalImpact.ToJSON())
+                               EnvironmentalImpacts.Select(environmentalImpact => new JObject(
+                                                                                      new JProperty("timestamp",   environmentalImpact.Timestamp.  ToIso8601()),
+                                                                                      new JProperty("impact",      environmentalImpact.Value.Value.ToString()),
+                                                                                      new JProperty("percentage",  environmentalImpact.Value.Percent)
+                                                                                  )))
                            )),
 
                            new JProperty("supplierName",              SupplierName.ToJSON()),

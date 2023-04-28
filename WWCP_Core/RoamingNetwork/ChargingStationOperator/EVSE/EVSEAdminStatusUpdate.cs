@@ -37,17 +37,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                             Id           { get; }
+        public EVSE_Id                             Id            { get; }
 
         /// <summary>
         /// The new timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>   NewStatus    { get; }
+        public Timestamped<EVSEAdminStatusTypes>   NewStatus     { get; }
 
         /// <summary>
         /// The optional old timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>?  OldStatus    { get; }
+        public Timestamped<EVSEAdminStatusTypes>?  OldStatus     { get; }
+
+        /// <summary>
+        /// An optional data source or context for this EVSE admin status update.
+        /// </summary>
+        public String?                             DataSource    { get; }
 
         #endregion
 
@@ -59,32 +64,48 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
         /// <param name="OldStatus">The optional old timestamped admin status of the EVSE.</param>
+        /// <param name="DataSource">An optional data source or context for this EVSE admin status update.</param>
         public EVSEAdminStatusUpdate(EVSE_Id                             Id,
                                      Timestamped<EVSEAdminStatusTypes>   NewStatus,
-                                     Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null)
+                                     Timestamped<EVSEAdminStatusTypes>?  OldStatus    = null,
+                                     String?                             DataSource   = null)
 
         {
 
-            this.Id         = Id;
-            this.OldStatus  = OldStatus;
-            this.NewStatus  = NewStatus;
+            this.Id          = Id;
+            this.NewStatus   = NewStatus;
+            this.OldStatus   = OldStatus;
+            this.DataSource  = DataSource;
+
+            unchecked
+            {
+
+                hashCode = Id.         GetHashCode()       * 7 ^
+                           NewStatus.  GetHashCode()       * 5 ^
+                          (OldStatus?. GetHashCode() ?? 0) * 3 ^
+                          (DataSource?.GetHashCode() ?? 0);
+
+            }
 
         }
 
         #endregion
 
 
-        #region (static) Snapshot(EVSE)
+        #region (static) Snapshot(EVSE, DataSource = null)
 
         /// <summary>
         /// Take a snapshot of the current EVSE admin status.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        public static EVSEAdminStatusUpdate Snapshot(IEVSE EVSE)
+        /// <param name="DataSource">An optional data source or context for this EVSE admin status update.</param>
+        public static EVSEAdminStatusUpdate Snapshot(IEVSE    EVSE,
+                                                     String?  DataSource   = null)
 
             => new (EVSE.Id,
                     EVSE.AdminStatus,
-                    EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault());
+                    EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault(),
+                    DataSource);
 
         #endregion
 
@@ -217,6 +238,9 @@ namespace cloud.charging.open.protocols.WWCP
             if (c == 0 && OldStatus.HasValue && EVSEAdminStatusUpdate.OldStatus.HasValue)
                 c = OldStatus.Value.CompareTo(EVSEAdminStatusUpdate.OldStatus.Value);
 
+            if (c == 0 && DataSource is not null && EVSEAdminStatusUpdate.DataSource is not null)
+                c = DataSource.     CompareTo(EVSEAdminStatusUpdate.DataSource);
+
             return c;
 
         }
@@ -251,8 +275,11 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.       Equals(EVSEAdminStatusUpdate.Id)        &&
                NewStatus.Equals(EVSEAdminStatusUpdate.NewStatus) &&
 
-            ((!OldStatus.HasValue && !EVSEAdminStatusUpdate.OldStatus.HasValue) ||
-              (OldStatus.HasValue &&  EVSEAdminStatusUpdate.OldStatus.HasValue && OldStatus.Value.Equals(EVSEAdminStatusUpdate.OldStatus.Value)));
+            ((!OldStatus.HasValue     && !EVSEAdminStatusUpdate.OldStatus.HasValue) ||
+              (OldStatus.HasValue     &&  EVSEAdminStatusUpdate.OldStatus.HasValue     && OldStatus.Value.Equals(EVSEAdminStatusUpdate.OldStatus.Value))) &&
+
+            (( DataSource is null     &&  EVSEAdminStatusUpdate.DataSource is null) ||
+              (DataSource is not null &&  EVSEAdminStatusUpdate.DataSource is not null && DataSource.     Equals(EVSEAdminStatusUpdate.DataSource)));
 
         #endregion
 
@@ -260,21 +287,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.        GetHashCode() * 5 ^
-                       NewStatus. GetHashCode() * 3 ^
-                      (OldStatus?.GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -285,12 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   Id,
-                   ": ",
-                   OldStatus?.ToString() + " -> " ?? "",
-                   NewStatus
-               );
+            => $"{Id}: {(OldStatus.HasValue ? $"'{OldStatus.Value}' -> " : "")}'{NewStatus}'{(DataSource is not null ? $" ({DataSource})" : "")}";
 
         #endregion
 

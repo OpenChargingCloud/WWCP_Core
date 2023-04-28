@@ -17,11 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -46,8 +43,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                        EventTracking_Id  EventTrackingId,
                                                        eVehicle          eVehicle,
                                                        String            PropertyName,
-                                                       Object            OldValue,
-                                                       Object            NewValue);
+                                                       Object?           NewValue,
+                                                       Object?           OldValue     = null,
+                                                       String?           DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the admin status of the electric vehicle changed.
@@ -57,11 +55,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldStatus">The old timestamped status of the electric vehicle.</param>
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
-    public delegate Task OnEVehicleAdminStatusChangedDelegate(DateTime                              Timestamp,
-                                                              EventTracking_Id                      EventTrackingId,
-                                                              eVehicle                              eVehicle,
-                                                              Timestamped<eVehicleAdminStatusTypes>  OldStatus,
-                                                              Timestamped<eVehicleAdminStatusTypes>  NewStatus);
+    public delegate Task OnEVehicleAdminStatusChangedDelegate(DateTime                                Timestamp,
+                                                              EventTracking_Id                        EventTrackingId,
+                                                              eVehicle                                eVehicle,
+                                                              Timestamped<eVehicleAdminStatusTypes>   NewStatus,
+                                                              Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
+                                                              String?                                 DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the electric vehicle changed.
@@ -71,11 +70,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldStatus">The old timestamped status of the electric vehicle.</param>
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
-    public delegate Task OnEVehicleStatusChangedDelegate(DateTime                         Timestamp,
-                                                         EventTracking_Id                 EventTrackingId,
-                                                         eVehicle                         eVehicle,
-                                                         Timestamped<eVehicleStatusTypes>  OldStatus,
-                                                         Timestamped<eVehicleStatusTypes>  NewStatus);
+    public delegate Task OnEVehicleStatusChangedDelegate(DateTime                           Timestamp,
+                                                         EventTracking_Id                   EventTrackingId,
+                                                         eVehicle                           eVehicle,
+                                                         Timestamped<eVehicleStatusTypes>   NewStatus,
+                                                         Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
+                                                         String?                            DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the geo coordinate of the electric vehicle changed.
@@ -85,10 +85,11 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldGeoCoordinate">The old timestamped geo coordinate of the electric vehicle.</param>
     /// <param name="NewGeoCoordinate">The new timestamped geo coordinate of the electric vehicle.</param>
-    public delegate Task OnEVehicleGeoLocationChangedDelegate(DateTime                    Timestamp,
-                                                              EventTracking_Id            EventTrackingId,
-                                                              eVehicle                    eVehicle,
-                                                              Timestamped<GeoCoordinate>  OldGeoCoordinate,
-                                                              Timestamped<GeoCoordinate>  NewGeoCoordinate);
+    public delegate Task OnEVehicleGeoLocationChangedDelegate(DateTime                     Timestamp,
+                                                              EventTracking_Id             EventTrackingId,
+                                                              eVehicle                     eVehicle,
+                                                              Timestamped<GeoCoordinate>   NewGeoCoordinate,
+                                                              Timestamped<GeoCoordinate>?  OldGeoCoordinate   = null,
+                                                              String?                      DataSource         = null);
 
 }

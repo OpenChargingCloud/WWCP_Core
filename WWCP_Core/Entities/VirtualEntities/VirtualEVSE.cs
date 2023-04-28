@@ -337,8 +337,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                 if (currentType != value)
                     SetProperty(ref currentType,
-                                value,
-                                EventTracking_Id.New);
+                                value);
 
             }
 
@@ -374,8 +373,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     else if (Math.Abs(averageVoltage.Value - value.Value) > EPSILON)
                         SetProperty(ref averageVoltage,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -411,8 +409,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     if (!averageVoltageRealTime.HasValue || Math.Abs(averageVoltageRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref averageVoltageRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -458,8 +455,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
                         SetProperty(ref maxCurrent,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -495,8 +491,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     if (!maxCurrentRealTime.HasValue || Math.Abs(maxCurrentRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxCurrentRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -542,8 +537,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
                         SetProperty(ref maxPower,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -579,8 +573,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     if (!maxPowerRealTime.HasValue || Math.Abs(maxPowerRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxPowerRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -626,8 +619,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
                         SetProperty(ref maxCapacity,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -663,8 +655,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     if (!maxCapacityRealTime.HasValue || Math.Abs(maxCapacityRealTime.Value.Value - value.Value.Value) > EPSILON)
                         SetProperty(ref maxCapacityRealTime,
-                                    value,
-                                    EventTracking_Id.New);
+                                    value);
 
                 }
                 else
@@ -740,8 +731,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                 if (value is not null)
                     SetProperty(ref energyMixRealTime,
-                                value,
-                                EventTracking_Id.New);
+                                value);
 
                 else
                     DeleteProperty(ref energyMixRealTime);
@@ -809,8 +799,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             {
                 if (maxReservationDuration.TotalSeconds != value.TotalSeconds)
                     SetProperty(ref maxReservationDuration,
-                                value,
-                                EventTracking_Id.New);
+                                value);
             }
 
         }
@@ -837,8 +826,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             {
                 if (isFreeOfCharge != value)
                     SetProperty(ref isFreeOfCharge,
-                                value,
-                                EventTracking_Id.New);
+                                value);
             }
 
         }
@@ -1171,11 +1159,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Link events
 
-            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
+            this.adminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
-            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
+            this.statusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource)
+                                                          => UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus, dataSource);
 
             #endregion
 
@@ -1347,19 +1335,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal async Task UpdateAdminStatus(DateTime                           Timestamp,
-                                              EventTracking_Id                   EventTrackingId,
-                                              Timestamped<EVSEAdminStatusTypes>  OldStatus,
-                                              Timestamped<EVSEAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                            Timestamp,
+                                              EventTracking_Id                    EventTrackingId,
+                                              Timestamped<EVSEAdminStatusTypes>   NewStatus,
+                                              Timestamped<EVSEAdminStatusTypes>?  OldStatus    = null,
+                                              String?                             DataSource   = null)
         {
 
             var onAdminStatusChanged = OnAdminStatusChanged;
             if (onAdminStatusChanged is not null)
                 await onAdminStatusChanged(Timestamp,
-                                                EventTrackingId,
-                                                this,
-                                                OldStatus,
-                                                NewStatus);
+                                           EventTrackingId,
+                                           this,
+                                           NewStatus,
+                                           OldStatus,
+                                           DataSource);
 
         }
 
@@ -1374,19 +1364,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                      Timestamp,
-                                         EventTracking_Id              EventTrackingId,
-                                         Timestamped<EVSEStatusTypes>  OldStatus,
-                                         Timestamped<EVSEStatusTypes>  NewStatus)
+        internal async Task UpdateStatus(DateTime                       Timestamp,
+                                         EventTracking_Id               EventTrackingId,
+                                         Timestamped<EVSEStatusTypes>   NewStatus,
+                                         Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                         String?                        DataSource   = null)
         {
 
             var onStatusChanged = OnStatusChanged;
             if (onStatusChanged is not null)
                 await onStatusChanged(Timestamp,
-                                           EventTrackingId,
-                                           this,
-                                           OldStatus,
-                                           NewStatus);
+                                      EventTrackingId,
+                                      this,
+                                      NewStatus,
+                                      OldStatus,
+                                      DataSource);
 
         }
 

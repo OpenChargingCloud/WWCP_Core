@@ -36,12 +36,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     /// <param name="OldValue">The optional old value of the changed property.</param>
+    /// <param name="DataSource">An optional data source or context for this status change.</param>
     public delegate Task OnEVSEDataChangedDelegate(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    IEVSE             EVSE,
                                                    String            PropertyName,
                                                    Object?           NewValue,
-                                                   Object?           OldValue   = null);
+                                                   Object?           OldValue     = null,
+                                                   String?           DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the admin status of the EVSE changed.
@@ -51,11 +53,13 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EVSE">The EVSE.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
     /// <param name="OldEVSEStatus">The optional old timestamped status of the EVSE.</param>
+    /// <param name="DataSource">An optional data source or context for this status change.</param>
     public delegate Task OnEVSEAdminStatusChangedDelegate(DateTime                            Timestamp,
                                                           EventTracking_Id                    EventTrackingId,
                                                           IEVSE                               EVSE,
                                                           Timestamped<EVSEAdminStatusTypes>   NewEVSEStatus,
-                                                          Timestamped<EVSEAdminStatusTypes>?  OldEVSEStatus   = null);
+                                                          Timestamped<EVSEAdminStatusTypes>?  OldEVSEStatus   = null,
+                                                          String?                             DataSource      = null);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the EVSE changed.
@@ -65,10 +69,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="EVSE">The EVSE.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
     /// <param name="OldEVSEStatus">The optional old timestamped status of the EVSE.</param>
+    /// <param name="DataSource">An optional data source or context for this status change.</param>
     public delegate Task OnEVSEStatusChangedDelegate(DateTime                       Timestamp,
                                                      EventTracking_Id               EventTrackingId,
                                                      IEVSE                          EVSE,
                                                      Timestamped<EVSEStatusTypes>   NewEVSEStatus,
-                                                     Timestamped<EVSEStatusTypes>?  OldEVSEStatus   = null);
+                                                     Timestamped<EVSEStatusTypes>?  OldEVSEStatus   = null,
+                                                     String?                        DataSource      = null);
 
 }

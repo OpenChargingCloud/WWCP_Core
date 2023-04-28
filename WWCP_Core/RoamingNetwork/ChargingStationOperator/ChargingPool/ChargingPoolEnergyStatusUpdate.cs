@@ -37,27 +37,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id      Id                    { get; }
+        public ChargingPool_Id           Id               { get; }
 
         /// <summary>
-        /// The old timestamped energy usage of the charging pool.
+        /// The new timestamped energy information of the charging pool.
         /// </summary>
-        public Timestamped<Double>  OldEnergyUsage        { get; }
+        public Timestamped<EnergyInfo>   NewEnergyInfo    { get; }
 
         /// <summary>
-        /// The new timestamped energy usage of the charging pool.
+        /// The optional old timestamped energy information of the charging pool.
         /// </summary>
-        public Timestamped<Double>  NewEnergyUsage        { get; }
+        public Timestamped<EnergyInfo>?  OldEnergyInfo    { get; }
 
         /// <summary>
-        /// The old timestamped available energy of the charging pool.
+        /// An optional data source or context for this charging pool energy information update.
         /// </summary>
-        public Timestamped<Double>  OldAvailableEnergy    { get; }
-
-        /// <summary>
-        /// The new timestamped available energy of the charging pool.
-        /// </summary>
-        public Timestamped<Double>  NewAvailableEnergy    { get; }
+        public String?                   DataSource       { get; }
 
         #endregion
 
@@ -67,23 +62,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new charging pool energy status update.
         /// </summary>
         /// <param name="Id">The unique identification of the charging pool.</param>
-        /// <param name="OldEnergyUsage">The old timestamped energy usage of the charging pool.</param>
-        /// <param name="NewEnergyUsage">The new timestamped energy usage of the charging pool.</param>
-        /// <param name="OldAvailableEnergy">The old timestamped available energy of the charging pool.</param>
-        /// <param name="NewAvailableEnergy">The new timestamped available energy of the charging pool.</param>
-        public ChargingPoolEnergyStatusUpdate(ChargingPool_Id      Id,
-                                              Timestamped<Double>  OldEnergyUsage,
-                                              Timestamped<Double>  NewEnergyUsage,
-                                              Timestamped<Double>  OldAvailableEnergy,
-                                              Timestamped<Double>  NewAvailableEnergy)
+        /// <param name="OldEnergyInfo">The old timestamped energy information of the EVSE.</param>
+        /// <param name="NewEnergyInfo">The new timestamped energy information of the EVSE.</param>
+        /// <param name="DataSource">An optional data source or context for this EVSE energy information update.</param>
+        public ChargingPoolEnergyStatusUpdate(ChargingPool_Id           Id,
+                                              Timestamped<EnergyInfo>   NewEnergyInfo,
+                                              Timestamped<EnergyInfo>?  OldEnergyInfo   = null,
+                                              String?                   DataSource      = null)
 
         {
 
-            this.Id                  = Id;
-            this.OldEnergyUsage      = OldEnergyUsage;
-            this.NewEnergyUsage      = NewEnergyUsage;
-            this.OldAvailableEnergy  = OldAvailableEnergy;
-            this.NewAvailableEnergy  = NewAvailableEnergy;
+            this.Id             = Id;
+            this.NewEnergyInfo  = NewEnergyInfo;
+            this.OldEnergyInfo  = OldEnergyInfo;
+            this.DataSource     = DataSource;
+
+            unchecked
+            {
+
+                hashCode = Id.            GetHashCode()       * 7 ^
+                           NewEnergyInfo. GetHashCode()       * 5 ^
+                          (OldEnergyInfo?.GetHashCode() ?? 0) * 3 ^
+                          (DataSource?.   GetHashCode() ?? 0);
+
+            }
 
         }
 
@@ -210,19 +212,16 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(ChargingPoolEnergyStatusUpdate ChargingPoolEnergyStatusUpdate)
         {
 
-            var c = Id.                CompareTo(ChargingPoolEnergyStatusUpdate.Id);
+            var c = Id.                 CompareTo(ChargingPoolEnergyStatusUpdate.Id);
 
             if (c == 0)
-                c = NewEnergyUsage.    CompareTo(ChargingPoolEnergyStatusUpdate.NewEnergyUsage);
+                c = NewEnergyInfo.      CompareTo(ChargingPoolEnergyStatusUpdate.NewEnergyInfo);
 
-            if (c == 0)
-                c = OldEnergyUsage.    CompareTo(ChargingPoolEnergyStatusUpdate.OldEnergyUsage);
+            if (c == 0 && OldEnergyInfo.HasValue && ChargingPoolEnergyStatusUpdate.OldEnergyInfo.HasValue)
+                c = OldEnergyInfo.Value.CompareTo(ChargingPoolEnergyStatusUpdate.OldEnergyInfo.Value);
 
-            if (c == 0)
-                c = OldAvailableEnergy.CompareTo(ChargingPoolEnergyStatusUpdate.OldAvailableEnergy);
-
-            if (c == 0)
-                c = NewAvailableEnergy.CompareTo(ChargingPoolEnergyStatusUpdate.NewAvailableEnergy);
+            if (c == 0 && DataSource is not null && ChargingPoolEnergyStatusUpdate.DataSource is not null)
+                c = DataSource.         CompareTo(ChargingPoolEnergyStatusUpdate.DataSource);
 
             return c;
 
@@ -255,11 +254,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolEnergyStatusUpdate">A charging pool energy status update to compare with.</param>
         public Boolean Equals(ChargingPoolEnergyStatusUpdate ChargingPoolEnergyStatusUpdate)
 
-            => Id.                Equals(ChargingPoolEnergyStatusUpdate.Id)                 &&
-               OldEnergyUsage.    Equals(ChargingPoolEnergyStatusUpdate.OldEnergyUsage)     &&
-               NewEnergyUsage.    Equals(ChargingPoolEnergyStatusUpdate.NewEnergyUsage)     &&
-               OldAvailableEnergy.Equals(ChargingPoolEnergyStatusUpdate.OldAvailableEnergy) &&
-               NewAvailableEnergy.Equals(ChargingPoolEnergyStatusUpdate.NewAvailableEnergy);
+            => Id.           Equals(ChargingPoolEnergyStatusUpdate.Id)            &&
+               NewEnergyInfo.Equals(ChargingPoolEnergyStatusUpdate.NewEnergyInfo) &&
+
+            ((!OldEnergyInfo.HasValue && !ChargingPoolEnergyStatusUpdate.OldEnergyInfo.HasValue) ||
+              (OldEnergyInfo.HasValue &&  ChargingPoolEnergyStatusUpdate.OldEnergyInfo.HasValue && OldEnergyInfo.Value.Equals(ChargingPoolEnergyStatusUpdate.OldEnergyInfo.Value))) &&
+
+            (( DataSource is null     &&  ChargingPoolEnergyStatusUpdate.DataSource is null) ||
+              (DataSource is not null &&  ChargingPoolEnergyStatusUpdate.DataSource is not null && DataSource.         Equals(ChargingPoolEnergyStatusUpdate.DataSource)));
 
         #endregion
 
@@ -267,23 +269,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.                GetHashCode() * 11 ^
-                       OldEnergyUsage.    GetHashCode() *  7 ^
-                       NewEnergyUsage.    GetHashCode() *  5 ^
-                       OldAvailableEnergy.GetHashCode() *  3 ^
-                       NewAvailableEnergy.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -294,16 +287,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   Id, ": ",
-                   OldEnergyUsage,
-                   " -> ",
-                   NewEnergyUsage,
-                   ", ",
-                   OldAvailableEnergy,
-                   " -> ",
-                   NewAvailableEnergy
-               );
+            => $"{Id}: {(OldEnergyInfo.HasValue ? $"'{OldEnergyInfo.Value}' -> " : "")}'{NewEnergyInfo}'{(DataSource is not null ? $" ({DataSource})" : "")}";
 
         #endregion
 

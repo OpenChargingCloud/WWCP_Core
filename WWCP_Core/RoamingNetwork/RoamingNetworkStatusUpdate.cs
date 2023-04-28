@@ -36,17 +36,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id                       Id          { get; }
-
-        /// <summary>
-        /// The old timestamped status of the roaming network.
-        /// </summary>
-        public Timestamped<RoamingNetworkStatusTypes>  OldStatus   { get; }
+        public RoamingNetwork_Id                        Id            { get; }
 
         /// <summary>
         /// The new timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusTypes>  NewStatus   { get; }
+        public Timestamped<RoamingNetworkStatusTypes>   NewStatus     { get; }
+
+        /// <summary>
+        /// The optional old timestamped status of the roaming network.
+        /// </summary>
+        public Timestamped<RoamingNetworkStatusTypes>?  OldStatus     { get; }
+
+        /// <summary>
+        /// An optional data source or context for this roaming network status update.
+        /// </summary>
+        public String?                                  DataSource    { get; }
 
         #endregion
 
@@ -56,34 +61,50 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new roaming network status update.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
-        /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
-        /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-        public RoamingNetworkStatusUpdate(RoamingNetwork_Id                       Id,
-                                          Timestamped<RoamingNetworkStatusTypes>  OldStatus,
-                                          Timestamped<RoamingNetworkStatusTypes>  NewStatus)
+        /// <param name="NewStatus">The new timestamped admin status of the roaming network.</param>
+        /// <param name="OldStatus">The optional old timestamped admin status of the roaming network.</param>
+        /// <param name="DataSource">An optional data source or context for this roaming network status update.</param>
+        public RoamingNetworkStatusUpdate(RoamingNetwork_Id                        Id,
+                                          Timestamped<RoamingNetworkStatusTypes>   NewStatus,
+                                          Timestamped<RoamingNetworkStatusTypes>?  OldStatus    = null,
+                                          String?                                  DataSource   = null)
 
         {
 
-            this.Id         = Id;
-            this.OldStatus  = OldStatus;
-            this.NewStatus  = NewStatus;
+            this.Id          = Id;
+            this.NewStatus   = NewStatus;
+            this.OldStatus   = OldStatus;
+            this.DataSource  = DataSource;
+
+            unchecked
+            {
+
+                hashCode = Id.         GetHashCode()       * 7 ^
+                           NewStatus.  GetHashCode()       * 5 ^
+                          (OldStatus?. GetHashCode() ?? 0) * 3 ^
+                          (DataSource?.GetHashCode() ?? 0);
+
+            }
 
         }
 
         #endregion
 
 
-        #region (static) Snapshot(RoamingNetwork)
+        #region (static) Snapshot(RoamingNetwork, DataSource = null)
 
         /// <summary>
         /// Take a snapshot of the current roaming network status.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        public static RoamingNetworkStatusUpdate Snapshot(IRoamingNetwork RoamingNetwork)
+        /// <param name="DataSource">An optional data source or context for this roaming network status update.</param>
+        public static RoamingNetworkStatusUpdate Snapshot(IRoamingNetwork  RoamingNetwork,
+                                                          String?          DataSource   = null)
 
             => new (RoamingNetwork.Id,
                     RoamingNetwork.Status,
-                    RoamingNetwork.StatusSchedule().Skip(1).FirstOrDefault());
+                    RoamingNetwork.StatusSchedule().Skip(1).FirstOrDefault(),
+                    DataSource);
 
         #endregion
 
@@ -208,13 +229,16 @@ namespace cloud.charging.open.protocols.WWCP
         public Int32 CompareTo(RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate)
         {
 
-            var c = Id.       CompareTo(RoamingNetworkStatusUpdate.Id);
+            var c = Id.             CompareTo(RoamingNetworkStatusUpdate.Id);
 
             if (c == 0)
-                c = NewStatus.CompareTo(RoamingNetworkStatusUpdate.NewStatus);
+                c = NewStatus.      CompareTo(RoamingNetworkStatusUpdate.NewStatus);
 
-            if (c == 0)
-                c = OldStatus.CompareTo(RoamingNetworkStatusUpdate.OldStatus);
+            if (c == 0 && OldStatus.HasValue && RoamingNetworkStatusUpdate.OldStatus.HasValue)
+                c = OldStatus.Value.CompareTo(RoamingNetworkStatusUpdate.OldStatus.Value);
+
+            if (c == 0 && DataSource is not null && RoamingNetworkStatusUpdate.DataSource is not null)
+                c = DataSource.     CompareTo(RoamingNetworkStatusUpdate.DataSource);
 
             return c;
 
@@ -248,8 +272,13 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean Equals(RoamingNetworkStatusUpdate RoamingNetworkStatusUpdate)
 
             => Id.       Equals(RoamingNetworkStatusUpdate.Id)        &&
-               OldStatus.Equals(RoamingNetworkStatusUpdate.OldStatus) &&
-               NewStatus.Equals(RoamingNetworkStatusUpdate.NewStatus);
+               NewStatus.Equals(RoamingNetworkStatusUpdate.NewStatus) &&
+
+            ((!OldStatus.HasValue     && !RoamingNetworkStatusUpdate.OldStatus.HasValue) ||
+              (OldStatus.HasValue     &&  RoamingNetworkStatusUpdate.OldStatus.HasValue     && OldStatus.Value.Equals(RoamingNetworkStatusUpdate.OldStatus.Value))) &&
+
+            (( DataSource is null     &&  RoamingNetworkStatusUpdate.DataSource is null) ||
+              (DataSource is not null &&  RoamingNetworkStatusUpdate.DataSource is not null && DataSource.     Equals(RoamingNetworkStatusUpdate.DataSource)));
 
         #endregion
 
@@ -257,21 +286,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.       GetHashCode() * 5 ^
-                       OldStatus.GetHashCode() * 3 ^
-                       NewStatus.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -282,10 +304,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id, ": ",
-                             OldStatus,
-                             " -> ",
-                             NewStatus);
+            => $"{Id}: {(OldStatus.HasValue ? $"'{OldStatus.Value}' -> " : "")}'{NewStatus}'{(DataSource is not null ? $" ({DataSource})" : "")}";
 
         #endregion
 

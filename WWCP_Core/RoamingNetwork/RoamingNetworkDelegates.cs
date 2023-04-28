@@ -37,8 +37,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                              EventTracking_Id  EventTrackingId,
                                                              IRoamingNetwork   RoamingNetwork,
                                                              String?           PropertyName,
+                                                             Object?           NewValue,
                                                              Object?           OldValue,
-                                                             Object?           NewValue);
+                                                             String?           DataSource);
 
 
     /// <summary>
@@ -47,13 +48,15 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetwork">The updated roaming network.</param>
-    /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
-    /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-    public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTime                                     Timestamp,
-                                                                    EventTracking_Id                             EventTrackingId,
-                                                                    IRoamingNetwork                              RoamingNetwork,
-                                                                    Timestamped<RoamingNetworkAdminStatusTypes>  OldStatus,
-                                                                    Timestamped<RoamingNetworkAdminStatusTypes>  NewStatus);
+    /// <param name="NewStatus">The new timestamped admin status of the roaming network.</param>
+    /// <param name="OldStatus">The optional old timestamped admin status of the roaming network.</param>
+    /// <param name="DataSource">An optional data source or context for this roaming network admin status update.</param>
+    public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTime                                      Timestamp,
+                                                                    EventTracking_Id                              EventTrackingId,
+                                                                    IRoamingNetwork                               RoamingNetwork,
+                                                                    Timestamped<RoamingNetworkAdminStatusTypes>   NewStatus,
+                                                                    Timestamped<RoamingNetworkAdminStatusTypes>?  OldStatus    = null,
+                                                                    String?                                       DataSource   = null);
 
 
     /// <summary>
@@ -62,12 +65,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetwork">The updated roaming network.</param>
-    /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
     /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-    public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                                Timestamp,
-                                                               EventTracking_Id                        EventTrackingId,
-                                                               IRoamingNetwork                         RoamingNetwork,
-                                                               Timestamped<RoamingNetworkStatusTypes>  OldStatus,
-                                                               Timestamped<RoamingNetworkStatusTypes>  NewStatus);
+    /// <param name="OldStatus">The optional old timestamped status of the roaming network.</param>
+    /// <param name="DataSource">An optional data source or context for this roaming network status update.</param>
+    public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                                 Timestamp,
+                                                               EventTracking_Id                         EventTrackingId,
+                                                               IRoamingNetwork                          RoamingNetwork,
+                                                               Timestamped<RoamingNetworkStatusTypes>   NewStatus,
+                                                               Timestamped<RoamingNetworkStatusTypes>?  OldStatus    = null,
+                                                               String?                                  DataSource   = null);
 
 }

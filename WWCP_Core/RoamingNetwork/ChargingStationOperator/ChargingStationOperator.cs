@@ -668,7 +668,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, NewValue, OldValue, DataSource)
 
         /// <summary>
         /// Update the static data.
@@ -700,7 +700,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, NewStatus, OldStatus, DataSource)
 
         /// <summary>
         /// Update the current admin status.
@@ -727,7 +727,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, NewStatus, OldStatus, DataSource)
 
         /// <summary>
         /// Update the current status.
@@ -1633,7 +1633,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, NewValue, OldValue = null, DataSource = null)
 
         /// <summary>
         /// Update the data of an charging pool.
@@ -1642,30 +1642,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The changed charging pool.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
+        /// <param name="OldValue">The optional old value of the changed property.</param>
+        /// <param name="DataSource">An optional data source or context for this data change.</param>
         internal async Task UpdateChargingPoolData(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    IChargingPool     ChargingPool,
                                                    String            PropertyName,
-                                                   Object?           OldValue,
-                                                   Object?           NewValue)
+                                                   Object?           NewValue,
+                                                   Object?           OldValue     = null,
+                                                   String?           DataSource   = null)
         {
 
-            var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
-            if (OnChargingPoolDataChangedLocal is not null)
-                await OnChargingPoolDataChangedLocal(Timestamp,
+            var onChargingPoolDataChanged = OnChargingPoolDataChanged;
+            if (onChargingPoolDataChanged is not null)
+                await onChargingPoolDataChanged(Timestamp,
                                                      EventTrackingId,
                                                      ChargingPool,
                                                      PropertyName,
+                                                     NewValue,
                                                      OldValue,
-                                                     NewValue);
+                                                     DataSource);
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingPoolAdminStatus(Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
+        #region (internal) UpdateChargingPoolAdminStatus(Timestamp, EventTrackingId, ChargingPool, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update a charging pool admin status.
@@ -1673,28 +1676,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
-        internal async Task UpdateChargingPoolAdminStatus(DateTime                                   Timestamp,
-                                                          EventTracking_Id                           EventTrackingId,
-                                                          IChargingPool                              ChargingPool,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
-                                                          Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
+        /// <param name="NewStatus">The new charging pool status.</param>
+        /// <param name="OldStatus">The old charging pool status.</param>
+        /// <param name="DataSource">An optional data source or context for this admin status change.</param>
+        internal async Task UpdateChargingPoolAdminStatus(DateTime                                    Timestamp,
+                                                          EventTracking_Id                            EventTrackingId,
+                                                          IChargingPool                               ChargingPool,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
+                                                          String?                                     DataSource   = null)
         {
 
-            var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
-            if (OnChargingPoolAdminStatusChangedLocal is not null)
-                await OnChargingPoolAdminStatusChangedLocal(Timestamp,
-                                                            EventTrackingId,
-                                                            ChargingPool,
-                                                            OldStatus,
-                                                            NewStatus);
+            var onChargingPoolAdminStatusChanged = OnChargingPoolAdminStatusChanged;
+            if (onChargingPoolAdminStatusChanged is not null)
+                await onChargingPoolAdminStatusChanged(Timestamp,
+                                                       EventTrackingId,
+                                                       ChargingPool,
+                                                       NewStatus,
+                                                       OldStatus,
+                                                       DataSource);
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingPoolStatus     (Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
+        #region (internal) UpdateChargingPoolStatus     (Timestamp, EventTrackingId, ChargingPool, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update a charging pool status.
@@ -1702,22 +1708,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
-        internal async Task UpdateChargingPoolStatus(DateTime                              Timestamp,
-                                                     EventTracking_Id                      EventTrackingId,
-                                                     IChargingPool                         ChargingPool,
-                                                     Timestamped<ChargingPoolStatusTypes>  OldStatus,
-                                                     Timestamped<ChargingPoolStatusTypes>  NewStatus)
+        /// <param name="NewStatus">The new charging pool status.</param>
+        /// <param name="OldStatus">The optional old charging pool status.</param>
+        /// <param name="DataSource">An optional data source or context for this admin status change.</param>
+        internal async Task UpdateChargingPoolStatus(DateTime                               Timestamp,
+                                                     EventTracking_Id                       EventTrackingId,
+                                                     IChargingPool                          ChargingPool,
+                                                     Timestamped<ChargingPoolStatusTypes>   NewStatus,
+                                                     Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
+                                                     String?                                DataSource   = null)
         {
 
-            var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
-            if (OnChargingPoolStatusChangedLocal is not null)
-                await OnChargingPoolStatusChangedLocal(Timestamp,
-                                                       EventTrackingId,
-                                                       ChargingPool,
-                                                       OldStatus,
-                                                       NewStatus);
+            var onChargingPoolStatusChanged = OnChargingPoolStatusChanged;
+            if (onChargingPoolStatusChanged is not null)
+                await onChargingPoolStatusChanged(Timestamp,
+                                                  EventTrackingId,
+                                                  ChargingPool,
+                                                  NewStatus,
+                                                  OldStatus,
+                                                  DataSource);
 
         }
 
@@ -2168,7 +2177,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, NewValue, OldValue = null, DataSource = null)
 
         /// <summary>
         /// Update the data of a charging station.
@@ -2177,30 +2186,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The changed charging station.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
+        /// <param name="OldValue">The optional old value of the changed property.</param>
+        /// <param name="DataSource">An optional data source or context for this charging station data update.</param>
         internal async Task UpdateChargingStationData(DateTime          Timestamp,
                                                       EventTracking_Id  EventTrackingId,
                                                       IChargingStation  ChargingStation,
                                                       String            PropertyName,
-                                                      Object?           OldValue,
-                                                      Object?           NewValue)
+                                                      Object?           NewValue,
+                                                      Object?           OldValue     = null,
+                                                      String?           DataSource   = null)
         {
 
-            var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
-            if (OnChargingStationDataChangedLocal is not null)
-                await OnChargingStationDataChangedLocal(Timestamp,
-                                                        EventTrackingId,
-                                                        ChargingStation,
-                                                        PropertyName,
-                                                        OldValue,
-                                                        NewValue);
+            var onChargingStationDataChanged = OnChargingStationDataChanged;
+            if (onChargingStationDataChanged is not null)
+                await onChargingStationDataChanged(Timestamp,
+                                                   EventTrackingId,
+                                                   ChargingStation,
+                                                   PropertyName,
+                                                   NewValue,
+                                                   OldValue,
+                                                   DataSource);
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingStationAdminStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationAdminStatus(Timestamp, EventTrackingId, ChargingStation, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current charging station admin status.
@@ -2210,49 +2222,55 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
-                                                             EventTracking_Id                              EventTrackingId,
-                                                             IChargingStation                              ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
+        /// <param name="DataSource">An optional data source or context for this charging station admin update.</param>
+        internal async Task UpdateChargingStationAdminStatus(DateTime                                       Timestamp,
+                                                             EventTracking_Id                               EventTrackingId,
+                                                             IChargingStation                               ChargingStation,
+                                                             Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
+                                                             Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
+                                                             String?                                        DataSource   = null)
         {
 
-            var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
-            if (OnChargingStationAdminStatusChangedLocal is not null)
-                await OnChargingStationAdminStatusChangedLocal(Timestamp,
-                                                               EventTrackingId,
-                                                               ChargingStation,
-                                                               OldStatus,
-                                                               NewStatus);
+            var onChargingStationAdminStatusChanged = OnChargingStationAdminStatusChanged;
+            if (onChargingStationAdminStatusChanged is not null)
+                await onChargingStationAdminStatusChanged(Timestamp,
+                                                          EventTrackingId,
+                                                          ChargingStation,
+                                                          NewStatus,
+                                                          OldStatus,
+                                                          DataSource);
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingStationStatus     (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationStatus     (Timestamp, EventTrackingId, ChargingStation, NewStatus, OldStatus = null, DataSource = null)
 
         /// <summary>
         /// Update a charging pool admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
-        internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
-                                                        EventTracking_Id                         EventTrackingId,
-                                                        IChargingStation                         ChargingStation,
-                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old aggregated charging station status.</param>
+        /// <param name="NewStatus">The new aggregated charging station status.</param>
+        /// <param name="DataSource">An optional data source or context for this charging pool admin status update.</param>
+        internal async Task UpdateChargingStationStatus(DateTime                                  Timestamp,
+                                                        EventTracking_Id                          EventTrackingId,
+                                                        IChargingStation                          ChargingStation,
+                                                        Timestamped<ChargingStationStatusTypes>   NewStatus,
+                                                        Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
+                                                        String?                                   DataSource   = null)
         {
 
-            var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
-            if (OnChargingStationStatusChangedLocal is not null)
-                await OnChargingStationStatusChangedLocal(Timestamp,
-                                                          EventTrackingId,
-                                                          ChargingStation,
-                                                          OldStatus,
-                                                          NewStatus);
+            var onChargingStationStatusChanged = OnChargingStationStatusChanged;
+            if (onChargingStationStatusChanged is not null)
+                await onChargingStationStatusChanged(Timestamp,
+                                                     EventTrackingId,
+                                                     ChargingStation,
+                                                     NewStatus,
+                                                     OldStatus,
+                                                     DataSource);
 
         }
 
@@ -3378,7 +3396,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, NewValue,       OldValue       = null)
+        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, NewValue,       OldValue       = null, DataSource = null)
 
         /// <summary>
         /// Update the static data of an EVSE.
@@ -3389,12 +3407,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The optional old value of the changed property.</param>
+        /// <param name="DataSource">An optional data source or context for this EVSE data update.</param>
         internal async Task UpdateEVSEData(DateTime          Timestamp,
                                            EventTracking_Id  EventTrackingId,
                                            IEVSE             EVSE,
                                            String            PropertyName,
                                            Object?           NewValue,
-                                           Object?           OldValue   = null)
+                                           Object?           OldValue     = null,
+                                           String?           DataSource   = null)
         {
 
             try
@@ -3407,7 +3427,8 @@ namespace cloud.charging.open.protocols.WWCP
                                             EVSE,
                                             PropertyName,
                                             NewValue,
-                                            OldValue);
+                                            OldValue,
+                                            DataSource);
 
             }
             catch (Exception e)
@@ -3419,7 +3440,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, NewAdminStatus, OldAdminStatus = null)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, NewAdminStatus, OldAdminStatus = null, DataSource = null)
 
         /// <summary>
         /// Update the current admin status of an EVSE.
@@ -3429,11 +3450,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="NewAdminStatus">The new EVSE admin status.</param>
         /// <param name="OldAdminStatus">The optional old EVSE admin status.</param>
+        /// <param name="DataSource">An optional data source or context for this EVSE admin status update.</param>
         internal async Task UpdateEVSEAdminStatus(DateTime                            Timestamp,
                                                   EventTracking_Id                    EventTrackingId,
                                                   IEVSE                               EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
-                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null)
+                                                  Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
+                                                  String?                             DataSource       = null)
         {
 
             try
@@ -3445,7 +3468,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                    EventTrackingId,
                                                    EVSE,
                                                    NewAdminStatus,
-                                                   OldAdminStatus);
+                                                   OldAdminStatus,
+                                                   DataSource);
 
             }
             catch (Exception e)
@@ -3457,7 +3481,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, NewStatus,      OldStatus      = null)
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, NewStatus,      OldStatus      = null, DataSource = null)
 
         /// <summary>
         /// Update the current status of an EVSE.
@@ -3467,11 +3491,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
         /// <param name="OldStatus">The optional old EVSE status.</param>
+        /// <param name="DataSource">An optional data source or context for this EVSE status update.</param>
         internal async Task UpdateEVSEStatus(DateTime                       Timestamp,
                                              EventTracking_Id               EventTrackingId,
                                              IEVSE                          EVSE,
                                              Timestamped<EVSEStatusTypes>   NewStatus,
-                                             Timestamped<EVSEStatusTypes>?  OldStatus   = null)
+                                             Timestamped<EVSEStatusTypes>?  OldStatus    = null,
+                                             String?                        DataSource   = null)
         {
 
             try
@@ -3483,7 +3509,8 @@ namespace cloud.charging.open.protocols.WWCP
                                               EventTrackingId,
                                               EVSE,
                                               NewStatus,
-                                              OldStatus);
+                                              OldStatus,
+                                              DataSource);
 
             }
             catch (Exception e)

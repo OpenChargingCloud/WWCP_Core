@@ -253,8 +253,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 EventTrackingId,
                                                                 EVSE,
                                                                 PropertyName,
+                                                                NewValue,
                                                                 OldValue,
-                                                                NewValue) => {
+                                                                dataSource) => {
 
                         evseDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -267,8 +268,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                   EventTrackingId,
                                                                   EVSE,
                                                                   PropertyName,
+                                                                  NewValue,
                                                                   OldValue,
-                                                                  NewValue) => {
+                                                                  dataSource) => {
 
                         chargingStationEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -281,8 +283,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                              EventTrackingId,
                                                              EVSE,
                                                              PropertyName,
+                                                             NewValue,
                                                              OldValue,
-                                                             NewValue) => {
+                                                             dataSource) => {
 
                         chargingPoolEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -292,11 +295,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     var chargingStationOperatorEVSEDataChanges = new List<String>();
 
                     DE_GEF.OnEVSEDataChanged += async (Timestamp,
-                                                             EventTrackingId,
-                                                             EVSE,
-                                                             PropertyName,
-                                                             OldValue,
-                                                             NewValue) => {
+                                                       EventTrackingId,
+                                                       EVSE,
+                                                       PropertyName,
+                                                       NewValue,
+                                                       OldValue,
+                                                       dataSource) => {
 
                         chargingStationOperatorEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -309,8 +313,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                EventTrackingId,
                                                                EVSE,
                                                                PropertyName,
+                                                               NewValue,
                                                                OldValue,
-                                                               NewValue) => {
+                                                               dataSource) => {
 
                         roamingNetworkEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -335,7 +340,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 345.67m;
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
 
-                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
+                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new[] {
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(1), 567.89m),
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(2), 678.91m),
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
@@ -353,7 +358,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                     DE_GEF_E1234_5678_1.MaxPower           = 234.56m;
                     DE_GEF_E1234_5678_1.MaxPowerRealTime   = 456.78m;
-                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new Timestamped<Decimal>[] {
+                    DE_GEF_E1234_5678_1.MaxPowerPrognoses.Replace(new[] {
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(1), 567.89m),
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(2), 678.91m),
                                                                       new Timestamped<Decimal>(now + TimeSpan.FromMinutes(3), 789.12m)
@@ -528,8 +533,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                             EventTrackingId,
                                                             EVSE,
                                                             PropertyName,
+                                                            NewValue,
                                                             OldValue,
-                                                            NewValue) => {
+                                                            dataSource) => {
 
                     evseDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -542,8 +548,9 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                                 EventTrackingId,
                                                                 EVSE,
                                                                 PropertyName,
+                                                                NewValue,
                                                                 OldValue,
-                                                                NewValue) => {
+                                                                dataSource) => {
 
                     chargingStationEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -553,11 +560,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 var chargingPoolEVSEDataChanges = new List<String>();
 
                 DE_GEF_P0001.OnEVSEDataChanged += async (Timestamp,
-                                                            EventTrackingId,
-                                                            EVSE,
-                                                            PropertyName,
-                                                            OldValue,
-                                                            NewValue) => {
+                                                         EventTrackingId,
+                                                         EVSE,
+                                                         PropertyName,
+                                                         NewValue,
+                                                         OldValue,
+                                                         dataSource) => {
 
                     chargingPoolEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -567,11 +575,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 var chargingStationOperatorEVSEDataChanges = new List<String>();
 
                 DE_GEF.OnEVSEDataChanged += async (Timestamp,
-                                                            EventTrackingId,
-                                                            EVSE,
-                                                            PropertyName,
-                                                            OldValue,
-                                                            NewValue) => {
+                                                   EventTrackingId,
+                                                   EVSE,
+                                                   PropertyName,
+                                                   NewValue,
+                                                   OldValue,
+                                                   dataSource) => {
 
                     chargingStationOperatorEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -581,11 +590,12 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 var roamingNetworkEVSEDataChanges = new List<String>();
 
                 roamingNetwork.OnEVSEDataChanged += async (Timestamp,
-                                                            EventTrackingId,
-                                                            EVSE,
-                                                            PropertyName,
-                                                            OldValue,
-                                                            NewValue) => {
+                                                           EventTrackingId,
+                                                           EVSE,
+                                                           PropertyName,
+                                                           NewValue,
+                                                           OldValue,
+                                                           dataSource) => {
 
                     roamingNetworkEVSEDataChanges.Add(String.Concat(EVSE.ToString(), ".", PropertyName, ": ", OldValue?.ToString() ?? "", " => ", NewValue?.ToString() ?? ""));
 
@@ -665,7 +675,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                                                       Id:         EVSEGroup_Id.Parse(DE_GEF.Id, tariffGroup_VW.Id, "_T0.25_per_kWh"),
                                                       Name:       I18NString.Create(Languages.de, "0,25 € / kWh"),
                                                       Tariff:     tariff_0_25_kWh,
-                                                      MemberIds:  new EVSE_Id[] {
+                                                      MemberIds:  new[] {
                                                                       DE_GEF_E0001_AAAA_1.Id
                                                                   }
                                                   );
