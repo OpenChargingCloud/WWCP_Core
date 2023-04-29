@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="NewStatus">The new timestamped admin status of the roaming network.</param>
         /// <param name="OldStatus">The optional old timestamped admin status of the roaming network.</param>
-        /// <param name="DataSource">An optional data source or context for this roaming network status update.</param>
+        /// <param name="DataSource">An optional data source or context for the roaming network status update.</param>
         public RoamingNetworkStatusUpdate(RoamingNetwork_Id                        Id,
                                           Timestamped<RoamingNetworkStatusTypes>   NewStatus,
                                           Timestamped<RoamingNetworkStatusTypes>?  OldStatus    = null,
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current roaming network status.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="DataSource">An optional data source or context for this roaming network status update.</param>
+        /// <param name="DataSource">An optional data source or context for the roaming network status update.</param>
         public static RoamingNetworkStatusUpdate Snapshot(IRoamingNetwork  RoamingNetwork,
                                                           String?          DataSource   = null)
 

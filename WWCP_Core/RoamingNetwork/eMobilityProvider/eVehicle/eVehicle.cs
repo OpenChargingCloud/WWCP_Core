@@ -606,7 +606,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        String            PropertyName,
                                        Object?           NewValue,
                                        Object?           OldValue     = null,
-                                       String?           DataSource   = null)
+                                       Context?          DataSource   = null)
         {
 
             var onDataChanged = OnDataChanged;
@@ -636,7 +636,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               EventTracking_Id                        EventTrackingId,
                                               Timestamped<eVehicleAdminStatusTypes>   NewStatus,
                                               Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
-                                              String?                                 DataSource   = null)
+                                              Context?                                DataSource   = null)
         {
 
             await OnAdminStatusChanged?.Invoke(Timestamp,
@@ -663,7 +663,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          EventTracking_Id                   EventTrackingId,
                                          Timestamped<eVehicleStatusTypes>   NewStatus,
                                          Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
-                                         String?                            DataSource   = null)
+                                         Context?                           DataSource   = null)
         {
 
             await OnStatusChanged?.Invoke(Timestamp,

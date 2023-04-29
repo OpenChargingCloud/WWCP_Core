@@ -33,14 +33,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Indicates whether this EVSE status types is null or empty.
         /// </summary>
-        /// <param name="EVSEStatusType">A EVSE status type.</param>
+        /// <param name="EVSEStatusType">An EVSE status type.</param>
         public static Boolean IsNullOrEmpty(this EVSEStatusTypes? EVSEStatusType)
             => !EVSEStatusType.HasValue || EVSEStatusType.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this EVSE status types is null or empty.
         /// </summary>
-        /// <param name="EVSEStatusType">A EVSE status type.</param>
+        /// <param name="EVSEStatusType">An EVSE status type.</param>
         public static Boolean IsNotNullOrEmpty(this EVSEStatusTypes? EVSEStatusType)
             => EVSEStatusType.HasValue && EVSEStatusType.Value.IsNotNullOrEmpty;
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The status type of a EVSE.
+    /// The status type of an EVSE.
     /// </summary>
     public readonly struct EVSEStatusTypes : IId,
                                              IEquatable<EVSEStatusTypes>,
@@ -102,16 +102,16 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a EVSE status type.
+        /// Parse the given string as an EVSE status type.
         /// </summary>
-        /// <param name="Text">A text representation of a EVSE status type.</param>
+        /// <param name="Text">A text representation of an EVSE status type.</param>
         public static EVSEStatusTypes Parse(String Text)
         {
 
-            if (TryParse(Text, out EVSEStatusTypes evseStatusType))
+            if (TryParse(Text, out var evseStatusType))
                 return evseStatusType;
 
-            throw new ArgumentException("Invalid text representation of a EVSE status type: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of an EVSE status type: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -121,13 +121,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a EVSE status type.
+        /// Try to parse the given string as an EVSE status type.
         /// </summary>
-        /// <param name="Text">A text representation of a EVSE status type.</param>
+        /// <param name="Text">A text representation of an EVSE status type.</param>
         public static EVSEStatusTypes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out EVSEStatusTypes evseStatusType))
+            if (TryParse(Text, out var evseStatusType))
                 return evseStatusType;
 
             return null;
@@ -139,9 +139,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region (static) TryParse(Text, out EVSEStatusType)
 
         /// <summary>
-        /// Parse the given string as a EVSE status type.
+        /// Parse the given string as an EVSE status type.
         /// </summary>
-        /// <param name="Text">A text representation of a EVSE status type.</param>
+        /// <param name="Text">A text representation of an EVSE status type.</param>
         /// <param name="EVSEStatusType">The parsed EVSE status type.</param>
         public static Boolean TryParse(String Text, out EVSEStatusTypes EVSEStatusType)
         {
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region Static members
+        #region Static definitions
 
         /// <summary>
         /// Unknown status of the EVSE.
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatusType1">A EVSE status type.</param>
+        /// <param name="EVSEStatusType1">An EVSE status type.</param>
         /// <param name="EVSEStatusType2">Another EVSE status type.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSEStatusTypes EVSEStatusType1,
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatusType1">A EVSE status type.</param>
+        /// <param name="EVSEStatusType1">An EVSE status type.</param>
         /// <param name="EVSEStatusType2">Another EVSE status type.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEStatusTypes EVSEStatusType1,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatusType1">A EVSE status type.</param>
+        /// <param name="EVSEStatusType1">An EVSE status type.</param>
         /// <param name="EVSEStatusType2">Another EVSE status type.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSEStatusTypes EVSEStatusType1,
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatusType1">A EVSE status type.</param>
+        /// <param name="EVSEStatusType1">An EVSE status type.</param>
         /// <param name="EVSEStatusType2">Another EVSE status type.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEStatusTypes EVSEStatusType1,
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatusType1">A EVSE status type.</param>
+        /// <param name="EVSEStatusType1">An EVSE status type.</param>
         /// <param name="EVSEStatusType2">Another EVSE status type.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSEStatusTypes EVSEStatusType1,
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatusType1">A EVSE status type.</param>
+        /// <param name="EVSEStatusType1">An EVSE status type.</param>
         /// <param name="EVSEStatusType2">Another EVSE status type.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEStatusTypes EVSEStatusType1,
@@ -361,12 +361,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two EVSE status types.
         /// </summary>
-        /// <param name="Object">A EVSE status type to compare with.</param>
+        /// <param name="Object">An EVSE status type to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is EVSEStatusTypes evseStatusType
                    ? CompareTo(evseStatusType)
-                   : throw new ArgumentException("The given object is not a EVSE status type!",
+                   : throw new ArgumentException("The given object is not an EVSE status type!",
                                                  nameof(Object));
 
         #endregion
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two EVSE status types.
         /// </summary>
-        /// <param name="EVSEStatusType">A EVSE status type to compare with.</param>
+        /// <param name="EVSEStatusType">An EVSE status type to compare with.</param>
         public Int32 CompareTo(EVSEStatusTypes EVSEStatusType)
 
             => String.Compare(InternalId,
@@ -394,7 +394,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two EVSE status types for equality.
         /// </summary>
-        /// <param name="Object">A EVSE status type to compare with.</param>
+        /// <param name="Object">An EVSE status type to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is EVSEStatusTypes evseStatusType &&
@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two EVSE status types for equality.
         /// </summary>
-        /// <param name="EVSEStatusType">A EVSE status type to compare with.</param>
+        /// <param name="EVSEStatusType">An EVSE status type to compare with.</param>
         public Boolean Equals(EVSEStatusTypes EVSEStatusType)
 
             => String.Equals(InternalId,

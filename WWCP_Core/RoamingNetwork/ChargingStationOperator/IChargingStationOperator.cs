@@ -958,7 +958,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region EVSE groups
 
         /// <summary>
-        /// Called whenever a EVSE group will be or was added.
+        /// Called whenever an EVSE group will be or was added.
         /// </summary>
         IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupAddition { get; }
 
@@ -1136,7 +1136,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Called whenever a EVSE group will be or was removed.
+        /// Called whenever an EVSE group will be or was removed.
         /// </summary>
         IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupRemoval { get; }
 

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
     public delegate void CPStateChangedDelegate(IRemoteChargingPool       ChargingPool,
                                                 ChargingPoolStatusTypes   NewStatus,
                                                 ChargingPoolStatusTypes?  OldStatus    = null,
-                                                String?                   DataSource   = null);
+                                                Context?                  DataSource   = null);
 
 
 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                  String               PropertyName,
                                                                  Object?              NewValue,
                                                                  Object?              OldValue     = null,
-                                                                 String?              DataSource   = null);
+                                                                 Context?             DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the admin status of the charging station changed.
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         IRemoteChargingPool                         RemoteChargingPool,
                                                                         Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
                                                                         Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
-                                                                        String?                                     DataSource   = null);
+                                                                        Context?                                    DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station changed.
@@ -81,6 +81,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                    IRemoteChargingPool                    RemoteChargingPool,
                                                                    Timestamped<ChargingPoolStatusTypes>   NewStatus,
                                                                    Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
-                                                                   String?                                DataSource   = null);
+                                                                   Context?                               DataSource   = null);
 
 }

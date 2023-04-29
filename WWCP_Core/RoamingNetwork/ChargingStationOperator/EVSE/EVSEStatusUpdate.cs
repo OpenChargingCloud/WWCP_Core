@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional data source or context for this EVSE status update.
         /// </summary>
-        public String?                        DataSource    { get; }
+        public Context?                       DataSource    { get; }
 
         #endregion
 
@@ -64,11 +64,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
         /// <param name="OldStatus">The optional old timestamped status of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for this EVSE status change.</param>
+        /// <param name="DataSource">An optional data source or context for the EVSE status update.</param>
         public EVSEStatusUpdate(EVSE_Id                        Id,
                                 Timestamped<EVSEStatusTypes>   NewStatus,
                                 Timestamped<EVSEStatusTypes>?  OldStatus    = null,
-                                String?                        DataSource   = null)
+                                Context?                       DataSource   = null)
 
         {
 
@@ -98,9 +98,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current EVSE status.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for this EVSE status update.</param>
-        public static EVSEStatusUpdate Snapshot(IEVSE    EVSE,
-                                                String?  DataSource   = null)
+        /// <param name="DataSource">An optional data source or context for the EVSE status update.</param>
+        public static EVSEStatusUpdate Snapshot(IEVSE     EVSE,
+                                                Context?  DataSource   = null)
 
             => new (EVSE.Id,
                     EVSE.Status,

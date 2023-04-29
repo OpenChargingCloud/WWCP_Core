@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP.Net.IO.JSON
         /// <summary>
         /// Return a JSON representation of the given EVSE group.
         /// </summary>
-        /// <param name="EVSEGroup">A EVSE group.</param>
+        /// <param name="EVSEGroup">An EVSE group.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
         public static JObject? ToJSON(this EVSEGroup  EVSEGroup,
                                       Boolean         Embedded                          = false,

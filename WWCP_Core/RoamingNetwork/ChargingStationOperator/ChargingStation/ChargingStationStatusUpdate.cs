@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional data source or context for this charging station status update.
         /// </summary>
-        public String?                                   DataSource    { get; }
+        public Context?                                  DataSource    { get; }
 
         #endregion
 
@@ -64,11 +64,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging station.</param>
         /// <param name="NewStatus">The new timestamped status of the charging station.</param>
         /// <param name="OldStatus">The optional old timestamped status of the charging station.</param>
-        /// <param name="DataSource">An optional data source or context for this charging station status update.</param>
+        /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
         public ChargingStationStatusUpdate(ChargingStation_Id                        Id,
                                            Timestamped<ChargingStationStatusTypes>   NewStatus,
                                            Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
-                                           String?                                   DataSource   = null)
+                                           Context?                                  DataSource   = null)
 
         {
 
@@ -98,9 +98,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current charging station status.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="DataSource">An optional data source or context for this charging station status update.</param>
+        /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
         public static ChargingStationStatusUpdate Snapshot(IChargingStation  ChargingStation,
-                                                           String?           DataSource   = null)
+                                                           Context?          DataSource   = null)
 
             => new (ChargingStation.Id,
                     ChargingStation.Status,

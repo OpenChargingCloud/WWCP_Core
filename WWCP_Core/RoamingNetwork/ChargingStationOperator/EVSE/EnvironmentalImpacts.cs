@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The admin status type of a EVSE.
+    /// The admin status type of an EVSE.
     /// </summary>
     public readonly struct EnvironmentalImpacts : IId,
                                                   IEquatable <EnvironmentalImpacts>,

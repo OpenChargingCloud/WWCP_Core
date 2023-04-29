@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// A EVSE group exception.
+    /// An EVSE group exception.
     /// </summary>
     public class EVSEGroupException : ChargingStationOperatorException
     {

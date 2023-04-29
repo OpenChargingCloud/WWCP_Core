@@ -631,7 +631,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSE_Id EVSEId1,
@@ -646,7 +646,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSE_Id EVSEId1,
@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSE_Id EVSEId1,
@@ -676,7 +676,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSE_Id EVSEId1,
@@ -691,7 +691,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSE_Id EVSEId1,
@@ -706,7 +706,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId1">An EVSE identification.</param>
         /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSE_Id EVSEId1,

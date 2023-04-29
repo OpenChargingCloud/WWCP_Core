@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional data source or context for this charging pool admin status change.
         /// </summary>
-        public String?                                     DataSource    { get; }
+        public Context?                                    DataSource    { get; }
 
         #endregion
 
@@ -64,11 +64,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
         /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-        /// <param name="DataSource">An optional data source or context for this charging pool admin status update.</param>
+        /// <param name="DataSource">An optional data source or context for the charging pool admin status update.</param>
         public ChargingPoolAdminStatusUpdate(ChargingPool_Id                             Id,
                                              Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
                                              Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
-                                             String?                                     DataSource   = null)
+                                             Context?                                    DataSource   = null)
 
         {
 
@@ -98,9 +98,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current charging pool admin status.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="DataSource">An optional data source or context for this charging pool admin status update.</param>
+        /// <param name="DataSource">An optional data source or context for the charging pool admin status update.</param>
         public static ChargingPoolAdminStatusUpdate Snapshot(IChargingPool  ChargingPool,
-                                                             String?        DataSource   = null)
+                                                             Context?       DataSource   = null)
 
             => new (ChargingPool.Id,
                     ChargingPool.AdminStatus,

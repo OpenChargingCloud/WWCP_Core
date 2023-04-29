@@ -1326,6 +1326,48 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #endregion
 
 
+        public void SetAdminStatus(EVSEAdminStatus EVSEAdminStatus)
+        {
+
+            //adminStatusSchedule.Insert(EVSEAdminStatus.Status,
+            //                           EVSEAdminStatus.Timestamp,
+            //                           EVSEAdminStatus.DataSource);
+
+        }
+
+        public void SetAdminStatus(EVSEAdminStatusUpdate EVSEAdminStatusUpdate)
+        {
+
+        }
+
+        public void SetStatus(EVSEStatus EVSEStatus)
+        {
+
+            statusSchedule.Insert(EVSEStatus.Status,
+                                  EVSEStatus.Timestamp,
+                                  EVSEStatus.DataSource);
+
+        }
+
+        public void SetStatus(EVSEStatusUpdate EVSEStatusUpdate)
+        {
+
+            statusSchedule.Insert(EVSEStatusUpdate.NewStatus,
+                                  EVSEStatusUpdate.DataSource);
+
+        }
+
+        public void SetEnergyStatus(EVSEEnergyStatus EVSEEnergyStatus)
+        {
+
+        }
+
+        public void SetEnergyStatus(EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate)
+        {
+
+        }
+
+
         #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
         /// <summary>
@@ -1339,7 +1381,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               EventTracking_Id                    EventTrackingId,
                                               Timestamped<EVSEAdminStatusTypes>   NewStatus,
                                               Timestamped<EVSEAdminStatusTypes>?  OldStatus    = null,
-                                              String?                             DataSource   = null)
+                                              Context?                            DataSource   = null)
         {
 
             var onAdminStatusChanged = OnAdminStatusChanged;
@@ -1368,7 +1410,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                          EventTracking_Id               EventTrackingId,
                                          Timestamped<EVSEStatusTypes>   NewStatus,
                                          Timestamped<EVSEStatusTypes>?  OldStatus    = null,
-                                         String?                        DataSource   = null)
+                                         Context?                       DataSource   = null)
         {
 
             var onStatusChanged = OnStatusChanged;

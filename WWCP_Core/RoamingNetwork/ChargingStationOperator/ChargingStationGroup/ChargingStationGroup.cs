@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       ChargingStationGroup                                ChargingStationGroup,
                                                       Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
                                                       Timestamped<ChargingStationGroupAdminStatusTypes>?  OldStatus    = null,
-                                                      String?                                             DataSource   = null);
+                                                      Context?                                            DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the status changed.
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  ChargingStationGroup                           ChargingStationGroup,
                                                  Timestamped<ChargingStationGroupStatusTypes>   NewStatus,
                                                  Timestamped<ChargingStationGroupStatusTypes>?  OldStatus    = null,
-                                                 String?                                        DataSource   = null);
+                                                 Context?                                       DataSource   = null);
 
 
     public class AutoIncludeMemberIds
@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               EventTracking_Id                                    EventTrackingId,
                                               Timestamped<ChargingStationGroupAdminStatusTypes>   NewStatus,
                                               Timestamped<ChargingStationGroupAdminStatusTypes>?  OldStatus    = null,
-                                              String?                                             DataSource   = null)
+                                              Context?                                            DataSource   = null)
         {
 
             await OnAdminStatusChanged?.Invoke(Timestamp,
@@ -645,7 +645,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                 String            PropertyName,
                                                 Object?           NewValue,
                                                 Object?           OldValue     = null,
-                                                String?           DataSource   = null)
+                                                Context?          DataSource   = null)
         {
 
             var onChargingStationDataChanged = OnChargingStationDataChanged;
@@ -677,7 +677,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        ChargingStation                                ChargingStation,
                                                        Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
                                                        Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
-                                                       String?                                        DataSource   = null)
+                                                       Context?                                       DataSource   = null)
         {
 
             var onChargingStationAdminStatusChanged = OnChargingStationAdminStatusChanged;
@@ -708,7 +708,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   ChargingStation                           ChargingStation,
                                                   Timestamped<ChargingStationStatusTypes>   NewStatus,
                                                   Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
-                                                  String?                                   DataSource   = null)
+                                                  Context?                                  DataSource   = null)
         {
 
             var onChargingStationStatusChanged = OnChargingStationStatusChanged;

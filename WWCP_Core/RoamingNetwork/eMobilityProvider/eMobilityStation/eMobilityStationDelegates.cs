@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                String            PropertyName,
                                                                Object?           NewValue,
                                                                Object?           OldValue     = null,
-                                                               String?           DataSource   = null);
+                                                               Context?          DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the admin status of the charging station changed.
@@ -62,6 +62,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                                       eMobilityStation                                eMobilityStation,
                                                                       Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
                                                                       Timestamped<eMobilityStationAdminStatusTypes>?  OldStatus    = null,
-                                                                      String?                                         DataSource   = null);
+                                                                      Context?                                        DataSource   = null);
 
 }

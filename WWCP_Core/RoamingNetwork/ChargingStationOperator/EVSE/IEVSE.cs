@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// An enumeration of all available charging tariffs at this EVSE.
         /// </summary>
         [Optional, SlowData]
-        ReactiveSet<ChargingTariff>            ChargingTariffs             { get; }
+        ReactiveSet<ChargingTariff>            ChargingTariffs              { get; }
 
 
         /// <summary>
@@ -287,6 +287,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         Boolean                                IsFreeOfCharge               { get; set; }
 
+        /// <summary>
+        /// The timestamp of the last status update.
+        /// This might be different from the timestamp of the last status change,
+        /// when the status was imported from a third party.
+        /// </summary>
+        [Optional]
         DateTime?                              LastStatusUpdate             { get; set; }
 
         #endregion
@@ -313,6 +319,17 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
+
+
+        void SetAdminStatus (EVSEAdminStatus         EVSEAdminStatus);
+        void SetAdminStatus (EVSEAdminStatusUpdate   EVSEAdminStatusUpdate);
+
+        void SetStatus      (EVSEStatus              EVSEStatus);
+        void SetStatus      (EVSEStatusUpdate        EVSEStatusUpdate);
+
+        void SetEnergyStatus(EVSEEnergyStatus        EVSEEnergyStatus);
+        void SetEnergyStatus(EVSEEnergyStatusUpdate  EVSEEnergyStatusUpdate);
+
 
         /// <summary>
         /// Update this EVSE with the data of the other EVSE.

@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                        String            PropertyName,
                                                        Object?           NewValue,
                                                        Object?           OldValue     = null,
-                                                       String?           DataSource   = null);
+                                                       Context?          DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the admin status of the electric vehicle changed.
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                               eVehicle                                eVehicle,
                                                               Timestamped<eVehicleAdminStatusTypes>   NewStatus,
                                                               Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
-                                                              String?                                 DataSource   = null);
+                                                              Context?                                DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the electric vehicle changed.
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                          eVehicle                           eVehicle,
                                                          Timestamped<eVehicleStatusTypes>   NewStatus,
                                                          Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
-                                                         String?                            DataSource   = null);
+                                                         Context?                           DataSource   = null);
 
     /// <summary>
     /// A delegate called whenever the geo coordinate of the electric vehicle changed.
@@ -90,6 +90,6 @@ namespace cloud.charging.open.protocols.WWCP
                                                               eVehicle                     eVehicle,
                                                               Timestamped<GeoCoordinate>   NewGeoCoordinate,
                                                               Timestamped<GeoCoordinate>?  OldGeoCoordinate   = null,
-                                                              String?                      DataSource         = null);
+                                                              Context?                     DataSource         = null);
 
 }

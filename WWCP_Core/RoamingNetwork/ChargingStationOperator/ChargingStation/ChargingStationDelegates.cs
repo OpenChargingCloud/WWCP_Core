@@ -38,14 +38,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     /// <param name="OldValue">The optional old value of the changed property.</param>
-    /// <param name="DataSource">An optional data source or context for this charging station data change.</param>
+    /// <param name="DataSource">An optional data source or context for the charging station data change.</param>
     public delegate Task OnChargingStationDataChangedDelegate(DateTime          Timestamp,
                                                               EventTracking_Id  EventTrackingId,
                                                               IChargingStation  ChargingStation,
                                                               String            PropertyName,
                                                               Object?           NewValue,
                                                               Object?           OldValue,
-                                                              String?           DataSource);
+                                                              Context?          DataSource);
 
     /// <summary>
     /// A delegate called whenever the admin status of the charging station changed.
@@ -55,13 +55,13 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStation">The updated charging station.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging station.</param>
     /// <param name="OldStatus">The optional old timestamped admin status of the charging station.</param>
-    /// <param name="DataSource">An optional data source or context for this charging station admin status change.</param>
+    /// <param name="DataSource">An optional data source or context for the charging station admin status update.</param>
     public delegate Task OnChargingStationAdminStatusChangedDelegate(DateTime                                       Timestamp,
                                                                      EventTracking_Id                               EventTrackingId,
                                                                      IChargingStation                               ChargingStation,
                                                                      Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
                                                                      Timestamped<ChargingStationAdminStatusTypes>?  OldStatus,
-                                                                     String?                                        DataSource);
+                                                                     Context?                                       DataSource);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station changed.
@@ -71,12 +71,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingStation">The updated charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
     /// <param name="OldStatus">The optional old timestamped status of the charging station.</param>
-    /// <param name="DataSource">An optional data source or context for this charging station status change.</param>
+    /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
     public delegate Task OnChargingStationStatusChangedDelegate(DateTime                                  Timestamp,
                                                                 EventTracking_Id                          EventTrackingId,
                                                                 IChargingStation                          ChargingStation,
                                                                 Timestamped<ChargingStationStatusTypes>   NewStatus,
                                                                 Timestamped<ChargingStationStatusTypes>?  OldStatus,
-                                                                String?                                   DataSource);
+                                                                Context?                                  DataSource);
 
 }

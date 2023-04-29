@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               EventTracking_Id                            EventTrackingId,
                                               Timestamped<ChargingPoolAdminStatusTypes>   NewStatus,
                                               Timestamped<ChargingPoolAdminStatusTypes>?  OldStatus    = null,
-                                              String?                                     DataSource   = null)
+                                              Context?                                    DataSource   = null)
         {
 
             OnAdminStatusChanged?.Invoke(Timestamp,
@@ -551,7 +551,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                          EventTracking_Id                       EventTrackingId,
                                          Timestamped<ChargingPoolStatusTypes>   NewStatus,
                                          Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
-                                         String?                                DataSource   = null)
+                                         Context?                               DataSource   = null)
         {
 
             OnStatusChanged?.Invoke(Timestamp,

@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional data source or context for this charging pool status update.
         /// </summary>
-        public String?                                DataSource    { get; }
+        public Context?                               DataSource    { get; }
 
         #endregion
 
@@ -64,11 +64,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
         /// <param name="OldStatus">The optional old timestamped status of the charging pool.</param>
-        /// <param name="DataSource">An optional data source or context for this charging pool status update.</param>
+        /// <param name="DataSource">An optional data source or context for the charging pool status update.</param>
         public ChargingPoolStatusUpdate(ChargingPool_Id                        Id,
                                         Timestamped<ChargingPoolStatusTypes>   NewStatus,
                                         Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
-                                        String?                                DataSource   = null)
+                                        Context?                               DataSource   = null)
 
         {
 
@@ -98,9 +98,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current charging pool status.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="DataSource">An optional data source or context for this EVSE admin status update.</param>
+        /// <param name="DataSource">An optional data source or context for the EVSE admin status update.</param>
         public static ChargingPoolStatusUpdate Snapshot(IChargingPool  ChargingPool,
-                                                        String?        DataSource   = null)
+                                                        Context?       DataSource   = null)
 
             => new (ChargingPool.Id,
                     ChargingPool.Status,

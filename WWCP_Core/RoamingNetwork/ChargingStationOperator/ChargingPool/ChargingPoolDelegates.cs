@@ -38,14 +38,14 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     /// <param name="OldValue">The optional old value of the changed property.</param>
-    /// <param name="DataSource">An optional data source or context for this charging pool data change.</param>
+    /// <param name="DataSource">An optional data source or context for the charging pool data change.</param>
     public delegate Task OnChargingPoolDataChangedDelegate(DateTime          Timestamp,
                                                            EventTracking_Id  EventTrackingId,
                                                            IChargingPool     ChargingPool,
                                                            String            PropertyName,
                                                            Object?           NewValue,
                                                            Object?           OldValue     = null,
-                                                           String?           DataSource   = null);
+                                                           Context?          DataSource   = null);
 
 
     /// <summary>
@@ -56,13 +56,13 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingPool">The updated charging pool.</param>
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
     /// <param name="OldStatus">The optional old timestamped status of the charging pool.</param>
-    /// <param name="DataSource">An optional data source or context for this charging pool admin status change.</param>
+    /// <param name="DataSource">An optional data source or context for the charging pool admin status update.</param>
     public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                    Timestamp,
                                                                   EventTracking_Id                            EventTrackingId,
                                                                   IChargingPool                               ChargingPool,
                                                                   Timestamped<ChargingPoolAdminStatusTypes>   OldStatus,
                                                                   Timestamped<ChargingPoolAdminStatusTypes>?  NewStatus    = null,
-                                                                  String?                                     DataSource   = null);
+                                                                  Context?                                    DataSource   = null);
 
 
     /// <summary>
@@ -73,12 +73,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="ChargingPool">The updated charging pool.</param>
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
     /// <param name="OldStatus">The optional old timestamped status of the charging pool.</param>
-    /// <param name="DataSource">An optional data source or context for this charging pool status change.</param>
+    /// <param name="DataSource">An optional data source or context for the charging pool status update.</param>
     public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                               Timestamp,
                                                              EventTracking_Id                       EventTrackingId,
                                                              IChargingPool                          ChargingPool,
                                                              Timestamped<ChargingPoolStatusTypes>   NewStatus,
                                                              Timestamped<ChargingPoolStatusTypes>?  OldStatus    = null,
-                                                             String?                                DataSource   = null);
+                                                             Context?                               DataSource   = null);
 
 }

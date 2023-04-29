@@ -83,8 +83,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// contains the given pair of EVSE identification and admin status.
         /// </summary>
         /// <param name="EVSEAdminStatus">An enumeration of EVSEs and their current admin status.</param>
-        /// <param name="Id">A EVSE identification.</param>
-        /// <param name="AdminStatus">A EVSE admin status.</param>
+        /// <param name="Id">An EVSE identification.</param>
+        /// <param name="AdminStatus">An EVSE admin status.</param>
         public static Boolean Contains(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
                                        EVSE_Id                            Id,
                                        EVSEAdminStatusTypes               AdminStatus)
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The current admin status of a EVSE.
+    /// The current admin status of an EVSE.
     /// </summary>
     public class EVSEAdminStatus : AInternalData,
                                    IEquatable<EVSEAdminStatus>,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Take a snapshot of the current EVSE admin status.
         /// </summary>
-        /// <param name="EVSE">A EVSE.</param>
+        /// <param name="EVSE">An EVSE.</param>
         public static EVSEAdminStatus Snapshot(EVSE EVSE)
 
             => new (EVSE.Id,
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSEAdminStatus EVSEAdminStatus1,
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEAdminStatus EVSEAdminStatus1,
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSEAdminStatus EVSEAdminStatus1,
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEAdminStatus EVSEAdminStatus1,
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSEAdminStatus EVSEAdminStatus1,
@@ -319,7 +319,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEAdminStatus EVSEAdminStatus1,
@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => Object is EVSEAdminStatus evseAdminStatus
                    ? CompareTo(evseAdminStatus)
-                   : throw new ArgumentException("The given object is not a EVSE admin status!",
+                   : throw new ArgumentException("The given object is not an EVSE admin status!",
                                                  nameof(Object));
 
         #endregion
@@ -397,7 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two EVSE identifications for equality.
         /// </summary>
-        /// <param name="EVSEAdminStatus">A EVSE identification to compare with.</param>
+        /// <param name="EVSEAdminStatus">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EVSEAdminStatus? EVSEAdminStatus)
 

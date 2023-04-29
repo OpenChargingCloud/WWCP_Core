@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               EventTracking_Id                               EventTrackingId,
                                               Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
                                               Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
-                                              String?                                        DataSource   = null)
+                                              Context?                                       DataSource   = null)
         {
 
             OnAdminStatusChanged?.Invoke(Timestamp,
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                          EventTracking_Id                          EventTrackingId,
                                          Timestamped<ChargingStationStatusTypes>   NewStatus,
                                          Timestamped<ChargingStationStatusTypes>?  OldStatus    = null,
-                                         String?                                   DataSource   = null)
+                                         Context?                                  DataSource   = null)
         {
 
             OnStatusChanged?.Invoke(Timestamp,
@@ -693,7 +693,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                      String    PropertyName,
                                      Object?   NewValue,
                                      Object?   OldValue     = null,
-                                     String?   DataSource   = null)
+                                     Context?  DataSource   = null)
         {
 
             OnEVSEDataChanged?.Invoke(Timestamp,
@@ -723,7 +723,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                   IEVSE                               RemoteEVSE,
                                                   Timestamped<EVSEAdminStatusTypes>   NewStatus,
                                                   Timestamped<EVSEAdminStatusTypes>?  OldStatus    = null,
-                                                  String?                             DataSource   = null)
+                                                  Context?                            DataSource   = null)
         {
 
             var onEVSEAdminStatusChanged = OnEVSEAdminStatusChanged;
@@ -754,7 +754,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                              IEVSE                          RemoteEVSE,
                                              Timestamped<EVSEStatusTypes>   NewStatus,
                                              Timestamped<EVSEStatusTypes>?  OldStatus    = null,
-                                             String?                        DataSource   = null)
+                                             Context?                       DataSource   = null)
         {
 
             var onEVSEStatusChanged = OnEVSEStatusChanged;

@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the EVSE property to update.</param>
         /// <param name="NewValue">The new value of the EVSE property to update.</param>
         /// <param name="OldValue">The optional old value of the EVSE property to update.</param>
-        /// <param name="DataSource">An optional data source or context for this data change.</param>
+        /// <param name="DataSource">An optional data source or context for the data change.</param>
         /// <param name="TransmissionType">Whether to send the EVSE update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.WWCP
                              String              PropertyName,
                              Object?             NewValue,
                              Object?             OldValue            = null,
-                             String?             DataSource          = null,
+                             Context?            DataSource          = null,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the charging station property to update.</param>
         /// <param name="NewValue">The new value of the charging station property to update.</param>
         /// <param name="OldValue">The optional old value of the charging station property to update.</param>
-        /// <param name="DataSource">An optional data source or context for this data change.</param>
+        /// <param name="DataSource">An optional data source or context for the data change.</param>
         /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.WWCP
                              String              PropertyName,
                              Object?             NewValue,
                              Object?             OldValue            = null,
-                             String?             DataSource          = null,
+                             Context?            DataSource          = null,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,
@@ -539,7 +539,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the charging pool property to update.</param>
         /// <param name="NewValue">The new value of the charging pool property to update.</param>
         /// <param name="OldValue">The optional old value of the charging pool property to update.</param>
-        /// <param name="DataSource">An optional data source or context for this data change.</param>
+        /// <param name="DataSource">An optional data source or context for the data change.</param>
         /// <param name="TransmissionType">Whether to send the charging pool update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -552,7 +552,7 @@ namespace cloud.charging.open.protocols.WWCP
                              String              PropertyName,
                              Object?             NewValue,
                              Object?             OldValue            = null,
-                             String?             DataSource          = null,
+                             Context?            DataSource          = null,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,
@@ -755,7 +755,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the charging station operator property to update.</param>
         /// <param name="NewValue">The new value of the charging station operator property to update.</param>
         /// <param name="OldValue">The optional old value of the charging station operator property to update.</param>
-        /// <param name="DataSource">An optional data source or context for this data change.</param>
+        /// <param name="DataSource">An optional data source or context for the data change.</param>
         /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -768,7 +768,7 @@ namespace cloud.charging.open.protocols.WWCP
                              String                    PropertyName,
                              Object?                   NewValue,
                              Object?                   OldValue            = null,
-                             String?                   DataSource          = null,
+                             Context?                  DataSource          = null,
                              TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                 Timestamp           = null,
@@ -960,7 +960,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the roaming network property to update.</param>
         /// <param name="NewValue">The new value of the roaming network property to update.</param>
         /// <param name="OldValue">The optinal old value of the roaming network property to update.</param>
-        /// <param name="DataSource">An optional data source or context for this data change.</param>
+        /// <param name="DataSource">An optional data source or context for the data change.</param>
         /// <param name="TransmissionType">Whether to send the charging station operator update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -973,7 +973,7 @@ namespace cloud.charging.open.protocols.WWCP
                              String              PropertyName,
                              Object?             NewValue,
                              Object?             OldValue            = null,
-                             String?             DataSource          = null,
+                             Context?            DataSource          = null,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,

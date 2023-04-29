@@ -695,7 +695,7 @@ namespace cloud.charging.open.protocols.WWCP
                                        String            PropertyName,
                                        Object?           NewValue,
                                        Object?           OldValue     = null,
-                                       String?           DataSource   = null)
+                                       Context?          DataSource   = null)
         {
 
             var onDataChanged = OnDataChanged;
@@ -725,7 +725,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               EventTracking_Id                                EventTrackingId,
                                               Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
                                               Timestamped<eMobilityStationAdminStatusTypes>?  OldStatus    = null,
-                                              String?                                         DataSource   = null)
+                                              Context?                                        DataSource   = null)
         {
 
             await OnAdminStatusChanged?.Invoke(Timestamp,
@@ -1094,7 +1094,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                String            PropertyName,
                                                Object?           NewValue,
                                                Object?           OldValue     = null,
-                                               String?           DataSource   = null)
+                                               Context?          DataSource   = null)
         {
 
             var onEVehicleDataChanged = OnEVehicleDataChanged;
@@ -1126,7 +1126,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       eVehicle                                eVehicle,
                                                       Timestamped<eVehicleAdminStatusTypes>   NewStatus,
                                                       Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
-                                                      String?                                 DataSource   = null)
+                                                      Context?                                DataSource   = null)
         {
 
             var OnEVehicleAdminStatusChangedLocal = OnEVehicleAdminStatusChanged;
@@ -1157,7 +1157,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  eVehicle                           eVehicle,
                                                  Timestamped<eVehicleStatusTypes>   NewStatus,
                                                  Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
-                                                 String?                            DataSource   = null)
+                                                 Context?                           DataSource   = null)
         {
 
             var OnEVehicleStatusChangedLocal = OnEVehicleStatusChanged;
@@ -1188,7 +1188,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       eVehicle                     eVehicle,
                                                       Timestamped<GeoCoordinate>   NewGeoCoordinate,
                                                       Timestamped<GeoCoordinate>?  OldGeoCoordinate   = null,
-                                                      String?                      DataSource         = null)
+                                                      Context?                     DataSource         = null)
         {
 
             var OnEVehicleGeoLocationChangedLocal = OnEVehicleGeoLocationChanged;

@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging station.</param>
         /// <param name="OldEnergyInfo">The old timestamped energy information of the EVSE.</param>
         /// <param name="NewEnergyInfo">The new timestamped energy information of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for this EVSE energy information update.</param>
+        /// <param name="DataSource">An optional data source or context for the EVSE energy information update.</param>
         public ChargingStationEnergyStatusUpdate(ChargingStation_Id        Id,
                                                  Timestamped<EnergyInfo>   NewEnergyInfo,
                                                  Timestamped<EnergyInfo>?  OldEnergyInfo   = null,

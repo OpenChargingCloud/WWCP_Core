@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional data source or context for this charging station status update.
         /// </summary>
-        public String?                                        DataSource    { get; }
+        public Context?                                       DataSource    { get; }
 
         #endregion
 
@@ -64,11 +64,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging station.</param>
         /// <param name="NewStatus">The new timestamped admin status of the charging station.</param>
         /// <param name="OldStatus">The optional old timestamped admin status of the charging station.</param>
-        /// <param name="DataSource">An optional data source or context for this charging station status change.</param>
+        /// <param name="DataSource">An optional data source or context for the charging station status update.</param>
         public ChargingStationAdminStatusUpdate(ChargingStation_Id                             Id,
                                                 Timestamped<ChargingStationAdminStatusTypes>   NewStatus,
                                                 Timestamped<ChargingStationAdminStatusTypes>?  OldStatus    = null,
-                                                String?                                        DataSource   = null)
+                                                Context?                                       DataSource   = null)
 
         {
 
@@ -98,9 +98,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current charging station admin status.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="DataSource">An optional data source or context for this EVSE status change.</param>
+        /// <param name="DataSource">An optional data source or context for the EVSE status update.</param>
         public static ChargingStationAdminStatusUpdate Snapshot(IChargingStation  ChargingStation,
-                                                                String?           DataSource   = null)
+                                                                Context?          DataSource   = null)
 
             => new (ChargingStation.Id,
                     ChargingStation.AdminStatus,

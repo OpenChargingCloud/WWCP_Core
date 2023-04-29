@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charging station operator.</param>
         /// <param name="NewStatus">The new timestamped admin status of the charging station operator.</param>
         /// <param name="OldStatus">The optional old timestamped admin status of the charging station operator.</param>
-        /// <param name="DataSource">An optional data source or context for this charging station operator admin status update.</param>
+        /// <param name="DataSource">An optional data source or context for the charging station operator admin status update.</param>
         public ChargingStationOperatorAdminStatusUpdate(ChargingStationOperator_Id                             Id,
                                                         Timestamped<ChargingStationOperatorAdminStatusTypes>   NewStatus,
                                                         Timestamped<ChargingStationOperatorAdminStatusTypes>?  OldStatus    = null,
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current charging station operator admin status.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// <param name="DataSource">An optional data source or context for this charging station operator admin status update.</param>
+        /// <param name="DataSource">An optional data source or context for the charging station operator admin status update.</param>
         public static ChargingStationOperatorAdminStatusUpdate Snapshot(IChargingStationOperator  ChargingStationOperator,
                                                                         String?                   DataSource   = null)
 

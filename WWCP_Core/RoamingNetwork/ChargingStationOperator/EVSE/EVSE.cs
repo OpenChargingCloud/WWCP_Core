@@ -696,7 +696,12 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory, SlowData]
         public ReactiveSet<IChargingConnector>          ChargingConnectors          { get; set; }
 
-
+        /// <summary>
+        /// The timestamp of the last status update.
+        /// This might be different from the timestamp of the last status change,
+        /// when the status was imported from a third party.
+        /// </summary>
+        [Optional]
         public DateTime?                                LastStatusUpdate            { get; set; }
 
         #endregion
@@ -1141,6 +1146,49 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data/(Admin-)Status
 
+
+        public void SetAdminStatus(EVSEAdminStatus EVSEAdminStatus)
+        {
+
+            //adminStatusSchedule.Insert(EVSEAdminStatus.Status,
+            //                           EVSEAdminStatus.Timestamp,
+            //                           EVSEAdminStatus.DataSource);
+
+        }
+
+        public void SetAdminStatus(EVSEAdminStatusUpdate EVSEAdminStatusUpdate)
+        {
+
+        }
+
+        public void SetStatus(EVSEStatus EVSEStatus)
+        {
+
+            statusSchedule.Insert(EVSEStatus.Status,
+                                  EVSEStatus.Timestamp,
+                                  EVSEStatus.DataSource);
+
+        }
+
+        public void SetStatus(EVSEStatusUpdate EVSEStatusUpdate)
+        {
+
+            statusSchedule.Insert(EVSEStatusUpdate.NewStatus,
+                                  EVSEStatusUpdate.DataSource);
+
+        }
+
+        public void SetEnergyStatus(EVSEEnergyStatus EVSEEnergyStatus)
+        {
+
+        }
+
+        public void SetEnergyStatus(EVSEEnergyStatusUpdate EVSEEnergyStatusUpdate)
+        {
+
+        }
+
+
         #region (internal) UpdateData       (Timestamp, EventTrackingId, PropertyName, NewValue, OldValue = null, DataSource = null)
 
         /// <summary>
@@ -1151,13 +1199,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="OldValue">The optional old value of the changed property.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         internal async Task UpdateData(DateTime          Timestamp,
                                        EventTracking_Id  EventTrackingId,
                                        String            PropertyName,
                                        Object?           NewValue,
                                        Object?           OldValue     = null,
-                                       String?           DataSource   = null)
+                                       Context?          DataSource   = null)
         {
 
             try
@@ -1196,12 +1244,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NewAdminStatus">The new EVSE admin status.</param>
         /// <param name="OldAdminStatus">The optional old EVSE admin status.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         internal async Task UpdateAdminStatus(DateTime                            Timestamp,
                                               EventTracking_Id                    EventTrackingId,
                                               Timestamped<EVSEAdminStatusTypes>   NewAdminStatus,
                                               Timestamped<EVSEAdminStatusTypes>?  OldAdminStatus   = null,
-                                              String?                             DataSource       = null)
+                                              Context?                            DataSource       = null)
         {
 
             try
@@ -1239,12 +1287,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
         /// <param name="OldStatus">The optional old EVSE status.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         internal async Task UpdateStatus(DateTime                       Timestamp,
                                          EventTracking_Id               EventTrackingId,
                                          Timestamped<EVSEStatusTypes>   NewStatus,
                                          Timestamped<EVSEStatusTypes>?  OldStatus    = null,
-                                         String?                        DataSource   = null)
+                                         Context?                       DataSource   = null)
         {
 
             try

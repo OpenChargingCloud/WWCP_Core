@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                       EVSEGroup EVSEGroup,
                                                       Timestamped<EVSEGroupAdminStatusTypes> NewStatus,
                                                       Timestamped<EVSEGroupAdminStatusTypes>? OldStatus = null,
-                                                      String? DataSource = null);
+                                                      Context? DataSource = null);
 
     /// <summary>
     /// A delegate called whenever the status changed.
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                  EVSEGroup EVSEGroup,
                                                  Timestamped<EVSEGroupStatusTypes>   NewStatus,
                                                  Timestamped<EVSEGroupStatusTypes>?  OldStatus    = null,
-                                                 String?                             DataSource   = null);
+                                                 Context?                            DataSource   = null);
 
 
     //public class AutoIncludeMemberIds
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.WWCP
                                               EventTracking_Id                         EventTrackingId,
                                               Timestamped<EVSEGroupAdminStatusTypes>   NewStatus,
                                               Timestamped<EVSEGroupAdminStatusTypes>?  OldStatus    = null,
-                                              String?                                  DataSource   = null)
+                                              Context?                                 DataSource   = null)
         {
 
             await OnAdminStatusChanged?.Invoke(Timestamp,
@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">A EVSE group.</param>
+        /// <param name="EVSEGroup1">An EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
@@ -638,7 +638,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">A EVSE group.</param>
+        /// <param name="EVSEGroup1">An EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">A EVSE group.</param>
+        /// <param name="EVSEGroup1">An EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
@@ -671,7 +671,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">A EVSE group.</param>
+        /// <param name="EVSEGroup1">An EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
@@ -684,7 +684,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">A EVSE group.</param>
+        /// <param name="EVSEGroup1">An EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
@@ -704,7 +704,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup1">A EVSE group.</param>
+        /// <param name="EVSEGroup1">An EVSE group.</param>
         /// <param name="EVSEGroup2">Another EVSE group.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEGroup EVSEGroup1, EVSEGroup EVSEGroup2)
@@ -743,7 +743,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEGroup">A EVSE group object to compare with.</param>
+        /// <param name="EVSEGroup">An EVSE group object to compare with.</param>
         public Int32 CompareTo(EVSEGroup EVSEGroup)
         {
 
@@ -788,7 +788,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Compares two charging pools for equality.
         /// </summary>
-        /// <param name="EVSEGroup">A EVSE group to compare with.</param>
+        /// <param name="EVSEGroup">An EVSE group to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EVSEGroup EVSEGroup)
         {

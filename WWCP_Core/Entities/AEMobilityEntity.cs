@@ -392,9 +392,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public void SetAdminStatus(TAdminStatus  NewAdminStatus,
-                                   String?       DataSource   = null)
+                                   Context?      DataSource   = null)
         {
 
             adminStatusSchedule.Insert(NewAdminStatus,
@@ -410,9 +410,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public void SetAdminStatus(Timestamped<TAdminStatus>  NewTimestampedAdminStatus,
-                                   String?                    DataSource   = null)
+                                   Context?                   DataSource   = null)
         {
 
             adminStatusSchedule.Insert(NewTimestampedAdminStatus,
@@ -429,10 +429,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="NewAdminStatus">A new admin status.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public void SetAdminStatus(TAdminStatus  NewAdminStatus,
                                    DateTime      Timestamp,
-                                   String?       DataSource   = null)
+                                   Context?      DataSource   = null)
         {
 
             adminStatusSchedule.Insert(NewAdminStatus,
@@ -450,10 +450,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public void SetAdminStatus(IEnumerable<Timestamped<TAdminStatus>>  NewAdminStatusList,
                                    ChangeMethods                           ChangeMethod   = ChangeMethods.Replace,
-                                   String?                                 DataSource     = null)
+                                   Context?                                DataSource     = null)
         {
 
             adminStatusSchedule.Set(NewAdminStatusList,
@@ -471,9 +471,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Set the current status.
         /// </summary>
         /// <param name="NewStatus">A new status.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
-        public void SetStatus(TStatus  NewStatus,
-                              String?  DataSource   = null)
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
+        public void SetStatus(TStatus   NewStatus,
+                              Context?  DataSource   = null)
         {
 
             statusSchedule.Insert(NewStatus,
@@ -489,9 +489,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// Set the current status.
         /// </summary>
         /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public void SetStatus(Timestamped<TStatus>  NewTimestampedStatus,
-                              String?               DataSource   = null)
+                              Context?              DataSource   = null)
         {
 
             statusSchedule.Insert(NewTimestampedStatus,
@@ -508,10 +508,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="NewStatus">A new status.</param>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public void SetStatus(TStatus   NewStatus,
                               DateTime  Timestamp,
-                              String?   DataSource   = null)
+                              Context?  DataSource   = null)
         {
 
             statusSchedule.Insert(NewStatus,
@@ -529,10 +529,10 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="NewStatusList">A list of new timestamped status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        /// <param name="DataSource">An optional data source or context for this status update.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public void SetStatus(IEnumerable<Timestamped<TStatus>>  NewStatusList,
                               ChangeMethods                      ChangeMethod   = ChangeMethods.Replace,
-                              String?                            DataSource     = null)
+                              Context?                           DataSource     = null)
         {
 
             statusSchedule.Set(NewStatusList,

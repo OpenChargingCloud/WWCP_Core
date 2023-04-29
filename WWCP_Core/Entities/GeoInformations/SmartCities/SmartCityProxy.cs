@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           String              PropertyName,
                                           Object?             NewValue,
                                           Object?             OldValue,
-                                          String?             DataSource,
+                                          Context?            DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -898,7 +898,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           String              PropertyName,
                                           Object?             NewValue,
                                           Object?             OldValue,
-                                          String?             DataSource,
+                                          Context?            DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -1217,7 +1217,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           String              PropertyName,
                                           Object?             NewValue,
                                           Object?             OldValue,
-                                          String?             DataSource,
+                                          Context?            DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
@@ -1527,7 +1527,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           String                    PropertyName,
                                           Object?                   NewValue,
                                           Object?                   OldValue,
-                                          String?                   DataSource,
+                                          Context?                  DataSource,
                                           TransmissionTypes         TransmissionType,
 
                                           DateTime?                 Timestamp,
@@ -1827,7 +1827,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           String              PropertyName,
                                           Object?             NewValue,
                                           Object?             OldValue,
-                                          String?             DataSource,
+                                          Context?            DataSource,
                                           TransmissionTypes   TransmissionType,
 
                                           DateTime?           Timestamp,
