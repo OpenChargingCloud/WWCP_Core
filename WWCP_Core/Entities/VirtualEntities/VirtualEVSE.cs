@@ -1345,7 +1345,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             statusSchedule.Insert(EVSEStatus.Status,
                                   EVSEStatus.Timestamp,
-                                  EVSEStatus.DataSource);
+                                  EVSEStatus.Context);
 
         }
 
@@ -1353,7 +1353,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
 
             statusSchedule.Insert(EVSEStatusUpdate.NewStatus,
-                                  EVSEStatusUpdate.DataSource);
+                                  EVSEStatusUpdate.Context);
 
         }
 

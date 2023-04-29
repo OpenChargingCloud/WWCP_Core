@@ -37,22 +37,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                        Id            { get; }
+        public EVSE_Id                        Id           { get; }
 
         /// <summary>
         /// The new timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>   NewStatus     { get; }
+        public Timestamped<EVSEStatusTypes>   NewStatus    { get; }
 
         /// <summary>
         /// The optional old timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>?  OldStatus     { get; }
+        public Timestamped<EVSEStatusTypes>?  OldStatus    { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE status update.
         /// </summary>
-        public Context?                       DataSource    { get; }
+        public Context?                       Context      { get; }
 
         #endregion
 
@@ -64,26 +64,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
         /// <param name="OldStatus">The optional old timestamped status of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE status update.</param>
+        /// <param name="Context">An optional data source or context for the EVSE status update.</param>
         public EVSEStatusUpdate(EVSE_Id                        Id,
                                 Timestamped<EVSEStatusTypes>   NewStatus,
-                                Timestamped<EVSEStatusTypes>?  OldStatus    = null,
-                                Context?                       DataSource   = null)
+                                Timestamped<EVSEStatusTypes>?  OldStatus   = null,
+                                Context?                       Context     = null)
 
         {
 
-            this.Id          = Id;
-            this.NewStatus   = NewStatus;
-            this.OldStatus   = OldStatus;
-            this.DataSource  = DataSource;
+            this.Id         = Id;
+            this.NewStatus  = NewStatus;
+            this.OldStatus  = OldStatus;
+            this.Context    = Context;
 
             unchecked
             {
 
-                hashCode = Id.         GetHashCode()       * 7 ^
-                           NewStatus.  GetHashCode()       * 5 ^
-                          (OldStatus?. GetHashCode() ?? 0) * 3 ^
-                          (DataSource?.GetHashCode() ?? 0);
+                hashCode = Id.        GetHashCode()       * 7 ^
+                           NewStatus. GetHashCode()       * 5 ^
+                          (OldStatus?.GetHashCode() ?? 0) * 3 ^
+                          (Context?.  GetHashCode() ?? 0);
 
             }
 
@@ -92,20 +92,20 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Snapshot(EVSE, DataSource = null)
+        #region (static) Snapshot(EVSE, Context = null)
 
         /// <summary>
         /// Take a snapshot of the current EVSE status.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE status update.</param>
+        /// <param name="Context">An optional data source or context for the EVSE status update.</param>
         public static EVSEStatusUpdate Snapshot(IEVSE     EVSE,
-                                                Context?  DataSource   = null)
+                                                Context?  Context   = null)
 
             => new (EVSE.Id,
                     EVSE.Status,
                     EVSE.StatusSchedule().Skip(1).FirstOrDefault(),
-                    DataSource);
+                    Context);
 
         #endregion
 
@@ -238,8 +238,8 @@ namespace cloud.charging.open.protocols.WWCP
             if (c == 0 && OldStatus.HasValue && EVSEStatusUpdate.OldStatus.HasValue)
                 c = OldStatus.Value.CompareTo(EVSEStatusUpdate.OldStatus.Value);
 
-            if (c == 0 && DataSource is not null && EVSEStatusUpdate.DataSource is not null)
-                c = DataSource.     CompareTo(EVSEStatusUpdate.DataSource);
+            if (c == 0 && Context is not null && EVSEStatusUpdate.Context is not null)
+                c = Context.        CompareTo(EVSEStatusUpdate.Context);
 
             return c;
 
@@ -275,11 +275,11 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.       Equals(EVSEStatusUpdate.Id)        &&
                NewStatus.Equals(EVSEStatusUpdate.NewStatus) &&
 
-            ((!OldStatus.HasValue     && !EVSEStatusUpdate.OldStatus.HasValue) ||
-              (OldStatus.HasValue     &&  EVSEStatusUpdate.OldStatus.HasValue     && OldStatus.Value.Equals(EVSEStatusUpdate.OldStatus.Value))) &&
+            ((!OldStatus.HasValue  && !EVSEStatusUpdate.OldStatus.HasValue) ||
+              (OldStatus.HasValue  &&  EVSEStatusUpdate.OldStatus.HasValue  && OldStatus.Value.Equals(EVSEStatusUpdate.OldStatus.Value))) &&
 
-            (( DataSource is null     &&  EVSEStatusUpdate.DataSource is null) ||
-              (DataSource is not null &&  EVSEStatusUpdate.DataSource is not null && DataSource.     Equals(EVSEStatusUpdate.DataSource)));
+            (( Context is null     &&  EVSEStatusUpdate.Context is null) ||
+              (Context is not null &&  EVSEStatusUpdate.Context is not null && Context.        Equals(EVSEStatusUpdate.Context)));
 
         #endregion
 
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => $"{Id}: {(OldStatus.HasValue ? $"'{OldStatus.Value}' -> " : "")}'{NewStatus}'{(DataSource is not null ? $" ({DataSource})" : "")}";
+            => $"{Id}: {(OldStatus.HasValue ? $"'{OldStatus.Value}' -> " : "")}'{NewStatus}'{(Context is not null ? $" ({Context})" : "")}";
 
         #endregion
 

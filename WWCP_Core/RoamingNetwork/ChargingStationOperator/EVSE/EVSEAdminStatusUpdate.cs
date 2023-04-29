@@ -37,22 +37,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id                             Id            { get; }
+        public EVSE_Id                             Id           { get; }
 
         /// <summary>
         /// The new timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>   NewStatus     { get; }
+        public Timestamped<EVSEAdminStatusTypes>   NewStatus    { get; }
 
         /// <summary>
         /// The optional old timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>?  OldStatus     { get; }
+        public Timestamped<EVSEAdminStatusTypes>?  OldStatus    { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE admin status update.
         /// </summary>
-        public Context?                            DataSource    { get; }
+        public Context?                            Context      { get; }
 
         #endregion
 
@@ -64,26 +64,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
         /// <param name="OldStatus">The optional old timestamped admin status of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE admin status update.</param>
+        /// <param name="Context">An optional data source or context for the EVSE admin status update.</param>
         public EVSEAdminStatusUpdate(EVSE_Id                             Id,
                                      Timestamped<EVSEAdminStatusTypes>   NewStatus,
-                                     Timestamped<EVSEAdminStatusTypes>?  OldStatus    = null,
-                                     Context?                            DataSource   = null)
+                                     Timestamped<EVSEAdminStatusTypes>?  OldStatus   = null,
+                                     Context?                            Context     = null)
 
         {
 
-            this.Id          = Id;
-            this.NewStatus   = NewStatus;
-            this.OldStatus   = OldStatus;
-            this.DataSource  = DataSource;
+            this.Id         = Id;
+            this.NewStatus  = NewStatus;
+            this.OldStatus  = OldStatus;
+            this.Context    = Context;
 
             unchecked
             {
 
-                hashCode = Id.         GetHashCode()       * 7 ^
-                           NewStatus.  GetHashCode()       * 5 ^
-                          (OldStatus?. GetHashCode() ?? 0) * 3 ^
-                          (DataSource?.GetHashCode() ?? 0);
+                hashCode = Id.        GetHashCode()       * 7 ^
+                           NewStatus. GetHashCode()       * 5 ^
+                          (OldStatus?.GetHashCode() ?? 0) * 3 ^
+                          (Context?.  GetHashCode() ?? 0);
 
             }
 
@@ -92,20 +92,20 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region (static) Snapshot(EVSE, DataSource = null)
+        #region (static) Snapshot(EVSE, Context = null)
 
         /// <summary>
         /// Take a snapshot of the current EVSE admin status.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE admin status update.</param>
+        /// <param name="Context">An optional data source or context for the EVSE admin status update.</param>
         public static EVSEAdminStatusUpdate Snapshot(IEVSE     EVSE,
-                                                     Context?  DataSource   = null)
+                                                     Context?  Context   = null)
 
             => new (EVSE.Id,
                     EVSE.AdminStatus,
                     EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault(),
-                    DataSource);
+                    Context);
 
         #endregion
 
@@ -238,8 +238,8 @@ namespace cloud.charging.open.protocols.WWCP
             if (c == 0 && OldStatus.HasValue && EVSEAdminStatusUpdate.OldStatus.HasValue)
                 c = OldStatus.Value.CompareTo(EVSEAdminStatusUpdate.OldStatus.Value);
 
-            if (c == 0 && DataSource is not null && EVSEAdminStatusUpdate.DataSource is not null)
-                c = DataSource.     CompareTo(EVSEAdminStatusUpdate.DataSource);
+            if (c == 0 && Context is not null && EVSEAdminStatusUpdate.Context is not null)
+                c = Context.        CompareTo(EVSEAdminStatusUpdate.Context);
 
             return c;
 
@@ -275,11 +275,11 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.       Equals(EVSEAdminStatusUpdate.Id)        &&
                NewStatus.Equals(EVSEAdminStatusUpdate.NewStatus) &&
 
-            ((!OldStatus.HasValue     && !EVSEAdminStatusUpdate.OldStatus.HasValue) ||
-              (OldStatus.HasValue     &&  EVSEAdminStatusUpdate.OldStatus.HasValue     && OldStatus.Value.Equals(EVSEAdminStatusUpdate.OldStatus.Value))) &&
+            ((!OldStatus.HasValue  && !EVSEAdminStatusUpdate.OldStatus.HasValue) ||
+              (OldStatus.HasValue  &&  EVSEAdminStatusUpdate.OldStatus.HasValue  && OldStatus.Value.Equals(EVSEAdminStatusUpdate.OldStatus.Value))) &&
 
-            (( DataSource is null     &&  EVSEAdminStatusUpdate.DataSource is null) ||
-              (DataSource is not null &&  EVSEAdminStatusUpdate.DataSource is not null && DataSource.     Equals(EVSEAdminStatusUpdate.DataSource)));
+            (( Context is null     &&  EVSEAdminStatusUpdate.Context is null) ||
+              (Context is not null &&  EVSEAdminStatusUpdate.Context is not null && Context.        Equals(EVSEAdminStatusUpdate.Context)));
 
         #endregion
 
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => $"{Id}: {(OldStatus.HasValue ? $"'{OldStatus.Value}' -> " : "")}'{NewStatus}'{(DataSource is not null ? $" ({DataSource})" : "")}";
+            => $"{Id}: {(OldStatus.HasValue ? $"'{OldStatus.Value}' -> " : "")}'{NewStatus}'{(Context is not null ? $" ({Context})" : "")}";
 
         #endregion
 

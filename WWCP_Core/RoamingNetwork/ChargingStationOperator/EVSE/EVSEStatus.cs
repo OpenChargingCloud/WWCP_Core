@@ -111,9 +111,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The current status of an EVSE.
     /// </summary>
-    public class EVSEStatus : AInternalData,
-                              IEquatable <EVSEStatus>,
-                              IComparable<EVSEStatus>
+    public readonly struct EVSEStatus : IEquatable <EVSEStatus>,
+                                        IComparable<EVSEStatus>,
+                                        IComparable
     {
 
         #region Properties
@@ -121,22 +121,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id          Id            { get; }
+        public EVSE_Id          Id           { get; }
 
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public EVSEStatusTypes  Status        { get; }
+        public EVSEStatusTypes  Status       { get; }
 
         /// <summary>
         /// The timestamp of the current status of the EVSE.
         /// </summary>
-        public DateTime         Timestamp     { get; }
+        public DateTime         Timestamp    { get; }
 
         /// <summary>
         /// An optional data source or context for this EVSE status.
         /// </summary>
-        public Context?         DataSource    { get; }
+        public Context?         Context      { get; }
 
         /// <summary>
         /// The timestamped status of the EVSE.
@@ -148,49 +148,56 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region EVSEStatus(Id, Status,            DataSource = null)
+        #region EVSEStatus(Id, Status,            Context = null)
 
         /// <summary>
         /// Create a new EVSE status.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current timestamped status of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE status.</param>
+        /// <param name="Context">An optional data source or context for the EVSE status.</param>
         public EVSEStatus(EVSE_Id                       Id,
                           Timestamped<EVSEStatusTypes>  Status,
-                          Context?                      DataSource   = null)
+                          Context?                      Context   = null)
 
             : this(Id,
-                   Status.Timestamp,
                    Status.Value,
-                   DataSource)
+                   Status.Timestamp,
+                   Context)
 
         { }
 
         #endregion
 
-        #region EVSEStatus(Id, Timestamp, Status, DataSource = null)
+        #region EVSEStatus(Id, Status, Timestamp, Context = null)
 
         /// <summary>
         /// Create a new EVSE status.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
         /// <param name="Status">The current status of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE status.</param>
+        /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
+        /// <param name="Context">An optional data source or context for the EVSE status.</param>
         public EVSEStatus(EVSE_Id          Id,
-                          DateTime         Timestamp,
                           EVSEStatusTypes  Status,
-                          Context?         DataSource   = null)
-
-            : base(null, null)
-
+                          DateTime         Timestamp,
+                          Context?         Context   = null)
         {
 
-            this.Id          = Id;
-            this.Status      = Status;
-            this.Timestamp   = Timestamp;
-            this.DataSource  = DataSource;
+            this.Id         = Id;
+            this.Status     = Status;
+            this.Timestamp  = Timestamp;
+            this.Context    = Context;
+
+            unchecked
+            {
+
+                hashCode = Id.       GetHashCode() * 7 ^
+                           Status.   GetHashCode() * 5 ^
+                           Timestamp.GetHashCode() * 3 ^
+                          (Context?. GetHashCode() ?? 0);
+
+            }
 
         }
 
@@ -225,19 +232,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
-        {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(EVSEStatus1, EVSEStatus2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (EVSEStatus1 is null || EVSEStatus2 is null)
-                return false;
-
-            return EVSEStatus1.Equals(EVSEStatus2);
-
-        }
+            => EVSEStatus1.Equals(EVSEStatus2);
 
         #endregion
 
@@ -252,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator != (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
 
-            => !(EVSEStatus1 == EVSEStatus2);
+            => !EVSEStatus1.Equals(EVSEStatus2);
 
         #endregion
 
@@ -266,14 +262,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSEStatus EVSEStatus1,
                                           EVSEStatus EVSEStatus2)
-        {
 
-            if (EVSEStatus1 is null)
-                throw new ArgumentNullException(nameof(EVSEStatus1), "The given EVSEStatus1 must not be null!");
-
-            return EVSEStatus1.CompareTo(EVSEStatus2) < 0;
-
-        }
+            => EVSEStatus1.CompareTo(EVSEStatus2) < 0;
 
         #endregion
 
@@ -288,7 +278,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator <= (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
 
-            => !(EVSEStatus1 > EVSEStatus2);
+            => EVSEStatus1.CompareTo(EVSEStatus2) <= 0;
 
         #endregion
 
@@ -302,14 +292,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSEStatus EVSEStatus1,
                                           EVSEStatus EVSEStatus2)
-        {
 
-            if (EVSEStatus1 is null)
-                throw new ArgumentNullException(nameof(EVSEStatus1), "The given EVSEStatus1 must not be null!");
-
-            return EVSEStatus1.CompareTo(EVSEStatus2) > 0;
-
-        }
+            => EVSEStatus1.CompareTo(EVSEStatus2) > 0;
 
         #endregion
 
@@ -324,7 +308,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static Boolean operator >= (EVSEStatus EVSEStatus1,
                                            EVSEStatus EVSEStatus2)
 
-            => !(EVSEStatus1 < EVSEStatus2);
+            => EVSEStatus1.CompareTo(EVSEStatus2) >= 0;
 
         #endregion
 
@@ -335,9 +319,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE status.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">An EVSE status to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is EVSEStatus evseStatus
@@ -350,22 +334,22 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(EVSEStatus)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE status.
         /// </summary>
-        /// <param name="EVSEStatus">An object to compare with.</param>
-        public Int32 CompareTo(EVSEStatus? EVSEStatus)
+        /// <param name="EVSEStatus">An EVSE status to compare with.</param>
+        public Int32 CompareTo(EVSEStatus EVSEStatus)
         {
 
-            if (EVSEStatus is null)
-                throw new ArgumentNullException(nameof(EVSEStatus), "The given EVSE status must not be null!");
-
-            var c = Id.       CompareTo(EVSEStatus.Id);
+            var c = Id.                   CompareTo(EVSEStatus.Id);
 
             if (c == 0)
-                c = Status.   CompareTo(EVSEStatus.Status);
+                c = Status.               CompareTo(EVSEStatus.Status);
 
             if (c == 0)
-                c = Timestamp.CompareTo(EVSEStatus.Timestamp);
+                c = Timestamp.ToIso8601().CompareTo(EVSEStatus.Timestamp.ToIso8601());
+
+            if (c == 0 && Context is not null && EVSEStatus.Context is not null)
+                c = Context.              CompareTo(EVSEStatus.Context);
 
             return c;
 
@@ -380,10 +364,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE status for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">An EVSE status to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is EVSEStatus evseStatus &&
@@ -394,16 +377,17 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(EVSEStatus)
 
         /// <summary>
-        /// Compares two EVSE identifications for equality.
+        /// Compares two EVSE status for equality.
         /// </summary>
-        /// <param name="EVSEStatus">An EVSE identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSEStatus? EVSEStatus)
+        /// <param name="EVSEStatus">An EVSE status to compare with.</param>
+        public Boolean Equals(EVSEStatus EVSEStatus)
 
-            => EVSEStatus is not null              &&
-               Id.       Equals(EVSEStatus.Id)     &&
-               Status.   Equals(EVSEStatus.Status) &&
-               Timestamp.Equals(EVSEStatus.Timestamp);
+            => Id.                   Equals(EVSEStatus.Id)                    &&
+               Status.               Equals(EVSEStatus.Status)                &&
+               Timestamp.ToIso8601().Equals(EVSEStatus.Timestamp.ToIso8601()) &&
+
+             ((Context is null     && EVSEStatus.Context is null) ||
+              (Context is not null && EVSEStatus.Context is not null && Context.Equals(EVSEStatus.Context)));
 
         #endregion
 
@@ -411,21 +395,14 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.       GetHashCode() * 5 ^
-                       Status.   GetHashCode() * 3 ^
-                       Timestamp.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -436,10 +413,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id, " -> ",
-                             Status,
-                             " since ",
-                             Timestamp.ToIso8601());
+            => $"{Id} -> '{Status}' since {Timestamp.ToIso8601()}";
 
         #endregion
 

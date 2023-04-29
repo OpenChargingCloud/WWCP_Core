@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An optional data source or context for this EVSE energy information update.
         /// </summary>
-        public String?                   DataSource       { get; }
+        public String?                   Context          { get; }
 
         #endregion
 
@@ -64,18 +64,18 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="OldEnergyInfo">The old timestamped energy information of the EVSE.</param>
         /// <param name="NewEnergyInfo">The new timestamped energy information of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE energy information update.</param>
+        /// <param name="Context">An optional data source or context for the EVSE energy information update.</param>
         public EVSEEnergyStatusUpdate(EVSE_Id                   Id,
                                       Timestamped<EnergyInfo>   NewEnergyInfo,
                                       Timestamped<EnergyInfo>?  OldEnergyInfo   = null,
-                                      String?                   DataSource      = null)
+                                      String?                   Context         = null)
 
         {
 
             this.Id             = Id;
             this.NewEnergyInfo  = NewEnergyInfo;
             this.OldEnergyInfo  = OldEnergyInfo;
-            this.DataSource     = DataSource;
+            this.Context        = Context;
 
             unchecked
             {
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
                 hashCode = Id.            GetHashCode()       * 7 ^
                            NewEnergyInfo. GetHashCode()       * 5 ^
                           (OldEnergyInfo?.GetHashCode() ?? 0) * 3 ^
-                          (DataSource?.   GetHashCode() ?? 0);
+                          (Context?.      GetHashCode() ?? 0);
 
             }
 
@@ -220,8 +220,8 @@ namespace cloud.charging.open.protocols.WWCP
             if (c == 0 && OldEnergyInfo.HasValue && EVSEEnergyStatusUpdate.OldEnergyInfo.HasValue)
                 c = OldEnergyInfo.Value.CompareTo(EVSEEnergyStatusUpdate.OldEnergyInfo.Value);
 
-            if (c == 0 && DataSource is not null && EVSEEnergyStatusUpdate.DataSource is not null)
-                c = DataSource.         CompareTo(EVSEEnergyStatusUpdate.DataSource);
+            if (c == 0 && Context is not null && EVSEEnergyStatusUpdate.Context is not null)
+                c = Context.            CompareTo(EVSEEnergyStatusUpdate.Context);
 
             return c;
 
@@ -260,8 +260,8 @@ namespace cloud.charging.open.protocols.WWCP
             ((!OldEnergyInfo.HasValue && !EVSEEnergyStatusUpdate.OldEnergyInfo.HasValue) ||
               (OldEnergyInfo.HasValue &&  EVSEEnergyStatusUpdate.OldEnergyInfo.HasValue && OldEnergyInfo.Value.Equals(EVSEEnergyStatusUpdate.OldEnergyInfo.Value))) &&
 
-            (( DataSource is null     &&  EVSEEnergyStatusUpdate.DataSource is null) ||
-              (DataSource is not null &&  EVSEEnergyStatusUpdate.DataSource is not null && DataSource.         Equals(EVSEEnergyStatusUpdate.DataSource)));
+            (( Context is null        &&  EVSEEnergyStatusUpdate.Context is null) ||
+              (Context is not null    &&  EVSEEnergyStatusUpdate.Context is not null && Context.               Equals(EVSEEnergyStatusUpdate.Context)));
 
         #endregion
 
@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public override String ToString()
 
-            => $"{Id}: {(OldEnergyInfo.HasValue ? $"'{OldEnergyInfo.Value}' -> " : "")}'{NewEnergyInfo}'{(DataSource is not null ? $" ({DataSource})" : "")}";
+            => $"{Id}: {(OldEnergyInfo.HasValue ? $"'{OldEnergyInfo.Value}' -> " : "")}'{NewEnergyInfo}'{(Context is not null ? $" ({Context})" : "")}";
 
         #endregion
 

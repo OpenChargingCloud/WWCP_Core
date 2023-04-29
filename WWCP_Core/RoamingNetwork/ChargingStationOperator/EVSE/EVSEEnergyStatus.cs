@@ -95,19 +95,19 @@ namespace cloud.charging.open.protocols.WWCP
         public EVSE_Id     Id            { get; }
 
         /// <summary>
-        /// The timestamp of the current energy status of the EVSE.
-        /// </summary>
-        public DateTime    Timestamp     { get; }
-
-        /// <summary>
         /// The current energy status of the EVSE.
         /// </summary>
         public EnergyInfo  EnergyInfo    { get; }
 
         /// <summary>
+        /// The timestamp of the current energy status of the EVSE.
+        /// </summary>
+        public DateTime    Timestamp     { get; }
+
+        /// <summary>
         /// An optional data source or context for this EVSE energy status.
         /// </summary>
-        public String?     DataSource    { get; }
+        public Context?    Context       { get; }
 
         /// <summary>
         /// The timestamped energy status of the EVSE.
@@ -119,54 +119,54 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region EVSEEnergyStatus(Id,            EnergyInfo, DataSource = null)
+        #region EVSEEnergyStatus(Id,            EnergyInfo, Context = null)
 
         /// <summary>
         /// Create a new EVSE energy status.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="EnergyInfo">The current timestamped energy information of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE energy status.</param>
+        /// <param name="Context">An optional data source or context for the EVSE energy status.</param>
         public EVSEEnergyStatus(EVSE_Id                  Id,
                                 Timestamped<EnergyInfo>  EnergyInfo,
-                                String?                  DataSource   = null)
+                                Context?                 Context   = null)
 
             : this(Id,
-                   EnergyInfo.Timestamp,
                    EnergyInfo.Value,
-                   DataSource)
+                   EnergyInfo.Timestamp,
+                   Context)
 
         { }
 
         #endregion
 
-        #region EVSEEnergyStatus(Id, Timestamp, EnergyInfo, DataSource = null)
+        #region EVSEEnergyStatus(Id, EnergyInfo, Timestamp, Context = null)
 
         /// <summary>
         /// Create a new EVSE energy status.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="Timestamp">The timestamp of the energy information of the EVSE.</param>
         /// <param name="EnergyInfo">The current energy information of the EVSE.</param>
-        /// <param name="DataSource">An optional data source or context for the EVSE energy status.</param>
+        /// <param name="Timestamp">The timestamp of the energy information of the EVSE.</param>
+        /// <param name="Context">An optional data source or context for the EVSE energy status.</param>
         public EVSEEnergyStatus(EVSE_Id     Id,
-                                DateTime    Timestamp,
                                 EnergyInfo  EnergyInfo,
-                                String?     DataSource   = null)
+                                DateTime    Timestamp,
+                                Context?    Context   = null)
         {
 
             this.Id          = Id;
             this.EnergyInfo  = EnergyInfo;
             this.Timestamp   = Timestamp;
-            this.DataSource  = DataSource;
+            this.Context     = Context;
 
             unchecked
             {
 
-                hashCode = Id.         GetHashCode() * 7 ^
-                           EnergyInfo. GetHashCode() * 5 ^
-                           Timestamp.  GetHashCode() * 3 ^
-                          (DataSource?.GetHashCode() ?? 0);
+                hashCode = Id.        GetHashCode() * 7 ^
+                           EnergyInfo.GetHashCode() * 5 ^
+                           Timestamp. GetHashCode() * 3 ^
+                          (Context?.  GetHashCode() ?? 0);
 
             }
 
@@ -175,7 +175,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
-
 
 
         #region Operator overloading
@@ -277,9 +276,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE energy status.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">An EVSE energy status to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is EVSEEnergyStatus evseEnergyStatus
@@ -292,9 +291,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(EVSEEnergyStatus)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE energy status.
         /// </summary>
-        /// <param name="EVSEEnergyStatus">An object to compare with.</param>
+        /// <param name="EVSEEnergyStatus">An EVSE energy status to compare with.</param>
         public Int32 CompareTo(EVSEEnergyStatus EVSEEnergyStatus)
         {
 
@@ -306,8 +305,8 @@ namespace cloud.charging.open.protocols.WWCP
             if (c == 0)
                 c = Timestamp.ToIso8601().CompareTo(EVSEEnergyStatus.Timestamp.ToIso8601());
 
-            if (c == 0 && DataSource is not null && EVSEEnergyStatus.DataSource is not null)
-                c = DataSource.           CompareTo(EVSEEnergyStatus.DataSource);
+            if (c == 0 && Context is not null && EVSEEnergyStatus.Context is not null)
+                c = Context.              CompareTo(EVSEEnergyStatus.Context);
 
             return c;
 
@@ -322,10 +321,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSE energy status for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">An EVSE energy status to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is EVSEEnergyStatus evseEnergyStatus &&
@@ -336,18 +334,17 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(EVSEEnergyStatus)
 
         /// <summary>
-        /// Compares two EVSE identifications for equality.
+        /// Compares two EVSE energy status for equality.
         /// </summary>
-        /// <param name="EVSEEnergyStatus">An EVSE identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="EVSEEnergyStatus">An EVSE energy status to compare with.</param>
         public Boolean Equals(EVSEEnergyStatus EVSEEnergyStatus)
 
             => Id.                   Equals(EVSEEnergyStatus.Id)                    &&
                EnergyInfo.           Equals(EVSEEnergyStatus.EnergyInfo)            &&
                Timestamp.ToIso8601().Equals(EVSEEnergyStatus.Timestamp.ToIso8601()) &&
 
-             ((DataSource is null     && EVSEEnergyStatus.DataSource is null) ||
-              (DataSource is not null && EVSEEnergyStatus.DataSource is not null && DataSource.Equals(EVSEEnergyStatus.DataSource)));
+             ((Context is null     && EVSEEnergyStatus.Context is null) ||
+              (Context is not null && EVSEEnergyStatus.Context is not null && Context.Equals(EVSEEnergyStatus.Context)));
 
         #endregion
 
