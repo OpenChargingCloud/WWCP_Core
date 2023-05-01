@@ -63,13 +63,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            SetStaticData(IEVSE               EVSE,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            SetStaticData(IEVSE              EVSE,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -87,13 +87,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            AddStaticData(IEVSE               EVSE,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            AddStaticData(IEVSE              EVSE,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -116,17 +116,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            UpdateStaticData(IEVSE               EVSE,
-                             String              PropertyName,
-                             Object?             NewValue,
-                             Object?             OldValue            = null,
-                             Context?            DataSource          = null,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            UpdateStaticData(IEVSE              EVSE,
+                             String             PropertyName,
+                             Object?            NewValue,
+                             Object?            OldValue            = null,
+                             Context?           DataSource          = null,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -144,13 +144,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            DeleteStaticData(IEVSE               EVSE,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            DeleteStaticData(IEVSE              EVSE,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -280,13 +280,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingStationDataResult>
 
-            SetStaticData(IChargingStation    ChargingStation,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            SetStaticData(IChargingStation   ChargingStation,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -304,13 +304,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingStationDataResult>
 
-            AddStaticData(IChargingStation    ChargingStation,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            AddStaticData(IChargingStation   ChargingStation,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -332,17 +332,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingStationDataResult>
 
-            UpdateStaticData(IChargingStation    ChargingStation,
-                             String              PropertyName,
-                             Object?             NewValue,
-                             Object?             OldValue            = null,
-                             Context?            DataSource          = null,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            UpdateStaticData(IChargingStation   ChargingStation,
+                             String             PropertyName,
+                             Object?            NewValue,
+                             Object?            OldValue            = null,
+                             Context?           DataSource          = null,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -360,13 +360,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingStationDataResult>
 
-            DeleteStaticData(IChargingStation    ChargingStation,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            DeleteStaticData(IChargingStation   ChargingStation,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                      Timestamp           = null,
-                          CancellationToken?             CancellationToken   = null,
+                          CancellationToken              CancellationToken   = default,
                           EventTracking_Id?              EventTrackingId     = null,
                           TimeSpan?                      RequestTimeout      = null);
 
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                      Timestamp           = null,
-                          CancellationToken?             CancellationToken   = null,
+                          CancellationToken              CancellationToken   = default,
                           EventTracking_Id?              EventTrackingId     = null,
                           TimeSpan?                      RequestTimeout      = null);
 
@@ -437,7 +437,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                      Timestamp           = null,
-                             CancellationToken?             CancellationToken   = null,
+                             CancellationToken              CancellationToken   = default,
                              EventTracking_Id?              EventTrackingId     = null,
                              TimeSpan?                      RequestTimeout      = null);
 
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                      Timestamp           = null,
-                             CancellationToken?             CancellationToken   = null,
+                             CancellationToken              CancellationToken   = default,
                              EventTracking_Id?              EventTrackingId     = null,
                              TimeSpan?                      RequestTimeout      = null);
 
@@ -496,13 +496,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            SetStaticData(IChargingPool       ChargingPool,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            SetStaticData(IChargingPool      ChargingPool,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -520,13 +520,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            AddStaticData(IChargingPool       ChargingPool,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            AddStaticData(IChargingPool      ChargingPool,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -548,17 +548,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            UpdateStaticData(IChargingPool       ChargingPool,
-                             String              PropertyName,
-                             Object?             NewValue,
-                             Object?             OldValue            = null,
-                             Context?            DataSource          = null,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            UpdateStaticData(IChargingPool      ChargingPool,
+                             String             PropertyName,
+                             Object?            NewValue,
+                             Object?            OldValue            = null,
+                             Context?           DataSource          = null,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -576,13 +576,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushChargingPoolDataResult>
 
-            DeleteStaticData(IChargingPool       ChargingPool,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            DeleteStaticData(IChargingPool      ChargingPool,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                   Timestamp           = null,
-                          CancellationToken?          CancellationToken   = null,
+                          CancellationToken           CancellationToken   = default,
                           EventTracking_Id?           EventTrackingId     = null,
                           TimeSpan?                   RequestTimeout      = null);
 
@@ -629,7 +629,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                   Timestamp           = null,
-                          CancellationToken?          CancellationToken   = null,
+                          CancellationToken           CancellationToken   = default,
                           EventTracking_Id?           EventTrackingId     = null,
                           TimeSpan?                   RequestTimeout      = null);
 
@@ -653,7 +653,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                   Timestamp           = null,
-                             CancellationToken?          CancellationToken   = null,
+                             CancellationToken           CancellationToken   = default,
                              EventTracking_Id?           EventTrackingId     = null,
                              TimeSpan?                   RequestTimeout      = null);
 
@@ -677,7 +677,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                   Timestamp           = null,
-                             CancellationToken?          CancellationToken   = null,
+                             CancellationToken           CancellationToken   = default,
                              EventTracking_Id?           EventTrackingId     = null,
                              TimeSpan?                   RequestTimeout      = null);
 
@@ -716,7 +716,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                 Timestamp           = null,
-                          CancellationToken?        CancellationToken   = null,
+                          CancellationToken         CancellationToken   = default,
                           EventTracking_Id?         EventTrackingId     = null,
                           TimeSpan?                 RequestTimeout      = null);
 
@@ -740,7 +740,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                 Timestamp           = null,
-                          CancellationToken?        CancellationToken   = null,
+                          CancellationToken         CancellationToken   = default,
                           EventTracking_Id?         EventTrackingId     = null,
                           TimeSpan?                 RequestTimeout      = null);
 
@@ -772,7 +772,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                 Timestamp           = null,
-                             CancellationToken?        CancellationToken   = null,
+                             CancellationToken         CancellationToken   = default,
                              EventTracking_Id?         EventTrackingId     = null,
                              TimeSpan?                 RequestTimeout      = null);
 
@@ -796,7 +796,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                 Timestamp           = null,
-                             CancellationToken?        CancellationToken   = null,
+                             CancellationToken         CancellationToken   = default,
                              EventTracking_Id?         EventTrackingId     = null,
                              TimeSpan?                 RequestTimeout      = null);
 
@@ -821,7 +821,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                              Timestamp           = null,
-                          CancellationToken?                     CancellationToken   = null,
+                          CancellationToken                      CancellationToken   = default,
                           EventTracking_Id?                      EventTrackingId     = null,
                           TimeSpan?                              RequestTimeout      = null);
 
@@ -845,7 +845,7 @@ namespace cloud.charging.open.protocols.WWCP
                           TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
                           DateTime?                              Timestamp           = null,
-                          CancellationToken?                     CancellationToken   = null,
+                          CancellationToken                      CancellationToken   = default,
                           EventTracking_Id?                      EventTrackingId     = null,
                           TimeSpan?                              RequestTimeout      = null);
 
@@ -869,7 +869,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                              Timestamp           = null,
-                             CancellationToken?                     CancellationToken   = null,
+                             CancellationToken                      CancellationToken   = default,
                              EventTracking_Id?                      EventTrackingId     = null,
                              TimeSpan?                              RequestTimeout      = null);
 
@@ -893,7 +893,7 @@ namespace cloud.charging.open.protocols.WWCP
                              TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
                              DateTime?                              Timestamp           = null,
-                             CancellationToken?                     CancellationToken   = null,
+                             CancellationToken                      CancellationToken   = default,
                              EventTracking_Id?                      EventTrackingId     = null,
                              TimeSpan?                              RequestTimeout      = null);
 
@@ -917,13 +917,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            SetStaticData(IRoamingNetwork     RoamingNetwork,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            SetStaticData(IRoamingNetwork    RoamingNetwork,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -941,13 +941,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            AddStaticData(IRoamingNetwork     RoamingNetwork,
-                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            AddStaticData(IRoamingNetwork    RoamingNetwork,
+                          TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
+                          DateTime?          Timestamp           = null,
+                          CancellationToken  CancellationToken   = default,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -969,17 +969,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            UpdateStaticData(IRoamingNetwork     RoamingNetwork,
-                             String              PropertyName,
-                             Object?             NewValue,
-                             Object?             OldValue            = null,
-                             Context?            DataSource          = null,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            UpdateStaticData(IRoamingNetwork    RoamingNetwork,
+                             String             PropertyName,
+                             Object?            NewValue,
+                             Object?            OldValue            = null,
+                             Context?           DataSource          = null,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 
@@ -997,13 +997,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<PushEVSEDataResult>
 
-            DeleteStaticData(IRoamingNetwork     RoamingNetwork,
-                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueue,
+            DeleteStaticData(IRoamingNetwork    RoamingNetwork,
+                             TransmissionTypes  TransmissionType    = TransmissionTypes.Enqueue,
 
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
+                             DateTime?          Timestamp           = null,
+                             CancellationToken  CancellationToken   = default,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             TimeSpan?          RequestTimeout      = null);
 
         #endregion
 

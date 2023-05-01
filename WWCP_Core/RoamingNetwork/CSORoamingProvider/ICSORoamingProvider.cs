@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    EMobilityProvider_Id?  ProviderId          = null,
 
                                    DateTime?              Timestamp           = null,
-                                   CancellationToken?     CancellationToken   = null,
+                                   CancellationToken      CancellationToken   = default,
                                    EventTracking_Id?      EventTrackingId     = null,
                                    TimeSpan?              RequestTimeout      = null);
 

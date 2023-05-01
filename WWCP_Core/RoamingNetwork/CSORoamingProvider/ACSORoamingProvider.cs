@@ -435,7 +435,7 @@
 //                              EVSE_Id?                               EVSEId              = null,
 
 //                              DateTime?                              Timestamp           = null,
-//                              CancellationToken?                     CancellationToken   = null,
+//                              CancellationToken                      CancellationToken   = default,
 //                              EventTracking_Id                       EventTrackingId     = null,
 //                              TimeSpan?                              RequestTimeout      = null);
 
@@ -468,7 +468,7 @@
 //                        eMobilityAccount_Id?     eMAId               = null,
 
 //                        DateTime?                Timestamp           = null,
-//                        CancellationToken?       CancellationToken   = null,
+//                        CancellationToken        CancellationToken   = default,
 //                        EventTracking_Id         EventTrackingId     = null,
 //                        TimeSpan?                RequestTimeout      = null);
 
@@ -644,42 +644,42 @@
 
 //        #endregion
 
-//        Task<IEnumerable<ChargeDetailRecord>> IEMPRoamingProvider.GetChargeDetailRecords(DateTime From, DateTime? To, eMobilityProvider_Id? ProviderId, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<IEnumerable<ChargeDetailRecord>> IEMPRoamingProvider.GetChargeDetailRecords(DateTime From, DateTime? To, eMobilityProvider_Id? ProviderId, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        Task<ReservationResult> IReserveRemoteStartStop.Reserve(EVSE_Id EVSEId, DateTime? StartTime, TimeSpan? Duration, ChargingReservation_Id? ReservationId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, ChargingProduct_Id? ChargingProductId, IEnumerable<AuthenticationToken> AuthTokens, IEnumerable<eMobilityAccount_Id> eMAIds, IEnumerable<uint> PINs, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<ReservationResult> IReserveRemoteStartStop.Reserve(EVSE_Id EVSEId, DateTime? StartTime, TimeSpan? Duration, ChargingReservation_Id? ReservationId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, ChargingProduct_Id? ChargingProductId, IEnumerable<AuthenticationToken> AuthTokens, IEnumerable<eMobilityAccount_Id> eMAIds, IEnumerable<uint> PINs, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        Task<CancelReservationResult> IReserveRemoteStartStop.CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, eMobilityProvider_Id? ProviderId, EVSE_Id? EVSEId, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<CancelReservationResult> IReserveRemoteStartStop.CancelReservation(ChargingReservation_Id ReservationId, ChargingReservationCancellationReason Reason, eMobilityProvider_Id? ProviderId, EVSE_Id? EVSEId, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        Task<RemoteStartEVSEResult> IReserveRemoteStartStop.RemoteStart(EVSE_Id EVSEId, ChargingProduct_Id? ChargingProductId, ChargingReservation_Id? ReservationId, ChargingSession_Id? SessionId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<RemoteStartEVSEResult> IReserveRemoteStartStop.RemoteStart(EVSE_Id EVSEId, ChargingProduct_Id? ChargingProductId, ChargingReservation_Id? ReservationId, ChargingSession_Id? SessionId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        Task<RemoteStartChargingStationResult> IReserveRemoteStartStop.RemoteStart(ChargingStation_Id ChargingStationId, ChargingProduct_Id? ChargingProductId, ChargingReservation_Id? ReservationId, ChargingSession_Id? SessionId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<RemoteStartChargingStationResult> IReserveRemoteStartStop.RemoteStart(ChargingStation_Id ChargingStationId, ChargingProduct_Id? ChargingProductId, ChargingReservation_Id? ReservationId, ChargingSession_Id? SessionId, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        Task<RemoteStopResult> IReserveRemoteStartStop.RemoteStop(ChargingSession_Id SessionId, ReservationHandling ReservationHandling, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<RemoteStopResult> IReserveRemoteStartStop.RemoteStop(ChargingSession_Id SessionId, ReservationHandling ReservationHandling, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        Task<RemoteStopEVSEResult> IReserveRemoteStartStop.RemoteStop(EVSE_Id EVSEId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<RemoteStopEVSEResult> IReserveRemoteStartStop.RemoteStop(EVSE_Id EVSEId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        Task<RemoteStopChargingStationResult> IReserveRemoteStartStop.RemoteStop(ChargingStation_Id ChargingStationId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken? CancellationToken, EventTracking_Id EventTrackingId, TimeSpan? RequestTimeout)
+//        Task<RemoteStopChargingStationResult> IReserveRemoteStartStop.RemoteStop(ChargingStation_Id ChargingStationId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, eMobilityProvider_Id? ProviderId, eMobilityAccount_Id? eMAId, DateTime? Timestamp, CancellationToken CancellationToken, EventTracking_Id? EventTrackingId, TimeSpan? RequestTimeout)
 //        {
 //            throw new NotImplementedException();
 //        }

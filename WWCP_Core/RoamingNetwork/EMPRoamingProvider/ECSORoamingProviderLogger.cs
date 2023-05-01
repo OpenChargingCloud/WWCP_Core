@@ -332,7 +332,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -417,7 +417,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -509,7 +509,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -609,7 +609,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -695,7 +695,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -785,7 +785,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -875,7 +875,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -965,7 +965,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -1056,7 +1056,7 @@
 //                                               TransmissionTypes                   TransmissionType,
 
 //                                               DateTime?                           Timestamp,
-//                                               CancellationToken?                  CancellationToken,
+//                                               CancellationToken                   CancellationToken,
 //                                               EventTracking_Id                    EventTrackingId,
 //                                               TimeSpan?                           RequestTimeout)
 
@@ -1095,7 +1095,7 @@
 //                                     TransmissionTypes              TransmissionType,
 
 //                                     DateTime?                      Timestamp,
-//                                     CancellationToken?             CancellationToken,
+//                                     CancellationToken              CancellationToken,
 //                                     EventTracking_Id               EventTrackingId,
 //                                     TimeSpan?                      RequestTimeout)
 
@@ -1198,7 +1198,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -1287,7 +1287,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -1382,7 +1382,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -1485,7 +1485,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -1673,7 +1673,7 @@
 //                                               TransmissionTypes                              TransmissionType,
 
 //                                               DateTime?                                      Timestamp,
-//                                               CancellationToken?                             CancellationToken,
+//                                               CancellationToken                              CancellationToken,
 //                                               EventTracking_Id                               EventTrackingId,
 //                                               TimeSpan?                                      RequestTimeout)
 
@@ -1753,7 +1753,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -1842,7 +1842,7 @@
 //                                    TransmissionTypes   TransmissionType,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -1937,7 +1937,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -2040,7 +2040,7 @@
 //                                       TransmissionTypes   TransmissionType,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -2227,7 +2227,7 @@
 //                                               TransmissionTypes                           TransmissionType,
 
 //                                               DateTime?                                   Timestamp,
-//                                               CancellationToken?                          CancellationToken,
+//                                               CancellationToken                           CancellationToken,
 //                                               EventTracking_Id                            EventTrackingId,
 //                                               TimeSpan?                                   RequestTimeout)
 
@@ -2266,7 +2266,7 @@
 //                                     TransmissionTypes                      TransmissionType,
 
 //                                     DateTime?                              Timestamp,
-//                                     CancellationToken?                     CancellationToken,
+//                                     CancellationToken                      CancellationToken,
 //                                     EventTracking_Id                       EventTrackingId,
 //                                     TimeSpan?                              RequestTimeout)
 
@@ -2589,7 +2589,7 @@
 //                                               TransmissionTypes                                      TransmissionType,
 
 //                                               DateTime?                                              Timestamp,
-//                                               CancellationToken?                                     CancellationToken,
+//                                               CancellationToken                                      CancellationToken,
 //                                               EventTracking_Id                                       EventTrackingId,
 //                                               TimeSpan?                                              RequestTimeout)
 
@@ -2667,7 +2667,7 @@
 //            ISendData.SetStaticData(RoamingNetwork      RoamingNetwork,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -2702,7 +2702,7 @@
 //            ISendData.AddStaticData(RoamingNetwork      RoamingNetwork,
 
 //                                    DateTime?           Timestamp,
-//                                    CancellationToken?  CancellationToken,
+//                                    CancellationToken   CancellationToken,
 //                                    EventTracking_Id    EventTrackingId,
 //                                    TimeSpan?           RequestTimeout)
 
@@ -2737,7 +2737,7 @@
 //            ISendData.UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -2772,7 +2772,7 @@
 //            ISendData.DeleteStaticData(RoamingNetwork      RoamingNetwork,
 
 //                                       DateTime?           Timestamp,
-//                                       CancellationToken?  CancellationToken,
+//                                       CancellationToken   CancellationToken,
 //                                       EventTracking_Id    EventTrackingId,
 //                                       TimeSpan?           RequestTimeout)
 
@@ -2849,7 +2849,7 @@
 //                                     TransmissionTypes                        TransmissionType,
 
 //                                     DateTime?                                Timestamp,
-//                                     CancellationToken?                       CancellationToken,
+//                                     CancellationToken                        CancellationToken,
 //                                     EventTracking_Id                         EventTrackingId,
 //                                     TimeSpan?                                RequestTimeout)
 

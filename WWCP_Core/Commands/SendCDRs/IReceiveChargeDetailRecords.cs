@@ -46,8 +46,8 @@ namespace cloud.charging.open.protocols.WWCP
         Task<SendCDRsResult> SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
 
                                                      DateTime?                        Timestamp           = null,
-                                                     CancellationToken?               CancellationToken   = null,
-                                                     EventTracking_Id                 EventTrackingId     = null,
+                                                     CancellationToken                CancellationToken   = default,
+                                                     EventTracking_Id?                EventTrackingId     = null,
                                                      TimeSpan?                        RequestTimeout      = null);
 
     }

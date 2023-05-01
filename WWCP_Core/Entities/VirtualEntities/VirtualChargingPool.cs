@@ -659,12 +659,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<AuthenticationToken>?           AuthTokens             = null,
+                    IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken?                 CancellationToken      = null,
+                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null)
 
@@ -722,12 +722,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<AuthenticationToken>?           AuthTokens             = null,
+                    IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken?                 CancellationToken      = null,
+                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null)
 
@@ -735,17 +735,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             EventTrackingId ??= EventTracking_Id.New;
 
-
-            ChargingReservation? newReservation   = null;
-            ReservationResult?   result           = null;
+            ChargingReservation? newReservation  = null;
+            ReservationResult?   result          = null;
 
             #endregion
 
@@ -983,7 +977,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                               ChargingReservationCancellationReason  Reason,
 
                               DateTime?                              Timestamp           = null,
-                              CancellationToken?                     CancellationToken   = null,
+                              CancellationToken                      CancellationToken   = default,
                               EventTracking_Id?                      EventTrackingId     = null,
                               TimeSpan?                              RequestTimeout      = null)
 
@@ -991,17 +985,11 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             EventTrackingId ??= EventTracking_Id.New;
 
-
-            ChargingReservation?     canceledReservation   = null;
-            CancelReservationResult? result                = null;
+            ChargingReservation?     canceledReservation  = null;
+            CancelReservationResult? result               = null;
 
             #endregion
 
@@ -1248,7 +1236,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
+                        CancellationToken        CancellationToken      = default,
                         EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
 
@@ -1293,24 +1281,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                         RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
+                        CancellationToken        CancellationToken      = default,
                         EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null)
         {
 
             #region Initial checks
 
-            if (SessionId == null)
-                SessionId = ChargingSession_Id.NewRandom;
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
+            SessionId       ??= ChargingSession_Id.NewRandom;
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             EventTrackingId ??= EventTracking_Id.New;
-
 
             RemoteStartResult? result = null;
 
@@ -1463,7 +1443,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        RemoteAuthentication?  RemoteAuthentication   = null,
 
                        DateTime?              Timestamp              = null,
-                       CancellationToken?     CancellationToken      = null,
+                       CancellationToken      CancellationToken      = default,
                        EventTracking_Id?      EventTrackingId        = null,
                        TimeSpan?              RequestTimeout         = null)
 
@@ -1471,14 +1451,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             EventTrackingId ??= EventTracking_Id.New;
-
 
             RemoteStopResult? result = null;
 

@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(EVSE                EVSE,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(EVSE                EVSE,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.WWCP
                              Object?             NewValue            = null,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(EVSE                EVSE,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(IEnumerable<EVSE>   EVSEs,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(IEnumerable<EVSE>   EVSEs,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateStaticData(IEnumerable<EVSE>   EVSEs,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(IEnumerable<EVSE>   EVSEs,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(ChargingStation     ChargingStation,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(ChargingStation     ChargingStation,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.WWCP
                              Object?             NewValue            = null,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -324,7 +324,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(ChargingStation     ChargingStation,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -347,7 +347,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
                           DateTime?                     Timestamp           = null,
-                          CancellationToken?            CancellationToken   = null,
+                          CancellationToken             CancellationToken   = default,
                           EventTracking_Id?             EventTrackingId     = null,
                           TimeSpan?                     RequestTimeout      = null);
 
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
                           DateTime?                     Timestamp           = null,
-                          CancellationToken?            CancellationToken   = null,
+                          CancellationToken             CancellationToken   = default,
                           EventTracking_Id?             EventTrackingId     = null,
                           TimeSpan?                     RequestTimeout      = null);
 
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
                              DateTime?                     Timestamp           = null,
-                             CancellationToken?            CancellationToken   = null,
+                             CancellationToken             CancellationToken   = default,
                              EventTracking_Id?             EventTrackingId     = null,
                              TimeSpan?                     RequestTimeout      = null);
 
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
                              DateTime?                     Timestamp           = null,
-                             CancellationToken?            CancellationToken   = null,
+                             CancellationToken             CancellationToken   = default,
                              EventTracking_Id?             EventTrackingId     = null,
                              TimeSpan?                     RequestTimeout      = null);
 
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(ChargingPool        ChargingPool,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(ChargingPool        ChargingPool,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -489,7 +489,7 @@ namespace cloud.charging.open.protocols.WWCP
                              Object?             NewValue            = null,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(ChargingPool        ChargingPool,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
                           DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
+                          CancellationToken        CancellationToken   = default,
                           EventTracking_Id?        EventTrackingId     = null,
                           TimeSpan?                RequestTimeout      = null);
 
@@ -648,7 +648,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
                           DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
+                          CancellationToken        CancellationToken   = default,
                           EventTracking_Id?        EventTrackingId     = null,
                           TimeSpan?                RequestTimeout      = null);
 
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
                              DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
+                             CancellationToken        CancellationToken   = default,
                              EventTracking_Id?        EventTrackingId     = null,
                              TimeSpan?                RequestTimeout      = null);
 
@@ -692,7 +692,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
                              DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
+                             CancellationToken        CancellationToken   = default,
                              EventTracking_Id?        EventTrackingId     = null,
                              TimeSpan?                RequestTimeout      = null);
 
@@ -806,7 +806,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(RoamingNetwork      RoamingNetwork,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -828,7 +828,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(RoamingNetwork      RoamingNetwork,
 
                           DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
+                          CancellationToken   CancellationToken   = default,
                           EventTracking_Id?   EventTrackingId     = null,
                           TimeSpan?           RequestTimeout      = null);
 
@@ -850,7 +850,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 
@@ -872,7 +872,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(RoamingNetwork      RoamingNetwork,
 
                              DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
+                             CancellationToken   CancellationToken   = default,
                              EventTracking_Id?   EventTrackingId     = null,
                              TimeSpan?           RequestTimeout      = null);
 

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
 
                               DateTime?                           Timestamp           = null,
-                              CancellationToken?                  CancellationToken   = null,
+                              CancellationToken                   CancellationToken   = default,
                               EventTracking_Id?                   EventTrackingId     = null,
                               TimeSpan?                           RequestTimeout      = null);
 
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
 
                               DateTime?                                      Timestamp           = null,
-                              CancellationToken?                             CancellationToken   = null,
+                              CancellationToken                              CancellationToken   = default,
                               EventTracking_Id?                              EventTrackingId     = null,
                               TimeSpan?                                      RequestTimeout      = null);
 
@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
 
                               DateTime?                                   Timestamp           = null,
-                              CancellationToken?                          CancellationToken   = null,
+                              CancellationToken                           CancellationToken   = default,
                               EventTracking_Id?                           EventTrackingId     = null,
                               TimeSpan?                                   RequestTimeout      = null);
 
@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
 
                               DateTime?                                              Timestamp           = null,
-                              CancellationToken?                                     CancellationToken   = null,
+                              CancellationToken                                      CancellationToken   = default,
                               EventTracking_Id?                                      EventTrackingId     = null,
                               TimeSpan?                                              RequestTimeout      = null);
 
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
 
                               DateTime?                                     Timestamp           = null,
-                              CancellationToken?                            CancellationToken   = null,
+                              CancellationToken                             CancellationToken   = default,
                               EventTracking_Id?                             EventTrackingId     = null,
                               TimeSpan?                                     RequestTimeout      = null);
 

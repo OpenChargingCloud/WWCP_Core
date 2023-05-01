@@ -77,17 +77,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<POIDataPull<EVSE>>
 
-            PullEVSEData(DateTime?                                LastCall            = null,
-                         GeoCoordinate?                           SearchCenter        = null,
-                         Single                                   DistanceKM          = 0f,
-                         EMobilityProvider_Id?                    ProviderId          = null,
-                         IEnumerable<ChargingStationOperator_Id>  OperatorIdFilter    = null,
-                         IEnumerable<Country>                     CountryCodeFilter   = null,
+            PullEVSEData(DateTime?                                 LastCall            = null,
+                         GeoCoordinate?                            SearchCenter        = null,
+                         Single                                    DistanceKM          = 0f,
+                         EMobilityProvider_Id?                     ProviderId          = null,
+                         IEnumerable<ChargingStationOperator_Id>?  OperatorIdFilter    = null,
+                         IEnumerable<Country>?                     CountryCodeFilter   = null,
 
-                         DateTime?                                Timestamp           = null,
-                         CancellationToken?                       CancellationToken   = null,
-                         EventTracking_Id                         EventTrackingId     = null,
-                         TimeSpan?                                RequestTimeout      = null);
+                         DateTime?                                 Timestamp           = null,
+                         CancellationToken                         CancellationToken   = default,
+                         EventTracking_Id?                         EventTrackingId     = null,
+                         TimeSpan?                                 RequestTimeout      = null);
 
         #endregion
 

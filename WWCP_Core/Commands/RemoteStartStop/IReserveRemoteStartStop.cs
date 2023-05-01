@@ -107,12 +107,12 @@ namespace cloud.charging.open.protocols.WWCP
                     EMobilityProvider_Id?              ProviderId             = null,
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
-                    IEnumerable<AuthenticationToken>?           AuthTokens             = null,
+                    IEnumerable<AuthenticationToken>?  AuthTokens             = null,
                     IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken?                 CancellationToken      = null,
+                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null);
 
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.WWCP
                               ChargingReservationCancellationReason  Reason,
 
                               DateTime?                              Timestamp           = null,
-                              CancellationToken?                     CancellationToken   = null,
+                              CancellationToken                      CancellationToken   = default,
                               EventTracking_Id?                      EventTrackingId     = null,
                               TimeSpan?                              RequestTimeout      = null);
 
@@ -156,12 +156,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        event OnRemoteStartRequestDelegate OnRemoteStartRequest;
+        event OnRemoteStartRequestDelegate   OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        event OnRemoteStartResponseDelegate OnRemoteStartResponse;
+        event OnRemoteStartResponseDelegate  OnRemoteStartResponse;
 
 
         /// <summary>
@@ -180,17 +180,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStartResult>
 
-            RemoteStart(ChargingLocation ChargingLocation,
-                        ChargingProduct? ChargingProduct = null,
-                        ChargingReservation_Id? ReservationId = null,
-                        ChargingSession_Id? SessionId = null,
-                        EMobilityProvider_Id? ProviderId = null,
-                        RemoteAuthentication? RemoteAuthentication = null,
+            RemoteStart(ChargingLocation         ChargingLocation,
+                        ChargingProduct?         ChargingProduct        = null,
+                        ChargingReservation_Id?  ReservationId          = null,
+                        ChargingSession_Id?      SessionId              = null,
+                        EMobilityProvider_Id?    ProviderId             = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
-                        DateTime? Timestamp = null,
-                        CancellationToken? CancellationToken = null,
-                        EventTracking_Id? EventTrackingId = null,
-                        TimeSpan? RequestTimeout = null);
+                        DateTime?                Timestamp              = null,
+                        CancellationToken        CancellationToken      = default,
+                        EventTracking_Id?        EventTrackingId        = null,
+                        TimeSpan?                RequestTimeout         = null);
 
         #endregion
 
@@ -199,12 +199,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        event OnRemoteStopRequestDelegate OnRemoteStopRequest;
+        event OnRemoteStopRequestDelegate   OnRemoteStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        event OnRemoteStopResponseDelegate OnRemoteStopResponse;
+        event OnRemoteStopResponseDelegate  OnRemoteStopResponse;
 
 
         /// <summary>
@@ -221,15 +221,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id SessionId,
-                       ReservationHandling? ReservationHandling = null,
-                       EMobilityProvider_Id? ProviderId = null,
-                       RemoteAuthentication? RemoteAuthentication = null,
+            RemoteStop(ChargingSession_Id     SessionId,
+                       ReservationHandling?   ReservationHandling    = null,
+                       EMobilityProvider_Id?  ProviderId             = null,
+                       RemoteAuthentication?  RemoteAuthentication   = null,
 
-                       DateTime? Timestamp = null,
-                       CancellationToken? CancellationToken = null,
-                       EventTracking_Id? EventTrackingId = null,
-                       TimeSpan? RequestTimeout = null);
+                       DateTime?              Timestamp              = null,
+                       CancellationToken      CancellationToken      = default,
+                       EventTracking_Id?      EventTrackingId        = null,
+                       TimeSpan?              RequestTimeout         = null);
 
         #endregion
 
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
-                    CancellationToken?                 CancellationToken      = null,
+                    CancellationToken                  CancellationToken      = default,
                     EventTracking_Id?                  EventTrackingId        = null,
                     TimeSpan?                          RequestTimeout         = null);
 
@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.WWCP
                         RemoteAuthentication?    RemoteAuthentication   = null,
 
                         DateTime?                Timestamp              = null,
-                        CancellationToken?       CancellationToken      = null,
+                        CancellationToken        CancellationToken      = default,
                         EventTracking_Id?        EventTrackingId        = null,
                         TimeSpan?                RequestTimeout         = null);
 

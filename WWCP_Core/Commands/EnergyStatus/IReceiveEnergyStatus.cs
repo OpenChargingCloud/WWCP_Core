@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
         //    UpdateEnergyStatus(IEnumerable<ChargingStationOperatorEnergyStatusUpdate>  EnergyStatusUpdates,
 
         //                       DateTime?                                               Timestamp           = null,
-        //                       CancellationToken?                                      CancellationToken   = null,
+        //                       CancellationToken                                       CancellationToken   = default,
         //                       EventTracking_Id?                                       EventTrackingId     = null,
         //                       TimeSpan?                                               RequestTimeout      = null);
 
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP
         //    UpdateEnergyStatus(IEnumerable<RoamingNetworkEnergyStatusUpdate>  EnergyStatusUpdates,
 
         //                       DateTime?                                      Timestamp           = null,
-        //                       CancellationToken?                             CancellationToken   = null,
+        //                       CancellationToken                              CancellationToken   = default,
         //                       EventTracking_Id?                              EventTrackingId     = null,
         //                       TimeSpan?                                      RequestTimeout      = null);
 

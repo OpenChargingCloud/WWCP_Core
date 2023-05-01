@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
+using System.Text;
 
 #endregion
 
@@ -1242,7 +1243,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateEVehicleData(DateTime Timestamp,
-                                               EventTracking_Id EventTrackingId,
+                                               EventTracking_Id? EventTrackingId,
                                                eVehicle eVehicle,
                                                String PropertyName,
                                                Object? NewValue,
@@ -1268,7 +1269,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
         internal async Task UpdateEVehicleAdminStatus(DateTime Timestamp,
-                                                      EventTracking_Id EventTrackingId,
+                                                      EventTracking_Id? EventTrackingId,
                                                       eVehicle eVehicle,
                                                       Timestamped<eVehicleAdminStatusTypes>   NewStatus,
                                                       Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
@@ -1293,7 +1294,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
         internal async Task UpdateEVehicleStatus(DateTime Timestamp,
-                                                 EventTracking_Id EventTrackingId,
+                                                 EventTracking_Id? EventTrackingId,
                                                  eVehicle eVehicle,
                                                  Timestamped<eVehicleStatusTypes>   NewStatus,
                                                  Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
@@ -1318,7 +1319,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OldGeoCoordinate">The old aggreagted charging station status.</param>
         /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
         internal async Task UpdateEVehicleGeoLocation(DateTime Timestamp,
-                                                      EventTracking_Id EventTrackingId,
+                                                      EventTracking_Id? EventTrackingId,
                                                       eVehicle eVehicle,
                                                       Timestamped<GeoCoordinate>   NewGeoCoordinate,
                                                       Timestamped<GeoCoordinate>?  OldGeoCoordinate   = null,
@@ -1707,8 +1708,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                  TransmissionTypes TransmissionType,
 
                                                  DateTime? Timestamp,
-                                                 CancellationToken? CancellationToken,
-                                                 EventTracking_Id EventTrackingId,
+                                                 CancellationToken CancellationToken,
+                                                 EventTracking_Id? EventTrackingId,
                                                  TimeSpan? RequestTimeout)
 
         {
@@ -1793,8 +1794,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                TransmissionTypes TransmissionType,
 
                                                DateTime? Timestamp,
-                                               CancellationToken? CancellationToken,
-                                               EventTracking_Id EventTrackingId,
+                                               CancellationToken CancellationToken,
+                                               EventTracking_Id? EventTrackingId,
                                                TimeSpan? RequestTimeout)
 
         {
@@ -1879,8 +1880,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                TransmissionTypes TransmissionType,
 
                                                DateTime? Timestamp,
-                                               CancellationToken? CancellationToken,
-                                               EventTracking_Id EventTrackingId,
+                                               CancellationToken CancellationToken,
+                                               EventTracking_Id? EventTrackingId,
                                                TimeSpan? RequestTimeout)
 
         {
@@ -1965,8 +1966,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                TransmissionTypes TransmissionType,
 
                                                DateTime? Timestamp,
-                                               CancellationToken? CancellationToken,
-                                               EventTracking_Id EventTrackingId,
+                                               CancellationToken CancellationToken,
+                                               EventTracking_Id? EventTrackingId,
                                                TimeSpan? RequestTimeout)
 
         {
@@ -2051,8 +2052,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                TransmissionTypes TransmissionType,
 
                                                DateTime? Timestamp,
-                                               CancellationToken? CancellationToken,
-                                               EventTracking_Id EventTrackingId,
+                                               CancellationToken CancellationToken,
+                                               EventTracking_Id? EventTrackingId,
                                                TimeSpan? RequestTimeout)
 
         {
@@ -2140,8 +2141,8 @@ namespace cloud.charging.open.protocols.WWCP
                                             TransmissionTypes TransmissionType,
 
                                             DateTime? Timestamp,
-                                            CancellationToken? CancellationToken,
-                                            EventTracking_Id EventTrackingId,
+                                            CancellationToken CancellationToken,
+                                            EventTracking_Id? EventTrackingId,
                                             TimeSpan? RequestTimeout)
 
         {
@@ -2224,8 +2225,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      TransmissionTypes TransmissionType,
 
                                      DateTime? Timestamp,
-                                     CancellationToken? CancellationToken,
-                                     EventTracking_Id EventTrackingId,
+                                     CancellationToken CancellationToken,
+                                     EventTracking_Id? EventTrackingId,
                                      TimeSpan? RequestTimeout)
 
         {
@@ -2308,8 +2309,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      TransmissionTypes TransmissionType,
 
                                      DateTime? Timestamp,
-                                     CancellationToken? CancellationToken,
-                                     EventTracking_Id EventTrackingId,
+                                     CancellationToken CancellationToken,
+                                     EventTracking_Id? EventTrackingId,
                                      TimeSpan? RequestTimeout)
 
         {
@@ -2392,8 +2393,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      TransmissionTypes TransmissionType,
 
                                      DateTime? Timestamp,
-                                     CancellationToken? CancellationToken,
-                                     EventTracking_Id EventTrackingId,
+                                     CancellationToken CancellationToken,
+                                     EventTracking_Id? EventTrackingId,
                                      TimeSpan? RequestTimeout)
 
         {
@@ -2476,8 +2477,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      TransmissionTypes TransmissionType,
 
                                      DateTime? Timestamp,
-                                     CancellationToken? CancellationToken,
-                                     EventTracking_Id EventTrackingId,
+                                     CancellationToken CancellationToken,
+                                     EventTracking_Id? EventTrackingId,
                                      TimeSpan? RequestTimeout)
 
         {
@@ -2584,7 +2585,7 @@ namespace cloud.charging.open.protocols.WWCP
                            ChargingStationOperator_Id? OperatorId = null,
 
                            DateTime? Timestamp = null,
-                           CancellationToken? CancellationToken = null,
+                           CancellationToken CancellationToken = default,
                            EventTracking_Id EventTrackingId = null,
                            TimeSpan? RequestTimeout = null)
 
@@ -2592,24 +2593,11 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (LocalAuthentication == null)
-                throw new ArgumentNullException(nameof(LocalAuthentication), "The given authentication token must not be null!");
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            EventTrackingId ??= EventTracking_Id.New;
+            RequestTimeout  ??= this.RequestTimeout;
 
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            AuthStartResult result = null;
+            AuthStartResult? result = null;
 
             #endregion
 
@@ -2736,31 +2724,18 @@ namespace cloud.charging.open.protocols.WWCP
                           ChargingStationOperator_Id? OperatorId = null,
 
                           DateTime? Timestamp = null,
-                          CancellationToken? CancellationToken = null,
+                          CancellationToken CancellationToken = default,
                           EventTracking_Id EventTrackingId = null,
                           TimeSpan? RequestTimeout = null)
         {
 
             #region Initial checks
 
-            if (LocalAuthentication == null)
-                throw new ArgumentNullException(nameof(LocalAuthentication), "The given authentication token must not be null!");
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            EventTrackingId ??= EventTracking_Id.New;
+            RequestTimeout  ??= this.RequestTimeout;
 
-
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            if (!RequestTimeout.HasValue)
-                RequestTimeout = this.RequestTimeout;
-
-
-            AuthStopResult result = null;
+            AuthStopResult? result = null;
 
             #endregion
 
@@ -2873,8 +2848,8 @@ namespace cloud.charging.open.protocols.WWCP
                                     TransmissionTypes TransmissionType,
 
                                     DateTime? Timestamp = null,
-                                    CancellationToken? CancellationToken = null,
-                                    EventTracking_Id EventTrackingId = null,
+                                    CancellationToken CancellationToken = default,
+                                    EventTracking_Id? EventTrackingId = null,
                                     TimeSpan? RequestTimeout = null)
         {
 
@@ -3000,7 +2975,7 @@ namespace cloud.charging.open.protocols.WWCP
                     IEnumerable<UInt32>? PINs = null,
 
                     DateTime? Timestamp = null,
-                    CancellationToken? CancellationToken = null,
+                    CancellationToken CancellationToken = default,
                     EventTracking_Id? EventTrackingId = null,
                     TimeSpan? RequestTimeout = null)
 
@@ -3008,14 +2983,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             EventTrackingId ??= EventTracking_Id.New;
-
 
             ReservationResult? result = null;
 
@@ -3143,30 +3112,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult>
 
-            CancelReservation(ChargingReservation_Id ReservationId,
-                              ChargingReservationCancellationReason Reason,
-                              EMobilityProvider_Id? ProviderId = null,
+            CancelReservation(ChargingReservation_Id                 ReservationId,
+                              ChargingReservationCancellationReason  Reason,
+                              EMobilityProvider_Id?                  ProviderId          = null,
 
-                              DateTime? Timestamp = null,
-                              CancellationToken? CancellationToken = null,
-                              EventTracking_Id EventTrackingId = null,
-                              TimeSpan? RequestTimeout = null)
+                              DateTime?                              Timestamp           = null,
+                              CancellationToken                      CancellationToken   = default,
+                              EventTracking_Id?                      EventTrackingId     = null,
+                              TimeSpan?                              RequestTimeout      = null)
 
         {
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             EventTrackingId ??= EventTracking_Id.New;
 
-
-            ChargingReservation? canceledReservation = null;
-            CancelReservationResult? result = null;
+            ChargingReservation?     canceledReservation  = null;
+            CancelReservationResult? result               = null;
 
             #endregion
 
@@ -3368,32 +3331,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartResult>
 
-            RemoteStart(ChargingLocation ChargingLocation,
-                        ChargingProduct ChargingProduct = null,
-                        ChargingReservation_Id? ReservationId = null,
-                        ChargingSession_Id? SessionId = null,
-                        RemoteAuthentication RemoteAuthentication = null,
+            RemoteStart(ChargingLocation         ChargingLocation,
+                        ChargingProduct?         ChargingProduct        = null,
+                        ChargingReservation_Id?  ReservationId          = null,
+                        ChargingSession_Id?      SessionId              = null,
+                        RemoteAuthentication?    RemoteAuthentication   = null,
 
-                        DateTime? Timestamp = null,
-                        CancellationToken? CancellationToken = null,
-                        EventTracking_Id EventTrackingId = null,
-                        TimeSpan? RequestTimeout = null)
+                        DateTime?                Timestamp              = null,
+                        CancellationToken        CancellationToken      = default,
+                        EventTracking_Id?        EventTrackingId        = null,
+                        TimeSpan?                RequestTimeout         = null)
 
         {
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            EventTrackingId ??= EventTracking_Id.New;
 
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-
-            RemoteStartResult result = null;
+            RemoteStartResult? result = null;
 
             #endregion
 
@@ -3505,30 +3461,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id SessionId,
-                       ReservationHandling? ReservationHandling = null,
-                       RemoteAuthentication RemoteAuthentication = null,
+            RemoteStop(ChargingSession_Id     SessionId,
+                       ReservationHandling?   ReservationHandling    = null,
+                       RemoteAuthentication?  RemoteAuthentication   = null,
 
-                       DateTime? Timestamp = null,
-                       CancellationToken? CancellationToken = null,
-                       EventTracking_Id EventTrackingId = null,
-                       TimeSpan? RequestTimeout = null)
+                       DateTime?              Timestamp              = null,
+                       CancellationToken      CancellationToken      = default,
+                       EventTracking_Id?      EventTrackingId        = null,
+                       TimeSpan?              RequestTimeout         = null)
 
         {
 
             #region Initial checks
 
-            if (!Timestamp.HasValue)
-                Timestamp = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            Timestamp       ??= org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            EventTrackingId ??= EventTracking_Id.New;
 
-            if (!CancellationToken.HasValue)
-                CancellationToken = new CancellationTokenSource().Token;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-
-            RemoteStopResult result = null;
+            RemoteStopResult? result = null;
 
             #endregion
 

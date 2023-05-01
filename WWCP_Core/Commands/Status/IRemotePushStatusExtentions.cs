@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                              TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
 
     //                              DateTime?                     Timestamp           = null,
-    //                              CancellationToken?            CancellationToken   = null,
+    //                              CancellationToken             CancellationToken   = default,
     //                              EventTracking_Id              EventTrackingId     = null,
     //                              TimeSpan?                     RequestTimeout      = null)
 
@@ -378,7 +378,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                              TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                              DateTime?                Timestamp           = null,
-    //                              CancellationToken?       CancellationToken   = null,
+    //                              CancellationToken        CancellationToken   = default,
     //                              EventTracking_Id         EventTrackingId     = null,
     //                              TimeSpan?                RequestTimeout      = null)
 
@@ -700,7 +700,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                         TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
 
     //                         DateTime?                     Timestamp           = null,
-    //                         CancellationToken?            CancellationToken   = null,
+    //                         CancellationToken             CancellationToken   = default,
     //                         EventTracking_Id              EventTrackingId     = null,
     //                         TimeSpan?                     RequestTimeout      = null)
 
@@ -845,7 +845,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                         TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                         DateTime?                Timestamp           = null,
-    //                         CancellationToken?       CancellationToken   = null,
+    //                         CancellationToken        CancellationToken   = default,
     //                         EventTracking_Id         EventTrackingId     = null,
     //                         TimeSpan?                RequestTimeout      = null)
 
@@ -1074,7 +1074,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                         TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                         DateTime?                     Timestamp           = null,
-    //                                         CancellationToken?            CancellationToken   = null,
+    //                                         CancellationToken             CancellationToken   = default,
     //                                         EventTracking_Id              EventTrackingId     = null,
     //                                         TimeSpan?                     RequestTimeout      = null)
 
@@ -1217,7 +1217,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                         TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                         DateTime?                Timestamp           = null,
-    //                                         CancellationToken?       CancellationToken   = null,
+    //                                         CancellationToken        CancellationToken   = default,
     //                                         EventTracking_Id         EventTrackingId     = null,
     //                                         TimeSpan?                RequestTimeout      = null)
 
@@ -1445,7 +1445,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                    TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                    DateTime?                     Timestamp           = null,
-    //                                    CancellationToken?            CancellationToken   = null,
+    //                                    CancellationToken             CancellationToken   = default,
     //                                    EventTracking_Id              EventTrackingId     = null,
     //                                    TimeSpan?                     RequestTimeout      = null)
 
@@ -1588,7 +1588,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                    TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                    DateTime?                Timestamp           = null,
-    //                                    CancellationToken?       CancellationToken   = null,
+    //                                    CancellationToken        CancellationToken   = default,
     //                                    EventTracking_Id         EventTrackingId     = null,
     //                                    TimeSpan?                RequestTimeout      = null)
 
@@ -1733,7 +1733,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                      TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                      DateTime?                      Timestamp           = null,
-    //                                      CancellationToken?             CancellationToken   = null,
+    //                                      CancellationToken              CancellationToken   = default,
     //                                      EventTracking_Id               EventTrackingId     = null,
     //                                      TimeSpan?                      RequestTimeout      = null)
 
@@ -1864,7 +1864,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                      TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                      DateTime?                Timestamp           = null,
-    //                                      CancellationToken?       CancellationToken   = null,
+    //                                      CancellationToken        CancellationToken   = default,
     //                                      EventTracking_Id         EventTrackingId     = null,
     //                                      TimeSpan?                RequestTimeout      = null)
 
@@ -2008,7 +2008,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                 TransmissionTypes         TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                 DateTime?                 Timestamp           = null,
-    //                                 CancellationToken?        CancellationToken   = null,
+    //                                 CancellationToken         CancellationToken   = default,
     //                                 EventTracking_Id          EventTrackingId     = null,
     //                                 TimeSpan?                 RequestTimeout      = null)
 
@@ -2139,7 +2139,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                 TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                 DateTime?                Timestamp           = null,
-    //                                 CancellationToken?       CancellationToken   = null,
+    //                                 CancellationToken        CancellationToken   = default,
     //                                 EventTracking_Id         EventTrackingId     = null,
     //                                 TimeSpan?                RequestTimeout      = null)
 
@@ -2284,7 +2284,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                                 TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                                 DateTime?                                 Timestamp           = null,
-    //                                                 CancellationToken?                        CancellationToken   = null,
+    //                                                 CancellationToken                         CancellationToken   = default,
     //                                                 EventTracking_Id                          EventTrackingId     = null,
     //                                                 TimeSpan?                                 RequestTimeout      = null)
 
@@ -2321,7 +2321,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                                 TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                                 DateTime?                Timestamp           = null,
-    //                                                 CancellationToken?       CancellationToken   = null,
+    //                                                 CancellationToken        CancellationToken   = default,
     //                                                 EventTracking_Id         EventTrackingId     = null,
     //                                                 TimeSpan?                RequestTimeout      = null)
 
@@ -2463,7 +2463,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                            TransmissionTypes                    TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                            DateTime?                            Timestamp           = null,
-    //                                            CancellationToken?                   CancellationToken   = null,
+    //                                            CancellationToken                    CancellationToken   = default,
     //                                            EventTracking_Id                     EventTrackingId     = null,
     //                                            TimeSpan?                            RequestTimeout      = null)
 
@@ -2500,7 +2500,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                            TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                            DateTime?                Timestamp           = null,
-    //                                            CancellationToken?       CancellationToken   = null,
+    //                                            CancellationToken        CancellationToken   = default,
     //                                            EventTracking_Id         EventTrackingId     = null,
     //                                            TimeSpan?                RequestTimeout      = null)
 
@@ -2728,7 +2728,7 @@ namespace cloud.charging.open.protocols.WWCP
     //                                   TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueued,
 
     //                                   DateTime?                   Timestamp           = null,
-    //                                   CancellationToken?          CancellationToken   = null,
+    //                                   CancellationToken           CancellationToken   = default,
     //                                   EventTracking_Id            EventTrackingId     = null,
     //                                   TimeSpan?                   RequestTimeout      = null)
 
