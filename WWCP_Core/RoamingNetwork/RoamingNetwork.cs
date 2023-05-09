@@ -332,11 +332,11 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        private readonly PriorityList<ISendPOIData>              _ISendData                        = new();
-        private readonly PriorityList<ISendAdminStatus>          _ISendAdminStatus                 = new();
-        private readonly PriorityList<ISendStatus>               _ISendStatus                      = new();
-        private readonly PriorityList<ISendAuthorizeStartStop>   _ISend2RemoteAuthorizeStartStop   = new();
-        private readonly PriorityList<ISendChargeDetailRecords>  _IRemoteSendChargeDetailRecord    = new();
+        private readonly PriorityList<ISendPOIData>              _ISendData                        = new ();
+        private readonly PriorityList<ISendAdminStatus>          _ISendAdminStatus                 = new ();
+        private readonly PriorityList<ISendStatus>               _ISendStatus                      = new ();
+        private readonly PriorityList<ISendAuthorizeStartStop>   _ISend2RemoteAuthorizeStartStop   = new ();
+        private readonly PriorityList<ISendChargeDetailRecords>  _IRemoteSendChargeDetailRecord    = new ();
 
         private readonly ConcurrentDictionary<UInt32, IEMPRoamingProvider> _eMobilityRoamingServices;
 
