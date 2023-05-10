@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
                           DateTime?                  Timestamp           = null,
-                          CancellationToken?         CancellationToken   = null,
+                          CancellationToken          CancellationToken   = default,
                           EventTracking_Id?          EventTrackingId     = null,
                           TimeSpan?                  RequestTimeout      = null);
 
@@ -556,7 +556,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
                           DateTime?                  Timestamp           = null,
-                          CancellationToken?         CancellationToken   = null,
+                          CancellationToken          CancellationToken   = default,
                           EventTracking_Id?          EventTrackingId     = null,
                           TimeSpan?                  RequestTimeout      = null);
 
@@ -578,7 +578,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
                              DateTime?                  Timestamp           = null,
-                             CancellationToken?         CancellationToken   = null,
+                             CancellationToken          CancellationToken   = default,
                              EventTracking_Id?          EventTrackingId     = null,
                              TimeSpan?                  RequestTimeout      = null);
 
@@ -600,7 +600,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
                              DateTime?                  Timestamp           = null,
-                             CancellationToken?         CancellationToken   = null,
+                             CancellationToken          CancellationToken   = default,
                              EventTracking_Id?          EventTrackingId     = null,
                              TimeSpan?                  RequestTimeout      = null);
 
@@ -715,7 +715,7 @@ namespace cloud.charging.open.protocols.WWCP
             SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                           DateTime?                             Timestamp           = null,
-                          CancellationToken?                    CancellationToken   = null,
+                          CancellationToken                     CancellationToken   = default,
                           EventTracking_Id?                     EventTrackingId     = null,
                           TimeSpan?                             RequestTimeout      = null);
 
@@ -737,7 +737,7 @@ namespace cloud.charging.open.protocols.WWCP
             AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                           DateTime?                             Timestamp           = null,
-                          CancellationToken?                    CancellationToken   = null,
+                          CancellationToken                     CancellationToken   = default,
                           EventTracking_Id?                     EventTrackingId     = null,
                           TimeSpan?                             RequestTimeout      = null);
 
@@ -759,7 +759,7 @@ namespace cloud.charging.open.protocols.WWCP
             UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                              DateTime?                             Timestamp           = null,
-                             CancellationToken?                    CancellationToken   = null,
+                             CancellationToken                     CancellationToken   = default,
                              EventTracking_Id?                     EventTrackingId     = null,
                              TimeSpan?                             RequestTimeout      = null);
         #endregion
@@ -780,7 +780,7 @@ namespace cloud.charging.open.protocols.WWCP
             DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                              DateTime?                             Timestamp           = null,
-                             CancellationToken?                    CancellationToken   = null,
+                             CancellationToken                     CancellationToken   = default,
                              EventTracking_Id?                     EventTrackingId     = null,
                              TimeSpan?                             RequestTimeout      = null);
 
