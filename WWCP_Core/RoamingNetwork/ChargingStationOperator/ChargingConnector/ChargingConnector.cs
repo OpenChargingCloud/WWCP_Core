@@ -93,10 +93,10 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean?              CableAttached    { get; }
 
         /// <summary>
-        /// The length of the charging cable [cm].
+        /// The length of the charging cable.
         /// </summary>
         [Optional]
-        public Double?               CableLength      { get; }
+        public Meter?                CableLength      { get; }
 
         /// <summary>
         /// Whether the charging connector is DC or AC.
@@ -116,12 +116,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Plug">The type of the charging plug.</param>
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="CableAttached">The type of the charging cable.</param>
-        /// <param name="CableLength">The length of the charging cable [mm].</param>
+        /// <param name="CableLength">The length of the charging cable.</param>
         public ChargingConnector(ChargingConnector_Id  Id,
                                  ChargingPlugTypes     Plug,
                                  Boolean?              Lockable        = null,
                                  Boolean?              CableAttached   = null,
-                                 Double?               CableLength     = null)
+                                 Meter?                CableLength     = null)
         {
 
             this.Id             = Id;
@@ -139,13 +139,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Plug">The type of the charging plug.</param>
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="CableAttached">The type of the charging cable.</param>
-        /// <param name="CableLength">The length of the charging cable [mm].</param>
+        /// <param name="CableLength">The length of the charging cable.</param>
         public ChargingConnector(IEVSE?                ParentEVSE,
                                  ChargingConnector_Id  Id,
                                  ChargingPlugTypes     Plug,
                                  Boolean?              Lockable        = null,
                                  Boolean?              CableAttached   = null,
-                                 Double?               CableLength     = null)
+                                 Meter?                CableLength     = null)
         {
 
             this.ParentEVSE     = ParentEVSE;
@@ -163,11 +163,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Plug">The type of the charging plug.</param>
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="CableAttached">The type of the charging cable.</param>
-        /// <param name="CableLength">The length of the charging cable [mm].</param>
+        /// <param name="CableLength">The length of the charging cable.</param>
         public ChargingConnector(ChargingPlugTypes  Plug,
                                  Boolean?           Lockable        = null,
                                  Boolean?           CableAttached   = null,
-                                 Double?            CableLength     = null)
+                                 Meter?             CableLength     = null)
         {
 
             this.Id             = ChargingConnector_Id.Parse(1);
@@ -184,12 +184,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Plug">The type of the charging plug.</param>
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="CableAttached">The type of the charging cable.</param>
-        /// <param name="CableLength">The length of the charging cable [mm].</param>
+        /// <param name="CableLength">The length of the charging cable.</param>
         public ChargingConnector(IEVSE?             ParentEVSE,
                                  ChargingPlugTypes  Plug,
                                  Boolean?           Lockable        = null,
                                  Boolean?           CableAttached   = null,
-                                 Double?            CableLength     = null)
+                                 Meter?             CableLength     = null)
         {
 
             this.ParentEVSE     = ParentEVSE;
@@ -227,8 +227,8 @@ namespace cloud.charging.open.protocols.WWCP
                                ? new JProperty("cableAttached",   CableAttached.ToString())
                                : null,
 
-                           CableLength > 0
-                               ? new JProperty("cableLength",     CableLength.  ToString())
+                           CableLength.HasValue
+                               ? new JProperty("cableLength",     CableLength.Value)
                                : null);
 
                 return CustomChargingConnectorSerializer is not null

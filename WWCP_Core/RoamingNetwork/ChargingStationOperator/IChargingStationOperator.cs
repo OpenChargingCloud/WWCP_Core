@@ -226,6 +226,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                        Address?                                                     Address                        = null,
                                                        GeoCoordinate?                                               GeoLocation                    = null,
+                                                       OpeningTimes?                                                OpeningTimes                   = null,
+                                                       Boolean?                                                     ChargingWhenClosed             = null,
 
                                                        Action<IChargingPool>?                                       Configurator                   = null,
                                                        RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
@@ -253,6 +255,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                        Address?                                                     Address                        = null,
                                                                        GeoCoordinate?                                               GeoLocation                    = null,
+                                                                       OpeningTimes?                                                OpeningTimes                   = null,
+                                                                       Boolean?                                                     ChargingWhenClosed             = null,
 
                                                                        Action<IChargingPool>?                                       Configurator                   = null,
                                                                        RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,

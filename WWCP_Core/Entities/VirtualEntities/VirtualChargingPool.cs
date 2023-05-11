@@ -60,6 +60,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                     Address?                                            Address                           = null,
                                                                     GeoCoordinate?                                      GeoLocation                       = null,
+                                                                    OpeningTimes?                                       OpeningTimes                      = null,
+                                                                    Boolean?                                            ChargingWhenClosed                = null,
 
                                                                     ChargingPoolAdminStatusTypes?                       InitialAdminStatus                = null,
                                                                     ChargingPoolStatusTypes?                            InitialStatus                     = null,
@@ -83,6 +85,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    Address,
                    GeoLocation,
+                   OpeningTimes,
+                   ChargingWhenClosed,
 
                    ChargingPoolConfigurator,
                    newChargingPool => {
@@ -97,6 +101,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                 Address,
                                                 GeoLocation,
+                                                OpeningTimes,
+                                                ChargingWhenClosed,
 
                                                 EllipticCurve,
                                                 PrivateKey,
@@ -139,10 +145,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region Data
 
+        private readonly       Decimal   EPSILON                         = 0.01m;
+
         /// <summary>
         /// The default max size of the status history.
         /// </summary>
-        public const          UInt16     DefaultMaxStatusListSize        = 50;
+        public const           UInt16    DefaultMaxStatusListSize        = 50;
 
         /// <summary>
         /// The default max size of the admin status history.
@@ -162,13 +170,880 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// The identification of the operator of this virtual EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator_Id  OperatorId
+        public ChargingStationOperator_Id    OperatorId
             => Id.OperatorId;
+
+        /// <summary>
+        /// The charging station operator of this charging pool.
+        /// </summary>
+        [Optional]
+        public ChargingStationOperator?      Operator               { get; }
+
+        /// <summary>
+        /// The charging station sub operator of this charging pool.
+        /// </summary>
+        [Optional]
+        public ChargingStationOperator?      SubOperator            { get; }
+
+
+        /// <summary>
+        /// All brands registered for this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<Brand>            Brands                 { get; }
+
+        /// <summary>
+        /// The license of the charging pool data.
+        /// </summary>
+        [Mandatory, SlowData]
+        public ReactiveSet<OpenDataLicense>  DataLicenses           { get; }
+
+
+        #region LocationLanguage
+
+        private Languages? locationLanguage;
+
+        /// <summary>
+        /// The official language at this charging pool.
+        /// </summary>
+        [Optional]
+        public Languages? LocationLanguage
+        {
+
+            get
+            {
+                return locationLanguage;
+            }
+
+            set
+            {
+
+                if (locationLanguage != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref locationLanguage);
+
+                    else
+                        SetProperty(ref locationLanguage, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region Address
+
+        private Address? address;
+
+        /// <summary>
+        /// The address of this charging pool.
+        /// </summary>
+        [Optional]
+        public Address? Address
+        {
+
+            get
+            {
+                return address;
+            }
+
+            set
+            {
+
+                if (address != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref address);
+
+                    else
+                        SetProperty(ref address, value);
+
+                    // Delete inherited addresses
+                    chargingStations.ForEach(station => station.Address = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region GeoLocation
+
+        private GeoCoordinate? geoLocation;
+
+        /// <summary>
+        /// The geographical location of this charging pool.
+        /// </summary>
+        [Optional]
+        public GeoCoordinate? GeoLocation
+        {
+
+            get
+            {
+                return geoLocation;
+            }
+
+            set
+            {
+
+                if (geoLocation != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref geoLocation);
+
+                    else
+                        SetProperty(ref geoLocation, value);
+
+                    // Delete inherited geo locations
+                    chargingStations.ForEach(station => station.GeoLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EntranceAddress
+
+        private Address? entranceAddress;
+
+        /// <summary>
+        /// The address of the entrance to this charging pool.
+        /// (If different from 'Address').
+        /// </summary>
+        [Optional]
+        public Address? EntranceAddress
+        {
+
+            get
+            {
+                return entranceAddress;
+            }
+
+            set
+            {
+
+                if (entranceAddress != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref entranceAddress);
+
+                    else
+                        SetProperty(ref entranceAddress, value);
+
+                    // Delete inherited entrance addresses
+                    chargingStations.ForEach(station => station.EntranceAddress = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EntranceLocation
+
+        private GeoCoordinate? entranceLocation;
+
+        /// <summary>
+        /// The geographical location of the entrance to this charging pool.
+        /// (If different from 'GeoLocation').
+        /// </summary>
+        [Optional]
+        public GeoCoordinate? EntranceLocation
+        {
+
+            get
+            {
+                return entranceLocation;
+            }
+
+            set
+            {
+
+                if (entranceLocation != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref entranceLocation);
+
+                    else
+                        SetProperty(ref entranceLocation, value);
+
+                    // Delete inherited entrance locations
+                    chargingStations.ForEach(station => station.EntranceLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ArrivalInstructions
+
+        /// <summary>
+        /// An optional (multi-language) description of how to find the charging pool.
+        /// </summary>
+        [Optional]
+        public I18NString                               ArrivalInstructions     { get; }
+
+        #endregion
+
+        #region OpeningTimes
+
+        private OpeningTimes openingTimes;
+
+        /// <summary>
+        /// The opening times of this charging pool.
+        /// </summary>
+        [Mandatory]
+        public OpeningTimes OpeningTimes
+        {
+
+            get
+            {
+                return openingTimes;
+            }
+
+            set
+            {
+                if (value != openingTimes)
+                {
+                    SetProperty(ref openingTimes, value);
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingWhenClosed
 
         /// <summary>
         /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
         /// </summary>
-        public Boolean?                    ChargingWhenClosed          { get; set; }
+        public Boolean?  ChargingWhenClosed    { get; set; }
+
+        #endregion
+
+
+        #region UIFeatures
+
+        /// <summary>
+        /// User interface features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. an external payment terminal.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<UIFeatures>                  UIFeatures              { get; }
+
+        #endregion
+
+        #region AuthenticationModes
+
+        /// <summary>
+        /// The authentication options an EV driver can use.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<AuthenticationModes>         AuthenticationModes     { get; }
+
+        #endregion
+
+        #region PaymentOptions
+
+        /// <summary>
+        /// The payment options an EV driver can use.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<PaymentOptions>              PaymentOptions          { get; }
+
+        #endregion
+
+        #region Accessibility
+
+        private AccessibilityTypes? accessibility;
+
+        /// <summary>
+        /// The accessibility of the charging station.
+        /// </summary>
+        [Optional]
+        public AccessibilityTypes? Accessibility
+        {
+
+            get
+            {
+                return accessibility;
+            }
+
+            set
+            {
+
+                if (accessibility != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref accessibility);
+
+                    else
+                        SetProperty(ref accessibility, value);
+
+                    // Delete inherited accessibilities
+                    chargingStations.ForEach(station => station.Accessibility = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region Features
+
+        /// <summary>
+        /// Charging features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. hasARoof.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<Features>                    Features                { get; }
+
+        #endregion
+
+        #region Facilities
+
+        /// <summary>
+        /// Charging facilities of the charging pool, e.g. a supermarket.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<Facilities>                  Facilities              { get; }
+
+        #endregion
+
+
+        #region PhotoURLs
+
+        /// <summary>
+        /// URIs of photos of this charging pool.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<URL>                         PhotoURLs               { get; }
+
+        #endregion
+
+        #region HotlinePhoneNumber
+
+        private PhoneNumber? _HotlinePhoneNumber;
+
+        /// <summary>
+        /// The telephone number of the charging station operator hotline.
+        /// </summary>
+        [Optional]
+        public PhoneNumber? HotlinePhoneNumber
+        {
+
+            get
+            {
+                return _HotlinePhoneNumber;
+            }
+
+            set
+            {
+
+                if (_HotlinePhoneNumber != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _HotlinePhoneNumber);
+
+                    else
+                        SetProperty(ref _HotlinePhoneNumber, value);
+
+                    // Delete inherited accessibilities
+                    chargingStations.ForEach(station => station.HotlinePhoneNumber = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region GridConnection
+
+        private GridConnectionTypes? gridConnection;
+
+        /// <summary>
+        /// The grid connection of the charging pool.
+        /// </summary>
+        [Optional]
+        public GridConnectionTypes? GridConnection
+        {
+
+            get
+            {
+                return gridConnection;
+            }
+
+            set
+            {
+
+                if (gridConnection != value)
+                {
+
+                    if (value is null)
+                        DeleteProperty(ref gridConnection);
+
+                    else
+                        SetProperty(ref gridConnection, value);
+
+                    // Delete inherited grid connections
+                    chargingStations.ForEach(station => station.GridConnection = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region MaxCurrent
+
+        private Decimal? maxCurrent;
+
+        /// <summary>
+        /// The maximum current [Ampere].
+        /// </summary>
+        [Mandatory, SlowData]
+        public Decimal? MaxCurrent
+        {
+
+            get
+            {
+                return maxCurrent;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxCurrent.HasValue)
+                        SetProperty(ref maxCurrent,
+                                    value);
+
+                    else if (Math.Abs(maxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCurrent,
+                                    value);
+
+                }
+                else
+                    DeleteProperty(ref maxCurrent);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrentRealTime
+
+        private Timestamped<Decimal>? maxCurrentRealTime;
+
+        /// <summary>
+        /// The real-time maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxCurrentRealTime
+        {
+
+            get
+            {
+                return maxCurrentRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxCurrentRealTime,
+                                value);
+
+                else
+                    DeleteProperty(ref maxCurrentRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum current [Ampere].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCurrentPrognoses     { get; }
+
+
+        #region MaxPower
+
+        private Decimal? maxPower;
+
+        /// <summary>
+        /// The maximum power [kWatt].
+        /// </summary>
+        [Optional, SlowData]
+        public Decimal? MaxPower
+        {
+
+            get
+            {
+                return maxPower;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxPower.HasValue)
+                        SetProperty(ref maxPower,
+                                    value);
+
+                    else if (Math.Abs(maxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxPower,
+                                    value);
+
+                }
+                else
+                    DeleteProperty(ref maxPower);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxPowerRealTime
+
+        private Timestamped<Decimal>? maxPowerRealTime;
+
+        /// <summary>
+        /// The real-time maximum power [kWatt].
+        /// </summary>
+        [Optional, FastData]
+        public Timestamped<Decimal>? MaxPowerRealTime
+        {
+
+            get
+            {
+                return maxPowerRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxPowerRealTime,
+                                value);
+
+                else
+                    DeleteProperty(ref maxPowerRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum power [kWatt].
+        /// </summary>
+        [Optional, FastData]
+        public ReactiveSet<Timestamped<Decimal>>        MaxPowerPrognoses       { get; }
+
+
+        #region MaxCapacity
+
+        private Decimal? maxCapacity;
+
+        /// <summary>
+        /// The maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public Decimal? MaxCapacity
+        {
+
+            get
+            {
+                return maxCapacity;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                {
+
+                    if (!maxCapacity.HasValue)
+                        SetProperty(ref maxCapacity,
+                                    value);
+
+                    else if (Math.Abs(maxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref maxCapacity,
+                                    value);
+
+                }
+                else
+                    DeleteProperty(ref maxCapacity);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCapacityRealTime
+
+        private Timestamped<Decimal>? maxCapacityRealTime;
+
+        /// <summary>
+        /// The real-time maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public Timestamped<Decimal>? MaxCapacityRealTime
+        {
+
+            get
+            {
+                return maxCapacityRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref maxCapacityRealTime,
+                                value);
+
+                else
+                    DeleteProperty(ref maxCapacityRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Prognoses on future values of the maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<Timestamped<Decimal>>        MaxCapacityPrognoses    { get; }
+
+
+        #region EnergyMix
+
+        private EnergyMix? energyMix;
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+        [Optional, SlowData]
+        public EnergyMix? EnergyMix
+        {
+
+            get
+            {
+                return energyMix;
+            }
+
+            set
+            {
+
+                if (value != energyMix)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref energyMix);
+
+                    else
+                        SetProperty(ref energyMix, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergyMixRealTime
+
+        private Timestamped<EnergyMix>? energyMixRealTime;
+
+        /// <summary>
+        /// The current energy mix.
+        /// </summary>
+        [Mandatory, FastData]
+        public Timestamped<EnergyMix>? EnergyMixRealTime
+        {
+
+            get
+            {
+                return energyMixRealTime;
+            }
+
+            set
+            {
+
+                if (value is not null)
+                    SetProperty(ref energyMixRealTime,
+                                value);
+
+                else
+                    DeleteProperty(ref energyMixRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergyMixPrognoses
+
+        private EnergyMixPrognosis? energyMixPrognoses;
+
+        /// <summary>
+        /// Prognoses on future values of the energy mix.
+        /// </summary>
+        [Optional, FastData]
+        public EnergyMixPrognosis? EnergyMixPrognoses
+        {
+
+            get
+            {
+                return energyMixPrognoses;
+            }
+
+            set
+            {
+
+                if (value != energyMixPrognoses)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref energyMixPrognoses);
+
+                    else
+                        SetProperty(ref energyMixPrognoses, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region ExitAddress
+
+        private Address? exitAddress;
+
+        /// <summary>
+        /// The address of the exit of this charging pool.
+        /// (If different from 'Address').
+        /// </summary>
+        [Optional]
+        public Address? ExitAddress
+        {
+
+            get
+            {
+                return exitAddress;
+            }
+
+            set
+            {
+
+                if (exitAddress != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref exitAddress);
+
+                    else
+                        SetProperty(ref exitAddress, value);
+
+                    // Delete inherited exit addresses
+                    chargingStations.ForEach(station => station.ExitAddress = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ExitLocation
+
+        private GeoCoordinate? exitLocation;
+
+        /// <summary>
+        /// The geographical location of the exit of this charging pool.
+        /// (If different from 'GeoLocation').
+        /// </summary>
+        [Optional]
+        public GeoCoordinate? ExitLocation
+        {
+
+            get
+            {
+                return exitLocation;
+            }
+
+            set
+            {
+
+                if (exitLocation != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref exitLocation);
+
+                    else
+                        SetProperty(ref exitLocation, value);
+
+                    // Delete inherited exit locations
+                    chargingStations.ForEach(station => station.ExitLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -186,6 +1061,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                    Address?                       Address                      = null,
                                    GeoCoordinate?                 GeoLocation                  = null,
+                                   OpeningTimes?                  OpeningTimes                 = null,
+                                   Boolean?                       ChargingWhenClosed           = null,
 
                                    String                         EllipticCurve                = "P-256",
                                    ECPrivateKeyParameters?        PrivateKey                   = null,
@@ -224,6 +1101,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
             this.Address              = Address;
             this.GeoLocation          = GeoLocation;
+            this.openingTimes         = OpeningTimes ?? OpeningTimes.Open24Hours;
+            this.ChargingWhenClosed   = ChargingWhenClosed;
 
             #endregion
 
@@ -1877,35 +2756,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
 
 
-        public ChargingStationOperator Operator => throw new NotImplementedException();
-
         public IRemoteChargingPool RemoteChargingPool => throw new NotImplementedException();
-
-        public Address? Address
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public GeoCoordinate? GeoLocation
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public OpeningTimes OpeningTimes => throw new NotImplementedException();
 
         public IEnumerable<IEVSE> EVSEs => throw new NotImplementedException();
 
@@ -1917,61 +2768,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
 
-        public ChargingStationOperator? SubOperator => throw new NotImplementedException();
-
-        public ReactiveSet<Brand> Brands => throw new NotImplementedException();
-
-        public ReactiveSet<OpenDataLicense> DataLicenses => throw new NotImplementedException();
-
-        public Languages? LocationLanguage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Address EntranceAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GeoCoordinate? EntranceLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public I18NString ArrivalInstructions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        OpeningTimes IChargingPool.OpeningTimes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ReactiveSet<UIFeatures> UIFeatures => throw new NotImplementedException();
-
-        public ReactiveSet<AuthenticationModes> AuthenticationModes => throw new NotImplementedException();
-
-        public ReactiveSet<PaymentOptions> PaymentOptions => throw new NotImplementedException();
-
-        public AccessibilityTypes? Accessibility { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<URL> PhotoURLs => throw new NotImplementedException();
-
-        public PhoneNumber? HotlinePhoneNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GridConnectionTypes? GridConnection { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Decimal? MaxCurrent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<Decimal>? MaxCurrentRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxCurrentPrognoses => throw new NotImplementedException();
-
-        public Decimal? MaxPower { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<Decimal>? MaxPowerRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxPowerPrognoses => throw new NotImplementedException();
-
-        public Decimal? MaxCapacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<Decimal>? MaxCapacityRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public ReactiveSet<Timestamped<Decimal>> MaxCapacityPrognoses => throw new NotImplementedException();
-
-        public EnergyMix? EnergyMix { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Timestamped<EnergyMix>? EnergyMixRealTime { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public Address ExitAddress { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public GeoCoordinate? ExitLocation { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public Partly IsHubjectCompatible => throw new NotImplementedException();
 
         public Partly DynamicInfoAvailable => throw new NotImplementedException();
 
         public Func<ChargingStationStatusReport, ChargingPoolStatusTypes> StatusAggregationDelegate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public EnergyMixPrognosis? EnergyMixPrognoses { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         TimeSpan IChargingReservations.MaxReservationDuration { get; set; }
-
-        public ReactiveSet<Features> Features => throw new NotImplementedException();
-
-        public ReactiveSet<Facilities> Facilities => throw new NotImplementedException();
 
         public Boolean Equals(IChargingPool? other)
         {
@@ -2117,6 +2919,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
             throw new NotImplementedException();
         }
+
+
     }
 
 }

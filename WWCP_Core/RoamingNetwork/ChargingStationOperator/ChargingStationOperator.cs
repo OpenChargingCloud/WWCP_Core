@@ -943,6 +943,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                     Address?                                                     Address                        = null,
                                                                     GeoCoordinate?                                               GeoLocation                    = null,
+                                                                    OpeningTimes?                                                OpeningTimes                   = null,
+                                                                    Boolean?                                                     ChargingWhenClosed             = null,
 
                                                                     Action<IChargingPool>?                                       Configurator                   = null,
                                                                     RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
@@ -991,6 +993,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                 Address,
                                                 GeoLocation,
+                                                OpeningTimes,
+                                                ChargingWhenClosed,
 
                                                 Configurator,
                                                 RemoteChargingPoolCreator,
@@ -1079,6 +1083,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                     Address?                                                     Address                        = null,
                                                                                     GeoCoordinate?                                               GeoLocation                    = null,
+                                                                                    OpeningTimes?                                                OpeningTimes                   = null,
+                                                                                    Boolean?                                                     ChargingWhenClosed             = null,
 
                                                                                     Action<IChargingPool>?                                       Configurator                   = null,
                                                                                     RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
@@ -1110,21 +1116,23 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 var result = await CreateChargingPool(Id,
-                                                        Name,
-                                                        Description,
+                                                      Name,
+                                                      Description,
 
-                                                        Address,
-                                                        GeoLocation,
+                                                      Address,
+                                                      GeoLocation,
+                                                      OpeningTimes,
+                                                      ChargingWhenClosed,
 
-                                                        Configurator,
-                                                        RemoteChargingPoolCreator,
-                                                        InitialAdminStatus,
-                                                        InitialStatus,
-                                                        MaxAdminStatusListSize,
-                                                        MaxStatusListSize,
-                                                        OnSuccess,
-                                                        OnError,
-                                                        AllowInconsistentOperatorIds);
+                                                      Configurator,
+                                                      RemoteChargingPoolCreator,
+                                                      InitialAdminStatus,
+                                                      InitialStatus,
+                                                      MaxAdminStatusListSize,
+                                                      MaxStatusListSize,
+                                                      OnSuccess,
+                                                      OnError,
+                                                      AllowInconsistentOperatorIds);
 
                 return AddOrUpdateChargingPoolResult.Success(
                             result.ChargingPool,
@@ -1148,17 +1156,19 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     var result = existingChargingPool.UpdateWith(new ChargingPool(Id,
-                                                                                    this,
-                                                                                    Name,
-                                                                                    Description,
+                                                                                  this,
+                                                                                  Name,
+                                                                                  Description,
 
-                                                                                    Address,
-                                                                                    GeoLocation,
+                                                                                  Address,
+                                                                                  GeoLocation,
+                                                                                  OpeningTimes,
+                                                                                  ChargingWhenClosed,
 
-                                                                                    Configurator,
-                                                                                    null,
-                                                                                    new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
-                                                                                    new Timestamped<ChargingPoolStatusTypes>     (DateTime.MinValue, ChargingPoolStatusTypes.     Available)));
+                                                                                  Configurator,
+                                                                                  null,
+                                                                                  new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
+                                                                                  new Timestamped<ChargingPoolStatusTypes>     (DateTime.MinValue, ChargingPoolStatusTypes.     Available)));
 
                     return AddOrUpdateChargingPoolResult.Success(
                                 result,

@@ -991,6 +991,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                             Address?                                    Address                      = null,
                             GeoCoordinate?                              GeoLocation                  = null,
+                            OpeningTimes?                               OpeningTimes                 = null,
+                            Boolean?                                    ChargingWhenClosed           = null,
 
                             Action<ChargingPool>?                       Configurator                 = null,
                             RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator    = null,
@@ -1006,6 +1008,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                    Address,
                    GeoLocation,
+                   OpeningTimes,
+                   ChargingWhenClosed,
 
                    Configurator,
                    RemoteChargingPoolCreator,
@@ -1038,6 +1042,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                             Address?                                    Address                          = null,
                             GeoCoordinate?                              GeoLocation                      = null,
+                            OpeningTimes?                               OpeningTimes                     = null,
+                            Boolean?                                    ChargingWhenClosed               = null,
 
                             Action<ChargingPool>?                       Configurator                     = null,
                             RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator        = null,
@@ -1070,9 +1076,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.Address                           = Address;
             this.GeoLocation                       = GeoLocation;
+            this.openingTimes                      = OpeningTimes ?? OpeningTimes.Open24Hours;
+            this.ChargingWhenClosed                = ChargingWhenClosed;
 
             this.Operator                          = Operator;
-            this.openingTimes                      = OpeningTimes.Open24Hours;
 
             this.Brands                            = new ReactiveSet<Brand>();
             this.Brands.OnSetChanged              += (timestamp, sender, newItems, oldItems) => {
