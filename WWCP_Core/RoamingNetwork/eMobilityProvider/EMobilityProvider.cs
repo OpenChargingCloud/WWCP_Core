@@ -25,7 +25,6 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Mail;
-using System.Text;
 
 #endregion
 
@@ -61,12 +60,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize = 15;
+        public const UInt16 DefaultMaxAdminStatusListSize   = 15;
 
         /// <summary>
         /// The default max size of the status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize = 15;
+        public const UInt16 DefaultMaxStatusListSize        = 15;
 
         #endregion
 
@@ -2577,17 +2576,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartResult>
 
-            AuthorizeStart(LocalAuthentication LocalAuthentication,
-                           ChargingLocation ChargingLocation = null,
-                           ChargingProduct ChargingProduct = null,
-                           ChargingSession_Id? SessionId = null,
-                           ChargingSession_Id? CPOPartnerSessionId = null,
-                           ChargingStationOperator_Id? OperatorId = null,
+            AuthorizeStart(LocalAuthentication          LocalAuthentication,
+                           ChargingLocation?            ChargingLocation      = null,
+                           ChargingProduct?             ChargingProduct       = null,
+                           ChargingSession_Id?          SessionId             = null,
+                           ChargingSession_Id?          CPOPartnerSessionId   = null,
+                           ChargingStationOperator_Id?  OperatorId            = null,
 
-                           DateTime? Timestamp = null,
-                           CancellationToken CancellationToken = default,
-                           EventTracking_Id EventTrackingId = null,
-                           TimeSpan? RequestTimeout = null)
+                           DateTime?                    Timestamp             = null,
+                           CancellationToken            CancellationToken     = default,
+                           EventTracking_Id?            EventTrackingId       = null,
+                           TimeSpan?                    RequestTimeout        = null)
 
         {
 
@@ -2634,7 +2633,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableAuthentication && RemoteEMobilityProvider != null)
+            if (!DisableAuthentication && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.AuthorizeStart(LocalAuthentication,
                                                                       ChargingLocation,
                                                                       ChargingProduct,
@@ -2717,16 +2716,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopResult>
 
-            AuthorizeStop(ChargingSession_Id SessionId,
-                          LocalAuthentication LocalAuthentication,
-                          ChargingLocation ChargingLocation = null,
-                          ChargingSession_Id? CPOPartnerSessionId = null,
-                          ChargingStationOperator_Id? OperatorId = null,
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          LocalAuthentication          LocalAuthentication,
+                          ChargingLocation?            ChargingLocation      = null,
+                          ChargingSession_Id?          CPOPartnerSessionId   = null,
+                          ChargingStationOperator_Id?  OperatorId            = null,
 
-                          DateTime? Timestamp = null,
-                          CancellationToken CancellationToken = default,
-                          EventTracking_Id EventTrackingId = null,
-                          TimeSpan? RequestTimeout = null)
+                          DateTime?                    Timestamp             = null,
+                          CancellationToken            CancellationToken     = default,
+                          EventTracking_Id?            EventTrackingId       = null,
+                          TimeSpan?                    RequestTimeout        = null)
         {
 
             #region Initial checks
@@ -2770,7 +2769,7 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (!DisableAuthentication && RemoteEMobilityProvider != null)
+            if (!DisableAuthentication && RemoteEMobilityProvider is not null)
                 result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
                                                                      LocalAuthentication,
                                                                      ChargingLocation,
@@ -2844,22 +2843,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<SendCDRsResult>
 
-            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord> ChargeDetailRecords,
-                                    TransmissionTypes TransmissionType,
+            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                    TransmissionTypes                TransmissionType,
 
-                                    DateTime? Timestamp = null,
-                                    CancellationToken CancellationToken = default,
-                                    EventTracking_Id? EventTrackingId = null,
-                                    TimeSpan? RequestTimeout = null)
+                                    DateTime?                        Timestamp           = null,
+                                    CancellationToken                CancellationToken   = default,
+                                    EventTracking_Id?                EventTrackingId     = null,
+                                    TimeSpan?                        RequestTimeout      = null)
         {
 
-            if (!DisableSendChargeDetailRecords && RemoteEMobilityProvider != null)
-                return await RemoteEMobilityProvider.SendChargeDetailRecords(ChargeDetailRecords,
+            if (!DisableSendChargeDetailRecords && RemoteEMobilityProvider is not null)
+                return await RemoteEMobilityProvider.ReceiveChargeDetailRecords(ChargeDetailRecords,
 
-                                                                             Timestamp,
-                                                                             CancellationToken,
-                                                                             EventTrackingId,
-                                                                             RequestTimeout);
+                                                                                Timestamp,
+                                                                                CancellationToken,
+                                                                                EventTrackingId,
+                                                                                RequestTimeout);
 
             return SendCDRsResult.OutOfService(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                                Id,
@@ -3679,6 +3678,7 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.ToString();
 
         #endregion
+
 
     }
 

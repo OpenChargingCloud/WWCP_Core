@@ -7805,12 +7805,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<SendCDRsResult>
 
-            IReceiveChargeDetailRecords.SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+            IReceiveChargeDetailRecords.ReceiveChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
 
-                                                                DateTime?                        Timestamp,
-                                                                CancellationToken                CancellationToken,
-                                                                EventTracking_Id?                EventTrackingId,
-                                                                TimeSpan?                        RequestTimeout)
+                                                                   DateTime?                        Timestamp,
+                                                                   CancellationToken                CancellationToken,
+                                                                   EventTracking_Id?                EventTrackingId,
+                                                                   TimeSpan?                        RequestTimeout)
 
                 => SendChargeDetailRecords(ChargeDetailRecords,
                                            TransmissionTypes.Enqueue,
