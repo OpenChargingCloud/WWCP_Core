@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Take a snapshot of the current e-mobility provider status.
         /// </summary>
         /// <param name="EMobilityProvider">A e-mobility provider.</param>
-        public static EMobilityProviderStatus Snapshot(EMobilityProvider EMobilityProvider)
+        public static EMobilityProviderStatus Snapshot(EMobilityProviderProxy EMobilityProvider)
 
             => new (EMobilityProvider.Id,
                     EMobilityProvider.Status);

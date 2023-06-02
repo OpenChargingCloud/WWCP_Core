@@ -25,7 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public delegate IRemoteEVehicle RemoteEVehicleCreatorDelegate(eVehicle eVehicle);
+    public delegate IRemoteEVehicle RemoteEVehicleCreatorDelegate(EVehicle eVehicle);
 
     public delegate String eVehicleNameSelectorDelegate(I18NString I18NText);
 
@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnEVehicleDataChangedDelegate(DateTime          Timestamp,
                                                        EventTracking_Id  EventTrackingId,
-                                                       eVehicle          eVehicle,
+                                                       EVehicle          eVehicle,
                                                        String            PropertyName,
                                                        Object?           NewValue,
                                                        Object?           OldValue     = null,
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
     public delegate Task OnEVehicleAdminStatusChangedDelegate(DateTime                                Timestamp,
                                                               EventTracking_Id                        EventTrackingId,
-                                                              eVehicle                                eVehicle,
+                                                              EVehicle                                eVehicle,
                                                               Timestamped<eVehicleAdminStatusTypes>   NewStatus,
                                                               Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
                                                               Context?                                DataSource   = null);
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
     public delegate Task OnEVehicleStatusChangedDelegate(DateTime                           Timestamp,
                                                          EventTracking_Id                   EventTrackingId,
-                                                         eVehicle                           eVehicle,
+                                                         EVehicle                           eVehicle,
                                                          Timestamped<eVehicleStatusTypes>   NewStatus,
                                                          Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
                                                          Context?                           DataSource   = null);
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.WWCP
     /// <param name="NewGeoCoordinate">The new timestamped geo coordinate of the electric vehicle.</param>
     public delegate Task OnEVehicleGeoLocationChangedDelegate(DateTime                     Timestamp,
                                                               EventTracking_Id             EventTrackingId,
-                                                              eVehicle                     eVehicle,
+                                                              EVehicle                     eVehicle,
                                                               Timestamped<GeoCoordinate>   NewGeoCoordinate,
                                                               Timestamped<GeoCoordinate>?  OldGeoCoordinate   = null,
                                                               Context?                     DataSource         = null);

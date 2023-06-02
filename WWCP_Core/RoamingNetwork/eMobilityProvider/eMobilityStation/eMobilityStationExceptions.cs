@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class eMobilityStationAlreadyExists : eMobilityProviderException
     {
 
-        public eMobilityStationAlreadyExists(EMobilityProvider    eMobilityProvider,
+        public eMobilityStationAlreadyExists(EMobilityProviderProxy    eMobilityProvider,
                                              eMobilityStation_Id  eMobilityStationId)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class eMobilityStationCouldNotBeCreated : eMobilityProviderException
     {
 
-        public eMobilityStationCouldNotBeCreated(EMobilityProvider    eMobilityProvider,
+        public eMobilityStationCouldNotBeCreated(EMobilityProviderProxy    eMobilityProvider,
                                                  eMobilityStation_Id  eMobilityStation_Id)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class eMobilityStationException : eMobilityProviderException
     {
 
-        public eMobilityStationException(EMobilityProvider  eMobilityProvider,
+        public eMobilityStationException(EMobilityProviderProxy  eMobilityProvider,
                                          String             Message)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         { }
 
-        public eMobilityStationException(EMobilityProvider  eMobilityProvider,
+        public eMobilityStationException(EMobilityProviderProxy  eMobilityProvider,
                                          String             Message,
                                          Exception          InnerException)
 

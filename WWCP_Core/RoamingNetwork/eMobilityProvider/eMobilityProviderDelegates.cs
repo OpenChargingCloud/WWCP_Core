@@ -17,21 +17,23 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Threading.Tasks;
 
 #endregion
 
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(EMobilityProvider EMobilityProvider);
+    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(EMobilityProviderProxy EMobilityProvider);
 
     public delegate String eMobilityProviderNameSelectorDelegate(I18NString I18NText);
 
 
+    /// <summary>
+    /// A delegate for filtering e-mobility providers.
+    /// </summary>
+    /// <param name="EMobilityProvider">A e-mobility provider to include.</param>
+    public delegate Boolean IncludeEMobilityProviderDelegate(IEMobilityProvider EMobilityProvider);
 
 
     /// <summary>

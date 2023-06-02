@@ -578,7 +578,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The e-mobility station Operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public EMobilityProvider Provider { get; }
+        public EMobilityProviderProxy Provider { get; }
 
         #endregion
 
@@ -590,7 +590,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the e-mobility station pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal eMobilityStation(eMobilityStation_Id                    Id,
-                                  EMobilityProvider                      Provider,
+                                  EMobilityProviderProxy                      Provider,
                                   Action<eMobilityStation>               Configurator                   = null,
                                   RemoteEMobilityStationCreatorDelegate  RemoteeMobilityStationCreator  = null,
                                   eMobilityStationAdminStatusTypes        AdminStatus                    = eMobilityStationAdminStatusTypes.Operational,
@@ -745,12 +745,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleAddition
 
-        internal readonly IVotingNotificator<DateTime, eMobilityStation, eVehicle, Boolean> eVehicleAddition;
+        internal readonly IVotingNotificator<DateTime, eMobilityStation, EVehicle, Boolean> eVehicleAddition;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityStation, eVehicle, Boolean> OnEVehicleAddition
+        public IVotingSender<DateTime, eMobilityStation, EVehicle, Boolean> OnEVehicleAddition
 
             => eVehicleAddition;
 
@@ -758,12 +758,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleRemoval
 
-        internal readonly IVotingNotificator<DateTime, eMobilityStation, eVehicle, Boolean> eVehicleRemoval;
+        internal readonly IVotingNotificator<DateTime, eMobilityStation, EVehicle, Boolean> eVehicleRemoval;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityStation, eVehicle, Boolean> OnEVehicleRemoval
+        public IVotingSender<DateTime, eMobilityStation, EVehicle, Boolean> OnEVehicleRemoval
 
             => eVehicleRemoval;
 
@@ -772,9 +772,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicles
 
-        private EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
+        private EntityHashSet<ChargingStationOperator, EVehicle_Id, EVehicle> _eVehicles;
 
-        public IEnumerable<eVehicle> eVehicles
+        public IEnumerable<EVehicle> eVehicles
 
             => _eVehicles;
 
@@ -782,21 +782,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleAdminStatus
 
-        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>> eVehicleAdminStatus
+        public IEnumerable<KeyValuePair<EVehicle_Id, eVehicleAdminStatusTypes>> eVehicleAdminStatus
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
+                   Select (vehicle => new KeyValuePair<EVehicle_Id, eVehicleAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
         #endregion
 
         #region eVehicleStatus
 
-        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleStatusTypes>> eVehicleStatus
+        public IEnumerable<KeyValuePair<EVehicle_Id, eVehicleStatusTypes>> eVehicleStatus
 
             => _eVehicles.
                    OrderBy(vehicle => vehicle.Id).
-                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusTypes>(vehicle.Id, vehicle.Status.Value));
+                   Select (vehicle => new KeyValuePair<EVehicle_Id, eVehicleStatusTypes>(vehicle.Id, vehicle.Status.Value));
 
         #endregion
 
@@ -811,20 +811,20 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new eVehicle before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new eVehicle after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the eVehicle failed.</param>
-        public eVehicle CreateNewEVehicle(eVehicle_Id                            eVehicleId             = null,
-                                          Action<eVehicle>                       Configurator           = null,
+        public EVehicle CreateNewEVehicle(EVehicle_Id                            eVehicleId             = null,
+                                          Action<EVehicle>                       Configurator           = null,
                                           RemoteEVehicleCreatorDelegate          RemoteeVehicleCreator  = null,
                                           eVehicleAdminStatusTypes                AdminStatus            = eVehicleAdminStatusTypes.Operational,
                                           eVehicleStatusTypes                     Status                 = eVehicleStatusTypes.Available,
-                                          Action<eVehicle>                       OnSuccess              = null,
-                                          Action<eMobilityStation, eVehicle_Id>  OnError                = null)
+                                          Action<EVehicle>                       OnSuccess              = null,
+                                          Action<eMobilityStation, EVehicle_Id>  OnError                = null)
 
         {
 
             #region Initial checks
 
             if (eVehicleId == null)
-                eVehicleId = eVehicle_Id.Random(Provider.Id);
+                eVehicleId = EVehicle_Id.Random(Provider.Id);
 
             // Do not throw an exception when an OnError delegate was given!
             if (_eVehicles.Any(pool => pool.Id == eVehicleId))
@@ -837,7 +837,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            var _eVehicle = new eVehicle(eVehicleId,
+            var _eVehicle = new EVehicle(eVehicleId,
                                          Provider,
                                          Configurator,
                                          RemoteeVehicleCreator,
@@ -881,7 +881,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given eVehicle is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="eVehicle">A eVehicle.</param>
-        public Boolean ContainseVehicle(eVehicle eVehicle)
+        public Boolean ContainseVehicle(EVehicle eVehicle)
 
             => _eVehicles.Contains(eVehicle);
 
@@ -893,7 +893,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Check if the given eVehicle identification is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="eVehicleId">The unique identification of the eVehicle.</param>
-        public Boolean ContainseVehicle(eVehicle_Id eVehicleId)
+        public Boolean ContainseVehicle(EVehicle_Id eVehicleId)
 
             => _eVehicles.ContainsId(eVehicleId);
 
@@ -901,7 +901,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GetEVehicleById(eVehicleId)
 
-        public eVehicle GetEVehicleById(eVehicle_Id eVehicleId)
+        public EVehicle GetEVehicleById(EVehicle_Id eVehicleId)
 
             => _eVehicles.GetById(eVehicleId);
 
@@ -909,7 +909,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryGetEVehicleById(eVehicleId, out eVehicle)
 
-        public Boolean TryGetEVehicleById(eVehicle_Id eVehicleId, out eVehicle eVehicle)
+        public Boolean TryGetEVehicleById(EVehicle_Id eVehicleId, out EVehicle eVehicle)
 
             => _eVehicles.TryGet(eVehicleId, out eVehicle);
 
@@ -917,10 +917,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveEVehicle(eVehicleId)
 
-        public eVehicle RemoveEVehicle(eVehicle_Id eVehicleId)
+        public EVehicle RemoveEVehicle(EVehicle_Id eVehicleId)
         {
 
-            eVehicle _eVehicle = null;
+            EVehicle _eVehicle = null;
 
             if (TryGetEVehicleById(eVehicleId, out _eVehicle))
             {
@@ -949,7 +949,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveEVehicle(eVehicleId, out eVehicle)
 
-        public Boolean TryRemoveEVehicle(eVehicle_Id eVehicleId, out eVehicle? eVehicle)
+        public Boolean TryRemoveEVehicle(EVehicle_Id eVehicleId, out EVehicle? eVehicle)
         {
 
             if (TryGetEVehicleById(eVehicleId, out eVehicle))
@@ -985,7 +985,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SeteVehicleAdminStatus(eVehicleId, NewStatus)
 
-        public void SeteVehicleAdminStatus(eVehicle_Id                            eVehicleId,
+        public void SeteVehicleAdminStatus(EVehicle_Id                            eVehicleId,
                                            Timestamped<eVehicleAdminStatusTypes>  NewStatus,
                                            Boolean                                SendUpstream = false)
         {
@@ -1002,7 +1002,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
 
-        public void SetEVehicleAdminStatus(eVehicle_Id               eVehicleId,
+        public void SetEVehicleAdminStatus(EVehicle_Id               eVehicleId,
                                            eVehicleAdminStatusTypes  NewStatus,
                                            DateTime                  Timestamp)
         {
@@ -1019,12 +1019,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region SetEVehicleAdminStatus(eVehicleId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetEVehicleAdminStatus(eVehicle_Id                                        eVehicleId,
+        public void SetEVehicleAdminStatus(EVehicle_Id                                        eVehicleId,
                                            IEnumerable<Timestamped<eVehicleAdminStatusTypes>>  StatusList,
                                            ChangeMethods                                      ChangeMethod  = ChangeMethods.Replace)
         {
 
-            eVehicle _eVehicle  = null;
+            EVehicle _eVehicle  = null;
             if (TryGetEVehicleById(eVehicleId, out _eVehicle))
                 _eVehicle.SetAdminStatus(StatusList, ChangeMethod);
 
@@ -1090,7 +1090,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateEVehicleData(DateTime          Timestamp,
                                                EventTracking_Id  EventTrackingId,
-                                               eVehicle          eVehicle,
+                                               EVehicle          eVehicle,
                                                String            PropertyName,
                                                Object?           NewValue,
                                                Object?           OldValue     = null,
@@ -1123,7 +1123,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
         internal async Task UpdateEVehicleAdminStatus(DateTime                                Timestamp,
                                                       EventTracking_Id                        EventTrackingId,
-                                                      eVehicle                                eVehicle,
+                                                      EVehicle                                eVehicle,
                                                       Timestamped<eVehicleAdminStatusTypes>   NewStatus,
                                                       Timestamped<eVehicleAdminStatusTypes>?  OldStatus    = null,
                                                       Context?                                DataSource   = null)
@@ -1154,7 +1154,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
         internal async Task UpdateEVehicleStatus(DateTime                           Timestamp,
                                                  EventTracking_Id                   EventTrackingId,
-                                                 eVehicle                           eVehicle,
+                                                 EVehicle                           eVehicle,
                                                  Timestamped<eVehicleStatusTypes>   NewStatus,
                                                  Timestamped<eVehicleStatusTypes>?  OldStatus    = null,
                                                  Context?                           DataSource   = null)
@@ -1185,7 +1185,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
         internal async Task UpdateEVehicleGeoLocation(DateTime                     Timestamp,
                                                       EventTracking_Id             EventTrackingId,
-                                                      eVehicle                     eVehicle,
+                                                      EVehicle                     eVehicle,
                                                       Timestamped<GeoCoordinate>   NewGeoCoordinate,
                                                       Timestamped<GeoCoordinate>?  OldGeoCoordinate   = null,
                                                       Context?                     DataSource         = null)

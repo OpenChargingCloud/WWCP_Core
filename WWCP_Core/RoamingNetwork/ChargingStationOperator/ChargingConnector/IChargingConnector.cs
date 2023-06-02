@@ -40,6 +40,7 @@ namespace cloud.charging.open.protocols.WWCP
         Meter?                CableLength      { get; }
         Boolean?              Lockable         { get; }
         ChargingPlugTypes     Plug             { get; }
+        Boolean               IsDC             { get; }
 
         JObject? ToJSON(Boolean                                              Embedded                            = false,
                         CustomJObjectSerializerDelegate<ChargingConnector>?  CustomChargingConnectorSerializer   = null);

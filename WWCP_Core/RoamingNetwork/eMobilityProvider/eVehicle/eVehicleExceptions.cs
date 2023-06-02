@@ -37,8 +37,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="eVehicleId">The electric vehicle identification.</param>
-        public eVehicleAlreadyExists(EMobilityProvider  eMobilityProvider,
-                                     eVehicle_Id        eVehicleId)
+        public eVehicleAlreadyExists(EMobilityProviderProxy  eMobilityProvider,
+                                     EVehicle_Id        eVehicleId)
 
             : base(eMobilityProvider.RoamingNetwork,
                    "The given electric vehicle identification '" + eVehicleId + "' already exists within the given '" + eMobilityProvider.Id + "' e-mobility provider!")
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMobilityStation">The e-mobility station.</param>
         /// <param name="eVehicleId">The electric vehicle identification.</param>
         public eVehicleAlreadyExistsInStation(eMobilityStation  eMobilityStation,
-                                              eVehicle_Id       eVehicleId)
+                                              EVehicle_Id       eVehicleId)
 
             : base(eMobilityStation.Provider,
                    "The given electric vehicle identification '" + eVehicleId + "' already exists within the given '" + eMobilityStation.Id + "' e-mobility station!")
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="Message">An exception message.</param>
-        public eVehicleException(EMobilityProvider  eMobilityProvider,
+        public eVehicleException(EMobilityProviderProxy  eMobilityProvider,
                                  String             Message)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public eVehicleException(EMobilityProvider  eMobilityProvider,
+        public eVehicleException(EMobilityProviderProxy  eMobilityProvider,
                                  String             Message,
                                  Exception          InnerException)
 

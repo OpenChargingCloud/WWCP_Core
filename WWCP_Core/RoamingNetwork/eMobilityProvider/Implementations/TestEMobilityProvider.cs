@@ -26,7 +26,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public class LocalEMobilityProvider : IRemoteEMobilityProvider
+    /// <summary>
+    /// An E-Mobility Provider for (internal) tests.
+    /// </summary>
+    public class TestEMobilityProvider : //ToDo: IEMobilityProvider,
+                                         IRemoteEMobilityProvider
     {
 
 
@@ -64,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
 
-        public LocalEMobilityProvider(EMobilityProvider_Id Id)
+        public TestEMobilityProvider(EMobilityProvider_Id Id)
         {
 
             this.AuthId = Id;

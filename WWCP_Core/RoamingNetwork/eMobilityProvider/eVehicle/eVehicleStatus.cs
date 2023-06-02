@@ -27,8 +27,8 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The current status of an electric vehicle.
     /// </summary>
-    public class eVehicleStatus : IEquatable<eVehicleStatus>,
-                                  IComparable<eVehicleStatus>
+    public class EVehicleStatus : IEquatable<EVehicleStatus>,
+                                  IComparable<EVehicleStatus>
     {
 
         #region Properties
@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of a e-mobility station.
         /// </summary>
-        public eVehicle_Id              Id          { get; }
+        public EVehicle_Id              Id          { get; }
 
         /// <summary>
         /// The current status of a e-mobility station.
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of a e-mobility station.</param>
         /// <param name="Status">The current status of a e-mobility station.</param>
         /// <param name="Timestamp">The timestamp of the current status of the e-mobility station.</param>
-        public eVehicleStatus(eVehicle_Id              Id,
+        public EVehicleStatus(EVehicle_Id              Id,
                                            eVehicleStatusTypes  Status,
                                            DateTime                         Timestamp)
 
@@ -87,9 +87,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicle">An e-mobility station.</param>
 
-        public static eVehicleStatus Snapshot(eVehicle eVehicle)
+        public static EVehicleStatus Snapshot(EVehicle eVehicle)
 
-            => new eVehicleStatus(eVehicle.Id,
+            => new EVehicleStatus(eVehicle.Id,
                                   eVehicle.Status.Value,
                                   eVehicle.Status.Timestamp);
 
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleStatus1">A eVehicleStatus.</param>
         /// <param name="eVehicleStatus2">Another eVehicleStatus.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eVehicleStatus eVehicleStatus1, eVehicleStatus eVehicleStatus2)
+        public static Boolean operator == (EVehicleStatus eVehicleStatus1, EVehicleStatus eVehicleStatus2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleStatus1">A eVehicleStatus.</param>
         /// <param name="eVehicleStatus2">Another eVehicleStatus.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eVehicleStatus eVehicleStatus1, eVehicleStatus eVehicleStatus2)
+        public static Boolean operator != (EVehicleStatus eVehicleStatus1, EVehicleStatus eVehicleStatus2)
         {
             return !(eVehicleStatus1 == eVehicleStatus2);
         }
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleStatus1">A eVehicleStatus.</param>
         /// <param name="eVehicleStatus2">Another eVehicleStatus.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eVehicleStatus eVehicleStatus1, eVehicleStatus eVehicleStatus2)
+        public static Boolean operator < (EVehicleStatus eVehicleStatus1, EVehicleStatus eVehicleStatus2)
         {
 
             if ((Object) eVehicleStatus1 == null)
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleStatus1">A eVehicleStatus.</param>
         /// <param name="eVehicleStatus2">Another eVehicleStatus.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eVehicleStatus eVehicleStatus1, eVehicleStatus eVehicleStatus2)
+        public static Boolean operator <= (EVehicleStatus eVehicleStatus1, EVehicleStatus eVehicleStatus2)
         {
             return !(eVehicleStatus1 > eVehicleStatus2);
         }
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleStatus1">A eVehicleStatus.</param>
         /// <param name="eVehicleStatus2">Another eVehicleStatus.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eVehicleStatus eVehicleStatus1, eVehicleStatus eVehicleStatus2)
+        public static Boolean operator > (EVehicleStatus eVehicleStatus1, EVehicleStatus eVehicleStatus2)
         {
 
             if ((Object) eVehicleStatus1 == null)
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleStatus1">A eVehicleStatus.</param>
         /// <param name="eVehicleStatus2">Another eVehicleStatus.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eVehicleStatus eVehicleStatus1, eVehicleStatus eVehicleStatus2)
+        public static Boolean operator >= (EVehicleStatus eVehicleStatus1, EVehicleStatus eVehicleStatus2)
         {
             return !(eVehicleStatus1 < eVehicleStatus2);
         }
@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eVehicleStatus.
-            var eVehicleStatus = Object as eVehicleStatus;
+            var eVehicleStatus = Object as EVehicleStatus;
             if ((Object) eVehicleStatus == null)
                 throw new ArgumentException("The given object is not a eVehicleStatus!");
 
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="eVehicleStatus">An object to compare with.</param>
-        public Int32 CompareTo(eVehicleStatus eVehicleStatus)
+        public Int32 CompareTo(EVehicleStatus eVehicleStatus)
         {
 
             if ((Object) eVehicleStatus == null)
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
 
             // Check if the given object is an eVehicleStatus.
-            var eVehicleStatus = Object as eVehicleStatus;
+            var eVehicleStatus = Object as EVehicleStatus;
             if ((Object) eVehicleStatus == null)
                 return false;
 
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleStatus">An eVehicle identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eVehicleStatus eVehicleStatus)
+        public Boolean Equals(EVehicleStatus eVehicleStatus)
         {
 
             if ((Object) eVehicleStatus == null)

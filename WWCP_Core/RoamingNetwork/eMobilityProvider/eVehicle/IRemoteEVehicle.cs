@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
     public interface IRemoteEVehicle
     {
 
-        eVehicle_Id Id          { get; }
+        EVehicle_Id Id          { get; }
 
         Timestamped<eVehicleAdminStatusTypes> AdminStatus { get; set; }
 
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        eVehicle_Id RemoteVehicleId { get; set; }
+        EVehicle_Id RemoteVehicleId { get; set; }
 
 
     }

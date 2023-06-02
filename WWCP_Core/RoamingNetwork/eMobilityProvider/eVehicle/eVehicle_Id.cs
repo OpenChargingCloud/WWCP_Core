@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The unique identification of an electric vehicle.
     /// </summary>
-    public class eVehicle_Id : IId,
-                               IEquatable<eVehicle_Id>,
-                               IComparable<eVehicle_Id>
+    public class EVehicle_Id : IId,
+                               IEquatable<EVehicle_Id>,
+                               IComparable<EVehicle_Id>
 
     {
 
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Generate a new electric vehicle identification
         /// based on the given string.
         /// </summary>
-        private eVehicle_Id(EMobilityProvider_Id  ProviderId,
+        private EVehicle_Id(EMobilityProvider_Id  ProviderId,
                             String                Suffix)
         {
 
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ProviderId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
-        public static eVehicle_Id Random(EMobilityProvider_Id   ProviderId,
+        public static EVehicle_Id Random(EMobilityProvider_Id   ProviderId,
                                          Func<String, String>?  Mapper  = null)
 
             => new (ProviderId,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Parse the given string as a charging station identification (EVCS Id).
         /// </summary>
         /// <param name="Text">A text representation of a charging station identification.</param>
-        public static eVehicle_Id Parse(String Text)
+        public static EVehicle_Id Parse(String Text)
         {
 
             #region Initial checks
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.WWCP
                 throw new ArgumentException("Illegal e-vehicle identification '" + Text + "'!", nameof(Text));
 
             if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out EMobilityProvider_Id eMobilityProviderId))
-                return new eVehicle_Id(eMobilityProviderId,
+                return new EVehicle_Id(eMobilityProviderId,
                                        matchCollection[0].Groups[2].Value);
 
             throw new ArgumentException("Illegal e-vehicle identification '" + Text + "'!", nameof(Text));
@@ -168,14 +168,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
         /// <param name="Suffix">A suffix of an electric vehicle identification.</param>
-        public static eVehicle_Id Parse(EMobilityProvider_Id  ProviderId,
+        public static EVehicle_Id Parse(EMobilityProvider_Id  ProviderId,
                                         String                Suffix)
         {
 
             if (Suffix.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Suffix),  "The suffix of the electric vehicle identification must not be null or empty!");
 
-            if (TryParse(ProviderId, Suffix, out eVehicle_Id eVehicleId))
+            if (TryParse(ProviderId, Suffix, out EVehicle_Id eVehicleId))
                 return eVehicleId;
 
             throw new ArgumentException("Illegal e-vehicle identification '" + Suffix + "'!", nameof(Suffix));
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Text">A text representation of an electric vehicle identification.</param>
         /// <param name="eVehicleId">The parsed electric vehicle identification.</param>
-        public static Boolean TryParse(String Text, out eVehicle_Id? eVehicleId)
+        public static Boolean TryParse(String Text, out EVehicle_Id? eVehicleId)
         {
 
             #region Initial checks
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[1].Value, out EMobilityProvider_Id eMobilityProviderId))
                 {
 
-                    eVehicleId = new eVehicle_Id(eMobilityProviderId,
+                    eVehicleId = new EVehicle_Id(eMobilityProviderId,
                                                  matchCollection[0].Groups[2].Value);
 
                     return true;
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.WWCP
                 else if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[3].Value, out eMobilityProviderId))
                 {
 
-                    eVehicleId = new eVehicle_Id(eMobilityProviderId,
+                    eVehicleId = new EVehicle_Id(eMobilityProviderId,
                                                  matchCollection[0].Groups[4].Value);
 
                     return true;
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.WWCP
                 else if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[5].Value, out eMobilityProviderId))
                 {
 
-                    eVehicleId = new eVehicle_Id(eMobilityProviderId,
+                    eVehicleId = new EVehicle_Id(eMobilityProviderId,
                                                  matchCollection[0].Groups[6].Value);
 
                     return true;
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.WWCP
                 else if (EMobilityProvider_Id.TryParse(matchCollection[0].Groups[7].Value, out eMobilityProviderId))
                 {
 
-                    eVehicleId = new eVehicle_Id(eMobilityProviderId,
+                    eVehicleId = new EVehicle_Id(eMobilityProviderId,
                                                  matchCollection[0].Groups[8].Value);
 
                     return true;
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId">The parsed electric vehicle identification.</param>
         public static Boolean TryParse(EMobilityProvider_Id  ProviderId,
                                        String                Suffix,
-                                       out eVehicle_Id?      eVehicleId)
+                                       out EVehicle_Id?      eVehicleId)
         {
 
             #region Initial checks
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (matchCollection.Count != 1)
                     return false;
 
-                eVehicleId = new eVehicle_Id(ProviderId,
+                eVehicleId = new EVehicle_Id(ProviderId,
                                              matchCollection[0].Groups[0].Value);
 
                 return true;
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Clone this electric vehicle identification.
         /// </summary>
-        public eVehicle_Id Clone
+        public EVehicle_Id Clone
 
             => new (ProviderId,
                     new String(Suffix.ToCharArray()));
@@ -345,8 +345,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eVehicle_Id  eVehicleId1,
-                                           eVehicle_Id  eVehicleId2)
+        public static Boolean operator == (EVehicle_Id  eVehicleId1,
+                                           EVehicle_Id  eVehicleId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -371,8 +371,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eVehicle_Id  eVehicleId1,
-                                           eVehicle_Id  eVehicleId2)
+        public static Boolean operator != (EVehicle_Id  eVehicleId1,
+                                           EVehicle_Id  eVehicleId2)
 
             => !(eVehicleId1 == eVehicleId2);
 
@@ -386,8 +386,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eVehicle_Id  eVehicleId1,
-                                          eVehicle_Id  eVehicleId2)
+        public static Boolean operator < (EVehicle_Id  eVehicleId1,
+                                          EVehicle_Id  eVehicleId2)
         {
 
             if ((Object) eVehicleId1 == null)
@@ -407,8 +407,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eVehicle_Id  eVehicleId1,
-                                           eVehicle_Id  eVehicleId2)
+        public static Boolean operator <= (EVehicle_Id  eVehicleId1,
+                                           EVehicle_Id  eVehicleId2)
 
             => !(eVehicleId1 > eVehicleId2);
 
@@ -422,8 +422,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eVehicle_Id  eVehicleId1,
-                                          eVehicle_Id  eVehicleId2)
+        public static Boolean operator > (EVehicle_Id  eVehicleId1,
+                                          EVehicle_Id  eVehicleId2)
         {
 
             if ((Object) eVehicleId1 == null)
@@ -443,8 +443,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId1">A electric vehicle identification.</param>
         /// <param name="eVehicleId2">Another electric vehicle identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eVehicle_Id  eVehicleId1,
-                                           eVehicle_Id  eVehicleId2)
+        public static Boolean operator >= (EVehicle_Id  eVehicleId1,
+                                           EVehicle_Id  eVehicleId2)
 
             => !(eVehicleId1 < eVehicleId2);
 
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eVehicleId.
-            var eVehicleId = Object as eVehicle_Id;
+            var eVehicleId = Object as EVehicle_Id;
             if ((Object) eVehicleId == null)
                 throw new ArgumentException("The given object is not a eVehicleId!");
 
@@ -483,7 +483,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="eVehicleId">An object to compare with.</param>
-        public Int32 CompareTo(eVehicle_Id eVehicleId)
+        public Int32 CompareTo(EVehicle_Id eVehicleId)
         {
 
             if ((Object) eVehicleId == null)
@@ -524,7 +524,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
 
             // Check if the given object is an eVehicleId.
-            var eVehicleId = Object as eVehicle_Id;
+            var eVehicleId = Object as EVehicle_Id;
             if ((Object) eVehicleId == null)
                 return false;
 
@@ -541,7 +541,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicleId">A charging station identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eVehicle_Id eVehicleId)
+        public Boolean Equals(EVehicle_Id eVehicleId)
         {
 
             if ((Object) eVehicleId == null)

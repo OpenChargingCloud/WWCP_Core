@@ -27,12 +27,12 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// The priority of an e-mobility provider.
     /// </summary>
-    public class eMobilityProviderPriority
+    public class EMobilityProviderPriority
     {
 
         public Int32 Value { get; }
 
-        public eMobilityProviderPriority(Int32 Priority)
+        public EMobilityProviderPriority(Int32 Priority)
         {
             Value = Priority;
         }

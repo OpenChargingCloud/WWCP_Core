@@ -38,10 +38,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An electric vehicle.
     /// </summary>
-    public class eVehicle : AEMobilityEntity<eVehicle_Id,
+    public class EVehicle : AEMobilityEntity<EVehicle_Id,
                                              eVehicleAdminStatusTypes,
                                              eVehicleStatusTypes>,
-                            IEquatable<eVehicle>, IComparable<eVehicle>, IComparable
+                            IEquatable<EVehicle>, IComparable<EVehicle>, IComparable
 
     {
 
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The e-mobility provider.
         /// </summary>
         [InternalUseOnly]
-        public EMobilityProvider  Provider          { get; }
+        public EMobilityProviderProxy  Provider          { get; }
 
         #endregion
 
@@ -472,9 +472,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
-        internal eVehicle(eVehicle_Id                     Id,
-                          EMobilityProvider               Provider,
-                          Action<eVehicle>?               Configurator             = null,
+        internal EVehicle(EVehicle_Id                     Id,
+                          EMobilityProviderProxy               Provider,
+                          Action<EVehicle>?               Configurator             = null,
                           RemoteEVehicleCreatorDelegate?  RemoteEVehicleCreator    = null,
                           eVehicleAdminStatusTypes        AdminStatus              = eVehicleAdminStatusTypes.Operational,
                           eVehicleStatusTypes             Status                   = eVehicleStatusTypes.Available,
@@ -538,9 +538,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
-        internal eVehicle(eVehicle_Id                    Id,
+        internal EVehicle(EVehicle_Id                    Id,
                           eMobilityStation               Station,
-                          Action<eVehicle>               Configurator            = null,
+                          Action<EVehicle>               Configurator            = null,
                           RemoteEVehicleCreatorDelegate  RemoteEVehicleCreator   = null,
                           eVehicleAdminStatusTypes        AdminStatus             = eVehicleAdminStatusTypes.Operational,
                           eVehicleStatusTypes             Status                  = eVehicleStatusTypes.Available,
@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (onDataChanged is not null)
                 await onDataChanged(Timestamp,
                                     EventTrackingId,
-                                    Sender as eVehicle,
+                                    Sender as EVehicle,
                                     PropertyName,
                                     NewValue,
                                     OldValue,
@@ -734,7 +734,7 @@ namespace cloud.charging.open.protocols.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a e-vehicle.
-            var eVehicle = Object as eVehicle;
+            var eVehicle = Object as EVehicle;
             if ((Object) eVehicle == null)
                 throw new ArgumentException("The given object is not a e-vehicle!");
 
@@ -750,7 +750,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="eVehicle">A e-vehicle object to compare with.</param>
-        public Int32 CompareTo(eVehicle eVehicle)
+        public Int32 CompareTo(EVehicle eVehicle)
         {
 
             if ((Object) eVehicle == null)
@@ -780,7 +780,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
 
             // Check if the given object is a e-vehicle.
-            var eVehicle = Object as eVehicle;
+            var eVehicle = Object as EVehicle;
             if ((Object) eVehicle == null)
                 return false;
 
@@ -797,7 +797,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eVehicle">A e-vehicle to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eVehicle eVehicle)
+        public Boolean Equals(EVehicle eVehicle)
         {
 
             if ((Object) eVehicle == null)

@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -63,5 +60,21 @@ namespace cloud.charging.open.protocols.WWCP
                                                                       Timestamped<eMobilityStationAdminStatusTypes>   NewStatus,
                                                                       Timestamped<eMobilityStationAdminStatusTypes>?  OldStatus    = null,
                                                                       Context?                                        DataSource   = null);
+
+
+    /// <summary>
+    /// A delegate called whenever the admin status of the charging station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+    /// <param name="eMobilityStation">The updated charging station.</param>
+    /// <param name="OldStatus">The old timestamped status of the charging station.</param>
+    /// <param name="NewStatus">The new timestamped status of the charging station.</param>
+    public delegate Task OnEMobilityStationStatusChangedDelegate(DateTime                                   Timestamp,
+                                                                 EventTracking_Id                           EventTrackingId,
+                                                                 eMobilityStation                           eMobilityStation,
+                                                                 Timestamped<eMobilityStationStatusTypes>   NewStatus,
+                                                                 Timestamped<eMobilityStationStatusTypes>?  OldStatus    = null,
+                                                                 Context?                                   DataSource   = null);
 
 }
