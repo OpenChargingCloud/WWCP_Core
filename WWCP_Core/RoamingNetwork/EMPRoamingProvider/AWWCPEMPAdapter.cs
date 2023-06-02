@@ -40,6 +40,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
+        public  const           String                                                           Default_LoggingPath                     = "default";
+
         /// <summary>
         /// The default EVSE data & status intervall.
         /// </summary>
@@ -238,12 +240,12 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean?                                   IsDevelopment            { get; }
         public IEnumerable<String>?                       DevelopmentServers       { get; }
         public Boolean?                                   DisableLogging           { get; set; }
-        public String?                                    LoggingPath              { get; }
+        public String                                     LoggingPath              { get; }
         public String?                                    LoggingContext           { get; }
         public String?                                    LogfileName              { get; }
         public LogfileCreatorDelegate?                    LogfileCreator           { get; }
 
-        public String?                                    ClientsLoggingPath       { get; }
+        public String                                     ClientsLoggingPath       { get; }
         public String?                                    ClientsLoggingContext    { get; }
         public LogfileCreatorDelegate?                    ClientsLogfileCreator    { get; }
 
@@ -449,14 +451,21 @@ namespace cloud.charging.open.protocols.WWCP
             this.IsDevelopment                                   = IsDevelopment;
             this.DevelopmentServers                              = DevelopmentServers;
             this.DisableLogging                                  = DisableLogging;
-            this.LoggingPath                                     = LoggingPath;
+            this.LoggingPath                                     = LoggingPath              ?? Path.Combine(AppContext.BaseDirectory, Default_LoggingPath);
             this.LoggingContext                                  = LoggingContext;
             this.LogfileName                                     = LogfileName;
             this.LogfileCreator                                  = LogfileCreator;
 
-            this.ClientsLoggingPath                              = ClientsLoggingPath;
+            if (this.LoggingPath[^1]        != Path.DirectorySeparatorChar)
+                this.LoggingPath        += Path.DirectorySeparatorChar;
+
+            this.ClientsLoggingPath                              = ClientsLoggingPath       ?? this.LoggingPath;
             this.ClientsLoggingContext                           = ClientsLoggingContext;
             this.ClientsLogfileCreator                           = ClientsLogfileCreator;
+
+            if (this.ClientsLoggingPath[^1] != Path.DirectorySeparatorChar)
+                this.ClientsLoggingPath += Path.DirectorySeparatorChar;
+
             this.DNSClient                                       = DNSClient;
 
         }

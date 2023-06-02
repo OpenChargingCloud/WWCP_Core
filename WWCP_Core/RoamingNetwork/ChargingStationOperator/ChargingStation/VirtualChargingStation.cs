@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     public static class VirtualChargingStationExtensions
     {
 
-        #region CreateVirtualStation(this ChargingPool, ChargingStationId = null, ChargingStationConfigurator = null, VirtualChargingStationConfigurator = null, OnSuccess = null, OnError = null)
+        #region AddVirtualStation        (this ChargingPool, ChargingStationId = null, ChargingStationConfigurator = null, VirtualChargingStationConfigurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create a new virtual charging station.
@@ -53,28 +53,28 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualChargingStationConfigurator">An optional delegate to configure the new virtual charging station.</param>
         /// <param name="OnSuccess">An optional delegate for reporting success.</param>
         /// <param name="OnError">An optional delegate for reporting an error.</param>
-        public static Task<AddChargingStationResult> CreateVirtualStation(this IChargingPool                          ChargingPool,
-                                                                          ChargingStation_Id                          ChargingStationId,
-                                                                          I18NString?                                 Name                                 = null,
-                                                                          I18NString?                                 Description                          = null,
+        public static Task<AddChargingStationResult> AddVirtualStation(this IChargingPool                          ChargingPool,
+                                                                       ChargingStation_Id                          ChargingStationId,
+                                                                       I18NString?                                 Name                                 = null,
+                                                                       I18NString?                                 Description                          = null,
 
-                                                                          Address?                                    Address                              = null,
-                                                                          GeoCoordinate?                              GeoLocation                          = null,
+                                                                       Address?                                    Address                              = null,
+                                                                       GeoCoordinate?                              GeoLocation                          = null,
 
-                                                                          ChargingStationAdminStatusTypes?            InitialAdminStatus                   = null,
-                                                                          ChargingStationStatusTypes?                 InitialStatus                        = null,
-                                                                          String                                      EllipticCurve                        = "P-256",
-                                                                          ECPrivateKeyParameters?                     PrivateKey                           = null,
-                                                                          PublicKeyCertificates?                      PublicKeyCertificates                = null,
-                                                                          TimeSpan?                                   SelfCheckTimeSpan                    = null,
-                                                                          UInt16                                      MaxAdminStatusListSize               = VirtualChargingStation.DefaultMaxAdminStatusListSize,
-                                                                          UInt16                                      MaxStatusListSize                    = VirtualChargingStation.DefaultMaxStatusListSize,
-                                                                          Action<IChargingStation>?                   ChargingStationConfigurator          = null,
-                                                                          Action<VirtualChargingStation>?             VirtualChargingStationConfigurator   = null,
-                                                                          Action<IChargingStation>?                   OnSuccess                            = null,
-                                                                          Action<IChargingPool, ChargingStation_Id>?  OnError                              = null)
+                                                                       ChargingStationAdminStatusTypes?            InitialAdminStatus                   = null,
+                                                                       ChargingStationStatusTypes?                 InitialStatus                        = null,
+                                                                       String                                      EllipticCurve                        = "P-256",
+                                                                       ECPrivateKeyParameters?                     PrivateKey                           = null,
+                                                                       PublicKeyCertificates?                      PublicKeyCertificates                = null,
+                                                                       TimeSpan?                                   SelfCheckTimeSpan                    = null,
+                                                                       UInt16                                      MaxAdminStatusListSize               = VirtualChargingStation.DefaultMaxAdminStatusListSize,
+                                                                       UInt16                                      MaxStatusListSize                    = VirtualChargingStation.DefaultMaxStatusListSize,
+                                                                       Action<IChargingStation>?                   ChargingStationConfigurator          = null,
+                                                                       Action<VirtualChargingStation>?             VirtualChargingStationConfigurator   = null,
+                                                                       Action<IChargingStation>?                   OnSuccess                            = null,
+                                                                       Action<IChargingPool, ChargingStation_Id>?  OnError                              = null)
 
-            => ChargingPool.CreateChargingStation(
+            => ChargingPool.AddChargingStation(
                    ChargingStationId,
                    Name,
                    Description,
@@ -108,15 +108,88 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    OnSuccess: OnSuccess,
                    OnError:   OnError
+
                );
 
         #endregion
+
+        #region AddOrUpdateVirtualStation(this ChargingPool, ChargingStationId = null, ChargingStationConfigurator = null, VirtualChargingStationConfigurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create a new virtual charging station.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingStationId">The charging station identification for the charging station to be created.</param>
+        /// <param name="ChargingStationConfigurator">An optional delegate to configure the new (local) charging station.</param>
+        /// <param name="VirtualChargingStationConfigurator">An optional delegate to configure the new virtual charging station.</param>
+        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
+        /// <param name="OnError">An optional delegate for reporting an error.</param>
+        public static Task<AddOrUpdateChargingStationResult> AddOrUpdateVirtualStation(this IChargingPool                          ChargingPool,
+                                                                                       ChargingStation_Id                          ChargingStationId,
+                                                                                       I18NString?                                 Name                                 = null,
+                                                                                       I18NString?                                 Description                          = null,
+
+                                                                                       Address?                                    Address                              = null,
+                                                                                       GeoCoordinate?                              GeoLocation                          = null,
+
+                                                                                       ChargingStationAdminStatusTypes?            InitialAdminStatus                   = null,
+                                                                                       ChargingStationStatusTypes?                 InitialStatus                        = null,
+                                                                                       String                                      EllipticCurve                        = "P-256",
+                                                                                       ECPrivateKeyParameters?                     PrivateKey                           = null,
+                                                                                       PublicKeyCertificates?                      PublicKeyCertificates                = null,
+                                                                                       TimeSpan?                                   SelfCheckTimeSpan                    = null,
+                                                                                       UInt16                                      MaxAdminStatusListSize               = VirtualChargingStation.DefaultMaxAdminStatusListSize,
+                                                                                       UInt16                                      MaxStatusListSize                    = VirtualChargingStation.DefaultMaxStatusListSize,
+                                                                                       Action<IChargingStation>?                   ChargingStationConfigurator          = null,
+                                                                                       Action<VirtualChargingStation>?             VirtualChargingStationConfigurator   = null,
+                                                                                       Action<IChargingStation>?                   OnSuccess                            = null,
+                                                                                       Action<IChargingPool, ChargingStation_Id>?  OnError                              = null)
+
+            => ChargingPool.AddOrUpdateChargingStation(
+                   ChargingStationId,
+                   Name,
+                   Description,
+
+                   Address,
+                   GeoLocation,
+
+                   ChargingStationConfigurator,
+                   newStation => {
+
+                       var virtualstation = new VirtualChargingStation(
+                                                newStation.Id,
+                                                ChargingPool.RoamingNetwork,
+                                                newStation.Name,
+                                                newStation.Description,
+                                                InitialAdminStatus ?? ChargingStationAdminStatusTypes.Operational,
+                                                InitialStatus      ?? ChargingStationStatusTypes.Available,
+                                                EllipticCurve,
+                                                PrivateKey,
+                                                PublicKeyCertificates,
+                                                SelfCheckTimeSpan,
+                                                MaxAdminStatusListSize,
+                                                MaxStatusListSize
+                                            );
+
+                       VirtualChargingStationConfigurator?.Invoke(virtualstation);
+
+                       return virtualstation;
+
+                   },
+
+                   OnSuccess: OnSuccess,
+                   OnError:   OnError
+
+               );
+
+        #endregion
+
 
     }
 
 
     /// <summary>
-    /// A virtual charging station.
+    /// A virtual charging station for (internal) tests.
     /// </summary>
     public class VirtualChargingStation : ACryptoEMobilityEntity<ChargingStation_Id,
                                                                  ChargingStationAdminStatusTypes,
@@ -2456,12 +2529,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public Task<AddEVSEResult> CreateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddEVSEResult> AddEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
+        public Task<AddOrUpdateEVSEResult> AddOrUpdateEVSE(EVSE_Id Id, I18NString? Name = null, I18NString? Description = null, Timestamped<EVSEAdminStatusTypes>? InitialAdminStatus = null, Timestamped<EVSEStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusScheduleSize = null, UInt16? MaxStatusScheduleSize = null, IEnumerable<URL>? PhotoURLs = null, IEnumerable<Brand>? Brands = null, IEnumerable<OpenDataLicense>? OpenDataLicenses = null, IEnumerable<ChargingModes>? ChargingModes = null, IEnumerable<ChargingTariff>? ChargingTariffs = null, CurrentTypes? CurrentType = null, Decimal? AverageVoltage = null, Timestamped<Decimal>? AverageVoltageRealTime = null, IEnumerable<Timestamped<Decimal>>? AverageVoltagePrognoses = null, Decimal? MaxCurrent = null, Timestamped<Decimal>? MaxCurrentRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCurrentPrognoses = null, Decimal? MaxPower = null, Timestamped<Decimal>? MaxPowerRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxPowerPrognoses = null, Decimal? MaxCapacity = null, Timestamped<Decimal>? MaxCapacityRealTime = null, IEnumerable<Timestamped<Decimal>>? MaxCapacityPrognoses = null, EnergyMix? EnergyMix = null, Timestamped<EnergyMix>? EnergyMixRealTime = null, EnergyMixPrognosis? EnergyMixPrognoses = null, EnergyMeter? EnergyMeter = null, Boolean? IsFreeOfCharge = null, IEnumerable<IChargingConnector>? ChargingConnectors = null, ChargingSession? ChargingSession = null, DateTime? LastStatusUpdate = null, String? DataSource = null, DateTime? LastChange = null, JObject? CustomData = null, UserDefinedDictionary? InternalData = null, Action<IEVSE>? Configurator = null, RemoteEVSECreatorDelegate? RemoteEVSECreator = null, Action<IEVSE>? OnSuccess = null, Action<IChargingStation, EVSE_Id>? OnError = null)
         {
             throw new NotImplementedException();
         }

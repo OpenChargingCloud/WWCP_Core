@@ -927,7 +927,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region CreateChargingPool        (Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingPool        (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging pool having the given
@@ -937,26 +937,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public async Task<AddChargingPoolResult> CreateChargingPool(ChargingPool_Id?                                             Id                             = null,
-                                                                    I18NString?                                                  Name                           = null,
-                                                                    I18NString?                                                  Description                    = null,
+        public async Task<AddChargingPoolResult> AddChargingPool(ChargingPool_Id?                                             Id                             = null,
+                                                                 I18NString?                                                  Name                           = null,
+                                                                 I18NString?                                                  Description                    = null,
 
-                                                                    Address?                                                     Address                        = null,
-                                                                    GeoCoordinate?                                               GeoLocation                    = null,
-                                                                    OpeningTimes?                                                OpeningTimes                   = null,
-                                                                    Boolean?                                                     ChargingWhenClosed             = null,
+                                                                 Address?                                                     Address                        = null,
+                                                                 GeoCoordinate?                                               GeoLocation                    = null,
+                                                                 OpeningTimes?                                                OpeningTimes                   = null,
+                                                                 Boolean?                                                     ChargingWhenClosed             = null,
 
-                                                                    Action<IChargingPool>?                                       Configurator                   = null,
-                                                                    RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
-                                                                    Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                    Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                    UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                                    UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
-                                                                    Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                    Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
-                                                                    Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                    EventTracking_Id?                                            EventTrackingId                = null,
-                                                                    User_Id?                                                     CurrentUserId                  = null)
+                                                                 Action<IChargingPool>?                                       Configurator                   = null,
+                                                                 RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
+                                                                 Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                 Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
+                                                                 UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                                                 UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                                 Action<IChargingPool>?                                       OnSuccess                      = null,
+                                                                 Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
+                                                                 Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                 EventTracking_Id?                                            EventTrackingId                = null,
+                                                                 User_Id?                                                     CurrentUserId                  = null)
         {
 
             #region Initial checks
@@ -1067,7 +1067,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region CreateOrUpdateChargingPool(Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddOrUpdateChargingPool(Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register or udpate a new charging pool having the given
@@ -1077,26 +1077,26 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public async Task<AddOrUpdateChargingPoolResult> CreateOrUpdateChargingPool(ChargingPool_Id                                              Id,
-                                                                                    I18NString?                                                  Name                           = null,
-                                                                                    I18NString?                                                  Description                    = null,
+        public async Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool_Id                                              Id,
+                                                                                 I18NString?                                                  Name                           = null,
+                                                                                 I18NString?                                                  Description                    = null,
 
-                                                                                    Address?                                                     Address                        = null,
-                                                                                    GeoCoordinate?                                               GeoLocation                    = null,
-                                                                                    OpeningTimes?                                                OpeningTimes                   = null,
-                                                                                    Boolean?                                                     ChargingWhenClosed             = null,
+                                                                                 Address?                                                     Address                        = null,
+                                                                                 GeoCoordinate?                                               GeoLocation                    = null,
+                                                                                 OpeningTimes?                                                OpeningTimes                   = null,
+                                                                                 Boolean?                                                     ChargingWhenClosed             = null,
 
-                                                                                    Action<IChargingPool>?                                       Configurator                   = null,
-                                                                                    RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
-                                                                                    Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                                    Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                                    UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                                                    UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
-                                                                                    Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                                    Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
-                                                                                    Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                                    EventTracking_Id?                                            EventTrackingId                = null,
-                                                                                    User_Id?                                                     CurrentUserId                  = null)
+                                                                                 Action<IChargingPool>?                                       Configurator                   = null,
+                                                                                 RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
+                                                                                 Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                                 Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
+                                                                                 UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
+                                                                                 UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                                                 Action<IChargingPool>?                                       OnSuccess                      = null,
+                                                                                 Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
+                                                                                 Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                                 EventTracking_Id?                                            EventTrackingId                = null,
+                                                                                 User_Id?                                                     CurrentUserId                  = null)
         {
 
             #region Initial checks
@@ -1115,7 +1115,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (!chargingPools.ContainsId(Id))
             {
 
-                var result = await CreateChargingPool(Id,
+                var result = await AddChargingPool(Id,
                                                       Name,
                                                       Description,
 
@@ -1193,8 +1193,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region UpdateChargingPool(ChargingPool, SkipUserUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
+        #region UpdateChargingPool     (ChargingPool, SkipUserUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
 
         /// <summary>
         /// A delegate called whenever a charging pool was updated.

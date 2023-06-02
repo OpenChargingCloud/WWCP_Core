@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The e-mobility provider.
         /// </summary>
         [InternalUseOnly]
-        public EMobilityProviderProxy  Provider          { get; }
+        public EMobilityProvider  Provider          { get; }
 
         #endregion
 
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal EVehicle(EVehicle_Id                     Id,
-                          EMobilityProviderProxy               Provider,
+                          EMobilityProvider               Provider,
                           Action<EVehicle>?               Configurator             = null,
                           RemoteEVehicleCreatorDelegate?  RemoteEVehicleCreator    = null,
                           eVehicleAdminStatusTypes        AdminStatus              = eVehicleAdminStatusTypes.Operational,

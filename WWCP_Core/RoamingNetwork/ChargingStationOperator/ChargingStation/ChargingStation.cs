@@ -100,7 +100,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging pool.
         /// </summary>
         [InternalUseOnly]
-        public ChargingPool?                 ChargingPool                { get; }
+        public IChargingPool?                ChargingPool                { get; }
 
         /// <summary>
         /// An optional remote charging station.
@@ -1210,7 +1210,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxAdminStatusScheduleSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusScheduleSize">An optional max length of the staus list.</param>
         public ChargingStation(ChargingStation_Id                             Id,
-                               ChargingPool?                                  ChargingPool                   = null,
+                               IChargingPool?                                 ChargingPool                   = null,
 
                                I18NString?                                    Name                           = null,
                                I18NString?                                    Description                    = null,
@@ -1706,7 +1706,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="RemoteEVSECreator">An optional delegate to configure a new remote EVSE after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public async Task<AddEVSEResult> CreateEVSE(EVSE_Id                             Id,
+        public async Task<AddEVSEResult> AddEVSE(EVSE_Id                             Id,
                                                     I18NString?                         Name                         = null,
                                                     I18NString?                         Description                  = null,
 
@@ -1884,7 +1884,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new EVSE before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new EVSE after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the EVSE failed.</param>
-        public async Task<AddOrUpdateEVSEResult> CreateOrUpdateEVSE(EVSE_Id                             Id,
+        public async Task<AddOrUpdateEVSEResult> AddOrUpdateEVSE(EVSE_Id                             Id,
                                                                     I18NString?                         Name                         = null,
                                                                     I18NString?                         Description                  = null,
 
@@ -1951,7 +1951,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!evses.ContainsId(Id))
                 {
 
-                    var result = await CreateEVSE(Id,
+                    var result = await AddEVSE(Id,
                                                   Name,
                                                   Description,
 

@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 DE_GEF_S0001_AAAA is not null)
             {
 
-                var DE_GEF_E0001_AAAA_X = DE_GEF_S0001_AAAA.CreateEVSE(
+                var DE_GEF_E0001_AAAA_X = DE_GEF_S0001_AAAA.AddEVSE(
                                                                 Id:           EVSE_Id.Parse("DE*GEF*E1234"),
                                                                 Name:         I18NString.Create(Languages.de, "DE*GEF EVSE 1234"),
                                                                 Description:  I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH")
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var success = false;
 
-                var DE_GEF_E1234_5678_1 = DE_GEF_S0001_AAAA.CreateEVSE(
+                var DE_GEF_E1234_5678_1 = DE_GEF_S0001_AAAA.AddEVSE(
                                                                 Id:                  EVSE_Id.Parse("DE*GEF*E1234*5678*1"),
                                                                 Name:                I18NString.Create(Languages.de, "DE*GEF EVSE 1234*5678*1"),
                                                                 Description:         I18NString.Create(Languages.de, "powered by GraphDefined EVSEs GmbH"),

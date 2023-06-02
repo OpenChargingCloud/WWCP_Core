@@ -27,10 +27,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// An e-mobility provider admin status report.
     /// </summary>
-    public class EMobilityProviderAdminStatusReport : StatusReport<EMobilityProviderProxy, EMobilityProviderAdminStatusTypes>
+    public class EMobilityProviderAdminStatusReport : StatusReport<EMobilityProvider, EMobilityProviderAdminStatusTypes>
     {
 
-        public EMobilityProviderAdminStatusReport(IEnumerable<EMobilityProviderProxy> EMobilityProviders)
+        public EMobilityProviderAdminStatusReport(IEnumerable<EMobilityProvider> EMobilityProviders)
 
             : base(EMobilityProviders,
                    provider => provider.AdminStatus.Value)

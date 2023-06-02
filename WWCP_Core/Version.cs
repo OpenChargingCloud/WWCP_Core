@@ -15,25 +15,24 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// The current WWCP version.
+    /// This WWCP version 3.0.
     /// </summary>
     public static class Version
     {
 
         /// <summary>
-        /// The current WWCP version.
+        /// This WWCP version 3.0 as text "v3.0".
         /// </summary>
-        public const String Number = "v0.11";
+        public const           String      String   = "v3.0";
+
+        /// <summary>
+        /// This WWCP version "3.0" as version identification.
+        /// </summary>
+        public readonly static Version_Id  Id       = Version_Id.Parse(String[1..]);
 
     }
 

@@ -27,9 +27,9 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// An E-Mobility Provider for (internal) tests.
+    /// A virtual E-Mobility Provider for (internal) tests.
     /// </summary>
-    public class TestEMobilityProvider : //ToDo: IEMobilityProvider,
+    public class VirtualEMobilityProvider : //ToDo: IEMobilityProvider,
                                          IRemoteEMobilityProvider
     {
 
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region Constructor(s)
 
 
-        public TestEMobilityProvider(EMobilityProvider_Id Id)
+        public VirtualEMobilityProvider(EMobilityProvider_Id Id)
         {
 
             this.AuthId = Id;

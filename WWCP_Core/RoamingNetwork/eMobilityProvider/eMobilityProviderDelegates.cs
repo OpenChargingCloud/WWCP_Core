@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(EMobilityProviderProxy EMobilityProvider);
+    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(EMobilityProvider EMobilityProvider);
 
     public delegate String eMobilityProviderNameSelectorDelegate(I18NString I18NText);
 

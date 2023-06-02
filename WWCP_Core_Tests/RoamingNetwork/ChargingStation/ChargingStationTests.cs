@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
                 DE_GEF_P0001   is not null)
             {
 
-                var DE_GEF_S1234 = DE_GEF_P0001.CreateChargingStation(
+                var DE_GEF_S1234 = DE_GEF_P0001.AddChargingStation(
                                                     Id:           ChargingStation_Id.Parse("DE*GEF*S1234"),
                                                     Name:         I18NString.Create(Languages.de, "DE*GEF Station 1234"),
                                                     Description:  I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH")
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.WWCP.tests.RoamingNetwork
 
                 var success = false;
 
-                var DE_GEF_S1234 = DE_GEF_P0001.CreateChargingStation(
+                var DE_GEF_S1234 = DE_GEF_P0001.AddChargingStation(
                                                     Id:                  ChargingStation_Id.Parse("DE*GEF*S1234"),
                                                     Name:                I18NString.Create(Languages.de, "DE*GEF Station 1234"),
                                                     Description:         I18NString.Create(Languages.de, "powered by GraphDefined Charging Stations GmbH"),

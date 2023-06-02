@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
             => await RoamingNetwork.AddEMobilityProvider(
-                         new EMobilityProviderProxy(
+                         new EMobilityProvider(
                              Id,
                              RoamingNetwork,
                              Name,

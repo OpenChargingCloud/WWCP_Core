@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Data
 
-        private readonly TParentDataStructure          parentDataStructure;
+        private readonly TParentDataStructure                parentDataStructure;
 
         private readonly ConcurrentDictionary<TId, TEntity>  lookup;
 
@@ -240,7 +240,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region Contains(...)
+        #region Contains  (...)
 
         public Boolean Contains(TEntity Entity)
         {
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region GetById(Id)
+        #region GetById   (Id)
 
         public TEntity? GetById(TId Id)
         {
@@ -271,7 +271,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGet(Id, out Entity)
+        #region TryGet    (Id, out Entity)
 
         public Boolean TryGet(TId Id, out TEntity? Entity)
         {
@@ -283,6 +283,16 @@ namespace cloud.charging.open.protocols.WWCP
             return false;
 
         }
+
+        #endregion
+
+        #region TryUpdate (Id, NewEntity, OldEntity)
+
+        public Boolean TryUpdate(TId      Id,
+                                 TEntity  NewEntity,
+                                 TEntity  OldEntity)
+
+            => lookup.TryUpdate(Id, NewEntity, OldEntity);
 
         #endregion
 

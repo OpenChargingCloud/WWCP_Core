@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                     EventTracking_Id?                                   EventTrackingId                   = null,
                                                                     User_Id?                                            CurrentUserId                     = null)
 
-            => ChargingStationOperator.CreateChargingPool(
+            => ChargingStationOperator.AddChargingPool(
                    ChargingPoolId,
                    Name,
                    Description,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
 
     /// <summary>
-    /// A virtual charging pool.
+    /// A virtual charging pool for (internal) tests.
     /// </summary>
     public class VirtualChargingPool : ACryptoEMobilityEntity<ChargingPool_Id,
                                                               ChargingPoolAdminStatusTypes,
@@ -1232,7 +1232,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
-        #region CreateVirtualStation(ChargingStationId, ..., Configurator = null, OnSuccess = null, OnError = null, ...)
+        #region AddVirtualStation(ChargingStationId, ..., Configurator = null, OnSuccess = null, OnError = null, ...)
 
         /// <summary>
         /// Create and register a new charging station having the given
@@ -1242,20 +1242,20 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="Configurator">An optional delegate to configure the new charging station after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the charging station.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public async Task<AddChargingStationResult> CreateVirtualStation(ChargingStation_Id                                   ChargingStationId,
-                                                                         I18NString?                                          Name                         = null,
-                                                                         I18NString?                                          Description                  = null,
-                                                                         ChargingStationAdminStatusTypes?                     InitialAdminStatus           = null,
-                                                                         ChargingStationStatusTypes?                          InitialStatus                = null,
-                                                                         String?                                              EllipticCurve                = null,
-                                                                         ECPrivateKeyParameters?                              PrivateKey                   = null,
-                                                                         PublicKeyCertificates?                               PublicKeyCertificates        = null,
-                                                                         TimeSpan?                                            SelfCheckTimeSpan            = null,
-                                                                         Action<VirtualChargingStation>?                      Configurator                 = null,
-                                                                         Action<VirtualChargingStation>?                      OnSuccess                    = null,
-                                                                         Action<VirtualChargingStation, ChargingStation_Id>?  OnError                      = null,
-                                                                         UInt16?                                              MaxAdminStatusScheduleSize   = null,
-                                                                         UInt16?                                              MaxStatusScheduleSize        = null)
+        public async Task<AddChargingStationResult> AddVirtualStation(ChargingStation_Id                                   ChargingStationId,
+                                                                      I18NString?                                          Name                         = null,
+                                                                      I18NString?                                          Description                  = null,
+                                                                      ChargingStationAdminStatusTypes?                     InitialAdminStatus           = null,
+                                                                      ChargingStationStatusTypes?                          InitialStatus                = null,
+                                                                      String?                                              EllipticCurve                = null,
+                                                                      ECPrivateKeyParameters?                              PrivateKey                   = null,
+                                                                      PublicKeyCertificates?                               PublicKeyCertificates        = null,
+                                                                      TimeSpan?                                            SelfCheckTimeSpan            = null,
+                                                                      Action<VirtualChargingStation>?                      Configurator                 = null,
+                                                                      Action<VirtualChargingStation>?                      OnSuccess                    = null,
+                                                                      Action<VirtualChargingStation, ChargingStation_Id>?  OnError                      = null,
+                                                                      UInt16?                                              MaxAdminStatusScheduleSize   = null,
+                                                                      UInt16?                                              MaxStatusScheduleSize        = null)
         {
 
             #region Initial checks
@@ -1310,6 +1310,43 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         }
 
         #endregion
+
+        public Task<AddChargingStationResult> AddChargingStation(ChargingStation_Id Id,
+                                                                 I18NString? Name = null,
+                                                                 I18NString? Description = null,
+                                                                 Address? Address = null,
+                                                                 GeoCoordinate? GeoLocation = null,
+                                                                 Action<IChargingStation>? Configurator = null,
+                                                                 RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null,
+                                                                 Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null,
+                                                                 Timestamped<ChargingStationStatusTypes>? InitialStatus = null,
+                                                                 UInt16? MaxAdminStatusListSize = null,
+                                                                 UInt16? MaxStatusListSize = null,
+                                                                 Action<IChargingStation>? OnSuccess = null,
+                                                                 Action<IChargingPool, ChargingStation_Id>? OnError = null,
+                                                                 Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(ChargingStation_Id Id,
+                                                                                 I18NString? Name = null,
+                                                                                 I18NString? Description = null,
+                                                                                 Address? Address = null,
+                                                                                 GeoCoordinate? GeoLocation = null,
+                                                                                 Action<IChargingStation>? Configurator = null,
+                                                                                 RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null,
+                                                                                 Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null,
+                                                                                 Timestamped<ChargingStationStatusTypes>? InitialStatus = null,
+                                                                                 UInt16? MaxAdminStatusListSize = null,
+                                                                                 UInt16? MaxStatusListSize = null,
+                                                                                 Action<IChargingStation>? OnSuccess = null,
+                                                                                 Action<IChargingPool, ChargingStation_Id>? OnError = null,
+                                                                                 Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
+        {
+            throw new NotImplementedException();
+        }
+
 
 
         #region ContainsChargingStationId(ChargingStationId)
@@ -1390,7 +1427,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public event OnRemoteChargingPoolStatusChangedDelegate?       OnStatusChanged;
 
         #endregion
-
 
         #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
@@ -2890,26 +2926,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             throw new NotImplementedException();
         }
 
-        public IChargingStation? CreateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<IChargingStation>? OnSuccess = null, Action<IChargingPool, ChargingStation_Id>? OnError = null, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Action<IChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<IChargingStation>? OnSuccess = null, Action<IChargingPool, ChargingStation_Id>? OnError = null, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<AddChargingStationResult> CreateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Address? Address = null, GeoCoordinate? GeoLocation = null, Action<IChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<IChargingStation>? OnSuccess = null, Action<IChargingPool, ChargingStation_Id>? OnError = null, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<AddChargingStationResult> CreateOrUpdateChargingStation(ChargingStation_Id Id, I18NString? Name = null, I18NString? Description = null, Address? Address = null, GeoCoordinate? GeoLocation = null, Action<IChargingStation>? Configurator = null, RemoteChargingStationCreatorDelegate? RemoteChargingStationCreator = null, Timestamped<ChargingStationAdminStatusTypes>? InitialAdminStatus = null, Timestamped<ChargingStationStatusTypes>? InitialStatus = null, UInt16? MaxAdminStatusListSize = null, UInt16? MaxStatusListSize = null, Action<IChargingStation>? OnSuccess = null, Action<IChargingPool, ChargingStation_Id>? OnError = null, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id ChargingStationId)
         {
             throw new NotImplementedException();
@@ -2919,7 +2935,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
             throw new NotImplementedException();
         }
-
 
     }
 

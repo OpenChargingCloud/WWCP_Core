@@ -35,10 +35,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// An E-Mobility Provider for lookups which allows to connect
     /// an optional remote E-Mobility Provider.
     /// </summary>
-    public class EMobilityProviderProxy : ACryptoEMobilityEntity<EMobilityProvider_Id,
-                                                                 EMobilityProviderAdminStatusTypes,
-                                                                 EMobilityProviderStatusTypes>,
-                                          IEMobilityProvider
+    public class EMobilityProvider : ACryptoEMobilityEntity<EMobilityProvider_Id,
+                                                            EMobilityProviderAdminStatusTypes,
+                                                            EMobilityProviderStatusTypes>,
+                                     IEMobilityProvider
     {
 
         #region Data
@@ -448,12 +448,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal EMobilityProviderProxy(EMobilityProvider_Id                     Id,
+        internal EMobilityProvider(EMobilityProvider_Id                     Id,
                                    IRoamingNetwork                          RoamingNetwork,
 
                                    I18NString?                              Name                             = null,
                                    I18NString?                              Description                      = null,
-                                   Action<EMobilityProviderProxy>?               Configurator                     = null,
+                                   Action<EMobilityProvider>?               Configurator                     = null,
                                    RemoteEMobilityProviderCreatorDelegate?  RemoteEMobilityProviderCreator   = null,
                                    EMobilityProviderPriority?               Priority                         = null,
                                    EMobilityProviderAdminStatusTypes?       InitialAdminStatus               = null,
@@ -513,12 +513,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityStationAddition
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProviderProxy, eMobilityStation, Boolean> eMobilityStationAddition;
+        internal readonly IVotingNotificator<DateTime, EMobilityProvider, eMobilityStation, Boolean> eMobilityStationAddition;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationAddition
+        public IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition
 
             => eMobilityStationAddition;
 
@@ -526,12 +526,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProviderProxy, eMobilityStation, Boolean> eMobilityStationRemoval;
+        internal readonly IVotingNotificator<DateTime, EMobilityProvider, eMobilityStation, Boolean> eMobilityStationRemoval;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationRemoval
+        public IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval
 
             => eMobilityStationRemoval;
 
@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                           RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null,
                                                           eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational,
                                                           Action<eMobilityStation> OnSuccess = null,
-                                                          Action<EMobilityProviderProxy, eMobilityStation_Id> OnError = null)
+                                                          Action<EMobilityProvider, eMobilityStation_Id> OnError = null)
 
         {
 
@@ -734,6 +734,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         #region SetEMobilityStationAdminStatus(eMobilityStationId, NewStatus)
 
         public void SetEMobilityStationAdminStatus(eMobilityStation_Id eMobilityStationId,
@@ -801,17 +802,22 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region OnEMobilityStationData/AdminStatusChanged
+        #region OnEMobilityStationData/(Admin)StatusChanged
 
         /// <summary>
         /// An event fired whenever the static data of any subordinated eMobilityStation changed.
         /// </summary>
-        public event OnEMobilityStationDataChangedDelegate OnEMobilityStationDataChanged;
+        public event OnEMobilityStationDataChangedDelegate?         OnEMobilityStationDataChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of any subordinated eMobilityStation changed.
         /// </summary>
-        public event OnEMobilityStationAdminStatusChangedDelegate OnEMobilityStationAdminStatusChanged;
+        public event OnEMobilityStationAdminStatusChangedDelegate?  OnEMobilityStationAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated eMobilityStation changed.
+        /// </summary>
+        public event OnEMobilityStationStatusChangedDelegate?       OnEMobilityStationStatusChanged;
 
         #endregion
 
@@ -887,12 +893,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleAddition
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProviderProxy, EVehicle, Boolean> eVehicleAddition;
+        internal readonly IVotingNotificator<DateTime, EMobilityProvider, EVehicle, Boolean> eVehicleAddition;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProviderProxy, EVehicle, Boolean> OnEVehicleAddition
+        public IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleAddition
 
             => eVehicleAddition;
 
@@ -900,12 +906,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicleRemoval
 
-        internal readonly IVotingNotificator<DateTime, EMobilityProviderProxy, EVehicle, Boolean> eVehicleRemoval;
+        internal readonly IVotingNotificator<DateTime, EMobilityProvider, EVehicle, Boolean> eVehicleRemoval;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EMobilityProviderProxy, EVehicle, Boolean> OnEVehicleRemoval
+        public IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleRemoval
 
             => eVehicleRemoval;
 
@@ -959,7 +965,7 @@ namespace cloud.charging.open.protocols.WWCP
                                           eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational,
                                           eVehicleStatusTypes Status = eVehicleStatusTypes.Available,
                                           Action<EVehicle> OnSuccess = null,
-                                          Action<EMobilityProviderProxy, EVehicle_Id> OnError = null)
+                                          Action<EMobilityProvider, EVehicle_Id> OnError = null)
 
         {
 
@@ -2613,7 +2619,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnAuthorizeStartRequest));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnAuthorizeStartRequest));
             }
 
             #endregion
@@ -2669,7 +2675,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnAuthorizeStartResponse));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnAuthorizeStartResponse));
             }
 
             #endregion
@@ -2749,7 +2755,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnAuthorizeStopRequest));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnAuthorizeStopRequest));
             }
 
             #endregion
@@ -2802,7 +2808,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnAuthorizeStopResponse));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnAuthorizeStopResponse));
             }
 
             #endregion
@@ -3003,7 +3009,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnReserveRequest));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnReserveRequest));
             }
 
             #endregion
@@ -3071,7 +3077,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnReserveResponse));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnReserveResponse));
             }
 
             #endregion
@@ -3138,7 +3144,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnCancelReservationRequest));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -3200,7 +3206,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnCancelReservationResponse));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -3363,7 +3369,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnRemoteStartRequest));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -3420,7 +3426,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnRemoteStartResponse));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnRemoteStartResponse));
             }
 
             #endregion
@@ -3489,7 +3495,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnRemoteStopRequest));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -3542,7 +3548,7 @@ namespace cloud.charging.open.protocols.WWCP
             }
             catch (Exception e)
             {
-                DebugX.LogException(e, nameof(EMobilityProviderProxy) + "." + nameof(OnRemoteStopResponse));
+                DebugX.LogException(e, nameof(EMobilityProvider) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion
@@ -3571,7 +3577,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            if (!(Object is EMobilityProviderProxy eMobilityProvider))
+            if (!(Object is EMobilityProvider eMobilityProvider))
                 throw new ArgumentException("The given object is not an eMobilityProvider!");
 
             return CompareTo(eMobilityProvider);
@@ -3615,7 +3621,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (Object is null)
                 return false;
 
-            if (!(Object is EMobilityProviderProxy eMobilityProvider))
+            if (!(Object is EMobilityProvider eMobilityProvider))
                 return false;
 
             return Equals(eMobilityProvider);

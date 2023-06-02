@@ -73,10 +73,10 @@ namespace cloud.charging.open.protocols.WWCP
         URL? Homepage { get; set; }
         PhoneNumber? HotlinePhoneNumber { get; set; }
         String Logo { get; set; }
-        IVotingSender<DateTime, EMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationAddition { get; }
-        IVotingSender<DateTime, EMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationRemoval { get; }
-        IVotingSender<DateTime, EMobilityProviderProxy, EVehicle, Boolean> OnEVehicleAddition { get; }
-        IVotingSender<DateTime, EMobilityProviderProxy, EVehicle, Boolean> OnEVehicleRemoval { get; }
+        IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition { get; }
+        IVotingSender<DateTime, EMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval { get; }
+        IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleAddition { get; }
+        IVotingSender<DateTime, EMobilityProvider, EVehicle, Boolean> OnEVehicleRemoval { get; }
         EMobilityProviderPriority Priority { get; set; }
         IRemoteEMobilityProvider RemoteEMobilityProvider { get; }
         TimeSpan? RequestTimeout { get; }
@@ -123,8 +123,8 @@ namespace cloud.charging.open.protocols.WWCP
         Boolean ContainseMobilityStation(eMobilityStation_Id eMobilityStationId);
         Boolean ContainseVehicle(EVehicle eVehicle);
         Boolean ContainseVehicle(EVehicle_Id eVehicleId);
-        eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id eMobilityStationId = null, Action<eMobilityStation> Configurator = null, RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null, eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational, Action<eMobilityStation> OnSuccess = null, Action<EMobilityProviderProxy, eMobilityStation_Id> OnError = null);
-        EVehicle CreateNeweVehicle(EVehicle_Id eVehicleId = null, Action<EVehicle> Configurator = null, RemoteEVehicleCreatorDelegate RemoteeVehicleCreator = null, eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational, eVehicleStatusTypes Status = eVehicleStatusTypes.Available, Action<EVehicle> OnSuccess = null, Action<EMobilityProviderProxy, EVehicle_Id> OnError = null);
+        eMobilityStation CreateNeweMobilityStation(eMobilityStation_Id eMobilityStationId = null, Action<eMobilityStation> Configurator = null, RemoteEMobilityStationCreatorDelegate RemoteeMobilityStationCreator = null, eMobilityStationAdminStatusTypes AdminStatus = eMobilityStationAdminStatusTypes.Operational, Action<eMobilityStation> OnSuccess = null, Action<EMobilityProvider, eMobilityStation_Id> OnError = null);
+        EVehicle CreateNeweVehicle(EVehicle_Id eVehicleId = null, Action<EVehicle> Configurator = null, RemoteEVehicleCreatorDelegate RemoteeVehicleCreator = null, eVehicleAdminStatusTypes AdminStatus = eVehicleAdminStatusTypes.Operational, eVehicleStatusTypes Status = eVehicleStatusTypes.Available, Action<EVehicle> OnSuccess = null, Action<EMobilityProvider, EVehicle_Id> OnError = null);
         eMobilityStation GeteMobilityStationById(eMobilityStation_Id eMobilityStationId);
         EVehicle GetEVehicleById(EVehicle_Id eVehicleId);
         Task<RemoteStartResult> RemoteStart(ChargingLocation ChargingLocation, ChargingProduct ChargingProduct = null, ChargingReservation_Id? ReservationId = null, ChargingSession_Id? SessionId = null, RemoteAuthentication RemoteAuthentication = null, DateTime? Timestamp = null, CancellationToken CancellationToken = default, EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = null);

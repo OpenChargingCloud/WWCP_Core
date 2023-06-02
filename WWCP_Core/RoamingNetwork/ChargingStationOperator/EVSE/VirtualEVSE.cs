@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
     public static class VirtualEVSEExtensions
     {
 
-        #region CreateVirtualEVSE(this ChargingStation, Id = null, EVSEConfigurator = null, VirtualEVSEConfigurator = null, OnSuccess = null, OnError = null)
+        #region AddVirtualEVSE         (this ChargingStation, Id = null, EVSEConfigurator = null, VirtualEVSEConfigurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create a new virtual charging station.
@@ -49,62 +49,62 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <param name="VirtualEVSEConfigurator">An optional delegate to configure the new EVSE.</param>
         /// <param name="OnSuccess">An optional delegate for reporting success.</param>
         /// <param name="OnError">An optional delegate for reporting an error.</param>
-        public static Task<AddEVSEResult> CreateVirtualEVSE(this IChargingStation               ChargingStation,
-                                                            EVSE_Id                             Id,
-                                                            I18NString?                         Name                         = null,
-                                                            I18NString?                         Description                  = null,
+        public static Task<AddEVSEResult> AddVirtualEVSE(this IChargingStation               ChargingStation,
+                                                         EVSE_Id                             Id,
+                                                         I18NString?                         Name                         = null,
+                                                         I18NString?                         Description                  = null,
 
-                                                            Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                                                            Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                                                            UInt16                              MaxAdminStatusScheduleSize   = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
-                                                            UInt16                              MaxStatusScheduleSize        = VirtualEVSE.DefaultMaxStatusScheduleSize,
+                                                         Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                                         Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                                         UInt16                              MaxAdminStatusScheduleSize   = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
+                                                         UInt16                              MaxStatusScheduleSize        = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
-                                                            IEnumerable<URL>?                   PhotoURLs                    = null,
-                                                            IEnumerable<Brand>?                 Brands                       = null,
-                                                            IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
-                                                            IEnumerable<ChargingModes>?         ChargingModes                = null,
-                                                            IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
-                                                            CurrentTypes?                       CurrentType                  = null,
-                                                            Decimal?                            AverageVoltage               = null,
-                                                            Timestamped<Decimal>?               AverageVoltageRealTime       = null,
-                                                            IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
-                                                            Decimal?                            MaxCurrent                   = null,
-                                                            Timestamped<Decimal>?               MaxCurrentRealTime           = null,
-                                                            IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
-                                                            Decimal?                            MaxPower                     = null,
-                                                            Timestamped<Decimal>?               MaxPowerRealTime             = null,
-                                                            IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
-                                                            Decimal?                            MaxCapacity                  = null,
-                                                            Timestamped<Decimal>?               MaxCapacityRealTime          = null,
-                                                            IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
-                                                            EnergyMix?                          EnergyMix                    = null,
-                                                            Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
-                                                            EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
-                                                            EnergyMeter?                        EnergyMeter                  = null,
-                                                            Boolean?                            IsFreeOfCharge               = null,
-                                                            IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
+                                                         IEnumerable<URL>?                   PhotoURLs                    = null,
+                                                         IEnumerable<Brand>?                 Brands                       = null,
+                                                         IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
+                                                         IEnumerable<ChargingModes>?         ChargingModes                = null,
+                                                         IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
+                                                         CurrentTypes?                       CurrentType                  = null,
+                                                         Decimal?                            AverageVoltage               = null,
+                                                         Timestamped<Decimal>?               AverageVoltageRealTime       = null,
+                                                         IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
+                                                         Decimal?                            MaxCurrent                   = null,
+                                                         Timestamped<Decimal>?               MaxCurrentRealTime           = null,
+                                                         IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
+                                                         Decimal?                            MaxPower                     = null,
+                                                         Timestamped<Decimal>?               MaxPowerRealTime             = null,
+                                                         IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
+                                                         Decimal?                            MaxCapacity                  = null,
+                                                         Timestamped<Decimal>?               MaxCapacityRealTime          = null,
+                                                         IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
+                                                         EnergyMix?                          EnergyMix                    = null,
+                                                         Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
+                                                         EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
+                                                         EnergyMeter?                        EnergyMeter                  = null,
+                                                         Boolean?                            IsFreeOfCharge               = null,
+                                                         IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
 
-                                                            ChargingSession?                    ChargingSession              = null,
-                                                            DateTime?                           LastStatusUpdate             = null,
-                                                            String?                             DataSource                   = null,
-                                                            DateTime?                           LastChange                   = null,
+                                                         ChargingSession?                    ChargingSession              = null,
+                                                         DateTime?                           LastStatusUpdate             = null,
+                                                         String?                             DataSource                   = null,
+                                                         DateTime?                           LastChange                   = null,
 
-                                                            Action<IEVSE>?                      Configurator                 = null,
-                                                            Action<VirtualEVSE>?                VirtualEVSEConfigurator      = null,
-                                                            RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+                                                         Action<IEVSE>?                      Configurator                 = null,
+                                                         Action<VirtualEVSE>?                VirtualEVSEConfigurator      = null,
+                                                         RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
 
-                                                            JObject?                            CustomData                   = null,
-                                                            UserDefinedDictionary?              InternalData                 = null,
+                                                         JObject?                            CustomData                   = null,
+                                                         UserDefinedDictionary?              InternalData                 = null,
 
-                                                            String                              EllipticCurve                = "P-256",
-                                                            ECPrivateKeyParameters?             PrivateKey                   = null,
-                                                            PublicKeyCertificates?              PublicKeyCertificates        = null,
-                                                            TimeSpan?                           SelfCheckTimeSpan            = null,
+                                                         String                              EllipticCurve                = "P-256",
+                                                         ECPrivateKeyParameters?             PrivateKey                   = null,
+                                                         PublicKeyCertificates?              PublicKeyCertificates        = null,
+                                                         TimeSpan?                           SelfCheckTimeSpan            = null,
 
-                                                            Action<IEVSE>?                      OnSuccess                    = null,
-                                                            Action<IChargingStation, EVSE_Id>?  OnError                      = null)
+                                                         Action<IEVSE>?                      OnSuccess                    = null,
+                                                         Action<IChargingStation, EVSE_Id>?  OnError                      = null)
 
-            => ChargingStation.CreateEVSE(
+            => ChargingStation.AddEVSE(
                    Id,
                    Name,
                    Description,
@@ -207,11 +207,181 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #endregion
 
+        #region AddOrUpdateVirtualEVSE(this ChargingStation, Id = null, EVSEConfigurator = null, VirtualEVSEConfigurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create a new virtual charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="EVSEId">The EVSE identification for the EVSE to be created.</param>
+        /// <param name="EVSEConfigurator">An optional delegate to configure the new (local) EVSE.</param>
+        /// <param name="VirtualEVSEConfigurator">An optional delegate to configure the new EVSE.</param>
+        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
+        /// <param name="OnError">An optional delegate for reporting an error.</param>
+        public static Task<AddOrUpdateEVSEResult> AddOrUpdateVirtualEVSE(this IChargingStation               ChargingStation,
+                                                                         EVSE_Id                             Id,
+                                                                         I18NString?                         Name                         = null,
+                                                                         I18NString?                         Description                  = null,
+
+                                                                         Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                                                                         Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                                                                         UInt16                              MaxAdminStatusScheduleSize   = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
+                                                                         UInt16                              MaxStatusScheduleSize        = VirtualEVSE.DefaultMaxStatusScheduleSize,
+
+                                                                         IEnumerable<URL>?                   PhotoURLs                    = null,
+                                                                         IEnumerable<Brand>?                 Brands                       = null,
+                                                                         IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
+                                                                         IEnumerable<ChargingModes>?         ChargingModes                = null,
+                                                                         IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
+                                                                         CurrentTypes?                       CurrentType                  = null,
+                                                                         Decimal?                            AverageVoltage               = null,
+                                                                         Timestamped<Decimal>?               AverageVoltageRealTime       = null,
+                                                                         IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
+                                                                         Decimal?                            MaxCurrent                   = null,
+                                                                         Timestamped<Decimal>?               MaxCurrentRealTime           = null,
+                                                                         IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
+                                                                         Decimal?                            MaxPower                     = null,
+                                                                         Timestamped<Decimal>?               MaxPowerRealTime             = null,
+                                                                         IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
+                                                                         Decimal?                            MaxCapacity                  = null,
+                                                                         Timestamped<Decimal>?               MaxCapacityRealTime          = null,
+                                                                         IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
+                                                                         EnergyMix?                          EnergyMix                    = null,
+                                                                         Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
+                                                                         EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
+                                                                         EnergyMeter?                        EnergyMeter                  = null,
+                                                                         Boolean?                            IsFreeOfCharge               = null,
+                                                                         IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
+
+                                                                         ChargingSession?                    ChargingSession              = null,
+                                                                         DateTime?                           LastStatusUpdate             = null,
+                                                                         String?                             DataSource                   = null,
+                                                                         DateTime?                           LastChange                   = null,
+
+                                                                         Action<IEVSE>?                      Configurator                 = null,
+                                                                         Action<VirtualEVSE>?                VirtualEVSEConfigurator      = null,
+                                                                         RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
+
+                                                                         JObject?                            CustomData                   = null,
+                                                                         UserDefinedDictionary?              InternalData                 = null,
+
+                                                                         String                              EllipticCurve                = "P-256",
+                                                                         ECPrivateKeyParameters?             PrivateKey                   = null,
+                                                                         PublicKeyCertificates?              PublicKeyCertificates        = null,
+                                                                         TimeSpan?                           SelfCheckTimeSpan            = null,
+
+                                                                         Action<IEVSE>?                      OnSuccess                    = null,
+                                                                         Action<IChargingStation, EVSE_Id>?  OnError                      = null)
+
+            => ChargingStation.AddOrUpdateEVSE(
+                   Id,
+                   Name,
+                   Description,
+
+                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
+                   InitialStatus      ?? EVSEStatusTypes.Available,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+
+                   PhotoURLs,
+                   Brands,
+                   OpenDataLicenses,
+                   ChargingModes,
+                   ChargingTariffs,
+                   CurrentType,
+                   AverageVoltage,
+                   AverageVoltageRealTime,
+                   AverageVoltagePrognoses,
+                   MaxCurrent,
+                   MaxCurrentRealTime,
+                   MaxCurrentPrognoses,
+                   MaxPower,
+                   MaxPowerRealTime,
+                   MaxPowerPrognoses,
+                   MaxCapacity,
+                   MaxCapacityRealTime,
+                   MaxCapacityPrognoses,
+                   EnergyMix,
+                   EnergyMixRealTime,
+                   EnergyMixPrognoses,
+                   EnergyMeter,
+                   IsFreeOfCharge,
+                   ChargingConnectors,
+
+                   ChargingSession,
+                   LastStatusUpdate,
+                   DataSource,
+                   LastChange,
+
+                   CustomData,
+                   InternalData,
+
+                   Configurator,
+                   newEVSE => {
+
+                       var virtualevse = new VirtualEVSE(
+
+                                             newEVSE.Id,
+                                             ChargingStation,
+                                             newEVSE.Name,
+                                             newEVSE.Description,
+
+                                             InitialAdminStatus,
+                                             InitialStatus,
+                                             MaxAdminStatusScheduleSize,
+                                             MaxStatusScheduleSize,
+
+                                             PhotoURLs,
+                                             Brands,
+                                             OpenDataLicenses,
+                                             ChargingModes,
+                                             ChargingTariffs,
+                                             CurrentType,
+                                             AverageVoltage,
+                                             AverageVoltageRealTime,
+                                             AverageVoltagePrognoses,
+                                             MaxCurrent,
+                                             MaxCurrentRealTime,
+                                             MaxCurrentPrognoses,
+                                             MaxPower,
+                                             MaxPowerRealTime,
+                                             MaxPowerPrognoses,
+                                             MaxCapacity,
+                                             MaxCapacityRealTime,
+                                             MaxCapacityPrognoses,
+                                             EnergyMix,
+                                             EnergyMixRealTime,
+                                             EnergyMixPrognoses,
+                                             EnergyMeter,
+                                             IsFreeOfCharge,
+                                             ChargingConnectors,
+
+                                             EllipticCurve,
+                                             PrivateKey,
+                                             PublicKeyCertificates,
+                                             SelfCheckTimeSpan
+
+                                         );
+
+                       VirtualEVSEConfigurator?.Invoke(virtualevse);
+
+                       return virtualevse;
+
+                   },
+
+                   OnSuccess,
+                   OnError
+
+               );
+
+        #endregion
+
+
     }
 
 
     /// <summary>
-    /// A virtual EVSE.
+    /// A virtual EVSE for (internal) tests.
     /// </summary>
     public class VirtualEVSE : ACryptoEMobilityEntity<EVSE_Id,
                                                       EVSEAdminStatusTypes,
