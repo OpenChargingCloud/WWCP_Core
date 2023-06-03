@@ -721,7 +721,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean>         OnEVSEAddition    { get; }
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was updated.
+        /// </summary>
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean>  OnEVSEUpdate      { get; }
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean>         OnEVSERemoval     { get; }
+
+
 
         /// <summary>
         /// All Electric Vehicle Supply Equipments (EVSE) present
@@ -893,12 +905,6 @@ namespace cloud.charging.open.protocols.WWCP
         //    => ChargingConnectorRemoval;
 
         //#endregion
-
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval { get; }
 
         #endregion
 

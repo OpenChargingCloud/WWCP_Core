@@ -420,7 +420,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean>                 OnChargingPoolAddition    { get; }
+
+        /// <summary>
+        /// Called whenever a charging pool will be or was updated.
+        /// </summary>
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>  OnChargingPoolUpdate      { get; }
+
+        /// <summary>
+        /// Called whenever an charging pool will be or was removed.
+        /// </summary>
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean>                 OnChargingPoolRemoval     { get; }
+
+
 
         /// <summary>
         /// Create and register a new charging pool having the given
@@ -599,12 +611,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        /// <summary>
-        /// Called whenever an charging pool will be or was removed.
-        /// </summary>
-        IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval { get; }
-
         #endregion
 
         #region Charging stations
@@ -670,9 +676,14 @@ namespace cloud.charging.open.protocols.WWCP
         IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition { get; }
 
         /// <summary>
+        /// Called whenever a charging station will be or was updated.
+        /// </summary>
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate { get; }
+
+        /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval { get; }
 
 
         ///// <summary>
@@ -991,12 +1002,23 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition { get; }
 
-        IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval { get; }
+
+
+        IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> EVSEUpdate { get; }
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was updated.
+        /// </summary>
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate { get; }
+
+
+
+        IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval { get; }
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval { get; }
 
 
 

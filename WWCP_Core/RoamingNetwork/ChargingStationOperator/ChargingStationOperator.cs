@@ -592,8 +592,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.chargingPools               = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this,
                                                                                                                                             new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true));
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true));
             this.chargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
             this.evseGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
@@ -608,12 +610,12 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init events
 
             this.ChargingStationAddition       = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval        = new VotingNotificator<DateTime, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
             this.evseAddition                  = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
-            this.evseRemoval                   = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
+            this.evseRemoval                   = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
             this.EVSEGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
             this.EVSEGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
 
@@ -772,8 +774,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPoolAddition
 
-        //internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolAddition;
-
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
@@ -785,12 +785,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPoolUpdate
 
-        //internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, IChargingPool, Boolean> ChargingPoolUpdate;
-
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, IChargingPool, Boolean> OnChargingPoolUpdate
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean> OnChargingPoolUpdate
 
             => chargingPools.OnUpdate;
 
@@ -798,12 +796,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPoolRemoval
 
-        //internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolRemoval;
-
         /// <summary>
         /// Called whenever an charging pool will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
 
             => chargingPools.OnRemoval;
 
@@ -955,10 +951,10 @@ namespace cloud.charging.open.protocols.WWCP
             ChargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
             ChargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
             ChargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
-            ChargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, chargingPool, chargingStation, vote) => ChargingStationRemoval. SendVoting(timestamp, chargingPool, chargingStation, vote);
-            ChargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, chargingPool, chargingStation)       => {
+            ChargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote) => ChargingStationRemoval. SendVoting(timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote);
+            ChargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, eventTrackingId, userId, chargingPool, chargingStation)       => {
                 chargingStationLookup.TryRemove(chargingStation.Id, out _);
-                ChargingStationRemoval.SendNotification(timestamp, chargingPool, chargingStation);
+                ChargingStationRemoval.SendNotification(timestamp, eventTrackingId, userId, chargingPool, chargingStation);
             };
 
             ChargingPool.OnEVSEAddition.           OnVoting        += (timestamp, eventTrackingId, userId, station, evse, vote) => evseAddition.SendVoting(timestamp, eventTrackingId, userId, station, evse, vote);
@@ -969,10 +965,10 @@ namespace cloud.charging.open.protocols.WWCP
             ChargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
             ChargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
             ChargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
-            ChargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote) => evseRemoval .SendVoting(timestamp, station, evse, vote);
-            ChargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)       => {
+            ChargingPool.OnEVSERemoval.            OnVoting        += (timestamp, eventTrackingId, userId, station, evse, vote) => evseRemoval .SendVoting(timestamp, eventTrackingId, userId, station, evse, vote);
+            ChargingPool.OnEVSERemoval.            OnNotification  += (timestamp, eventTrackingId, userId, station, evse)       => {
                 evseLookup.TryRemove(evse.Id, out _);
-                evseRemoval.SendNotification(timestamp, station, evse);
+                evseRemoval.SendNotification(timestamp, eventTrackingId, userId, station, evse);
             };
 
 
@@ -1017,18 +1013,16 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
 
-            if (//ChargingPoolAddition.SendVoting(Timestamp.Now, this, ChargingPool) &&
-                chargingPools.TryAdd(ChargingPool,
+            if (chargingPools.TryAdd(ChargingPool,
                                      Connect,
                                      EventTrackingId,
-                                     CurrentUserId))
+                                     CurrentUserId).IsSuccess)
             {
 
                 //ToDo: Persistency
                 await Task.Delay(1);
 
                 OnSuccess?.Invoke(ChargingPool);
-                //ChargingPoolAddition.SendNotification(Timestamp.Now, this, ChargingPool);
 
                 return AddChargingPoolResult.Success(ChargingPool,
                                                      EventTrackingId,
@@ -1082,7 +1076,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (chargingPools.TryAdd(ChargingPool,
                                      Connect,
                                      EventTrackingId,
-                                     CurrentUserId))
+                                     CurrentUserId).IsSuccess)
             {
 
                 //ToDo: Persistency
@@ -1184,7 +1178,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (chargingPools.TryAdd(ChargingPool,
                                          Connect,
                                          EventTrackingId,
-                                         CurrentUserId))
+                                         CurrentUserId).IsSuccess)
                 {
 
                     //ToDo: Persistency
@@ -1275,9 +1269,10 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentChargingPoolId);
 
-            chargingPools.Remove(OldChargingPool.Id,
-                                 EventTrackingId,
-                                 CurrentUserId);
+            chargingPools.TryRemove(OldChargingPool.Id,
+                                    out _,
+                                    EventTrackingId,
+                                    CurrentUserId);
             //ChargingPool.CopyAllLinkedDataFrom(OldChargingPool);
             chargingPools.TryAdd(ChargingPool,
                                  EventTrackingId,
@@ -1806,14 +1801,27 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region ChargingStationUpdate
+
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> ChargingStationUpdate;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was updated.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate
+
+            => ChargingStationUpdate;
+
+        #endregion
+
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
             => ChargingStationRemoval;
 
@@ -2424,48 +2432,43 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                var _ChargingStationGroup = new ChargingStationGroup(Id,
-                                                                     this,
-                                                                     Name,
-                                                                     Description,
+                var chargingStationGroup = new ChargingStationGroup(Id,
+                                                                    this,
+                                                                    Name,
+                                                                    Description,
 
-                                                                     Brand,
-                                                                     Priority,
-                                                                     Tariff,
-                                                                     DataLicenses,
+                                                                    Brand,
+                                                                    Priority,
+                                                                    Tariff,
+                                                                    DataLicenses,
 
-                                                                     Members,
-                                                                     MemberIds,
-                                                                     AutoIncludeStations,
-                                                                     StatusAggregationDelegate,
-                                                                     MaxGroupAdminStatusListSize,
-                                                                     MaxGroupStatusListSize);
+                                                                    Members,
+                                                                    MemberIds,
+                                                                    AutoIncludeStations,
+                                                                    StatusAggregationDelegate,
+                                                                    MaxGroupAdminStatusListSize,
+                                                                    MaxGroupStatusListSize);
 
 
-                if (ChargingStationGroupAddition.SendVoting(Timestamp.Now, this, _ChargingStationGroup) &&
-                    chargingStationGroups.TryAdd(_ChargingStationGroup,
+                if (chargingStationGroups.TryAdd(chargingStationGroup,
                                                  EventTracking_Id.New,
-                                                 null))
+                                                 null).IsSuccess)
                 {
 
-                    _ChargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
-                    _ChargingStationGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                    _ChargingStationGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+                    chargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
+                    chargingStationGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                    chargingStationGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
 
-                    _ChargingStationGroup.OnChargingStationDataChanged                  += UpdateChargingStationData;
-                    _ChargingStationGroup.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-                    _ChargingStationGroup.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+                    chargingStationGroup.OnChargingStationDataChanged                  += UpdateChargingStationData;
+                    chargingStationGroup.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
+                    chargingStationGroup.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
 
                     //_ChargingStationGroup.OnDataChanged                                 += UpdateChargingStationGroupData;
                     //_ChargingStationGroup.OnAdminStatusChanged                          += UpdateChargingStationGroupAdminStatus;
 
-                    OnSuccess?.Invoke(_ChargingStationGroup);
+                    OnSuccess?.Invoke(chargingStationGroup);
 
-                    ChargingStationGroupAddition.SendNotification(Timestamp.Now,
-                                                                  this,
-                                                                  _ChargingStationGroup);
-
-                    return _ChargingStationGroup;
+                    return chargingStationGroup;
 
                 }
 
@@ -2820,17 +2823,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region EVSEUpdate
+
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> evseUpdate;
+
+        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> EVSEUpdate
+            => evseUpdate;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was update.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate
+
+            => evseUpdate;
+
+        #endregion
+
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> evseRemoval;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> evseRemoval;
 
-        public IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval
+        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval
             => evseRemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => evseRemoval;
 
@@ -3679,49 +3698,44 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                var _EVSEGroup = new EVSEGroup(Id,
-                                               this,
-                                               Name,
-                                               Description,
+                var evseGroup = new EVSEGroup(Id,
+                                              this,
+                                              Name,
+                                              Description,
 
-                                               Brand,
-                                               Priority,
-                                               Tariff,
-                                               DataLicenses,
+                                              Brand,
+                                              Priority,
+                                              Tariff,
+                                              DataLicenses,
 
-                                               Members,
-                                               MemberIds,
-                                               AutoIncludeEVSEIds,
-                                               AutoIncludeEVSEs,
-                                               StatusAggregationDelegate,
-                                               MaxGroupAdminStatusListSize,
-                                               MaxGroupStatusListSize);
+                                              Members,
+                                              MemberIds,
+                                              AutoIncludeEVSEIds,
+                                              AutoIncludeEVSEs,
+                                              StatusAggregationDelegate,
+                                              MaxGroupAdminStatusListSize,
+                                              MaxGroupStatusListSize);
 
 
-                if (EVSEGroupAddition.SendVoting(Timestamp.Now, this, _EVSEGroup) &&
-                    evseGroups.TryAdd(_EVSEGroup,
+                if (evseGroups.TryAdd(evseGroup,
                                       EventTracking_Id.New,
-                                      null))
+                                      null).IsSuccess)
                 {
 
-                    _EVSEGroup.OnEVSEDataChanged                             += UpdateEVSEData;
-                    _EVSEGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                    _EVSEGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+                    evseGroup.OnEVSEDataChanged                  += UpdateEVSEData;
+                    evseGroup.OnEVSEStatusChanged                += UpdateEVSEStatus;
+                    evseGroup.OnEVSEAdminStatusChanged           += UpdateEVSEAdminStatus;
 
-                    _EVSEGroup.OnEVSEDataChanged                  += UpdateEVSEData;
-                    _EVSEGroup.OnEVSEStatusChanged                += UpdateEVSEStatus;
-                    _EVSEGroup.OnEVSEAdminStatusChanged           += UpdateEVSEAdminStatus;
+                    evseGroup.OnEVSEDataChanged                  += UpdateEVSEData;
+                    evseGroup.OnEVSEStatusChanged                += UpdateEVSEStatus;
+                    evseGroup.OnEVSEAdminStatusChanged           += UpdateEVSEAdminStatus;
 
                     //_EVSEGroup.OnDataChanged                                 += UpdateEVSEGroupData;
                     //_EVSEGroup.OnAdminStatusChanged                          += UpdateEVSEGroupAdminStatus;
 
-                    OnSuccess?.Invoke(_EVSEGroup);
+                    OnSuccess?.Invoke(evseGroup);
 
-                    EVSEGroupAddition.SendNotification(Timestamp.Now,
-                                                                  this,
-                                                                  _EVSEGroup);
-
-                    return _EVSEGroup;
+                    return evseGroup;
 
                 }
 
@@ -4149,20 +4163,19 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
-                var _ChargingTariff = new ChargingTariff(Id,
-                                                         Name,
-                                                         Description,
-                                                         TariffElements,
-                                                         Currency,
-                                                         Brand,
-                                                         TariffURL,
-                                                         EnergyMix);
+                var chargingTariff = new ChargingTariff(Id,
+                                                        Name,
+                                                        Description,
+                                                        TariffElements,
+                                                        Currency,
+                                                        Brand,
+                                                        TariffURL,
+                                                        EnergyMix);
 
 
-                if (chargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff) &&
-                    chargingTariffs.TryAdd(_ChargingTariff,
+                if (chargingTariffs.TryAdd(chargingTariff,
                                            EventTracking_Id.New,
-                                           null))
+                                           null).IsSuccess)
                 {
 
                     //_ChargingTariff.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -4176,13 +4189,9 @@ namespace cloud.charging.open.protocols.WWCP
                     ////_ChargingTariff.OnDataChanged                                 += UpdateChargingTariffData;
                     ////_ChargingTariff.OnAdminStatusChanged                          += UpdateChargingTariffAdminStatus;
 
-                    OnSuccess?.Invoke(_ChargingTariff);
+                    OnSuccess?.Invoke(chargingTariff);
 
-                    chargingTariffAddition.SendNotification(Timestamp.Now,
-                                                            this,
-                                                            _ChargingTariff);
-
-                    return _ChargingTariff;
+                    return chargingTariff;
 
                 }
 
@@ -4584,10 +4593,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                   Description);
 
 
-                if (chargingTariffGroupAddition.SendVoting(Timestamp.Now, this, chargingTariffGroup) &&
-                    chargingTariffGroups.TryAdd(chargingTariffGroup,
+                if (chargingTariffGroups.TryAdd(chargingTariffGroup,
                                                 EventTracking_Id.New,
-                                                null))
+                                                null).IsSuccess)
                 {
 
                     //_ChargingTariffGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -4602,10 +4610,6 @@ namespace cloud.charging.open.protocols.WWCP
                     ////_ChargingTariffGroup.OnAdminStatusChanged                          += UpdateChargingTariffGroupAdminStatus;
 
                     OnSuccess?.Invoke(chargingTariffGroup);
-
-                    chargingTariffGroupAddition.SendNotification(Timestamp.Now,
-                                                                 this,
-                                                                 chargingTariffGroup);
 
                     return chargingTariffGroup;
 

@@ -1540,8 +1540,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        //internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
-
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
@@ -1551,14 +1549,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region EVSERemoval
+        #region EVSEUpdate
 
-        //internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval;
+        /// <summary>
+        /// Called whenever an EVSE will be or was updated.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate
+
+            => evses.OnUpdate;
+
+        #endregion
+
+        #region EVSERemoval
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => evses.OnRemoval;
 
@@ -1710,186 +1717,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddEVSE(Id, Configurator = null, RemoteEVSECreator = null, ...)
-
-        /// <summary>
-        /// Create and register a new EVSE having the given
-        /// unique EVSE identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the new EVSE.</param>
-        /// <param name="Configurator">An optional delegate to configure the new EVSE after its creation.</param>
-        /// <param name="RemoteEVSECreator">An optional delegate to configure a new remote EVSE after its creation.</param>
-        /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
-        /// <param name="OnError">An optional delegate for signaling errors.</param>
-        public async Task<AddEVSEResult> Add333EVSE(EVSE_Id                             Id,
-                                                 I18NString?                         Name                         = null,
-                                                 I18NString?                         Description                  = null,
-
-                                                 Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                                                 Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                                                 UInt16?                             MaxAdminStatusScheduleSize   = null,
-                                                 UInt16?                             MaxStatusScheduleSize        = null,
-
-                                                 IEnumerable<URL>?                   PhotoURLs                    = null,
-                                                 IEnumerable<Brand>?                 Brands                       = null,
-                                                 IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
-                                                 IEnumerable<ChargingModes>?         ChargingModes                = null,
-                                                 IEnumerable<ChargingTariff>?        ChargingTariffs              = null,
-                                                 CurrentTypes?                       CurrentType                  = null,
-                                                 Decimal?                            AverageVoltage               = null,
-                                                 Timestamped<Decimal>?               AverageVoltageRealTime       = null,
-                                                 IEnumerable<Timestamped<Decimal>>?  AverageVoltagePrognoses      = null,
-                                                 Decimal?                            MaxCurrent                   = null,
-                                                 Timestamped<Decimal>?               MaxCurrentRealTime           = null,
-                                                 IEnumerable<Timestamped<Decimal>>?  MaxCurrentPrognoses          = null,
-                                                 Decimal?                            MaxPower                     = null,
-                                                 Timestamped<Decimal>?               MaxPowerRealTime             = null,
-                                                 IEnumerable<Timestamped<Decimal>>?  MaxPowerPrognoses            = null,
-                                                 Decimal?                            MaxCapacity                  = null,
-                                                 Timestamped<Decimal>?               MaxCapacityRealTime          = null,
-                                                 IEnumerable<Timestamped<Decimal>>?  MaxCapacityPrognoses         = null,
-                                                 EnergyMix?                          EnergyMix                    = null,
-                                                 Timestamped<EnergyMix>?             EnergyMixRealTime            = null,
-                                                 EnergyMixPrognosis?                 EnergyMixPrognoses           = null,
-                                                 EnergyMeter?                        EnergyMeter                  = null,
-                                                 Boolean?                            IsFreeOfCharge               = null,
-                                                 IEnumerable<IChargingConnector>?    SocketOutlets                = null,
-
-                                                 ChargingSession?                    ChargingSession              = null,
-                                                 DateTime?                           LastStatusUpdate             = null,
-                                                 String?                             DataSource                   = null,
-                                                 DateTime?                           LastChange                   = null,
-                                                 JObject?                            CustomData                   = null,
-                                                 UserDefinedDictionary?              InternalData                 = null,
-
-                                                 Action<IEVSE>?                      Configurator                 = null,
-                                                 RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-                                                 Action<IEVSE>?                      OnSuccess                    = null,
-                                                 Action<IChargingStation, EVSE_Id>?  OnError                      = null)
-        {
-
-            //lock (evses)
-            //{
-
-                #region Initial checks
-
-                if (evses.Any(evse => evse.Id == Id))
-                {
-                    if (OnError is null)
-                        throw new EVSEAlreadyExistsInStation(this, Id);
-                    else
-                        OnError?.Invoke(this, Id);
-                }
-
-                if (Operator.Id != Id.OperatorId)
-                    return null;
-                    //throw new InvalidChargingStationOperatorId(Id.OperatorId);
-
-                #endregion
-
-                var now   = Timestamp.Now;
-
-                var evse  = new EVSE(
-                                Id,
-                                this,   // ChargingStation
-                                Name,
-                                Description,
-
-                                InitialAdminStatus,
-                                InitialStatus,
-                                MaxAdminStatusScheduleSize,
-                                MaxStatusScheduleSize,
-
-                                PhotoURLs,
-                                Brands,
-                                OpenDataLicenses,
-                                ChargingModes,
-                                ChargingTariffs,
-                                CurrentType,
-                                AverageVoltage,
-                                AverageVoltageRealTime,
-                                AverageVoltagePrognoses,
-                                MaxCurrent,
-                                MaxCurrentRealTime,
-                                MaxCurrentPrognoses,
-                                MaxPower,
-                                MaxPowerRealTime,
-                                MaxPowerPrognoses,
-                                MaxCapacity,
-                                MaxCapacityRealTime,
-                                MaxCapacityPrognoses,
-                                EnergyMix,
-                                EnergyMixRealTime,
-                                EnergyMixPrognoses,
-                                EnergyMeter,
-                                IsFreeOfCharge,
-                                SocketOutlets,
-
-                                ChargingSession,
-                                LastStatusUpdate,
-                                DataSource,
-                                LastChange,
-
-                                Configurator,
-                                RemoteEVSECreator,
-
-                                CustomData,
-                                InternalData
-
-                            );
-
-                if (evses.TryAdd(evse,
-                                 EventTracking_Id.New,
-                                 null))
-                {
-
-                    evse.OnDataChanged           += UpdateEVSEData;
-                    evse.OnStatusChanged         += UpdateEVSEStatus;
-                    evse.OnAdminStatusChanged    += UpdateEVSEAdminStatus;
-
-                    evse.OnNewReservation        += SendNewReservation;
-                    evse.OnReservationCanceled   += SendReservationCanceled;
-                    evse.OnNewChargingSession    += SendNewChargingSession;
-                    evse.OnNewChargeDetailRecord += SendNewChargeDetailRecord;
-
-                    //UpdateEVSEStatus(Now,
-                    //                 EventTracking_Id.New,
-                    //                 _EVSE,
-                    //                 new Timestamped<EVSEStatusTypes>(Now, EVSEStatusTypes.Unspecified),
-                    //                 _EVSE.Status).Wait();
-
-                    if (RemoteChargingStation is not null)
-                    {
-
-                        if (evse.RemoteEVSE is not null)
-                            RemoteChargingStation.AddEVSE(evse.RemoteEVSE);
-
-                        OnAdminStatusChanged               += (Timestamp, EventTrackingId, station, newstatus, oldstatus, dataSource) => { adminStatusSchedule.Insert(newstatus, dataSource); return Task.CompletedTask; };
-                        OnStatusChanged                    += (Timestamp, EventTrackingId, station, newstatus, oldstatus, dataSource) => { statusSchedule.     Insert(newstatus, dataSource); return Task.CompletedTask; };
-
-                        this.RemoteChargingStation.OnAdminStatusChanged    += (timestamp, eventTrackingId, chargingStation, newstatus, oldstatus, dataSource) => { adminStatusSchedule.Insert(newstatus, dataSource); return Task.CompletedTask; };
-                        this.RemoteChargingStation.OnStatusChanged         += (timestamp, eventTrackingId, chargingStation, newstatus, oldstatus, dataSource) => { statusSchedule.     Insert(newstatus, dataSource); return Task.CompletedTask; };
-
-                    //RemoteConfigurator?.Invoke(_EVSE.RemoteEVSE);
-
-                }
-
-                    OnSuccess?.Invoke(evse);
-
-                    return AddEVSEResult.Success(evse, EventTracking_Id.New);
-
-                }
-
-                Debug.WriteLine("EVSE '" + Id + "' was not created!");
-                return null;
-
-            //}
-
-        }
-
-        #endregion
-
-
         #region (private) Connect(EVSE)
 
         private void Connect(IEVSE EVSE)
@@ -1965,7 +1792,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (evses.TryAdd(EVSE,
                              Connect,
                              EventTrackingId,
-                             CurrentUserId))
+                             CurrentUserId).IsSuccess)
             {
 
                 //ToDo: Persistency
@@ -2025,7 +1852,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (evses.TryAdd(EVSE,
                              Connect,
                              EventTrackingId,
-                             CurrentUserId))
+                             CurrentUserId).IsSuccess)
             {
 
                 //ToDo: Persistency
@@ -2126,7 +1953,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (evses.TryAdd(EVSE,
                                  EventTrackingId,
-                                 CurrentUserId))
+                                 CurrentUserId).IsSuccess)
                 {
 
                     //ToDo: Persistency
@@ -2203,10 +2030,19 @@ namespace cloud.charging.open.protocols.WWCP
         #region RemoveEVSE(EVSEId)
 
         public IEVSE? RemoveEVSE(EVSE_Id EVSEId)
+        {
 
-            => evses.Remove(EVSEId,
-                            EventTracking_Id.New,
-                            null);
+            if (evses.TryRemove(EVSEId,
+                                out var evse,
+                                EventTracking_Id.New,
+                                null))
+            {
+                return evse;
+            }
+
+            return null;
+
+        }
 
         #endregion
 
@@ -3772,6 +3608,7 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.ToString();
 
         #endregion
+
 
     }
 

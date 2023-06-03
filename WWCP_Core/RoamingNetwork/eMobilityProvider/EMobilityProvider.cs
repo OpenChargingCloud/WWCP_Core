@@ -540,11 +540,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMobilityStations
 
-        private EntityHashSet<ChargingStationOperator, eMobilityStation_Id, eMobilityStation> _eMobilityStations;
+        private EntityHashSet<ChargingStationOperator, eMobilityStation_Id, eMobilityStation> eMobilityStations;
 
         public IEnumerable<eMobilityStation> EMobilityStations
 
-            => _eMobilityStations;
+            => eMobilityStations;
 
         #endregion
 
@@ -552,7 +552,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IEnumerable<KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>> EMobilityStationAdminStatus
 
-            => _eMobilityStations.
+            => eMobilityStations.
                    OrderBy(vehicle => vehicle.Id).
                    Select(vehicle => new KeyValuePair<eMobilityStation_Id, eMobilityStationAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
@@ -584,7 +584,7 @@ namespace cloud.charging.open.protocols.WWCP
                 eMobilityStationId = eMobilityStation_Id.Random(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
-            if (_eMobilityStations.Any(pool => pool.Id == eMobilityStationId))
+            if (eMobilityStations.Any(pool => pool.Id == eMobilityStationId))
             {
                 if (OnError == null)
                     throw new eMobilityStationAlreadyExists(this, eMobilityStationId);
@@ -594,35 +594,31 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            var _eMobilityStation = new eMobilityStation(eMobilityStationId,
-                                                         this,
-                                                         Configurator,
-                                                         RemoteeMobilityStationCreator,
-                                                         AdminStatus);
+            var eMobilityStation = new eMobilityStation(eMobilityStationId,
+                                                        this,
+                                                        Configurator,
+                                                        RemoteeMobilityStationCreator,
+                                                        AdminStatus);
 
 
-            if (eMobilityStationAddition.SendVoting(Timestamp.Now, this, _eMobilityStation))
+            if (eMobilityStations.TryAdd(eMobilityStation,
+                                         EventTracking_Id.New,
+                                         null).IsSuccess)
             {
-                if (_eMobilityStations.TryAdd(_eMobilityStation,
-                                              EventTracking_Id.New,
-                                              null))
-                {
 
-                    _eMobilityStation.OnDataChanged        += UpdateeMobilityStationData;
-                    _eMobilityStation.OnAdminStatusChanged += UpdateeMobilityStationAdminStatus;
+                eMobilityStation.OnDataChanged        += UpdateeMobilityStationData;
+                eMobilityStation.OnAdminStatusChanged += UpdateeMobilityStationAdminStatus;
 
-                    //_eMobilityStation.OnNewReservation                     += SendNewReservation;
-                    //_eMobilityStation.OnCancelReservationResponse               += SendOnCancelReservationResponse;
-                    //_eMobilityStation.OnNewChargingSession                 += SendNewChargingSession;
-                    //_eMobilityStation.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+                //_eMobilityStation.OnNewReservation                     += SendNewReservation;
+                //_eMobilityStation.OnCancelReservationResponse               += SendOnCancelReservationResponse;
+                //_eMobilityStation.OnNewChargingSession                 += SendNewChargingSession;
+                //_eMobilityStation.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
 
-                    OnSuccess?.Invoke(_eMobilityStation);
-                    eMobilityStationAddition.SendNotification(Timestamp.Now, this, _eMobilityStation);
+                OnSuccess?.Invoke(eMobilityStation);
 
-                    return _eMobilityStation;
+                return eMobilityStation;
 
-                }
             }
 
             return null;
@@ -640,7 +636,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMobilityStation">A eMobilityStation.</param>
         public Boolean ContainseMobilityStation(eMobilityStation eMobilityStation)
 
-            => _eMobilityStations.Contains(eMobilityStation);
+            => eMobilityStations.Contains(eMobilityStation);
 
         #endregion
 
@@ -652,7 +648,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMobilityStationId">The unique identification of the eMobilityStation.</param>
         public Boolean ContainseMobilityStation(eMobilityStation_Id eMobilityStationId)
 
-            => _eMobilityStations.ContainsId(eMobilityStationId);
+            => eMobilityStations.ContainsId(eMobilityStationId);
 
         #endregion
 
@@ -660,7 +656,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public eMobilityStation GeteMobilityStationById(eMobilityStation_Id eMobilityStationId)
 
-            => _eMobilityStations.GetById(eMobilityStationId);
+            => eMobilityStations.GetById(eMobilityStationId);
 
         #endregion
 
@@ -668,7 +664,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGeteMobilityStationById(eMobilityStation_Id eMobilityStationId, out eMobilityStation eMobilityStation)
 
-            => _eMobilityStations.TryGet(eMobilityStationId, out eMobilityStation);
+            => eMobilityStations.TryGet(eMobilityStationId, out eMobilityStation);
 
         #endregion
 
@@ -685,7 +681,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (eMobilityStationRemoval.SendVoting(Timestamp.Now, this, _eMobilityStation))
                 {
 
-                    if (_eMobilityStations.TryRemove(eMobilityStationId,
+                    if (eMobilityStations.TryRemove(eMobilityStationId,
                                                      out _eMobilityStation,
                                                      EventTracking_Id.New,
                                                      null))
@@ -718,7 +714,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (eMobilityStationRemoval.SendVoting(Timestamp.Now, this, eMobilityStation))
                 {
 
-                    if (_eMobilityStations.TryRemove(eMobilityStationId,
+                    if (eMobilityStations.TryRemove(eMobilityStationId,
                                                      out eMobilityStation,
                                                      EventTracking_Id.New,
                                                      null))
@@ -928,11 +924,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eVehicles
 
-        private readonly EntityHashSet<ChargingStationOperator, EVehicle_Id, EVehicle> _eVehicles;
+        private readonly EntityHashSet<ChargingStationOperator, EVehicle_Id, EVehicle> eVehicles;
 
         public IEnumerable<EVehicle> EVehicles
 
-            => _eVehicles;
+            => eVehicles;
 
         #endregion
 
@@ -940,7 +936,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IEnumerable<KeyValuePair<EVehicle_Id, eVehicleAdminStatusTypes>> EVehicleAdminStatus
 
-            => _eVehicles.
+            => eVehicles.
                    OrderBy(vehicle => vehicle.Id).
                    Select(vehicle => new KeyValuePair<EVehicle_Id, eVehicleAdminStatusTypes>(vehicle.Id, vehicle.AdminStatus.Value));
 
@@ -950,7 +946,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public IEnumerable<KeyValuePair<EVehicle_Id, eVehicleStatusTypes>> EVehicleStatus
 
-            => _eVehicles.
+            => eVehicles.
                    OrderBy(vehicle => vehicle.Id).
                    Select(vehicle => new KeyValuePair<EVehicle_Id, eVehicleStatusTypes>(vehicle.Id, vehicle.Status.Value));
 
@@ -983,7 +979,7 @@ namespace cloud.charging.open.protocols.WWCP
                 eVehicleId = EVehicle_Id.Random(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
-            if (_eVehicles.Any(pool => pool.Id == eVehicleId))
+            if (eVehicles.Any(pool => pool.Id == eVehicleId))
             {
                 if (OnError == null)
                     throw new eVehicleAlreadyExists(this, eVehicleId);
@@ -993,37 +989,32 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            var _eVehicle = new EVehicle(eVehicleId,
-                                                 this,
-                                                 Configurator,
-                                                 RemoteeVehicleCreator,
-                                                 AdminStatus,
-                                                 Status);
+            var eVehicle = new EVehicle(eVehicleId,
+                                        this,
+                                        Configurator,
+                                        RemoteeVehicleCreator,
+                                        AdminStatus,
+                                        Status);
 
 
-            if (eVehicleAddition.SendVoting(Timestamp.Now, this, _eVehicle))
+            if (eVehicles.TryAdd(eVehicle,
+                                 EventTracking_Id.New,
+                                 null).IsSuccess)
             {
-                if (_eVehicles.TryAdd(_eVehicle,
-                                      EventTracking_Id.New,
-                                      null))
-                {
 
-                    _eVehicle.OnDataChanged         += UpdateEVehicleData;
-                    _eVehicle.OnStatusChanged       += UpdateEVehicleStatus;
-                    _eVehicle.OnAdminStatusChanged  += UpdateEVehicleAdminStatus;
+                eVehicle.OnDataChanged         += UpdateEVehicleData;
+                eVehicle.OnStatusChanged       += UpdateEVehicleStatus;
+                eVehicle.OnAdminStatusChanged  += UpdateEVehicleAdminStatus;
 
-                    //_eVehicle.OnNewReservation                     += SendNewReservation;
-                    //_eVehicle.OnCancelReservationResponse               += SendOnCancelReservationResponse;
-                    //_eVehicle.OnNewChargingSession                 += SendNewChargingSession;
-                    //_eVehicle.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+                //_eVehicle.OnNewReservation                     += SendNewReservation;
+                //_eVehicle.OnCancelReservationResponse               += SendOnCancelReservationResponse;
+                //_eVehicle.OnNewChargingSession                 += SendNewChargingSession;
+                //_eVehicle.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
+                OnSuccess?.Invoke(eVehicle);
 
-                    OnSuccess?.Invoke(_eVehicle);
-                    eVehicleAddition.SendNotification(Timestamp.Now, this, _eVehicle);
+                return eVehicle;
 
-                    return _eVehicle;
-
-                }
             }
 
             return null;
@@ -1041,7 +1032,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicle">A eVehicle.</param>
         public Boolean ContainseVehicle(EVehicle eVehicle)
 
-            => _eVehicles.Contains(eVehicle);
+            => eVehicles.Contains(eVehicle);
 
         #endregion
 
@@ -1053,7 +1044,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eVehicleId">The unique identification of the eVehicle.</param>
         public Boolean ContainseVehicle(EVehicle_Id eVehicleId)
 
-            => _eVehicles.ContainsId(eVehicleId);
+            => eVehicles.ContainsId(eVehicleId);
 
         #endregion
 
@@ -1061,7 +1052,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public EVehicle GetEVehicleById(EVehicle_Id eVehicleId)
 
-            => _eVehicles.GetById(eVehicleId);
+            => eVehicles.GetById(eVehicleId);
 
         #endregion
 
@@ -1069,7 +1060,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryGetEVehicleById(EVehicle_Id eVehicleId, out EVehicle eVehicle)
 
-            => _eVehicles.TryGet(eVehicleId, out eVehicle);
+            => eVehicles.TryGet(eVehicleId, out eVehicle);
 
         #endregion
 
@@ -1086,7 +1077,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (eVehicleRemoval.SendVoting(Timestamp.Now, this, _eVehicle))
                 {
 
-                    if (_eVehicles.TryRemove(eVehicleId,
+                    if (eVehicles.TryRemove(eVehicleId,
                                              out _eVehicle,
                                              EventTracking_Id.New,
                                              null))
@@ -1119,7 +1110,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (eVehicleRemoval.SendVoting(Timestamp.Now, this, eVehicle))
                 {
 
-                    if (_eVehicles.TryRemove(eVehicleId,
+                    if (eVehicles.TryRemove(eVehicleId,
                                              out eVehicle,
                                              EventTracking_Id.New,
                                              null))

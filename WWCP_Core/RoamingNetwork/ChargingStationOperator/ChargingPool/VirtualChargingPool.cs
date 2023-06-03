@@ -2832,6 +2832,14 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
 
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate => throw new NotImplementedException();
+
+        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> IChargingPool.OnChargingStationRemoval => throw new NotImplementedException();
+
+        public org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
+
+        org.GraphDefined.Vanaheimr.Styx.Arrows.IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> IChargingPool.OnEVSERemoval => throw new NotImplementedException();
+
         public Boolean Equals(IChargingPool? other)
         {
             throw new NotImplementedException();

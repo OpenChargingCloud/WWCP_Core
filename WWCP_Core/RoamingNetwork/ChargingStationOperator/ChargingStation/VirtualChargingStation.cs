@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+
 using social.OpenData.UsersAPI;
 
 #endregion
@@ -1032,12 +1033,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region ChargingConnectorAddition
 
-        internal readonly IVotingNotificator<DateTime, VirtualChargingStation, ChargingConnector, Boolean> ChargingConnectorAddition;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, VirtualChargingStation, ChargingConnector, Boolean> ChargingConnectorAddition;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, VirtualChargingStation, ChargingConnector, Boolean> OnChargingConnectorAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, VirtualChargingStation, ChargingConnector, Boolean> OnChargingConnectorAddition
         {
             get
             {
@@ -1049,12 +1050,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region ChargingConnectorRemoval
 
-        internal readonly IVotingNotificator<DateTime, VirtualChargingStation, ChargingConnector, Boolean> ChargingConnectorRemoval;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, VirtualChargingStation, ChargingConnector, Boolean> ChargingConnectorRemoval;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, VirtualChargingStation, ChargingConnector, Boolean> OnChargingConnectorRemoval
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, VirtualChargingStation, ChargingConnector, Boolean> OnChargingConnectorRemoval
         {
             get
             {
@@ -2374,7 +2375,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition => throw new NotImplementedException();
 
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval => throw new NotImplementedException();
 
         ReactiveSet<Brand> IChargingStation.Brands => throw new NotImplementedException();
 
@@ -2384,6 +2385,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         TimeSpan IChargingReservations.MaxReservationDuration { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ReactiveSet<Features> Features => throw new NotImplementedException();
+
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate => throw new NotImplementedException();
 
         public Boolean Equals(IChargingStation? other)
         {

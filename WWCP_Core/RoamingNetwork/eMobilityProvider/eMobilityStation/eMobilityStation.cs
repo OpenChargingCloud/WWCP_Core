@@ -837,37 +837,32 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            var _eVehicle = new EVehicle(eVehicleId,
-                                         Provider,
-                                         Configurator,
-                                         RemoteeVehicleCreator,
-                                         AdminStatus,
-                                         Status);
+            var eVehicle = new EVehicle(eVehicleId,
+                                        Provider,
+                                        Configurator,
+                                        RemoteeVehicleCreator,
+                                        AdminStatus,
+                                        Status);
 
 
-            if (eVehicleAddition.SendVoting(Timestamp.Now, this, _eVehicle))
+            if (_eVehicles.TryAdd(eVehicle,
+                                  EventTracking_Id.New,
+                                  null).IsSuccess)
             {
-                if (_eVehicles.TryAdd(_eVehicle,
-                                      EventTracking_Id.New,
-                                      null))
-                {
 
-                    _eVehicle.OnDataChanged                        += UpdateEVehicleData;
-                    _eVehicle.OnStatusChanged                      += UpdateEVehicleStatus;
-                    _eVehicle.OnAdminStatusChanged                 += UpdateEVehicleAdminStatus;
+                eVehicle.OnDataChanged                        += UpdateEVehicleData;
+                eVehicle.OnStatusChanged                      += UpdateEVehicleStatus;
+                eVehicle.OnAdminStatusChanged                 += UpdateEVehicleAdminStatus;
 
-                    //_eVehicle.OnNewReservation                     += SendNewReservation;
-                    //_eVehicle.OnCancelReservationResponse               += SendOnCancelReservationResponse;
-                    //_eVehicle.OnNewChargingSession                 += SendNewChargingSession;
-                    //_eVehicle.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+                //_eVehicle.OnNewReservation                     += SendNewReservation;
+                //_eVehicle.OnCancelReservationResponse               += SendOnCancelReservationResponse;
+                //_eVehicle.OnNewChargingSession                 += SendNewChargingSession;
+                //_eVehicle.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
+                OnSuccess?.Invoke(eVehicle);
 
-                    OnSuccess?.Invoke(_eVehicle);
-                    eVehicleAddition.SendNotification(Timestamp.Now, this, _eVehicle);
+                return eVehicle;
 
-                    return _eVehicle;
-
-                }
             }
 
             return null;
@@ -1213,10 +1208,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
         #endregion
-
-
-
-
 
 
         public void AddParkingSpaces(params ParkingSpace[] ParkingSpaces)

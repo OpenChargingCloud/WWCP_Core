@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System.Diagnostics;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Aegir;
@@ -29,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
+
 using social.OpenData.UsersAPI;
 
 #endregion
@@ -1236,7 +1235,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             // ChargingStation events
             this.EVSEAddition             = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
 
@@ -1466,8 +1465,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        //internal IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
-
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
@@ -1479,12 +1476,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationUpdate
 
-        //internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, IChargingStation, Boolean> ChargingStationUpdate;
-
         /// <summary>
         /// Called whenever a charging station will be or was updated.
         /// </summary>
-        public IVotingSender<DateTime, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate
 
             => chargingStations.OnUpdate;
 
@@ -1492,12 +1487,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationRemoval
 
-        //internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
-
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
             => chargingStations.OnRemoval;
 
@@ -1518,8 +1511,8 @@ namespace cloud.charging.open.protocols.WWCP
             ChargingStation.OnEVSEDataChanged              += UpdateEVSEData;
             ChargingStation.OnEVSEStatusChanged            += UpdateEVSEStatus;
             ChargingStation.OnEVSEAdminStatusChanged       += UpdateEVSEAdminStatus;
-            ChargingStation.OnEVSERemoval. OnVoting        += (timestamp, station, evse, vote)  => EVSERemoval.SendVoting       (timestamp, station, evse, vote);
-            ChargingStation.OnEVSERemoval. OnNotification  += (timestamp, station, evse)        => EVSERemoval.SendNotification (timestamp, station, evse);
+            ChargingStation.OnEVSERemoval. OnVoting        += (timestamp, eventTrackingId, userId, station, evse, vote)  => EVSERemoval.SendVoting       (timestamp, eventTrackingId, userId, station, evse, vote);
+            ChargingStation.OnEVSERemoval. OnNotification  += (timestamp, eventTrackingId, userId, station, evse)        => EVSERemoval.SendNotification (timestamp, eventTrackingId, userId, station, evse);
 
 
             ChargingStation.OnNewReservation               += SendNewReservation;
@@ -1620,7 +1613,7 @@ namespace cloud.charging.open.protocols.WWCP
             if (chargingStations.TryAdd(ChargingStation,
                                         Connect,
                                         EventTrackingId,
-                                        CurrentUserId))
+                                        CurrentUserId).IsSuccess)
             {
 
                 //ToDo: Persistency
@@ -1677,10 +1670,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            if (//ChargingStationAddition.SendVoting(Timestamp.Now, this, ChargingStation) &&
-                chargingStations.TryAdd(ChargingStation,
+            if (chargingStations.TryAdd(ChargingStation,
                                         EventTrackingId,
-                                        CurrentUserId))
+                                        CurrentUserId).IsSuccess)
             {
 
                 //ToDo: Persistency
@@ -1785,7 +1777,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                 if (chargingStations.TryAdd(ChargingStation,
                                             EventTrackingId,
-                                            CurrentUserId))
+                                            CurrentUserId).IsSuccess)
                 {
 
                     //ToDo: Persistency
@@ -2119,6 +2111,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region EVSEUpdate
+
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> EVSEUpdate;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was updated.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, IEVSE, Boolean> OnEVSEUpdate
+
+            => EVSEUpdate;
+
+        #endregion
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
+
+            => EVSERemoval;
+
+        #endregion
+
+
         #region EVSEs
 
         /// <summary>
@@ -2324,18 +2343,7 @@ namespace cloud.charging.open.protocols.WWCP
         //#endregion
 
 
-        #region EVSERemoval
 
-        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
-
-        #endregion
 
 
         #region TryGetEVSEById(EVSEId, out EVSE)
