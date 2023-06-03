@@ -23,6 +23,7 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using social.OpenData.UsersAPI;
 
 #endregion
 
@@ -46,19 +47,28 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Events
 
-        private readonly IVotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean> addition;
+        private readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> addition;
 
         /// <summary>
-        /// Called whenever a parking operator will be or was added.
+        /// Called whenever an entity will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, TParentDataStructure, TEntity, Boolean> OnAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> OnAddition
             => addition;
+
+
+        private readonly IVotingNotificator<DateTime, TParentDataStructure, TEntity, TEntity, Boolean> update;
+
+        /// <summary>
+        /// Called whenever an entity will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, TParentDataStructure, TEntity, TEntity, Boolean> OnUpdate
+            => update;
 
 
         private readonly IVotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean> removal;
 
         /// <summary>
-        /// Called whenever a parking operator will be or was removed.
+        /// Called whenever an entity will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, TParentDataStructure, TEntity, Boolean> OnRemoval
             => removal;
@@ -67,14 +77,20 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        public EntityHashSet(TParentDataStructure ParentDataStructure)
+        public EntityHashSet(TParentDataStructure                                                            ParentDataStructure,
+
+                             IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>?  Addition   = null,
+                             IVotingNotificator<DateTime, TParentDataStructure, TEntity, TEntity, Boolean>?  Update     = null,
+                             IVotingNotificator<DateTime, TParentDataStructure, TEntity,          Boolean>?  Removal    = null)
         {
 
-            this.parentDataStructure  = ParentDataStructure;
             this.lookup               = new ConcurrentDictionary<TId, TEntity>();
 
-            this.addition             = new VotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean>(() => new VetoVote(), true);
-            this.removal              = new VotingNotificator<DateTime, TParentDataStructure, TEntity, Boolean>(() => new VetoVote(), true);
+            this.parentDataStructure  = ParentDataStructure;
+
+            this.addition             = Addition ?? new VotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
+            this.update               = Update   ?? new VotingNotificator<DateTime, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
+            this.removal              = Removal  ?? new VotingNotificator<DateTime, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
 
         }
 
@@ -83,28 +99,69 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryAdd(Entity, ...)
 
-        public Boolean TryAdd(TEntity Entity)
+        public Boolean TryAdd(TEntity           Entity,
+                              EventTracking_Id  EventTrackingId,
+                              User_Id?          CurrentUserId)
         {
 
-            if (addition.SendVoting(Timestamp.Now, parentDataStructure, Entity))
+            if (addition.SendVoting(Timestamp.Now,
+                                    EventTrackingId,
+                                    CurrentUserId ?? User_Id.Anonymous,
+                                    parentDataStructure,
+                                    Entity) &&
+
+                lookup.TryAdd(Entity.Id, Entity))
+
             {
-                lookup.TryAdd(Entity.Id, Entity);
-                addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+
+                addition.SendNotification(Timestamp.Now,
+                                          EventTrackingId,
+                                          CurrentUserId ?? User_Id.Anonymous,
+                                          parentDataStructure,
+                                          Entity);
+
                 return true;
+
             }
 
             return false;
 
         }
 
-        public Boolean TryAdd(TEntity          Entity,
-                              Action<TEntity>  OnSuccess)
+
+        /// <summary>
+        /// Try to add the given entity to the hashset.
+        /// </summary>
+        /// <param name="Entity">An entity.</param>
+        /// <param name="OnSuccess">A delegate called after adding the entity, but before the notifications are send.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public Boolean TryAdd(TEntity           Entity,
+                              Action<TEntity>   OnSuccess,
+                              EventTracking_Id  EventTrackingId,
+                              User_Id?          CurrentUserId)
         {
 
-            if (TryAdd(Entity))
+            if (addition.SendVoting(Timestamp.Now,
+                                    EventTrackingId,
+                                    CurrentUserId ?? User_Id.Anonymous,
+                                    parentDataStructure,
+                                    Entity) &&
+
+                lookup.TryAdd(Entity.Id, Entity))
+
             {
+
                 OnSuccess?.Invoke(Entity);
+
+                addition.SendNotification(Timestamp.Now,
+                                          EventTrackingId,
+                                          CurrentUserId ?? User_Id.Anonymous,
+                                          parentDataStructure,
+                                          Entity);
+
                 return true;
+
             }
 
             return false;
@@ -112,27 +169,69 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         public Boolean TryAdd(TEntity                    Entity,
-                              Action<DateTime, TEntity>  OnSuccess)
+                              Action<DateTime, TEntity>  OnSuccess,
+                              EventTracking_Id           EventTrackingId,
+                              User_Id?                   CurrentUserId)
         {
 
-            if (TryAdd(Entity))
+            if (addition.SendVoting(Timestamp.Now,
+                                    EventTrackingId,
+                                    CurrentUserId ?? User_Id.Anonymous,
+                                    parentDataStructure,
+                                    Entity) &&
+
+                lookup.TryAdd(Entity.Id, Entity))
+
             {
+
                 OnSuccess?.Invoke(Timestamp.Now, Entity);
+
+                addition.SendNotification(Timestamp.Now,
+                                          EventTrackingId,
+                                          CurrentUserId ?? User_Id.Anonymous,
+                                          parentDataStructure,
+                                          Entity);
+
                 return true;
+
             }
 
             return false;
 
         }
 
-        public Boolean TryAdd(TEntity                           Entity,
-                              Action<DateTime, TParentDataStructure, TEntity>  OnSuccess)
+        public Boolean TryAdd(TEntity                                                                     Entity,
+                              Action<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity>  OnSuccess,
+                              EventTracking_Id                                                            EventTrackingId,
+                              User_Id?                                                                    CurrentUserId)
         {
 
-            if (TryAdd(Entity))
+            var userId = CurrentUserId ?? User_Id.Anonymous;
+
+            if (addition.SendVoting(Timestamp.Now,
+                                    EventTrackingId,
+                                    userId,
+                                    parentDataStructure,
+                                    Entity) &&
+
+                lookup.TryAdd(Entity.Id, Entity))
+
             {
-                OnSuccess?.Invoke(Timestamp.Now, parentDataStructure, Entity);
+
+                OnSuccess?.Invoke(Timestamp.Now,
+                                  EventTrackingId,
+                                  userId,
+                                  parentDataStructure,
+                                  Entity);
+
+                addition.SendNotification(Timestamp.Now,
+                                          EventTrackingId,
+                                          CurrentUserId ?? User_Id.Anonymous,
+                                          parentDataStructure,
+                                          Entity);
+
                 return true;
+
             }
 
             return false;
@@ -143,16 +242,32 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryAdd(Entities, ...)
 
-        public Boolean TryAdd(IEnumerable<TEntity> Entities)
+        public Boolean TryAdd(IEnumerable<TEntity>  Entities,
+                              EventTracking_Id      EventTrackingId,
+                              User_Id?              CurrentUserId)
         {
 
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
+            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+
+            // Only when all are allowed we will go on!
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
+                                                           EventTrackingId,
+                                                           currentUserId,
+                                                           parentDataStructure,
+                                                           Entity)))
             {
 
-                foreach (var Entity in Entities)
+                foreach (var entity in Entities)
                 {
-                    lookup.TryAdd(Entity.Id, Entity);
-                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+
+                    lookup.TryAdd(entity.Id, entity);
+
+                    addition.SendNotification(Timestamp.Now,
+                                              EventTrackingId,
+                                              currentUserId,
+                                              parentDataStructure,
+                                              entity);
+
                 }
 
                 return true;
@@ -164,16 +279,32 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         public Boolean TryAdd(IEnumerable<TEntity>          Entities,
-                              Action<IEnumerable<TEntity>>  OnSuccess)
+                              Action<IEnumerable<TEntity>>  OnSuccess,
+                              EventTracking_Id              EventTrackingId,
+                              User_Id?                      CurrentUserId)
         {
 
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
+            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+
+            // Only when all are allowed we will go on!
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
+                                                           EventTrackingId,
+                                                           currentUserId,
+                                                           parentDataStructure,
+                                                           Entity)))
             {
 
-                foreach (var Entity in Entities)
+                foreach (var entity in Entities)
                 {
-                    lookup.TryAdd(Entity.Id, Entity);
-                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+
+                    lookup.TryAdd(entity.Id, entity);
+
+                    addition.SendNotification(Timestamp.Now,
+                                              EventTrackingId,
+                                              currentUserId,
+                                              parentDataStructure,
+                                              entity);
+
                 }
 
                 OnSuccess?.Invoke(Entities);
@@ -186,16 +317,32 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         public Boolean TryAdd(IEnumerable<TEntity>                    Entities,
-                              Action<DateTime, IEnumerable<TEntity>>  OnSuccess)
+                              Action<DateTime, IEnumerable<TEntity>>  OnSuccess,
+                              EventTracking_Id                        EventTrackingId,
+                              User_Id?                                CurrentUserId)
         {
 
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
+            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+
+            // Only when all are allowed we will go on!
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
+                                                           EventTrackingId,
+                                                           currentUserId,
+                                                           parentDataStructure,
+                                                           Entity)))
             {
 
-                foreach (var Entity in Entities)
+                foreach (var entity in Entities)
                 {
-                    lookup.TryAdd(Entity.Id, Entity);
-                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+
+                    lookup.TryAdd(entity.Id, entity);
+
+                    addition.SendNotification(Timestamp.Now,
+                                              EventTrackingId,
+                                              currentUserId,
+                                              parentDataStructure,
+                                              entity);
+
                 }
 
                 OnSuccess?.Invoke(Timestamp.Now, Entities);
@@ -207,17 +354,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-        public Boolean TryAdd(IEnumerable<TEntity>                           Entities,
-                              Action<DateTime, TParentDataStructure, IEnumerable<TEntity>>  OnSuccess)
+        public Boolean TryAdd(IEnumerable<TEntity>                                          Entities,
+                              Action<DateTime, TParentDataStructure, IEnumerable<TEntity>>  OnSuccess,
+                              EventTracking_Id                                              EventTrackingId,
+                              User_Id?                                                      CurrentUserId)
         {
 
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now, parentDataStructure, Entity)))
+            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+
+            // Only when all are allowed we will go on!
+            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
+                                                           EventTrackingId,
+                                                           currentUserId,
+                                                           parentDataStructure,
+                                                           Entity)))
             {
 
-                foreach (var Entity in Entities)
+                foreach (var entity in Entities)
                 {
-                    lookup.TryAdd(Entity.Id, Entity);
-                    addition.SendNotification(Timestamp.Now, parentDataStructure, Entity);
+
+                    lookup.TryAdd(entity.Id, entity);
+
+                    addition.SendNotification(Timestamp.Now,
+                                              EventTrackingId,
+                                              currentUserId,
+                                              parentDataStructure,
+                                              entity);
+
                 }
 
                 OnSuccess?.Invoke(Timestamp.Now, parentDataStructure, Entities);
@@ -288,9 +451,11 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryUpdate (Id, NewEntity, OldEntity)
 
-        public Boolean TryUpdate(TId      Id,
-                                 TEntity  NewEntity,
-                                 TEntity  OldEntity)
+        public Boolean TryUpdate(TId               Id,
+                                 TEntity           NewEntity,
+                                 TEntity           OldEntity,
+                                 EventTracking_Id  EventTrackingId,
+                                 User_Id?          CurrentUserId)
 
             => lookup.TryUpdate(Id, NewEntity, OldEntity);
 
@@ -299,7 +464,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Remove   (Id)
 
-        public TEntity? Remove(TId Id)
+        public TEntity? Remove(TId               Id,
+                               EventTracking_Id  EventTrackingId,
+                               User_Id?          CurrentUserId)
         {
 
             if (lookup.TryRemove(Id, out var entity))
@@ -313,7 +480,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemove(Id, out Entity)
 
-        public Boolean TryRemove(TId Id, out TEntity? Entity)
+        public Boolean TryRemove(TId               Id,
+                                 out TEntity?      Entity,
+                                 EventTracking_Id  EventTrackingId,
+                                 User_Id?          CurrentUserId)
 
             => lookup.TryRemove(Id, out Entity);
 
@@ -322,7 +492,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemove(Entity)
 
-        public Boolean TryRemove(TEntity Entity)
+        public Boolean TryRemove(TEntity           Entity,
+                                 EventTracking_Id  EventTrackingId,
+                                 User_Id?          CurrentUserId)
 
             => lookup.TryRemove(Entity.Id, out _);
 
@@ -330,7 +502,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Clear()
 
-        public void Clear()
+        public void Clear(EventTracking_Id  EventTrackingId,
+                          User_Id?          CurrentUserId)
         {
             lookup.Clear();
         }
@@ -349,6 +522,7 @@ namespace cloud.charging.open.protocols.WWCP
             => lookup.Values.GetEnumerator();
 
         #endregion
+
 
     }
 

@@ -34,6 +34,7 @@ using social.OpenData.UsersAPI;
 
 using cloud.charging.open.protocols.WWCP.Net.IO.JSON;
 using NUnit.Framework.Internal;
+using NUnit.Framework.Constraints;
 
 #endregion
 
@@ -574,7 +575,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.Brands                       = new ReactiveSet<Brand>();
+            this.Brands                      = new ReactiveSet<Brand>();
             this.dataLicenses                = new ReactiveSet<OpenDataLicense>();
 
             #region InvalidEVSEIds
@@ -589,7 +590,10 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            this.chargingPools                = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this);
+            this.chargingPools               = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this,
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true));
             this.chargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
             this.evseGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
@@ -603,17 +607,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init events
 
-            this.ChargingPoolAddition          = new VotingNotificator<DateTime, IChargingStationOperator,    IChargingPool,         Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval           = new VotingNotificator<DateTime, IChargingStationOperator,    IChargingPool,         Boolean>(() => new VetoVote(), true);
-            //this.ChargingPoolGroupAddition     = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPoolGroup,    Boolean>(() => new VetoVote(), true);
-            //this.ChargingPoolGroupRemoval      = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPoolGroup,    Boolean>(() => new VetoVote(), true);
-
-            this.ChargingStationAddition       = new VotingNotificator<DateTime, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition       = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
             this.ChargingStationRemoval        = new VotingNotificator<DateTime, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
-            this.evseAddition                  = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
+            this.evseAddition                  = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
             this.evseRemoval                   = new VotingNotificator<DateTime, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
             this.EVSEGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
             this.EVSEGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
@@ -773,27 +772,40 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPoolAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolAddition;
+        //internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolAddition
 
-            => ChargingPoolAddition;
+            => chargingPools.OnAddition;
+
+        #endregion
+
+        #region ChargingPoolUpdate
+
+        //internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, IChargingPool, Boolean> ChargingPoolUpdate;
+
+        /// <summary>
+        /// Called whenever an charging pool will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, IChargingPool, Boolean> OnChargingPoolUpdate
+
+            => chargingPools.OnUpdate;
 
         #endregion
 
         #region ChargingPoolRemoval
 
-        internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolRemoval;
+        //internal readonly IVotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean> ChargingPoolRemoval;
 
         /// <summary>
         /// Called whenever an charging pool will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, IChargingStationOperator, IChargingPool, Boolean> OnChargingPoolRemoval
 
-            => ChargingPoolRemoval;
+            => chargingPools.OnRemoval;
 
         #endregion
 
@@ -927,33 +939,65 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region AddChargingPool        (Id, Configurator = null, OnSuccess = null, OnError = null)
+
+        private void Connect(IChargingPool ChargingPool)
+        {
+
+            ChargingPool.OnDataChanged                             += UpdateChargingPoolData;
+            ChargingPool.OnAdminStatusChanged                      += UpdateChargingPoolAdminStatus;
+            ChargingPool.OnStatusChanged                           += UpdateChargingPoolStatus;
+
+            ChargingPool.OnChargingStationAddition.OnVoting        += (timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote) => ChargingStationAddition.SendVoting(timestamp, eventTrackingId, userId, chargingPool, chargingStation, vote);
+            ChargingPool.OnChargingStationAddition.OnNotification  += (timestamp, eventTrackingId, userId, chargingPool, chargingStation)       => {
+                chargingStationLookup.TryAdd(chargingStation.Id, chargingStation);
+                ChargingStationAddition.SendNotification(timestamp, eventTrackingId, userId, chargingPool, chargingStation);
+            };
+            ChargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
+            ChargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
+            ChargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
+            ChargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, chargingPool, chargingStation, vote) => ChargingStationRemoval. SendVoting(timestamp, chargingPool, chargingStation, vote);
+            ChargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, chargingPool, chargingStation)       => {
+                chargingStationLookup.TryRemove(chargingStation.Id, out _);
+                ChargingStationRemoval.SendNotification(timestamp, chargingPool, chargingStation);
+            };
+
+            ChargingPool.OnEVSEAddition.           OnVoting        += (timestamp, eventTrackingId, userId, station, evse, vote) => evseAddition.SendVoting(timestamp, eventTrackingId, userId, station, evse, vote);
+            ChargingPool.OnEVSEAddition.           OnNotification  += (timestamp, eventTrackingId, userId, station, evse)       => {
+                evseLookup.TryAdd(evse.Id, evse);
+                evseAddition.SendNotification(timestamp, eventTrackingId, userId, station, evse);
+            };
+            ChargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
+            ChargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
+            ChargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
+            ChargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote) => evseRemoval .SendVoting(timestamp, station, evse, vote);
+            ChargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)       => {
+                evseLookup.TryRemove(evse.Id, out _);
+                evseRemoval.SendNotification(timestamp, station, evse);
+            };
+
+
+            ChargingPool.OnNewReservation                          += SendNewReservation;
+            ChargingPool.OnReservationCanceled                     += SendReservationCanceled;
+            ChargingPool.OnNewChargingSession                      += SendNewChargingSession;
+            ChargingPool.OnNewChargeDetailRecord                   += SendNewChargeDetailRecord;
+
+        }
+
+
+        #region AddChargingPool           (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging pool having the given
         /// unique charging pool identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging pool.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
+        /// <param name="ChargingPool">A charging pool.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public async Task<AddChargingPoolResult> AddChargingPool(ChargingPool_Id?                                             Id                             = null,
-                                                                 I18NString?                                                  Name                           = null,
-                                                                 I18NString?                                                  Description                    = null,
+        public async Task<AddChargingPoolResult> AddChargingPool(ChargingPool                                                 ChargingPool,
 
-                                                                 Address?                                                     Address                        = null,
-                                                                 GeoCoordinate?                                               GeoLocation                    = null,
-                                                                 OpeningTimes?                                                OpeningTimes                   = null,
-                                                                 Boolean?                                                     ChargingWhenClosed             = null,
-
-                                                                 Action<IChargingPool>?                                       Configurator                   = null,
-                                                                 RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
-                                                                 Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                 Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                 UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                                 UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
                                                                  Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                 Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
+                                                                 Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+
                                                                  Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                  EventTracking_Id?                                            EventTrackingId                = null,
                                                                  User_Id?                                                     CurrentUserId                  = null)
@@ -961,113 +1005,107 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            Id ??= ChargingPool_Id.NewRandom(this.Id);
-
-            // Do not throw an exception when an OnError delegate was given!
-            if (chargingPools.ContainsId(Id.Value))
-            {
-
-                OnError?.Invoke(this, Id.Value);
-
-                return AddChargingPoolResult.Failed(
-                           null, //chargingPool,
-                           EventTracking_Id.New,
-                           ""
-                       );
-
-            }
-
+            EventTrackingId              ??= EventTracking_Id.New;
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
 
-            if (this.Id != Id.Value.OperatorId && !AllowInconsistentOperatorIds(this.Id, Id.Value))
-                return null;
-                //throw new InvalidChargingPoolOperatorId(this,
-                //                                        Id.Value.OperatorId);
+            if (ChargingPool.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingPool.Id))
+                return AddChargingPoolResult.Failed(ChargingPool,
+                                                    EventTrackingId,
+                                                    $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!",
+                                                    this);
 
             #endregion
 
-            var chargingPool = new ChargingPool(Id.Value,
-                                                this,
-                                                Name,
-                                                Description,
 
-                                                Address,
-                                                GeoLocation,
-                                                OpeningTimes,
-                                                ChargingWhenClosed,
-
-                                                Configurator,
-                                                RemoteChargingPoolCreator,
-                                                InitialAdminStatus,
-                                                InitialStatus,
-                                                MaxAdminStatusListSize,
-                                                MaxStatusListSize);
-
-
-            if (ChargingPoolAddition.SendVoting(Timestamp.Now, this, chargingPool) &&
-                chargingPools.TryAdd(chargingPool))
+            if (//ChargingPoolAddition.SendVoting(Timestamp.Now, this, ChargingPool) &&
+                chargingPools.TryAdd(ChargingPool,
+                                     Connect,
+                                     EventTrackingId,
+                                     CurrentUserId))
             {
 
-                chargingPool.OnDataChanged                             += UpdateChargingPoolData;
-                chargingPool.OnAdminStatusChanged                      += UpdateChargingPoolAdminStatus;
-                chargingPool.OnStatusChanged                           += UpdateChargingPoolStatus;
+                //ToDo: Persistency
+                await Task.Delay(1);
 
-                chargingPool.OnChargingStationAddition.OnVoting        += (timestamp, chargingPool, chargingStation, vote) => ChargingStationAddition.SendVoting(timestamp, chargingPool, chargingStation, vote);
-                chargingPool.OnChargingStationAddition.OnNotification  += (timestamp, chargingPool, chargingStation)       => {
-                    chargingStationLookup.TryAdd(chargingStation.Id, chargingStation);
-                    ChargingStationAddition.SendNotification(timestamp, chargingPool, chargingStation);
-                };
-                chargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
-                chargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
-                chargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
-                chargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, chargingPool, chargingStation, vote) => ChargingStationRemoval. SendVoting(timestamp, chargingPool, chargingStation, vote);
-                chargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, chargingPool, chargingStation)       => {
-                    chargingStationLookup.TryRemove(chargingStation.Id, out _);
-                    ChargingStationRemoval.SendNotification(timestamp, chargingPool, chargingStation);
-                };
+                OnSuccess?.Invoke(ChargingPool);
+                //ChargingPoolAddition.SendNotification(Timestamp.Now, this, ChargingPool);
 
-                chargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote) => evseAddition.SendVoting(timestamp, station, evse, vote);
-                chargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)       => {
-                    evseLookup.TryAdd(evse.Id, evse);
-                    evseAddition.SendNotification(timestamp, station, evse);
-                };
-                chargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
-                chargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
-                chargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
-                chargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote) => evseRemoval .SendVoting(timestamp, station, evse, vote);
-                chargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)       => {
-                    evseLookup.TryRemove(evse.Id, out _);
-                    evseRemoval.SendNotification(timestamp, station, evse);
-                };
-
-
-                chargingPool.OnNewReservation                          += SendNewReservation;
-                chargingPool.OnReservationCanceled                     += SendReservationCanceled;
-                chargingPool.OnNewChargingSession                      += SendNewChargingSession;
-                chargingPool.OnNewChargeDetailRecord                   += SendNewChargeDetailRecord;
-
-                OnSuccess?.Invoke(chargingPool);
-                ChargingPoolAddition.SendNotification(Timestamp.Now, this, chargingPool);
-
-                return AddChargingPoolResult.Success(
-                           chargingPool,
-                           EventTracking_Id.New,
-                           this
-                       );
+                return AddChargingPoolResult.Success(ChargingPool,
+                                                     EventTrackingId,
+                                                     this);
 
             }
 
-            return AddChargingPoolResult.Failed(
-                       chargingPool,
-                       EventTracking_Id.New,
-                       ""
-                   );
+            OnError?.Invoke(this, ChargingPool);
+
+            return AddChargingPoolResult.Failed(ChargingPool,
+                                                EventTrackingId,
+                                                "Error!",
+                                                this);
 
         }
 
         #endregion
 
-        #region AddOrUpdateChargingPool(Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingPoolIfNotExists(Id, Configurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging pool having the given
+        /// unique charging pool identification.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        public async Task<AddChargingPoolResult> AddChargingPoolIfNotExists(ChargingPool                                                 ChargingPool,
+
+                                                                            Action<IChargingPool>?                                       OnSuccess                      = null,
+                                                                            Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+
+                                                                            Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                            EventTracking_Id?                                            EventTrackingId                = null,
+                                                                            User_Id?                                                     CurrentUserId                  = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
+
+            if (ChargingPool.Id.OperatorId != Id && !AllowInconsistentOperatorIds(Id, ChargingPool.Id))
+                return AddChargingPoolResult.Failed(ChargingPool,
+                                                    EventTrackingId,
+                                                    $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!",
+                                                    this);
+
+            #endregion
+
+            if (chargingPools.TryAdd(ChargingPool,
+                                     Connect,
+                                     EventTrackingId,
+                                     CurrentUserId))
+            {
+
+                //ToDo: Persistency
+                await Task.Delay(1);
+
+                OnSuccess?.Invoke(ChargingPool);
+
+                return AddChargingPoolResult.Success(ChargingPool,
+                                                     EventTrackingId,
+                                                     this);
+
+            }
+
+            return AddChargingPoolResult.NoOperation(ChargingPool,
+                                                     EventTrackingId,
+                                                     "Error!",
+                                                     this);
+
+        }
+
+        #endregion
+
+        #region AddOrUpdateChargingPool   (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register or udpate a new charging pool having the given
@@ -1077,23 +1115,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public async Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool_Id                                              Id,
-                                                                                 I18NString?                                                  Name                           = null,
-                                                                                 I18NString?                                                  Description                    = null,
+        public async Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool                                                 ChargingPool,
 
-                                                                                 Address?                                                     Address                        = null,
-                                                                                 GeoCoordinate?                                               GeoLocation                    = null,
-                                                                                 OpeningTimes?                                                OpeningTimes                   = null,
-                                                                                 Boolean?                                                     ChargingWhenClosed             = null,
+                                                                                 Action<IChargingPool>?                                       OnAdditionSuccess              = null,
+                                                                                 Action<IChargingPool,            IChargingPool>?             OnUpdateSuccess                = null,
+                                                                                 Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
 
-                                                                                 Action<IChargingPool>?                                       Configurator                   = null,
-                                                                                 RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
-                                                                                 Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                                 Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                                 UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                                                 UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
-                                                                                 Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                                 Action<IChargingStationOperator, ChargingPool_Id>?           OnError                        = null,
                                                                                  Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                                  EventTracking_Id?                                            EventTrackingId                = null,
                                                                                  User_Id?                                                     CurrentUserId                  = null)
@@ -1101,99 +1128,94 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
+            EventTrackingId              ??= EventTracking_Id.New;
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingPoolId) => false);
 
-            if (this.Id != Id.OperatorId && !AllowInconsistentOperatorIds(this.Id, Id))
-                return null;
-            //throw new InvalidChargingPoolOperatorId(this,
-            //                                        Id.OperatorId);
-
-            #endregion
-
-            #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
-
-            if (!chargingPools.ContainsId(Id))
-            {
-
-                var result = await AddChargingPool(Id,
-                                                      Name,
-                                                      Description,
-
-                                                      Address,
-                                                      GeoLocation,
-                                                      OpeningTimes,
-                                                      ChargingWhenClosed,
-
-                                                      Configurator,
-                                                      RemoteChargingPoolCreator,
-                                                      InitialAdminStatus,
-                                                      InitialStatus,
-                                                      MaxAdminStatusListSize,
-                                                      MaxStatusListSize,
-                                                      OnSuccess,
-                                                      OnError,
-                                                      AllowInconsistentOperatorIds);
-
-                return AddOrUpdateChargingPoolResult.Success(
-                            result.ChargingPool,
-                            AddedOrUpdated.Add,
-                            EventTracking_Id.New
-                        );
-
-            }
+            if (ChargingPool.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingPool.Id))
+                return AddOrUpdateChargingPoolResult.Failed(null,
+                                                            EventTrackingId,
+                                                            $"The operator identification of the given charging pool '{ChargingPool.Id.OperatorId}' is invalid!",
+                                                            this);
 
             #endregion
 
 
-            // Merge existing charging pool with new pool data...
-
-            try
+            if (chargingPools.TryGet(ChargingPool.Id, out var existingChargingPool) &&
+                existingChargingPool is not null)
             {
 
-                var existingChargingPool = chargingPools.GetById(Id);
-
-                if (existingChargingPool is not null)
+                if (chargingPools.TryUpdate(ChargingPool.Id,
+                                            ChargingPool,
+                                            existingChargingPool,
+                                            EventTrackingId,
+                                            CurrentUserId))
                 {
 
-                    var result = existingChargingPool.UpdateWith(new ChargingPool(Id,
-                                                                                  this,
-                                                                                  Name,
-                                                                                  Description,
+                    //ToDo: Persistency
+                    await Task.Delay(1);
 
-                                                                                  Address,
-                                                                                  GeoLocation,
-                                                                                  OpeningTimes,
-                                                                                  ChargingWhenClosed,
+                    Connect(ChargingPool);
 
-                                                                                  Configurator,
-                                                                                  null,
-                                                                                  new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
-                                                                                  new Timestamped<ChargingPoolStatusTypes>     (DateTime.MinValue, ChargingPoolStatusTypes.     Available)));
+                    OnUpdateSuccess?.Invoke(ChargingPool,
+                                            existingChargingPool);
 
-                    return AddOrUpdateChargingPoolResult.Success(
-                                result,
-                                AddedOrUpdated.Update,
-                                EventTracking_Id.New
-                            );
+                    return AddOrUpdateChargingPoolResult.Success(ChargingPool,
+                                                                 AddedOrUpdated.Update,
+                                                                 EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this, ChargingPool);
+
+                    return AddOrUpdateChargingPoolResult.Failed(ChargingPool,
+                                                                EventTrackingId,
+                                                                "Error!",
+                                                                this);
 
                 }
 
-            } catch (Exception e)
-            {
-                DebugX.Log("CSO.CreateOrUpdateChargingPool(...) failed: " + e.Message);
             }
 
-            return AddOrUpdateChargingPoolResult.Failed(
-                        Id,
-                        EventTracking_Id.New,
-                        ""
-                    );
+            else
+            {
+
+                if (chargingPools.TryAdd(ChargingPool,
+                                         Connect,
+                                         EventTrackingId,
+                                         CurrentUserId))
+                {
+
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    OnAdditionSuccess?.Invoke(ChargingPool);
+
+                    return AddOrUpdateChargingPoolResult.Success(ChargingPool,
+                                                                 AddedOrUpdated.Add,
+                                                                 EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this, ChargingPool);
+
+                    return AddOrUpdateChargingPoolResult.Failed(ChargingPool,
+                                                                EventTrackingId,
+                                                                "Error!",
+                                                                this);
+
+                }
+
+            }
 
         }
 
         #endregion
 
-        #region UpdateChargingPool     (ChargingPool, SkipUserUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
+        #region UpdateChargingPool        (ChargingPool, SkipUserUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
 
         /// <summary>
         /// A delegate called whenever a charging pool was updated.
@@ -1253,9 +1275,13 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentChargingPoolId);
 
-            chargingPools.Remove(OldChargingPool.Id);
+            chargingPools.Remove(OldChargingPool.Id,
+                                 EventTrackingId,
+                                 CurrentUserId);
             //ChargingPool.CopyAllLinkedDataFrom(OldChargingPool);
-            chargingPools.TryAdd(ChargingPool);
+            chargingPools.TryAdd(ChargingPool,
+                                 EventTrackingId,
+                                 CurrentUserId);
 
             OnUpdated?.Invoke(ChargingPool,
                               eventTrackingId);
@@ -1494,21 +1520,25 @@ namespace cloud.charging.open.protocols.WWCP
         public async Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id ChargingPoolId)
         {
 
-            if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
-            {
+            //if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
+            //{
 
-                if (chargingPool is not null &&
-                    ChargingPoolRemoval.SendVoting(Timestamp.Now,
-                                                   this,
-                                                   chargingPool))
-                {
+            //    if (chargingPool is not null &&
+            //        ChargingPoolRemoval.SendVoting(Timestamp.Now,
+            //                                       this,
+            //                                       chargingPool))
+            //    {
 
-                    if (chargingPools.TryRemove(ChargingPoolId, out _))
+                    if (chargingPools.TryRemove(ChargingPoolId,
+                                                out var chargingPool,
+                                                EventTracking_Id.New,
+                                                null) &&
+                        chargingPool is not null)
                     {
 
-                        ChargingPoolRemoval.SendNotification(Timestamp.Now,
-                                                             this,
-                                                             chargingPool);
+                        //ChargingPoolRemoval.SendNotification(Timestamp.Now,
+                        //                                     this,
+                        //                                     chargingPool);
 
                         return RemoveChargingPoolResult.Success(
                                    chargingPool,
@@ -1518,9 +1548,9 @@ namespace cloud.charging.open.protocols.WWCP
 
                     }
 
-                }
+            //    }
 
-            }
+            //}
 
             return RemoveChargingPoolResult.Failed(
                        ChargingPoolId,
@@ -1537,33 +1567,36 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
         {
 
-            if (TryGetChargingPoolById(ChargingPoolId, out ChargingPool))
-            {
+            //if (TryGetChargingPoolById(ChargingPoolId, out ChargingPool))
+            //{
 
-                if (ChargingPool is not null &&
-                    ChargingPoolRemoval.SendVoting(Timestamp.Now,
-                                                   this,
-                                                   ChargingPool))
-                {
+            //    if (ChargingPool is not null &&
+            //        ChargingPoolRemoval.SendVoting(Timestamp.Now,
+            //                                       this,
+            //                                       ChargingPool))
+            //    {
 
-                    if (chargingPools.TryRemove(ChargingPoolId, out _))
+                    if (chargingPools.TryRemove(ChargingPoolId,
+                                                out ChargingPool,
+                                                EventTracking_Id.New,
+                                                null))
                     {
 
-                        ChargingPoolRemoval.SendNotification(Timestamp.Now,
-                                                             this,
-                                                             ChargingPool);
+                        //ChargingPoolRemoval.SendNotification(Timestamp.Now,
+                        //                                     this,
+                        //                                     ChargingPool);
 
                         return true;
 
                     }
 
-                }
+                //}
 
                 return false;
 
-            }
+            //}
 
-            return true;
+            //return true;
 
         }
 
@@ -1762,12 +1795,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
 
             => ChargingStationAddition;
 
@@ -2356,7 +2389,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                Brand                                                               Brand                         = null,
                                                                Priority?                                                           Priority                      = null,
                                                                ChargingTariff                                                      Tariff                        = null,
-                                                               IEnumerable<OpenDataLicense>                                            DataLicenses                  = null,
+                                                               IEnumerable<OpenDataLicense>                                        DataLicenses                  = null,
 
                                                                IEnumerable<IChargingStation>                                       Members                       = null,
                                                                IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
@@ -2410,7 +2443,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 if (ChargingStationGroupAddition.SendVoting(Timestamp.Now, this, _ChargingStationGroup) &&
-                    chargingStationGroups.TryAdd(_ChargingStationGroup))
+                    chargingStationGroups.TryAdd(_ChargingStationGroup,
+                                                 EventTracking_Id.New,
+                                                 null))
                 {
 
                     _ChargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -2677,11 +2712,14 @@ namespace cloud.charging.open.protocols.WWCP
             lock (chargingStationGroups)
             {
 
-                if (chargingStationGroups.TryGet(ChargingStationGroupId, out ChargingStationGroup ChargingStationGroup) &&
+                if (chargingStationGroups.TryGet(ChargingStationGroupId, out var ChargingStationGroup) &&
                     ChargingStationGroupRemoval.SendVoting(Timestamp.Now,
                                                            this,
                                                            ChargingStationGroup) &&
-                    chargingStationGroups.TryRemove(ChargingStationGroupId, out ChargingStationGroup _ChargingStationGroup))
+                    chargingStationGroups.TryRemove(ChargingStationGroupId,
+                                                    out var _ChargingStationGroup,
+                                                    EventTracking_Id.New,
+                                                    null))
                 {
 
                     OnSuccess?.Invoke(this, ChargingStationGroup);
@@ -2723,7 +2761,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (ChargingStationGroupRemoval.SendVoting(Timestamp.Now,
                                                            this,
                                                            ChargingStationGroup) &&
-                    chargingStationGroups.TryRemove(ChargingStationGroup.Id, out ChargingStationGroup _ChargingStationGroup))
+                    chargingStationGroups.TryRemove(ChargingStationGroup.Id,
+                                                    out var _ChargingStationGroup,
+                                                    EventTracking_Id.New,
+                                                    null))
                 {
 
                     OnSuccess?.Invoke(this, _ChargingStationGroup);
@@ -2765,15 +2806,15 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> evseAddition;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> evseAddition;
 
-        public IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition
+        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition
             => evseAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => evseAddition;
 
@@ -3602,7 +3643,7 @@ namespace cloud.charging.open.protocols.WWCP
                                          Brand                                          Brand                         = null,
                                          Priority?                                      Priority                      = null,
                                          ChargingTariff                                 Tariff                        = null,
-                                         IEnumerable<OpenDataLicense>                       DataLicenses                  = null,
+                                         IEnumerable<OpenDataLicense>                   DataLicenses                  = null,
 
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -3658,7 +3699,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 if (EVSEGroupAddition.SendVoting(Timestamp.Now, this, _EVSEGroup) &&
-                    evseGroups.TryAdd(_EVSEGroup))
+                    evseGroups.TryAdd(_EVSEGroup,
+                                      EventTracking_Id.New,
+                                      null))
                 {
 
                     _EVSEGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -3943,26 +3986,29 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="EVSEGroupId">The unique identification of the EVSE group to be removed.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new EVSE group after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the EVSE group failed.</param>
-        public EVSEGroup RemoveEVSEGroup(EVSEGroup_Id                                   EVSEGroupId,
-                                                               Action<ChargingStationOperator, EVSEGroup>     OnSuccess   = null,
-                                                               Action<ChargingStationOperator, EVSEGroup_Id>  OnError     = null)
+        public EVSEGroup RemoveEVSEGroup(EVSEGroup_Id                                    EVSEGroupId,
+                                         Action<ChargingStationOperator, EVSEGroup>?     OnSuccess   = null,
+                                         Action<ChargingStationOperator, EVSEGroup_Id>?  OnError     = null)
         {
 
             lock (evseGroups)
             {
 
-                if (evseGroups.TryGet(EVSEGroupId, out EVSEGroup EVSEGroup) &&
+                if (evseGroups.TryGet(EVSEGroupId, out var EVSEGroup) &&
                     EVSEGroupRemoval.SendVoting(Timestamp.Now,
-                                                           this,
-                                                           EVSEGroup) &&
-                    evseGroups.TryRemove(EVSEGroupId, out EVSEGroup _EVSEGroup))
+                                                this,
+                                                EVSEGroup) &&
+                    evseGroups.TryRemove(EVSEGroupId,
+                                         out var _EVSEGroup,
+                                         EventTracking_Id.New,
+                                         null))
                 {
 
                     OnSuccess?.Invoke(this, EVSEGroup);
 
                     EVSEGroupRemoval.SendNotification(Timestamp.Now,
-                                                                 this,
-                                                                 _EVSEGroup);
+                                                      this,
+                                                      _EVSEGroup);
 
                     return _EVSEGroup;
 
@@ -3987,24 +4033,27 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnSuccess">An optional delegate to configure the new EVSE group after its successful deletion.</param>
         /// <param name="OnError">An optional delegate to be called whenever the deletion of the EVSE group failed.</param>
         public EVSEGroup RemoveEVSEGroup(EVSEGroup                                   EVSEGroup,
-                                                               Action<ChargingStationOperator, EVSEGroup>  OnSuccess   = null,
-                                                               Action<ChargingStationOperator, EVSEGroup>  OnError     = null)
+                                         Action<ChargingStationOperator, EVSEGroup>  OnSuccess   = null,
+                                         Action<ChargingStationOperator, EVSEGroup>  OnError     = null)
         {
 
             lock (evseGroups)
             {
 
                 if (EVSEGroupRemoval.SendVoting(Timestamp.Now,
-                                                           this,
-                                                           EVSEGroup) &&
-                    evseGroups.TryRemove(EVSEGroup.Id, out EVSEGroup _EVSEGroup))
+                                                this,
+                                                EVSEGroup) &&
+                    evseGroups.TryRemove(EVSEGroup.Id,
+                                         out var _EVSEGroup,
+                                         EventTracking_Id.New,
+                                         null))
                 {
 
                     OnSuccess?.Invoke(this, _EVSEGroup);
 
                     EVSEGroupRemoval.SendNotification(Timestamp.Now,
-                                                                 this,
-                                                                 _EVSEGroup);
+                                                      this,
+                                                      _EVSEGroup);
 
                     return _EVSEGroup;
 
@@ -4111,7 +4160,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 if (chargingTariffAddition.SendVoting(Timestamp.Now, this, _ChargingTariff) &&
-                    chargingTariffs.TryAdd(_ChargingTariff))
+                    chargingTariffs.TryAdd(_ChargingTariff,
+                                           EventTracking_Id.New,
+                                           null))
                 {
 
                     //_ChargingTariff.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -4389,7 +4440,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (chargingTariffs.TryGet(ChargingTariffId, out var chargingTariff)      &&
                     chargingTariff is not null                                            &&
                     chargingTariffRemoval.SendVoting(Timestamp.Now, this, chargingTariff) &&
-                    chargingTariffs.TryRemove(ChargingTariffId, out _))
+                    chargingTariffs.TryRemove(ChargingTariffId,
+                                              out _,
+                                              EventTracking_Id.New,
+                                              null))
                 {
 
                     OnSuccess?.Invoke(this, chargingTariff);
@@ -4429,7 +4483,10 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (chargingTariffRemoval.SendVoting(Timestamp.Now, this, ChargingTariff) &&
-                    chargingTariffs.TryRemove(ChargingTariff.Id, out var chargingTariff)  &&
+                    chargingTariffs.TryRemove(ChargingTariff.Id,
+                                              out var chargingTariff,
+                                              EventTracking_Id.New,
+                                              null)  &&
                     chargingTariff is not null)
                 {
 
@@ -4528,7 +4585,9 @@ namespace cloud.charging.open.protocols.WWCP
 
 
                 if (chargingTariffGroupAddition.SendVoting(Timestamp.Now, this, chargingTariffGroup) &&
-                    chargingTariffGroups.TryAdd(chargingTariffGroup))
+                    chargingTariffGroups.TryAdd(chargingTariffGroup,
+                                                EventTracking_Id.New,
+                                                null))
                 {
 
                     //_ChargingTariffGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -4663,7 +4722,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (chargingTariffGroups.TryGet(ChargingTariffGroupId, out var chargingTariffGroup) &&
                     chargingTariffGroup is not null                                                 &&
                     chargingTariffGroupRemoval.SendVoting(Timestamp.Now, this, chargingTariffGroup) &&
-                    chargingTariffGroups.TryRemove(ChargingTariffGroupId, out _))
+                    chargingTariffGroups.TryRemove(ChargingTariffGroupId,
+                                                   out _,
+                                                   EventTracking_Id.New,
+                                                   null))
                 {
 
                     OnSuccess?.Invoke(this, chargingTariffGroup);
@@ -4703,7 +4765,10 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (chargingTariffGroupRemoval.SendVoting(Timestamp.Now, this, ChargingTariffGroup) &&
-                    chargingTariffGroups.TryRemove(ChargingTariffGroup.Id, out var chargingTariffGroup) &&
+                    chargingTariffGroups.TryRemove(ChargingTariffGroup.Id,
+                                                   out var chargingTariffGroup,
+                                                   EventTracking_Id.New,
+                                                   null) &&
                     chargingTariffGroup is not null)
                 {
 

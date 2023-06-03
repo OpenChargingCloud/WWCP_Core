@@ -26,8 +26,8 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingPoolAlreadyExists : ChargingStationOperatorException
     {
 
-        public ChargingPoolAlreadyExists(ChargingStationOperator  ChargingStationOperator,
-                                         ChargingPool_Id          ChargingPoolId)
+        public ChargingPoolAlreadyExists(IChargingStationOperator  ChargingStationOperator,
+                                         ChargingPool_Id           ChargingPoolId)
 
             : base(ChargingStationOperator.RoamingNetwork,
                    "The given charging pool identification '" + ChargingPoolId + "' already exists within the given '" + ChargingStationOperator.Id + "' charging station operator!")
@@ -46,17 +46,17 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingPoolException : ChargingStationOperatorException
     {
 
-        public ChargingPoolException(ChargingStationOperator  ChargingStationOperator,
-                                     String                   Message)
+        public ChargingPoolException(IChargingStationOperator  ChargingStationOperator,
+                                     String                    Message)
 
             : base(ChargingStationOperator.RoamingNetwork,
                    Message)
 
         { }
 
-        public ChargingPoolException(ChargingStationOperator  ChargingStationOperator,
-                                     String                   Message,
-                                     Exception                InnerException)
+        public ChargingPoolException(IChargingStationOperator  ChargingStationOperator,
+                                     String                    Message,
+                                     Exception                 InnerException)
 
             : base(ChargingStationOperator.RoamingNetwork,
                    Message, InnerException)

@@ -26,7 +26,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingStationAlreadyExistsInPool : ChargingPoolException
     {
 
-        public ChargingStationAlreadyExistsInPool(ChargingPool        ChargingPool,
+        public ChargingStationAlreadyExistsInPool(IChargingPool       ChargingPool,
                                                   ChargingStation_Id  ChargingStationId)
 
             : base(ChargingPool.Operator,
@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingStationCouldNotBeCreated : ChargingPoolException
     {
 
-        public ChargingStationCouldNotBeCreated(ChargingPool        ChargingPool,
+        public ChargingStationCouldNotBeCreated(IChargingPool       ChargingPool,
                                                 ChargingStation_Id  ChargingStation_Id)
 
             : base(ChargingPool.Operator,
@@ -65,17 +65,17 @@ namespace cloud.charging.open.protocols.WWCP
     public class ChargingStationException : ChargingPoolException
     {
 
-        public ChargingStationException(ChargingPool  ChargingPool,
-                                        String        Message)
+        public ChargingStationException(IChargingPool  ChargingPool,
+                                        String         Message)
 
             : base(ChargingPool.Operator,
                    Message)
 
         { }
 
-        public ChargingStationException(ChargingPool  ChargingPool,
-                                        String        Message,
-                                        Exception     InnerException)
+        public ChargingStationException(IChargingPool  ChargingPool,
+                                        String         Message,
+                                        Exception      InnerException)
 
             : base(ChargingPool.Operator,
                    Message,

@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using System.Threading.Tasks;
 using org.GraphDefined.Vanaheimr.Hermod;
+using social.OpenData.UsersAPI;
 
 #endregion
 
@@ -284,18 +285,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
-        {
-            get
-            {
-                return EVSEAddition;
-            }
-        }
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean> OnEVSEAddition
+            => EVSEAddition;
 
         #endregion
 
@@ -338,21 +334,21 @@ namespace cloud.charging.open.protocols.WWCP
         internal EVSEGroup(EVSEGroup_Id                                  Id,
                            ChargingStationOperator                       Operator,
                            I18NString                                    Name,
-                           I18NString                                    Description                  = null,
+                           I18NString                                    Description                   = null,
 
-                           Brand                                         Brand                        = null,
-                           Priority?                                     Priority                     = null,
-                           ChargingTariff                                Tariff                       = null,
-                           IEnumerable<OpenDataLicense>                      DataLicenses                 = null,
+                           Brand                                         Brand                         = null,
+                           Priority?                                     Priority                      = null,
+                           ChargingTariff                                Tariff                        = null,
+                           IEnumerable<OpenDataLicense>                  DataLicenses                  = null,
 
-                           IEnumerable<EVSE>                             Members                      = null,
-                           IEnumerable<EVSE_Id>                          MemberIds                    = null,
-                           Func<EVSE_Id, Boolean>                        AutoIncludeEVSEIds           = null,
-                           Func<IEVSE,   Boolean>                        AutoIncludeEVSEs             = null,
+                           IEnumerable<EVSE>                             Members                       = null,
+                           IEnumerable<EVSE_Id>                          MemberIds                     = null,
+                           Func<EVSE_Id, Boolean>                        AutoIncludeEVSEIds            = null,
+                           Func<IEVSE,   Boolean>                        AutoIncludeEVSEs              = null,
 
-                           Func<EVSEStatusReport, EVSEGroupStatusTypes>  StatusAggregationDelegate    = null,
-                           UInt16                                        MaxGroupStatusListSize       = DefaultMaxGroupStatusListSize,
-                           UInt16                                        MaxGroupAdminStatusListSize  = DefaultMaxGroupAdminStatusListSize)
+                           Func<EVSEStatusReport, EVSEGroupStatusTypes>  StatusAggregationDelegate     = null,
+                           UInt16                                        MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
+                           UInt16                                        MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
             : base(Id)
 
@@ -391,7 +387,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init events
 
             // EVSEGroup events
-            this.EVSEAddition             = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTime, EventTracking_Id, User_Id, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
             this.EVSERemoval              = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
@@ -411,8 +407,8 @@ namespace cloud.charging.open.protocols.WWCP
             //this.OnChargingStationRemoval. OnNotification += (timestamp, evseoperator, pool)       => EVSEOperator.ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
             // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => Operator.evseAddition.           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => Operator.evseAddition.           SendNotification(timestamp, station, evse);
+            this.OnEVSEAddition.           OnVoting       += (timestamp, eventTrackingId, userId, station, evse, vote)      => Operator.evseAddition.           SendVoting      (timestamp, eventTrackingId, userId, station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (timestamp, eventTrackingId, userId, station, evse)            => Operator.evseAddition.           SendNotification(timestamp, eventTrackingId, userId, station, evse);
 
             this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => Operator.evseRemoval .           SendVoting      (timestamp, station, evse, vote);
             this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => Operator.evseRemoval .           SendNotification(timestamp, station, evse);

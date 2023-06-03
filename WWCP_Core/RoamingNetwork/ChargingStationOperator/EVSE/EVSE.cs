@@ -829,7 +829,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">Optional internal data.</param>
         public EVSE(EVSE_Id                             Id,
-                    ChargingStation                     ChargingStation,
+                    IChargingStation                    ChargingStation,
                     I18NString?                         Name                         = null,
                     I18NString?                         Description                  = null,
 
@@ -868,7 +868,7 @@ namespace cloud.charging.open.protocols.WWCP
                     String?                             DataSource                   = null,
                     DateTime?                           LastChange                   = null,
 
-                    Action<EVSE>?                       Configurator                 = null,
+                    Action<IEVSE>?                      Configurator                 = null,
                     RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
 
                     JObject?                            CustomData                   = null,

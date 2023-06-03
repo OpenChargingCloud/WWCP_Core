@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
     public class EVSEAlreadyExistsInStation : ChargingStationException
     {
 
-        public EVSEAlreadyExistsInStation(ChargingStation ChargingStation, EVSE_Id EVSE_Id)
+        public EVSEAlreadyExistsInStation(IChargingStation ChargingStation, EVSE_Id EVSE_Id)
 
             : base(ChargingStation.ChargingPool,
                   "The given EVSE identification '" + EVSE_Id + "' already exists within the given '" + ChargingStation.Id + "' charging station!")
@@ -53,11 +53,11 @@ namespace cloud.charging.open.protocols.WWCP
     public class EVSEException : ChargingStationException
     {
 
-        public EVSEException(ChargingStation ChargingStation, String Message)
+        public EVSEException(IChargingStation ChargingStation, String Message)
             : base(ChargingStation.ChargingPool, Message)
         { }
 
-        public EVSEException(ChargingStation ChargingStation, String Message, Exception InnerException)
+        public EVSEException(IChargingStation ChargingStation, String Message, Exception InnerException)
             : base(ChargingStation.ChargingPool, Message, InnerException)
         { }
 

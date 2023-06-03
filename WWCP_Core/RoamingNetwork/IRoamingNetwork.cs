@@ -610,7 +610,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a parking operator will be or was added.
         /// </summary>
-        IVotingSender<DateTime, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition { get; }
 
         /// <summary>
         /// Called whenever a parking operator will be or was removed.
@@ -715,7 +715,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        IVotingSender<DateTime, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition { get; }
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
@@ -798,7 +798,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        IVotingSender<DateTime, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition { get; }
+        IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition { get; }
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.

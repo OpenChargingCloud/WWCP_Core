@@ -847,7 +847,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (eVehicleAddition.SendVoting(Timestamp.Now, this, _eVehicle))
             {
-                if (_eVehicles.TryAdd(_eVehicle))
+                if (_eVehicles.TryAdd(_eVehicle,
+                                      EventTracking_Id.New,
+                                      null))
                 {
 
                     _eVehicle.OnDataChanged                        += UpdateEVehicleData;
@@ -928,7 +930,10 @@ namespace cloud.charging.open.protocols.WWCP
                 if (eVehicleRemoval.SendVoting(Timestamp.Now, this, _eVehicle))
                 {
 
-                    if (_eVehicles.TryRemove(eVehicleId, out _eVehicle))
+                    if (_eVehicles.TryRemove(eVehicleId,
+                                             out _eVehicle,
+                                             EventTracking_Id.New,
+                                             null))
                     {
 
                         eVehicleRemoval.SendNotification(Timestamp.Now, this, _eVehicle);
@@ -960,7 +965,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                eVehicle))
                 {
 
-                    if (_eVehicles.TryRemove(eVehicleId, out _))
+                    if (_eVehicles.TryRemove(eVehicleId,
+                                             out _,
+                                             EventTracking_Id.New,
+                                             null))
                     {
 
                         eVehicleRemoval.SendNotification(Timestamp.Now,

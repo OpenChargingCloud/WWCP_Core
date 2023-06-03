@@ -93,6 +93,22 @@ namespace cloud.charging.open.protocols.WWCP
                     Description);
 
 
+        public static AddEVSEResult NoOperation(IEVSE              EVSE,
+                                                EventTracking_Id   EventTrackingId,
+                                                String             Description,
+                                                IChargingStation?  ChargingStation   = null)
+
+            => new (EVSE,
+                    EventTrackingId,
+                    true,
+                    null,
+                    I18NString.Create(
+                        Languages.en,
+                        Description
+                    ),
+                    ChargingStation);
+
+
         public static AddEVSEResult Failed(IEVSE              EVSE,
                                            EventTracking_Id   EventTrackingId,
                                            String             Description,

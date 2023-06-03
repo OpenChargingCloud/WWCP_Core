@@ -36,9 +36,6 @@ using social.OpenData.UsersAPI;
 namespace cloud.charging.open.protocols.WWCP
 {
 
-    
-
-
     /// <summary>
     /// A pool of electric vehicle charging stations.
     /// The geo locations of these charging stations will be close together and the charging pool
@@ -93,13 +90,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging station operator of this charging pool.
         /// </summary>
         [Optional]
-        public ChargingStationOperator?      Operator               { get; }
+        public IChargingStationOperator?     Operator               { get; }
 
         /// <summary>
         /// The charging station sub operator of this charging pool.
         /// </summary>
         [Optional]
-        public ChargingStationOperator?      SubOperator            { get; }
+        public IChargingStationOperator?     SubOperator            { get; }
 
 
         /// <summary>
@@ -1040,7 +1037,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="MaxPoolStatusScheduleSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusScheduleSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
-                            ChargingStationOperator                     Operator,
+                            IChargingStationOperator                    Operator,
                             I18NString?                                 Name                             = null,
                             I18NString?                                 Description                      = null,
 
@@ -1234,11 +1231,11 @@ namespace cloud.charging.open.protocols.WWCP
             #region Init events
 
             // ChargingPool events
-            this.ChargingStationAddition  = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval   = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
+            //this.ChargingStationAddition  = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
+            //this.ChargingStationRemoval   = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
-            this.EVSEAddition             = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
             this.EVSERemoval              = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
@@ -1469,61 +1466,142 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
+        //internal IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
 
-            => ChargingStationAddition;
+            => chargingStations.OnAddition;
 
         #endregion
 
         #region ChargingStationUpdate
 
-        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, IChargingStation, Boolean> ChargingStationUpdate;
+        //internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, IChargingStation, Boolean> ChargingStationUpdate;
 
         /// <summary>
         /// Called whenever a charging station will be or was updated.
         /// </summary>
         public IVotingSender<DateTime, IChargingPool, IChargingStation, IChargingStation, Boolean> OnChargingStationUpdate
 
-            => ChargingStationUpdate;
+            => chargingStations.OnUpdate;
 
         #endregion
 
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
+        //internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval
 
-            => ChargingStationRemoval;
+            => chargingStations.OnRemoval;
 
         #endregion
 
 
-        #region AddChargingStation        (Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region (private) Connect(ChargingStation)
+
+        private void Connect(IChargingStation ChargingStation)
+        {
+
+            ChargingStation.OnDataChanged                  += UpdateChargingStationData;
+            ChargingStation.OnStatusChanged                += UpdateChargingStationStatus;
+            ChargingStation.OnAdminStatusChanged           += UpdateChargingStationAdminStatus;
+
+            ChargingStation.OnEVSEAddition.OnVoting        += (timestamp, eventTrackingId, userId, station, evse, vote)  => EVSEAddition.SendVoting      (timestamp, eventTrackingId, userId, station, evse, vote);
+            ChargingStation.OnEVSEAddition.OnNotification  += (timestamp, eventTrackingId, userId, station, evse)        => EVSEAddition.SendNotification(timestamp, eventTrackingId, userId, station, evse);
+            ChargingStation.OnEVSEDataChanged              += UpdateEVSEData;
+            ChargingStation.OnEVSEStatusChanged            += UpdateEVSEStatus;
+            ChargingStation.OnEVSEAdminStatusChanged       += UpdateEVSEAdminStatus;
+            ChargingStation.OnEVSERemoval. OnVoting        += (timestamp, station, evse, vote)  => EVSERemoval.SendVoting       (timestamp, station, evse, vote);
+            ChargingStation.OnEVSERemoval. OnNotification  += (timestamp, station, evse)        => EVSERemoval.SendNotification (timestamp, station, evse);
+
+
+            ChargingStation.OnNewReservation               += SendNewReservation;
+            ChargingStation.OnReservationCanceled          += SendReservationCanceled;
+            ChargingStation.OnNewChargingSession           += SendNewChargingSession;
+            ChargingStation.OnNewChargeDetailRecord        += SendNewChargeDetailRecord;
+
+
+            if (ChargingStation.RemoteChargingStation is not null)
+            {
+
+                ChargingStation.RemoteChargingStation.OnNewReservation += SendNewReservation;
+
+                ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
+
+                    var __EVSE = GetEVSEById(reservation.EVSEId.Value);
+
+                    //__EVSE.Reservation = reservation;
+
+                };
+
+                ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
+
+                    var __EVSE = GetEVSEById(session.EVSEId.Value);
+
+                    //__EVSE.ChargingSession = session;
+
+                };
+
+                ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
+
+                    var __EVSE = GetEVSEById(cdr.EVSEId.Value);
+
+                    if (__EVSE is EVSE evse)
+                        evse.SendNewChargeDetailRecord(Timestamp.Now,
+                                                       this,
+                                                       cdr);
+
+                };
+
+
+                //ToDo: Fix me!
+                //ChargingStation.RemoteChargingStation.OnReservationCanceled += ChargingStation.SendReservationCanceled;
+
+                //ToDo: Fix me!
+                //ChargingStation.RemoteChargingStation.OnEVSEStatusChanged += (timestamp,
+                //                                                              eventTrackingId,
+                //                                                              evse,
+                //                                                              newStatus,
+                //                                                              oldStatus,
+                //                                                              dataSource)
+
+                //    => ChargingStation.UpdateEVSEStatus(timestamp,
+                //                                        eventTrackingId,
+                //                                        GetEVSEById(evse.Id),
+                //                                        newStatus,
+                //                                        oldStatus,
+                //                                        dataSource);
+
+            }
+
+        }
+
+        #endregion
+
+        #region AddChargingStation           (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
         /// unique charging station identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging station.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public async Task<AddChargingStationResult> AddChargingStation(ChargingStation                                                 ChargingStation,
-                                                                       RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+        public async Task<AddChargingStationResult> AddChargingStation(IChargingStation                                                ChargingStation,
 
-                                                                       EventTracking_Id?                                               EventTrackingId                = null,
                                                                        Action<IChargingStation>?                                       OnSuccess                      = null,
-                                                                       Action<IChargingPool, ChargingStation>?                         OnError                        = null,
-                                                                       Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null)
+                                                                       Action<IChargingPool, IChargingStation>?                        OnError                        = null,
+
+                                                                       Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                       EventTracking_Id?                                               EventTrackingId                = null,
+                                                                       User_Id?                                                        CurrentUserId                  = null)
         {
 
             #region Initial checks
@@ -1534,87 +1612,21 @@ namespace cloud.charging.open.protocols.WWCP
             if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
                 return AddChargingStationResult.Failed(ChargingStation,
                                                        EventTrackingId,
-                                                       $"The given charging station operator identification '{ChargingStation.Id.OperatorId}' is invalid!",
+                                                       $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!",
                                                        this);
 
             #endregion
 
-            if (ChargingStationAddition.SendVoting(Timestamp.Now, this, ChargingStation) &&
-                chargingStations.TryAdd(ChargingStation))
+            if (chargingStations.TryAdd(ChargingStation,
+                                        Connect,
+                                        EventTrackingId,
+                                        CurrentUserId))
             {
 
-                ChargingStation.OnDataChanged                  += UpdateChargingStationData;
-                ChargingStation.OnStatusChanged                += UpdateChargingStationStatus;
-                ChargingStation.OnAdminStatusChanged           += UpdateChargingStationAdminStatus;
-
-                ChargingStation.OnEVSEAddition.OnVoting        += (timestamp, station, evse, vote)  => EVSEAddition.SendVoting      (timestamp, station, evse, vote);
-                ChargingStation.OnEVSEAddition.OnNotification  += (timestamp, station, evse)        => EVSEAddition.SendNotification(timestamp, station, evse);
-                ChargingStation.OnEVSEDataChanged              += UpdateEVSEData;
-                ChargingStation.OnEVSEStatusChanged            += UpdateEVSEStatus;
-                ChargingStation.OnEVSEAdminStatusChanged       += UpdateEVSEAdminStatus;
-                ChargingStation.OnEVSERemoval. OnVoting        += (timestamp, station, evse, vote)  => EVSERemoval.SendVoting       (timestamp, station, evse, vote);
-                ChargingStation.OnEVSERemoval. OnNotification  += (timestamp, station, evse)        => EVSERemoval.SendNotification (timestamp, station, evse);
-
-
-                ChargingStation.OnNewReservation               += SendNewReservation;
-                ChargingStation.OnReservationCanceled          += SendReservationCanceled;
-                ChargingStation.OnNewChargingSession           += SendNewChargingSession;
-                ChargingStation.OnNewChargeDetailRecord        += SendNewChargeDetailRecord;
-
-
-                if (RemoteChargingStationCreator is not null)
-                {
-
-                    ChargingStation.RemoteChargingStation.OnNewReservation += SendNewReservation;
-
-                    ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
-
-                        var __EVSE = GetEVSEById(reservation.EVSEId.Value);
-
-                        //__EVSE.Reservation = reservation;
-
-                    };
-
-                    ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
-
-                        var __EVSE = GetEVSEById(session.EVSEId.Value);
-
-                        //__EVSE.ChargingSession = session;
-
-                    };
-
-                    ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
-
-                        var __EVSE = GetEVSEById(cdr.EVSEId.Value);
-
-                        if (__EVSE is EVSE evse)
-                            evse.SendNewChargeDetailRecord(Timestamp.Now,
-                                                           this,
-                                                           cdr);
-
-                    };
-
-
-                    ChargingStation.RemoteChargingStation.OnReservationCanceled += ChargingStation.SendReservationCanceled;
-
-                    ChargingStation.RemoteChargingStation.OnEVSEStatusChanged += (timestamp,
-                                                                                  eventTrackingId,
-                                                                                  evse,
-                                                                                  newStatus,
-                                                                                  oldStatus,
-                                                                                  dataSource)
-
-                        => ChargingStation.UpdateEVSEStatus(timestamp,
-                                                            eventTrackingId,
-                                                            GetEVSEById(evse.Id),
-                                                            newStatus,
-                                                            oldStatus,
-                                                            dataSource);
-
-                }
+                //ToDo: Persistency
+                await Task.Delay(1);
 
                 OnSuccess?.Invoke(ChargingStation);
-                ChargingStationAddition.SendNotification(Timestamp.Now, this, ChargingStation);
 
                 return AddChargingStationResult.Success(ChargingStation,
                                                         EventTrackingId,
@@ -1633,48 +1645,23 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region AddOrUpdateChargingStation(Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingStationIfNotExists(Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
         /// unique charging station identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging station.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
-        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
-        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
-        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
-        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        /// 
-        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public async Task<AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(ChargingStation_Id                                              Id,
-                                                                                       I18NString?                                                     Name                           = null,
-                                                                                       I18NString?                                                     Description                    = null,
+        public async Task<AddChargingStationResult> AddChargingStationIfNotExists(IChargingStation                                                ChargingStation,
 
-                                                                                       Address?                                                        Address                        = null,
-                                                                                       GeoCoordinate?                                                  GeoLocation                    = null,
+                                                                                  Action<IChargingStation>?                                       OnSuccess                      = null,
+                                                                                  Action<IChargingPool, IChargingStation>?                        OnError                        = null,
 
-                                                                                       Action<IChargingStation>?                                       Configurator                   = null,
-                                                                                       RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
-                                                                                       Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                                       Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                                                       UInt16?                                                         MaxAdminStatusListSize         = null,
-                                                                                       UInt16?                                                         MaxStatusListSize              = null,
-
-                                                                                       String?                                                         DataSource                     = null,
-                                                                                       DateTime?                                                       LastChange                     = null,
-
-                                                                                       JObject?                                                        CustomData                     = null,
-                                                                                       UserDefinedDictionary?                                          InternalData                   = null,
-                                                                                       EventTracking_Id?                                               EventTrackingId                = null,
-
-                                                                                       Action<IChargingStation>?                                       OnAdditionSuccess              = null,
-                                                                                       Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
-                                                                                       Action<IChargingPool, ChargingStation_Id>?                      OnError                        = null,
-                                                                                       Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null)
+                                                                                  Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                                  EventTracking_Id?                                               EventTrackingId                = null,
+                                                                                  User_Id?                                                        CurrentUserId                  = null)
         {
 
             #region Initial checks
@@ -1682,49 +1669,99 @@ namespace cloud.charging.open.protocols.WWCP
             EventTrackingId              ??= EventTracking_Id.New;
             AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
 
-            if (Operator.Id != Id.OperatorId && !AllowInconsistentOperatorIds(Operator.Id, Id))
-                return null;
-                //throw new InvalidChargingStationOperatorId(this,
-                //                                           Id.OperatorId);
+            if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
+                return AddChargingStationResult.Failed(ChargingStation,
+                                                       EventTrackingId,
+                                                       $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!",
+                                                       this);
 
             #endregion
 
-            var chargingStation = new ChargingStation(Id,
-                                                      this,
-                                                      Name,
-                                                      Description,
+            if (//ChargingStationAddition.SendVoting(Timestamp.Now, this, ChargingStation) &&
+                chargingStations.TryAdd(ChargingStation,
+                                        EventTrackingId,
+                                        CurrentUserId))
+            {
 
-                                                      Address,
-                                                      GeoLocation,
+                //ToDo: Persistency
+                await Task.Delay(1);
 
-                                                      Configurator,
-                                                      RemoteChargingStationCreator,
-                                                      InitialAdminStatus,
-                                                      InitialStatus,
-                                                      MaxAdminStatusListSize ?? ChargingStation.DefaultMaxAdminStatusScheduleSize,
-                                                      MaxStatusListSize      ?? ChargingStation.DefaultMaxStatusScheduleSize,
+                Connect(ChargingStation);
 
-                                                      DataSource,
-                                                      LastChange,
+                OnSuccess?.Invoke(ChargingStation);
+                //ChargingStationAddition.SendNotification(Timestamp.Now, this, ChargingStation);
 
-                                                      CustomData,
-                                                      InternalData);
+                return AddChargingStationResult.Success(ChargingStation,
+                                                        EventTrackingId,
+                                                        this);
+
+            }
+
+            return AddChargingStationResult.NoOperation(ChargingStation,
+                                                        EventTrackingId,
+                                                        String.Empty,
+                                                        this);
+
+        }
+
+        #endregion
+
+        #region AddOrUpdateChargingStation   (Id, Configurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        public async Task<AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(IChargingStation                                                ChargingStation,
+
+                                                                                       Action<IChargingStation>?                                       OnAdditionSuccess              = null,
+                                                                                       Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
+                                                                                       Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+
+                                                                                       Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                                       EventTracking_Id?                                               EventTrackingId                = null,
+                                                                                       User_Id?                                                        CurrentUserId                  = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
+
+            if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
+                return AddOrUpdateChargingStationResult.Failed(null,
+                                                               EventTrackingId,
+                                                               $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!",
+                                                               this);
+
+            #endregion
 
 
-            if (chargingStations.TryGet(chargingStation.Id, out var existingChargingStation) &&
+            if (chargingStations.TryGet(ChargingStation.Id, out var existingChargingStation) &&
                 existingChargingStation is not null)
             {
 
-                if (ChargingStationUpdate.SendVoting(Timestamp.Now, this, chargingStation, existingChargingStation) &&
-                    chargingStations.TryUpdate(chargingStation.Id,
-                                               chargingStation,
-                                               existingChargingStation))
+                if (chargingStations.TryUpdate(ChargingStation.Id,
+                                               ChargingStation,
+                                               existingChargingStation,
+                                               EventTrackingId,
+                                               CurrentUserId))
                 {
 
-                    OnUpdateSuccess?.Invoke(chargingStation,
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    Connect(ChargingStation);
+
+                    OnUpdateSuccess?.Invoke(ChargingStation,
                                             existingChargingStation);
 
-                    return AddOrUpdateChargingStationResult.Success(chargingStation,
+                    return AddOrUpdateChargingStationResult.Success(ChargingStation,
                                                                     AddedOrUpdated.Update,
                                                                     EventTrackingId);
 
@@ -1732,9 +1769,9 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    OnError?.Invoke(this, Id);
+                    OnError?.Invoke(this, ChargingStation);
 
-                    return AddOrUpdateChargingStationResult.Failed(chargingStation,
+                    return AddOrUpdateChargingStationResult.Failed(ChargingStation,
                                                                    EventTrackingId,
                                                                    "Error!",
                                                                    this);
@@ -1746,13 +1783,19 @@ namespace cloud.charging.open.protocols.WWCP
             else
             {
 
-                if (ChargingStationAddition.SendVoting(Timestamp.Now, this, chargingStation) &&
-                    chargingStations.TryAdd(chargingStation))
+                if (chargingStations.TryAdd(ChargingStation,
+                                            EventTrackingId,
+                                            CurrentUserId))
                 {
 
-                    OnAdditionSuccess?.Invoke(chargingStation);
+                    //ToDo: Persistency
+                    await Task.Delay(1);
 
-                    return AddOrUpdateChargingStationResult.Success(chargingStation,
+                    Connect(ChargingStation);
+
+                    OnAdditionSuccess?.Invoke(ChargingStation);
+
+                    return AddOrUpdateChargingStationResult.Success(ChargingStation,
                                                                     AddedOrUpdated.Add,
                                                                     EventTrackingId);
 
@@ -1760,9 +1803,9 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    OnError?.Invoke(this, Id);
+                    OnError?.Invoke(this, ChargingStation);
 
-                    return AddOrUpdateChargingStationResult.Failed(chargingStation,
+                    return AddOrUpdateChargingStationResult.Failed(ChargingStation,
                                                                    EventTrackingId,
                                                                    "Error!",
                                                                    this);
@@ -1819,29 +1862,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region RemoveChargingStation    (ChargingStationId)
 
-        public async Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id ChargingStationId)
+        public async Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id  ChargingStationId,
+                                                                             EventTracking_Id    EventTrackingId,
+                                                                             User_Id?            CurrentUserId)
         {
 
-            if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
-            {
+            //if (TryGetChargingStationById(ChargingStationId, out var chargingStation))
+            //{
 
-                if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, chargingStation))
-                {
+                //if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, chargingStation))
+                //{
 
-                    if (chargingStations.TryRemove(ChargingStationId, out chargingStation))
+                    if (chargingStations.TryRemove(ChargingStationId,
+                                                   out var chargingStation,
+                                                   EventTrackingId,
+                                                   CurrentUserId) &&
+                        chargingStation is not null)
                     {
 
-                        ChargingStationRemoval.SendNotification(Timestamp.Now, this, chargingStation);
+                        //ChargingStationRemoval.SendNotification(Timestamp.Now, this, chargingStation);
 
-                        return RemoveChargingStationResult.Success(chargingStation, EventTracking_Id.New);
+                        return RemoveChargingStationResult.Success(chargingStation,
+                                                                   EventTracking_Id.New);
 
                     }
 
-                }
+                //}
 
-            }
+            //}
 
-            return RemoveChargingStationResult.Failed(ChargingStationId, EventTracking_Id.New, "");
+            return RemoveChargingStationResult.Failed(ChargingStationId,
+                                                      EventTracking_Id.New,
+                                                      "");
 
         }
 
@@ -1849,32 +1901,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveChargingStation (ChargingStationId, out ChargingStation)
 
-        public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
+        public Boolean TryRemoveChargingStation(ChargingStation_Id     ChargingStationId,
+                                                out IChargingStation?  ChargingStation,
+                                                EventTracking_Id       EventTrackingId,
+                                                User_Id?               CurrentUserId)
         {
 
-            if (TryGetChargingStationById(ChargingStationId, out ChargingStation) &&
-                ChargingStation is not null)
-            {
+            //if (TryGetChargingStationById(ChargingStationId, out ChargingStation) &&
+            //    ChargingStation is not null)
+            //{
 
-                if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, ChargingStation))
-                {
+            //    if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, ChargingStation))
+            //    {
 
-                    if (chargingStations.TryRemove(ChargingStationId, out _))
+                    if (chargingStations.TryRemove(ChargingStationId,
+                                                   out ChargingStation,
+                                                   EventTrackingId,
+                                                   CurrentUserId))
                     {
 
-                        ChargingStationRemoval.SendNotification(Timestamp.Now, this, ChargingStation);
+                        //ChargingStationRemoval.SendNotification(Timestamp.Now, this, ChargingStation);
 
                         return true;
 
                     }
 
-                }
+                //}
 
                 return false;
 
-            }
+            //}
 
-            return true;
+            //return true;
 
         }
 
@@ -2050,12 +2108,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => EVSEAddition;
 

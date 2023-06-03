@@ -39,46 +39,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         //Timestamped<ChargingStationAdminStatusTypes> AdminStatus { get; set; }
 
-        #region OnEVSEData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated EVSE changed.
-        /// </summary>
-        event OnEVSEDataChangedDelegate?         OnEVSEDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        event OnEVSEStatusChangedDelegate?       OnEVSEStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated EVSE changed.
-        /// </summary>
-        event OnEVSEAdminStatusChangedDelegate?  OnEVSEAdminStatusChanged;
-
-        #endregion
-
-        #region OnChargingStationData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated EVSE changed.
-        /// </summary>
-        event OnChargingStationDataChangedDelegate?         OnDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated EVSE changed.
-        /// </summary>
-        event OnChargingStationAdminStatusChangedDelegate?  OnAdminStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        event OnChargingStationStatusChangedDelegate?       OnStatusChanged;
-
-        #endregion
-
-
-
         IRemoteEVSE AddEVSE(IRemoteEVSE                        EVSE,
                             Action<IRemoteEVSE>?               Configurator  = null,
                             Action<IRemoteEVSE>?               OnSuccess     = null,

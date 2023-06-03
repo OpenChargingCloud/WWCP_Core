@@ -314,11 +314,11 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingPoolRemoval         = new VotingNotificator<DateTime, IChargingStationOperator, IChargingPool, Boolean>(() => new VetoVote(), true);
 
             // ChargingPool events
-            this.ChargingStationAddition     = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition     = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
             this.ChargingStationRemoval      = new VotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
-            this.EVSEAddition                = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition                = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
             this.EVSERemoval                 = new VotingNotificator<DateTime, IChargingStation, IEVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
@@ -764,7 +764,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a charging station operator will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IRoamingNetwork, IEMobilityProvider, Boolean> OnEMobilityProviderAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IRoamingNetwork, IEMobilityProvider, Boolean> OnEMobilityProviderAddition
             => eMobilityProviders.OnAddition;
 
         private void SendEMobilityProviderAdded(DateTime            Timestamp,
@@ -945,7 +945,9 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            var result  = eMobilityProviders.TryAdd(EMobilityProvider);
+            var result  = eMobilityProviders.TryAdd(EMobilityProvider,
+                                                    EventTracking_Id.New,
+                                                    null);
             var now     = Timestamp.Now;
 
             if (result)
@@ -1179,8 +1181,13 @@ namespace cloud.charging.open.protocols.WWCP
         public IEMobilityProvider? RemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId)
         {
 
-            if (eMobilityProviders.TryRemove(EMobilityProviderId, out var eMobilityProvider))
+            if (eMobilityProviders.TryRemove(EMobilityProviderId,
+                                             out var eMobilityProvider,
+                                             EventTracking_Id.New,
+                                             null))
+            {
                 return eMobilityProvider;
+            }
 
             return null;
 
@@ -1190,7 +1197,10 @@ namespace cloud.charging.open.protocols.WWCP
         {
 
             if (EMobilityProviderId is not null &&
-                eMobilityProviders.TryRemove(EMobilityProviderId.Value, out var eMobilityProvider))
+                eMobilityProviders.TryRemove(EMobilityProviderId.Value,
+                                             out var eMobilityProvider,
+                                             EventTracking_Id.New,
+                                             null))
             {
                 return eMobilityProvider;
             }
@@ -1205,7 +1215,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
 
-            => eMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
+            => eMobilityProviders.TryRemove(EMobilityProviderId,
+                                            out EMobilityProvider,
+                                            EventTracking_Id.New,
+                                            null);
 
         public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id? EMobilityProviderId, out IEMobilityProvider? EMobilityProvider)
 
@@ -1217,7 +1230,10 @@ namespace cloud.charging.open.protocols.WWCP
                 return false;
             }
 
-            return eMobilityProviders.TryRemove(EMobilityProviderId.Value, out EMobilityProvider);
+            return eMobilityProviders.TryRemove(EMobilityProviderId.Value,
+                                                out EMobilityProvider,
+                                                EventTracking_Id.New,
+                                                null);
 
         }
 
@@ -1555,10 +1571,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a charging station operator will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IRoamingNetwork, IChargingStationOperator, Boolean> OnChargingStationOperatorAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IRoamingNetwork, IChargingStationOperator, Boolean> OnChargingStationOperatorAddition
             => chargingStationOperators.OnAddition;
 
         private void SendChargingStationOperatorAdded(DateTime                  Timestamp,
+                                                      EventTracking_Id          EventTrackingId,
+                                                      User_Id                   CurrentUserId,
                                                       IRoamingNetwork           RoamingNetwork,
                                                       IChargingStationOperator  ChargingStationOperator)
         {
@@ -1736,7 +1754,9 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            var result  = chargingStationOperators.TryAdd(ChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(ChargingStationOperator,
+                                                          EventTracking_Id.New,
+                                                          null);
             var now     = Timestamp.Now;
 
             if (result)
@@ -1746,7 +1766,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ChargingStationOperator.OnStatusChanged                            += UpdateChargingStationOperatorStatus;
                 ChargingStationOperator.OnAdminStatusChanged                       += UpdateChargingStationOperatorAdminStatus;
 
-                ChargingStationOperator.OnChargingPoolAddition.   OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
+                ChargingStationOperator.OnChargingPoolAddition.   OnVoting         += (timestamp, eventTrackingId, userId, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
                 ChargingStationOperator.OnChargingPoolAddition.   OnNotification   += SendChargingPoolAdded;
                 ChargingStationOperator.OnChargingPoolDataChanged                  += UpdateChargingPoolData;
                 ChargingStationOperator.OnChargingPoolAdminStatusChanged           += UpdateChargingPoolAdminStatus;
@@ -1754,7 +1774,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ChargingStationOperator.OnChargingPoolRemoval.    OnVoting         += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
                 ChargingStationOperator.OnChargingPoolRemoval.    OnNotification   += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
 
-                ChargingStationOperator.OnChargingStationAddition.OnVoting         += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
+                ChargingStationOperator.OnChargingStationAddition.OnVoting         += (timestamp, eventTrackingId, userId, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, eventTrackingId, userId, pool, station, vote);
                 ChargingStationOperator.OnChargingStationAddition.OnNotification   += SendChargingStationAdded;
                 ChargingStationOperator.OnChargingStationDataChanged               += UpdateChargingStationData;
                 ChargingStationOperator.OnChargingStationAdminStatusChanged        += UpdateChargingStationAdminStatus;
@@ -1762,7 +1782,7 @@ namespace cloud.charging.open.protocols.WWCP
                 ChargingStationOperator.OnChargingStationRemoval. OnVoting         += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
                 ChargingStationOperator.OnChargingStationRemoval. OnNotification   += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
 
-                ChargingStationOperator.OnEVSEAddition.           OnVoting         += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                ChargingStationOperator.OnEVSEAddition.           OnVoting         += (timestamp, eventTrackingId, userId, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, eventTrackingId, userId, station, evse, vote);
                 ChargingStationOperator.OnEVSEAddition.           OnNotification   += SendEVSEAdded;
                 ChargingStationOperator.OnEVSEDataChanged                          += UpdateEVSEData;
                 ChargingStationOperator.OnEVSEAdminStatusChanged                   += UpdateEVSEAdminStatus;
@@ -1942,7 +1962,9 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            var result  = chargingStationOperators.TryAdd(ChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(ChargingStationOperator,
+                                                          eventTrackingId,
+                                                          CurrentUserId);
             var now     = Timestamp.Now;
 
             OnAdded?.Invoke(now,
@@ -2110,11 +2132,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             if (chargingStationOperators.TryGet(ChargingStationOperator.Id, out var OldChargingStationOperator))
             {
-                chargingStationOperators.Remove(OldChargingStationOperator.Id);
+                chargingStationOperators.Remove(OldChargingStationOperator.Id,
+                                                EventTracking_Id.New,
+                                                null);
                 //ChargingStationOperator.CopyAllLinkedDataFrom(OldChargingStationOperator);
             }
 
-            var result  = chargingStationOperators.TryAdd(ChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(ChargingStationOperator,
+                                                          EventTracking_Id.New,
+                                                          null);
             var now     = Timestamp.Now;
 
             if (OldChargingStationOperator is null)
@@ -2308,9 +2334,14 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentChargingStationOperatorId);
 
-            chargingStationOperators.Remove(oldChargingStationOperator.Id);
+            chargingStationOperators.Remove(oldChargingStationOperator.Id,
+                                            EventTracking_Id.New,
+                                            null);
+
             //ChargingStationOperator.CopyAllLinkedDataFrom(oldChargingStationOperator);
-            var result  = chargingStationOperators.TryAdd(NewChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(NewChargingStationOperator,
+                                                          EventTracking_Id.New,
+                                                          null);
             var now     = Timestamp.Now;
 
             OnUpdated?.Invoke(now,
@@ -2468,9 +2499,14 @@ namespace cloud.charging.open.protocols.WWCP
             //                          eventTrackingId,
             //                          CurrentChargingStationOperatorId);
 
-            chargingStationOperators.Remove(ChargingStationOperator.Id);
+            chargingStationOperators.Remove(ChargingStationOperator.Id,
+                                            EventTracking_Id.New,
+                                            null);
+
             //updatedChargingStationOperator.CopyAllLinkedDataFrom(ChargingStationOperator);
-            var result  = chargingStationOperators.TryAdd(updatedChargingStationOperator);
+            var result  = chargingStationOperators.TryAdd(updatedChargingStationOperator,
+                                                          EventTracking_Id.New,
+                                                          null);
             var now     = Timestamp.Now;
 
             OnUpdated?.Invoke(now,
@@ -2658,7 +2694,9 @@ namespace cloud.charging.open.protocols.WWCP
             // ToDo: Remove incoming edges
 
 
-            var result  = chargingStationOperators.Remove(ChargingStationOperator.Id);
+            var result  = chargingStationOperators.Remove(ChargingStationOperator.Id,
+                                                          EventTracking_Id.New,
+                                                          null);
             var now     = Timestamp.Now;
 
             OnRemoved?.Invoke(now,
@@ -3343,6 +3381,8 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         private void SendChargingPoolAdded(DateTime                  Timestamp,
+                                           EventTracking_Id          EventTrackingId,
+                                           User_Id                   User_Id,
                                            IChargingStationOperator  ChargingStationOperator,
                                            IChargingPool             ChargingPool)
         {
@@ -3832,28 +3872,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationAddition
 
             => ChargingStationAddition;
 
         private void SendChargingStationAdded(DateTime          Timestamp,
+                                              EventTracking_Id  EventTrackingId,
+                                              User_Id           UserId,
                                               IChargingPool     ChargingPool,
                                               IChargingStation  ChargingStation)
         {
 
             ChargingStationAddition.SendNotification(Timestamp,
+                                                     EventTrackingId,
+                                                     UserId,
                                                      ChargingPool,
                                                      ChargingStation);
 
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(ChargingStation));
+                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(ChargingStation,
+                                                                                      EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -4383,28 +4428,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<DateTime, IChargingStation, IEVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, IChargingStation, IEVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSEAddition
 
             => EVSEAddition;
 
         private void SendEVSEAdded(DateTime          Timestamp,
+                                   EventTracking_Id  EventTrackingId,
+                                   User_Id           UserId,
                                    IChargingStation  ChargingStation,
                                    IEVSE             EVSE)
         {
 
             EVSEAddition.SendNotification(Timestamp,
+                                          EventTrackingId,
+                                          UserId,
                                           ChargingStation,
                                           EVSE);
 
             try
             {
 
-                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(EVSE));
+                var results = _ISendData.WhenAll(iSendData => iSendData.AddStaticData(EVSE,
+                                                                                      EventTrackingId: EventTrackingId));
 
             }
             catch (Exception e)
@@ -5020,7 +5070,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever a parking operator will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorAddition
             => parkingOperators.OnAddition;
 
         #endregion
@@ -5031,7 +5081,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Called whenever a parking operator will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, RoamingNetwork, ParkingOperator, Boolean> OnParkingOperatorRemoval
-            => parkingOperators.OnAddition;
+            => parkingOperators.OnRemoval;
 
         #endregion
 
@@ -5097,7 +5147,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                       InititalStatus);
 
 
-            if (parkingOperators.TryAdd(parkingOperator, OnSuccess))
+            if (parkingOperators.TryAdd(parkingOperator,
+                                        EventTracking_Id.New,
+                                        null))
             {
 
                 parkingOperator.OnDataChanged                                 += UpdateParkingOperatorData;
@@ -5208,10 +5260,13 @@ namespace cloud.charging.open.protocols.WWCP
         public ParkingOperator RemoveParkingOperator(ParkingOperator_Id ParkingOperatorId)
         {
 
-            ParkingOperator _ParkingOperator = null;
-
-            if (parkingOperators.TryRemove(ParkingOperatorId, out _ParkingOperator))
+            if (parkingOperators.TryRemove(ParkingOperatorId,
+                                           out var _ParkingOperator,
+                                           EventTracking_Id.New,
+                                           null))
+            {
                 return _ParkingOperator;
+            }
 
             return null;
 
@@ -5223,7 +5278,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryRemoveParkingOperator(ParkingOperator_Id ParkingOperatorId, out ParkingOperator ParkingOperator)
 
-            => parkingOperators.TryRemove(ParkingOperatorId, out ParkingOperator);
+            => parkingOperators.TryRemove(ParkingOperatorId,
+                                          out ParkingOperator,
+                                          EventTracking_Id.New,
+                                          null);
 
         #endregion
 
@@ -5396,7 +5454,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition
             => gridOperators.OnAddition;
 
         #endregion
@@ -5450,15 +5508,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
         public GridOperator CreateNewGridOperator(GridOperator_Id                          GridOperatorId,
-                                            I18NString                            Name                    = null,
-                                            I18NString                            Description             = null,
-                                            GridOperatorPriority                     Priority                = null,
-                                            GridOperatorAdminStatusType              AdminStatus             = GridOperatorAdminStatusType.Available,
-                                            GridOperatorStatusType                   Status                  = GridOperatorStatusType.Available,
-                                            Action<GridOperator>                     Configurator            = null,
-                                            Action<GridOperator>                     OnSuccess               = null,
-                                            Action<RoamingNetwork, GridOperator_Id>  OnError                 = null,
-                                            RemoteGridOperatorCreatorDelegate        RemoteGridOperatorCreator  = null)
+                                                  I18NString                               Name                       = null,
+                                                  I18NString                               Description                = null,
+                                                  GridOperatorPriority                     Priority                   = null,
+                                                  GridOperatorAdminStatusType              AdminStatus                = GridOperatorAdminStatusType.Available,
+                                                  GridOperatorStatusType                   Status                     = GridOperatorStatusType.Available,
+                                                  Action<GridOperator>                     Configurator               = null,
+                                                  Action<GridOperator>                     OnSuccess                  = null,
+                                                  Action<RoamingNetwork, GridOperator_Id>  OnError                    = null,
+                                                  RemoteGridOperatorCreatorDelegate        RemoteGridOperatorCreator  = null)
         {
 
             #region Initial checks
@@ -5479,7 +5537,9 @@ namespace cloud.charging.open.protocols.WWCP
                                            Status);
 
 
-            if (gridOperators.TryAdd(_GridOperator, OnSuccess))
+            if (gridOperators.TryAdd(_GridOperator,
+                                     EventTracking_Id.New,
+                                     null))
             {
 
                 // Link events!
@@ -5541,8 +5601,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             GridOperator _GridOperator = null;
 
-            if (gridOperators.TryRemove(GridOperatorId, out _GridOperator))
+            if (gridOperators.TryRemove(GridOperatorId,
+                                        out _GridOperator,
+                                        EventTracking_Id.New,
+                                        null))
+            {
                 return _GridOperator;
+            }
 
             return null;
 
@@ -5554,7 +5619,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryRemoveGridOperator(GridOperator_Id GridOperatorId, out GridOperator GridOperator)
 
-            => gridOperators.TryRemove(GridOperatorId, out GridOperator);
+            => gridOperators.TryRemove(GridOperatorId,
+                                       out GridOperator,
+                                       EventTracking_Id.New,
+                                       null);
 
         #endregion
 
@@ -5605,7 +5673,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, SmartCityProxy, Boolean> OnSmartCityAddition
             => _SmartCities.OnAddition;
 
         #endregion
@@ -5663,7 +5731,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                 InitialStatus);
 
 
-            if (_SmartCities.TryAdd(_SmartCity, OnSuccess))
+            if (_SmartCities.TryAdd(_SmartCity,
+                                    EventTracking_Id.New,
+                                    null))
             {
 
                 // Link events!
@@ -5723,10 +5793,13 @@ namespace cloud.charging.open.protocols.WWCP
         public SmartCityProxy RemoveSmartCity(SmartCity_Id SmartCityId)
         {
 
-            SmartCityProxy _SmartCity = null;
-
-            if (_SmartCities.TryRemove(SmartCityId, out _SmartCity))
+            if (_SmartCities.TryRemove(SmartCityId,
+                                       out var _SmartCity,
+                                       EventTracking_Id.New,
+                                       null))
+            {
                 return _SmartCity;
+            }
 
             return null;
 
@@ -5738,7 +5811,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryRemoveSmartCity(SmartCity_Id SmartCityId, out SmartCityProxy SmartCity)
 
-            => _SmartCities.TryRemove(SmartCityId, out SmartCity);
+            => _SmartCities.TryRemove(SmartCityId,
+                                      out SmartCity,
+                                      EventTracking_Id.New,
+                                      null);
 
         #endregion
 
@@ -5822,7 +5898,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Called whenever an navigation provider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, NavigationProvider, Boolean> OnNavigationProviderAddition
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, RoamingNetwork, NavigationProvider, Boolean> OnNavigationProviderAddition
             => _NavigationProviders.OnAddition;
 
         #endregion
@@ -5851,15 +5927,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="OnSuccess">An optional delegate to configure the new navigation provider after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the navigation provider failed.</param>
         public NavigationProvider CreateNewNavigationProvider(NavigationProvider_Id                          NavigationProviderId,
-                                                            I18NString                                    Name                            = null,
-                                                            I18NString                                    Description                     = null,
-                                                            NavigationProviderPriority                     Priority                        = null,
-                                                            NavigationProviderAdminStatusType              AdminStatus                     = NavigationProviderAdminStatusType.Available,
-                                                            NavigationProviderStatusType                   Status                          = NavigationProviderStatusType.Available,
-                                                            Action<NavigationProvider>                     Configurator                    = null,
-                                                            Action<NavigationProvider>                     OnSuccess                       = null,
-                                                            Action<RoamingNetwork, NavigationProvider_Id>  OnError                         = null,
-                                                            RemoteNavigationProviderCreatorDelegate        RemoteNavigationProviderCreator  = null)
+                                                              I18NString                                     Name                              = null,
+                                                              I18NString                                     Description                       = null,
+                                                              NavigationProviderPriority                     Priority                          = null,
+                                                              NavigationProviderAdminStatusType              AdminStatus                       = NavigationProviderAdminStatusType.Available,
+                                                              NavigationProviderStatusType                   Status                            = NavigationProviderStatusType.Available,
+                                                              Action<NavigationProvider>                     Configurator                      = null,
+                                                              Action<NavigationProvider>                     OnSuccess                         = null,
+                                                              Action<RoamingNetwork, NavigationProvider_Id>  OnError                           = null,
+                                                              RemoteNavigationProviderCreatorDelegate        RemoteNavigationProviderCreator   = null)
         {
 
             #region Initial checks
@@ -5880,7 +5956,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                            Status);
 
 
-            if (_NavigationProviders.TryAdd(_NavigationProvider, OnSuccess))
+            if (_NavigationProviders.TryAdd(_NavigationProvider,
+                                            EventTracking_Id.New,
+                                            null))
             {
 
                 // Link events!
@@ -5940,10 +6018,13 @@ namespace cloud.charging.open.protocols.WWCP
         public NavigationProvider RemoveNavigationProvider(NavigationProvider_Id NavigationProviderId)
         {
 
-            NavigationProvider _NavigationProvider = null;
-
-            if (_NavigationProviders.TryRemove(NavigationProviderId, out _NavigationProvider))
+            if (_NavigationProviders.TryRemove(NavigationProviderId,
+                                               out var _NavigationProvider,
+                                               EventTracking_Id.New,
+                                               null))
+            {
                 return _NavigationProvider;
+            }
 
             return null;
 
@@ -5955,7 +6036,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Boolean TryRemoveNavigationProvider(NavigationProvider_Id NavigationProviderId, out NavigationProvider NavigationProvider)
 
-            => _NavigationProviders.TryRemove(NavigationProviderId, out NavigationProvider);
+            => _NavigationProviders.TryRemove(NavigationProviderId,
+                                              out NavigationProvider,
+                                              EventTracking_Id.New,
+                                              null);
 
         #endregion
 
