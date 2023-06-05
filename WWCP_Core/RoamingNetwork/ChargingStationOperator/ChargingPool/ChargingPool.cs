@@ -97,6 +97,13 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional]
         public IChargingStationOperator?     SubOperator            { get; }
 
+        /// <summary>
+        /// All brands registered for this charging pool.
+        /// </summary>
+        [Optional, SlowData]
+        public ReactiveSet<Brand>            Brands                 { get; }
+
+
 
         /// <summary>
         /// The remote charging pool.
@@ -105,18 +112,8 @@ namespace cloud.charging.open.protocols.WWCP
         public IRemoteChargingPool?          RemoteChargingPool     { get; }
 
 
-        /// <summary>
-        /// All brands registered for this charging pool.
-        /// </summary>
-        [Optional, SlowData]
-        public ReactiveSet<Brand>            Brands                 { get; }
 
-        /// <summary>
-        /// The license of the charging pool data.
-        /// </summary>
-        [Mandatory, SlowData]
-        public ReactiveSet<OpenDataLicense>  DataLicenses           { get; }
-
+        #region Address related
 
         #region LocationLanguage
 
@@ -232,6 +229,53 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region OpeningTimes
+
+        private OpeningTimes openingTimes;
+
+        /// <summary>
+        /// The opening times of this charging pool.
+        /// </summary>
+        [Mandatory]
+        public OpeningTimes OpeningTimes
+        {
+
+            get
+            {
+                return openingTimes;
+            }
+
+            set
+            {
+                if (value != openingTimes)
+                {
+                    SetProperty(ref openingTimes, value);
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingWhenClosed
+
+        /// <summary>
+        /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
+        /// </summary>
+        public Boolean?  ChargingWhenClosed    { get; set; }
+
+        #endregion
+
+        #region ArrivalInstructions
+
+        /// <summary>
+        /// An optional (multi-language) description of how to find the charging pool.
+        /// </summary>
+        [Optional]
+        public I18NString                               ArrivalInstructions     { get; }
+
+        #endregion
+
         #region EntranceAddress
 
         private Address? entranceAddress;
@@ -312,83 +356,88 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region ArrivalInstructions
+        #region ExitAddress
+
+        private Address? exitAddress;
 
         /// <summary>
-        /// An optional (multi-language) description of how to find the charging pool.
+        /// The address of the exit of this charging pool.
+        /// (If different from 'Address').
         /// </summary>
         [Optional]
-        public I18NString                               ArrivalInstructions     { get; }
-
-        #endregion
-
-        #region OpeningTimes
-
-        private OpeningTimes openingTimes;
-
-        /// <summary>
-        /// The opening times of this charging pool.
-        /// </summary>
-        [Mandatory]
-        public OpeningTimes OpeningTimes
+        public Address? ExitAddress
         {
 
             get
             {
-                return openingTimes;
+                return exitAddress;
             }
 
             set
             {
-                if (value != openingTimes)
+
+                if (exitAddress != value)
                 {
-                    SetProperty(ref openingTimes, value);
+
+                    if (value == null)
+                        DeleteProperty(ref exitAddress);
+
+                    else
+                        SetProperty(ref exitAddress, value);
+
+                    // Delete inherited exit addresses
+                    chargingStations.ForEach(station => station.ExitAddress = null);
+
                 }
+
             }
 
         }
 
         #endregion
 
-        #region ChargingWhenClosed
+        #region ExitLocation
+
+        private GeoCoordinate? exitLocation;
 
         /// <summary>
-        /// Indicates if the charging stations are still charging outside the opening hours of the charging pool.
-        /// </summary>
-        public Boolean?  ChargingWhenClosed    { get; set; }
-
-        #endregion
-
-        #region UIFeatures
-
-        /// <summary>
-        /// User interface features of the charging pool, when those features
-        /// are not features of the charging stations, e.g. an external payment terminal.
+        /// The geographical location of the exit of this charging pool.
+        /// (If different from 'GeoLocation').
         /// </summary>
         [Optional]
-        public ReactiveSet<UIFeatures>                  UIFeatures              { get; }
+        public GeoCoordinate? ExitLocation
+        {
+
+            get
+            {
+                return exitLocation;
+            }
+
+            set
+            {
+
+                if (exitLocation != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref exitLocation);
+
+                    else
+                        SetProperty(ref exitLocation, value);
+
+                    // Delete inherited exit locations
+                    chargingStations.ForEach(station => station.ExitLocation = null);
+
+                }
+
+            }
+
+        }
 
         #endregion
 
-        #region AuthenticationModes
-
-        /// <summary>
-        /// The authentication options an EV driver can use.
-        /// </summary>
-        [Optional]
-        public ReactiveSet<AuthenticationModes>         AuthenticationModes     { get; }
-
         #endregion
 
-        #region PaymentOptions
-
-        /// <summary>
-        /// The payment options an EV driver can use.
-        /// </summary>
-        [Optional]
-        public ReactiveSet<PaymentOptions>              PaymentOptions          { get; }
-
-        #endregion
 
         #region Accessibility
 
@@ -440,6 +489,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UIFeatures
+
+        /// <summary>
+        /// User interface features of the charging pool, when those features
+        /// are not features of the charging stations, e.g. an external payment terminal.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<UIFeatures>                  UIFeatures              { get; }
+
+        #endregion
+
+        #region AuthenticationModes
+
+        /// <summary>
+        /// The authentication options an EV driver can use.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<AuthenticationModes>         AuthenticationModes     { get; }
+
+        #endregion
+
+        #region PaymentOptions
+
+        /// <summary>
+        /// The payment options an EV driver can use.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<PaymentOptions>              PaymentOptions          { get; }
+
+        #endregion
+
         #region Facilities
 
         /// <summary>
@@ -449,7 +529,6 @@ namespace cloud.charging.open.protocols.WWCP
         public ReactiveSet<Facilities>                  Facilities              { get; }
 
         #endregion
-
 
         #region PhotoURLs
 
@@ -463,7 +542,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region HotlinePhoneNumber
 
-        private PhoneNumber? _HotlinePhoneNumber;
+        private PhoneNumber? hotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the charging station operator hotline.
@@ -474,20 +553,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _HotlinePhoneNumber;
+                return hotlinePhoneNumber;
             }
 
             set
             {
 
-                if (_HotlinePhoneNumber != value)
+                if (hotlinePhoneNumber != value)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _HotlinePhoneNumber);
+                        DeleteProperty(ref hotlinePhoneNumber);
 
                     else
-                        SetProperty(ref _HotlinePhoneNumber, value);
+                        SetProperty(ref hotlinePhoneNumber, value);
 
                     // Delete inherited accessibilities
                     chargingStations.ForEach(station => station.HotlinePhoneNumber = null);
@@ -500,6 +579,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
+        #region Energy related
 
         #region GridConnection
 
@@ -882,85 +963,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region ExitAddress
-
-        private Address? exitAddress;
-
-        /// <summary>
-        /// The address of the exit of this charging pool.
-        /// (If different from 'Address').
-        /// </summary>
-        [Optional]
-        public Address? ExitAddress
-        {
-
-            get
-            {
-                return exitAddress;
-            }
-
-            set
-            {
-
-                if (exitAddress != value)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref exitAddress);
-
-                    else
-                        SetProperty(ref exitAddress, value);
-
-                    // Delete inherited exit addresses
-                    chargingStations.ForEach(station => station.ExitAddress = null);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region ExitLocation
-
-        private GeoCoordinate? exitLocation;
-
-        /// <summary>
-        /// The geographical location of the exit of this charging pool.
-        /// (If different from 'GeoLocation').
-        /// </summary>
-        [Optional]
-        public GeoCoordinate? ExitLocation
-        {
-
-            get
-            {
-                return exitLocation;
-            }
-
-            set
-            {
-
-                if (exitLocation != value)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref exitLocation);
-
-                    else
-                        SetProperty(ref exitLocation, value);
-
-                    // Delete inherited exit locations
-                    chargingStations.ForEach(station => station.ExitLocation = null);
-
-                }
-
-            }
-
-        }
-
         #endregion
 
 
@@ -973,68 +975,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        /// <summary>
+        /// The license of the charging pool data.
+        /// </summary>
+        [Mandatory, SlowData]
+        public ReactiveSet<OpenDataLicense>  DataLicenses           { get; }
+
         #endregion
 
         #region Constructor(s)
-
-        #region ChargingPool(Id, ...)
-
-        /// <summary>
-        /// Create a new group/pool of charging stations having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charing pool.</param>
-        /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
-        /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
-        public ChargingPool(ChargingPool_Id                             Id,
-                            I18NString?                                 Name                         = null,
-                            I18NString?                                 Description                  = null,
-
-                            Address?                                    Address                      = null,
-                            GeoCoordinate?                              GeoLocation                  = null,
-                            OpeningTimes?                               OpeningTimes                 = null,
-                            Boolean?                                    ChargingWhenClosed           = null,
-
-                            Action<ChargingPool>?                       Configurator                 = null,
-                            RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator    = null,
-                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
-                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
-                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusScheduleSize,
-                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusScheduleSize)
-
-            : this(Id,
-                   null,
-                   Name,
-                   Description,
-
-                   Address,
-                   GeoLocation,
-                   OpeningTimes,
-                   ChargingWhenClosed,
-
-                   Configurator,
-                   RemoteChargingPoolCreator,
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxPoolAdminStatusListSize,
-                   MaxPoolStatusListSize)
-
-        { }
-
-        #endregion
-
-        #region ChargingPool(Id, Operator, ...)
 
         /// <summary>
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
         /// <param name="Operator">The parent charging station operator.</param>
-        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
-        /// <param name="RemoteChargingPoolCreator">A delegate to attach a remote charging pool.</param>
+        /// 
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxPoolStatusScheduleSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusScheduleSize">The default size of the charging pool admin status list.</param>
+        /// 
+        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
+        /// <param name="RemoteChargingPoolCreator">A delegate to attach a remote charging pool.</param>
         public ChargingPool(ChargingPool_Id                             Id,
                             IChargingStationOperator                    Operator,
                             I18NString?                                 Name                             = null,
@@ -1044,9 +1007,10 @@ namespace cloud.charging.open.protocols.WWCP
                             GeoCoordinate?                              GeoLocation                      = null,
                             OpeningTimes?                               OpeningTimes                     = null,
                             Boolean?                                    ChargingWhenClosed               = null,
+                            AccessibilityTypes?                         Accessibility                    = null,
+                            Languages?                                  LocationLanguage                 = null,
+                            PhoneNumber?                                HotlinePhoneNumber               = null,
 
-                            Action<ChargingPool>?                       Configurator                     = null,
-                            RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator        = null,
                             Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus               = null,
                             Timestamped<ChargingPoolStatusTypes>?       InitialStatus                    = null,
                             UInt16?                                     MaxPoolAdminStatusScheduleSize   = null,
@@ -1056,7 +1020,10 @@ namespace cloud.charging.open.protocols.WWCP
                             DateTime?                                   LastChange                       = null,
 
                             JObject?                                    CustomData                       = null,
-                            UserDefinedDictionary?                      InternalData                     = null)
+                            UserDefinedDictionary?                      InternalData                     = null,
+
+                            Action<ChargingPool>?                       Configurator                     = null,
+                            RemoteChargingPoolCreatorDelegate?          RemoteChargingPoolCreator        = null)
 
             : base(Id,
                    Name,
@@ -1078,6 +1045,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.GeoLocation                       = GeoLocation;
             this.openingTimes                      = OpeningTimes ?? OpeningTimes.Open24Hours;
             this.ChargingWhenClosed                = ChargingWhenClosed;
+            this.Accessibility                     = Accessibility;
+            this.locationLanguage                  = LocationLanguage;
+            this.hotlinePhoneNumber                = HotlinePhoneNumber;
 
             this.Operator                          = Operator;
 
@@ -1258,8 +1228,6 @@ namespace cloud.charging.open.protocols.WWCP
             this.RemoteChargingPool = RemoteChargingPoolCreator?.Invoke(this);
 
         }
-
-        #endregion
 
         #endregion
 

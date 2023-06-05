@@ -790,6 +790,26 @@ namespace cloud.charging.open.protocols.WWCP
 
             => chargingPools.OnUpdate;
 
+
+        /// <summary>
+        /// A delegate called whenever a charging pool was updated.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when the charging pool was updated.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldChargingPool">The old charging pool.</param>
+        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
+        public delegate Task OnChargingPoolUpdatedDelegate(DateTime           Timestamp,
+                                                           ChargingPool       ChargingPool,
+                                                           ChargingPool       OldChargingPool,
+                                                           EventTracking_Id?  EventTrackingId         = null,
+                                                           ChargingPool_Id?   CurrentChargingPoolId   = null);
+
+        /// <summary>
+        /// An event fired whenever a charging pool was updated.
+        /// </summary>
+        public event OnChargingPoolUpdatedDelegate OnChargingPoolUpdated;
+
         #endregion
 
         #region ChargingPoolRemoval
@@ -978,23 +998,29 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
 
-        #region AddChargingPool           (Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingPool           (ChargingPool, OnSuccess = null, OnError = null, ...)
 
         /// <summary>
-        /// Create and register a new charging pool having the given
-        /// unique charging pool identification.
+        /// Add a new charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public async Task<AddChargingPoolResult> AddChargingPool(ChargingPool                                                 ChargingPool,
+        /// <param name="ChargingPool">A new charging pool.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddChargingPoolResult> AddChargingPool(ChargingPool                                                        ChargingPool,
 
-                                                                 Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                 Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                                 Action<IChargingPool,                           EventTracking_Id>?  OnSuccess                      = null,
+                                                                 Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
 
-                                                                 Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                 EventTracking_Id?                                            EventTrackingId                = null,
-                                                                 User_Id?                                                     CurrentUserId                  = null)
+                                                                 Boolean                                                             SkipAddedNotifications         = false,
+                                                                 Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                 EventTracking_Id?                                                   EventTrackingId                = null,
+                                                                 User_Id?                                                            CurrentUserId                  = null)
         {
 
             #region Initial checks
@@ -1020,7 +1046,8 @@ namespace cloud.charging.open.protocols.WWCP
                 //ToDo: Persistency
                 await Task.Delay(1);
 
-                OnSuccess?.Invoke(ChargingPool);
+                OnSuccess?.Invoke(ChargingPool,
+                                  EventTrackingId);
 
                 return AddChargingPoolResult.Success(ChargingPool,
                                                      EventTrackingId,
@@ -1028,31 +1055,37 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            OnError?.Invoke(this, ChargingPool);
+            OnError?.Invoke(this,
+                            ChargingPool,
+                            EventTrackingId);
 
             return AddChargingPoolResult.Failed(ChargingPool,
                                                 EventTrackingId,
-                                                "Error!",
+                                                "Could not add the given charging pool!",
                                                 this);
 
         }
 
         #endregion
 
-        #region AddChargingPoolIfNotExists(Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingPoolIfNotExists(ChargingPool, OnSuccess = null,                 ...)
 
         /// <summary>
-        /// Create and register a new charging pool having the given
-        /// unique charging pool identification.
+        /// Add a new charging pool, but do not fail when this charging pool already exists.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        /// <param name="ChargingPool">A new charging pool.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public async Task<AddChargingPoolResult> AddChargingPoolIfNotExists(ChargingPool                                                 ChargingPool,
 
-                                                                            Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                            Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                                            Action<IChargingPool, EventTracking_Id>?                     OnSuccess                      = null,
 
+                                                                            Boolean                                                      SkipAddedNotifications         = false,
                                                                             Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                             EventTracking_Id?                                            EventTrackingId                = null,
                                                                             User_Id?                                                     CurrentUserId                  = null)
@@ -1080,7 +1113,8 @@ namespace cloud.charging.open.protocols.WWCP
                 //ToDo: Persistency
                 await Task.Delay(1);
 
-                OnSuccess?.Invoke(ChargingPool);
+                OnSuccess?.Invoke(ChargingPool,
+                                  EventTrackingId);
 
                 return AddChargingPoolResult.Success(ChargingPool,
                                                      EventTrackingId,
@@ -1090,32 +1124,37 @@ namespace cloud.charging.open.protocols.WWCP
 
             return AddChargingPoolResult.NoOperation(ChargingPool,
                                                      EventTrackingId,
-                                                     "Error!",
-                                                     this);
+                                                     ChargingStationOperator: this);
 
         }
 
         #endregion
 
-        #region AddOrUpdateChargingPool   (Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddOrUpdateChargingPool   (ChargingPool, OnAdditionSuccess = null, OnUpdateSuccess = null, OnError = null, ...)
 
         /// <summary>
-        /// Create and register or udpate a new charging pool having the given
-        /// unique charging pool identification.
+        /// Add a new or update an existing charging pool.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging pool.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public async Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool                                                 ChargingPool,
+        /// <param name="ChargingPool">A new or updated charging pool.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool                                                        ChargingPool,
 
-                                                                                 Action<IChargingPool>?                                       OnAdditionSuccess              = null,
-                                                                                 Action<IChargingPool,            IChargingPool>?             OnUpdateSuccess                = null,
-                                                                                 Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                                                 Action<IChargingPool,                           EventTracking_Id>?  OnAdditionSuccess                      = null,
+                                                                                 Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                        = null,
+                                                                                 Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                                = null,
 
-                                                                                 Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                                 EventTracking_Id?                                            EventTrackingId                = null,
-                                                                                 User_Id?                                                     CurrentUserId                  = null)
+                                                                                 Boolean                                                             SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                                 Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds           = null,
+                                                                                 EventTracking_Id?                                                   EventTrackingId                        = null,
+                                                                                 User_Id?                                                            CurrentUserId                          = null)
         {
 
             #region Initial checks
@@ -1136,6 +1175,10 @@ namespace cloud.charging.open.protocols.WWCP
                 existingChargingPool is not null)
             {
 
+                var xx1 = existingChargingPool.Equals(ChargingPool);
+
+                var xx2 = existingChargingPool == ChargingPool; //FalseFriend!!!
+
                 if (chargingPools.TryUpdate(ChargingPool.Id,
                                             ChargingPool,
                                             existingChargingPool,
@@ -1149,7 +1192,8 @@ namespace cloud.charging.open.protocols.WWCP
                     Connect(ChargingPool);
 
                     OnUpdateSuccess?.Invoke(ChargingPool,
-                                            existingChargingPool);
+                                            existingChargingPool,
+                                            EventTrackingId);
 
                     return AddOrUpdateChargingPoolResult.Success(ChargingPool,
                                                                  AddedOrUpdated.Update,
@@ -1159,7 +1203,9 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    OnError?.Invoke(this, ChargingPool);
+                    OnError?.Invoke(this,
+                                    ChargingPool,
+                                    EventTrackingId);
 
                     return AddOrUpdateChargingPoolResult.Failed(ChargingPool,
                                                                 EventTrackingId,
@@ -1182,7 +1228,8 @@ namespace cloud.charging.open.protocols.WWCP
                     //ToDo: Persistency
                     await Task.Delay(1);
 
-                    OnAdditionSuccess?.Invoke(ChargingPool);
+                    OnAdditionSuccess?.Invoke(ChargingPool,
+                                              EventTrackingId);
 
                     return AddOrUpdateChargingPoolResult.Success(ChargingPool,
                                                                  AddedOrUpdated.Add,
@@ -1192,7 +1239,9 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    OnError?.Invoke(this, ChargingPool);
+                    OnError?.Invoke(this,
+                                    ChargingPool,
+                                    EventTrackingId);
 
                     return AddOrUpdateChargingPoolResult.Failed(ChargingPool,
                                                                 EventTrackingId,
@@ -1207,42 +1256,29 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region UpdateChargingPool        (ChargingPool, SkipUserUpdatedNotifications = false, OnUpdated = null, EventTrackingId = null, CurrentUserId = null)
+        #region UpdateChargingPool        (ChargingPool, OnUpdateSuccess = false, OnError = null, ...)
 
         /// <summary>
-        /// A delegate called whenever a charging pool was updated.
+        /// Update the given charging pool.
         /// </summary>
-        /// <param name="Timestamp">The timestamp when the charging pool was updated.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldChargingPool">The old charging pool.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
-        public delegate Task OnChargingPoolUpdatedDelegate(DateTime           Timestamp,
-                                                           ChargingPool       ChargingPool,
-                                                           ChargingPool       OldChargingPool,
-                                                           EventTracking_Id?  EventTrackingId         = null,
-                                                           ChargingPool_Id?   CurrentChargingPoolId   = null);
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// 
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the update of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                                                        ChargingPool,
 
-        /// <summary>
-        /// An event fired whenever a charging pool was updated.
-        /// </summary>
-        public event OnChargingPoolUpdatedDelegate OnChargingPoolUpdated;
+                                                                       Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                                       Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
 
-
-        #region UpdateChargingPool(ChargingPool,                 SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
-
-        /// <summary>
-        /// Update the given charging pool to/within the API.
-        /// </summary>
-        /// <param name="User">A charging pool.</param>
-        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentUserId">An optional charging pool identification initiating this command/request.</param>
-        public async Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
-                                                                       Boolean                                  SkipChargingPoolUpdatedNotifications   = false,
-                                                                       Action<ChargingPool, EventTracking_Id>?  OnUpdated                              = null,
-                                                                       EventTracking_Id?                        EventTrackingId                        = null,
-                                                                       User_Id?                                 CurrentUserId                          = null)
+                                                                       Boolean                                                             SkipUpdatedNotifications       = false,
+                                                                       Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                       EventTracking_Id?                                                   EventTrackingId                = null,
+                                                                       User_Id?                                                            CurrentUserId                  = null)
         {
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
@@ -1271,13 +1307,15 @@ namespace cloud.charging.open.protocols.WWCP
                                     out _,
                                     EventTrackingId,
                                     CurrentUserId);
+
             //ChargingPool.CopyAllLinkedDataFrom(OldChargingPool);
             chargingPools.TryAdd(ChargingPool,
                                  EventTrackingId,
                                  CurrentUserId);
 
-            OnUpdated?.Invoke(ChargingPool,
-                              eventTrackingId);
+            OnUpdateSuccess?.Invoke(ChargingPool,
+                                    ChargingPool,
+                                    eventTrackingId);
 
             //var OnChargingPoolUpdatedLocal = OnChargingPoolUpdated;
             //if (OnChargingPoolUpdatedLocal is not null)
@@ -1300,6 +1338,73 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+        #region RemoveChargingPool        (ChargingPoolId, OnRemoveSuccess = null, OnError = null, ...)
+
+        /// <summary>
+        /// Remove the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
+        /// 
+        /// <param name="OnRemoveSuccess">An optional delegate to be called after the successful removal of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the removal of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      ChargingPoolId,
+
+                                                                       Action<IChargingPool,            EventTracking_Id>?  OnRemoveSuccess                = null,
+                                                                       Action<IChargingStationOperator, EventTracking_Id>?  OnError                        = null,
+
+                                                                       Boolean                                              SkipRemovedNotifications       = false,
+                                                                       EventTracking_Id?                                    EventTrackingId                = null,
+                                                                       User_Id?                                             CurrentUserId                  = null)
+        {
+
+            //if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
+            //{
+
+            //    if (chargingPool is not null &&
+            //        ChargingPoolRemoval.SendVoting(Timestamp.Now,
+            //                                       this,
+            //                                       chargingPool))
+            //    {
+
+                    if (chargingPools.TryRemove(ChargingPoolId,
+                                                out var chargingPool,
+                                                EventTracking_Id.New,
+                                                null) &&
+                        chargingPool is not null)
+                    {
+
+                        //ChargingPoolRemoval.SendNotification(Timestamp.Now,
+                        //                                     this,
+                        //                                     chargingPool);
+
+                        return RemoveChargingPoolResult.Success(
+                                   chargingPool,
+                                   EventTracking_Id.New,
+                                   this
+                               );
+
+                    }
+
+            //    }
+
+            //}
+
+            return RemoveChargingPoolResult.Failed(
+                       ChargingPoolId,
+                       EventTracking_Id.New,
+                       ""
+                   );
+
+        }
+
+        #endregion
+
+
 
         #region UpdateChargingPool(ChargingPool, UpdateDelegate, SkipChargingPoolUpdatedNotifications = false, OnUpdated = null, ...)
 
@@ -1383,6 +1488,48 @@ namespace cloud.charging.open.protocols.WWCP
         }
 
         #endregion
+
+
+
+
+
+        #region TryRemoveChargingPool(ChargingPoolId, out ChargingPool)
+
+        public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
+        {
+
+            //if (TryGetChargingPoolById(ChargingPoolId, out ChargingPool))
+            //{
+
+            //    if (ChargingPool is not null &&
+            //        ChargingPoolRemoval.SendVoting(Timestamp.Now,
+            //                                       this,
+            //                                       ChargingPool))
+            //    {
+
+                    if (chargingPools.TryRemove(ChargingPoolId,
+                                                out ChargingPool,
+                                                EventTracking_Id.New,
+                                                null))
+                    {
+
+                        //ChargingPoolRemoval.SendNotification(Timestamp.Now,
+                        //                                     this,
+                        //                                     ChargingPool);
+
+                        return true;
+
+                    }
+
+                //}
+
+                return false;
+
+            //}
+
+            //return true;
+
+        }
 
         #endregion
 
@@ -1507,93 +1654,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region RemoveChargingPool(ChargingPoolId)
-
-        public async Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id ChargingPoolId)
-        {
-
-            //if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
-            //{
-
-            //    if (chargingPool is not null &&
-            //        ChargingPoolRemoval.SendVoting(Timestamp.Now,
-            //                                       this,
-            //                                       chargingPool))
-            //    {
-
-                    if (chargingPools.TryRemove(ChargingPoolId,
-                                                out var chargingPool,
-                                                EventTracking_Id.New,
-                                                null) &&
-                        chargingPool is not null)
-                    {
-
-                        //ChargingPoolRemoval.SendNotification(Timestamp.Now,
-                        //                                     this,
-                        //                                     chargingPool);
-
-                        return RemoveChargingPoolResult.Success(
-                                   chargingPool,
-                                   EventTracking_Id.New,
-                                   this
-                               );
-
-                    }
-
-            //    }
-
-            //}
-
-            return RemoveChargingPoolResult.Failed(
-                       ChargingPoolId,
-                       EventTracking_Id.New,
-                       ""
-                   );
-
-        }
-
-        #endregion
-
-        #region TryRemoveChargingPool(ChargingPoolId, out ChargingPool)
-
-        public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool)
-        {
-
-            //if (TryGetChargingPoolById(ChargingPoolId, out ChargingPool))
-            //{
-
-            //    if (ChargingPool is not null &&
-            //        ChargingPoolRemoval.SendVoting(Timestamp.Now,
-            //                                       this,
-            //                                       ChargingPool))
-            //    {
-
-                    if (chargingPools.TryRemove(ChargingPoolId,
-                                                out ChargingPool,
-                                                EventTracking_Id.New,
-                                                null))
-                    {
-
-                        //ChargingPoolRemoval.SendNotification(Timestamp.Now,
-                        //                                     this,
-                        //                                     ChargingPool);
-
-                        return true;
-
-                    }
-
-                //}
-
-                return false;
-
-            //}
-
-            //return true;
-
-        }
-
-        #endregion
 
 
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)

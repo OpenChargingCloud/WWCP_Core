@@ -95,17 +95,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static AddChargingPoolResult NoOperation(IChargingPool             ChargingPool,
                                                         EventTracking_Id          EventTrackingId,
-                                                        String                    Description,
+                                                        String?                   Description               = null,
                                                         ChargingStationOperator?  ChargingStationOperator   = null)
 
             => new (ChargingPool,
                     EventTrackingId,
                     true,
                     null,
-                    I18NString.Create(
-                        Languages.en,
-                        Description
-                    ),
+                    Description is not null
+                        ? I18NString.Create(
+                              Languages.en,
+                              Description
+                          )
+                        : null,
                     ChargingStationOperator);
 
 

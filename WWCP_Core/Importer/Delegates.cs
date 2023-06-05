@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.WWCP.Importer
                                                 WWCPImporter<T>  WWCPImporter,
                                                 DateTime         LastRuntimestamp,
                                                 UInt64           LastRunId,
-                                                DNSClient        DNSClient)
+                                                DNSClient?       DNSClient)
 
         where T : class;
 

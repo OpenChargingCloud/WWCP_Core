@@ -47,79 +47,114 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// Charging station extentions.
+    /// Extension methods for charging station operators.
     /// </summary>
-    public static partial class ChargingStationOperatorExtensions
+    public static class IChargingStationOperatorExtensions
     {
 
-        #region AddChargingPool           (this IChargingStationOperator, ...)
+        #region AddChargingPool           (this IChargingStationOperator, Id = null, Name = null, ...)
 
-        public static Task<AddChargingPoolResult> AddChargingPool(this IChargingStationOperator                                ChargingStationOperator,
+        /// <summary>
+        /// Add a new charging pool, but do not fail when this charging pool already exists.
+        /// </summary>
+        /// <param name="ChargingStationOperator">The charging station operator of the new charging pool.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public static Task<AddChargingPoolResult> AddChargingPool(this IChargingStationOperator                                       ChargingStationOperator,
 
-                                                                  ChargingPool_Id?                                             Id                             = null,
-                                                                  I18NString?                                                  Name                           = null,
-                                                                  I18NString?                                                  Description                    = null,
+                                                                  ChargingPool_Id?                                                    Id                             = null,
+                                                                  I18NString?                                                         Name                           = null,
+                                                                  I18NString?                                                         Description                    = null,
 
-                                                                  Address?                                                     Address                        = null,
-                                                                  GeoCoordinate?                                               GeoLocation                    = null,
-                                                                  OpeningTimes?                                                OpeningTimes                   = null,
-                                                                  Boolean?                                                     ChargingWhenClosed             = null,
+                                                                  Address?                                                            Address                        = null,
+                                                                  GeoCoordinate?                                                      GeoLocation                    = null,
+                                                                  OpeningTimes?                                                       OpeningTimes                   = null,
+                                                                  Boolean?                                                            ChargingWhenClosed             = null,
+                                                                  AccessibilityTypes?                                                 Accessibility                  = null,
+                                                                  Languages?                                                          LocationLanguage               = null,
+                                                                  PhoneNumber?                                                        HotlinePhoneNumber             = null,
 
-                                                                  Action<IChargingPool>?                                       Configurator                   = null,
-                                                                  RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
-                                                                  Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                  Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                  UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                                  UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                                  Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
+                                                                  Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
+                                                                  UInt16?                                                             MaxAdminStatusListSize         = null,
+                                                                  UInt16?                                                             MaxStatusListSize              = null,
 
-                                                                  String?                                                      DataSource                     = null,
-                                                                  DateTime?                                                    LastChange                     = null,
+                                                                  String?                                                             DataSource                     = null,
+                                                                  DateTime?                                                           LastChange                     = null,
 
-                                                                  JObject?                                                     CustomData                     = null,
-                                                                  UserDefinedDictionary?                                       InternalData                   = null,
+                                                                  JObject?                                                            CustomData                     = null,
+                                                                  UserDefinedDictionary?                                              InternalData                   = null,
 
-                                                                  Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                  Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                                  Action<IChargingPool>?                                              Configurator                   = null,
+                                                                  RemoteChargingPoolCreatorDelegate?                                  RemoteChargingPoolCreator      = null,
 
-                                                                  Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                  EventTracking_Id?                                            EventTrackingId                = null,
-                                                                  User_Id?                                                     CurrentUserId                  = null)
+                                                                  Action<IChargingPool, EventTracking_Id>?                            OnSuccess                      = null,
+                                                                  Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
+
+                                                                  Boolean                                                             SkipAddedNotifications         = false,
+                                                                  Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                  EventTracking_Id?                                                   EventTrackingId                = null,
+                                                                  User_Id?                                                            CurrentUserId                  = null)
 
 
-            => ChargingStationOperator.AddChargingPool(new ChargingPool(Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
-                                                                        ChargingStationOperator,
-                                                                        Name,
-                                                                        Description,
+            => ChargingStationOperator.AddChargingPool(new ChargingPool(
+                                                           Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
+                                                           ChargingStationOperator,
+                                                           Name,
+                                                           Description,
 
-                                                                        Address,
-                                                                        GeoLocation,
-                                                                        OpeningTimes,
-                                                                        ChargingWhenClosed,
+                                                           Address,
+                                                           GeoLocation,
+                                                           OpeningTimes,
+                                                           ChargingWhenClosed,
+                                                           Accessibility,
+                                                           LocationLanguage,
+                                                           HotlinePhoneNumber,
 
-                                                                        Configurator,
-                                                                        RemoteChargingPoolCreator,
-                                                                        InitialAdminStatus,
-                                                                        InitialStatus,
-                                                                        MaxAdminStatusListSize,
-                                                                        MaxStatusListSize,
+                                                           InitialAdminStatus,
+                                                           InitialStatus,
+                                                           MaxAdminStatusListSize,
+                                                           MaxStatusListSize,
 
-                                                                        DataSource,
-                                                                        LastChange,
+                                                           DataSource,
+                                                           LastChange,
 
-                                                                        CustomData,
-                                                                        InternalData),
+                                                           CustomData,
+                                                           InternalData,
+
+                                                           Configurator,
+                                                           RemoteChargingPoolCreator
+                                                       ),
 
                                                        OnSuccess,
                                                        OnError,
 
+                                                       SkipAddedNotifications,
                                                        AllowInconsistentOperatorIds,
                                                        EventTrackingId,
                                                        CurrentUserId);
 
         #endregion
 
-        #region AddChargingPoolIfNotExists(this IChargingStationOperator, ...)
+        #region AddChargingPoolIfNotExists(this IChargingStationOperator, Id = null, Name = null, ...)
 
+        /// <summary>
+        /// Add a new charging pool, but do not fail when this charging pool already exists.
+        /// </summary>
+        /// <param name="ChargingStationOperator">The charging station operator of the new charging pool.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<AddChargingPoolResult> AddChargingPoolIfNotExists(this IChargingStationOperator                                ChargingStationOperator,
 
                                                                              ChargingPool_Id?                                             Id                             = null,
@@ -130,13 +165,14 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              GeoCoordinate?                                               GeoLocation                    = null,
                                                                              OpeningTimes?                                                OpeningTimes                   = null,
                                                                              Boolean?                                                     ChargingWhenClosed             = null,
+                                                                             AccessibilityTypes?                                          Accessibility                  = null,
+                                                                             Languages?                                                   LocationLanguage               = null,
+                                                                             PhoneNumber?                                                 HotlinePhoneNumber             = null,
 
-                                                                             Action<IChargingPool>?                                       Configurator                   = null,
-                                                                             RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
                                                                              Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                              Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                             UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                                             UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                                             UInt16?                                                      MaxAdminStatusListSize         = null,
+                                                                             UInt16?                                                      MaxStatusListSize              = null,
 
                                                                              String?                                                      DataSource                     = null,
                                                                              DateTime?                                                    LastChange                     = null,
@@ -144,119 +180,235 @@ namespace cloud.charging.open.protocols.WWCP
                                                                              JObject?                                                     CustomData                     = null,
                                                                              UserDefinedDictionary?                                       InternalData                   = null,
 
-                                                                             Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                                             Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                                             Action<IChargingPool>?                                       Configurator                   = null,
+                                                                             RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
 
+                                                                             Action<IChargingPool, EventTracking_Id>?                     OnSuccess                      = null,
+
+                                                                             Boolean                                                      SkipAddedNotifications         = false,
                                                                              Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                              EventTracking_Id?                                            EventTrackingId                = null,
                                                                              User_Id?                                                     CurrentUserId                  = null)
 
 
-            => ChargingStationOperator.AddChargingPoolIfNotExists(new ChargingPool(Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
-                                                                                   ChargingStationOperator,
-                                                                                   Name,
-                                                                                   Description,
+            => ChargingStationOperator.AddChargingPoolIfNotExists(new ChargingPool(
+                                                                      Id ?? ChargingPool_Id.NewRandom(ChargingStationOperator.Id),
+                                                                      ChargingStationOperator,
+                                                                      Name,
+                                                                      Description,
 
-                                                                                   Address,
-                                                                                   GeoLocation,
-                                                                                   OpeningTimes,
-                                                                                   ChargingWhenClosed,
+                                                                      Address,
+                                                                      GeoLocation,
+                                                                      OpeningTimes,
+                                                                      ChargingWhenClosed,
+                                                                      Accessibility,
+                                                                      LocationLanguage,
+                                                                      HotlinePhoneNumber,
 
-                                                                                   Configurator,
-                                                                                   RemoteChargingPoolCreator,
-                                                                                   InitialAdminStatus,
-                                                                                   InitialStatus,
-                                                                                   MaxAdminStatusListSize,
-                                                                                   MaxStatusListSize,
+                                                                      InitialAdminStatus,
+                                                                      InitialStatus,
+                                                                      MaxAdminStatusListSize,
+                                                                      MaxStatusListSize,
 
-                                                                                   DataSource,
-                                                                                   LastChange,
+                                                                      DataSource,
+                                                                      LastChange,
 
-                                                                                   CustomData,
-                                                                                   InternalData),
+                                                                      CustomData,
+                                                                      InternalData,
+
+                                                                      Configurator,
+                                                                      RemoteChargingPoolCreator
+                                                                  ),
 
                                                                   OnSuccess,
-                                                                  OnError,
 
+                                                                  SkipAddedNotifications,
                                                                   AllowInconsistentOperatorIds,
                                                                   EventTrackingId,
                                                                   CurrentUserId);
 
         #endregion
 
-        #region AddOrUpdateChargingPool   (this IChargingStationOperator, ...)
+        #region AddOrUpdateChargingPool   (this IChargingStationOperator, Id,        Name = null, ...)
 
         /// <summary>
-        /// Create and register or udpate a new charging pool having the given
-        /// unique charging pool identification.
+        /// Add a new or update an existing charging pool.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging pool.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public static Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(this IChargingStationOperator                                ChargingStationOperator,
+        /// <param name="ChargingStationOperator">The charging station operator of the new or updated charging pool.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public static Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(this IChargingStationOperator                                       ChargingStationOperator,
 
-                                                                                  ChargingPool_Id                                              Id,
-                                                                                  I18NString?                                                  Name                           = null,
-                                                                                  I18NString?                                                  Description                    = null,
+                                                                                  ChargingPool_Id                                                     Id,
+                                                                                  I18NString?                                                         Name                                   = null,
+                                                                                  I18NString?                                                         Description                            = null,
 
-                                                                                  Address?                                                     Address                        = null,
-                                                                                  GeoCoordinate?                                               GeoLocation                    = null,
-                                                                                  OpeningTimes?                                                OpeningTimes                   = null,
-                                                                                  Boolean?                                                     ChargingWhenClosed             = null,
+                                                                                  Address?                                                            Address                                = null,
+                                                                                  GeoCoordinate?                                                      GeoLocation                            = null,
+                                                                                  OpeningTimes?                                                       OpeningTimes                           = null,
+                                                                                  Boolean?                                                            ChargingWhenClosed                     = null,
+                                                                                  AccessibilityTypes?                                                 Accessibility                          = null,
+                                                                                  Languages?                                                          LocationLanguage                       = null,
+                                                                                  PhoneNumber?                                                        HotlinePhoneNumber                     = null,
 
-                                                                                  Action<IChargingPool>?                                       Configurator                   = null,
-                                                                                  RemoteChargingPoolCreatorDelegate?                           RemoteChargingPoolCreator      = null,
-                                                                                  Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                                  Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                                  UInt16                                                       MaxAdminStatusListSize         = ChargingPool.DefaultMaxAdminStatusScheduleSize,
-                                                                                  UInt16                                                       MaxStatusListSize              = ChargingPool.DefaultMaxStatusScheduleSize,
+                                                                                  Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                     = null,
+                                                                                  Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                          = null,
+                                                                                  UInt16?                                                             MaxAdminStatusListSize                 = null,
+                                                                                  UInt16?                                                             MaxStatusListSize                      = null,
 
-                                                                                  String?                                                      DataSource                     = null,
-                                                                                  DateTime?                                                    LastChange                     = null,
+                                                                                  String?                                                             DataSource                             = null,
+                                                                                  DateTime?                                                           LastChange                             = null,
 
-                                                                                  JObject?                                                     CustomData                     = null,
-                                                                                  UserDefinedDictionary?                                       InternalData                   = null,
+                                                                                  JObject?                                                            CustomData                             = null,
+                                                                                  UserDefinedDictionary?                                              InternalData                           = null,
 
-                                                                                  Action<IChargingPool>?                                       OnAdditionSuccess              = null,
-                                                                                  Action<IChargingPool,            IChargingPool>?             OnUpdateSuccess                = null,
-                                                                                  Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                                                  Action<IChargingPool>?                                              Configurator                           = null,
+                                                                                  RemoteChargingPoolCreatorDelegate?                                  RemoteChargingPoolCreator              = null,
 
-                                                                                  Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                                  EventTracking_Id?                                            EventTrackingId                = null,
-                                                                                  User_Id?                                                     CurrentUserId                  = null)
+                                                                                  Action<IChargingPool,                           EventTracking_Id>?  OnAdditionSuccess                      = null,
+                                                                                  Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                        = null,
+                                                                                  Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                                = null,
+
+                                                                                  Boolean                                                             SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                                  Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds           = null,
+                                                                                  EventTracking_Id?                                                   EventTrackingId                        = null,
+                                                                                  User_Id?                                                            CurrentUserId                          = null)
 
 
-            => ChargingStationOperator.AddOrUpdateChargingPool(new ChargingPool(Id,
-                                                                                ChargingStationOperator,
-                                                                                Name,
-                                                                                Description,
+            => ChargingStationOperator.AddOrUpdateChargingPool(new ChargingPool(
+                                                                   Id,
+                                                                   ChargingStationOperator,
+                                                                   Name,
+                                                                   Description,
 
-                                                                                Address,
-                                                                                GeoLocation,
-                                                                                OpeningTimes,
-                                                                                ChargingWhenClosed,
+                                                                   Address,
+                                                                   GeoLocation,
+                                                                   OpeningTimes,
+                                                                   ChargingWhenClosed,
+                                                                   Accessibility,
+                                                                   LocationLanguage,
+                                                                   HotlinePhoneNumber,
 
-                                                                                Configurator,
-                                                                                RemoteChargingPoolCreator,
-                                                                                InitialAdminStatus,
-                                                                                InitialStatus,
-                                                                                MaxAdminStatusListSize,
-                                                                                MaxStatusListSize,
+                                                                   InitialAdminStatus,
+                                                                   InitialStatus,
+                                                                   MaxAdminStatusListSize,
+                                                                   MaxStatusListSize,
 
-                                                                                DataSource,
-                                                                                LastChange,
+                                                                   DataSource,
+                                                                   LastChange,
 
-                                                                                CustomData,
-                                                                                InternalData),
+                                                                   CustomData,
+                                                                   InternalData,
+
+                                                                   Configurator,
+                                                                   RemoteChargingPoolCreator
+                                                               ),
 
                                                                OnAdditionSuccess,
                                                                OnUpdateSuccess,
                                                                OnError,
 
+                                                               SkipAddOrUpdatedUpdatedNotifications,
                                                                AllowInconsistentOperatorIds,
                                                                EventTrackingId,
                                                                CurrentUserId);
+
+        #endregion
+
+        #region UpdateChargingPool        (this IChargingStationOperator, Id,        Name = null, ...)
+
+        /// <summary>
+        /// Update the given charging pool.
+        /// </summary>
+        /// <param name="ChargingStationOperator">The charging station operator of the updated charging pool.</param>
+        /// 
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public static Task<UpdateChargingPoolResult> UpdateChargingPool(this IChargingStationOperator                                       ChargingStationOperator,
+
+                                                                        ChargingPool_Id                                                     Id,
+                                                                        I18NString?                                                         Name                           = null,
+                                                                        I18NString?                                                         Description                    = null,
+
+                                                                        Address?                                                            Address                        = null,
+                                                                        GeoCoordinate?                                                      GeoLocation                    = null,
+                                                                        OpeningTimes?                                                       OpeningTimes                   = null,
+                                                                        Boolean?                                                            ChargingWhenClosed             = null,
+                                                                        AccessibilityTypes?                                                 Accessibility                  = null,
+                                                                        Languages?                                                          LocationLanguage               = null,
+                                                                        PhoneNumber?                                                        HotlinePhoneNumber             = null,
+
+                                                                        Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
+                                                                        Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
+                                                                        UInt16?                                                             MaxAdminStatusListSize         = null,
+                                                                        UInt16?                                                             MaxStatusListSize              = null,
+
+                                                                        String?                                                             DataSource                     = null,
+                                                                        DateTime?                                                           LastChange                     = null,
+
+                                                                        JObject?                                                            CustomData                     = null,
+                                                                        UserDefinedDictionary?                                              InternalData                   = null,
+
+                                                                        Action<IChargingPool>?                                              Configurator                   = null,
+                                                                        RemoteChargingPoolCreatorDelegate?                                  RemoteChargingPoolCreator      = null,
+
+                                                                        Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                                        Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
+
+                                                                        Boolean                                                             SkipUpdatedNotifications       = false,
+                                                                        Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                        EventTracking_Id?                                                   EventTrackingId                = null,
+                                                                        User_Id?                                                            CurrentUserId                  = null)
+
+
+            => ChargingStationOperator.UpdateChargingPool(new ChargingPool(
+                                                              Id,
+                                                              ChargingStationOperator,
+                                                              Name,
+                                                              Description,
+
+                                                              Address,
+                                                              GeoLocation,
+                                                              OpeningTimes,
+                                                              ChargingWhenClosed,
+                                                              Accessibility,
+                                                              LocationLanguage,
+                                                              HotlinePhoneNumber,
+
+                                                              InitialAdminStatus,
+                                                              InitialStatus,
+                                                              MaxAdminStatusListSize,
+                                                              MaxStatusListSize,
+
+                                                              DataSource,
+                                                              LastChange,
+
+                                                              CustomData,
+                                                              InternalData,
+
+                                                              Configurator,
+                                                              RemoteChargingPoolCreator
+                                                          ),
+
+                                                          OnUpdateSuccess,
+                                                          OnError,
+
+                                                          SkipUpdatedNotifications,
+                                                          AllowInconsistentOperatorIds,
+                                                          EventTrackingId,
+                                                          CurrentUserId);
 
         #endregion
 
@@ -313,6 +465,9 @@ namespace cloud.charging.open.protocols.WWCP
     }
 
 
+    /// <summary>
+    /// The common charging station operator interface.
+    /// </summary>
     public interface IChargingStationOperator : IEntity<ChargingStationOperator_Id>,
                                                 IAdminStatus<ChargingStationOperatorAdminStatusTypes>,
                                                 IStatus<ChargingStationOperatorStatusTypes>,
@@ -435,70 +590,117 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Create and register a new charging pool having the given
-        /// unique charging pool identification.
+        /// Add a new charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        Task<AddChargingPoolResult> AddChargingPool(ChargingPool                                                 ChargingPool,
+        /// <param name="ChargingPool">A new charging pool.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        Task<AddChargingPoolResult> AddChargingPool(ChargingPool                                                        ChargingPool,
 
-                                                    Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                    Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                    Action<IChargingPool,                           EventTracking_Id>?  OnSuccess                      = null,
+                                                    Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
 
-                                                    Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                    EventTracking_Id?                                            EventTrackingId                = null,
-                                                    User_Id?                                                     CurrentUserId                  = null);
+                                                    Boolean                                                             SkipAddedNotifications         = false,
+                                                    Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                    EventTracking_Id?                                                   EventTrackingId                = null,
+                                                    User_Id?                                                            CurrentUserId                  = null);
 
 
         /// <summary>
-        /// Create and register a new charging pool having the given
-        /// unique charging pool identification.
+        /// Add a new charging pool, but do not fail when this charging pool already exists.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        /// <param name="ChargingPool">A new charging pool.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         Task<AddChargingPoolResult> AddChargingPoolIfNotExists(ChargingPool                                                 ChargingPool,
 
-                                                               Action<IChargingPool>?                                       OnSuccess                      = null,
-                                                               Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                               Action<IChargingPool, EventTracking_Id>?                     OnSuccess                      = null,
 
+                                                               Boolean                                                      SkipAddedNotifications         = false,
                                                                Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                EventTracking_Id?                                            EventTrackingId                = null,
                                                                User_Id?                                                     CurrentUserId                  = null);
 
 
         /// <summary>
-        /// Create and register or update a new charging pool having the given
-        /// unique charging pool identification.
+        /// Add a new or update an existing charging pool.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging pool.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool                                                 ChargingPool,
+        /// <param name="ChargingPool">A new or updated charging pool.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the charging pool.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool                                                        ChargingPool,
 
-                                                                    Action<IChargingPool>?                                       OnAdditionSuccess              = null,
-                                                                    Action<IChargingPool,            IChargingPool>?             OnUpdateSuccess                = null,
-                                                                    Action<IChargingStationOperator, IChargingPool>?             OnError                        = null,
+                                                                    Action<IChargingPool,                           EventTracking_Id>?  OnAdditionSuccess                      = null,
+                                                                    Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                        = null,
+                                                                    Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                                = null,
 
-                                                                    Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                    EventTracking_Id?                                            EventTrackingId                = null,
-                                                                    User_Id?                                                     CurrentUserId                  = null);
+                                                                    Boolean                                                             SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                    Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds           = null,
+                                                                    EventTracking_Id?                                                   EventTrackingId                        = null,
+                                                                    User_Id?                                                            CurrentUserId                          = null);
 
 
         /// <summary>
         /// Update the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="OnUpdated">A delegate run whenever the charging pool has been updated successfully.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        /// 
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the update of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                             ChargingPool,
-                                                          Boolean                                  SkipUserUpdatedNotifications   = false,
-                                                          Action<ChargingPool, EventTracking_Id>?  OnUpdated                      = null,
-                                                          EventTracking_Id?                        EventTrackingId                = null,
-                                                          User_Id?                                 CurrentUserId                  = null);
+        Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                                                        ChargingPool,
+
+                                                          Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                          Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
+
+                                                          Boolean                                                             SkipUpdatedNotifications       = false,
+                                                          Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                          EventTracking_Id?                                                   EventTrackingId                = null,
+                                                          User_Id?                                                            CurrentUserId                  = null);
+
+
+        /// <summary>
+        /// Remove the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
+        /// 
+        /// <param name="OnRemoveSuccess">An optional delegate to be called after the successful removal of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the removal of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      ChargingPoolId,
+
+                                                          Action<IChargingPool,            EventTracking_Id>?  OnRemoveSuccess            = null,
+                                                          Action<IChargingStationOperator, EventTracking_Id>?  OnError                    = null,
+
+                                                          Boolean                                              SkipRemovedNotifications   = false,
+                                                          EventTracking_Id?                                    EventTrackingId            = null,
+                                                          User_Id?                                             CurrentUserId              = null);
+
 
 
         /// <summary>
@@ -511,6 +713,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="IncludeChargingPools">An optional delegate for filtering charging pools.</param>
         IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate? IncludeChargingPools = null);
+
+        /// <summary>
+        /// Check if the given ChargingPool is already present within the Charging Station Operator.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        Boolean ChargingPoolExists(IChargingPool ChargingPool);
+
+        /// <summary>
+        /// Check if the given ChargingPool identification is already present within the Charging Station Operator.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
+        Boolean ChargingPoolExists(ChargingPool_Id ChargingPoolId);
+
+        IChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId);
+
+        Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool);
+
+        Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out IChargingPool? ChargingPool);
+
+
+
+
+
+
+
 
         /// <summary>
         /// Return an enumeration of all charging pool admin status.
@@ -557,35 +784,15 @@ namespace cloud.charging.open.protocols.WWCP
                                        UInt64?                                  Take                   = null);
 
 
-        /// <summary>
-        /// Check if the given ChargingPool is already present within the Charging Station Operator.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        Boolean ChargingPoolExists(IChargingPool ChargingPool);
 
-        /// <summary>
-        /// Check if the given ChargingPool identification is already present within the Charging Station Operator.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
-        Boolean ChargingPoolExists(ChargingPool_Id ChargingPoolId);
 
-        IChargingPool? GetChargingPoolById(ChargingPool_Id ChargingPoolId);
+        void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
+                                        Timestamped<ChargingPoolAdminStatusTypes>               NewStatus,
+                                        Boolean                                                 SendUpstream = false);
 
-        Boolean TryGetChargingPoolById(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool);
-
-        Boolean TryGetChargingPoolByStationId(ChargingStation_Id ChargingStationId, out IChargingPool? ChargingPool);
-
-        Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id ChargingPoolId);
-
-        Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out IChargingPool? ChargingPool);
-
-        void SetChargingPoolAdminStatus(ChargingPool_Id                            ChargingPoolId,
-                                        Timestamped<ChargingPoolAdminStatusTypes>  NewStatus,
-                                        Boolean                                    SendUpstream = false);
-
-        void SetChargingPoolAdminStatus(ChargingPool_Id               ChargingPoolId,
-                                        ChargingPoolAdminStatusTypes  NewStatus,
-                                        DateTime                      Timestamp);
+        void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
+                                        ChargingPoolAdminStatusTypes                            NewStatus,
+                                        DateTime                                                Timestamp);
 
         void SetChargingPoolAdminStatus(ChargingPool_Id                                         ChargingPoolId,
                                         IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList,
