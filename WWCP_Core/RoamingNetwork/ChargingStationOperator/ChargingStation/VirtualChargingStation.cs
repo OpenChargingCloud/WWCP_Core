@@ -84,8 +84,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                        ECPrivateKeyParameters?                                         PrivateKey                           = null,
                                                                        PublicKeyCertificates?                                          PublicKeyCertificates                = null,
                                                                        TimeSpan?                                                       SelfCheckTimeSpan                    = null,
-                                                                       UInt16                                                          MaxAdminStatusScheduleSize               = VirtualChargingStation.DefaultMaxAdminStatusScheduleSize,
-                                                                       UInt16                                                          MaxStatusScheduleSize                    = VirtualChargingStation.DefaultMaxStatusScheduleSize,
+                                                                       UInt16?                                                         MaxAdminStatusScheduleSize           = null,
+                                                                       UInt16?                                                         MaxStatusScheduleSize                = null,
 
                                                                        String?                                                         DataSource                           = null,
                                                                        DateTime?                                                       LastChange                           = null,
@@ -213,8 +213,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                   ECPrivateKeyParameters?                                         PrivateKey                           = null,
                                                                                   PublicKeyCertificates?                                          PublicKeyCertificates                = null,
                                                                                   TimeSpan?                                                       SelfCheckTimeSpan                    = null,
-                                                                                  UInt16                                                          MaxAdminStatusScheduleSize               = VirtualChargingStation.DefaultMaxAdminStatusScheduleSize,
-                                                                                  UInt16                                                          MaxStatusScheduleSize                    = VirtualChargingStation.DefaultMaxStatusScheduleSize,
+                                                                                  UInt16?                                                         MaxAdminStatusScheduleSize           = null,
+                                                                                  UInt16?                                                         MaxStatusScheduleSize                = null,
 
                                                                                   String?                                                         DataSource                           = null,
                                                                                   DateTime?                                                       LastChange                           = null,
@@ -342,8 +342,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                        ECPrivateKeyParameters?                                         PrivateKey                           = null,
                                                                                        PublicKeyCertificates?                                          PublicKeyCertificates                = null,
                                                                                        TimeSpan?                                                       SelfCheckTimeSpan                    = null,
-                                                                                       UInt16                                                          MaxAdminStatusScheduleSize               = VirtualChargingStation.DefaultMaxAdminStatusScheduleSize,
-                                                                                       UInt16                                                          MaxStatusScheduleSize                    = VirtualChargingStation.DefaultMaxStatusScheduleSize,
+                                                                                       UInt16?                                                         MaxAdminStatusScheduleSize           = null,
+                                                                                       UInt16?                                                         MaxStatusScheduleSize                = null,
 
                                                                                        String?                                                         DataSource                           = null,
                                                                                        DateTime?                                                       LastChange                           = null,
@@ -431,7 +431,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                );
 
         #endregion
-
 
     }
 

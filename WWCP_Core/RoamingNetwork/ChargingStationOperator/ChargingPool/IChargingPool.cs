@@ -186,8 +186,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                    Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                                    Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                                                   UInt16?                                                         MaxAdminStatusScheduleSize         = null,
-                                                                                   UInt16?                                                         MaxStatusScheduleSize              = null,
+                                                                                   UInt16?                                                         MaxAdminStatusScheduleSize     = null,
+                                                                                   UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                                    String?                                                         DataSource                     = null,
                                                                                    DateTime?                                                       LastChange                     = null,

@@ -25,7 +25,8 @@ namespace cloud.charging.open.protocols.WWCP
         FreePubliclyAccessible,
         RestrictedAccess,
         PayingPubliclyAccessible,
-        TestStation
+        TestStation,
+        TestPool
 
     }
 
