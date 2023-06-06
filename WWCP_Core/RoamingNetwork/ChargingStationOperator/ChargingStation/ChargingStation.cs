@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Accessibility
 
-        private AccessibilityTypes? _Accessibility;
+        private AccessibilityTypes? accessibility;
 
         /// <summary>
         /// The accessibility of the charging station.
@@ -384,8 +384,8 @@ namespace cloud.charging.open.protocols.WWCP
             get
             {
 
-                return _Accessibility != null
-                           ? _Accessibility
+                return accessibility is not null
+                           ? accessibility
                            : ChargingPool?.Accessibility;
 
             }
@@ -393,14 +393,14 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (value != _Accessibility && value != ChargingPool?.Accessibility)
+                if (value != accessibility && value != ChargingPool?.Accessibility)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _Accessibility);
+                        DeleteProperty(ref accessibility);
 
                     else
-                        SetProperty(ref _Accessibility, value);
+                        SetProperty(ref accessibility, value);
 
                 }
 
@@ -420,11 +420,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        /// <summary>
-        /// An optional number/string printed on the outside of the charging station for visual identification.
-        /// </summary>
-        public String?                                  PhysicalReference       { get; }
+        #region PhotoURLs
 
         /// <summary>
         /// URIs of photos of this charging station.
@@ -432,10 +428,67 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional]
         public ReactiveSet<URL>                         PhotoURLs               { get; }
 
+        #endregion
+
+        #region PhysicalReference
+
+        private String? physicalReference;
+
+        /// <summary>
+        /// An optional number/string printed on the outside of the charging station for visual identification.
+        /// </summary>
+        [Optional]
+        public String? PhysicalReference
+        {
+
+            get
+            {
+                return physicalReference;
+            }
+
+            set
+            {
+
+                if (physicalReference != value)
+                    SetProperty(ref physicalReference, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region LocationLanguage
+
+        private Languages? locationLanguage;
+
+        /// <summary>
+        /// The location language.
+        /// </summary>
+        [Optional]
+        public Languages? LocationLanguage
+        {
+
+            get
+            {
+                return locationLanguage;
+            }
+
+            set
+            {
+
+                if (locationLanguage != value)
+                    SetProperty(ref locationLanguage, value);
+
+            }
+
+        }
+
+        #endregion
 
         #region HotlinePhoneNumber
 
-        private PhoneNumber? _HotlinePhoneNumber;
+        private PhoneNumber? hotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the charging station operator hotline.
@@ -446,20 +499,56 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _HotlinePhoneNumber;
+                return hotlinePhoneNumber;
             }
 
             set
             {
 
-                if (_HotlinePhoneNumber != value)
+                if (hotlinePhoneNumber != value)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _HotlinePhoneNumber);
+                        DeleteProperty(ref hotlinePhoneNumber);
 
                     else
-                        SetProperty(ref _HotlinePhoneNumber, value);
+                        SetProperty(ref hotlinePhoneNumber, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingWhenClosed
+
+        private Boolean? chargingWhenClosed;
+
+        /// <summary>
+        /// Whether chargingWhenClosed?
+        /// </summary>
+        [Optional]
+        public Boolean? ChargingWhenClosed
+        {
+
+            get
+            {
+                return chargingWhenClosed;
+            }
+
+            set
+            {
+
+                if (chargingWhenClosed != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref chargingWhenClosed);
+
+                    else
+                        SetProperty(ref chargingWhenClosed, value);
 
                 }
 
@@ -1053,7 +1142,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (ServiceIdentification != value)
+                if (serviceIdentification != value)
                     SetProperty(ref serviceIdentification, value);
 
             }
@@ -1081,7 +1170,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (ModelCode != value)
+                if (modelCode != value)
                     SetProperty(ref modelCode, value);
 
             }
@@ -1106,7 +1195,7 @@ namespace cloud.charging.open.protocols.WWCP
             set
             {
 
-                if (HubjectStationId != value)
+                if (hubjectStationId != value)
                     SetProperty<String>(ref hubjectStationId, value);
 
             }
@@ -1152,74 +1241,43 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Constructor(s)
 
-        #region ChargingStation(Id, ...)
-
-        /// <summary>
-        /// Create a new charging station having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging station pool.</param>
-        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
-        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
-        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
-        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
-        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        public ChargingStation(ChargingStation_Id                             Id,
-                               I18NString?                                    Name                           = null,
-                               I18NString?                                    Description                    = null,
-
-                               Address?                                       Address                        = null,
-                               GeoCoordinate?                                 GeoLocation                    = null,
-
-                               Action<ChargingStation>?                       Configurator                   = null,
-                               RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
-                               Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
-                               Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-                               UInt16?                                        MaxAdminStatusListSize         = null,
-                               UInt16?                                        MaxStatusListSize              = null)
-
-            : this(Id,
-                   null,
-                   Name,
-                   Description,
-
-                   Address,
-                   GeoLocation,
-
-                   Configurator,
-                   RemoteChargingStationCreator,
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize)
-
-        { }
-
-        #endregion
-
-        #region ChargingStation(Id, ChargingPool, ...)
-
         /// <summary>
         /// Create a new charging station having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station pool.</param>
         /// <param name="ChargingPool">The parent charging pool.</param>
-        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
-        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
+        /// 
         /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxAdminStatusScheduleSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusScheduleSize">An optional max length of the staus list.</param>
+        /// 
+        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
+        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
         public ChargingStation(ChargingStation_Id                             Id,
                                IChargingPool?                                 ChargingPool                   = null,
 
                                I18NString?                                    Name                           = null,
                                I18NString?                                    Description                    = null,
+
                                Address?                                       Address                        = null,
                                GeoCoordinate?                                 GeoLocation                    = null,
+                               OpeningTimes?                                  OpeningTimes                   = null,
+                               Boolean?                                       ChargingWhenClosed             = null,
+                               AccessibilityTypes?                            Accessibility                  = null,
+                               Languages?                                     LocationLanguage               = null,
+                               String?                                        PhysicalReference              = null,
+                               PhoneNumber?                                   HotlinePhoneNumber             = null,
 
-                               Action<ChargingStation>?                       Configurator                   = null,
-                               RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
+                               IEnumerable<AuthenticationModes>?              AuthenticationModes            = null,
+                               IEnumerable<PaymentOptions>?                   PaymentOptions                 = null,
+                               IEnumerable<Features>?                         Features                       = null,
+
+                               String?                                        ServiceIdentification          = null,
+                               String?                                        ModelCode                      = null,
+
+                               IEnumerable<Brand>?                            Brands                         = null,
+
                                Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
                                Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
                                UInt16?                                        MaxAdminStatusScheduleSize     = null,
@@ -1229,7 +1287,10 @@ namespace cloud.charging.open.protocols.WWCP
                                DateTime?                                      LastChange                     = null,
 
                                JObject?                                       CustomData                     = null,
-                               UserDefinedDictionary?                         InternalData                   = null)
+                               UserDefinedDictionary?                         InternalData                   = null,
+
+                               Action<ChargingStation>?                       Configurator                   = null,
+                               RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null)
 
             : base(Id,
                    Name,
@@ -1249,10 +1310,23 @@ namespace cloud.charging.open.protocols.WWCP
 
             this.ChargingPool                        = ChargingPool;
 
-            this.Address                             = Address;
-            this.GeoLocation                         = GeoLocation;
+            this.address                             = Address;
+            this.geoLocation                         = GeoLocation;
+            this.openingTimes                        = OpeningTimes ?? OpeningTimes.Open24Hours;
+            this.hotlinePhoneNumber                  = HotlinePhoneNumber;
+            this.physicalReference                   = PhysicalReference;
+            this.chargingWhenClosed                  = ChargingWhenClosed;
+            this.accessibility                       = Accessibility;
+            this.locationLanguage                    = LocationLanguage;
+            this.serviceIdentification               = ServiceIdentification;
+            this.modelCode                           = ModelCode;
 
             this.Brands                              = new ReactiveSet<Brand>();
+
+            if (Brands is not null)
+                foreach (var brand in Brands)
+                    this.Brands.Add(brand);
+
             this.Brands.OnSetChanged                += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("Brands",
@@ -1282,6 +1356,11 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.AuthenticationModes                 = new ReactiveSet<AuthenticationModes>();
+
+            if (AuthenticationModes is not null)
+                foreach (var authenticationMode in AuthenticationModes)
+                    this.AuthenticationModes.Add(authenticationMode);
+
             this.AuthenticationModes.OnSetChanged   += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("AuthenticationModes",
@@ -1291,6 +1370,11 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.PaymentOptions                      = new ReactiveSet<PaymentOptions>();
+
+            if (PaymentOptions is not null)
+                foreach (var paymentOption in PaymentOptions)
+                    this.PaymentOptions.Add(paymentOption);
+
             this.PaymentOptions.OnSetChanged        += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("PaymentOptions",
@@ -1300,6 +1384,11 @@ namespace cloud.charging.open.protocols.WWCP
             };
 
             this.Features                            = new ReactiveSet<Features>();
+
+            if (Features is not null)
+                foreach (var feature in Features)
+                    this.Features.Add(feature);
+
             this.Features.OnSetChanged              += (timestamp, sender, newItems, oldItems) => {
 
                 PropertyChanged("Features",
@@ -1387,8 +1476,6 @@ namespace cloud.charging.open.protocols.WWCP
 
             };
 
-            this.HotlinePhoneNumber                = HotlinePhoneNumber;
-
             //this.evses                             = new EntityHashSet<IChargingStation, EVSE_Id, IEVSE>(this);
             //this.evses.OnSetChanged               += (timestamp, reactiveSet, newItems, oldItems) =>
             //{
@@ -1399,8 +1486,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             //};
 
-            this.openingTimes                = OpeningTimes.Open24Hours;
-            this.evses                       = new EntityHashSet<IChargingStation, EVSE_Id,  IEVSE> (this);
+            this.evses                             = new EntityHashSet<IChargingStation, EVSE_Id,  IEVSE> (this);
 
             #endregion
 
@@ -1431,8 +1517,6 @@ namespace cloud.charging.open.protocols.WWCP
             this.RemoteChargingStation = RemoteChargingStationCreator?.Invoke(this);
 
         }
-
-        #endregion
 
         #endregion
 

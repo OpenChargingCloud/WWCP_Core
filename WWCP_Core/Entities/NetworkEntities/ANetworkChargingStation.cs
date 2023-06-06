@@ -54,12 +54,12 @@
 //        /// <summary>
 //        /// The default max size of the status history.
 //        /// </summary>
-//        public const UInt16 DefaultMaxStatusListSize        = 50;
+//        public const UInt16 DefaultMaxStatusScheduleSize        = 50;
 
 //        /// <summary>
 //        /// The default max size of the admin status history.
 //        /// </summary>
-//        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
+//        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 50;
 
 //        public static readonly TimeSpan  DefaultRequestTimeout  = TimeSpan.FromSeconds(180);
 
@@ -405,8 +405,8 @@
 //                                       ECPrivateKeyParameters           PrivateKey               = null,
 //                                       PublicKeyCertificates            PublicKeyCertificates    = null,
 //                                       TimeSpan?                        SelfCheckTimeSpan        = null,
-//                                       UInt16                           MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-//                                       UInt16                           MaxStatusListSize        = DefaultMaxStatusListSize)
+//                                       UInt16                           MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
+//                                       UInt16                           MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize)
 //        {
 
 //            #region Init data and properties
@@ -415,10 +415,10 @@
 //            this.RoamingNetwork         = RoamingNetwork;
 //            this._EVSEs                 = new HashSet<IRemoteEVSE>();
 
-//            this._StatusSchedule        = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusListSize);
+//            this._StatusSchedule        = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusScheduleSize);
 //            this._StatusSchedule.Insert(ChargingStationStatusTypes.OutOfService);
 
-//            this._AdminStatusSchedule   = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxStatusListSize);
+//            this._AdminStatusSchedule   = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxStatusScheduleSize);
 //            this._AdminStatusSchedule.Insert(ChargingStationAdminStatusTypes.OutOfService);
 
 //            #endregion
@@ -497,8 +497,8 @@
 //                                       ECPrivateKeyParameters               PrivateKey                   = null,
 //                                       PublicKeyCertificates                PublicKeyCertificates        = null,
 //                                       TimeSpan?                            SelfCheckTimeSpan            = null,
-//                                       UInt16                               MaxStatusListSize            = DefaultMaxStatusListSize,
-//                                       UInt16                               MaxAdminStatusListSize       = DefaultMaxAdminStatusListSize,
+//                                       UInt16                               MaxStatusScheduleSize            = DefaultMaxStatusScheduleSize,
+//                                       UInt16                               MaxAdminStatusScheduleSize       = DefaultMaxAdminStatusScheduleSize,
 //                                       IPTransport                          IPTransport                  = IPTransport.IPv4only,
 
 //                                       HTTPHostname?                        Hostname                     = null,
@@ -521,8 +521,8 @@
 //                   PrivateKey,
 //                   PublicKeyCertificates,
 //                   SelfCheckTimeSpan,
-//                   MaxStatusListSize,
-//                   MaxAdminStatusListSize)
+//                   MaxStatusScheduleSize,
+//                   MaxAdminStatusScheduleSize)
 
 //        {
 

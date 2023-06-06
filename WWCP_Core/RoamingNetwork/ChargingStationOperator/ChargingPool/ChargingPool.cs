@@ -1778,47 +1778,164 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-
-        #region ContainsChargingStation  (ChargingStation)
+        #region UpdateChargingStation        (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Check if the given ChargingStation is already present within the charging pool.
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public Boolean ContainsChargingStation(IChargingStation ChargingStation)
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        public async Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation                                                ChargingStation,
 
-            => chargingStations.ContainsId(ChargingStation.Id);
+                                                                             Action<IChargingStation>?                                       OnAdditionSuccess              = null,
+                                                                             Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
+                                                                             Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+
+                                                                             Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                             EventTracking_Id?                                               EventTrackingId                = null,
+                                                                             User_Id?                                                        CurrentUserId                  = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
+
+            if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
+                return UpdateChargingStationResult.Failed(null,
+                                                          EventTrackingId,
+                                                          $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!");
+
+            #endregion
+
+
+            if (chargingStations.TryGet(ChargingStation.Id, out var existingChargingStation) &&
+                existingChargingStation is not null)
+            {
+
+                if (chargingStations.TryUpdate(ChargingStation.Id,
+                                               ChargingStation,
+                                               existingChargingStation,
+                                               EventTrackingId,
+                                               CurrentUserId))
+                {
+
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    Connect(ChargingStation);
+
+                    OnUpdateSuccess?.Invoke(ChargingStation,
+                                            existingChargingStation);
+
+                    return UpdateChargingStationResult.Success(ChargingStation,
+                                                               EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this, ChargingStation);
+
+                    return UpdateChargingStationResult.Failed(ChargingStation,
+                                                              EventTrackingId,
+                                                              "Error!");
+
+                }
+
+            }
+            else
+                return UpdateChargingStationResult.Failed(ChargingStation,
+                                                          EventTrackingId,
+                                                          "Error!");
+
+        }
 
         #endregion
 
-        #region ContainsChargingStation  (ChargingStationId)
+        #region UpdateChargingStation        (Id, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Check if the given ChargingStation identification is already present within the charging pool.
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
+        /// <param name="ChargingStation">A charging station.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        public async Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation                                                ChargingStation,
+                                                                             Action<IChargingStation>                                        UpdateDelegate,
 
-            => chargingStations.ContainsId(ChargingStationId);
+                                                                             Action<IChargingStation>?                                       OnAdditionSuccess              = null,
+                                                                             Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
+                                                                             Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+
+                                                                             Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                             EventTracking_Id?                                               EventTrackingId                = null,
+                                                                             User_Id?                                                        CurrentUserId                  = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingStationId) => false);
+
+            if (ChargingStation.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, ChargingStation.Id))
+                return UpdateChargingStationResult.Failed(null,
+                                                          EventTrackingId,
+                                                          $"The operator identification of the given charging station '{ChargingStation.Id.OperatorId}' is invalid!");
+
+            #endregion
+
+
+            if (chargingStations.TryGet(ChargingStation.Id, out var existingChargingStation) &&
+                existingChargingStation is not null)
+            {
+
+                if (chargingStations.TryUpdate(ChargingStation.Id,
+                                               ChargingStation,
+                                               existingChargingStation,
+                                               EventTrackingId,
+                                               CurrentUserId))
+                {
+
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    Connect(ChargingStation);
+
+                    OnUpdateSuccess?.Invoke(ChargingStation,
+                                            existingChargingStation);
+
+                    return UpdateChargingStationResult.Success(ChargingStation,
+                                                               EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this, ChargingStation);
+
+                    return UpdateChargingStationResult.Failed(ChargingStation,
+                                                              EventTrackingId,
+                                                              "Error!");
+
+                }
+
+            }
+            else
+                return UpdateChargingStationResult.Failed(ChargingStation,
+                                                          EventTrackingId,
+                                                          "Error!");
+
+        }
 
         #endregion
-
-        #region GetChargingStationById   (ChargingStationId)
-
-        public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
-
-            => chargingStations.GetById(ChargingStationId);
-
-        #endregion
-
-        #region TryGetChargingStationById(ChargingStationId, out ChargingStation)
-
-        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
-
-            => chargingStations.TryGet(ChargingStationId, out ChargingStation);
-
-        #endregion
-
 
         #region RemoveChargingStation    (ChargingStationId)
 
@@ -1861,40 +1978,81 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region TryRemoveChargingStation (ChargingStationId, out ChargingStation)
 
-        public Boolean TryRemoveChargingStation(ChargingStation_Id     ChargingStationId,
-                                                out IChargingStation?  ChargingStation,
-                                                EventTracking_Id       EventTrackingId,
-                                                User_Id?               CurrentUserId)
-        {
+        //public Boolean TryRemoveChargingStation(ChargingStation_Id     ChargingStationId,
+        //                                        out IChargingStation?  ChargingStation,
+        //                                        EventTracking_Id       EventTrackingId,
+        //                                        User_Id?               CurrentUserId)
+        //{
 
-            //if (TryGetChargingStationById(ChargingStationId, out ChargingStation) &&
-            //    ChargingStation is not null)
-            //{
+        //    //if (TryGetChargingStationById(ChargingStationId, out ChargingStation) &&
+        //    //    ChargingStation is not null)
+        //    //{
 
-            //    if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, ChargingStation))
-            //    {
+        //    //    if (ChargingStationRemoval.SendVoting(Timestamp.Now, this, ChargingStation))
+        //    //    {
 
-                    if (chargingStations.TryRemove(ChargingStationId,
-                                                   out ChargingStation,
-                                                   EventTrackingId,
-                                                   CurrentUserId))
-                    {
+        //            if (chargingStations.TryRemove(ChargingStationId,
+        //                                           out ChargingStation,
+        //                                           EventTrackingId,
+        //                                           CurrentUserId))
+        //            {
 
-                        //ChargingStationRemoval.SendNotification(Timestamp.Now, this, ChargingStation);
+        //                //ChargingStationRemoval.SendNotification(Timestamp.Now, this, ChargingStation);
 
-                        return true;
+        //                return true;
 
-                    }
+        //            }
 
-                //}
+        //        //}
 
-                return false;
+        //        return false;
 
-            //}
+        //    //}
 
-            //return true;
+        //    //return true;
 
-        }
+        //}
+
+        #endregion
+
+
+        #region ContainsChargingStation  (ChargingStation)
+
+        /// <summary>
+        /// Check if the given ChargingStation is already present within the charging pool.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        public Boolean ContainsChargingStation(IChargingStation ChargingStation)
+
+            => chargingStations.ContainsId(ChargingStation.Id);
+
+        #endregion
+
+        #region ContainsChargingStation  (ChargingStationId)
+
+        /// <summary>
+        /// Check if the given ChargingStation identification is already present within the charging pool.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
+        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
+
+            => chargingStations.ContainsId(ChargingStationId);
+
+        #endregion
+
+        #region GetChargingStationById   (ChargingStationId)
+
+        public IChargingStation? GetChargingStationById(ChargingStation_Id ChargingStationId)
+
+            => chargingStations.GetById(ChargingStationId);
+
+        #endregion
+
+        #region TryGetChargingStationById(ChargingStationId, out ChargingStation)
+
+        public Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation)
+
+            => chargingStations.TryGet(ChargingStationId, out ChargingStation);
 
         #endregion
 
@@ -3600,6 +3758,39 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public ChargingPool Clone()
+
+            => new (Id,
+                    Operator,
+                    Name,
+                    Description,
+
+                    Address,
+                    GeoLocation,
+                    OpeningTimes,
+                    ChargingWhenClosed,
+                    Accessibility,
+                    LocationLanguage,
+                    HotlinePhoneNumber,
+
+                    AdminStatus,
+                    Status,
+                    adminStatusSchedule.MaxStatusHistorySize,
+                    statusSchedule.     MaxStatusHistorySize,
+
+                    DataSource,
+                    LastChange,
+
+                    CustomData,
+                    InternalData);
 
         #endregion
 

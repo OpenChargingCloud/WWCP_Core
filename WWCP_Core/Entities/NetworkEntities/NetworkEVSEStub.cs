@@ -55,7 +55,7 @@
 //        /// <summary>
 //        /// The default max size of the EVSE admin status history.
 //        /// </summary>
-//        public const UInt16 DefaultMaxAdminStatusListSize = 50;
+//        public const UInt16 DefaultMaxAdminStatusScheduleSize = 50;
 
 //        /// <summary>
 //        /// The maximum time span for a reservation.
@@ -508,12 +508,12 @@
 //        /// </summary>
 //        /// <param name="Id">The unique identification of this EVSE.</param>
 //        /// <param name="ChargingStation">The parent charging station.</param>
-//        /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
-//        /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
+//        /// <param name="MaxStatusScheduleSize">The maximum size of the EVSE status list.</param>
+//        /// <param name="MaxAdminStatusScheduleSize">The maximum size of the EVSE admin status list.</param>
 //        internal NetworkEVSEStub(EVSE_Id                  Id,
 //                                 ANetworkChargingStation  ChargingStation,
-//                                 UInt16                   MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
-//                                 UInt16                   MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+//                                 UInt16                   MaxStatusScheduleSize       = DefaultMaxEVSEStatusListSize,
+//                                 UInt16                   MaxAdminStatusScheduleSize  = DefaultMaxAdminStatusScheduleSize)
 
 //            : base(Id)
 
@@ -534,10 +534,10 @@
 //            this._ChargingModes         = new ReactiveSet<ChargingModes>();
 //            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-//            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
+//            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusScheduleSize);
 //            this._StatusSchedule.Insert(EVSEStatusTypes.OutOfService);
 
-//            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxStatusListSize);
+//            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxStatusScheduleSize);
 //            this._AdminStatusSchedule.Insert(EVSEAdminStatusTypes.OutOfService);
 
 //            #endregion

@@ -121,12 +121,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 15;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
 
         /// <summary>
         /// The default max size of the status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize        = 15;
+        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
 
         /// <summary>
         /// The request timeout.
@@ -215,8 +215,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Description">An optional multi-language description of the roaming network.</param>
         /// <param name="InitialAdminStatus">The initial admin status of the roaming network.</param>
         /// <param name="InitialStatus">The initial status of the roaming network.</param>
-        /// <param name="MaxAdminStatusListSize">The maximum number of entries in the admin status history.</param>
-        /// <param name="MaxStatusListSize">The maximum number of entries in the status history.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The maximum number of entries in the admin status history.</param>
+        /// <param name="MaxStatusScheduleSize">The maximum number of entries in the status history.</param>
         /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
         /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
         /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
@@ -225,8 +225,8 @@ namespace cloud.charging.open.protocols.WWCP
                               I18NString?                                Description                                 = null,
                               RoamingNetworkAdminStatusTypes?            InitialAdminStatus                          = null,
                               RoamingNetworkStatusTypes?                 InitialStatus                               = null,
-                              UInt16?                                    MaxAdminStatusListSize                      = null,
-                              UInt16?                                    MaxStatusListSize                           = null,
+                              UInt16?                                    MaxAdminStatusScheduleSize                      = null,
+                              UInt16?                                    MaxStatusScheduleSize                           = null,
 
                               ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
                               ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
@@ -247,8 +247,8 @@ namespace cloud.charging.open.protocols.WWCP
                    Description            ?? new I18NString(Languages.en, "A roaming network for testing purposes"),
                    InitialAdminStatus     ?? RoamingNetworkAdminStatusTypes.Operational,
                    InitialStatus          ?? RoamingNetworkStatusTypes.Available,
-                   MaxAdminStatusListSize ?? DefaultMaxAdminStatusListSize,
-                   MaxStatusListSize      ?? DefaultMaxStatusListSize,
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize,
                    DataSource,
                    LastChange,
                    CustomData,

@@ -58,12 +58,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 15;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize   = 15;
 
         /// <summary>
         /// The default max size of the status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize        = 15;
+        public const UInt16 DefaultMaxStatusScheduleSize        = 15;
 
         #endregion
 
@@ -407,8 +407,8 @@ namespace cloud.charging.open.protocols.WWCP
                                     NavigationProviderPriority               Priority                          = null,
                                     NavigationProviderAdminStatusType        AdminStatus                       = NavigationProviderAdminStatusType.Available,
                                     NavigationProviderStatusType             Status                            = NavigationProviderStatusType.Available,
-                                    UInt16                                   MaxAdminStatusListSize            = DefaultMaxAdminStatusListSize,
-                                    UInt16                                   MaxStatusListSize                 = DefaultMaxStatusListSize)
+                                    UInt16                                   MaxAdminStatusScheduleSize            = DefaultMaxAdminStatusScheduleSize,
+                                    UInt16                                   MaxStatusScheduleSize                 = DefaultMaxStatusScheduleSize)
 
             : base(Id)
 

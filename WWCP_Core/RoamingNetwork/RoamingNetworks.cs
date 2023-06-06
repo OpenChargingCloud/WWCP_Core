@@ -104,8 +104,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Configurator">An optional delegate to configure the new roaming network after its creation.</param>
         /// <param name="AdminStatus">The initial admin status of the roaming network.</param>
         /// <param name="Status">The initial status of the roaming network.</param>
-        /// <param name="MaxAdminStatusListSize">The maximum number of entries in the admin status history.</param>
-        /// <param name="MaxStatusListSize">The maximum number of entries in the status history.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The maximum number of entries in the admin status history.</param>
+        /// <param name="MaxStatusScheduleSize">The maximum number of entries in the status history.</param>
         /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
         /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
         /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
@@ -115,8 +115,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                       Action<RoamingNetwork>?                    Configurator                                = null,
                                                       RoamingNetworkAdminStatusTypes?            AdminStatus                                 = null,
                                                       RoamingNetworkStatusTypes?                 Status                                      = null,
-                                                      UInt16?                                    MaxAdminStatusListSize                      = null,
-                                                      UInt16?                                    MaxStatusListSize                           = null,
+                                                      UInt16?                                    MaxAdminStatusScheduleSize                      = null,
+                                                      UInt16?                                    MaxStatusScheduleSize                           = null,
 
                                                       ChargingStationSignatureDelegate?          ChargingStationSignatureGenerator           = null,
                                                       ChargingPoolSignatureDelegate?             ChargingPoolSignatureGenerator              = null,
@@ -140,8 +140,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                     Description,
                                                     AdminStatus,
                                                     Status,
-                                                    MaxAdminStatusListSize,
-                                                    MaxStatusListSize,
+                                                    MaxAdminStatusScheduleSize,
+                                                    MaxStatusScheduleSize,
 
                                                     ChargingStationSignatureGenerator,
                                                     ChargingPoolSignatureGenerator,

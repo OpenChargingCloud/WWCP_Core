@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the e-vehicle (aggregated EVSE) status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize         = 15;
+        public const UInt16 DefaultMaxStatusScheduleSize         = 15;
 
         /// <summary>
         /// The default max size of the e-vehicle admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize    = 15;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize    = 15;
 
         #endregion
 
@@ -471,15 +471,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new e-vehicle having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
-        /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The default size of the admin status list.</param>
         internal EVehicle(EVehicle_Id                     Id,
                           EMobilityProvider               Provider,
                           Action<EVehicle>?               Configurator             = null,
                           RemoteEVehicleCreatorDelegate?  RemoteEVehicleCreator    = null,
                           eVehicleAdminStatusTypes        AdminStatus              = eVehicleAdminStatusTypes.Operational,
                           eVehicleStatusTypes             Status                   = eVehicleStatusTypes.Available,
-                          UInt16                          MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                          UInt16                          MaxStatusListSize        = DefaultMaxStatusListSize)
+                          UInt16                          MaxAdminStatusScheduleSize   = DefaultMaxAdminStatusScheduleSize,
+                          UInt16                          MaxStatusScheduleSize        = DefaultMaxStatusScheduleSize)
 
             : base(Id)
 
@@ -537,15 +537,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new e-vehicle having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
-        /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The default size of the admin status list.</param>
         internal EVehicle(EVehicle_Id                    Id,
                           eMobilityStation               Station,
                           Action<EVehicle>               Configurator            = null,
                           RemoteEVehicleCreatorDelegate  RemoteEVehicleCreator   = null,
                           eVehicleAdminStatusTypes        AdminStatus             = eVehicleAdminStatusTypes.Operational,
                           eVehicleStatusTypes             Status                  = eVehicleStatusTypes.Available,
-                          UInt16                         MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                          UInt16                         MaxStatusListSize       = DefaultMaxStatusListSize)
+                          UInt16                         MaxAdminStatusScheduleSize  = DefaultMaxAdminStatusScheduleSize,
+                          UInt16                         MaxStatusScheduleSize       = DefaultMaxStatusScheduleSize)
 
             : this(Id,
                    Station.Provider,
@@ -553,8 +553,8 @@ namespace cloud.charging.open.protocols.WWCP
                    RemoteEVehicleCreator,
                    AdminStatus,
                    Status,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize)
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize)
 
         {
 

@@ -72,12 +72,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The default max size of the e-mobility station (aggregated EVSE) status list.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize         = 15;
+        public const UInt16 DefaultMaxStatusScheduleSize         = 15;
 
         /// <summary>
         /// The default max size of the e-mobility station admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize    = 15;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize    = 15;
 
         #endregion
 
@@ -588,13 +588,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new e-mobility station having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the e-mobility station pool.</param>
-        /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The default size of the admin status list.</param>
         internal eMobilityStation(eMobilityStation_Id                    Id,
                                   EMobilityProvider                      Provider,
                                   Action<eMobilityStation>               Configurator                   = null,
                                   RemoteEMobilityStationCreatorDelegate  RemoteeMobilityStationCreator  = null,
                                   eMobilityStationAdminStatusTypes        AdminStatus                    = eMobilityStationAdminStatusTypes.Operational,
-                                  UInt16                                 MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize)
+                                  UInt16                                 MaxAdminStatusScheduleSize         = DefaultMaxAdminStatusScheduleSize)
 
             : base(Id)
 

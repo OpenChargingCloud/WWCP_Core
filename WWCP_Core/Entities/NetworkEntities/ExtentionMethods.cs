@@ -49,8 +49,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         //public static ChargingStation CreateNewRemoteStation(//this ChargingPool                         ChargingPool,
         //                                                     //ChargingStation_Id                        ChargingStationId                  = null,
         //                                                     //Action<ChargingStation>                   ChargingStationConfigurator        = null,
-        //                                                     //UInt16                                    MaxStatusListSize                  = NetworkChargingStationStub.DefaultMaxStatusListSize,
-        //                                                     //UInt16                                    MaxAdminStatusListSize             = NetworkChargingStationStub.DefaultMaxAdminStatusListSize,
+        //                                                     //UInt16                                    MaxStatusScheduleSize                  = NetworkChargingStationStub.DefaultMaxStatusScheduleSize,
+        //                                                     //UInt16                                    MaxAdminStatusScheduleSize             = NetworkChargingStationStub.DefaultMaxAdminStatusScheduleSize,
         //                                                     //Action<NetworkChargingStationStub>        RemoteChargingStationConfigurator  = null,
         //                                                     //Action<ChargingStation>                   OnSuccess                          = null,
         //                                                     //Action<ChargingPool, ChargingStation_Id>  OnError                            = null)
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         //                                                     ChargingStation_Id                        ChargingStationId,
         //                                                     Action<ChargingStation>                   ChargingStationConfigurator        = null,
         //                                                     TimeSpan?                                 SelfCheckTimeSpan                  = null,
-        //                                                     UInt16                                    MaxStatusListSize                  = ChargingStations.NetworkChargingStationStub.DefaultMaxStatusListSize,
-        //                                                     UInt16                                    MaxAdminStatusListSize             = ChargingStations.NetworkChargingStationStub.DefaultMaxAdminStatusListSize,
+        //                                                     UInt16                                    MaxStatusScheduleSize                  = ChargingStations.NetworkChargingStationStub.DefaultMaxStatusScheduleSize,
+        //                                                     UInt16                                    MaxAdminStatusScheduleSize             = ChargingStations.NetworkChargingStationStub.DefaultMaxAdminStatusScheduleSize,
         //                                                     IPTransport                               IPTransport                        = IPTransport.IPv4only,
         //                                                     DNSClient                                 DNSClient                          = null,
         //                                                     String                                    Hostname                           = null,
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.WWCP.Networking
         //                                              ChargingStationConfigurator,
         //                                              newstation => {
 
-        //                                                  var remotestation = new NetworkChargingStationStub(newstation, MaxStatusListSize, MaxAdminStatusListSize);
+        //                                                  var remotestation = new NetworkChargingStationStub(newstation, MaxStatusScheduleSize, MaxAdminStatusScheduleSize);
 
         //                                                  RemoteChargingStationConfigurator?.Invoke(remotestation);
 

@@ -82,8 +82,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
-                                                                  UInt16?                                                             MaxAdminStatusListSize         = null,
-                                                                  UInt16?                                                             MaxStatusListSize              = null,
+                                                                  UInt16?                                                             MaxAdminStatusScheduleSize     = null,
+                                                                  UInt16?                                                             MaxStatusScheduleSize          = null,
 
                                                                   String?                                                             DataSource                     = null,
                                                                   DateTime?                                                           LastChange                     = null,
@@ -119,8 +119,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                            InitialAdminStatus,
                                                            InitialStatus,
-                                                           MaxAdminStatusListSize,
-                                                           MaxStatusListSize,
+                                                           MaxAdminStatusScheduleSize,
+                                                           MaxStatusScheduleSize,
 
                                                            DataSource,
                                                            LastChange,
@@ -171,8 +171,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                              Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                              Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                             UInt16?                                                      MaxAdminStatusListSize         = null,
-                                                                             UInt16?                                                      MaxStatusListSize              = null,
+                                                                             UInt16?                                                      MaxAdminStatusScheduleSize         = null,
+                                                                             UInt16?                                                      MaxStatusScheduleSize              = null,
 
                                                                              String?                                                      DataSource                     = null,
                                                                              DateTime?                                                    LastChange                     = null,
@@ -207,8 +207,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                       InitialAdminStatus,
                                                                       InitialStatus,
-                                                                      MaxAdminStatusListSize,
-                                                                      MaxStatusListSize,
+                                                                      MaxAdminStatusScheduleSize,
+                                                                      MaxStatusScheduleSize,
 
                                                                       DataSource,
                                                                       LastChange,
@@ -260,8 +260,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                     = null,
                                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                          = null,
-                                                                                  UInt16?                                                             MaxAdminStatusListSize                 = null,
-                                                                                  UInt16?                                                             MaxStatusListSize                      = null,
+                                                                                  UInt16?                                                             MaxAdminStatusScheduleSize                 = null,
+                                                                                  UInt16?                                                             MaxStatusScheduleSize                      = null,
 
                                                                                   String?                                                             DataSource                             = null,
                                                                                   DateTime?                                                           LastChange                             = null,
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                    InitialAdminStatus,
                                                                    InitialStatus,
-                                                                   MaxAdminStatusListSize,
-                                                                   MaxStatusListSize,
+                                                                   MaxAdminStatusScheduleSize,
+                                                                   MaxStatusScheduleSize,
 
                                                                    DataSource,
                                                                    LastChange,
@@ -352,8 +352,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                         Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                         Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
-                                                                        UInt16?                                                             MaxAdminStatusListSize         = null,
-                                                                        UInt16?                                                             MaxStatusListSize              = null,
+                                                                        UInt16?                                                             MaxAdminStatusScheduleSize         = null,
+                                                                        UInt16?                                                             MaxStatusScheduleSize              = null,
 
                                                                         String?                                                             DataSource                     = null,
                                                                         DateTime?                                                           LastChange                     = null,
@@ -389,8 +389,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                               InitialAdminStatus,
                                                               InitialStatus,
-                                                              MaxAdminStatusListSize,
-                                                              MaxStatusListSize,
+                                                              MaxAdminStatusScheduleSize,
+                                                              MaxStatusScheduleSize,
 
                                                               DataSource,
                                                               LastChange,
@@ -553,17 +553,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        event OnChargingStationOperatorDataChangedDelegate         OnDataChanged;
+        event OnChargingStationOperatorDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        event OnChargingStationOperatorAdminStatusChangedDelegate  OnAdminStatusChanged;
+        event OnChargingStationOperatorAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
-        event OnChargingStationOperatorStatusChangedDelegate       OnStatusChanged;
+        event OnChargingStationOperatorStatusChangedDelegate?       OnStatusChanged;
 
         #endregion
 
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<AddChargingPoolResult> AddChargingPool(ChargingPool                                                        ChargingPool,
+        Task<AddChargingPoolResult> AddChargingPool(IChargingPool                                                       ChargingPool,
 
                                                     Action<IChargingPool,                           EventTracking_Id>?  OnSuccess                      = null,
                                                     Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<AddChargingPoolResult> AddChargingPoolIfNotExists(ChargingPool                                                 ChargingPool,
+        Task<AddChargingPoolResult> AddChargingPoolIfNotExists(IChargingPool                                                ChargingPool,
 
                                                                Action<IChargingPool, EventTracking_Id>?                     OnSuccess                      = null,
 
@@ -646,7 +646,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(ChargingPool                                                        ChargingPool,
+        Task<AddOrUpdateChargingPoolResult> AddOrUpdateChargingPool(IChargingPool                                                       ChargingPool,
 
                                                                     Action<IChargingPool,                           EventTracking_Id>?  OnAdditionSuccess                      = null,
                                                                     Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                        = null,
@@ -670,7 +670,31 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool                                                        ChargingPool,
+        Task<UpdateChargingPoolResult> UpdateChargingPool(IChargingPool                                                       ChargingPool,
+
+                                                          Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                          Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
+
+                                                          Boolean                                                             SkipUpdatedNotifications       = false,
+                                                          Func<ChargingStationOperator_Id, ChargingPool_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                          EventTracking_Id?                                                   EventTrackingId                = null,
+                                                          User_Id?                                                            CurrentUserId                  = null);
+
+        /// <summary>
+        /// Update the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPoolId">An unique charging pool identification.</param>
+        /// <param name="UpdateDelegate">A delegate for updating the given charging pool.</param>
+        /// 
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the update of the new charging pool failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool_Id                                                     ChargingPoolId,
+                                                          Action<IChargingPool>                                               UpdateDelegate,
 
                                                           Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
                                                           Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
@@ -820,6 +844,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        // Charging pool groups
+
         #region Charging stations
 
         /// <summary>
@@ -893,52 +919,6 @@ namespace cloud.charging.open.protocols.WWCP
         IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingPool, IChargingStation, Boolean> OnChargingStationRemoval { get; }
 
 
-        ///// <summary>
-        ///// Create and register a new charging station having the given
-        ///// unique charging station identification.
-        ///// </summary>
-        ///// <param name="Id">The unique identification of the new charging station.</param>
-        ///// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
-        ///// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        ///// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        //ChargingStation CreateChargingStation(ChargingStation_Id                             Id,
-        //                                      I18NString?                                    Name                           = null,
-        //                                      I18NString?                                    Description                    = null,
-        //                                      Action<ChargingStation>?                       Configurator                   = null,
-        //                                      RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
-        //                                      Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
-        //                                      Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-        //                                      UInt16?                                        MaxAdminStatusListSize         = null,
-        //                                      UInt16?                                        MaxStatusListSize              = null,
-        //                                      Action<ChargingStation>?                       OnSuccess                      = null,
-        //                                      Action<ChargingPool, ChargingStation_Id>?      OnError                        = null);
-
-        ///// <summary>
-        ///// Create and register a new charging station having the given
-        ///// unique charging station identification.
-        ///// </summary>
-        ///// <param name="Id">The unique identification of the new charging station.</param>
-        ///// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
-        ///// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
-        ///// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
-        ///// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        ///// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
-        ///// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        ///// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        ///// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        //ChargingStation? CreateOrUpdateChargingStation(ChargingStation_Id                             Id,
-        //                                               I18NString?                                    Name                           = null,
-        //                                               I18NString?                                    Description                    = null,
-        //                                               Action<ChargingStation>?                       Configurator                   = null,
-        //                                               RemoteChargingStationCreatorDelegate?          RemoteChargingStationCreator   = null,
-        //                                               Timestamped<ChargingStationAdminStatusTypes>?  InitialAdminStatus             = null,
-        //                                               Timestamped<ChargingStationStatusTypes>?       InitialStatus                  = null,
-        //                                               UInt16?                                        MaxAdminStatusListSize         = null,
-        //                                               UInt16?                                        MaxStatusListSize              = null,
-        //                                               Action<ChargingStation>?                       OnSuccess                      = null,
-        //                                               Action<ChargingPool, ChargingStation_Id>?      OnError                        = null);
-
-
         /// <summary>
         /// Check if the given ChargingStation is already present within the charging pool.
         /// </summary>
@@ -955,25 +935,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation);
 
-        //IChargingStation? RemoveChargingStation(ChargingStation_Id ChargingStationId);
-
-        //Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation);
-
 
         /// <summary>
         /// An event fired whenever the static data of any subordinated charging station changed.
         /// </summary>
-        event OnChargingStationDataChangedDelegate         OnChargingStationDataChanged;
+        event OnChargingStationDataChangedDelegate?         OnChargingStationDataChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
         /// </summary>
-        event OnChargingStationStatusChangedDelegate       OnChargingStationStatusChanged;
+        event OnChargingStationStatusChangedDelegate?       OnChargingStationStatusChanged;
 
         /// <summary>
         /// An event fired whenever the aggregated admin status of any subordinated charging station changed.
         /// </summary>
-        event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
+        event OnChargingStationAdminStatusChangedDelegate?  OnChargingStationAdminStatusChanged;
 
 
         #region SetChargingStationAdminStatus

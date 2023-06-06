@@ -63,19 +63,35 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                         Address?                                                        Address                        = null,
                                                                         GeoCoordinate?                                                  GeoLocation                    = null,
+                                                                        OpeningTimes?                                                   OpeningTimes                   = null,
+                                                                        Boolean?                                                        ChargingWhenClosed             = null,
+                                                                        AccessibilityTypes?                                             Accessibility                  = null,
+                                                                        Languages?                                                      LocationLanguage               = null,
+                                                                        String?                                                         PhysicalReference              = null,
+                                                                        PhoneNumber?                                                    HotlinePhoneNumber             = null,
 
-                                                                        Action<IChargingStation>?                                       Configurator                   = null,
-                                                                        RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                                        IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
+                                                                        IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
+                                                                        IEnumerable<Features>?                                          Features                       = null,
+
+                                                                        String?                                                         ServiceIdentification          = null,
+                                                                        String?                                                         ModelCode                      = null,
+
+                                                                        IEnumerable<Brand>?                                             Brands                         = null,
+
                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                         Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                                        UInt16?                                                         MaxAdminStatusListSize         = null,
-                                                                        UInt16?                                                         MaxStatusListSize              = null,
+                                                                        UInt16?                                                         MaxAdminStatusScheduleSize     = null,
+                                                                        UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                         String?                                                         DataSource                     = null,
                                                                         DateTime?                                                       LastChange                     = null,
 
                                                                         JObject?                                                        CustomData                     = null,
                                                                         UserDefinedDictionary?                                          InternalData                   = null,
+
+                                                                        Action<IChargingStation>?                                       Configurator                   = null,
+                                                                        RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
 
                                                                         Action<IChargingStation>?                                       OnSuccess                      = null,
                                                                         Action<IChargingPool, IChargingStation>?                        OnError                        = null,
@@ -85,26 +101,44 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         User_Id?                                                        CurrentUserId                  = null)
 
 
-            => ChargingPool.AddChargingStation(new ChargingStation(Id,
-                                                                   ChargingPool,
-                                                                   Name,
-                                                                   Description,
+            => ChargingPool.AddChargingStation(new ChargingStation(
+                                                   Id,
+                                                   ChargingPool,
+                                                   Name,
+                                                   Description,
 
-                                                                   Address,
-                                                                   GeoLocation,
+                                                   Address,
+                                                   GeoLocation,
+                                                   OpeningTimes,
+                                                   ChargingWhenClosed,
+                                                   Accessibility,
+                                                   LocationLanguage,
+                                                   PhysicalReference,
+                                                   HotlinePhoneNumber,
 
-                                                                   Configurator,
-                                                                   RemoteChargingStationCreator,
-                                                                   InitialAdminStatus,
-                                                                   InitialStatus,
-                                                                   MaxAdminStatusListSize,
-                                                                   MaxStatusListSize,
+                                                   AuthenticationModes,
+                                                   PaymentOptions,
+                                                   Features,
 
-                                                                   DataSource,
-                                                                   LastChange,
+                                                   ServiceIdentification,
+                                                   ModelCode,
 
-                                                                   CustomData,
-                                                                   InternalData),
+                                                   Brands,
+
+                                                   InitialAdminStatus,
+                                                   InitialStatus,
+                                                   MaxAdminStatusScheduleSize,
+                                                   MaxStatusScheduleSize,
+
+                                                   DataSource,
+                                                   LastChange,
+
+                                                   CustomData,
+                                                   InternalData,
+
+                                                   Configurator,
+                                                   RemoteChargingStationCreator
+                                               ),
 
                                                OnSuccess,
                                                OnError,
@@ -133,19 +167,36 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                    Address?                                                        Address                        = null,
                                                                                    GeoCoordinate?                                                  GeoLocation                    = null,
+                                                                                   OpeningTimes?                                                   OpeningTimes                   = null,
+                                                                                   Boolean?                                                        ChargingWhenClosed             = null,
+                                                                                   AccessibilityTypes?                                             Accessibility                  = null,
+                                                                                   Languages?                                                      LocationLanguage               = null,
+                                                                                   String?                                                         PhysicalReference              = null,
+                                                                                   PhoneNumber?                                                    HotlinePhoneNumber             = null,
 
-                                                                                   Action<IChargingStation>?                                       Configurator                   = null,
-                                                                                   RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                                                   IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
+                                                                                   IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
+                                                                                   IEnumerable<Features>?                                          Features                       = null,
+
+                                                                                   String?                                                         ServiceIdentification          = null,
+                                                                                   String?                                                         ModelCode                      = null,
+
+                                                                                   IEnumerable<Brand>?                                             Brands                         = null,
+
+
                                                                                    Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                                    Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                                                   UInt16?                                                         MaxAdminStatusListSize         = null,
-                                                                                   UInt16?                                                         MaxStatusListSize              = null,
+                                                                                   UInt16?                                                         MaxAdminStatusScheduleSize         = null,
+                                                                                   UInt16?                                                         MaxStatusScheduleSize              = null,
 
                                                                                    String?                                                         DataSource                     = null,
                                                                                    DateTime?                                                       LastChange                     = null,
 
                                                                                    JObject?                                                        CustomData                     = null,
                                                                                    UserDefinedDictionary?                                          InternalData                   = null,
+
+                                                                                   Action<IChargingStation>?                                       Configurator                   = null,
+                                                                                   RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
 
                                                                                    Action<IChargingStation>?                                       OnSuccess                      = null,
                                                                                    Action<IChargingPool, IChargingStation>?                        OnError                        = null,
@@ -155,26 +206,44 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    User_Id?                                                        CurrentUserId                  = null)
 
 
-            => ChargingPool.AddChargingStationIfNotExists(new ChargingStation(Id,
-                                                                              ChargingPool,
-                                                                              Name,
-                                                                              Description,
+            => ChargingPool.AddChargingStationIfNotExists(new ChargingStation(
+                                                              Id,
+                                                              ChargingPool,
+                                                              Name,
+                                                              Description,
 
-                                                                              Address,
-                                                                              GeoLocation,
+                                                              Address,
+                                                              GeoLocation,
+                                                              OpeningTimes,
+                                                              ChargingWhenClosed,
+                                                              Accessibility,
+                                                              LocationLanguage,
+                                                              PhysicalReference,
+                                                              HotlinePhoneNumber,
 
-                                                                              Configurator,
-                                                                              RemoteChargingStationCreator,
-                                                                              InitialAdminStatus,
-                                                                              InitialStatus,
-                                                                              MaxAdminStatusListSize,
-                                                                              MaxStatusListSize,
+                                                              AuthenticationModes,
+                                                              PaymentOptions,
+                                                              Features,
 
-                                                                              DataSource,
-                                                                              LastChange,
+                                                              ServiceIdentification,
+                                                              ModelCode,
 
-                                                                              CustomData,
-                                                                              InternalData),
+                                                              Brands,
+
+                                                              InitialAdminStatus,
+                                                              InitialStatus,
+                                                              MaxAdminStatusScheduleSize,
+                                                              MaxStatusScheduleSize,
+
+                                                              DataSource,
+                                                              LastChange,
+
+                                                              CustomData,
+                                                              InternalData,
+
+                                                              Configurator,
+                                                              RemoteChargingStationCreator
+                                                          ),
 
                                                           OnSuccess,
                                                           OnError,
@@ -203,19 +272,35 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                         Address?                                                        Address                        = null,
                                                                                         GeoCoordinate?                                                  GeoLocation                    = null,
+                                                                                        OpeningTimes?                                                   OpeningTimes                   = null,
+                                                                                        Boolean?                                                        ChargingWhenClosed             = null,
+                                                                                        AccessibilityTypes?                                             Accessibility                  = null,
+                                                                                        Languages?                                                      LocationLanguage               = null,
+                                                                                        String?                                                         PhysicalReference              = null,
+                                                                                        PhoneNumber?                                                    HotlinePhoneNumber             = null,
 
-                                                                                        Action<IChargingStation>?                                       Configurator                   = null,
-                                                                                        RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                                                        IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
+                                                                                        IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
+                                                                                        IEnumerable<Features>?                                          Features                       = null,
+
+                                                                                        String?                                                         ServiceIdentification          = null,
+                                                                                        String?                                                         ModelCode                      = null,
+
+                                                                                        IEnumerable<Brand>?                                             Brands                         = null,
+
                                                                                         Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                                         Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                                                        UInt16?                                                         MaxAdminStatusListSize         = null,
-                                                                                        UInt16?                                                         MaxStatusListSize              = null,
+                                                                                        UInt16?                                                         MaxAdminStatusScheduleSize     = null,
+                                                                                        UInt16?                                                         MaxStatusScheduleSize          = null,
 
                                                                                         String?                                                         DataSource                     = null,
                                                                                         DateTime?                                                       LastChange                     = null,
 
                                                                                         JObject?                                                        CustomData                     = null,
                                                                                         UserDefinedDictionary?                                          InternalData                   = null,
+
+                                                                                        Action<IChargingStation>?                                       Configurator                   = null,
+                                                                                        RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
 
                                                                                         Action<IChargingStation>?                                       OnAdditionSuccess              = null,
                                                                                         Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
@@ -225,26 +310,44 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                         EventTracking_Id?                                               EventTrackingId                = null,
                                                                                         User_Id?                                                        CurrentUserId                  = null)
 
-            => ChargingPool.AddOrUpdateChargingStation(new ChargingStation(Id,
-                                                                           ChargingPool,
-                                                                           Name,
-                                                                           Description,
+            => ChargingPool.AddOrUpdateChargingStation(new ChargingStation(
+                                                           Id,
+                                                           ChargingPool,
+                                                           Name,
+                                                           Description,
 
-                                                                           Address,
-                                                                           GeoLocation,
+                                                           Address,
+                                                           GeoLocation,
+                                                           OpeningTimes,
+                                                           ChargingWhenClosed,
+                                                           Accessibility,
+                                                           LocationLanguage,
+                                                           PhysicalReference,
+                                                           HotlinePhoneNumber,
 
-                                                                           Configurator,
-                                                                           RemoteChargingStationCreator,
-                                                                           InitialAdminStatus,
-                                                                           InitialStatus,
-                                                                           MaxAdminStatusListSize,
-                                                                           MaxStatusListSize,
+                                                           AuthenticationModes,
+                                                           PaymentOptions,
+                                                           Features,
 
-                                                                           DataSource,
-                                                                           LastChange,
+                                                           ServiceIdentification,
+                                                           ModelCode,
 
-                                                                           CustomData,
-                                                                           InternalData),
+                                                           Brands,
+
+                                                           InitialAdminStatus,
+                                                           InitialStatus,
+                                                           MaxAdminStatusScheduleSize,
+                                                           MaxStatusScheduleSize,
+
+                                                           DataSource,
+                                                           LastChange,
+
+                                                           CustomData,
+                                                           InternalData,
+
+                                                           Configurator,
+                                                           RemoteChargingStationCreator
+                                                       ),
 
                                                        OnAdditionSuccess,
                                                        OnUpdateSuccess,
@@ -256,6 +359,110 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region UpdateChargingStation        (this ChargingPool, Id, Configurator = null, OnAdditionSuccess = null, OnUpdateSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the new charging station.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        public static Task<UpdateChargingStationResult> UpdateChargingStation(this IChargingPool                                              ChargingPool,
+
+                                                                              ChargingStation_Id                                              Id,
+                                                                              I18NString?                                                     Name                           = null,
+                                                                              I18NString?                                                     Description                    = null,
+
+                                                                              Address?                                                        Address                        = null,
+                                                                              GeoCoordinate?                                                  GeoLocation                    = null,
+                                                                              OpeningTimes?                                                   OpeningTimes                   = null,
+                                                                              Boolean?                                                        ChargingWhenClosed             = null,
+                                                                              AccessibilityTypes?                                             Accessibility                  = null,
+                                                                              Languages?                                                      LocationLanguage               = null,
+                                                                              String?                                                         PhysicalReference              = null,
+                                                                              PhoneNumber?                                                    HotlinePhoneNumber             = null,
+
+                                                                              IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
+                                                                              IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
+                                                                              IEnumerable<Features>?                                          Features                       = null,
+
+                                                                              String?                                                         ServiceIdentification          = null,
+                                                                              String?                                                         ModelCode                      = null,
+
+                                                                              IEnumerable<Brand>?                                             Brands                         = null,
+
+                                                                              Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
+                                                                              Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
+                                                                              UInt16?                                                         MaxAdminStatusScheduleSize     = null,
+                                                                              UInt16?                                                         MaxStatusScheduleSize          = null,
+
+                                                                              String?                                                         DataSource                     = null,
+                                                                              DateTime?                                                       LastChange                     = null,
+
+                                                                              JObject?                                                        CustomData                     = null,
+                                                                              UserDefinedDictionary?                                          InternalData                   = null,
+
+                                                                              Action<IChargingStation>?                                       Configurator                   = null,
+                                                                              RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+
+                                                                              Action<IChargingStation>?                                       OnAdditionSuccess              = null,
+                                                                              Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
+                                                                              Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+
+                                                                              Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                              EventTracking_Id?                                               EventTrackingId                = null,
+                                                                              User_Id?                                                        CurrentUserId                  = null)
+
+            => ChargingPool.UpdateChargingStation(new ChargingStation(
+                                                      Id,
+                                                      ChargingPool,
+                                                      Name,
+                                                      Description,
+
+                                                      Address,
+                                                      GeoLocation,
+                                                      OpeningTimes,
+                                                      ChargingWhenClosed,
+                                                      Accessibility,
+                                                      LocationLanguage,
+                                                      PhysicalReference,
+                                                      HotlinePhoneNumber,
+
+                                                      AuthenticationModes,
+                                                      PaymentOptions,
+                                                      Features,
+
+                                                      ServiceIdentification,
+                                                      ModelCode,
+
+                                                      Brands,
+
+                                                      InitialAdminStatus,
+                                                      InitialStatus,
+                                                      MaxAdminStatusScheduleSize,
+                                                      MaxStatusScheduleSize,
+
+                                                      DataSource,
+                                                      LastChange,
+
+                                                      CustomData,
+                                                      InternalData,
+
+                                                      Configurator,
+                                                      RemoteChargingStationCreator
+                                                  ),
+
+                                                  OnAdditionSuccess,
+                                                  OnUpdateSuccess,
+                                                  OnError,
+
+                                                  AllowInconsistentOperatorIds,
+                                                  EventTrackingId,
+                                                  CurrentUserId);
+
+        #endregion
 
 
         #region ToJSON(this ChargingPools, Skip = null, Take = null, Embedded = false, ...)
@@ -686,6 +893,64 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation                                                ChargingStation,
+
+                                                                Action<IChargingStation>?                                       OnAdditionSuccess              = null,
+                                                                Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
+                                                                Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+
+                                                                Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                EventTracking_Id?                                               EventTrackingId                = null,
+                                                                User_Id?                                                        CurrentUserId                  = null);
+
+        /// <summary>
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="UpdateDelegate">A delegate for updating the given charging station.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation                                                ChargingStation,
+                                                                Action<IChargingStation>                                        UpdateDelegate,
+
+                                                                Action<IChargingStation>?                                       OnAdditionSuccess              = null,
+                                                                Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
+                                                                Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+
+                                                                Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                EventTracking_Id?                                               EventTrackingId                = null,
+                                                                User_Id?                                                        CurrentUserId                  = null);
+
+
+
+        Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id  ChargingStationId,
+                                                                EventTracking_Id    EventTrackingId,
+                                                                User_Id?            CurrentUserId);
+
+        //Boolean TryRemoveChargingStation(ChargingStation_Id     ChargingStationId,
+        //                                 out IChargingStation?  ChargingStation,
+        //                                 EventTracking_Id       EventTrackingId,
+        //                                 User_Id?               CurrentUserId);
+
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        ChargingPool Clone();
+
+
+        /// <summary>
         /// Check if the given ChargingStation is already present within the charging pool.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
@@ -701,14 +966,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         Boolean TryGetChargingStationById(ChargingStation_Id ChargingStationId, out IChargingStation? ChargingStation);
 
-        Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id  ChargingStationId,
-                                                                EventTracking_Id    EventTrackingId,
-                                                                User_Id?            CurrentUserId);
-
-        Boolean TryRemoveChargingStation(ChargingStation_Id     ChargingStationId,
-                                         out IChargingStation?  ChargingStation,
-                                         EventTracking_Id       EventTrackingId,
-                                         User_Id?               CurrentUserId);
 
 
         /// <summary>

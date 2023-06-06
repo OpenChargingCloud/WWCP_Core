@@ -62,6 +62,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                        Address?                                                        Address                              = null,
                                                                        GeoCoordinate?                                                  GeoLocation                          = null,
+                                                                       OpeningTimes?                                                   OpeningTimes                         = null,
+                                                                       Boolean?                                                        ChargingWhenClosed                   = null,
+                                                                       AccessibilityTypes?                                             Accessibility                        = null,
+                                                                       Languages?                                                      LocationLanguage                     = null,
+                                                                       String?                                                         PhysicalReference                    = null,
+                                                                       PhoneNumber?                                                    HotlinePhoneNumber                   = null,
+
+                                                                       IEnumerable<AuthenticationModes>?                               AuthenticationModes                  = null,
+                                                                       IEnumerable<PaymentOptions>?                                    PaymentOptions                       = null,
+                                                                       IEnumerable<Features>?                                          Features                             = null,
+
+                                                                       String?                                                         ServiceIdentification                = null,
+                                                                       String?                                                         ModelCode                            = null,
+
+                                                                       IEnumerable<Brand>?                                             Brands                               = null,
 
                                                                        Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                   = null,
                                                                        Timestamped<ChargingStationStatusTypes>?                        InitialStatus                        = null,
@@ -69,8 +84,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                        ECPrivateKeyParameters?                                         PrivateKey                           = null,
                                                                        PublicKeyCertificates?                                          PublicKeyCertificates                = null,
                                                                        TimeSpan?                                                       SelfCheckTimeSpan                    = null,
-                                                                       UInt16                                                          MaxAdminStatusListSize               = VirtualChargingStation.DefaultMaxAdminStatusListSize,
-                                                                       UInt16                                                          MaxStatusListSize                    = VirtualChargingStation.DefaultMaxStatusListSize,
+                                                                       UInt16                                                          MaxAdminStatusScheduleSize               = VirtualChargingStation.DefaultMaxAdminStatusScheduleSize,
+                                                                       UInt16                                                          MaxStatusScheduleSize                    = VirtualChargingStation.DefaultMaxStatusScheduleSize,
 
                                                                        String?                                                         DataSource                           = null,
                                                                        DateTime?                                                       LastChange                           = null,
@@ -96,6 +111,32 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    Address,
                    GeoLocation,
+                   OpeningTimes,
+                   ChargingWhenClosed,
+                   Accessibility,
+                   LocationLanguage,
+                   PhysicalReference,
+                   HotlinePhoneNumber,
+
+                   AuthenticationModes,
+                   PaymentOptions,
+                   Features,
+
+                   ServiceIdentification,
+                   ModelCode,
+
+                   Brands,
+
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+
+                   DataSource,
+                   LastChange,
+
+                   CustomData,
+                   InternalData,
 
                    ChargingStationConfigurator,
                    newStation => {
@@ -111,8 +152,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 PrivateKey,
                                                 PublicKeyCertificates,
                                                 SelfCheckTimeSpan,
-                                                MaxAdminStatusListSize,
-                                                MaxStatusListSize
+                                                MaxAdminStatusScheduleSize,
+                                                MaxStatusScheduleSize
                                             );
 
                        VirtualChargingStationConfigurator?.Invoke(virtualstation);
@@ -120,16 +161,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        return virtualstation;
 
                    },
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize,
-
-                   DataSource,
-                   LastChange,
-
-                   CustomData,
-                   InternalData,
 
                    OnSuccess,
                    OnError,
@@ -160,6 +191,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                                   Address?                                                        Address                              = null,
                                                                                   GeoCoordinate?                                                  GeoLocation                          = null,
+                                                                                  OpeningTimes?                                                   OpeningTimes                         = null,
+                                                                                  Boolean?                                                        ChargingWhenClosed                   = null,
+                                                                                  AccessibilityTypes?                                             Accessibility                        = null,
+                                                                                  Languages?                                                      LocationLanguage                     = null,
+                                                                                  String?                                                         PhysicalReference                    = null,
+                                                                                  PhoneNumber?                                                    HotlinePhoneNumber                   = null,
+
+                                                                                  IEnumerable<AuthenticationModes>?                               AuthenticationModes                  = null,
+                                                                                  IEnumerable<PaymentOptions>?                                    PaymentOptions                       = null,
+                                                                                  IEnumerable<Features>?                                          Features                             = null,
+
+                                                                                  String?                                                         ServiceIdentification                = null,
+                                                                                  String?                                                         ModelCode                            = null,
+
+                                                                                  IEnumerable<Brand>?                                             Brands                               = null,
 
                                                                                   Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                   = null,
                                                                                   Timestamped<ChargingStationStatusTypes>?                        InitialStatus                        = null,
@@ -167,8 +213,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                   ECPrivateKeyParameters?                                         PrivateKey                           = null,
                                                                                   PublicKeyCertificates?                                          PublicKeyCertificates                = null,
                                                                                   TimeSpan?                                                       SelfCheckTimeSpan                    = null,
-                                                                                  UInt16                                                          MaxAdminStatusListSize               = VirtualChargingStation.DefaultMaxAdminStatusListSize,
-                                                                                  UInt16                                                          MaxStatusListSize                    = VirtualChargingStation.DefaultMaxStatusListSize,
+                                                                                  UInt16                                                          MaxAdminStatusScheduleSize               = VirtualChargingStation.DefaultMaxAdminStatusScheduleSize,
+                                                                                  UInt16                                                          MaxStatusScheduleSize                    = VirtualChargingStation.DefaultMaxStatusScheduleSize,
 
                                                                                   String?                                                         DataSource                           = null,
                                                                                   DateTime?                                                       LastChange                           = null,
@@ -194,6 +240,32 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    Address,
                    GeoLocation,
+                   OpeningTimes,
+                   ChargingWhenClosed,
+                   Accessibility,
+                   LocationLanguage,
+                   PhysicalReference,
+                   HotlinePhoneNumber,
+
+                   AuthenticationModes,
+                   PaymentOptions,
+                   Features,
+
+                   ServiceIdentification,
+                   ModelCode,
+
+                   Brands,
+
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+
+                   DataSource,
+                   LastChange,
+
+                   CustomData,
+                   InternalData,
 
                    ChargingStationConfigurator,
                    newStation => {
@@ -209,8 +281,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 PrivateKey,
                                                 PublicKeyCertificates,
                                                 SelfCheckTimeSpan,
-                                                MaxAdminStatusListSize,
-                                                MaxStatusListSize
+                                                MaxAdminStatusScheduleSize,
+                                                MaxStatusScheduleSize
                                             );
 
                        VirtualChargingStationConfigurator?.Invoke(virtualstation);
@@ -218,16 +290,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        return virtualstation;
 
                    },
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize,
-
-                   DataSource,
-                   LastChange,
-
-                   CustomData,
-                   InternalData,
 
                    OnSuccess,
                    OnError,
@@ -258,6 +320,21 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                                        Address?                                                        Address                              = null,
                                                                                        GeoCoordinate?                                                  GeoLocation                          = null,
+                                                                                       OpeningTimes?                                                   OpeningTimes                         = null,
+                                                                                       Boolean?                                                        ChargingWhenClosed                   = null,
+                                                                                       AccessibilityTypes?                                             Accessibility                        = null,
+                                                                                       Languages?                                                      LocationLanguage                     = null,
+                                                                                       String?                                                         PhysicalReference                    = null,
+                                                                                       PhoneNumber?                                                    HotlinePhoneNumber                   = null,
+
+                                                                                       IEnumerable<AuthenticationModes>?                               AuthenticationModes                  = null,
+                                                                                       IEnumerable<PaymentOptions>?                                    PaymentOptions                       = null,
+                                                                                       IEnumerable<Features>?                                          Features                             = null,
+
+                                                                                       String?                                                         ServiceIdentification                = null,
+                                                                                       String?                                                         ModelCode                            = null,
+
+                                                                                       IEnumerable<Brand>?                                             Brands                               = null,
 
                                                                                        Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                   = null,
                                                                                        Timestamped<ChargingStationStatusTypes>?                        InitialStatus                        = null,
@@ -265,8 +342,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                        ECPrivateKeyParameters?                                         PrivateKey                           = null,
                                                                                        PublicKeyCertificates?                                          PublicKeyCertificates                = null,
                                                                                        TimeSpan?                                                       SelfCheckTimeSpan                    = null,
-                                                                                       UInt16                                                          MaxAdminStatusListSize               = VirtualChargingStation.DefaultMaxAdminStatusListSize,
-                                                                                       UInt16                                                          MaxStatusListSize                    = VirtualChargingStation.DefaultMaxStatusListSize,
+                                                                                       UInt16                                                          MaxAdminStatusScheduleSize               = VirtualChargingStation.DefaultMaxAdminStatusScheduleSize,
+                                                                                       UInt16                                                          MaxStatusScheduleSize                    = VirtualChargingStation.DefaultMaxStatusScheduleSize,
 
                                                                                        String?                                                         DataSource                           = null,
                                                                                        DateTime?                                                       LastChange                           = null,
@@ -292,6 +369,32 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    Address,
                    GeoLocation,
+                   OpeningTimes,
+                   ChargingWhenClosed,
+                   Accessibility,
+                   LocationLanguage,
+                   PhysicalReference,
+                   HotlinePhoneNumber,
+
+                   AuthenticationModes,
+                   PaymentOptions,
+                   Features,
+
+                   ServiceIdentification,
+                   ModelCode,
+
+                   Brands,
+
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize,
+
+                   DataSource,
+                   LastChange,
+
+                   CustomData,
+                   InternalData,
 
                    ChargingStationConfigurator,
                    newStation => {
@@ -307,8 +410,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                 PrivateKey,
                                                 PublicKeyCertificates,
                                                 SelfCheckTimeSpan,
-                                                MaxAdminStatusListSize,
-                                                MaxStatusListSize
+                                                MaxAdminStatusScheduleSize,
+                                                MaxStatusScheduleSize
                                             );
 
                        VirtualChargingStationConfigurator?.Invoke(virtualstation);
@@ -316,16 +419,6 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                        return virtualstation;
 
                    },
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize,
-
-                   DataSource,
-                   LastChange,
-
-                   CustomData,
-                   InternalData,
 
                    OnAdditionSuccess,
                    OnUpdateSuccess,
@@ -358,12 +451,12 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// <summary>
         /// The default max size of the status history.
         /// </summary>
-        public const UInt16 DefaultMaxStatusListSize = 50;
+        public const UInt16 DefaultMaxStatusScheduleSize = 50;
 
         /// <summary>
         /// The default max size of the admin status history.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize = 50;
+        public const UInt16 DefaultMaxAdminStatusScheduleSize = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
@@ -487,8 +580,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         /// </summary>
         /// <param name="Id">The unique identification of this EVSE.</param>
         /// <param name="SelfCheckTimeSpan">The time span between self checks.</param>
-        /// <param name="MaxStatusListSize">The maximum size of the charging station status list.</param>
-        /// <param name="MaxAdminStatusListSize">The maximum size of the charging station admin status list.</param>
+        /// <param name="MaxStatusScheduleSize">The maximum size of the charging station status list.</param>
+        /// <param name="MaxAdminStatusScheduleSize">The maximum size of the charging station admin status list.</param>
         public VirtualChargingStation(ChargingStation_Id                             Id,
                                       IRoamingNetwork                                RoamingNetwork,
                                       I18NString?                                    Name                     = null,
@@ -499,8 +592,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                       ECPrivateKeyParameters?                        PrivateKey               = null,
                                       PublicKeyCertificates?                         PublicKeyCertificates    = null,
                                       TimeSpan?                                      SelfCheckTimeSpan        = null,
-                                      UInt16?                                        MaxAdminStatusListSize   = null,
-                                      UInt16?                                        MaxStatusListSize        = null)
+                                      UInt16?                                        MaxAdminStatusScheduleSize   = null,
+                                      UInt16?                                        MaxStatusScheduleSize        = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -511,8 +604,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    PublicKeyCertificates,
                    InitialAdminStatus     ?? ChargingStationAdminStatusTypes.Operational,
                    InitialStatus          ?? ChargingStationStatusTypes.Available,
-                   MaxAdminStatusListSize ?? DefaultMaxAdminStatusListSize,
-                   MaxStatusListSize      ?? DefaultMaxStatusListSize)
+                   MaxAdminStatusScheduleSize ?? DefaultMaxAdminStatusScheduleSize,
+                   MaxStatusScheduleSize      ?? DefaultMaxStatusScheduleSize)
 
         {
 
@@ -778,8 +871,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                               EVSEAdminStatusTypes?               InitialAdminStatus           = null,
                                               EVSEStatusTypes?                    InitialStatus                = null,
-                                              UInt16                              MaxAdminStatusListSize       = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
-                                              UInt16                              MaxStatusListSize            = VirtualEVSE.DefaultMaxStatusScheduleSize,
+                                              UInt16                              MaxAdminStatusScheduleSize       = VirtualEVSE.DefaultMaxAdminStatusScheduleSize,
+                                              UInt16                              MaxStatusScheduleSize            = VirtualEVSE.DefaultMaxStatusScheduleSize,
 
                                               IEnumerable<URL>?                   PhotoURLs                    = null,
                                               IEnumerable<Brand>?                 Brands                       = null,
@@ -836,8 +929,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                   InitialAdminStatus ?? EVSEAdminStatusTypes.Operational,
                                                   InitialStatus      ?? EVSEStatusTypes.Available,
-                                                  MaxAdminStatusListSize,
-                                                  MaxStatusListSize,
+                                                  MaxAdminStatusScheduleSize,
+                                                  MaxStatusScheduleSize,
 
                                                   PhotoURLs,
                                                   Brands,
