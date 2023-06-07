@@ -47,14 +47,17 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region AddVirtualStation           (this ChargingPool, ChargingStationId = null, ChargingStationConfigurator = null, VirtualChargingStationConfigurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create a new virtual charging station.
+        /// Add a new virtual charging station.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="ChargingStationId">The charging station identification for the charging station to be created.</param>
-        /// <param name="ChargingStationConfigurator">An optional delegate to configure the new (local) charging station.</param>
-        /// <param name="VirtualChargingStationConfigurator">An optional delegate to configure the new virtual charging station.</param>
-        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
-        /// <param name="OnError">An optional delegate for reporting an error.</param>
+        /// <param name="ChargingPool">The charging pool of the new charging station.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<AddChargingStationResult> AddVirtualStation(this IChargingPool                                              ChargingPool,
                                                                        ChargingStation_Id                                              ChargingStationId,
                                                                        I18NString?                                                     Name                                 = null,
@@ -96,9 +99,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                        Action<IChargingStation>?                                       ChargingStationConfigurator          = null,
                                                                        Action<VirtualChargingStation>?                                 VirtualChargingStationConfigurator   = null,
 
-                                                                       Action<IChargingStation>?                                       OnSuccess                            = null,
-                                                                       Action<IChargingPool, IChargingStation>?                        OnError                              = null,
+                                                                       Action<IChargingStation,                EventTracking_Id>?      OnSuccess                            = null,
+                                                                       Action<IChargingPool, IChargingStation, EventTracking_Id>?      OnError                              = null,
 
+                                                                       Boolean                                                         SkipAddedNotifications               = false,
                                                                        Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds         = null,
                                                                        EventTracking_Id?                                               EventTrackingId                      = null,
                                                                        User_Id?                                                        CurrentUserId                        = null)
@@ -165,6 +169,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    OnSuccess,
                    OnError,
 
+                   SkipAddedNotifications,
                    AllowInconsistentOperatorIds,
                    EventTrackingId,
                    CurrentUserId
@@ -176,14 +181,16 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region AddVirtualStationIfNotExists(this ChargingPool, ChargingStationId = null, ChargingStationConfigurator = null, VirtualChargingStationConfigurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create a new virtual charging station.
+        /// Add a new virtual charging station, but do not fail when this charging station already exists.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="ChargingStationId">The charging station identification for the charging station to be created.</param>
-        /// <param name="ChargingStationConfigurator">An optional delegate to configure the new (local) charging station.</param>
-        /// <param name="VirtualChargingStationConfigurator">An optional delegate to configure the new virtual charging station.</param>
-        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
-        /// <param name="OnError">An optional delegate for reporting an error.</param>
+        /// <param name="ChargingPool">The charging pool of the new charging station.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<AddChargingStationResult> AddVirtualStationIfNotExists(this IChargingPool                                              ChargingPool,
                                                                                   ChargingStation_Id                                              ChargingStationId,
                                                                                   I18NString?                                                     Name                                 = null,
@@ -225,9 +232,9 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                                                                   Action<IChargingStation>?                                       ChargingStationConfigurator          = null,
                                                                                   Action<VirtualChargingStation>?                                 VirtualChargingStationConfigurator   = null,
 
-                                                                                  Action<IChargingStation>?                                       OnSuccess                            = null,
-                                                                                  Action<IChargingPool, IChargingStation>?                        OnError                              = null,
+                                                                                  Action<IChargingStation, EventTracking_Id>?                     OnSuccess                            = null,
 
+                                                                                  Boolean                                                         SkipAddedNotifications               = false,
                                                                                   Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds         = null,
                                                                                   EventTracking_Id?                                               EventTrackingId                      = null,
                                                                                   User_Id?                                                        CurrentUserId                        = null)
@@ -292,8 +299,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    },
 
                    OnSuccess,
-                   OnError,
 
+                   SkipAddedNotifications,
                    AllowInconsistentOperatorIds,
                    EventTrackingId,
                    CurrentUserId
@@ -305,62 +312,67 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         #region AddOrUpdateVirtualStation   (this ChargingPool, ChargingStationId = null, ChargingStationConfigurator = null, VirtualChargingStationConfigurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create a new virtual charging station.
+        /// Add a new or update an existing virtual charging station.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="ChargingStationId">The charging station identification for the charging station to be created.</param>
-        /// <param name="ChargingStationConfigurator">An optional delegate to configure the new (local) charging station.</param>
-        /// <param name="VirtualChargingStationConfigurator">An optional delegate to configure the new virtual charging station.</param>
-        /// <param name="OnSuccess">An optional delegate for reporting success.</param>
-        /// <param name="OnError">An optional delegate for reporting an error.</param>
+        /// <param name="ChargingPool">The charging pool of the new or updated charging station.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<AddOrUpdateChargingStationResult> AddOrUpdateVirtualStation(this IChargingPool                                              ChargingPool,
                                                                                        ChargingStation_Id                                              ChargingStationId,
-                                                                                       I18NString?                                                     Name                                 = null,
-                                                                                       I18NString?                                                     Description                          = null,
+                                                                                       I18NString?                                                     Name                                   = null,
+                                                                                       I18NString?                                                     Description                            = null,
 
-                                                                                       Address?                                                        Address                              = null,
-                                                                                       GeoCoordinate?                                                  GeoLocation                          = null,
-                                                                                       OpeningTimes?                                                   OpeningTimes                         = null,
-                                                                                       Boolean?                                                        ChargingWhenClosed                   = null,
-                                                                                       AccessibilityTypes?                                             Accessibility                        = null,
-                                                                                       Languages?                                                      LocationLanguage                     = null,
-                                                                                       String?                                                         PhysicalReference                    = null,
-                                                                                       PhoneNumber?                                                    HotlinePhoneNumber                   = null,
+                                                                                       Address?                                                        Address                                = null,
+                                                                                       GeoCoordinate?                                                  GeoLocation                            = null,
+                                                                                       OpeningTimes?                                                   OpeningTimes                           = null,
+                                                                                       Boolean?                                                        ChargingWhenClosed                     = null,
+                                                                                       AccessibilityTypes?                                             Accessibility                          = null,
+                                                                                       Languages?                                                      LocationLanguage                       = null,
+                                                                                       String?                                                         PhysicalReference                      = null,
+                                                                                       PhoneNumber?                                                    HotlinePhoneNumber                     = null,
 
-                                                                                       IEnumerable<AuthenticationModes>?                               AuthenticationModes                  = null,
-                                                                                       IEnumerable<PaymentOptions>?                                    PaymentOptions                       = null,
-                                                                                       IEnumerable<Features>?                                          Features                             = null,
+                                                                                       IEnumerable<AuthenticationModes>?                               AuthenticationModes                    = null,
+                                                                                       IEnumerable<PaymentOptions>?                                    PaymentOptions                         = null,
+                                                                                       IEnumerable<Features>?                                          Features                               = null,
 
-                                                                                       String?                                                         ServiceIdentification                = null,
-                                                                                       String?                                                         ModelCode                            = null,
+                                                                                       String?                                                         ServiceIdentification                  = null,
+                                                                                       String?                                                         ModelCode                              = null,
 
-                                                                                       IEnumerable<Brand>?                                             Brands                               = null,
+                                                                                       IEnumerable<Brand>?                                             Brands                                 = null,
 
-                                                                                       Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                   = null,
-                                                                                       Timestamped<ChargingStationStatusTypes>?                        InitialStatus                        = null,
-                                                                                       String                                                          EllipticCurve                        = "P-256",
-                                                                                       ECPrivateKeyParameters?                                         PrivateKey                           = null,
-                                                                                       PublicKeyCertificates?                                          PublicKeyCertificates                = null,
-                                                                                       TimeSpan?                                                       SelfCheckTimeSpan                    = null,
-                                                                                       UInt16?                                                         MaxAdminStatusScheduleSize           = null,
-                                                                                       UInt16?                                                         MaxStatusScheduleSize                = null,
+                                                                                       Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                     = null,
+                                                                                       Timestamped<ChargingStationStatusTypes>?                        InitialStatus                          = null,
+                                                                                       String                                                          EllipticCurve                          = "P-256",
+                                                                                       ECPrivateKeyParameters?                                         PrivateKey                             = null,
+                                                                                       PublicKeyCertificates?                                          PublicKeyCertificates                  = null,
+                                                                                       TimeSpan?                                                       SelfCheckTimeSpan                      = null,
+                                                                                       UInt16?                                                         MaxAdminStatusScheduleSize             = null,
+                                                                                       UInt16?                                                         MaxStatusScheduleSize                  = null,
 
-                                                                                       String?                                                         DataSource                           = null,
-                                                                                       DateTime?                                                       LastChange                           = null,
+                                                                                       String?                                                         DataSource                             = null,
+                                                                                       DateTime?                                                       LastChange                             = null,
 
-                                                                                       JObject?                                                        CustomData                           = null,
-                                                                                       UserDefinedDictionary?                                          InternalData                         = null,
+                                                                                       JObject?                                                        CustomData                             = null,
+                                                                                       UserDefinedDictionary?                                          InternalData                           = null,
 
-                                                                                       Action<IChargingStation>?                                       ChargingStationConfigurator          = null,
-                                                                                       Action<VirtualChargingStation>?                                 VirtualChargingStationConfigurator   = null,
+                                                                                       Action<IChargingStation>?                                       ChargingStationConfigurator            = null,
+                                                                                       Action<VirtualChargingStation>?                                 VirtualChargingStationConfigurator     = null,
 
-                                                                                       Action<IChargingStation>?                                       OnAdditionSuccess                    = null,
-                                                                                       Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                      = null,
-                                                                                       Action<IChargingPool,    IChargingStation>?                     OnError                              = null,
+                                                                                       Action<IChargingStation,                   EventTracking_Id>?   OnAdditionSuccess                      = null,
+                                                                                       Action<IChargingStation, IChargingStation, EventTracking_Id>?   OnUpdateSuccess                        = null,
+                                                                                       Action<IChargingPool,    IChargingStation, EventTracking_Id>?   OnError                                = null,
 
-                                                                                       Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds         = null,
-                                                                                       EventTracking_Id?                                               EventTrackingId                      = null,
-                                                                                       User_Id?                                                        CurrentUserId                        = null)
+                                                                                       Boolean                                                         SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                                       Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds           = null,
+                                                                                       EventTracking_Id?                                               EventTrackingId                        = null,
+                                                                                       User_Id?                                                        CurrentUserId                          = null)
 
             => ChargingPool.AddOrUpdateChargingStation(
                    ChargingStationId,
@@ -424,6 +436,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                    OnUpdateSuccess,
                    OnError,
 
+                   SkipAddOrUpdatedUpdatedNotifications,
                    AllowInconsistentOperatorIds,
                    EventTrackingId,
                    CurrentUserId
@@ -2801,6 +2814,36 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         }
 
         public Task<AddOrUpdateEVSEResult> AddOrUpdateEVSE(IEVSE EVSE, Action<IEVSE>? OnAdditionSuccess = null, Action<IEVSE, IEVSE>? OnUpdateSuccess = null, Action<IChargingStation, IEVSE>? OnError = null, Func<ChargingStationOperator_Id, EVSE_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddEVSEResult> AddEVSE(IEVSE EVSE, Action<IEVSE, EventTracking_Id>? OnSuccess = null, Action<IChargingStation, IEVSE, EventTracking_Id>? OnError = null, Boolean SkipAddedNotifications = false, Func<ChargingStationOperator_Id, EVSE_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddEVSEResult> AddEVSEIfNotExists(IEVSE EVSE, Action<IEVSE, EventTracking_Id>? OnSuccess = null, Boolean SkipAddedNotifications = false, Func<ChargingStationOperator_Id, EVSE_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddOrUpdateEVSEResult> AddOrUpdateEVSE(IEVSE EVSE, Action<IEVSE, EventTracking_Id>? OnAdditionSuccess = null, Action<IEVSE, IEVSE, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingStation, IEVSE, EventTracking_Id>? OnError = null, Boolean SkipAddOrUpdatedUpdatedNotifications = false, Func<ChargingStationOperator_Id, EVSE_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateEVSEResult> UpdateEVSE(IEVSE EVSE, Action<IEVSE, IEVSE, EventTracking_Id>? OnSuccess = null, Action<IChargingStation, IEVSE, EventTracking_Id>? OnError = null, Boolean SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, EVSE_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateEVSEResult> UpdateEVSE(IEVSE EVSE, Action<IEVSE> UpdateDelegate, Action<IEVSE, IEVSE, EventTracking_Id>? OnSuccess = null, Action<IChargingStation, IEVSE, EventTracking_Id>? OnError = null, Boolean SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, EVSE_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoveEVSEResult> RemoveEVSE(EVSE_Id Id, Action<IEVSE, EventTracking_Id>? OnSuccess = null, Action<IChargingStation, IEVSE, EventTracking_Id>? OnError = null, Boolean SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
         {
             throw new NotImplementedException();
         }

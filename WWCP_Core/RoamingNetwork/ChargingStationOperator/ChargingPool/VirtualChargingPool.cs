@@ -2990,6 +2990,36 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
             throw new NotImplementedException();
         }
+
+        public Task<AddChargingStationResult> AddChargingStation(IChargingStation ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, Boolean SkipAddedNotifications = false, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddChargingStationResult> AddChargingStationIfNotExists(IChargingStation ChargingStation, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Boolean SkipAddedNotifications = false, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(IChargingStation ChargingStation, Action<IChargingStation, EventTracking_Id>? OnAdditionSuccess = null, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, Boolean SkipAddOrUpdatedUpdatedNotifications = false, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation ChargingStation, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, Boolean SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation ChargingStation, Action<IChargingStation> UpdateDelegate, Action<IChargingStation, IChargingStation, EventTracking_Id>? OnUpdateSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, Boolean SkipUpdatedNotifications = false, Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>? AllowInconsistentOperatorIds = null, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id Id, Action<IChargingStation, EventTracking_Id>? OnSuccess = null, Action<IChargingPool, IChargingStation, EventTracking_Id>? OnError = null, Boolean SkipRemovedNotifications = false, EventTracking_Id? EventTrackingId = null, User_Id? CurrentUserId = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

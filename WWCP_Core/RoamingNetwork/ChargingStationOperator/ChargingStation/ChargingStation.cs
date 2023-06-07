@@ -1844,17 +1844,23 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddEVSE           (Id, Configurator = null, RemoteEVSECreator = null, ...)
 
         /// <summary>
-        /// Create and register a new EVSE having the given
-        /// unique EVSE identification.
+        /// Add a new EVSE.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
-        /// <param name="OnError">An optional delegate for signaling errors.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the EVSE.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new EVSE failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public async Task<AddEVSEResult> AddEVSE(IEVSE                                                EVSE,
 
-                                                 Action<IEVSE>?                                       OnSuccess                      = null,
-                                                 Action<IChargingStation, IEVSE>?                     OnError                        = null,
+                                                 Action<IEVSE,                   EventTracking_Id>?   OnSuccess                      = null,
+                                                 Action<IChargingStation, IEVSE, EventTracking_Id>?   OnError                        = null,
 
+                                                 Boolean                                              SkipAddedNotifications         = false,
                                                  Func<ChargingStationOperator_Id, EVSE_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                  EventTracking_Id?                                    EventTrackingId                = null,
                                                  User_Id?                                             CurrentUserId                  = null)
@@ -1882,7 +1888,8 @@ namespace cloud.charging.open.protocols.WWCP
                 //ToDo: Persistency
                 await Task.Delay(1);
 
-                OnSuccess?.Invoke(EVSE);
+                OnSuccess?.Invoke(EVSE,
+                                  EventTrackingId);
 
                 return AddEVSEResult.Success(EVSE,
                                              EventTrackingId,
@@ -1890,7 +1897,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             }
 
-            OnError?.Invoke(this, EVSE);
+            OnError?.Invoke(this,
+                            EVSE,
+                            EventTrackingId);
 
             return AddEVSEResult.Failed(EVSE,
                                         EventTrackingId,
@@ -1904,17 +1913,21 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddEVSEIfNotExists(Id, Configurator = null, RemoteEVSECreator = null, ...)
 
         /// <summary>
-        /// Create and register a new EVSE having the given
-        /// unique EVSE identification.
+        /// Add a new EVSE, but do not fail when this EVSE already exists.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
-        /// <param name="OnError">An optional delegate for signaling errors.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the EVSE.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public async Task<AddEVSEResult> AddEVSEIfNotExists(IEVSE                                                EVSE,
 
-                                                            Action<IEVSE>?                                       OnSuccess                      = null,
-                                                            Action<IChargingStation, IEVSE>?                     OnError                        = null,
+                                                            Action<IEVSE, EventTracking_Id>?                     OnSuccess                      = null,
 
+                                                            Boolean                                              SkipAddedNotifications         = false,
                                                             Func<ChargingStationOperator_Id, EVSE_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                             EventTracking_Id?                                    EventTrackingId                = null,
                                                             User_Id?                                             CurrentUserId                  = null)
@@ -1942,7 +1955,8 @@ namespace cloud.charging.open.protocols.WWCP
                 //ToDo: Persistency
                 await Task.Delay(1);
 
-                OnSuccess?.Invoke(EVSE);
+                OnSuccess?.Invoke(EVSE,
+                                  EventTrackingId);
 
                 return AddEVSEResult.Success(EVSE,
                                              EventTrackingId,
@@ -1962,22 +1976,28 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddOrUpdateEVSE   (Id, Configurator = null, RemoteEVSECreator = null, ...)
 
         /// <summary>
-        /// Create and register a new EVSE having the given
-        /// unique EVSE identification.
+        /// Add a new or update an existing EVSE.
         /// </summary>
-        /// <param name="Id">The unique identification of the new EVSE.</param>
-        /// <param name="Configurator">An optional delegate to configure the new EVSE before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new EVSE after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the EVSE failed.</param>
+        /// <param name="EVSE">An EVSE.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the EVSE.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the EVSE.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new EVSE failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public async Task<AddOrUpdateEVSEResult> AddOrUpdateEVSE(IEVSE                                                EVSE,
 
-                                                                 Action<IEVSE>?                                       OnAdditionSuccess              = null,
-                                                                 Action<IEVSE,            IEVSE>?                     OnUpdateSuccess                = null,
-                                                                 Action<IChargingStation, IEVSE>?                     OnError                        = null,
+                                                                 Action<IEVSE,                   EventTracking_Id>?   OnAdditionSuccess                      = null,
+                                                                 Action<IEVSE,            IEVSE, EventTracking_Id>?   OnUpdateSuccess                        = null,
+                                                                 Action<IChargingStation, IEVSE, EventTracking_Id>?   OnError                                = null,
 
-                                                                 Func<ChargingStationOperator_Id, EVSE_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                 EventTracking_Id?                                    EventTrackingId                = null,
-                                                                 User_Id?                                             CurrentUserId                  = null)
+                                                                 Boolean                                              SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                 Func<ChargingStationOperator_Id, EVSE_Id, Boolean>?  AllowInconsistentOperatorIds           = null,
+                                                                 EventTracking_Id?                                    EventTrackingId                        = null,
+                                                                 User_Id?                                             CurrentUserId                          = null)
         {
 
             #region Initial checks
@@ -2011,7 +2031,8 @@ namespace cloud.charging.open.protocols.WWCP
                     Connect(EVSE);
 
                     OnUpdateSuccess?.Invoke(EVSE,
-                                            existingEVSE);
+                                            existingEVSE,
+                                            EventTrackingId);
 
                     return AddOrUpdateEVSEResult.Success(EVSE,
                                                          AddedOrUpdated.Update,
@@ -2021,7 +2042,9 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    OnError?.Invoke(this, EVSE);
+                    OnError?.Invoke(this,
+                                    EVSE,
+                                    EventTrackingId);
 
                     return AddOrUpdateEVSEResult.Failed(EVSE,
                                                         EventTrackingId,
@@ -2045,7 +2068,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                     Connect(EVSE);
 
-                    OnAdditionSuccess?.Invoke(EVSE);
+                    OnAdditionSuccess?.Invoke(EVSE,
+                                              EventTrackingId);
 
                     return AddOrUpdateEVSEResult.Success(EVSE,
                                                          AddedOrUpdated.Add,
@@ -2055,7 +2079,9 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    OnError?.Invoke(this, EVSE);
+                    OnError?.Invoke(this,
+                                    EVSE,
+                                    EventTrackingId);
 
                     return AddOrUpdateEVSEResult.Failed(EVSE,
                                                         EventTrackingId,
@@ -2065,6 +2091,233 @@ namespace cloud.charging.open.protocols.WWCP
                 }
 
             }
+
+        }
+
+        #endregion
+
+        #region UpdateEVSE        (Id, Configurator = null, RemoteEVSECreator = null, ...)
+
+        /// <summary>
+        /// Update the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful update of the EVSE.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new EVSE failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<UpdateEVSEResult> UpdateEVSE(IEVSE                                                EVSE,
+
+                                                       Action<IEVSE,            IEVSE, EventTracking_Id>?   OnSuccess                      = null,
+                                                       Action<IChargingStation, IEVSE, EventTracking_Id>?   OnError                        = null,
+
+                                                       Boolean                                              SkipUpdatedNotifications       = false,
+                                                       Func<ChargingStationOperator_Id, EVSE_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                       EventTracking_Id?                                    EventTrackingId                = null,
+                                                       User_Id?                                             CurrentUserId                  = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, evseId) => false);
+
+            if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
+                return UpdateEVSEResult.Failed(null,
+                                               EventTrackingId,
+                                               $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!");
+
+            #endregion
+
+
+            if (evses.TryGet(EVSE.Id, out var existingEVSE) &&
+                existingEVSE is not null)
+            {
+
+                if (evses.TryUpdate(EVSE.Id,
+                                    EVSE,
+                                    existingEVSE,
+                                    EventTrackingId,
+                                    CurrentUserId))
+                {
+
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    Connect(EVSE);
+
+                    OnSuccess?.Invoke(EVSE,
+                                      existingEVSE,
+                                      EventTrackingId);
+
+                    return UpdateEVSEResult.Success(EVSE,
+                                                    EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this,
+                                    EVSE,
+                                    EventTrackingId);
+
+                    return UpdateEVSEResult.Failed(EVSE,
+                                                   EventTrackingId,
+                                                   "Error!");
+
+                }
+
+            }
+
+            else
+                return UpdateEVSEResult.Failed(EVSE,
+                                               EventTrackingId,
+                                               "Error!");
+
+        }
+
+        #endregion
+
+        #region UpdateEVSE        (Id, Configurator = null, RemoteEVSECreator = null, ...)
+
+        /// <summary>
+        /// Update the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="UpdateDelegate">A delegate for updating the given EVSE.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful update of the EVSE.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new EVSE failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<UpdateEVSEResult> UpdateEVSE(IEVSE                                                EVSE,
+                                                       Action<IEVSE>                                        UpdateDelegate,
+
+                                                       Action<IEVSE,            IEVSE, EventTracking_Id>?   OnSuccess                      = null,
+                                                       Action<IChargingStation, IEVSE, EventTracking_Id>?   OnError                        = null,
+
+                                                       Boolean                                              SkipUpdatedNotifications       = false,
+                                                       Func<ChargingStationOperator_Id, EVSE_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                       EventTracking_Id?                                    EventTrackingId                = null,
+                                                       User_Id?                                             CurrentUserId                  = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, evseId) => false);
+
+            if (EVSE.Id.OperatorId != Operator?.Id && !AllowInconsistentOperatorIds(Operator.Id, EVSE.Id))
+                return UpdateEVSEResult.Failed(null,
+                                               EventTrackingId,
+                                               $"The operator identification of the given EVSE '{EVSE.Id.OperatorId}' is invalid!");
+
+            #endregion
+
+
+            if (evses.TryGet(EVSE.Id, out var existingEVSE) &&
+                existingEVSE is not null)
+            {
+
+                if (evses.TryUpdate(EVSE.Id,
+                                    EVSE,
+                                    existingEVSE,
+                                    EventTrackingId,
+                                    CurrentUserId))
+                {
+
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    Connect(EVSE);
+
+                    OnSuccess?.Invoke(EVSE,
+                                      existingEVSE,
+                                      EventTrackingId);
+
+                    return UpdateEVSEResult.Success(EVSE,
+                                                    EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this,
+                                    EVSE,
+                                    EventTrackingId);
+
+                    return UpdateEVSEResult.Failed(EVSE,
+                                                   EventTrackingId,
+                                                   "Error!");
+
+                }
+
+            }
+
+            else
+                return UpdateEVSEResult.Failed(EVSE,
+                                               EventTrackingId,
+                                               "Error!");
+
+        }
+
+        #endregion
+
+        #region RemoveEVSE(EVSEId)
+
+        /// <summary>
+        /// Remove the given EVSE.
+        /// </summary>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful removal of the EVSE.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the removal of the new EVSE failed.</param>
+        /// 
+        /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<RemoveEVSEResult> RemoveEVSE(EVSE_Id                                             Id,
+
+                                                       Action<IEVSE,                   EventTracking_Id>?  OnSuccess                  = null,
+                                                       Action<IChargingStation, IEVSE, EventTracking_Id>?  OnError                    = null,
+
+                                                       Boolean                                             SkipRemovedNotifications   = false,
+                                                       EventTracking_Id?                                   EventTrackingId            = null,
+                                                       User_Id?                                            CurrentUserId              = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            #endregion
+
+            if (evses.TryRemove(Id,
+                                out var evse,
+                                EventTrackingId,
+                                null) &&
+                evse is not null)
+            {
+
+                OnSuccess?.Invoke(evse,
+                                  EventTrackingId);
+
+                return RemoveEVSEResult.Success(evse,
+                                                EventTrackingId);
+
+            }
+
+
+            return RemoveEVSEResult.Failed(Id,
+                                           EventTrackingId,
+                                           "");
 
         }
 
@@ -2108,36 +2361,6 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean TryGetEVSEById(EVSE_Id EVSEId, out IEVSE? EVSE)
 
             => evses.TryGet(EVSEId, out EVSE);
-
-        #endregion
-
-        #region RemoveEVSE(EVSEId)
-
-        public IEVSE? RemoveEVSE(EVSE_Id EVSEId)
-        {
-
-            if (evses.TryRemove(EVSEId,
-                                out var evse,
-                                EventTracking_Id.New,
-                                null))
-            {
-                return evse;
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryRemoveEVSE(EVSEId, out EVSE)
-
-        public Boolean TryRemoveEVSE(EVSE_Id EVSEId, out IEVSE? EVSE)
-
-            => evses.TryRemove(EVSEId,
-                               out EVSE,
-                               EventTracking_Id.New,
-                               null);
 
         #endregion
 

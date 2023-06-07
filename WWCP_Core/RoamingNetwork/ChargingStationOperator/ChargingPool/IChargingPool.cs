@@ -45,16 +45,20 @@ namespace cloud.charging.open.protocols.WWCP
     public static partial class ChargingPoolExtensions
     {
 
-        #region AddChargingStation           (this ChargingPool, Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingStation           (this ChargingPool, Id, ..., Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Add a new charging station.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging station.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// <param name="ChargingPool">The charging pool of the new charging station.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<AddChargingStationResult> AddChargingStation(this IChargingPool                                              ChargingPool,
 
                                                                         ChargingStation_Id                                              Id,
@@ -93,9 +97,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         Action<IChargingStation>?                                       Configurator                   = null,
                                                                         RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
 
-                                                                        Action<IChargingStation>?                                       OnSuccess                      = null,
-                                                                        Action<IChargingPool, IChargingStation>?                        OnError                        = null,
+                                                                        Action<IChargingStation, EventTracking_Id>?                     OnSuccess                      = null,
+                                                                        Action<IChargingPool, IChargingStation, EventTracking_Id>?      OnError                        = null,
 
+                                                                        Boolean                                                         SkipAddedNotifications         = false,
                                                                         Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                         EventTracking_Id?                                               EventTrackingId                = null,
                                                                         User_Id?                                                        CurrentUserId                  = null)
@@ -143,22 +148,26 @@ namespace cloud.charging.open.protocols.WWCP
                                                OnSuccess,
                                                OnError,
 
+                                               SkipAddedNotifications,
                                                AllowInconsistentOperatorIds,
                                                EventTrackingId,
                                                CurrentUserId);
 
         #endregion
 
-        #region AddChargingStationIfNotExists(this ChargingPool, Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddChargingStationIfNotExists(this ChargingPool, Id, ..., Configurator = null, OnSuccess = null)
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Add a new charging station, but do not fail when this charging station already exists.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging station.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// <param name="ChargingPool">The charging pool of the new charging station.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<AddChargingStationResult> AddChargingStationIfNotExists(this IChargingPool                                              ChargingPool,
 
                                                                                    ChargingStation_Id                                              Id,
@@ -198,9 +207,9 @@ namespace cloud.charging.open.protocols.WWCP
                                                                                    Action<IChargingStation>?                                       Configurator                   = null,
                                                                                    RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
 
-                                                                                   Action<IChargingStation>?                                       OnSuccess                      = null,
-                                                                                   Action<IChargingPool, IChargingStation>?                        OnError                        = null,
+                                                                                   Action<IChargingStation, EventTracking_Id>?                     OnSuccess                      = null,
 
+                                                                                   Boolean                                                         SkipAddedNotifications         = false,
                                                                                    Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                                    EventTracking_Id?                                               EventTrackingId                = null,
                                                                                    User_Id?                                                        CurrentUserId                  = null)
@@ -246,69 +255,75 @@ namespace cloud.charging.open.protocols.WWCP
                                                           ),
 
                                                           OnSuccess,
-                                                          OnError,
 
+                                                          SkipAddedNotifications,
                                                           AllowInconsistentOperatorIds,
                                                           EventTrackingId,
                                                           CurrentUserId);
 
         #endregion
 
-        #region AddOrUpdateChargingStation   (this ChargingPool, Id, Configurator = null, OnSuccess = null, OnError = null)
+        #region AddOrUpdateChargingStation   (this ChargingPool, Id, ..., Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Add a new or update an existing charging station.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging station.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// <param name="ChargingPool">The charging pool of the new or updated charging station.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(this IChargingPool                                              ChargingPool,
 
                                                                                         ChargingStation_Id                                              Id,
-                                                                                        I18NString?                                                     Name                           = null,
-                                                                                        I18NString?                                                     Description                    = null,
+                                                                                        I18NString?                                                     Name                                   = null,
+                                                                                        I18NString?                                                     Description                            = null,
 
-                                                                                        Address?                                                        Address                        = null,
-                                                                                        GeoCoordinate?                                                  GeoLocation                    = null,
-                                                                                        OpeningTimes?                                                   OpeningTimes                   = null,
-                                                                                        Boolean?                                                        ChargingWhenClosed             = null,
-                                                                                        AccessibilityTypes?                                             Accessibility                  = null,
-                                                                                        Languages?                                                      LocationLanguage               = null,
-                                                                                        String?                                                         PhysicalReference              = null,
-                                                                                        PhoneNumber?                                                    HotlinePhoneNumber             = null,
+                                                                                        Address?                                                        Address                                = null,
+                                                                                        GeoCoordinate?                                                  GeoLocation                            = null,
+                                                                                        OpeningTimes?                                                   OpeningTimes                           = null,
+                                                                                        Boolean?                                                        ChargingWhenClosed                     = null,
+                                                                                        AccessibilityTypes?                                             Accessibility                          = null,
+                                                                                        Languages?                                                      LocationLanguage                       = null,
+                                                                                        String?                                                         PhysicalReference                      = null,
+                                                                                        PhoneNumber?                                                    HotlinePhoneNumber                     = null,
 
-                                                                                        IEnumerable<AuthenticationModes>?                               AuthenticationModes            = null,
-                                                                                        IEnumerable<PaymentOptions>?                                    PaymentOptions                 = null,
-                                                                                        IEnumerable<Features>?                                          Features                       = null,
+                                                                                        IEnumerable<AuthenticationModes>?                               AuthenticationModes                    = null,
+                                                                                        IEnumerable<PaymentOptions>?                                    PaymentOptions                         = null,
+                                                                                        IEnumerable<Features>?                                          Features                               = null,
 
-                                                                                        String?                                                         ServiceIdentification          = null,
-                                                                                        String?                                                         ModelCode                      = null,
+                                                                                        String?                                                         ServiceIdentification                  = null,
+                                                                                        String?                                                         ModelCode                              = null,
 
-                                                                                        IEnumerable<Brand>?                                             Brands                         = null,
+                                                                                        IEnumerable<Brand>?                                             Brands                                 = null,
 
-                                                                                        Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus             = null,
-                                                                                        Timestamped<ChargingStationStatusTypes>?                        InitialStatus                  = null,
-                                                                                        UInt16?                                                         MaxAdminStatusScheduleSize     = null,
-                                                                                        UInt16?                                                         MaxStatusScheduleSize          = null,
+                                                                                        Timestamped<ChargingStationAdminStatusTypes>?                   InitialAdminStatus                     = null,
+                                                                                        Timestamped<ChargingStationStatusTypes>?                        InitialStatus                          = null,
+                                                                                        UInt16?                                                         MaxAdminStatusScheduleSize             = null,
+                                                                                        UInt16?                                                         MaxStatusScheduleSize                  = null,
 
-                                                                                        String?                                                         DataSource                     = null,
-                                                                                        DateTime?                                                       LastChange                     = null,
+                                                                                        String?                                                         DataSource                             = null,
+                                                                                        DateTime?                                                       LastChange                             = null,
 
-                                                                                        JObject?                                                        CustomData                     = null,
-                                                                                        UserDefinedDictionary?                                          InternalData                   = null,
+                                                                                        JObject?                                                        CustomData                             = null,
+                                                                                        UserDefinedDictionary?                                          InternalData                           = null,
 
-                                                                                        Action<IChargingStation>?                                       Configurator                   = null,
-                                                                                        RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
+                                                                                        Action<IChargingStation>?                                       Configurator                           = null,
+                                                                                        RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator           = null,
 
-                                                                                        Action<IChargingStation>?                                       OnAdditionSuccess              = null,
-                                                                                        Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
-                                                                                        Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+                                                                                        Action<IChargingStation,                   EventTracking_Id>?   OnAdditionSuccess                      = null,
+                                                                                        Action<IChargingStation, IChargingStation, EventTracking_Id>?   OnUpdateSuccess                        = null,
+                                                                                        Action<IChargingPool,    IChargingStation, EventTracking_Id>?   OnError                                = null,
 
-                                                                                        Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                                        EventTracking_Id?                                               EventTrackingId                = null,
-                                                                                        User_Id?                                                        CurrentUserId                  = null)
+                                                                                        Boolean                                                         SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                                        Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds           = null,
+                                                                                        EventTracking_Id?                                               EventTrackingId                        = null,
+                                                                                        User_Id?                                                        CurrentUserId                          = null)
 
             => ChargingPool.AddOrUpdateChargingStation(new ChargingStation(
                                                            Id,
@@ -353,22 +368,27 @@ namespace cloud.charging.open.protocols.WWCP
                                                        OnUpdateSuccess,
                                                        OnError,
 
+                                                       SkipAddOrUpdatedUpdatedNotifications,
                                                        AllowInconsistentOperatorIds,
                                                        EventTrackingId,
                                                        CurrentUserId);
 
         #endregion
 
-        #region UpdateChargingStation        (this ChargingPool, Id, Configurator = null, OnAdditionSuccess = null, OnUpdateSuccess = null, OnError = null)
+        #region UpdateChargingStation        (this ChargingPool, Id, ..., Configurator = null, OnAdditionSuccess = null, OnUpdateSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Update the given charging station.
         /// </summary>
-        /// <param name="Id">The unique identification of the new charging station.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// <param name="ChargingPool">The charging pool of the updated charging station.</param>
+        /// 
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         public static Task<UpdateChargingStationResult> UpdateChargingStation(this IChargingPool                                              ChargingPool,
 
                                                                               ChargingStation_Id                                              Id,
@@ -407,10 +427,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                                               Action<IChargingStation>?                                       Configurator                   = null,
                                                                               RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
 
-                                                                              Action<IChargingStation>?                                       OnAdditionSuccess              = null,
-                                                                              Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
-                                                                              Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+                                                                              Action<IChargingStation, IChargingStation, EventTracking_Id>?   OnUpdateSuccess                = null,
+                                                                              Action<IChargingPool,    IChargingStation, EventTracking_Id>?   OnError                        = null,
 
+                                                                              Boolean                                                         SkipUpdatedNotifications       = false,
                                                                               Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                               EventTracking_Id?                                               EventTrackingId                = null,
                                                                               User_Id?                                                        CurrentUserId                  = null)
@@ -454,10 +474,10 @@ namespace cloud.charging.open.protocols.WWCP
                                                       RemoteChargingStationCreator
                                                   ),
 
-                                                  OnAdditionSuccess,
                                                   OnUpdateSuccess,
                                                   OnError,
 
+                                                  SkipUpdatedNotifications,
                                                   AllowInconsistentOperatorIds,
                                                   EventTrackingId,
                                                   CurrentUserId);
@@ -511,7 +531,6 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         #endregion
-
 
     }
 
@@ -839,109 +858,140 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Add a new charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         Task<AddChargingStationResult> AddChargingStation(IChargingStation                                                ChargingStation,
 
-                                                          Action<IChargingStation>?                                       OnSuccess                      = null,
-                                                          Action<IChargingPool, IChargingStation>?                        OnError                        = null,
+                                                          Action<IChargingStation,                EventTracking_Id>?      OnSuccess                      = null,
+                                                          Action<IChargingPool, IChargingStation, EventTracking_Id>?      OnError                        = null,
 
+                                                          Boolean                                                         SkipAddedNotifications         = false,
                                                           Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                           EventTracking_Id?                                               EventTrackingId                = null,
                                                           User_Id?                                                        CurrentUserId                  = null);
 
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Add a new charging station, but do not fail when this charging station already exists.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         Task<AddChargingStationResult> AddChargingStationIfNotExists(IChargingStation                                                ChargingStation,
 
-                                                                     Action<IChargingStation>?                                       OnSuccess                      = null,
-                                                                     Action<IChargingPool, IChargingStation>?                        OnError                        = null,
+                                                                     Action<IChargingStation, EventTracking_Id>?                     OnSuccess                      = null,
 
+                                                                     Boolean                                                         SkipAddedNotifications         = false,
                                                                      Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                      EventTracking_Id?                                               EventTrackingId                = null,
                                                                      User_Id?                                                        CurrentUserId                  = null);
 
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Add a new or update an existing charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         /// 
-        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the charging station.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         Task<AddOrUpdateChargingStationResult> AddOrUpdateChargingStation(IChargingStation                                                ChargingStation,
 
-                                                                          Action<IChargingStation>?                                       OnAdditionSuccess              = null,
-                                                                          Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
-                                                                          Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+                                                                          Action<IChargingStation,                   EventTracking_Id>?   OnAdditionSuccess                      = null,
+                                                                          Action<IChargingStation, IChargingStation, EventTracking_Id>?   OnUpdateSuccess                        = null,
+                                                                          Action<IChargingPool,    IChargingStation, EventTracking_Id>?   OnError                                = null,
 
-                                                                          Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
-                                                                          EventTracking_Id?                                               EventTrackingId                = null,
-                                                                          User_Id?                                                        CurrentUserId                  = null);
+                                                                          Boolean                                                         SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                          Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds           = null,
+                                                                          EventTracking_Id?                                               EventTrackingId                        = null,
+                                                                          User_Id?                                                        CurrentUserId                          = null);
 
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Update the given charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         /// 
-        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation                                                ChargingStation,
 
-                                                                Action<IChargingStation>?                                       OnAdditionSuccess              = null,
-                                                                Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
-                                                                Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+                                                                Action<IChargingStation, IChargingStation, EventTracking_Id>?   OnUpdateSuccess                = null,
+                                                                Action<IChargingPool,    IChargingStation, EventTracking_Id>?   OnError                        = null,
 
+                                                                Boolean                                                         SkipUpdatedNotifications       = false,
                                                                 Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                 EventTracking_Id?                                               EventTrackingId                = null,
                                                                 User_Id?                                                        CurrentUserId                  = null);
 
         /// <summary>
-        /// Create and register a new charging station having the given
-        /// unique charging station identification.
+        /// Update the given charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         /// <param name="UpdateDelegate">A delegate for updating the given charging station.</param>
         /// 
-        /// <param name="OnAdditionSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
-        /// <param name="OnUpdateSuccess">An optional delegate to configure the new charging station after its successful update.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         Task<UpdateChargingStationResult> UpdateChargingStation(IChargingStation                                                ChargingStation,
                                                                 Action<IChargingStation>                                        UpdateDelegate,
 
-                                                                Action<IChargingStation>?                                       OnAdditionSuccess              = null,
-                                                                Action<IChargingStation, IChargingStation>?                     OnUpdateSuccess                = null,
-                                                                Action<IChargingPool,    IChargingStation>?                     OnError                        = null,
+                                                                Action<IChargingStation, IChargingStation, EventTracking_Id>?   OnUpdateSuccess                = null,
+                                                                Action<IChargingPool,    IChargingStation, EventTracking_Id>?   OnError                        = null,
 
+                                                                Boolean                                                         SkipUpdatedNotifications       = false,
                                                                 Func<ChargingStationOperator_Id, ChargingStation_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
                                                                 EventTracking_Id?                                               EventTrackingId                = null,
                                                                 User_Id?                                                        CurrentUserId                  = null);
 
 
+        /// <summary>
+        /// Remove the given charging station.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charging station.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful removal of the charging station.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the removal of the new charging station failed.</param>
+        /// 
+        /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id                                          Id,
 
-        Task<RemoveChargingStationResult> RemoveChargingStation(ChargingStation_Id  ChargingStationId,
-                                                                EventTracking_Id    EventTrackingId,
-                                                                User_Id?            CurrentUserId);
+                                                                Action<IChargingStation,                EventTracking_Id>?  OnSuccess                  = null,
+                                                                Action<IChargingPool, IChargingStation, EventTracking_Id>?  OnError                    = null,
 
-        //Boolean TryRemoveChargingStation(ChargingStation_Id     ChargingStationId,
-        //                                 out IChargingStation?  ChargingStation,
-        //                                 EventTracking_Id       EventTrackingId,
-        //                                 User_Id?               CurrentUserId);
+                                                                Boolean                                                     SkipRemovedNotifications   = false,
+                                                                EventTracking_Id?                                           EventTrackingId            = null,
+                                                                User_Id?                                                    CurrentUserId              = null);
 
 
         /// <summary>

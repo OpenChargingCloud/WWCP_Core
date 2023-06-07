@@ -98,8 +98,8 @@ namespace cloud.charging.open.protocols.WWCP.Importer
                     {
 
                         chargingStationToMove.ChargingPool.RemoveChargingStation(StationId,
-                                                                                 EventTracking_Id.New,
-                                                                                 null);
+                                                                                 EventTrackingId:  EventTracking_Id.New,
+                                                                                 CurrentUserId:    null);
 
                         // Also remove empty charging pools
                         if (!chargingStationToMove.ChargingPool.ChargingStations.Any())

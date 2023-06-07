@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.WWCP
         #region AddChargingPool           (this IChargingStationOperator, Id = null, Name = null, ...)
 
         /// <summary>
-        /// Add a new charging pool, but do not fail when this charging pool already exists.
+        /// Add a new charging pool.
         /// </summary>
         /// <param name="ChargingStationOperator">The charging station operator of the new charging pool.</param>
         /// 
@@ -171,8 +171,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                              Timestamped<ChargingPoolAdminStatusTypes>?                   InitialAdminStatus             = null,
                                                                              Timestamped<ChargingPoolStatusTypes>?                        InitialStatus                  = null,
-                                                                             UInt16?                                                      MaxAdminStatusScheduleSize         = null,
-                                                                             UInt16?                                                      MaxStatusScheduleSize              = null,
+                                                                             UInt16?                                                      MaxAdminStatusScheduleSize     = null,
+                                                                             UInt16?                                                      MaxStatusScheduleSize          = null,
 
                                                                              String?                                                      DataSource                     = null,
                                                                              DateTime?                                                    LastChange                     = null,
@@ -260,8 +260,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                   Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus                     = null,
                                                                                   Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                          = null,
-                                                                                  UInt16?                                                             MaxAdminStatusScheduleSize                 = null,
-                                                                                  UInt16?                                                             MaxStatusScheduleSize                      = null,
+                                                                                  UInt16?                                                             MaxAdminStatusScheduleSize             = null,
+                                                                                  UInt16?                                                             MaxStatusScheduleSize                  = null,
 
                                                                                   String?                                                             DataSource                             = null,
                                                                                   DateTime?                                                           LastChange                             = null,
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingStationOperator">The charging station operator of the updated charging pool.</param>
         /// 
-        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
         /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging pool failed.</param>
         /// 
         /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         Action<IChargingPool>?                                              Configurator                   = null,
                                                                         RemoteChargingPoolCreatorDelegate?                                  RemoteChargingPoolCreator      = null,
 
-                                                                        Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                                        Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnSuccess                      = null,
                                                                         Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
 
                                                                         Boolean                                                             SkipUpdatedNotifications       = false,
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                               RemoteChargingPoolCreator
                                                           ),
 
-                                                          OnUpdateSuccess,
+                                                          OnSuccess,
                                                           OnError,
 
                                                           SkipUpdatedNotifications,
@@ -460,7 +460,6 @@ namespace cloud.charging.open.protocols.WWCP
                    : new JArray();
 
         #endregion
-
 
     }
 
@@ -663,7 +662,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
         /// 
-        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
         /// <param name="OnError">An optional delegate to be called whenever the update of the new charging pool failed.</param>
         /// 
         /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
@@ -672,7 +671,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         Task<UpdateChargingPoolResult> UpdateChargingPool(IChargingPool                                                       ChargingPool,
 
-                                                          Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                          Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnSuccess                      = null,
                                                           Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
 
                                                           Boolean                                                             SkipUpdatedNotifications       = false,
@@ -686,7 +685,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingPoolId">An unique charging pool identification.</param>
         /// <param name="UpdateDelegate">A delegate for updating the given charging pool.</param>
         /// 
-        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
+        /// <param name="OnSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
         /// <param name="OnError">An optional delegate to be called whenever the update of the new charging pool failed.</param>
         /// 
         /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
@@ -696,7 +695,7 @@ namespace cloud.charging.open.protocols.WWCP
         Task<UpdateChargingPoolResult> UpdateChargingPool(ChargingPool_Id                                                     ChargingPoolId,
                                                           Action<IChargingPool>                                               UpdateDelegate,
 
-                                                          Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                          Action<IChargingPool,            IChargingPool, EventTracking_Id>?  OnSuccess                      = null,
                                                           Action<IChargingStationOperator, IChargingPool, EventTracking_Id>?  OnError                        = null,
 
                                                           Boolean                                                             SkipUpdatedNotifications       = false,
@@ -708,17 +707,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Remove the given charging pool.
         /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
+        /// <param name="Id">The unique identification of the charging pool.</param>
         /// 
-        /// <param name="OnRemoveSuccess">An optional delegate to be called after the successful removal of the charging pool.</param>
+        /// <param name="OnSuccess">An optional delegate to be called after the successful removal of the charging pool.</param>
         /// <param name="OnError">An optional delegate to be called whenever the removal of the new charging pool failed.</param>
         /// 
         /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      ChargingPoolId,
+        Task<RemoveChargingPoolResult> RemoveChargingPool(ChargingPool_Id                                      Id,
 
-                                                          Action<IChargingPool,            EventTracking_Id>?  OnRemoveSuccess            = null,
+                                                          Action<IChargingPool,            EventTracking_Id>?  OnSuccess                  = null,
                                                           Action<IChargingStationOperator, EventTracking_Id>?  OnError                    = null,
 
                                                           Boolean                                              SkipRemovedNotifications   = false,

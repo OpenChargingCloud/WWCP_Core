@@ -833,11 +833,6 @@ namespace cloud.charging.open.protocols.WWCP
                     I18NString?                         Name                         = null,
                     I18NString?                         Description                  = null,
 
-                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
-                    Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
-                    UInt16?                             MaxAdminStatusScheduleSize   = null,
-                    UInt16?                             MaxStatusScheduleSize        = null,
-
                     IEnumerable<URL>?                   PhotoURLs                    = null,
                     IEnumerable<Brand>?                 Brands                       = null,
                     IEnumerable<OpenDataLicense>?       OpenDataLicenses             = null,
@@ -862,17 +857,22 @@ namespace cloud.charging.open.protocols.WWCP
                     EnergyMeter?                        EnergyMeter                  = null,
                     Boolean?                            IsFreeOfCharge               = null,
                     IEnumerable<IChargingConnector>?    ChargingConnectors           = null,
-
                     ChargingSession?                    ChargingSession              = null,
+
+                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus           = null,
+                    Timestamped<EVSEStatusTypes>?       InitialStatus                = null,
+                    UInt16?                             MaxAdminStatusScheduleSize   = null,
+                    UInt16?                             MaxStatusScheduleSize        = null,
                     DateTime?                           LastStatusUpdate             = null,
+
                     String?                             DataSource                   = null,
                     DateTime?                           LastChange                   = null,
 
-                    Action<IEVSE>?                      Configurator                 = null,
-                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null,
-
                     JObject?                            CustomData                   = null,
-                    UserDefinedDictionary?              InternalData                 = null)
+                    UserDefinedDictionary?              InternalData                 = null,
+
+                    Action<IEVSE>?                      Configurator                 = null,
+                    RemoteEVSECreatorDelegate?          RemoteEVSECreator            = null)
 
             : base(Id,
                    Name,
