@@ -92,11 +92,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// The unique charging session identification.
         /// </summary>
         [Mandatory]
-        public ChargingSession_Id       Id       { get; }
+        public ChargingSession_Id  Id                 { get; }
 
-
-
-        public EventTracking_Id  EventTrackingId    { get; set; }
+        /// <summary>
+        /// The event tracking identification causing the creation of this charging session.
+        /// </summary>
+        public EventTracking_Id    EventTrackingId    { get; }
 
         #region SystemId
 
@@ -116,7 +117,7 @@ namespace cloud.charging.open.protocols.WWCP
         public RoamingNetwork_Id? RoamingNetworkId { get; set; }
 
 
-        private IRoamingNetwork? _RoamingNetwork;
+        private IRoamingNetwork? roamingNetwork;
 
         /// <summary>
         /// The roaming network serving this session.
@@ -126,13 +127,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _RoamingNetwork;
+                return roamingNetwork;
             }
 
             set
             {
-                _RoamingNetwork   = value;
-                 RoamingNetworkId = value?.Id;
+                roamingNetwork    = value;
+                RoamingNetworkId  = value?.Id;
             }
 
         }
@@ -141,7 +142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStationOperator
 
-        private ChargingStationOperator_Id? _ChargingStationOperatorId;
+        private ChargingStationOperator_Id? chargingStationOperatorId;
 
         /// <summary>
         /// The unqiue identification of the charging station operator serving this session.
@@ -151,23 +152,21 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ChargingStationOperatorId;
+                return chargingStationOperatorId;
             }
 
             set
             {
 
-                _ChargingStationOperatorId = value;
-                _ChargingStationOperator   = value.HasValue ? RoamingNetwork?.GetChargingStationOperatorById(value.Value) : null;
-
-                if (_RoamingNetwork == null)
-                    _RoamingNetwork        = _ChargingStationOperator?.RoamingNetwork;
+                chargingStationOperatorId  = value;
+                chargingStationOperator    = value.HasValue ? RoamingNetwork?.GetChargingStationOperatorById(value.Value) : null;
+                roamingNetwork           ??= chargingStationOperator?.RoamingNetwork;
 
             }
 
         }
 
-        private IChargingStationOperator? _ChargingStationOperator;
+        private IChargingStationOperator? chargingStationOperator;
 
         /// <summary>
         /// The charging station operator serving this session.
@@ -178,17 +177,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ChargingStationOperator;
+                return chargingStationOperator;
             }
 
             set
             {
 
-                _ChargingStationOperator    = value;
-                _ChargingStationOperatorId  = value?.Id;
-
-                if (_RoamingNetwork == null)
-                    RoamingNetwork          = value?.RoamingNetwork;
+                chargingStationOperator      = value;
+                chargingStationOperatorId    = value?.Id;
+                RoamingNetwork             ??= value?.RoamingNetwork;
 
             }
 
@@ -198,7 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingPool
 
-        private ChargingPool_Id? _ChargingPoolId;
+        private ChargingPool_Id? chargingPoolId;
 
         /// <summary>
         /// The unqiue identification of the charging pool serving this session.
@@ -208,20 +205,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ChargingPoolId;
+                return chargingPoolId;
             }
 
             set
             {
-                _ChargingPoolId          = value;
-                _ChargingPool            = value.HasValue ? RoamingNetwork?.GetChargingPoolById(value.Value) : null;
-                ChargingStationOperator  = _ChargingPool?.Operator;
+                chargingPoolId             = value;
+                chargingPool               = value.HasValue ? RoamingNetwork?.GetChargingPoolById(value.Value) : null;
+                ChargingStationOperator  ??= chargingPool?.Operator;
             }
 
         }
 
 
-        private IChargingPool? _ChargingPool;
+        private IChargingPool? chargingPool;
 
         /// <summary>
         /// The charging pool serving this session.
@@ -231,14 +228,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ChargingPool;
+                return chargingPool;
             }
 
             set
             {
-                _ChargingPool            = value;
-                _ChargingPoolId          = value?.Id;
-                ChargingStationOperator  = value?.Operator;
+                chargingPool               = value;
+                chargingPoolId             = value?.Id;
+                ChargingStationOperator  ??= value?.Operator;
             }
 
         }
@@ -247,7 +244,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingStation
 
-        private ChargingStation_Id? _ChargingStationId;
+        private ChargingStation_Id? chargingStationId;
 
         /// <summary>
         /// The unqiue identification of the charging station serving this session.
@@ -257,20 +254,20 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ChargingStationId;
+                return chargingStationId;
             }
 
             set
             {
-                _ChargingStationId  = value;
-                _ChargingStation    = value.HasValue ? RoamingNetwork?.GetChargingStationById(value.Value) : null;
-                ChargingPool        = _ChargingStation?.ChargingPool;
+                chargingStationId    = value;
+                chargingStation      = value.HasValue ? RoamingNetwork?.GetChargingStationById(value.Value) : null;
+                ChargingPool       ??= chargingStation?.ChargingPool;
             }
 
         }
 
 
-        private IChargingStation? _ChargingStation;
+        private IChargingStation? chargingStation;
 
         /// <summary>
         /// The charging station serving this session.
@@ -280,14 +277,14 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ChargingStation;
+                return chargingStation;
             }
 
             set
             {
-                _ChargingStation    = value;
-                _ChargingStationId  = value?.Id;
-                ChargingPool        = value?.ChargingPool;
+                chargingStation      = value;
+                chargingStationId    = value?.Id;
+                ChargingPool       ??= value?.ChargingPool;
             }
 
         }
@@ -296,7 +293,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSE
 
-        private EVSE_Id? _EVSEId;
+        private EVSE_Id? evseId;
 
         /// <summary>
         /// The unqiue identification of the EVSE serving this session.
@@ -306,38 +303,38 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _EVSEId;
+                return evseId;
             }
 
             set
             {
-                _EVSEId          = value;
-                _EVSE            = value.HasValue ? RoamingNetwork?.GetEVSEById(value.Value) : null;
-                ChargingStation  = _EVSE?.ChargingStation;
+                evseId             = value;
+                evse               = value.HasValue ? RoamingNetwork?.GetEVSEById(value.Value) : null;
+                ChargingStation  ??= evse?.ChargingStation;
             }
 
         }
 
 
-        private IEVSE _EVSE;
+        private IEVSE? evse;
 
         /// <summary>
         /// The EVSE serving this session.
         /// </summary>
         [Optional]
-        public IEVSE EVSE
+        public IEVSE? EVSE
         {
 
             get
             {
-                return _EVSE;
+                return evse;
             }
 
             set
             {
-                _EVSE            = value;
-                _EVSEId          = value?.Id;
-                ChargingStation  = value?.ChargingStation;
+                evse               = value;
+                evseId             = value?.Id;
+                ChargingStation  ??= value?.ChargingStation;
             }
 
         }
@@ -350,9 +347,59 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging product selected for this charging session.
         /// </summary>
         [Optional]
-        public ChargingProduct  ChargingProduct   { get; set; }
+        public ChargingProduct?  ChargingProduct   { get; set; }
 
         #endregion
+
+        #region Reservation
+
+        private ChargingReservation_Id? reservationId;
+
+        /// <summary>
+        /// An optional charging reservation for this charging session.
+        /// </summary>
+        [Optional]
+        public ChargingReservation_Id? ReservationId
+        {
+
+            get
+            {
+                return reservationId;
+            }
+
+            set
+            {
+                reservationId  = value;
+                reservation    = value.HasValue ? RoamingNetwork?.GetChargingReservationById(value.Value) : null;
+            }
+
+        }
+
+
+        private ChargingReservation? reservation;
+
+        /// <summary>
+        /// An optional charging reservation for this charging session.
+        /// </summary>
+        [Optional]
+        public ChargingReservation? Reservation
+        {
+
+            get
+            {
+                return reservation;
+            }
+
+            set
+            {
+                reservation    = value;
+                reservationId  = value?.Id;
+            }
+
+        }
+
+        #endregion
+
 
         #region EnergyMeterId
 
@@ -366,7 +413,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EnergyMeterValues
 
-        private readonly List<EnergyMeteringValue> _EnergyMeterValues;
+        private readonly List<EnergyMeteringValue> energyMeterValues;
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
@@ -375,7 +422,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         public IEnumerable<EnergyMeteringValue> EnergyMeteringValues
-            => _EnergyMeterValues;
+            => energyMeterValues;
 
         #endregion
 
@@ -386,18 +433,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Mandatory]
         public Decimal ConsumedEnergy
-        {
-            get
-            {
 
-                return EnergyMeteringValues.
-                           Select(metervalue => metervalue.Value).
-                           Sum() / 1000;
-
-            }
-        }
+            => EnergyMeteringValues.
+                   Select(metervalue => metervalue.Value).
+                   Sum() / 1000;
 
         #endregion
+
 
         #region ParkingTime
 
@@ -405,7 +447,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// Optional timestamps when the parking started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime ParkingTime { get; set; }
+        public StartEndDateTime? ParkingTime { get; set; }
 
         #endregion
 
@@ -427,71 +469,9 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-
-        #region Reservation
-
-        private ChargingReservation _Reservation;
-
-        /// <summary>
-        /// An optional charging reservation for this charging session.
-        /// </summary>
-        [Optional]
-        public ChargingReservation Reservation
-        {
-
-            get
-            {
-                return _Reservation;
-            }
-
-            set
-            {
-
-                _Reservation = value;
-
-                if (value != null)
-                    _ReservationId = value.Id;
-
-            }
-
-        }
-
-        #endregion
-
-        #region ReservationId
-
-        private ChargingReservation_Id? _ReservationId;
-
-        /// <summary>
-        /// An optional charging reservation for this charging session.
-        /// </summary>
-        [Optional]
-        public ChargingReservation_Id? ReservationId
-        {
-
-            get
-            {
-                return _ReservationId;
-            }
-
-            set
-            {
-
-                _ReservationId = value;
-
-                if (_Reservation != null && _Reservation.Id != value)
-                    _Reservation = null;
-
-            }
-
-        }
-
-        #endregion
-
-
         #region ProviderStart
 
-        private EMobilityProvider_Id? _ProviderIdStart;
+        private EMobilityProvider_Id? providerIdStart;
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
@@ -502,31 +482,31 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ProviderIdStart;
+                return providerIdStart;
             }
 
             set
             {
-                _ProviderIdStart = value;
-                _ProviderStart   = value.HasValue ? RoamingNetwork?.GetEMobilityProviderById(value.Value) : null;
+                providerIdStart  = value;
+                providerStart    = value.HasValue ? RoamingNetwork?.GetEMobilityProviderById(value.Value) : null;
             }
 
         }
 
-        private IEMobilityProvider? _ProviderStart;
+        private IEMobilityProvider? providerStart;
 
         public IEMobilityProvider? ProviderStart
         {
 
             get
             {
-                return _ProviderStart;
+                return providerStart;
             }
 
             set
             {
-                _ProviderStart   = value;
-                _ProviderIdStart = value?.Id;
+                providerStart    = value;
+                providerIdStart  = value?.Id;
             }
 
         }
@@ -535,7 +515,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ProviderStop
 
-        private EMobilityProvider_Id? _ProviderIdStop;
+        private EMobilityProvider_Id? providerIdStop;
 
         /// <summary>
         /// The identification of the e-mobility provider used for stopping this charging process.
@@ -546,32 +526,32 @@ namespace cloud.charging.open.protocols.WWCP
 
             get
             {
-                return _ProviderIdStop;
+                return providerIdStop;
             }
 
             set
             {
-                _ProviderIdStop = value;
-                _ProviderStop   = value.HasValue ? RoamingNetwork?.GetEMobilityProviderById(value.Value) : null;
+                providerIdStop  = value;
+                providerStop    = value.HasValue ? RoamingNetwork?.GetEMobilityProviderById(value.Value) : null;
             }
 
         }
 
-        private IEMobilityProvider? _ProviderStop;
+        private IEMobilityProvider? providerStop;
 
         public IEMobilityProvider? ProviderStop
         {
 
             get
             {
-                return _ProviderStop;
+                return providerStop;
             }
 
             set
             {
 
-                _ProviderStop   = value;
-                _ProviderIdStop = value?.Id;
+                providerStop    = value;
+                providerIdStop  = value?.Id;
 
             }
 
@@ -585,51 +565,51 @@ namespace cloud.charging.open.protocols.WWCP
         /// The authentication used for starting this charging process.
         /// </summary>
         [Optional]
-        public AAuthentication  AuthenticationStart    { get; set; }
+        public AAuthentication?  AuthenticationStart    { get; set; }
 
         /// <summary>
         /// The authentication used for stopping this charging process.
         /// </summary>
         [Optional]
-        public AAuthentication  AuthenticationStop     { get; set; }
+        public AAuthentication?  AuthenticationStop     { get; set; }
 
         #endregion
 
 
         #region CSORoamingProviderStart
 
-        private CSORoamingProvider_Id? _CSORoamingProviderIdStart;
+        private CSORoamingProvider_Id? csoRoamingProviderIdStart;
 
         public CSORoamingProvider_Id? CSORoamingProviderIdStart
         {
 
             get
             {
-                return _CSORoamingProviderIdStart;
+                return csoRoamingProviderIdStart;
             }
 
             set
             {
-                _CSORoamingProviderIdStart = value;
-                _CSORoamingProviderStart   = value.HasValue ? RoamingNetwork?.GetCSORoamingProviderById(value.Value) : null;
+                csoRoamingProviderIdStart  = value;
+                csoRoamingProviderStart    = value.HasValue ? RoamingNetwork?.GetCSORoamingProviderById(value.Value) : null;
             }
 
         }
 
-        private ICSORoamingProvider _CSORoamingProviderStart;
+        private ICSORoamingProvider? csoRoamingProviderStart;
 
-        public ICSORoamingProvider CSORoamingProviderStart
+        public ICSORoamingProvider? CSORoamingProviderStart
         {
 
             get
             {
-                return _CSORoamingProviderStart;
+                return csoRoamingProviderStart;
             }
 
             set
             {
-                _CSORoamingProviderStart  = value;
-                CSORoamingProviderIdStart = value?.Id;
+                csoRoamingProviderStart    = value;
+                CSORoamingProviderIdStart  = value?.Id;
             }
 
         }
@@ -638,38 +618,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region CSORoamingProviderStop
 
-        private CSORoamingProvider_Id? _CSORoamingProviderIdStop;
+        private CSORoamingProvider_Id? csoRoamingProviderIdStop;
 
         public CSORoamingProvider_Id? CSORoamingProviderIdStop
         {
 
             get
             {
-                return _CSORoamingProviderIdStop;
+                return csoRoamingProviderIdStop;
             }
 
             set
             {
-                _CSORoamingProviderIdStop = value;
-                _CSORoamingProviderStop   = value.HasValue ? RoamingNetwork?.GetCSORoamingProviderById(value.Value) : null;
+                csoRoamingProviderIdStop  = value;
+                csoRoamingProviderStop    = value.HasValue ? RoamingNetwork?.GetCSORoamingProviderById(value.Value) : null;
             }
 
         }
 
-        private ICSORoamingProvider _CSORoamingProviderStop;
+        private ICSORoamingProvider? csoRoamingProviderStop;
 
-        public ICSORoamingProvider CSORoamingProviderStop
+        public ICSORoamingProvider? CSORoamingProviderStop
         {
 
             get
             {
-                return _CSORoamingProviderStop;
+                return csoRoamingProviderStop;
             }
 
             set
             {
-                _CSORoamingProviderStop  = value;
-                CSORoamingProviderIdStop = value?.Id;
+                csoRoamingProviderStop    = value;
+                CSORoamingProviderIdStop  = value?.Id;
             }
 
         }
@@ -679,38 +659,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviderStart
 
-        private EMPRoamingProvider_Id? _EMPRoamingProviderIdStart;
+        private EMPRoamingProvider_Id? empRoamingProviderIdStart;
 
         public EMPRoamingProvider_Id? EMPRoamingProviderIdStart
         {
 
             get
             {
-                return _EMPRoamingProviderIdStart;
+                return empRoamingProviderIdStart;
             }
 
             set
             {
-                _EMPRoamingProviderIdStart = value;
-                _EMPRoamingProviderStart   = value.HasValue ? RoamingNetwork?.GetEMPRoamingProviderById(value.Value) : null;
+                empRoamingProviderIdStart  = value;
+                empRoamingProviderStart    = value.HasValue ? RoamingNetwork?.GetEMPRoamingProviderById(value.Value) : null;
             }
 
         }
 
-        private IEMPRoamingProvider _EMPRoamingProviderStart;
+        private IEMPRoamingProvider? empRoamingProviderStart;
 
-        public IEMPRoamingProvider EMPRoamingProviderStart
+        public IEMPRoamingProvider? EMPRoamingProviderStart
         {
 
             get
             {
-                return _EMPRoamingProviderStart;
+                return empRoamingProviderStart;
             }
 
             set
             {
-                _EMPRoamingProviderStart  = value;
-                EMPRoamingProviderIdStart = value?.Id;
+                empRoamingProviderStart    = value;
+                EMPRoamingProviderIdStart  = value?.Id;
             }
 
         }
@@ -719,38 +699,38 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EMPRoamingProviderStop
 
-        private EMPRoamingProvider_Id? _EMPRoamingProviderIdStop;
+        private EMPRoamingProvider_Id? empRoamingProviderIdStop;
 
         public EMPRoamingProvider_Id? EMPRoamingProviderIdStop
         {
 
             get
             {
-                return _EMPRoamingProviderIdStop;
+                return empRoamingProviderIdStop;
             }
 
             set
             {
-                _EMPRoamingProviderIdStop = value;
-                _EMPRoamingProviderStop   = value.HasValue ? RoamingNetwork?.GetEMPRoamingProviderById(value.Value) : null;
+                empRoamingProviderIdStop  = value;
+                empRoamingProviderStop    = value.HasValue ? RoamingNetwork?.GetEMPRoamingProviderById(value.Value) : null;
             }
 
         }
 
-        private IEMPRoamingProvider _EMPRoamingProviderStop;
+        private IEMPRoamingProvider? empRoamingProviderStop;
 
-        public IEMPRoamingProvider EMPRoamingProviderStop
+        public IEMPRoamingProvider? EMPRoamingProviderStop
         {
 
             get
             {
-                return _EMPRoamingProviderStop;
+                return empRoamingProviderStop;
             }
 
             set
             {
-                _EMPRoamingProviderStop  = value;
-                EMPRoamingProviderIdStop = value?.Id;
+                empRoamingProviderStop    = value;
+                EMPRoamingProviderIdStop  = value?.Id;
             }
 
         }
@@ -759,11 +739,11 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        public ChargeDetailRecord            CDR                           { get; set; }
+        public ChargeDetailRecord?           CDR                           { get; set; }
 
         public DateTime?                     CDRReceived                   { get; set; }
 
-        public SendCDRResult                 CDRResult                     { get; set; }
+        public SendCDRResult?                CDRResult                     { get; set; }
 
 
         #region Runtime
@@ -778,19 +758,19 @@ namespace cloud.charging.open.protocols.WWCP
 
 
 
-        private readonly List<SessionStopRequest> _StopRequests;
+        private readonly List<SessionStopRequest> stopRequests;
         public IEnumerable<SessionStopRequest> StopRequests
-            => _StopRequests;
+            => stopRequests;
 
 
 
         public Boolean                       RemoveMe                      { get; set; }
 
 
-        private readonly HashSet<String> _Signatures;
+        private readonly HashSet<String> signatures;
 
         public IEnumerable<String> Signatures
-                   => _Signatures;
+                   => signatures;
 
         #endregion
 
@@ -807,7 +787,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event sent whenever a new energy meter value was received.
         /// </summary>
-        public event OnNewEnergyMeterValueDelegate OnNewEnergyMeterValue;
+        public event OnNewEnergyMeterValueDelegate? OnNewEnergyMeterValue;
 
         #endregion
 
@@ -819,6 +799,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Id">The unique identification of the charing pool.</param>
         /// <param name="Timestamp">The timestamp of the session creation.</param>
         public ChargingSession(ChargingSession_Id      Id,
+                               EventTracking_Id        EventTrackingId,
+
                                DateTime?               Timestamp      = null,
                                JObject?                CustomData     = null,
                                UserDefinedDictionary?  InternalData   = null)
@@ -828,10 +810,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            this.Id                  = Id;
-            this.SessionTime         = new StartEndDateTime(Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
-            this._EnergyMeterValues  = new List<EnergyMeteringValue>();
-            this._StopRequests       = new List<SessionStopRequest>();
+            this.Id                 = Id;
+            this.EventTrackingId    = EventTrackingId;
+            this.SessionTime        = new StartEndDateTime(Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now);
+            this.energyMeterValues  = new List<EnergyMeteringValue>();
+            this.stopRequests       = new List<SessionStopRequest>();
+            this.signatures         = new HashSet<String>();
 
         }
 
@@ -840,12 +824,12 @@ namespace cloud.charging.open.protocols.WWCP
 
         public void AddEnergyMeterValue(EnergyMeteringValue Value)
         {
-            _EnergyMeterValues.Add(Value);
+            energyMeterValues.Add(Value);
         }
 
         public void AddStopRequest(SessionStopRequest Value)
         {
-            _StopRequests.Add(Value);
+            stopRequests.Add(Value);
         }
 
 
@@ -1093,16 +1077,18 @@ namespace cloud.charging.open.protocols.WWCP
             //     "EVSEId":                        "DE*LVF*E970993236*1"
             // }
 
-            var session = new ChargingSession(ChargingSession_Id.Parse(JSON["@id"]?.Value<String>())) {
+            var session = new ChargingSession(
+                              ChargingSession_Id.Parse(JSON["@id"]?.            Value<String>()),
+                              EventTracking_Id.  Parse(JSON["eventTrackingId"]?.Value<String>())) {
 
-                RoamingNetwork             = RoamingNetwork,
-                //RoamingNetworkId           = JSON["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(JSON["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?(),
-                ChargingStationOperatorId  = JSON["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(JSON["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?(),
-                ChargingPoolId             = JSON["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(JSON["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?(),
-                ChargingStationId          = JSON["chargingStationId"]         != null ? ChargingStation_Id.        Parse(JSON["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?(),
-                EVSEId                     = JSON["EVSEId"]                    != null ? EVSE_Id.                   Parse(JSON["EVSEId"]?.                   Value<String>()) : new EVSE_Id?()
-
-            };
+                              RoamingNetwork             = RoamingNetwork,
+                              //RoamingNetworkId           = JSON["roamingNetworkId"]          != null ? RoamingNetwork_Id.         Parse(JSON["roamingNetworkId"]?.         Value<String>()) : new RoamingNetwork_Id?(),
+                              ChargingStationOperatorId  = JSON["chargingStationOperatorId"] != null ? ChargingStationOperator_Id.Parse(JSON["chargingStationOperatorId"]?.Value<String>()) : new ChargingStationOperator_Id?(),
+                              ChargingPoolId             = JSON["chargingPoolId"]            != null ? ChargingPool_Id.           Parse(JSON["chargingPoolId"]?.           Value<String>()) : new ChargingPool_Id?(),
+                              ChargingStationId          = JSON["chargingStationId"]         != null ? ChargingStation_Id.        Parse(JSON["chargingStationId"]?.        Value<String>()) : new ChargingStation_Id?(),
+                              EVSEId                     = JSON["EVSEId"]                    != null ? EVSE_Id.                   Parse(JSON["EVSEId"]?.                   Value<String>()) : new EVSE_Id?()
+                          
+                          };
 
 
             if (JSON["start"] is JObject sessionStartJSON)
@@ -1156,7 +1142,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     if (sessionCDRReceivedJSON["CDRResult"] is JObject CDRResultJSON)
                     {
-                        if (SendCDRResult.TryParse(CDRResultJSON, out SendCDRResult sendCDRResult, out String ErrorResponse))
+                        if (SendCDRResult.TryParse(CDRResultJSON, out var sendCDRResult, out var ErrorResponse))
                             session.CDRResult     = sendCDRResult;
                     }
 

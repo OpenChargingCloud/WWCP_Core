@@ -639,7 +639,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             ReservationExpiredTimer    = new Timer(CheckIfReservationIsExpired, null, this.SelfCheckTimeSpan, this.SelfCheckTimeSpan);
 
 
-            this.reservations         = new Dictionary<ChargingReservation_Id, ChargingReservation>();
+            this.chargingReservations  = new Dictionary<ChargingReservation_Id, ChargingReservationCollection>();
             this._ChargingSessions     = new Dictionary<ChargingSession_Id, ChargingSession>();
 
             #endregion
@@ -1179,26 +1179,13 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
         #region Data
 
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> reservations;
+        private readonly Dictionary<ChargingReservation_Id, ChargingReservationCollection> chargingReservations;
 
         /// <summary>
         /// All current charging reservations.
         /// </summary>
         public IEnumerable<ChargingReservation> ChargingReservations
-            => reservations.Select(_ => _.Value);
-
-
-        #region TryGetReservationById(ReservationId, out Reservation)
-
-        /// <summary>
-        /// Return the charging reservation specified by the given identification.
-        /// </summary>
-        /// <param name="ReservationId">The charging reservation identification.</param>
-        /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-            => reservations.TryGetValue(ReservationId, out Reservation);
-
-        #endregion
+            => chargingReservations.Select(_ => _.Value).FirstOrDefault();
 
         #endregion
 
@@ -1236,6 +1223,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         public event OnReservationCanceledDelegate?        OnReservationCanceled;
 
         #endregion
+
 
         #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
@@ -1522,10 +1510,10 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     newReservation != null)
                 {
 
-                    reservations.Add(newReservation.Id, newReservation);
+                    chargingReservations.Add(newReservation.Id, new ChargingReservationCollection(newReservation));
 
                     foreach (var subReservation in newReservation.SubReservations)
-                        reservations.Add(subReservation.Id, subReservation);
+                        chargingReservations.Add(subReservation.Id, new ChargingReservationCollection(subReservation));
 
                     OnNewReservation?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                                              this,
@@ -1777,17 +1765,17 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                     ChargingReservation[]? expiredReservations = null;
 
-                    lock (reservations)
+                    lock (chargingReservations)
                     {
-                        expiredReservations = reservations.Values.Where(reservation => reservation.IsExpired()).ToArray();
+                        expiredReservations = chargingReservations.Values.Where(reservationCollection => reservationCollection.LastOrDefault().IsExpired()).LastOrDefault().ToArray();
                     }
 
                     foreach (var expiredReservation in expiredReservations)
                     {
 
-                        lock (reservations)
+                        lock (chargingReservations)
                         {
-                            reservations.Remove(expiredReservation.Id);
+                            chargingReservations.Remove(expiredReservation.Id);
                         }
 
                         //if (Status.Value == EVSEStatusTypes.Reserved &&
@@ -1817,6 +1805,79 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             }
 
         }
+
+        #endregion
+
+
+        #region GetChargingReservationById    (ReservationId)
+
+        /// <summary>
+        /// Return the charging reservation specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        public ChargingReservation? GetChargingReservationById(ChargingReservation_Id ReservationId)
+        {
+
+            if (chargingReservations.TryGetValue(ReservationId, out var reservationCollection))
+                return reservationCollection?.LastOrDefault();
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region GetChargingReservationsById   (ReservationId)
+
+        /// <summary>
+        /// Return the charging reservations specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        public ChargingReservationCollection? GetChargingReservationsById(ChargingReservation_Id ReservationId)
+        {
+
+            if (chargingReservations.TryGetValue(ReservationId, out var reservationCollection))
+                return reservationCollection;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingReservationById (ReservationId, out Reservation)
+
+        /// <summary>
+        /// Return the charging reservation specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        /// <param name="Reservation">The charging reservation.</param>
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? Reservation)
+        {
+
+            if (chargingReservations.TryGetValue(ReservationId, out var reservationCollection))
+            {
+                Reservation = reservationCollection?.LastOrDefault();
+                return true;
+            }
+
+            Reservation = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingReservationsById(ReservationId, out ChargingReservations)
+
+        /// <summary>
+        /// Return the charging reservation collection specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        /// <param name="ChargingReservations">The charging reservations.</param>
+        public Boolean TryGetChargingReservationsById(ChargingReservation_Id ReservationId, out ChargingReservationCollection? ChargingReservations)
+
+            => chargingReservations.TryGetValue(ReservationId, out ChargingReservations);
 
         #endregion
 

@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -31,9 +29,9 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A charging product.
     /// </summary>
-    public class ChargingProduct : IEquatable <ChargingProduct>,
-                                   IComparable<ChargingProduct>
-
+    public class ChargingProduct : IEquatable<ChargingProduct>,
+                                   IComparable<ChargingProduct>,
+                                   IComparable
     {
 
         #region Properties
@@ -104,15 +102,15 @@ namespace cloud.charging.open.protocols.WWCP
                                Boolean?            IntermediateCDRs        = null)
         {
 
-            this.Id                      = Id;
-            this.MinDuration             = MinDuration;
-            this.StopChargingAfterTime   = StopChargingAfterTime;
-            this.MinPower                = MinPower;
-            this.MaxPower                = MaxPower;
-            this.MinEnergy               = MinEnergy;
-            this.StopChargingAfterKWh    = StopChargingAfterKWh;
-            this.MaxB2BServiceCosts      = MaxB2BServiceCosts;
-            this.IntermediateCDRs        = IntermediateCDRs;
+            this.Id                     = Id;
+            this.MinDuration            = MinDuration;
+            this.StopChargingAfterTime  = StopChargingAfterTime;
+            this.MinPower               = MinPower;
+            this.MaxPower               = MaxPower;
+            this.MinEnergy              = MinEnergy;
+            this.StopChargingAfterKWh   = StopChargingAfterKWh;
+            this.MaxB2BServiceCosts     = MaxB2BServiceCosts;
+            this.IntermediateCDRs       = IntermediateCDRs;
 
         }
 
@@ -121,19 +119,19 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region FromId(ChargingProductId)
 
-        /// <summary>
-        /// Parse the given string as a charging product identification.
-        /// </summary>
-        /// <param name="ChargingProductId">A text representation of a charging product identification.</param>
-        public static ChargingProduct? FromId(String ChargingProductId)
-        {
+        ///// <summary>
+        ///// Parse the given string as a charging product identification.
+        ///// </summary>
+        ///// <param name="ChargingProductId">A text representation of a charging product identification.</param>
+        //public static ChargingProduct? FromId(String ChargingProductId)
+        //{
 
-            if (ChargingProductId?.Trim().IsNullOrEmpty() == true)
-                return null;
+        //    if (ChargingProductId?.Trim().IsNullOrEmpty() == true)
+        //        return null;
 
-            return FromId(ChargingProduct_Id.Parse(ChargingProductId!));
+        //    return FromId(ChargingProduct_Id.Parse(ChargingProductId!));
 
-        }
+        //}
 
         /// <summary>
         /// Create a charging product based on the given charging product identification.
@@ -141,7 +139,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProductId">A charging product identification.</param>
         public static ChargingProduct FromId(ChargingProduct_Id ChargingProductId)
 
-            => new(ChargingProductId);
+            => new (ChargingProductId);
 
         #endregion
 
@@ -155,9 +153,9 @@ namespace cloud.charging.open.protocols.WWCP
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProduct> CustomChargingProductSerializer = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("@id",                   Id.ToString()),
+                                 new JProperty("@id",                       Id.ToString()),
 
                            MinDuration.HasValue
                                ? new JProperty("minDuration",               MinDuration.Value.TotalSeconds)
@@ -194,8 +192,8 @@ namespace cloud.charging.open.protocols.WWCP
                        );
 
             return CustomChargingProductSerializer != null
-                       ? CustomChargingProductSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChargingProductSerializer(this, json)
+                       : json;
 
         }
 
@@ -212,15 +210,14 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingProduct ChargingProduct1, ChargingProduct ChargingProduct2)
+        public static Boolean operator == (ChargingProduct ChargingProduct1,
+                                           ChargingProduct ChargingProduct2)
         {
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChargingProduct1, ChargingProduct2))
+            if (Object.ReferenceEquals(ChargingProduct1, ChargingProduct2))
                 return true;
 
-            // If one is null, but not both, return false.
-            if (((Object) ChargingProduct1 == null) || ((Object) ChargingProduct2 == null))
+            if (ChargingProduct1 is null || ChargingProduct2 is null)
                 return false;
 
             return ChargingProduct1.Equals(ChargingProduct2);
@@ -237,7 +234,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingProduct ChargingProduct1, ChargingProduct ChargingProduct2)
+        public static Boolean operator != (ChargingProduct ChargingProduct1,
+                                           ChargingProduct ChargingProduct2)
+
             => !(ChargingProduct1 == ChargingProduct2);
 
         #endregion
@@ -250,15 +249,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingProduct ChargingProduct1, ChargingProduct ChargingProduct2)
-        {
+        public static Boolean operator < (ChargingProduct ChargingProduct1,
+                                          ChargingProduct ChargingProduct2)
 
-            if ((Object) ChargingProduct1 == null)
-                throw new ArgumentNullException(nameof(ChargingProduct1), "The given ChargingProduct1 must not be null!");
-
-            return ChargingProduct1.CompareTo(ChargingProduct2) < 0;
-
-        }
+            => ChargingProduct1 is null
+                   ? throw new ArgumentNullException(nameof(ChargingProduct1), "The given charging product must not be null!")
+                   : ChargingProduct1.CompareTo(ChargingProduct2) < 0;
 
         #endregion
 
@@ -270,7 +266,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingProduct ChargingProduct1, ChargingProduct ChargingProduct2)
+        public static Boolean operator <= (ChargingProduct ChargingProduct1,
+                                           ChargingProduct ChargingProduct2)
+
             => !(ChargingProduct1 > ChargingProduct2);
 
         #endregion
@@ -283,15 +281,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingProduct ChargingProduct1, ChargingProduct ChargingProduct2)
-        {
+        public static Boolean operator > (ChargingProduct ChargingProduct1,
+                                          ChargingProduct ChargingProduct2)
 
-            if ((Object) ChargingProduct1 == null)
-                throw new ArgumentNullException(nameof(ChargingProduct1), "The given ChargingProduct1 must not be null!");
-
-            return ChargingProduct1.CompareTo(ChargingProduct2) > 0;
-
-        }
+            => ChargingProduct1 is null
+                   ? throw new ArgumentNullException(nameof(ChargingProduct1), "The given charging product must not be null!")
+                   : ChargingProduct1.CompareTo(ChargingProduct2) > 0;
 
         #endregion
 
@@ -303,7 +298,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingProduct1">A charging product.</param>
         /// <param name="ChargingProduct2">Another charging product.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingProduct ChargingProduct1, ChargingProduct ChargingProduct2)
+        public static Boolean operator >= (ChargingProduct ChargingProduct1,
+                                           ChargingProduct ChargingProduct2)
+
             => !(ChargingProduct1 < ChargingProduct2);
 
         #endregion
@@ -315,42 +312,33 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging products.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A charging product to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var _ChargingProduct = Object as ChargingProduct;
-            if (_ChargingProduct == null)
-                throw new ArgumentException("The given object is not a charging product!",
-                                            nameof(Object));
-
-            return CompareTo(_ChargingProduct);
-
-        }
+            => Object is ChargingProduct chargingProduct
+                   ? CompareTo(chargingProduct)
+                   : throw new ArgumentException("The given object is not a charging product!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(ChargingProduct)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging products.
         /// </summary>
-        /// <param name="ChargingProduct">An object to compare with.</param>
-        public Int32 CompareTo(ChargingProduct ChargingProduct)
+        /// <param name="ChargingProduct">A charging product to compare with.</param>
+        public Int32 CompareTo(ChargingProduct? ChargingProduct)
         {
 
-            if ((Object) ChargingProduct == null)
-                throw new ArgumentNullException(nameof(ChargingProduct),  "The given charging product must not be null!");
+            if (ChargingProduct is null)
+                throw new ArgumentNullException(nameof(EVSE), "The given charging product must not be null!");
 
-            // Compare the ChargingProductIds
-            var _Result = this.Id.CompareTo(ChargingProduct.Id);
+            var c = Id.CompareTo(ChargingProduct.Id);
 
-            return _Result;
+            return c;
 
         }
 
@@ -363,23 +351,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging products for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A charging product to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            var _ChargingProduct = Object as ChargingProduct;
-            if (_ChargingProduct == null)
-                return false;
-
-            return Equals(_ChargingProduct);
-
-        }
+            => Object is ChargingProduct chargingProduct &&
+                   Equals(chargingProduct);
 
         #endregion
 
@@ -389,16 +367,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging products for equality.
         /// </summary>
         /// <param name="ChargingProduct">A charging product to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingProduct ChargingProduct)
-        {
+        public Boolean Equals(ChargingProduct? ChargingProduct)
 
-            if ((Object) Id == null)
-                return false;
+            => ChargingProduct is not null &&
 
-            return Id.Equals(ChargingProduct.Id);
-
-        }
+               Id.Equals(ChargingProduct.Id);
 
         #endregion
 
@@ -424,6 +397,7 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.ToString();
 
         #endregion
+
 
     }
 

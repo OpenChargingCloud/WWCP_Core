@@ -2539,29 +2539,6 @@ namespace cloud.charging.open.protocols.WWCP
                          SelectMany(reservations => reservations)
                    : Array.Empty<ChargingReservation>();
 
-        /// <summary>
-        /// Return the charging reservation specified by the given identification.
-        /// </summary>
-        /// <param name="ReservationId">The charging reservation identification.</param>
-        /// <param name="Reservation">The charging reservation.</param>
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservationCollection ChargingReservations)
-            => RoamingNetwork.ReservationsStore.TryGet(ReservationId, out ChargingReservations);
-
-
-        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? ChargingReservation)
-        {
-
-            if (RoamingNetwork.ReservationsStore.TryGet(ReservationId, out var chargingReservations))
-            {
-                ChargingReservation = chargingReservations.FirstOrDefault();
-                return true;
-            }
-
-            ChargingReservation = null;
-            return false;
-
-        }
-
         #endregion
 
         #region Events
@@ -2598,6 +2575,7 @@ namespace cloud.charging.open.protocols.WWCP
         public event OnReservationCanceledDelegate?        OnReservationCanceled;
 
         #endregion
+
 
         #region Reserve(                                           StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
 
@@ -2983,6 +2961,97 @@ namespace cloud.charging.open.protocols.WWCP
             #endregion
 
             return result;
+
+        }
+
+        #endregion
+
+
+        #region GetChargingReservationById    (ReservationId)
+
+        /// <summary>
+        /// Return the charging reservation specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        public ChargingReservation? GetChargingReservationById(ChargingReservation_Id ReservationId)
+        {
+
+            if (RoamingNetwork is not null &&
+                RoamingNetwork.ReservationsStore.TryGet(ReservationId, out var reservationCollection))
+            {
+                return reservationCollection?.LastOrDefault();
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region GetChargingReservationsById   (ReservationId)
+
+        /// <summary>
+        /// Return the charging reservations specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        public ChargingReservationCollection? GetChargingReservationsById(ChargingReservation_Id ReservationId)
+        {
+
+            if (RoamingNetwork is not null &&
+                RoamingNetwork.ReservationsStore.TryGet(ReservationId, out var reservationCollection))
+            {
+                return reservationCollection;
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingReservationById (ReservationId, out Reservation)
+
+        /// <summary>
+        /// Return the charging reservation specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        /// <param name="Reservation">The charging reservation.</param>
+        public Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? Reservation)
+        {
+
+            if (RoamingNetwork is not null &&
+                RoamingNetwork.ReservationsStore.TryGet(ReservationId, out var reservationCollection))
+            {
+                Reservation = reservationCollection?.LastOrDefault();
+                return true;
+            }
+
+            Reservation = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingReservationsById(ReservationId, out ChargingReservations)
+
+        /// <summary>
+        /// Return the charging reservation collection specified by the given identification.
+        /// </summary>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        /// <param name="ChargingReservations">The charging reservations.</param>
+        public Boolean TryGetChargingReservationsById(ChargingReservation_Id ReservationId, out ChargingReservationCollection? ChargingReservations)
+        {
+
+            if (RoamingNetwork is not null &&
+                RoamingNetwork.ReservationsStore.TryGet(ReservationId, out var reservationCollection))
+            {
+                ChargingReservations = reservationCollection;
+                return true;
+            }
+
+            ChargingReservations = null;
+            return false;
 
         }
 

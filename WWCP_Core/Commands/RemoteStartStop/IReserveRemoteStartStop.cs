@@ -71,7 +71,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         IEnumerable<ChargingReservation> ChargingReservations { get; }
 
-        Boolean TryGetChargingReservationById(ChargingReservation_Id ReservationId, out ChargingReservation? ChargingReservation);
+        Boolean TryGetChargingReservationById (ChargingReservation_Id ReservationId, out ChargingReservation?           ChargingReservation);
+
+        Boolean TryGetChargingReservationsById(ChargingReservation_Id ReservationId, out ChargingReservationCollection? ChargingReservations);
+
+        ChargingReservation?           GetChargingReservationById (ChargingReservation_Id ReservationId);
+
+        ChargingReservationCollection? GetChargingReservationsById(ChargingReservation_Id ReservationId);
 
 
         #region Reserve(ChargingLocation, ReservationLevel = EVSE, StartTime = null, Duration = null, ReservationId = null, ProviderId = null, ...)
