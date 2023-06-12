@@ -1372,7 +1372,7 @@ namespace cloud.charging.open.protocols.WWCP
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
@@ -1434,7 +1434,7 @@ namespace cloud.charging.open.protocols.WWCP
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
@@ -1992,7 +1992,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try Remote EVSE
 
-                    if (RemoteEVSE != null)
+                    if (RemoteEVSE is not null)
                     {
 
                         result = await RemoteEVSE.
@@ -2014,7 +2014,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try Remote Charging Station
 
-                    else if (ChargingStation.RemoteChargingStation != null)
+                    else if (ChargingStation?.RemoteChargingStation is not null)
                     {
 
                         result = await ChargingStation.RemoteChargingStation.
@@ -2036,7 +2036,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try Remote Charging Pool
 
-                    else if (ChargingStation.ChargingPool.RemoteChargingPool != null)
+                    else if (ChargingStation?.ChargingPool?.RemoteChargingPool is not null)
                     {
 
                         result = await ChargingStation.ChargingPool.RemoteChargingPool.
@@ -2058,7 +2058,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try Remote Charging Station Operator
 
-                    else if (ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator != null)
+                    else if (ChargingStation?.ChargingPool?.Operator?.RemoteChargingStationOperator is not null)
                     {
 
                         result = await ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator.
@@ -2080,7 +2080,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region Try EMP Roaming Provider
 
-                    else if (ChargingStation.ChargingPool.Operator.EMPRoamingProvider != null)
+                    else if (ChargingStation?.ChargingPool?.Operator?.EMPRoamingProvider is not null)
                     {
 
                         result = await ChargingStation.ChargingPool.Operator.EMPRoamingProvider.
@@ -2257,7 +2257,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #region Try Remote EVSE
 
-                        if (RemoteEVSE != null)
+                        if (RemoteEVSE is not null)
                         {
 
                             result = await RemoteEVSE.
@@ -2277,7 +2277,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #region Try Remote Charging Station
 
-                        else if (ChargingStation.RemoteChargingStation != null)
+                        else if (ChargingStation?.RemoteChargingStation is not null)
                         {
 
                             result = await ChargingStation.RemoteChargingStation.
@@ -2297,7 +2297,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #region Try Remote Charging Pool
 
-                        else if (ChargingStation.ChargingPool.RemoteChargingPool != null)
+                        else if (ChargingStation?.ChargingPool?.RemoteChargingPool is not null)
                         {
 
                             result = await ChargingStation.ChargingPool.RemoteChargingPool.
@@ -2317,7 +2317,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #region Try Remote Charging Station Operator
 
-                        else if (ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator != null)
+                        else if (ChargingStation?.ChargingPool?.Operator?.RemoteChargingStationOperator is not null)
                         {
 
                             result = await ChargingStation.ChargingPool.Operator.RemoteChargingStationOperator.
@@ -2337,7 +2337,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                         #region Try EMP Roaming Provider
 
-                        else if (ChargingStation.ChargingPool.Operator.EMPRoamingProvider != null)
+                        else if (ChargingStation?.ChargingPool?.Operator?.EMPRoamingProvider is not null)
                         {
 
                             result = await ChargingStation.ChargingPool.Operator.EMPRoamingProvider.

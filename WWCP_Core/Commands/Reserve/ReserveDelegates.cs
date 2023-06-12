@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                   RemoteAuthentication?              RemoteAuthentication,
                                                   ChargingProduct?                   ChargingProduct,
                                                   IEnumerable<AuthenticationToken>?           AuthTokens,
-                                                  IEnumerable<eMobilityAccount_Id>?  eMAIds,
+                                                  IEnumerable<EMobilityAccount_Id>?  eMAIds,
                                                   IEnumerable<UInt32>?               PINs,
                                                   TimeSpan?                          RequestTimeout);
 
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                               RemoteAuthentication               RemoteAuthentication,
                                                               ChargingProduct?                   ChargingProduct,
                                                               IEnumerable<AuthenticationToken>?           AuthTokens,
-                                                              IEnumerable<eMobilityAccount_Id>?  eMAIds,
+                                                              IEnumerable<EMobilityAccount_Id>?  eMAIds,
                                                               IEnumerable<UInt32>?               PINs,
 
                                                               DateTime?                          Timestamp           = null,
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                    RemoteAuthentication?              RemoteAuthentication,
                                                    ChargingProduct?                   ChargingProduct,
                                                    IEnumerable<AuthenticationToken>?           AuthTokens,
-                                                   IEnumerable<eMobilityAccount_Id>?  eMAIds,
+                                                   IEnumerable<EMobilityAccount_Id>?  eMAIds,
                                                    IEnumerable<UInt32>?               PINs,
                                                    ReservationResult                  Result,
                                                    TimeSpan                           Runtime,

@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.WWCP
         public EMobilityProvider_Id?  ProviderId          { get; }
 
         [Optional]
-        public eMobilityAccount_Id?   eMAId               { get; }
+        public EMobilityAccount_Id?   eMAId               { get; }
 
         [Optional]
         public RoamingNetwork         RoamingNetwork      { get; }
@@ -233,10 +233,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMAIds
 
-        private readonly HashSet<eMobilityAccount_Id> _eMAIds;
+        private readonly HashSet<EMobilityAccount_Id> _eMAIds;
 
         [Optional]
-        public IEnumerable<eMobilityAccount_Id> eMAIds
+        public IEnumerable<EMobilityAccount_Id> eMAIds
         {
             get
             {
@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   ParkingReservationLevel           ReservationLevel,
 
                                   EMobilityProvider_Id?             ProviderId          = null,
-                                  eMobilityAccount_Id?              eMAId               = null,
+                                  EMobilityAccount_Id?              eMAId               = null,
 
                                   RoamingNetwork                    RoamingNetwork      = null,
                                   ChargingPool_Id?                  ParkingPoolId      = null,
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.WWCP
                                   ParkingProduct_Id?                ParkingProductId   = null,
 
                                   IEnumerable<AuthenticationToken>           AuthTokens          = null,
-                                  IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+                                  IEnumerable<EMobilityAccount_Id>  eMAIds              = null,
                                   IEnumerable<UInt32>               PINs                = null)
 
         {
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ParkingProductId         = ParkingProductId;
 
             this._AuthTokens               = AuthTokens != null ? new HashSet<AuthenticationToken>(AuthTokens) : new HashSet<AuthenticationToken>();
-            this._eMAIds                   = eMAIds     != null ? new HashSet<eMobilityAccount_Id>    (eMAIds)     : new HashSet<eMobilityAccount_Id>();
+            this._eMAIds                   = eMAIds     != null ? new HashSet<EMobilityAccount_Id>    (eMAIds)     : new HashSet<EMobilityAccount_Id>();
             this._PINs                     = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
 
         }

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The unique identification of an eMAId.
         /// </summary>
-        public eMobilityAccount_Id  Id       { get; }
+        public EMobilityAccount_Id  Id       { get; }
 
         /// <summary>
         /// The current status of an eMAId.
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="eMAId">The unique identification of an eMAId.</param>
         /// <param name="Status">The current status of an eMAId.</param>
-        public eMAIdStatus(eMobilityAccount_Id  eMAId,
+        public eMAIdStatus(EMobilityAccount_Id  eMAId,
                            eMAIdStatusType      Status)
 
         {

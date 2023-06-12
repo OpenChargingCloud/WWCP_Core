@@ -1890,7 +1890,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
@@ -1953,7 +1953,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
@@ -2724,7 +2724,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
                                               SessionId ?? ChargingSession_Id.NewRandom,
                                               EventTrackingId) {
                                               ReservationId        = ReservationId,
-                                              Reservation          = chargingReservations.Values.FirstOrDefault(reservation => reservation.Id == ReservationId).LastOrDefault(),
+                                              Reservation          = chargingReservations.Values.FirstOrDefault(reservation => reservation.Id == ReservationId)?.LastOrDefault(),
                                               EVSEId               = Id,
                                               ChargingProduct      = ChargingProduct,
                                               ProviderIdStart      = ProviderId,

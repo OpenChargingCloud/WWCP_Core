@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static Boolean IsNull(this ChargingLocation ChargingLocation)
 
-            => ChargingLocation == null ||
+            => ChargingLocation is null ||
                !(ChargingLocation.EVSEId.                   HasValue ||
                  ChargingLocation.ChargingStationId.        HasValue ||
                  ChargingLocation.ChargingPoolId.           HasValue ||
@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static Boolean IsDefined(this ChargingLocation ChargingLocation)
 
-            => ChargingLocation != null &&
+            => ChargingLocation is not null &&
               (ChargingLocation.EVSEId.                   HasValue ||
                ChargingLocation.ChargingStationId.        HasValue ||
                ChargingLocation.ChargingPoolId.           HasValue ||
@@ -92,37 +92,37 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static ChargingLocation FromEVSEId(EVSE_Id EVSEId)
 
-            => new ChargingLocation(EVSEId: EVSEId);
+            => new (EVSEId: EVSEId);
 
-        public static ChargingLocation FromEVSEId(EVSE_Id? EVSEId)
+        public static ChargingLocation? FromEVSEId(EVSE_Id? EVSEId)
 
             => EVSEId.HasValue
                    ? new ChargingLocation(EVSEId: EVSEId)
                    : null;
 
-        public static ChargingLocation ParseEVSEId(String Text)
-        {
+        //public static ChargingLocation? ParseEVSEId(String Text)
+        //{
 
-            if (EVSE_Id.TryParse(Text, out EVSE_Id evseId))
-                return new ChargingLocation(EVSEId: evseId);
+        //    if (EVSE_Id.TryParse(Text, out var evseId))
+        //        return new ChargingLocation(EVSEId: evseId);
 
-            return null;
+        //    return null;
 
-        }
+        //}
 
-        public static Boolean TryParseEVSEId(String Text, out ChargingLocation ChargingLocation)
-        {
+        //public static Boolean TryParseEVSEId(String Text, out ChargingLocation? ChargingLocation)
+        //{
 
-            if (EVSE_Id.TryParse(Text, out EVSE_Id evseId))
-            {
-                ChargingLocation = new ChargingLocation(EVSEId: evseId);
-                return true;
-            }
+        //    if (EVSE_Id.TryParse(Text, out var evseId))
+        //    {
+        //        ChargingLocation = new ChargingLocation(EVSEId: evseId);
+        //        return true;
+        //    }
 
-            ChargingLocation = null;
-            return false;
+        //    ChargingLocation = null;
+        //    return false;
 
-        }
+        //}
 
         #endregion
 
@@ -130,9 +130,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static ChargingLocation FromChargingStationId(ChargingStation_Id ChargingStationId)
 
-            => new ChargingLocation(ChargingStationId: ChargingStationId);
+            => new (ChargingStationId: ChargingStationId);
 
-        public static ChargingLocation FromChargingStationId(ChargingStation_Id? ChargingStationId)
+        public static ChargingLocation? FromChargingStationId(ChargingStation_Id? ChargingStationId)
 
             => ChargingStationId.HasValue
                    ? new ChargingLocation(ChargingStationId: ChargingStationId)
@@ -144,9 +144,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static ChargingLocation FromChargingPoolId(ChargingPool_Id ChargingPoolId)
 
-            => new ChargingLocation(ChargingPoolId: ChargingPoolId);
+            => new (ChargingPoolId: ChargingPoolId);
 
-        public static ChargingLocation FromChargingPoolId(ChargingPool_Id? ChargingPoolId)
+        public static ChargingLocation? FromChargingPoolId(ChargingPool_Id? ChargingPoolId)
 
             => ChargingPoolId.HasValue
                    ? new ChargingLocation(ChargingPoolId: ChargingPoolId)
@@ -158,9 +158,9 @@ namespace cloud.charging.open.protocols.WWCP
 
         public static ChargingLocation FromChargingStationOperatorId(ChargingStationOperator_Id ChargingStationOperatorId)
 
-            => new ChargingLocation(ChargingStationOperatorId: ChargingStationOperatorId);
+            => new (ChargingStationOperatorId: ChargingStationOperatorId);
 
-        public static ChargingLocation FromChargingStationOperatorId(ChargingStationOperator_Id? ChargingStationOperatorId)
+        public static ChargingLocation? FromChargingStationOperatorId(ChargingStationOperator_Id? ChargingStationOperatorId)
 
             => ChargingStationOperatorId.HasValue
                    ? new ChargingLocation(ChargingStationOperatorId: ChargingStationOperatorId)

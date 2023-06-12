@@ -72,12 +72,12 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// A e-mobility account identification transmitted via PnC.
         /// </summary>
-        public eMobilityAccount_Id?  PlugAndChargeIdentification    { get; }
+        public EMobilityAccount_Id?  PlugAndChargeIdentification    { get; }
 
         /// <summary>
         /// A e-mobility account identification.
         /// </summary>
-        public eMobilityAccount_Id?  RemoteIdentification           { get; }
+        public EMobilityAccount_Id?  RemoteIdentification           { get; }
 
         /// <summary>
         /// A PIN.
@@ -110,8 +110,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         protected AAuthentication(AuthenticationToken?  AuthToken                     = null,
                                   eMAIdWithPIN2?        QRCodeIdentification          = null,
-                                  eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
-                                  eMobilityAccount_Id?  RemoteIdentification          = null,
+                                  EMobilityAccount_Id?  PlugAndChargeIdentification   = null,
+                                  EMobilityAccount_Id?  RemoteIdentification          = null,
                                   PIN?                  PIN                           = null,
                                   PublicKey?            PublicKey                     = null,
                                   Certificate?          Certificate                   = null,
@@ -488,8 +488,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         protected internal LocalAuthentication(AuthenticationToken?  AuthToken                     = null,
                                                eMAIdWithPIN2?        QRCodeIdentification          = null,
-                                               eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
-                                               eMobilityAccount_Id?  RemoteIdentification          = null,
+                                               EMobilityAccount_Id?  PlugAndChargeIdentification   = null,
+                                               EMobilityAccount_Id?  RemoteIdentification          = null,
                                                PIN?                  PIN                           = null,
                                                PublicKey?            PublicKey                     = null,
                                                Certificate?          Certificate                   = null,
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMAId">An e-mobility account identification.</param>
         /// <param name="PIN">A password/PIN.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
+        public static LocalAuthentication FromQRCodeIdentification(EMobilityAccount_Id  eMAId,
                                                                    String               PIN,
                                                                    I18NString           Description  = null)
 
@@ -557,7 +557,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Function">A crypto function.</param>
         /// <param name="Salt">A salt of the crypto function.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
+        public static LocalAuthentication FromQRCodeIdentification(EMobilityAccount_Id  eMAId,
                                                                    String               HashedPIN,
                                                                    PINCrypto            Function,
                                                                    String               Salt          = "",
@@ -595,7 +595,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="PlugAndChargeIdentification">A PnC e-mobility account identification.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromPlugAndChargeIdentification(eMobilityAccount_Id  PlugAndChargeIdentification,
+        public static LocalAuthentication FromPlugAndChargeIdentification(EMobilityAccount_Id  PlugAndChargeIdentification,
                                                                           I18NString           Description  = null)
 
             => new LocalAuthentication(PlugAndChargeIdentification: PlugAndChargeIdentification,
@@ -611,7 +611,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RemoteIdentification">An e-mobility account identification.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromRemoteIdentification(eMobilityAccount_Id  RemoteIdentification,
+        public static LocalAuthentication FromRemoteIdentification(EMobilityAccount_Id  RemoteIdentification,
                                                                    I18NString           Description  = null)
 
             => new LocalAuthentication(RemoteIdentification: RemoteIdentification,
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RemoteIdentification">An e-mobility account identification.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static LocalAuthentication FromRemoteIdentification(eMobilityAccount_Id?  RemoteIdentification,
+        public static LocalAuthentication FromRemoteIdentification(EMobilityAccount_Id?  RemoteIdentification,
                                                                    I18NString            Description  = null)
 
             => RemoteIdentification.HasValue
@@ -697,8 +697,8 @@ namespace cloud.charging.open.protocols.WWCP
             return new(
                        authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
                        null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
-                       plugAndChargeIdentification is not null ? eMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
-                       remoteIdentification        is not null ? eMobilityAccount_Id.Parse(remoteIdentification)        : null,
+                       plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
+                       remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
                        publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
                        certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,
@@ -732,8 +732,8 @@ namespace cloud.charging.open.protocols.WWCP
 
         protected internal RemoteAuthentication(AuthenticationToken?  AuthToken                     = null,
                                                 eMAIdWithPIN2?        QRCodeIdentification          = null,
-                                                eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
-                                                eMobilityAccount_Id?  RemoteIdentification          = null,
+                                                EMobilityAccount_Id?  PlugAndChargeIdentification   = null,
+                                                EMobilityAccount_Id?  RemoteIdentification          = null,
                                                 PIN?                  PIN                           = null,
                                                 PublicKey?            PublicKey                     = null,
                                                 Certificate?          Certificate                   = null,
@@ -781,7 +781,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="eMAId">An e-mobility account identification.</param>
         /// <param name="PIN">A password/PIN.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
+        public static RemoteAuthentication FromQRCodeIdentification(EMobilityAccount_Id  eMAId,
                                                                     String               PIN,
                                                                     I18NString           Description  = null)
 
@@ -801,7 +801,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Function">A crypto function.</param>
         /// <param name="Salt">A salt of the crypto function.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
+        public static RemoteAuthentication FromQRCodeIdentification(EMobilityAccount_Id  eMAId,
                                                                     String               HashedPIN,
                                                                     PINCrypto            Function,
                                                                     String               Salt          = "",
@@ -839,7 +839,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="PlugAndChargeIdentification">A PnC e-mobility account identification.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromPlugAndChargeIdentification(eMobilityAccount_Id  PlugAndChargeIdentification,
+        public static RemoteAuthentication FromPlugAndChargeIdentification(EMobilityAccount_Id  PlugAndChargeIdentification,
                                                                            I18NString           Description  = null)
 
             => new RemoteAuthentication(PlugAndChargeIdentification: PlugAndChargeIdentification,
@@ -855,7 +855,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RemoteIdentification">An e-mobility account identification.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromRemoteIdentification(eMobilityAccount_Id  RemoteIdentification,
+        public static RemoteAuthentication FromRemoteIdentification(EMobilityAccount_Id  RemoteIdentification,
                                                                     I18NString           Description  = null)
 
             => new RemoteAuthentication(RemoteIdentification: RemoteIdentification,
@@ -868,7 +868,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         /// <param name="RemoteIdentification">An e-mobility account identification.</param>
         /// <param name="Description">An optional multilingual description.</param>
-        public static RemoteAuthentication FromRemoteIdentification(eMobilityAccount_Id?  RemoteIdentification,
+        public static RemoteAuthentication FromRemoteIdentification(EMobilityAccount_Id?  RemoteIdentification,
                                                                     I18NString            Description  = null)
 
             => RemoteIdentification.HasValue
@@ -941,8 +941,8 @@ namespace cloud.charging.open.protocols.WWCP
             return new(
                        authToken                   is not null ? AuthenticationToken.Parse(authToken) : null,
                        null, //JSON["QRCodeIdentification"]        != null ? eMAIdWithPIN2.      Parse(JSON["QRCodeIdentification"]?.       Value<String>()) : null,
-                       plugAndChargeIdentification is not null ? eMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
-                       remoteIdentification        is not null ? eMobilityAccount_Id.Parse(remoteIdentification)        : null,
+                       plugAndChargeIdentification is not null ? EMobilityAccount_Id.Parse(plugAndChargeIdentification) : null,
+                       remoteIdentification        is not null ? EMobilityAccount_Id.Parse(remoteIdentification)        : null,
                        pin                         is not null ? WWCP.PIN.           Parse(pin)                         : null,
                        publicKey                   is not null ? WWCP.PublicKey.     Parse(publicKey)                   : null,
                        certificate                 is not null ? WWCP.Certificate.   Parse(certificate)                 : null,

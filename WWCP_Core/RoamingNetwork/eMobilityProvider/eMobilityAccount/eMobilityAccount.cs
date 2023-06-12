@@ -27,14 +27,10 @@ namespace cloud.charging.open.protocols.WWCP
     /// <summary>
     /// A electric mobility account.
     /// </summary>
-    public class eMobilityAccount : AInternalData,
-                                    IHasId<eMobilityAccount_Id>,
-                                    IEquatable<eMobilityAccount>, IComparable<eMobilityAccount>, IComparable
+    public class EMobilityAccount : AInternalData,
+                                    IHasId<EMobilityAccount_Id>,
+                                    IEquatable<EMobilityAccount>, IComparable<EMobilityAccount>, IComparable
     {
-
-        #region Data
-
-        #endregion
 
         #region Properties
 
@@ -42,7 +38,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The unique electric mobility account identification.
         /// </summary>
         [Mandatory]
-        public eMobilityAccount_Id  Id      { get; }
+        public EMobilityAccount_Id  Id      { get; }
 
         /// <summary>
         /// The offical (multi-language) name of the e-mobility account.
@@ -58,8 +54,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a new parking sensor having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the parking sensor.</param>
-        internal eMobilityAccount(eMobilityAccount_Id  Id,
-                                  I18NString?          Name   = null)
+        public EMobilityAccount(EMobilityAccount_Id  Id,
+                                I18NString?          Name   = null)
 
             : base(null,
                    null)
@@ -75,44 +71,148 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region IComparable<eMobilityAccount> Members
+        #region Operator overloading
+
+        #region Operator == (EMobilityAccount1, EMobilityAccount2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EMobilityAccount1">An electric mobility account.</param>
+        /// <param name="EMobilityAccount2">Another electric mobility account.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (EMobilityAccount EMobilityAccount1,
+                                           EMobilityAccount EMobilityAccount2)
+        {
+
+            if (Object.ReferenceEquals(EMobilityAccount1, EMobilityAccount2))
+                return true;
+
+            if (EMobilityAccount1 is null || EMobilityAccount2 is null)
+                return false;
+
+            return EMobilityAccount1.Equals(EMobilityAccount2);
+
+        }
+
+        #endregion
+
+        #region Operator != (EMobilityAccount1, EMobilityAccount2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EMobilityAccount1">An electric mobility account.</param>
+        /// <param name="EMobilityAccount2">Another electric mobility account.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (EMobilityAccount EMobilityAccount1,
+                                           EMobilityAccount EMobilityAccount2)
+
+            => !(EMobilityAccount1 == EMobilityAccount2);
+
+        #endregion
+
+        #region Operator <  (EMobilityAccount1, EMobilityAccount2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EMobilityAccount1">An electric mobility account.</param>
+        /// <param name="EMobilityAccount2">Another electric mobility account.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (EMobilityAccount EMobilityAccount1,
+                                          EMobilityAccount EMobilityAccount2)
+
+            => EMobilityAccount1 is null
+                   ? throw new ArgumentNullException(nameof(EMobilityAccount1), "The given EMobilityAccount must not be null!")
+                   : EMobilityAccount1.CompareTo(EMobilityAccount2) < 0;
+
+        #endregion
+
+        #region Operator <= (EMobilityAccount1, EMobilityAccount2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EMobilityAccount1">An electric mobility account.</param>
+        /// <param name="EMobilityAccount2">Another electric mobility account.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (EMobilityAccount EMobilityAccount1,
+                                           EMobilityAccount EMobilityAccount2)
+
+            => !(EMobilityAccount1 > EMobilityAccount2);
+
+        #endregion
+
+        #region Operator >  (EMobilityAccount1, EMobilityAccount2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EMobilityAccount1">An electric mobility account.</param>
+        /// <param name="EMobilityAccount2">Another electric mobility account.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (EMobilityAccount EMobilityAccount1,
+                                          EMobilityAccount EMobilityAccount2)
+
+            => EMobilityAccount1 is null
+                   ? throw new ArgumentNullException(nameof(EMobilityAccount1), "The given EMobilityAccount must not be null!")
+                   : EMobilityAccount1.CompareTo(EMobilityAccount2) > 0;
+
+        #endregion
+
+        #region Operator >= (EMobilityAccount1, EMobilityAccount2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EMobilityAccount1">An electric mobility account.</param>
+        /// <param name="EMobilityAccount2">Another electric mobility account.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (EMobilityAccount EMobilityAccount1,
+                                           EMobilityAccount EMobilityAccount2)
+
+            => !(EMobilityAccount1 < EMobilityAccount2);
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<EMobilityAccount> Members
 
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two electric mobility accounts.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">An electric mobility account to compare with.</param>
         public Int32 CompareTo(Object? Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            // Check if the given object is a service plan.
-            var ServicePlan = Object as eMobilityAccount;
-            if ((Object) ServicePlan == null)
-                throw new ArgumentException("The given object is not a service plan!");
-
-            return CompareTo(ServicePlan);
-
-        }
+            => Object is EMobilityAccount eMobilityAccount
+                   ? CompareTo(eMobilityAccount)
+                   : throw new ArgumentException("The given object is not an electric mobility account!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(eMobilityAccount)
+        #region CompareTo(EMobilityAccount)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two electric mobility accounts.
         /// </summary>
-        /// <param name="eMobilityAccount">A service plan object to compare with.</param>
-        public Int32 CompareTo(eMobilityAccount eMobilityAccount)
+        /// <param name="EMobilityAccount">An electric mobility account to compare with.</param>
+        public Int32 CompareTo(EMobilityAccount? EMobilityAccount)
         {
 
-            if ((Object) eMobilityAccount == null)
-                throw new ArgumentNullException("The given service plan must not be null!");
+            if (EMobilityAccount is null)
+                throw new ArgumentNullException(nameof(EMobilityAccount), "The given electric mobility account must not be null!");
 
-            return Id.CompareTo(eMobilityAccount.Id);
+            var c = Id.CompareTo(EMobilityAccount.Id);
+
+            //if (c == 0)
+            //    c = Name.CompareTo(EMobilityAccount.Name);
+
+            return c;
 
         }
 
@@ -120,48 +220,33 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region IEquatable<eMobilityAccount> Members
+        #region IEquatable<EMobilityAccount> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two electric mobility accounts for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An electric mobility account to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a service plan.
-            var eMobilityAccount = Object as eMobilityAccount;
-            if ((Object) eMobilityAccount == null)
-                return false;
-
-            return this.Equals(eMobilityAccount);
-
-        }
+            => Object is EMobilityAccount eMobilityAccount &&
+                   Equals(eMobilityAccount);
 
         #endregion
 
-        #region Equals(eMobilityAccount)
+        #region Equals(EMobilityAccount)
 
         /// <summary>
-        /// Compares two service plans for equality.
+        /// Compares two electric mobility accounts for equality.
         /// </summary>
-        /// <param name="eMobilityAccount">A service plan to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMobilityAccount eMobilityAccount)
-        {
+        /// <param name="EMobilityAccount">An electric mobility account to compare with.</param>
+        public Boolean Equals(EMobilityAccount? EMobilityAccount)
 
-            if ((Object) eMobilityAccount == null)
-                return false;
+            => EMobilityAccount is not null &&
 
-            return Id.Equals(eMobilityAccount.Id);
-
-        }
+               Id.  Equals(EMobilityAccount.Id) &&
+               Name.Equals(EMobilityAccount.Name);
 
         #endregion
 
@@ -173,9 +258,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+
+            => Id.GetHashCode();
 
         #endregion
 
@@ -185,9 +269,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return "eMI3 charging service plan: " + Id.ToString();
-        }
+
+            => Id.ToString();
 
         #endregion
 

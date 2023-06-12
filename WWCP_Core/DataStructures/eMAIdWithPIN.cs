@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region Properties
 
-        public eMobilityAccount_Id  eMAId           { get; }
+        public EMobilityAccount_Id  eMAId           { get; }
 
         public String               PIN             { get; }
 
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMAIdWithPIN(eMAId, PIN)
 
-        public eMAIdWithPIN2(eMobilityAccount_Id  eMAId,
+        public eMAIdWithPIN2(EMobilityAccount_Id  eMAId,
                              String               PIN)
         {
 
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMAIdWithPIN(eMAId, PIN, Function, Salt = "")
 
-        public eMAIdWithPIN2(eMobilityAccount_Id  eMAId,
+        public eMAIdWithPIN2(EMobilityAccount_Id  eMAId,
                              String               PIN,
                              PINCrypto            Function,
                              String               Salt = "")

@@ -4898,7 +4898,7 @@ namespace cloud.charging.open.protocols.WWCP
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
@@ -4961,7 +4961,7 @@ namespace cloud.charging.open.protocols.WWCP
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,

@@ -6146,7 +6146,7 @@ namespace cloud.charging.open.protocols.WWCP
                     RemoteAuthentication?              RemoteAuthentication   = null,
                     ChargingProduct?                   ChargingProduct        = null,
                     IEnumerable<AuthenticationToken>?  AuthTokens             = null,
-                    IEnumerable<eMobilityAccount_Id>?  eMAIds                 = null,
+                    IEnumerable<EMobilityAccount_Id>?  eMAIds                 = null,
                     IEnumerable<UInt32>?               PINs                   = null,
 
                     DateTime?                          Timestamp              = null,
@@ -6874,14 +6874,10 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (ChargingLocation.IsNull())
-                {
                     result = RemoteStartResult.UnknownLocation();
-                }
 
                 else if (SessionsStore.SessionExists(SessionId))
-                {
                     result = RemoteStartResult.InvalidSessionId();
-                }
 
                 else if (AdminStatus.Value == RoamingNetworkAdminStatusTypes.Operational ||
                          AdminStatus.Value == RoamingNetworkAdminStatusTypes.InternalUse)
@@ -6929,8 +6925,8 @@ namespace cloud.charging.open.protocols.WWCP
                     //ToDo: Add routing!
                     #region ...or try every CSO roaming provider...
 
-                    if (result        == null ||
-                       (result        != null &&
+                    if (result        is     null ||
+                       (result        is not null &&
                        (result.Result == RemoteStartResultTypes.UnknownLocation)))
                     {
 
@@ -6982,14 +6978,9 @@ namespace cloud.charging.open.protocols.WWCP
                 else
                 {
 
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            result = RemoteStartResult.OutOfService();
-                            break;
-
-                    }
+                    result = AdminStatus.Value switch {
+                        _ => RemoteStartResult.OutOfService(),
+                    };
 
                 }
 

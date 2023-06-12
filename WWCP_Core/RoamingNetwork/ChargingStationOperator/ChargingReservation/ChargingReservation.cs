@@ -125,10 +125,10 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region eMAIds
 
-        private readonly HashSet<eMobilityAccount_Id> _eMAIds;
+        private readonly HashSet<EMobilityAccount_Id> _eMAIds;
 
         [Optional]
-        public IEnumerable<eMobilityAccount_Id> eMAIds
+        public IEnumerable<EMobilityAccount_Id> eMAIds
             => _eMAIds;
 
         #endregion
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    ChargingProduct                   ChargingProduct             = null,
 
                                    IEnumerable<AuthenticationToken>           AuthTokens                  = null,
-                                   IEnumerable<eMobilityAccount_Id>  eMAIds                      = null,
+                                   IEnumerable<EMobilityAccount_Id>  eMAIds                      = null,
                                    IEnumerable<UInt32>               PINs                        = null,
 
                                    IEnumerable<ChargingReservation>  SubReservations             = null)
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.WWCP
             this.ChargingProduct            = ChargingProduct;
 
             this._AuthTokens                = AuthTokens      != null ? new HashSet<AuthenticationToken>         (AuthTokens)      : new HashSet<AuthenticationToken>();
-            this._eMAIds                    = eMAIds          != null ? new HashSet<eMobilityAccount_Id>(eMAIds)          : new HashSet<eMobilityAccount_Id>();
+            this._eMAIds                    = eMAIds          != null ? new HashSet<EMobilityAccount_Id>(eMAIds)          : new HashSet<EMobilityAccount_Id>();
             this._PINs                      = PINs            != null ? new HashSet<UInt32>             (PINs)            : new HashSet<UInt32>();
 
             this._SubReservations           = SubReservations != null ? new HashSet<ChargingReservation>(SubReservations) : new HashSet<ChargingReservation>();
