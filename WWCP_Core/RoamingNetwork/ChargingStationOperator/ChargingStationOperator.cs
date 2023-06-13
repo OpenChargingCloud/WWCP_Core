@@ -204,21 +204,15 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The remote charging station operator.
         /// </summary>
-        [Optional]
-        public IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
+        [InternalUseOnly]
+        public IRemoteChargingStationOperator?  RemoteChargingStationOperator    { get; }
 
         /// <summary>
         /// The roaming provider of this charging station operator.
         /// </summary>
-        [Optional]
-        public ICSORoamingProvider             EMPRoamingProvider               { get; }
+        [InternalUseOnly]
+        public ICSORoamingProvider?             EMPRoamingProvider               { get; }
 
-
-        /// <summary>
-        /// All brands registered for this charging station operator.
-        /// </summary>
-        [Optional, SlowData]
-        public ReactiveSet<Brand>              Brands                           { get; }
 
         #region Logo
 
@@ -246,63 +240,25 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region DataLicense
-
-        private ReactiveSet<OpenDataLicense> dataLicenses;
+        #region Brands
 
         /// <summary>
-        /// The license of the charging station operator data.
+        /// All brands registered for this charging station operator.
         /// </summary>
-        [Mandatory]
-        public ReactiveSet<OpenDataLicense> DataLicenses
-        {
-
-            get
-            {
-
-                return dataLicenses != null && dataLicenses.Any()
-                           ? dataLicenses
-                           : RoamingNetwork?.DataLicenses;
-
-            }
-
-            set
-            {
-
-                if (value != dataLicenses && value != RoamingNetwork?.DataLicenses)
-                {
-
-                    if (value.IsNullOrEmpty())
-                        DeleteProperty(ref dataLicenses);
-
-                    else
-                    {
-
-                        if (dataLicenses == null)
-                            SetProperty(ref dataLicenses, value);
-
-                        else
-                            SetProperty(ref dataLicenses, dataLicenses.Set(value));
-
-                    }
-
-                }
-
-            }
-
-        }
+        [Optional, SlowData]
+        public ReactiveSet<Brand>               Brands                           { get; } = new();
 
         #endregion
 
         #region Address
 
-        private Address address;
+        private Address? address;
 
         /// <summary>
         /// The address of the operators headquarter.
         /// </summary>
         [Optional]
-        public Address Address
+        public Address? Address
         {
 
             get
@@ -312,13 +268,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-
-                if (value == null)
-                    address = value;
-
-                if (address != value)
-                    SetProperty(ref address, value);
-
+                SetProperty(ref address, value);
             }
 
         }
@@ -327,13 +277,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region GeoLocation
 
-        private GeoCoordinate geoLocation;
+        private GeoCoordinate? geoLocation;
 
         /// <summary>
         /// The geographical location of this operator.
         /// </summary>
         [Optional]
-        public GeoCoordinate GeoLocation
+        public GeoCoordinate? GeoLocation
         {
 
             get
@@ -343,13 +293,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-
-                if (value == null)
-                    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
-
-                if (geoLocation != value)
-                    SetProperty(ref geoLocation, value);
-
+                SetProperty(ref geoLocation, value);
             }
 
         }
@@ -374,8 +318,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-                if (telephone != value)
-                    SetProperty(ref telephone, value);
+                SetProperty(ref telephone, value);
             }
 
         }
@@ -400,8 +343,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-                if (eMailAddress != value)
-                    SetProperty(ref eMailAddress, value);
+                SetProperty(ref eMailAddress, value);
             }
 
         }
@@ -426,8 +368,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-                if (homepage != value)
-                    SetProperty(ref homepage, value);
+                SetProperty(ref homepage, value);
             }
 
         }
@@ -452,8 +393,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-                if (hotlinePhoneNumber != value)
-                    SetProperty(ref hotlinePhoneNumber, value);
+                SetProperty(ref hotlinePhoneNumber, value);
             }
 
         }
@@ -478,45 +418,26 @@ namespace cloud.charging.open.protocols.WWCP
 
             set
             {
-                if (termsAndConditionsURL != value)
-                    SetProperty(ref termsAndConditionsURL, value);
+                SetProperty(ref termsAndConditionsURL, value);
             }
 
         }
 
         #endregion
 
-        #endregion
+        #region DataLicenses
 
-        #region Events
-
-        #region OnInvalidEVSEIdAdded
+        private readonly ReactiveSet<OpenDataLicense> dataLicenses = new();
 
         /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// The license(s) of the charging station operator data.
         /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidEVSEIdAddedDelegate(DateTime Timestamp, ChargingStationOperator ChargingStationOperator, EVSE_Id EVSEId);
+        [Optional]
+        public ReactiveSet<OpenDataLicense> DataLicenses
 
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        public event OnInvalidEVSEIdAddedDelegate OnInvalidEVSEIdAdded;
-
-        #endregion
-
-        #region OnInvalidEVSEIdRemoved
-
-        /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidEVSEIdRemovedDelegate(DateTime Timestamp, ChargingStationOperator ChargingStationOperator, EVSE_Id EVSEId);
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        public event OnInvalidEVSEIdRemovedDelegate OnInvalidEVSEIdRemoved;
+            => dataLicenses.Any()
+                   ? dataLicenses
+                   : RoamingNetwork?.DataLicenses ?? dataLicenses;
 
         #endregion
 
@@ -540,8 +461,8 @@ namespace cloud.charging.open.protocols.WWCP
                                        RemoteChargingStationOperatorCreatorDelegate?          RemoteChargingStationOperatorCreator   = null,
                                        Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                     = null,
                                        Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                          = null,
-                                       UInt16                                                 MaxAdminStatusScheduleSize                 = DefaultMaxAdminStatusScheduleSize,
-                                       UInt16                                                 MaxStatusScheduleSize                      = DefaultMaxStatusScheduleSize,
+                                       UInt16                                                 MaxAdminStatusScheduleSize             = DefaultMaxAdminStatusScheduleSize,
+                                       UInt16                                                 MaxStatusScheduleSize                  = DefaultMaxStatusScheduleSize,
 
                                        JObject?                                               CustomData                             = null,
                                        UserDefinedDictionary?                                 InternalData                           = null)
@@ -564,75 +485,47 @@ namespace cloud.charging.open.protocols.WWCP
 
         {
 
-            #region Initial checks
-
-            if (RoamingNetwork is null)
-                throw new ArgumentNullException(nameof(RoamingNetwork),  "The roaming network must not be null!");
-
-            #endregion
-
             #region Init data and properties
 
-            this.Brands                      = new ReactiveSet<Brand>();
-            this.dataLicenses                = new ReactiveSet<OpenDataLicense>();
-
-            #region InvalidEVSEIds
-
-            this.InvalidEVSEIds               = new ReactiveSet<EVSE_Id>();
-
-            InvalidEVSEIds.OnItemAdded += (Timestamp, Set, EVSEId) =>
-                OnInvalidEVSEIdAdded?.Invoke(Timestamp, this, EVSEId);
-
-            InvalidEVSEIds.OnItemRemoved += (Timestamp, Set, EVSEId) =>
-                OnInvalidEVSEIdRemoved?.Invoke(Timestamp, this, EVSEId);
-
-            #endregion
-
             this.chargingPools               = new EntityHashSet <IChargingStationOperator, ChargingPool_Id,         IChargingPool>        (this,
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool, IChargingPool, Boolean>(() => new VetoVote(), true),
-                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                Boolean>(() => new VetoVote(), true));
-            this.chargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
-            this.evseGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,   IChargingPool,   Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,   IChargingPool,   Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingPool,                    Boolean>(() => new VetoVote(), true));
 
-            this.chargingTariffs             = new EntityHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
-            this.chargingTariffGroups        = new EntityHashSet <ChargingStationOperator, ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
+            this.chargingTariffs             = new EntityHashSet <IChargingStationOperator, ChargingTariff_Id,      IChargingTariff>       (this,
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean>(() => new VetoVote(), true),
+                                                                                                                                            new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff,                  Boolean>(() => new VetoVote(), true));
 
-            //this._ChargingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
-            //this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ChargingPool>();
+            this.evseGroups                  = new EntityHashSet <ChargingStationOperator,  EVSEGroup_Id,            EVSEGroup>           (this);
+            this.chargingStationGroups       = new EntityHashSet <ChargingStationOperator,  ChargingStationGroup_Id, ChargingStationGroup>(this);
+            this.chargingTariffGroups        = new EntityHashSet <ChargingStationOperator,  ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
 
             #endregion
 
             #region Init events
 
-            this.ChargingStationAddition       = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition       = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,                   Boolean>(() => new VetoVote(), true);
+            this.ChargingStationUpdate         = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation, IChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingPool,               IChargingStation,                   Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
-            this.evseAddition                  = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
-            this.evseRemoval                   = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,           IEVSE,                Boolean>(() => new VetoVote(), true);
-            this.EVSEGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
-            this.EVSEGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
+            this.evseAddition                  = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,            IEVSE,                              Boolean>(() => new VetoVote(), true);
+            this.evseUpdate                    = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,            IEVSE,            IEVSE,            Boolean>(() => new VetoVote(), true);
+            this.evseRemoval                   = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation,            IEVSE,                              Boolean>(() => new VetoVote(), true);
+            this.evseGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
+            this.evseGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
 
-            this.chargingTariffAddition        = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
-            this.chargingTariffRemoval         = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
+            this.chargingTariffAddition        = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator,    IChargingTariff,                    Boolean>(() => new VetoVote(), true);
+            this.chargingTariffUpdate          = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator,    IChargingTariff,  IChargingTariff,  Boolean>(() => new VetoVote(), true);
+            this.chargingTariffRemoval         = new VotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator,    IChargingTariff,                    Boolean>(() => new VetoVote(), true);
             this.chargingTariffGroupAddition   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
             this.chargingTariffGroupRemoval    = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
-
-            #endregion
-
-            #region Link events
-
-            //this.OnPropertyChanged += UpdateData;
-
-            //this._StatusSchedule.     OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          //=> UpdateStatus     (timestamp, eventTrackingId, newStatus, oldStatus);
-
-            //this._AdminStatusSchedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus)
-                                                          //=> UpdateAdminStatus(timestamp, eventTrackingId, newStatus, oldStatus);
 
             #endregion
 
@@ -652,17 +545,17 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        public event OnChargingStationOperatorDataChangedDelegate         OnDataChanged;
+        public event OnChargingStationOperatorDataChangedDelegate?         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnChargingStationOperatorAdminStatusChangedDelegate  OnAdminStatusChanged;
+        public event OnChargingStationOperatorAdminStatusChangedDelegate?  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
-        public event OnChargingStationOperatorStatusChangedDelegate       OnStatusChanged;
+        public event OnChargingStationOperatorStatusChangedDelegate?       OnStatusChanged;
 
         #endregion
 
@@ -770,6 +663,26 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region OnChargingPoolData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated charging pool changed.
+        /// </summary>
+        public event OnChargingPoolDataChangedDelegate?         OnChargingPoolDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
+        /// </summary>
+        public event OnChargingPoolStatusChangedDelegate?       OnChargingPoolStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
+        /// </summary>
+        public event OnChargingPoolAdminStatusChangedDelegate?  OnChargingPoolAdminStatusChanged;
+
+        #endregion
+
+
         #region ChargingPoolAddition
 
         /// <summary>
@@ -791,24 +704,24 @@ namespace cloud.charging.open.protocols.WWCP
             => chargingPools.OnUpdate;
 
 
-        /// <summary>
-        /// A delegate called whenever a charging pool was updated.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when the charging pool was updated.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldChargingPool">The old charging pool.</param>
-        /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
-        public delegate Task OnChargingPoolUpdatedDelegate(DateTime           Timestamp,
-                                                           ChargingPool       ChargingPool,
-                                                           ChargingPool       OldChargingPool,
-                                                           EventTracking_Id?  EventTrackingId         = null,
-                                                           ChargingPool_Id?   CurrentChargingPoolId   = null);
+        ///// <summary>
+        ///// A delegate called whenever a charging pool was updated.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when the charging pool was updated.</param>
+        ///// <param name="ChargingPool">The updated charging pool.</param>
+        ///// <param name="OldChargingPool">The old charging pool.</param>
+        ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
+        ///// <param name="CurrentChargingPoolId">An optional charging pool identification initiating this command/request.</param>
+        //public delegate Task OnChargingPoolUpdatedDelegate(DateTime           Timestamp,
+        //                                                   ChargingPool       ChargingPool,
+        //                                                   ChargingPool       OldChargingPool,
+        //                                                   EventTracking_Id?  EventTrackingId         = null,
+        //                                                   ChargingPool_Id?   CurrentChargingPoolId   = null);
 
-        /// <summary>
-        /// An event fired whenever a charging pool was updated.
-        /// </summary>
-        public event OnChargingPoolUpdatedDelegate OnChargingPoolUpdated;
+        ///// <summary>
+        ///// An event fired whenever a charging pool was updated.
+        ///// </summary>
+        //public event OnChargingPoolUpdatedDelegate OnChargingPoolUpdated;
 
         #endregion
 
@@ -1346,7 +1259,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// Update the given charging pool.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ChargingPoolId">A charging pool identification.</param>
         /// <param name="UpdateDelegate">A delegate for updating the given charging pool.</param>
         /// 
         /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging pool.</param>
@@ -1455,43 +1368,26 @@ namespace cloud.charging.open.protocols.WWCP
                                                                        User_Id?                                             CurrentUserId                  = null)
         {
 
-            //if (TryGetChargingPoolById(ChargingPoolId, out var chargingPool))
-            //{
+            EventTrackingId ??= EventTracking_Id.New;
 
-            //    if (chargingPool is not null &&
-            //        ChargingPoolRemoval.SendVoting(Timestamp.Now,
-            //                                       this,
-            //                                       chargingPool))
-            //    {
+            if (chargingPools.TryRemove(ChargingPoolId,
+                                        out var chargingPool,
+                                        EventTrackingId,
+                                        null) &&
+                chargingPool is not null)
+            {
 
-                    if (chargingPools.TryRemove(ChargingPoolId,
-                                                out var chargingPool,
-                                                EventTracking_Id.New,
-                                                null) &&
-                        chargingPool is not null)
-                    {
+                return RemoveChargingPoolResult.Success(
+                           chargingPool,
+                           EventTrackingId,
+                           this
+                       );
 
-                        //ChargingPoolRemoval.SendNotification(Timestamp.Now,
-                        //                                     this,
-                        //                                     chargingPool);
+            }
 
-                        return RemoveChargingPoolResult.Success(
-                                   chargingPool,
-                                   EventTracking_Id.New,
-                                   this
-                               );
-
-                    }
-
-            //    }
-
-            //}
-
-            return RemoveChargingPoolResult.Failed(
-                       ChargingPoolId,
-                       EventTracking_Id.New,
-                       ""
-                   );
+            return RemoveChargingPoolResult.Failed(ChargingPoolId,
+                                                   EventTrackingId,
+                                                   "");
 
         }
 
@@ -1619,7 +1515,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                            ChargingPoolId,
@@ -1668,26 +1563,6 @@ namespace cloud.charging.open.protocols.WWCP
             }
 
         }
-
-        #endregion
-
-
-        #region OnChargingPoolData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolDataChangedDelegate?         OnChargingPoolDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolStatusChangedDelegate?       OnChargingPoolStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolAdminStatusChangedDelegate?  OnChargingPoolAdminStatusChanged;
 
         #endregion
 
@@ -2829,6 +2704,7 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+
         #region EVSEAddition
 
         internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> evseAddition;
@@ -2874,16 +2750,6 @@ namespace cloud.charging.open.protocols.WWCP
         public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStation, IEVSE, Boolean> OnEVSERemoval
 
             => evseRemoval;
-
-        #endregion
-
-
-        #region InvalidEVSEIds
-
-        /// <summary>
-        /// A list of invalid EVSE Ids.
-        /// </summary>
-        public ReactiveSet<EVSE_Id> InvalidEVSEIds { get; }
 
         #endregion
 
@@ -3236,16 +3102,11 @@ namespace cloud.charging.open.protocols.WWCP
                                        IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
                                        ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
         {
-
-            if (InvalidEVSEIds.Contains(EVSEId))
-                return;
-
             if (TryGetEVSEById(EVSEId, out var evse) &&
                 evse is not null)
             {
                 evse.SetAdminStatus(AdminStatusList, ChangeMethod);
             }
-
         }
 
         #endregion
@@ -3345,16 +3206,11 @@ namespace cloud.charging.open.protocols.WWCP
                                   IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
                                   ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
         {
-
-            if (InvalidEVSEIds.Contains(EVSEId))
-                return;
-
             if (TryGetEVSEById(EVSEId, out var evse) &&
                 evse is not null)
             {
                 evse.SetStatus(StatusList, ChangeMethod);
             }
-
         }
 
         #endregion
@@ -3632,27 +3488,27 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region EVSEGroupAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> EVSEGroupAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> evseGroupAddition;
 
         /// <summary>
         /// Called whenever an EVSE group will be or was added.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupAddition
 
-            => EVSEGroupAddition;
+            => evseGroupAddition;
 
         #endregion
 
         #region EVSEGroupRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> EVSEGroupRemoval;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> evseGroupRemoval;
 
         /// <summary>
         /// Called whenever an EVSE group will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupRemoval
 
-            => EVSEGroupRemoval;
+            => evseGroupRemoval;
 
         #endregion
 
@@ -4031,7 +3887,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (evseGroups.TryGet(EVSEGroupId, out var EVSEGroup) &&
-                    EVSEGroupRemoval.SendVoting(Timestamp.Now,
+                    evseGroupRemoval.SendVoting(Timestamp.Now,
                                                 this,
                                                 EVSEGroup) &&
                     evseGroups.TryRemove(EVSEGroupId,
@@ -4042,7 +3898,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(this, EVSEGroup);
 
-                    EVSEGroupRemoval.SendNotification(Timestamp.Now,
+                    evseGroupRemoval.SendNotification(Timestamp.Now,
                                                       this,
                                                       _EVSEGroup);
 
@@ -4076,7 +3932,7 @@ namespace cloud.charging.open.protocols.WWCP
             lock (evseGroups)
             {
 
-                if (EVSEGroupRemoval.SendVoting(Timestamp.Now,
+                if (evseGroupRemoval.SendVoting(Timestamp.Now,
                                                 this,
                                                 EVSEGroup) &&
                     evseGroups.TryRemove(EVSEGroup.Id,
@@ -4087,7 +3943,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     OnSuccess?.Invoke(this, _EVSEGroup);
 
-                    EVSEGroupRemoval.SendNotification(Timestamp.Now,
+                    evseGroupRemoval.SendNotification(Timestamp.Now,
                                                       this,
                                                       _EVSEGroup);
 
@@ -4110,222 +3966,139 @@ namespace cloud.charging.open.protocols.WWCP
 
         #region ChargingTariffs
 
-        #region ChargingTariffAddition
+        #region Data
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> chargingTariffAddition;
-
-        public IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffAddition
-            => chargingTariffAddition;
-
-        /// <summary>
-        /// Called whenever a charging tariff will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingTariff, Boolean> OnChargingTariffAddition
-            => chargingTariffAddition;
-
-        #endregion
-
-
-        #region ChargingTariffs
-
-        private readonly EntityHashSet<ChargingStationOperator, ChargingTariff_Id, ChargingTariff> chargingTariffs;
+        private readonly EntityHashSet<IChargingStationOperator, ChargingTariff_Id, IChargingTariff> chargingTariffs;
 
         /// <summary>
         /// All charging tariffs registered within this charging station operator.
         /// </summary>
-        public IEnumerable<ChargingTariff> ChargingTariffs
+        public IEnumerable<IChargingTariff> ChargingTariffs
             => chargingTariffs;
 
         #endregion
 
 
-        #region CreateChargingTariff     (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+        #region ChargingTariffAddition
+
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> chargingTariffAddition;
+
+        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffAddition
+            => chargingTariffAddition;
 
         /// <summary>
-        /// Create and register a new charging tariff having the given
-        /// unique charging tariff identification.
+        /// Called whenever a charging tariff will be or was added.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
-        /// 
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff? CreateChargingTariff(ChargingTariff_Id                                    Id,
-                                                    I18NString                                           Name,
-                                                    I18NString                                           Description,
-                                                    IEnumerable<ChargingTariffElement>                   TariffElements,
-                                                    Currency                                             Currency,
-                                                    Brand                                                Brand,
-                                                    URL                                                  TariffURL,
-                                                    EnergyMix                                            EnergyMix,
-
-                                                    Action<ChargingTariff>?                              OnSuccess   = null,
-                                                    Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
-
-        {
-
-            lock (chargingTariffs)
-            {
-
-                #region Initial checks
-
-                if (chargingTariffs.ContainsId(Id))
-                {
-
-                    if (OnError != null)
-                        OnError?.Invoke(this, Id);
-
-                    throw new ChargingTariffAlreadyExists(this, Id);
-
-                }
-
-                if (Name.IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
-
-                #endregion
-
-                var chargingTariff = new ChargingTariff(Id,
-                                                        Name,
-                                                        Description,
-                                                        TariffElements,
-                                                        Currency,
-                                                        Brand,
-                                                        TariffURL,
-                                                        EnergyMix);
-
-
-                if (chargingTariffs.TryAdd(chargingTariff,
-                                           EventTracking_Id.New,
-                                           null).IsSuccess)
-                {
-
-                    //_ChargingTariff.OnEVSEDataChanged                             += UpdateEVSEData;
-                    //_ChargingTariff.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                    //_ChargingTariff.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
-
-                    //_ChargingTariff.OnChargingStationDataChanged                  += UpdateChargingStationData;
-                    //_ChargingTariff.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-                    //_ChargingTariff.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
-
-                    ////_ChargingTariff.OnDataChanged                                 += UpdateChargingTariffData;
-                    ////_ChargingTariff.OnAdminStatusChanged                          += UpdateChargingTariffAdminStatus;
-
-                    OnSuccess?.Invoke(chargingTariff);
-
-                    return chargingTariff;
-
-                }
-
-                return null;
-
-            }
-
-        }
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffAddition
+            => chargingTariffAddition;
 
         #endregion
 
-        #region CreateChargingTariff     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+        #region ChargingTariffUpdate
+
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> chargingTariffUpdate;
+
+        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> ChargingTariffUpdate
+            => chargingTariffUpdate;
 
         /// <summary>
-        /// Create and register a new charging tariff having the given
-        /// unique charging tariff identification.
+        /// Called whenever a charging Tariff will be or was added.
         /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the new charging tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
-        /// 
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff? CreateChargingTariff(String                                                         Id,
-                                                    I18NString                                                     Name,
-                                                    I18NString                                                     Description,
-                                                    IEnumerable<ChargingTariffElement>                             TariffElements,
-                                                    Currency                                                       Currency,
-                                                    Brand                                                          Brand,
-                                                    URL                                                            TariffURL,
-                                                    EnergyMix                                                      EnergyMix,
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, IChargingTariff, Boolean> OnChargingTariffUpdate
+            => chargingTariffUpdate;
 
-                                                    Action<ChargingTariff>?                                        OnSuccess   = null,
-                                                    Action<ChargingStationOperator, ChargingTariff_Id>?            OnError     = null)
+        #endregion
+
+        #region ChargingTariffRemoval
+
+        internal readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> chargingTariffRemoval;
+
+        public IVotingNotificator<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> ChargingTariffRemoval
+            => chargingTariffRemoval;
+
+        /// <summary>
+        /// Called whenever a charging Tariff will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, EventTracking_Id, User_Id, IChargingStationOperator, IChargingTariff, Boolean> OnChargingTariffRemoval
+            => chargingTariffRemoval;
+
+        #endregion
+
+
+        #region GetOrCreateChargingTariff(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new charging Tariff having the given
+        /// unique charging Tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing Tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging Tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging Tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging Tariff failed.</param>
+        public Task<AddChargingTariffResult> GetOrCreateChargingTariff(ChargingTariff_Id                                                     Id,
+                                                                       I18NString                                                            Name,
+                                                                       I18NString                                                            Description,
+                                                                       IEnumerable<ChargingTariffElement>                                    TariffElements,
+                                                                       Currency                                                              Currency,
+                                                                       Brand                                                                 Brand,
+                                                                       URL                                                                   TariffURL,
+                                                                       EnergyMix                                                             EnergyMix,
+
+                                                                       String?                                                               DataSource                     = null,
+                                                                       DateTime?                                                             LastChange                     = null,
+
+                                                                       JObject?                                                              CustomData                     = null,
+                                                                       UserDefinedDictionary?                                                InternalData                   = null,
+
+                                                                       Action<IChargingTariff,                           EventTracking_Id>?  OnSuccess                      = null,
+                                                                       Action<IChargingStationOperator, IChargingTariff, EventTracking_Id>?  OnError                        = null,
+
+                                                                       Boolean                                                               SkipAddedNotifications         = false,
+                                                                       Func<ChargingStationOperator_Id, ChargingTariff_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                       EventTracking_Id?                                                     EventTrackingId                = null,
+                                                                       User_Id?                                                              CurrentUserId                  = null)
 
         {
 
             #region Initial checks
 
-            if (Id.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Id), "The given suffix of the unique identification of the new charging tariff must not be null or empty!");
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Name), "The name of the charging Tariff must not be null or empty!");
 
             #endregion
 
-            return CreateChargingTariff(ChargingTariff_Id.Parse(Id),
-                                        Name,
-                                        Description,
-                                        TariffElements,
-                                        Currency,
-                                        Brand,
-                                        TariffURL,
-                                        EnergyMix,
-
-                                        OnSuccess,
-                                        OnError);
-
-        }
-
-        #endregion
-
-        #region GetOrCreateChargingTariff(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// Get or create and register a new charging tariff having the given
-        /// unique charging tariff identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
-        /// 
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff? GetOrCreateChargingTariff(ChargingTariff_Id                                    Id,
-                                                         I18NString                                           Name,
-                                                         I18NString                                           Description,
-                                                         IEnumerable<ChargingTariffElement>                   TariffElements,
-                                                         Currency                                             Currency,
-                                                         Brand                                                Brand,
-                                                         URL                                                  TariffURL,
-                                                         EnergyMix                                            EnergyMix,
-
-                                                         Action<ChargingTariff>?                              OnSuccess   = null,
-                                                         Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
-
-        {
-
-            lock (chargingTariffs)
+            if (chargingTariffs.TryGet(Id, out var chargingTariff) &&
+                chargingTariff is not null)
             {
-
-                #region Initial checks
-
-                if (Name.IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(Name), "The name of the charging tariff must not be null or empty!");
-
-                #endregion
-
-                if (chargingTariffs.TryGet(Id, out var chargingTariff))
-                    return chargingTariff;
-
-                return CreateChargingTariff(Id,
-                                            Name,
-                                            Description,
-                                            TariffElements,
-                                            Currency,
-                                            Brand,
-                                            TariffURL,
-                                            EnergyMix,
-
-                                            OnSuccess,
-                                            OnError);
-
+                return Task.FromResult(AddChargingTariffResult.Success(chargingTariff,
+                                                                       EventTracking_Id.New,
+                                                                       this));
             }
+
+            return this.CreateChargingTariff(Id,
+                                             Name,
+                                             Description,
+                                             TariffElements,
+                                             Currency,
+                                             Brand,
+                                             TariffURL,
+                                             EnergyMix,
+
+                                             DataSource,
+                                             LastChange,
+
+                                             CustomData,
+                                             InternalData,
+
+                                             OnSuccess,
+                                             OnError,
+
+                                             SkipAddedNotifications,
+                                             AllowInconsistentOperatorIds,
+                                             EventTrackingId,
+                                             CurrentUserId);
 
         }
 
@@ -4334,26 +4107,37 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetOrCreateChargingTariff(IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Get or create and register a new charging tariff having the given
-        /// unique charging tariff identification.
+        /// Get or create and register a new charging Tariff having the given
+        /// unique charging Tariff identification.
         /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the new charging tariff.</param>
-        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        /// <param name="IdSuffix">The suffix of the unique identification of the new charging Tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging Tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging Tariff.</param>
         /// 
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariff? GetOrCreateChargingTariff(String                                               IdSuffix,
-                                                         I18NString                                           Name,
-                                                         I18NString                                           Description,
-                                                         IEnumerable<ChargingTariffElement>                   TariffElements,
-                                                         Currency                                             Currency,
-                                                         Brand                                                Brand,
-                                                         URL                                                  TariffURL,
-                                                         EnergyMix                                            EnergyMix,
+        /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging Tariff failed.</param>
+        public Task<AddChargingTariffResult> GetOrCreateChargingTariff(String                                                                IdSuffix,
+                                                                       I18NString                                                            Name,
+                                                                       I18NString                                                            Description,
+                                                                       IEnumerable<ChargingTariffElement>                                    TariffElements,
+                                                                       Currency                                                              Currency,
+                                                                       Brand                                                                 Brand,
+                                                                       URL                                                                   TariffURL,
+                                                                       EnergyMix                                                             EnergyMix,
 
-                                                         Action<ChargingTariff>?                              OnSuccess   = null,
-                                                         Action<ChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
+                                                                       String?                                                               DataSource                     = null,
+                                                                       DateTime?                                                             LastChange                     = null,
+
+                                                                       JObject?                                                              CustomData                     = null,
+                                                                       UserDefinedDictionary?                                                InternalData                   = null,
+
+                                                                       Action<IChargingTariff,                           EventTracking_Id>?  OnSuccess                      = null,
+                                                                       Action<IChargingStationOperator, IChargingTariff, EventTracking_Id>?  OnError                        = null,
+
+                                                                       Boolean                                                               SkipAddedNotifications         = false,
+                                                                       Func<ChargingStationOperator_Id, ChargingTariff_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                       EventTracking_Id?                                                     EventTrackingId                = null,
+                                                                       User_Id?                                                              CurrentUserId                  = null)
 
 
         {
@@ -4361,7 +4145,7 @@ namespace cloud.charging.open.protocols.WWCP
             #region Initial checks
 
             if (IdSuffix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging tariff must not be null or empty!");
+                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging Tariff must not be null or empty!");
 
             #endregion
 
@@ -4374,25 +4158,547 @@ namespace cloud.charging.open.protocols.WWCP
                                              TariffURL,
                                              EnergyMix,
 
+                                             DataSource,
+                                             LastChange,
+
+                                             CustomData,
+                                             InternalData,
+
                                              OnSuccess,
-                                             OnError);
+                                             OnError,
+
+                                             SkipAddedNotifications,
+                                             AllowInconsistentOperatorIds,
+                                             EventTrackingId,
+                                             CurrentUserId);
 
         }
 
         #endregion
 
 
-        #region GetChargingTariff(Id)
+        #region AddChargingTariff           (ChargingTariff,                             OnSuccess       = null, OnError = null, ...)
 
         /// <summary>
-        /// Return to charging tariff for the given charging tariff identification.
+        /// Add a new charging tariff.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        public ChargingTariff? GetChargingTariff(ChargingTariff_Id Id)
+        /// <param name="ChargingTariff">A new charging tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging tariff.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging tariff failed.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddChargingTariffResult> AddChargingTariff(IChargingTariff                                                       ChargingTariff,
+
+                                                                     Action<IChargingTariff,                           EventTracking_Id>?  OnSuccess                      = null,
+                                                                     Action<IChargingStationOperator, IChargingTariff, EventTracking_Id>?  OnError                        = null,
+
+                                                                     Boolean                                                               SkipAddedNotifications         = false,
+                                                                     Func<ChargingStationOperator_Id, ChargingTariff_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                     EventTracking_Id?                                                     EventTrackingId                = null,
+                                                                     User_Id?                                                              CurrentUserId                  = null)
         {
 
-            if (chargingTariffs.TryGet(Id, out var tariff))
-                return tariff;
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingTariffId) => false);
+
+            if (ChargingTariff.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingTariff.Id))
+                return AddChargingTariffResult.Failed(ChargingTariff,
+                                                      EventTrackingId,
+                                                      $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!",
+                                                      this);
+
+            #endregion
+
+
+            if (chargingTariffs.TryAdd(ChargingTariff,
+                                       EventTrackingId,
+                                       CurrentUserId).IsSuccess)
+            {
+
+                //ToDo: Persistency
+                await Task.Delay(1);
+
+                OnSuccess?.Invoke(ChargingTariff,
+                                  EventTrackingId);
+
+                return AddChargingTariffResult.Success(ChargingTariff,
+                                                       EventTrackingId,
+                                                       this);
+
+            }
+
+            OnError?.Invoke(this,
+                            ChargingTariff,
+                            EventTrackingId);
+
+            return AddChargingTariffResult.Failed(ChargingTariff,
+                                                  EventTrackingId,
+                                                  "Could not add the given charging tariff!",
+                                                  this);
+
+        }
+
+        #endregion
+
+        #region AddChargingTariffIfNotExists(ChargingTariff,                             OnSuccess       = null,                 ...)
+
+        /// <summary>
+        /// Add a new charging tariff, but do not fail when this charging tariff already exists.
+        /// </summary>
+        /// <param name="ChargingTariff">A new charging tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful addition of the charging tariff.</param>
+        /// 
+        /// <param name="SkipAddedNotifications">Whether to skip sending the 'OnAdded' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddChargingTariffResult> AddChargingTariffIfNotExists(IChargingTariff                                                ChargingTariff,
+
+                                                                                Action<IChargingTariff, EventTracking_Id>?                     OnSuccess                      = null,
+
+                                                                                Boolean                                                        SkipAddedNotifications         = false,
+                                                                                Func<ChargingStationOperator_Id, ChargingTariff_Id, Boolean>?  AllowInconsistentOperatorIds   = null,
+                                                                                EventTracking_Id?                                              EventTrackingId                = null,
+                                                                                User_Id?                                                       CurrentUserId                  = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingTariffId) => false);
+
+            if (ChargingTariff.Id.OperatorId != Id && !AllowInconsistentOperatorIds(Id, ChargingTariff.Id))
+                return AddChargingTariffResult.Failed(ChargingTariff,
+                                                    EventTrackingId,
+                                                    $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!",
+                                                    this);
+
+            #endregion
+
+            if (chargingTariffs.TryAdd(ChargingTariff,
+                                       EventTrackingId,
+                                       CurrentUserId).IsSuccess)
+            {
+
+                //ToDo: Persistency
+                await Task.Delay(1);
+
+                OnSuccess?.Invoke(ChargingTariff,
+                                  EventTrackingId);
+
+                return AddChargingTariffResult.Success(ChargingTariff,
+                                                       EventTrackingId,
+                                                       this);
+
+            }
+
+            return AddChargingTariffResult.NoOperation(ChargingTariff,
+                                                       EventTrackingId,
+                                                       ChargingStationOperator: this);
+
+        }
+
+        #endregion
+
+        #region AddOrUpdateChargingTariff   (ChargingTariff,   OnAdditionSuccess = null, OnUpdateSuccess = null, OnError = null, ...)
+
+        /// <summary>
+        /// Add a new or update an existing charging tariff.
+        /// </summary>
+        /// <param name="ChargingTariff">A new or updated charging tariff.</param>
+        /// 
+        /// <param name="OnAdditionSuccess">An optional delegate to be called after the successful addition of the charging tariff.</param>
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging tariff.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the addition of the new charging tariff failed.</param>
+        /// 
+        /// <param name="SkipAddOrUpdatedUpdatedNotifications">Whether to skip sending the 'OnAddedOrUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<AddOrUpdateChargingTariffResult> AddOrUpdateChargingTariff(IChargingTariff                                                       ChargingTariff,
+
+                                                                                     Action<IChargingTariff,                           EventTracking_Id>?  OnAdditionSuccess                      = null,
+                                                                                     Action<IChargingTariff,          IChargingTariff, EventTracking_Id>?  OnUpdateSuccess                        = null,
+                                                                                     Action<IChargingStationOperator, IChargingTariff, EventTracking_Id>?  OnError                                = null,
+
+                                                                                     Boolean                                                               SkipAddOrUpdatedUpdatedNotifications   = false,
+                                                                                     Func<ChargingStationOperator_Id, ChargingTariff_Id, Boolean>?         AllowInconsistentOperatorIds           = null,
+                                                                                     EventTracking_Id?                                                     EventTrackingId                        = null,
+                                                                                     User_Id?                                                              CurrentUserId                          = null)
+        {
+
+            #region Initial checks
+
+            EventTrackingId              ??= EventTracking_Id.New;
+            AllowInconsistentOperatorIds ??= ((chargingStationOperatorId, chargingTariffId) => false);
+
+            if (ChargingTariff.Id.OperatorId != this.Id && !AllowInconsistentOperatorIds(this.Id, ChargingTariff.Id))
+                return AddOrUpdateChargingTariffResult.Failed(null,
+                                                              EventTrackingId,
+                                                              $"The operator identification of the given charging tariff '{ChargingTariff.Id.OperatorId}' is invalid!",
+                                                              this);
+
+            #endregion
+
+
+            if (chargingTariffs.TryGet(ChargingTariff.Id, out var existingChargingTariff) &&
+                existingChargingTariff is not null)
+            {
+
+                var xx1 = existingChargingTariff.Equals(ChargingTariff);
+
+                var xx2 = existingChargingTariff == ChargingTariff; //FalseFriend!!!
+
+                if (chargingTariffs.TryUpdate(ChargingTariff.Id,
+                                              ChargingTariff,
+                                              existingChargingTariff,
+                                              EventTrackingId,
+                                              CurrentUserId))
+                {
+
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    OnUpdateSuccess?.Invoke(ChargingTariff,
+                                            existingChargingTariff,
+                                            EventTrackingId);
+
+                    return AddOrUpdateChargingTariffResult.Success(ChargingTariff,
+                                                                   AddedOrUpdated.Update,
+                                                                   EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this,
+                                    ChargingTariff,
+                                    EventTrackingId);
+
+                    return AddOrUpdateChargingTariffResult.Failed(ChargingTariff,
+                                                                  EventTrackingId,
+                                                                  "Error!",
+                                                                  this);
+
+                }
+
+            }
+
+            else
+            {
+
+                if (chargingTariffs.TryAdd(ChargingTariff,
+                                           EventTrackingId,
+                                           CurrentUserId).IsSuccess)
+                {
+
+                    //ToDo: Persistency
+                    await Task.Delay(1);
+
+                    OnAdditionSuccess?.Invoke(ChargingTariff,
+                                              EventTrackingId);
+
+                    return AddOrUpdateChargingTariffResult.Success(ChargingTariff,
+                                                                   AddedOrUpdated.Add,
+                                                                   EventTrackingId);
+
+                }
+                else
+                {
+
+                    OnError?.Invoke(this,
+                                    ChargingTariff,
+                                    EventTrackingId);
+
+                    return AddOrUpdateChargingTariffResult.Failed(ChargingTariff,
+                                                                  EventTrackingId,
+                                                                  "Error!",
+                                                                  this);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region UpdateChargingTariff        (ChargingTariff,                             OnUpdateSuccess = null, OnError = null, ...)
+
+        /// <summary>
+        /// Update the given charging tariff.
+        /// </summary>
+        /// <param name="ChargingTariff">A charging tariff.</param>
+        /// 
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging tariff.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the update of the new charging tariff failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<UpdateChargingTariffResult> UpdateChargingTariff(IChargingTariff                                                       ChargingTariff,
+
+                                                                           Action<IChargingTariff,          IChargingTariff, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                                           Action<IChargingStationOperator, IChargingTariff, EventTracking_Id>?  OnError                        = null,
+
+                                                                           Boolean                                                               SkipUpdatedNotifications       = false,
+                                                                           Func<ChargingStationOperator_Id, ChargingTariff_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                           EventTracking_Id?                                                     EventTrackingId                = null,
+                                                                           User_Id?                                                              CurrentUserId                  = null)
+        {
+
+            var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
+
+            if (!TryGetChargingTariffById(ChargingTariff.Id, out var OldChargingTariff))
+                return UpdateChargingTariffResult.ArgumentError(ChargingTariff,
+                                                                eventTrackingId,
+                                                                nameof(ChargingTariff),
+                                                                "The given charging tariff '" + ChargingTariff.Id + "' does not exists in this API!");
+
+            //if (ChargingTariff.API is not null && ChargingTariff.API != this)
+            //    return UpdateChargingTariffResult.ArgumentError(ChargingTariff,
+            //                                                  eventTrackingId,
+            //                                                  nameof(ChargingTariff.API),
+            //                                                  "The given charging tariff is not attached to this API!");
+
+            //ChargingTariff.API = this;
+
+
+            //await WriteToDatabaseFile(updateChargingTariff_MessageType,
+            //                          ChargingTariff.ToJSON(),
+            //                          eventTrackingId,
+            //                          CurrentChargingTariffId);
+
+            chargingTariffs.TryRemove(OldChargingTariff.Id,
+                                      out _,
+                                      EventTrackingId,
+                                      CurrentUserId);
+
+            //ChargingTariff.CopyAllLinkedDataFrom(OldChargingTariff);
+            chargingTariffs.TryAdd(ChargingTariff,
+                                   EventTrackingId,
+                                   CurrentUserId);
+
+            OnUpdateSuccess?.Invoke(ChargingTariff,
+                                    ChargingTariff,
+                                    eventTrackingId);
+
+            //var OnChargingTariffUpdatedLocal = OnChargingTariffUpdated;
+            //if (OnChargingTariffUpdatedLocal is not null)
+            //    await OnChargingTariffUpdatedLocal.Invoke(Timestamp.Now,
+            //                                            ChargingTariff,
+            //                                            OldChargingTariff,
+            //                                            eventTrackingId, 
+            //                                            CurrentChargingTariffId);
+
+            //if (!SkipChargingTariffUpdatedNotifications)
+            //    await SendNotifications(ChargingTariff,
+            //                            updateChargingTariff_MessageType,
+            //                            OldChargingTariff,
+            //                            eventTrackingId,
+            //                            CurrentChargingTariffId);
+
+            return UpdateChargingTariffResult.Success(ChargingTariff,
+                                                      eventTrackingId);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingTariff        (ChargingTariffId, UpdateDelegate,           OnUpdateSuccess = null, OnError = null, ...)
+
+        /// <summary>
+        /// Update the given charging tariff.
+        /// </summary>
+        /// <param name="ChargingTariffId">A charging tariff identification.</param>
+        /// <param name="UpdateDelegate">A delegate for updating the given charging tariff.</param>
+        /// 
+        /// <param name="OnUpdateSuccess">An optional delegate to be called after the successful update of the charging tariff.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the update of the new charging tariff failed.</param>
+        /// 
+        /// <param name="SkipUpdatedNotifications">Whether to skip sending the 'OnUpdated' event.</param>
+        /// <param name="AllowInconsistentOperatorIds">A delegate to decide whether to allow inconsistent charging station operator identifications.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<UpdateChargingTariffResult> UpdateChargingTariff(ChargingTariff_Id                                                     ChargingTariffId,
+                                                                           Action<IChargingTariff>                                               UpdateDelegate,
+
+                                                                           Action<IChargingTariff,          IChargingTariff, EventTracking_Id>?  OnUpdateSuccess                = null,
+                                                                           Action<IChargingStationOperator, IChargingTariff, EventTracking_Id>?  OnError                        = null,
+
+                                                                           Boolean                                                               SkipUpdatedNotifications       = false,
+                                                                           Func<ChargingStationOperator_Id, ChargingTariff_Id, Boolean>?         AllowInconsistentOperatorIds   = null,
+                                                                           EventTracking_Id?                                                     EventTrackingId                = null,
+                                                                           User_Id?                                                              CurrentUserId                  = null)
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            if (!chargingTariffs.TryRemove(ChargingTariffId,
+                                           out var oldChargingTariff,
+                                           EventTrackingId,
+                                           CurrentUserId) ||
+                oldChargingTariff is null)
+            {
+
+                return UpdateChargingTariffResult.ArgumentError(oldChargingTariff,
+                                                                EventTrackingId,
+                                                                nameof(ChargingTariff),
+                                                                $"The given charging tariff '{ChargingTariffId}' does not exists!");
+
+            }
+
+            //if (ChargingTariff.API is not null && ChargingTariff.API != this)
+            //    return UpdateChargingTariffResult.ArgumentError(ChargingTariff,
+            //                                                  eventTrackingId,
+            //                                                  nameof(ChargingTariff.API),
+            //                                                  "The given charging tariff is not attached to this API!");
+
+            //ChargingTariff.API = this;
+
+
+            //await WriteToDatabaseFile(updateChargingTariff_MessageType,
+            //                          ChargingTariff.ToJSON(),
+            //                          eventTrackingId,
+            //                          CurrentChargingTariffId);
+
+            var newChargingTariff = oldChargingTariff.Clone();
+            UpdateDelegate(oldChargingTariff);
+
+            //ChargingTariff.CopyAllLinkedDataFrom(OldChargingTariff);
+            chargingTariffs.TryAdd(newChargingTariff,
+                                   EventTrackingId,
+                                   CurrentUserId);
+
+            OnUpdateSuccess?.Invoke(newChargingTariff,
+                                    oldChargingTariff,
+                                    EventTrackingId);
+
+            //var OnChargingTariffUpdatedLocal = OnChargingTariffUpdated;
+            //if (OnChargingTariffUpdatedLocal is not null)
+            //    await OnChargingTariffUpdatedLocal.Invoke(Timestamp.Now,
+            //                                            ChargingTariff,
+            //                                            OldChargingTariff,
+            //                                            eventTrackingId, 
+            //                                            CurrentChargingTariffId);
+
+            //if (!SkipChargingTariffUpdatedNotifications)
+            //    await SendNotifications(ChargingTariff,
+            //                            updateChargingTariff_MessageType,
+            //                            OldChargingTariff,
+            //                            eventTrackingId,
+            //                            CurrentChargingTariffId);
+
+            return UpdateChargingTariffResult.Success(newChargingTariff,
+                                                      EventTrackingId);
+
+        }
+
+        #endregion
+
+        #region RemoveChargingTariff(ChargingTariffId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Remove the given charging Tariff.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charging Tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to be called after the successful removal of the charging Tariff.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the removal of the new charging Tariff failed.</param>
+        /// 
+        /// <param name="SkipRemovedNotifications">Whether to skip sending the 'OnRemoved' event.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
+        public async Task<RemoveChargingTariffResult> RemoveChargingTariff(ChargingTariff_Id                                    Id,
+
+                                                                           Action<IChargingTariff,          EventTracking_Id>?  OnSuccess                  = null,
+                                                                           Action<IChargingStationOperator, EventTracking_Id>?  OnError                    = null,
+
+                                                                           Boolean                                              SkipRemovedNotifications   = false,
+                                                                           EventTracking_Id?                                    EventTrackingId            = null,
+                                                                           User_Id?                                             CurrentUserId              = null)
+        {
+
+            EventTrackingId ??= EventTracking_Id.New;
+
+            if (chargingTariffs.TryRemove(Id,
+                                          out var chargingTariff,
+                                          EventTrackingId,
+                                          null) &&
+                chargingTariff is not null)
+            {
+
+                return RemoveChargingTariffResult.Success(
+                           chargingTariff,
+                           EventTrackingId,
+                           this
+                       );
+
+            }
+
+            return RemoveChargingTariffResult.Failed(Id,
+                                                     EventTrackingId,
+                                                     "");
+
+        }
+
+        #endregion
+
+
+        #region ChargingTariffExists(ChargingTariff)
+
+        /// <summary>
+        /// Check if the given ChargingTariff is already present within the Charging Station Operator.
+        /// </summary>
+        /// <param name="ChargingTariff">A charging pool.</param>
+        public Boolean ChargingTariffExists(IChargingTariff ChargingTariff)
+
+            => ChargingTariffs.Contains(ChargingTariff);
+
+        #endregion
+
+        #region ChargingTariffExists(ChargingTariffId)
+
+        /// <summary>
+        /// Determines whether the given user identification exists within this API.
+        /// </summary>
+        /// <param name="ChargingTariffId">The unique identification of an user.</param>
+        public Boolean ChargingTariffExists(ChargingTariff_Id ChargingTariffId)
+
+            => ChargingTariffId.IsNotNullOrEmpty &&
+               chargingTariffs.ContainsId(ChargingTariffId);
+
+        /// <summary>
+        /// Determines whether the given user identification exists within this API.
+        /// </summary>
+        /// <param name="ChargingTariffId">The unique identification of an user.</param>
+        public Boolean ChargingTariffExists(ChargingTariff_Id? ChargingTariffId)
+
+            => ChargingTariffId.HasValue &&
+               ChargingTariffId.Value.IsNotNullOrEmpty &&
+               chargingTariffs.ContainsId(ChargingTariffId.Value);
+
+        #endregion
+
+        #region GetChargingTariff   (Id)
+
+        /// <summary>
+        /// Return to charging Tariff for the given charging Tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing Tariff.</param>
+        public IChargingTariff? GetChargingTariff(ChargingTariff_Id Id)
+        {
+
+            if (chargingTariffs.TryGet(Id, out var chargingTariff))
+                return chargingTariff;
 
             return null;
 
@@ -4400,21 +4706,21 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
-        #region TryGetChargingTariff(Id, out ChargingTariff)
+        #region TryGetChargingTariffById(Id, out ChargingTariff)
 
         /// <summary>
-        /// Try to return to charging tariff for the given charging tariff identification.
+        /// Try to return to charging Tariff for the given charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="ChargingTariff">The charing tariff.</param>
-        public Boolean TryGetChargingTariff(ChargingTariff_Id    Id,
-                                            out ChargingTariff?  ChargingTariff)
+        /// <param name="Id">The unique identification of the charing Tariff.</param>
+        /// <param name="ChargingTariff">The charing Tariff.</param>
+        public Boolean TryGetChargingTariffById(ChargingTariff_Id     Id,
+                                                out IChargingTariff?  ChargingTariff)
 
             => chargingTariffs.TryGet(Id, out ChargingTariff);
 
         #endregion
 
-        public IEnumerable<ChargingTariff>    GetChargingTariffs  (ChargingPool_Id?       ChargingPoolId        = null,
+        public IEnumerable<IChargingTariff>   GetChargingTariffs  (ChargingPool_Id?       ChargingPoolId        = null,
                                                                    ChargingStation_Id?    ChargingStationId     = null,
                                                                    EVSE_Id?               EVSEId                = null,
                                                                    ChargingConnector_Id?  ChargingConnectorId   = null,
@@ -4436,111 +4742,6 @@ namespace cloud.charging.open.protocols.WWCP
 
         }
 
-
-        #region ChargingTariffRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> chargingTariffRemoval;
-
-        public IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffRemoval
-            => chargingTariffRemoval;
-
-        /// <summary>
-        /// Called whenever a charging tariff will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingTariff, Boolean> OnChargingTariffRemoval
-            => chargingTariffRemoval;
-
-        #endregion
-
-        #region RemoveChargingTariff(ChargingTariffId, OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All charging tariffs registered within this charging station operator.
-        /// </summary>
-        /// <param name="ChargingTariffId">The unique identification of the charging tariff to be removed.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
-        public ChargingTariff? RemoveChargingTariff(ChargingTariff_Id                                     ChargingTariffId,
-                                                    Action<IChargingStationOperator, ChargingTariff>?     OnSuccess   = null,
-                                                    Action<IChargingStationOperator, ChargingTariff_Id>?  OnError     = null)
-        {
-
-            lock (chargingTariffs)
-            {
-
-                if (chargingTariffs.TryGet(ChargingTariffId, out var chargingTariff)      &&
-                    chargingTariff is not null                                            &&
-                    chargingTariffRemoval.SendVoting(Timestamp.Now, this, chargingTariff) &&
-                    chargingTariffs.TryRemove(ChargingTariffId,
-                                              out _,
-                                              EventTracking_Id.New,
-                                              null))
-                {
-
-                    OnSuccess?.Invoke(this, chargingTariff);
-
-                    chargingTariffRemoval.SendNotification(Timestamp.Now,
-                                                           this,
-                                                           chargingTariff);
-
-                    return chargingTariff;
-
-                }
-
-                OnError?.Invoke(this, ChargingTariffId);
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region RemoveChargingTariff(ChargingTariff,   OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// All charging tariffs registered within this charging station operator.
-        /// </summary>
-        /// <param name="ChargingTariff">The charging tariff to remove.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
-        public ChargingTariff? RemoveChargingTariff(ChargingTariff                                     ChargingTariff,
-                                                    Action<IChargingStationOperator, ChargingTariff>?  OnSuccess   = null,
-                                                    Action<IChargingStationOperator, ChargingTariff>?  OnError     = null)
-        {
-
-            lock (chargingTariffs)
-            {
-
-                if (chargingTariffRemoval.SendVoting(Timestamp.Now, this, ChargingTariff) &&
-                    chargingTariffs.TryRemove(ChargingTariff.Id,
-                                              out var chargingTariff,
-                                              EventTracking_Id.New,
-                                              null)  &&
-                    chargingTariff is not null)
-                {
-
-                    OnSuccess?.Invoke(this, chargingTariff);
-
-                    chargingTariffRemoval.SendNotification(Timestamp.Now,
-                                                           this,
-                                                           chargingTariff);
-
-                    return chargingTariff;
-
-                }
-
-                OnError?.Invoke(this, ChargingTariff);
-
-                return ChargingTariff;
-
-            }
-
-        }
-
-        #endregion
-
         #endregion
 
         #region ChargingTariffGroups
@@ -4553,7 +4754,7 @@ namespace cloud.charging.open.protocols.WWCP
             => chargingTariffGroupAddition;
 
         /// <summary>
-        /// Called whenever a charging tariff will be or was added.
+        /// Called whenever a charging Tariff will be or was added.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupAddition
 
@@ -4566,7 +4767,7 @@ namespace cloud.charging.open.protocols.WWCP
         private readonly EntityHashSet<ChargingStationOperator, ChargingTariffGroup_Id, ChargingTariffGroup> chargingTariffGroups;
 
         /// <summary>
-        /// All charging tariff groups registered within this charging station operator.
+        /// All charging Tariff groups registered within this charging station operator.
         /// </summary>
         public IEnumerable<ChargingTariffGroup> ChargingTariffGroups
             => chargingTariffGroups;
@@ -4577,13 +4778,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region CreateChargingTariffGroup     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create and register a new charging tariff group having the given
-        /// unique charging tariff identification.
+        /// Create and register a new charging Tariff group having the given
+        /// unique charging Tariff identification.
         /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff group.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff group after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff group failed.</param>
+        /// <param name="IdSuffix">The suffix of the unique identification of the charing Tariff group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging Tariff group.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging Tariff group failed.</param>
         public ChargingTariffGroup? CreateChargingTariffGroup(String                                                     IdSuffix,
                                                               I18NString                                                 Description,
                                                               Action<ChargingTariffGroup>?                               OnSuccess   = null,
@@ -4648,13 +4849,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetOrCreateChargingTariffGroup(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Get or create and register a new charging tariff having the given
-        /// unique charging tariff identification.
+        /// Get or create and register a new charging Tariff having the given
+        /// unique charging Tariff identification.
         /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
+        /// <param name="IdSuffix">The suffix of the unique identification of the charing Tariff group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging Tariff.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging Tariff failed.</param>
         public ChargingTariffGroup? GetOrCreateChargingTariffGroup(String                                                     IdSuffix,
                                                                    I18NString                                                 Description,
                                                                    Action<ChargingTariffGroup>?                               OnSuccess   = null,
@@ -4683,9 +4884,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region GetChargingTariffGroup(Id)
 
         /// <summary>
-        /// Return to charging tariff for the given charging tariff identification.
+        /// Return to charging Tariff for the given charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="Id">The unique identification of the charing Tariff.</param>
         public ChargingTariffGroup? GetChargingTariffGroup(ChargingTariffGroup_Id Id)
         {
 
@@ -4701,10 +4902,10 @@ namespace cloud.charging.open.protocols.WWCP
         #region TryGetChargingTariffGroup(Id, out ChargingTariffGroup)
 
         /// <summary>
-        /// Try to return to charging tariff for the given charging tariff identification.
+        /// Try to return to charging Tariff for the given charging Tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="ChargingTariffGroup">The charing tariff.</param>
+        /// <param name="Id">The unique identification of the charing Tariff.</param>
+        /// <param name="ChargingTariffGroup">The charing Tariff.</param>
         public Boolean TryGetChargingTariffGroup(ChargingTariffGroup_Id   Id,
                                                  out ChargingTariffGroup? ChargingTariffGroup)
 
@@ -4721,7 +4922,7 @@ namespace cloud.charging.open.protocols.WWCP
             => chargingTariffGroupRemoval;
 
         /// <summary>
-        /// Called whenever a charging tariff group will be or was removed.
+        /// Called whenever a charging Tariff group will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupRemoval
 
@@ -4732,11 +4933,11 @@ namespace cloud.charging.open.protocols.WWCP
         #region RemoveChargingTariffGroup(ChargingTariffGroupId, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// All charging tariffs registered within this charging station operator.
+        /// All charging Tariffs registered within this charging station operator.
         /// </summary>
-        /// <param name="ChargingTariffGroupId">The unique identification of the charging tariff to be removed.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
+        /// <param name="ChargingTariffGroupId">The unique identification of the charging Tariff to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging Tariff failed.</param>
         public ChargingTariffGroup? RemoveChargingTariffGroup(ChargingTariffGroup_Id                                     ChargingTariffGroupId,
                                                               Action<IChargingStationOperator, ChargingTariffGroup>?     OnSuccess   = null,
                                                               Action<IChargingStationOperator, ChargingTariffGroup_Id>?  OnError     = null)
@@ -4777,11 +4978,11 @@ namespace cloud.charging.open.protocols.WWCP
         #region RemoveChargingTariffGroup(ChargingTariffGroup,   OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// All charging tariffs registered within this charging station operator.
+        /// All charging Tariffs registered within this charging station operator.
         /// </summary>
-        /// <param name="ChargingTariffGroup">The charging tariff to remove.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
+        /// <param name="ChargingTariffGroup">The charging Tariff to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging Tariff after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging Tariff failed.</param>
         public ChargingTariffGroup? RemoveChargingTariffGroup(ChargingTariffGroup                                     ChargingTariffGroup,
                                                               Action<IChargingStationOperator, ChargingTariffGroup>?  OnSuccess   = null,
                                                               Action<IChargingStationOperator, ChargingTariffGroup>?  OnError     = null)
@@ -5398,33 +5599,33 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// An event fired whenever a remote start EVSE command was received.
         /// </summary>
-        public event OnRemoteStartRequestDelegate              OnRemoteStartRequest;
+        public event OnRemoteStartRequestDelegate?              OnRemoteStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start EVSE command completed.
         /// </summary>
-        public event OnRemoteStartResponseDelegate             OnRemoteStartResponse;
+        public event OnRemoteStartResponseDelegate?             OnRemoteStartResponse;
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
-        public event OnNewChargingSessionDelegate              OnNewChargingSession;
+        public event OnNewChargingSessionDelegate?              OnNewChargingSession;
 
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopRequestDelegate               OnRemoteStopRequest;
+        public event OnRemoteStopRequestDelegate?               OnRemoteStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopResponseDelegate              OnRemoteStopResponse;
+        public event OnRemoteStopResponseDelegate?              OnRemoteStopResponse;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
         /// </summary>
-        public event OnNewChargeDetailRecordDelegate           OnNewChargeDetailRecord;
+        public event OnNewChargeDetailRecordDelegate?           OnNewChargeDetailRecord;
 
         #endregion
 

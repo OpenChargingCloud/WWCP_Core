@@ -75,7 +75,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      I18NString?              Description   = null)
 
             : base(null,
-                   null)
+                   null,
+                   Timestamp.Now)
 
         {
 

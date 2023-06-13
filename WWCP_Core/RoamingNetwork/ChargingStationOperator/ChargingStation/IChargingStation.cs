@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// Extension methods for the commom charging station interface.
+    /// Extension methods for the common charging station interface.
     /// </summary>
     public static class IChargingStationExtensions
     {
@@ -603,7 +603,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The commom charging station interface.
+    /// The common interface of all charging stations.
     /// </summary>
     public interface IChargingStation : IEntity<ChargingStation_Id>,
                                         IAdminStatus<ChargingStationAdminStatusTypes>,

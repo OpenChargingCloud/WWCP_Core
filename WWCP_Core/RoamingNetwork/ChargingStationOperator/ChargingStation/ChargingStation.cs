@@ -3884,9 +3884,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging stations.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging station to compare with.</param>
         public override Int32 CompareTo(Object? Object)
 
             => Object is ChargingStation chargingStation
@@ -3898,9 +3898,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(ChargingStation)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging stations.
         /// </summary>
-        /// <param name="ChargingStation">An ChargingStation to compare with.</param>
+        /// <param name="ChargingStation">A charging station to compare with.</param>
         public Int32 CompareTo(ChargingStation? ChargingStation)
 
             => ChargingStation is not null
@@ -3908,9 +3908,9 @@ namespace cloud.charging.open.protocols.WWCP
                    : throw new ArgumentException("The given object is not a ChargingStation!", nameof(ChargingStation));
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging stations.
         /// </summary>
-        /// <param name="IChargingStation">An IChargingStation to compare with.</param>
+        /// <param name="IChargingStation">A charging station to compare with.</param>
         public Int32 CompareTo(IChargingStation? IChargingStation)
 
             => IChargingStation is not null
@@ -3926,10 +3926,9 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging stations for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A charging station to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ChargingStation chargingStation &&
@@ -3943,7 +3942,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging stations for equality.
         /// </summary>
         /// <param name="ChargingStation">A charging station to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStation? ChargingStation)
 
             => ChargingStation is not null &&
@@ -3953,7 +3951,6 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging stations for equality.
         /// </summary>
         /// <param name="IChargingStation">A charging station to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(IChargingStation? IChargingStation)
 
             => IChargingStation is not null &&

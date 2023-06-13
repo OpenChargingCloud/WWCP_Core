@@ -3081,6 +3081,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
         {
             throw new NotImplementedException();
         }
+
     }
 
 }

@@ -292,7 +292,8 @@ namespace cloud.charging.open.protocols.WWCP
                                 UserDefinedDictionary?      InternalData                 = null)
 
             : base(CustomData,
-                   InternalData)
+                   InternalData,
+                   LastChange ?? Timestamp.Now)
 
         {
 
@@ -303,10 +304,9 @@ namespace cloud.charging.open.protocols.WWCP
 
             #endregion
 
-            this.Id                    = Id;
-            this.eTag                  = null;
-            this.DataSource            = DataSource;
-            this.LastChange            = LastChange ?? Timestamp.Now;
+            this.Id          = Id;
+            this.eTag        = null;
+            this.DataSource  = DataSource;
 
 
             #region Name

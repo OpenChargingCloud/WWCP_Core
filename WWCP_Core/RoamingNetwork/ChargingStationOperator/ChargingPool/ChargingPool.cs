@@ -2630,12 +2630,6 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        /// <summary>
-        /// The maximum time span for a reservation.
-        /// </summary>
-        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(30);
-
-
         #region Reservations...
 
         #region Data
@@ -2647,6 +2641,12 @@ namespace cloud.charging.open.protocols.WWCP
             => RoamingNetwork.ReservationsStore.
                    Where     (reservations => reservations.First().ChargingPoolId == Id).
                    SelectMany(reservations => reservations);
+
+
+        /// <summary>
+        /// The maximum time span for a reservation.
+        /// </summary>
+        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(30);
 
         #endregion
 

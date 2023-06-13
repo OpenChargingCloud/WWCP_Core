@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (!InternalData.ContainsKey(NewChargeDetailRecord.SessionId))
-                    InternalData.Add(NewChargeDetailRecord.SessionId, new ChargeDetailRecordCollection(NewChargeDetailRecord));
+                    InternalData.TryAdd(NewChargeDetailRecord.SessionId, new ChargeDetailRecordCollection(NewChargeDetailRecord));
 
                 else
                     InternalData[NewChargeDetailRecord.SessionId].Add(NewChargeDetailRecord);
@@ -132,8 +132,8 @@ namespace cloud.charging.open.protocols.WWCP
             {
 
                 if (!InternalData.ContainsKey(SendCDRResult.ChargeDetailRecord.SessionId))
-                    InternalData.Add(SendCDRResult.ChargeDetailRecord.SessionId,
-                                     new ChargeDetailRecordCollection(SendCDRResult.ChargeDetailRecord));
+                    InternalData.TryAdd(SendCDRResult.ChargeDetailRecord.SessionId,
+                                        new ChargeDetailRecordCollection(SendCDRResult.ChargeDetailRecord));
 
                 LogIt("sent",
                       SendCDRResult.ChargeDetailRecord.SessionId,
@@ -157,8 +157,8 @@ namespace cloud.charging.open.protocols.WWCP
                 foreach (var cdrr in SendCDRsResult.ResultMap)
                 {
                     if (!InternalData.ContainsKey(cdrr.ChargeDetailRecord.SessionId))
-                        InternalData.Add(cdrr.ChargeDetailRecord.SessionId,
-                                         new ChargeDetailRecordCollection(cdrr.ChargeDetailRecord));
+                        InternalData.TryAdd(cdrr.ChargeDetailRecord.SessionId,
+                                            new ChargeDetailRecordCollection(cdrr.ChargeDetailRecord));
                 }
 
                 //LogIt("sent",

@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!InternalData.ContainsKey(NewChargingReservation.Id))
                 {
 
-                    InternalData.Add(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
+                    InternalData.TryAdd(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
 
                     LogIt("new",
                           NewChargingReservation.Id,
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!InternalData.ContainsKey(NewChargingReservation.Id))
                 {
 
-                    InternalData.Add(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
+                    InternalData.TryAdd(NewChargingReservation.Id, new ChargingReservationCollection(NewChargingReservation));
 
                     LogIt("new",
                           NewChargingReservation.Id,

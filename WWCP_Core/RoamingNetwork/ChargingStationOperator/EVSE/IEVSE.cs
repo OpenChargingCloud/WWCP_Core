@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The commom Electric Vehicle Supply Equipments (EVSEs) interface.
+    /// The common interface of all Electric Vehicle Supply Equipments (EVSEs).
     /// </summary>
     public interface IEVSE : IEntity<EVSE_Id>,
                              IAdminStatus<EVSEAdminStatusTypes>,
@@ -104,34 +104,46 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The roaming network of this EVSE.
         /// </summary>
+        [InternalUseOnly]
         IRoamingNetwork?                       RoamingNetwork               { get; }
 
         /// <summary>
         /// The charging station operator of this EVSE.
         /// </summary>
-        [Optional]
+        [InternalUseOnly]
         IChargingStationOperator?              Operator                     { get; }
 
         /// <summary>
         /// The charging pool of this EVSE.
         /// </summary>
+        [InternalUseOnly]
         IChargingPool?                         ChargingPool                 { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
+        [InternalUseOnly]
         IChargingStation?                      ChargingStation              { get; }
 
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        [Optional]
+        [InternalUseOnly]
         IRemoteEVSE?                           RemoteEVSE                   { get; }
+
+
+        /// <summary>
+        /// The current charging session of this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        ChargingSession?                       ChargingSession              { get; set; }
+
 
 
         /// <summary>
         /// An optional number/string printed on the outside of the EVSE for visual identification.
         /// </summary>
+        [Optional]
         String?                                PhysicalReference            { get; }
 
         /// <summary>
@@ -168,6 +180,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The type of the current of this EVSE.
         /// </summary>
+        [Mandatory]
         CurrentTypes                           CurrentType                  { get; set; }
 
         /// <summary>
@@ -264,27 +277,16 @@ namespace cloud.charging.open.protocols.WWCP
         [Optional, FastData]
         EnergyMixPrognosis?                    EnergyMixPrognoses           { get; set; }
 
-
         /// <summary>
         /// An optional energy meter of this EVSE.
         /// </summary>
+        [Optional]
         EnergyMeter?                           EnergyMeter                  { get; set; }
 
-
         /// <summary>
-        /// The power socket outlets of this EVSE.
+        /// Whether this EVSE is free of charge (shortcut for "no charging tariffs").
         /// </summary>
-        [Mandatory, SlowData]
-        ReactiveSet<IChargingConnector>        ChargingConnectors           { get; set; }
-
-
-
-        /// <summary>
-        /// The current charging session of this EVSE.
-        /// </summary>
-        ChargingSession?                       ChargingSession              { get; set; }
-
-
+        [Optional]
         Boolean                                IsFreeOfCharge               { get; set; }
 
         /// <summary>
@@ -294,6 +296,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         [Optional]
         DateTime?                              LastStatusUpdate             { get; set; }
+
+
+        /// <summary>
+        /// The power socket outlets of this EVSE.
+        /// </summary>
+        [Mandatory, SlowData]
+        ReactiveSet<IChargingConnector>        ChargingConnectors           { get; set; }
 
         #endregion
 

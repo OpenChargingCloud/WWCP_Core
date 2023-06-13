@@ -125,7 +125,8 @@ namespace cloud.charging.open.protocols.WWCP
                                              UserDefinedDictionary?                      InternalData   = null)
 
             : base(CustomData,
-                   InternalData)
+                   InternalData,
+                   Timestamp.Now)
 
         {
 

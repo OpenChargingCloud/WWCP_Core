@@ -129,9 +129,22 @@ namespace cloud.charging.open.protocols.WWCP
         /// </summary>
         public JObject ToJSON()
 
-            => new JObject(new JProperty("type",       Type. ToString()),
-                           new JProperty("price",      Price.ToString("0.00")),
-                           new JProperty("step_size",  StepSize));
+            => new JObject(new JProperty("type",      Type. ToString()),
+                           new JProperty("price",     Price.ToString("0.00")),
+                           new JProperty("stepSize",  StepSize));
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public ChargingPriceComponent Clone()
+
+            => new (Type,
+                    Price,
+                    StepSize);
 
         #endregion
 

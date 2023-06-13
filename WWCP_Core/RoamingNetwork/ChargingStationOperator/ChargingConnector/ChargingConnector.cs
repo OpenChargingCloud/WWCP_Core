@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The parent EVSE of this charging connector.
         /// </summary>
         [InternalUseOnly]
-        public IEVSE?                ParentEVSE       { get; set; }
+        public IEVSE?                EVSE       { get; set; }
 
         /// <summary>
         /// The optional charging connector identification.
@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Meter?                CableLength     = null)
         {
 
-            this.ParentEVSE     = ParentEVSE;
+            this.EVSE     = ParentEVSE;
             this.Id             = Id;
             this.Plug           = Plug;
             this.Lockable       = Lockable;
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.WWCP
                                  Meter?             CableLength     = null)
         {
 
-            this.ParentEVSE     = ParentEVSE;
+            this.EVSE     = ParentEVSE;
             this.Id             = ChargingConnector_Id.Parse(1);
             this.Plug           = Plug;
             this.Lockable       = Lockable;

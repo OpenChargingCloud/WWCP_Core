@@ -186,6 +186,18 @@ namespace cloud.charging.open.protocols.WWCP
             => Parse("AUTH_REQUEST");
 
         /// <summary>
+        /// The authentication request was implicitly sent within a reservation request.
+        /// </summary>
+        public static AuthMethod RESERVE
+            => Parse("RESERVE");
+
+        /// <summary>
+        /// The authentication request was implicitly sent within a remote start request.
+        /// </summary>
+        public static AuthMethod REMOTESTART
+            => Parse("REMOTESTART");
+
+        /// <summary>
         /// A whitelist was used for authentication, no request to the eMSP has been performed.
         /// </summary>
         public static AuthMethod WHITELIST

@@ -22,7 +22,6 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -30,146 +29,7 @@ namespace cloud.charging.open.protocols.WWCP
 {
 
     /// <summary>
-    /// Extension methods for charging tariffs.
-    /// </summary>
-    public static class ChargingTariffExtensions
-    {
-
-        #region ToJSON(this ChargingTariffs, Skip = null, Take = null, Embedded = false, ...)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of charging stations.
-        /// </summary>
-        /// <param name="ChargingTariffs">An enumeration of charging tariffs.</param>
-        /// <param name="Skip">The optional number of charging stations to skip.</param>
-        /// <param name="Take">The optional number of charging stations to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public static JArray ToJSON(this IEnumerable<ChargingTariff>  ChargingTariffs,
-                                    UInt64?                           Skip                              = null,
-                                    UInt64?                           Take                              = null,
-                                    Boolean                           Embedded                          = false,
-                                    InfoStatus                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandEVSEIds                     = InfoStatus.Expanded,
-                                    InfoStatus                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                        ExpandDataLicenses                = InfoStatus.ShowIdOnly)
-
-
-            => ChargingTariffs is not null && ChargingTariffs.Any()
-
-                   ? new JArray(ChargingTariffs.
-                                    Where     (chargingTariff => chargingTariff is not null).
-                                    OrderBy   (chargingTariff => chargingTariff.Id).
-                                    SkipTakeFilter(Skip, Take).
-                                    SafeSelect(chargingTariff => chargingTariff.ToJSON(Embedded,
-                                                                                       ExpandRoamingNetworkId,
-                                                                                       ExpandChargingStationOperatorId,
-                                                                                       ExpandChargingPoolId,
-                                                                                       ExpandEVSEIds,
-                                                                                       ExpandBrandIds,
-                                                                                       ExpandDataLicenses)))
-
-                   : new JArray();
-
-        #endregion
-
-        #region GetTariffs(this ChargingStations, Skip = null, Take = null, Embedded = false, ...)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of charging stations.
-        /// </summary>
-        /// <param name="ChargingTariffs">An enumeration of charging tariffs.</param>
-        /// <param name="Skip">The optional number of charging stations to skip.</param>
-        /// <param name="Take">The optional number of charging stations to return.</param>
-        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
-        public static IEnumerable<String[]> GetTariffs(this IEnumerable<IChargingStation>  ChargingStations,
-                                                       UInt64?                             Skip                              = null,
-                                                       UInt64?                             Take                              = null,
-                                                       Boolean                             Embedded                          = false,
-                                                       InfoStatus                          ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                          ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                          ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                          ExpandEVSEIds                     = InfoStatus.Expanded,
-                                                       InfoStatus                          ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                                       InfoStatus                          ExpandDataLicenses                = InfoStatus.ShowIdOnly)
-
-
-            => ChargingStations is not null && ChargingStations.Any()
-
-                   ? ChargingStations.
-                         Where     (station => station is not null).
-                         OrderBy   (station => station.Id).
-                         SkipTakeFilter(Skip, Take).
-                         SafeSelectMany(station => {
-
-                             var results = new List<String[]>();
-
-                             foreach (var group in station.Operator.ChargingStationGroups.Where(group => group.Tariff is not null))
-                                 if (group.AllowedMemberIds.Contains(station.Id) ||
-                                     (group.AutoIncludeStations != null && group.AutoIncludeStations(station.Operator.GetChargingStationById(station.Id))))
-                                     foreach (var evse in station)
-                                        results.Add(new String[] {
-                                                        evse.Id.                             ToString(),
-                                                     //   station.Brand.Name.                  FirstText(),
-                                                        station.Name.                        FirstText(),
-                                                        station.Address.Street,
-                                                        station.Address.HouseNumber,
-                                                        station.Address.PostalCode,
-                                                        station.Address.City.                FirstText(),
-                                                        station.Address.Country.CountryName. FirstText(),
-                                                        evse.MaxPower.                       ToString() + " kW",
-                                                        evse.ChargingConnectors.First().Plug.ToString(),
-                                                        group.Tariff.Name.                   FirstText()
-                                                    });
-
-                             foreach (var evse in station)
-                                 foreach (var group in evse.Operator.EVSEGroups.Where(group => group.Tariff is not null))
-                                     if (group.AllowedMemberIds.Contains(evse.Id) ||
-                                         (group.AutoIncludeEVSEs != null && group.AutoIncludeEVSEs(evse.Operator.GetEVSEById(evse.Id))))
-                                         results.Add(new String[] {
-                                                         evse.Id.                             ToString(),
-                                                      //   station.Brand.Name.                  FirstText(),
-                                                         station.Name.                        FirstText(),
-                                                         station.Address.Street,
-                                                         station.Address.HouseNumber,
-                                                         station.Address.PostalCode,
-                                                         station.Address.City.                FirstText(),
-                                                         station.Address.Country.CountryName. FirstText(),
-                                                         evse.MaxPower.                       ToString() + " kW",
-                                                         evse.ChargingConnectors.First().Plug.ToString(),
-                                                         group.Tariff.Name.                   FirstText()
-                                                     });
-
-                             if (results.Count == 0)
-                                 foreach (var evse in station)
-                                     results.Add(new String[] {
-                                                     evse.Id.                             ToString(),
-                                                   //  station.Brand.Name.                  FirstText(),
-                                                     station.Name.                        FirstText(),
-                                                     station.Address.Street,
-                                                     station.Address.HouseNumber,
-                                                     station.Address.PostalCode,
-                                                     station.Address.City.                FirstText(),
-                                                     station.Address.Country.CountryName. FirstText(),
-                                                     evse.MaxPower.                       ToString() + " kW",
-                                                     evse.ChargingConnectors.First().Plug.ToString(),
-                                                     "-"
-                                                 });
-
-                             return results;
-
-                         })
-
-                   : new List<String[]>();
-
-        #endregion
-
-    }
-
-
-    /// <summary>
-    /// A charging tariff to charge an electric vehicle.
+    /// A charging tariff for charging an electric vehicle.
     /// </summary>
     public class ChargingTariff : AEMobilityEntity<ChargingTariff_Id,
                                                    ChargingTariffAdminStatusTypes,
@@ -178,6 +38,20 @@ namespace cloud.charging.open.protocols.WWCP
     {
 
         #region Properties
+
+        /// <summary>
+        /// The roaming network of this charging tariff.
+        /// </summary>
+        [InternalUseOnly]
+        public IRoamingNetwork?                    RoamingNetwork
+            => Operator?.RoamingNetwork;
+
+        /// <summary>
+        /// The charging station operator of this charging tariff.
+        /// </summary>
+        [Optional]
+        public IChargingStationOperator?           Operator          { get; }
+
 
         /// <summary>
         /// An enumeration of tariff elements.
@@ -221,18 +95,30 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         public ChargingTariff(ChargingTariff_Id                   Id,
+                              IChargingStationOperator            Operator,
                               I18NString                          Name,
                               I18NString                          Description,
+
                               IEnumerable<ChargingTariffElement>  TariffElements,
                               Currency                            Currency,
 
-                              Brand?                              Brand = null,
-                              URL?                                TariffURL = null,
-                              EnergyMix?                          EnergyMix = null)
+                              Brand?                              Brand          = null,
+                              URL?                                TariffURL      = null,
+                              EnergyMix?                          EnergyMix      = null,
+
+                              String?                             DataSource     = null,
+                              DateTime?                           LastChange     = null,
+
+                              JObject?                            CustomData     = null,
+                              UserDefinedDictionary?              InternalData   = null)
 
             : base(Id,
                    Name,
-                   Description)
+                   Description,
+                   DataSource:    DataSource,
+                   LastChange:    LastChange,
+                   CustomData:    CustomData,
+                   InternalData:  InternalData)
 
         {
 
@@ -245,12 +131,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.TariffElements = TariffElements;
-            this.Currency = Currency;
+            this.Operator        = Operator;
+            this.TariffElements  = TariffElements;
+            this.Currency        = Currency;
 
-            this.Brand = Brand;
-            this.TariffURL = TariffURL;
-            this.EnergyMix = EnergyMix;
+            this.Brand           = Brand;
+            this.TariffURL       = TariffURL;
+            this.EnergyMix       = EnergyMix;
 
             #endregion
 
@@ -276,18 +163,18 @@ namespace cloud.charging.open.protocols.WWCP
 
             => JSONObject.Create(
 
-                         new JProperty("@id", Id.ToString()),
+                               new JProperty("@id",             Id.ToString()),
 
                          Embedded
                              ? null
-                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingTariff"),
+                             : new JProperty("@context",        "https://open.charging.cloud/contexts/wwcp+json/ChargingTariff"),
 
                          Name.IsNeitherNullNorEmpty()
-                             ? new JProperty("name", Name.ToJSON())
+                             ? new JProperty("name",            Name.ToJSON())
                              : null,
 
                          Description.IsNeitherNullNorEmpty()
-                             ? new JProperty("description", Description.ToJSON())
+                             ? new JProperty("description",     Description.ToJSON())
                              : null,
 
                          Brand != null
@@ -297,28 +184,55 @@ namespace cloud.charging.open.protocols.WWCP
                              : null,
 
                          (DataSource is not null && !Embedded)
-                             ? new JProperty("dataSource", DataSource)
+                             ? new JProperty("dataSource",      DataSource)
                              : null,
 
 
                          TariffElements.Any()
-                             ? new JProperty("elements", new JArray(TariffElements.Select(tariffElement => tariffElement.ToJSON())))
+                             ? new JProperty("elements",        new JArray(TariffElements.Select(tariffElement => tariffElement.ToJSON())))
                              : null,
 
-                         new JProperty("currency", Currency.ISOCode),
+                               new JProperty("currency",        Currency.ISOCode),
 
 
 
 
                          TariffURL is not null
-                             ? new JProperty("URI", TariffURL.ToString())
+                             ? new JProperty("URI",             TariffURL.ToString())
                              : null,
 
                          EnergyMix is not null
-                             ? new JProperty("energy_mix", EnergyMix.ToJSON())
+                             ? new JProperty("energy_mix",      EnergyMix.ToJSON())
                              : null
 
                         );
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public IChargingTariff Clone()
+
+            => new ChargingTariff(Id,
+                                  Operator,
+                                  Name,
+                                  Description,
+
+                                  TariffElements.Select(tariffElements => tariffElements.Clone()),
+                                  Currency,
+
+                                  Brand,
+                                  TariffURL,
+                                  EnergyMix,
+
+                                  DataSource,
+                                  LastChange,
+
+                                  CustomData,
+                                  InternalData);
 
         #endregion
 
@@ -333,7 +247,8 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator ==(ChargingTariff ChargingTariff1, ChargingTariff ChargingTariff2)
+        public static Boolean operator == (ChargingTariff ChargingTariff1,
+                                           ChargingTariff ChargingTariff2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -341,7 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object)ChargingTariff1 == null) || ((Object)ChargingTariff2 == null))
+            if (ChargingTariff1 is null || ChargingTariff2 is null)
                 return false;
 
             return ChargingTariff1.Equals(ChargingTariff2);
@@ -358,7 +273,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator !=(ChargingTariff ChargingTariff1, ChargingTariff ChargingTariff2)
+        public static Boolean operator != (ChargingTariff ChargingTariff1,
+                                           ChargingTariff ChargingTariff2)
+
             => !(ChargingTariff1 == ChargingTariff2);
 
         #endregion
@@ -371,10 +288,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <(ChargingTariff ChargingTariff1, ChargingTariff ChargingTariff2)
+        public static Boolean operator < (ChargingTariff ChargingTariff1,
+                                          ChargingTariff ChargingTariff2)
         {
 
-            if ((Object)ChargingTariff1 == null)
+            if (ChargingTariff1 is null)
                 throw new ArgumentNullException(nameof(ChargingTariff1), "The given ChargingTariff1 must not be null!");
 
             return ChargingTariff1.CompareTo(ChargingTariff2) < 0;
@@ -391,7 +309,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <=(ChargingTariff ChargingTariff1, ChargingTariff ChargingTariff2)
+        public static Boolean operator <= (ChargingTariff ChargingTariff1,
+                                           ChargingTariff ChargingTariff2)
+
             => !(ChargingTariff1 > ChargingTariff2);
 
         #endregion
@@ -404,10 +324,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >(ChargingTariff ChargingTariff1, ChargingTariff ChargingTariff2)
+        public static Boolean operator > (ChargingTariff ChargingTariff1,
+                                          ChargingTariff ChargingTariff2)
         {
 
-            if ((Object)ChargingTariff1 == null)
+            if (ChargingTariff1 is null)
                 throw new ArgumentNullException(nameof(ChargingTariff1), "The given ChargingTariff1 must not be null!");
 
             return ChargingTariff1.CompareTo(ChargingTariff2) > 0;
@@ -424,7 +345,9 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargingTariff1">A charging tariff.</param>
         /// <param name="ChargingTariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >=(ChargingTariff ChargingTariff1, ChargingTariff ChargingTariff2)
+        public static Boolean operator >= (ChargingTariff ChargingTariff1,
+                                           ChargingTariff ChargingTariff2)
+
             => !(ChargingTariff1 < ChargingTariff2);
 
         #endregion
@@ -436,40 +359,38 @@ namespace cloud.charging.open.protocols.WWCP
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging tariffs.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A charging tariff to compare with.</param>
         public override Int32 CompareTo(Object? Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var ChargingTariff = Object as ChargingTariff;
-            if ((Object)ChargingTariff == null)
-                throw new ArgumentException("The given object is not a charging tariff!", nameof(Object));
-
-            return CompareTo(ChargingTariff);
-
-        }
+            => Object is ChargingTariff chargingTariff
+                   ? CompareTo(chargingTariff)
+                   : throw new ArgumentException("The given object is not a charging tariff!", nameof(Object));
 
         #endregion
 
         #region CompareTo(ChargingTariff)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging tariffs.
         /// </summary>
-        /// <param name="ChargingTariff">A charging tariff object to compare with.</param>
-        public Int32 CompareTo(ChargingTariff ChargingTariff)
-        {
+        /// <param name="ChargingTariff">A charging tariff to compare with.</param>
+        public Int32 CompareTo(ChargingTariff? ChargingTariff)
 
-            if ((Object)ChargingTariff == null)
-                throw new ArgumentNullException(nameof(ChargingTariff), "The given charging tariff must not be null!");
+            => ChargingTariff is not null
+                   ? Id.CompareTo(ChargingTariff.Id)
+                   : throw new ArgumentException("The given object is not a ChargingTariff!", nameof(ChargingTariff));
 
-            return Id.CompareTo(ChargingTariff.Id);
+        /// <summary>
+        /// Compares two charging tariffs.
+        /// </summary>
+        /// <param name="IChargingTariff">A charging tariff to compare with.</param>
+        public Int32 CompareTo(IChargingTariff? IChargingTariff)
 
-        }
+            => IChargingTariff is not null
+                   ? Id.CompareTo(IChargingTariff.Id)
+                   : throw new ArgumentException("The given object is not a IChargingTariff!", nameof(IChargingTariff));
 
         #endregion
 
@@ -480,23 +401,13 @@ namespace cloud.charging.open.protocols.WWCP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two charging tariffs for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A charging tariff to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            var ChargingTariff = Object as ChargingTariff;
-            if ((Object)ChargingTariff == null)
-                return false;
-
-            return Equals(ChargingTariff);
-
-        }
+            => Object is ChargingTariff chargingTariff &&
+                   Equals(chargingTariff);
 
         #endregion
 
@@ -506,16 +417,19 @@ namespace cloud.charging.open.protocols.WWCP
         /// Compares two charging tariffs for equality.
         /// </summary>
         /// <param name="ChargingTariff">A charging tariff to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingTariff ChargingTariff)
-        {
+        public Boolean Equals(ChargingTariff? ChargingTariff)
 
-            if ((Object)ChargingTariff == null)
-                return false;
+            => ChargingTariff is not null &&
+               Id.Equals(ChargingTariff.Id);
 
-            return Id.Equals(ChargingTariff.Id);
+        /// <summary>
+        /// Compares two charging tariffs for equality.
+        /// </summary>
+        /// <param name="IChargingTariff">A charging tariff to compare with.</param>
+        public Boolean Equals(IChargingTariff? IChargingTariff)
 
-        }
+            => IChargingTariff is not null &&
+               Id.Equals(IChargingTariff.Id);
 
         #endregion
 
@@ -540,6 +454,7 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.ToString();
 
         #endregion
+
 
     }
 

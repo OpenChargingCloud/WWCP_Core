@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    {
 
                                        if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.Add(session.Id, session);
+                                           InternalData.TryAdd(session.Id, session);
 
                                        if (session.EVSEId.HasValue && session.EVSE == null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    {
 
                                        if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.Add(session.Id, session);
+                                           InternalData.TryAdd(session.Id, session);
                                        else
                                            InternalData[session.Id] = session;
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    {
 
                                        if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.Add(session.Id, session);
+                                           InternalData.TryAdd(session.Id, session);
 
                                        if (session.EVSEId.HasValue && session.EVSE == null)
                                            session.EVSE = RoamingNetwork.GetEVSEById(session.EVSEId.Value);
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    {
 
                                        if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.Add(session.Id, session);
+                                           InternalData.TryAdd(session.Id, session);
                                        else
                                            InternalData[session.Id] = session;
 
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    {
 
                                        if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.Add(session.Id, session);
+                                           InternalData.TryAdd(session.Id, session);
                                        else
                                            InternalData[session.Id] = session;
 
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.WWCP
                                    {
 
                                        if (!InternalData.ContainsKey(session.Id))
-                                           InternalData.Add(session.Id, session);
+                                           InternalData.TryAdd(session.Id, session);
                                        else
                                            InternalData[session.Id] = session;
 
@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (!InternalData.ContainsKey(NewChargingSession.Id))
                 {
 
-                    InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                    InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
                     UpdateFunc?.Invoke(NewChargingSession);
 
                     LogIt("new",
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.WWCP
                 if (InternalData.TryGetValue(Id, out ChargingSession session))
                 {
 
-                    InternalData.Remove(session.Id);
+                    InternalData.Remove(session.Id, out _);
                     session.AuthenticationStop = Authentication;
 
                     LogIt("remove",
@@ -460,7 +460,7 @@ namespace cloud.charging.open.protocols.WWCP
                     InternalData.ContainsKey(ChargingSession.Id))
                 {
 
-                    InternalData.Remove(ChargingSession.Id);
+                    InternalData.Remove(ChargingSession.Id, out _);
 
                     LogIt("remove",
                           ChargingSession.Id,
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     NewChargingSession.SystemIdStart = System_Id.Parse(Environment.MachineName);
-                    InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                    InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
                     UpdateFunc?.Invoke(NewChargingSession);
 
                     LogIt("remoteStart",
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.WWCP
                 {
 
                     NewChargingSession.SystemIdStart = System_Id.Parse(Environment.MachineName);
-                    InternalData.Add(NewChargingSession.Id, NewChargingSession);
+                    InternalData.TryAdd(NewChargingSession.Id, NewChargingSession);
                     UpdateFunc?.Invoke(NewChargingSession);
 
                     LogIt("authStart",

@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// The EVSE of this charging connector.
         /// </summary>
         [InternalUseOnly]
-        IEVSE?                ParentEVSE       { get; set; }
+        IEVSE?                EVSE             { get; set; }
 
         ChargingConnector_Id  Id               { get; }
         Boolean?              CableAttached    { get; }

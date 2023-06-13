@@ -17,13 +17,10 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -53,7 +50,7 @@ namespace cloud.charging.open.protocols.WWCP
         public DateTime              Timestamp             { get; }
 
         /// <summary>
-        /// A charge detail record.
+        /// The charge detail record.
         /// </summary>
         public ChargeDetailRecord    ChargeDetailRecord    { get; }
 
@@ -63,7 +60,7 @@ namespace cloud.charging.open.protocols.WWCP
         public SendCDRResultTypes    Result                { get; }
 
         /// <summary>
-        /// An optional multi-language description of the result.
+        /// The optional multi-language description of the result.
         /// </summary>
         public I18NString            Description           { get; }
 
@@ -71,6 +68,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// Optional warnings or additional information.
         /// </summary>
         public IEnumerable<Warning>  Warnings              { get; }
+
+        /// <summary>
+        /// The optional URL for locating the charge detail record as defined e.g. in OCPI.
+        /// </summary>
+        public URL?                  Location              { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -89,22 +91,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Result">The result of the SendCDR request.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private SendCDRResult(DateTime              Timestamp,
-                              ChargeDetailRecord    ChargeDetailRecord,
-                              SendCDRResultTypes    Result,
-                              I18NString            Description   = null,
-                              IEnumerable<Warning>  Warnings      = null,
-                              TimeSpan?             Runtime       = null)
+        private SendCDRResult(DateTime               Timestamp,
+                              ChargeDetailRecord     ChargeDetailRecord,
+                              SendCDRResultTypes     Result,
+                              I18NString?            Description   = null,
+                              IEnumerable<Warning>?  Warnings      = null,
+                              URL?                   Location      = null,
+                              TimeSpan?              Runtime       = null)
         {
 
             this.Timestamp           = Timestamp;
             this.ChargeDetailRecord  = ChargeDetailRecord;
             this.Result              = Result;
-            this.Description         = Description;
-            this.Warnings            = Warnings != null
+            this.Description         = Description ?? I18NString.Empty;
+            this.Warnings            = Warnings is not null
                                            ? Warnings.Where(warning => warning.IsNeitherNullNorEmpty())
-                                           : new Warning[0];
+                                           : Array.Empty<Warning>();
+            this.Location            = Location;
             this.Runtime             = Runtime;
 
         }
@@ -125,16 +130,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             NoOperation(DateTime            Timestamp,
                         ChargeDetailRecord  ChargeDetailRecord,
-                        I18NString          Description   = null,
+                        I18NString?         Description   = null,
                         TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.NoOperation,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.NoOperation,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request failed.
@@ -149,16 +153,15 @@ namespace cloud.charging.open.protocols.WWCP
             NoOperation(DateTime            Timestamp,
                         ChargeDetailRecord  ChargeDetailRecord,
                         Warning             Warning,
-                        I18NString          Description   = null,
+                        I18NString?         Description   = null,
                         TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.NoOperation,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.NoOperation,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -174,16 +177,15 @@ namespace cloud.charging.open.protocols.WWCP
             NoOperation(DateTime              Timestamp,
                         ChargeDetailRecord    ChargeDetailRecord,
                         IEnumerable<Warning>  Warnings,
-                        I18NString            Description   = null,
+                        I18NString?           Description   = null,
                         TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.NoOperation,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -200,16 +202,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             AdminDown(DateTime            Timestamp,
                       ChargeDetailRecord  ChargeDetailRecord,
-                      I18NString          Description   = null,
+                      I18NString?         Description   = null,
                       TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.AdminDown,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.AdminDown,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request failed.
@@ -224,16 +225,15 @@ namespace cloud.charging.open.protocols.WWCP
             AdminDown(DateTime            Timestamp,
                       ChargeDetailRecord  ChargeDetailRecord,
                       Warning             Warning,
-                      I18NString          Description   = null,
+                      I18NString?         Description   = null,
                       TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.AdminDown,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.AdminDown,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -249,16 +249,15 @@ namespace cloud.charging.open.protocols.WWCP
             AdminDown(DateTime              Timestamp,
                       ChargeDetailRecord    ChargeDetailRecord,
                       IEnumerable<Warning>  Warnings,
-                      I18NString            Description   = null,
+                      I18NString?           Description   = null,
                       TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.AdminDown,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.AdminDown,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -275,16 +274,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             OutOfService(DateTime            Timestamp,
                          ChargeDetailRecord  ChargeDetailRecord,
-                         I18NString          Description   = null,
+                         I18NString?         Description   = null,
                          TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.OutOfService,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.OutOfService,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request failed.
@@ -299,16 +297,15 @@ namespace cloud.charging.open.protocols.WWCP
             OutOfService(DateTime            Timestamp,
                          ChargeDetailRecord  ChargeDetailRecord,
                          Warning             Warning,
-                         I18NString          Description   = null,
+                         I18NString?         Description   = null,
                          TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.OutOfService,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.OutOfService,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -324,16 +321,15 @@ namespace cloud.charging.open.protocols.WWCP
             OutOfService(DateTime              Timestamp,
                          ChargeDetailRecord    ChargeDetailRecord,
                          IEnumerable<Warning>  Warnings,
-                         I18NString            Description   = null,
+                         I18NString?           Description   = null,
                          TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.OutOfService,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.OutOfService,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -350,16 +346,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             Filtered(DateTime            Timestamp,
                      ChargeDetailRecord  ChargeDetailRecord,
-                     I18NString          Description   = null,
+                     I18NString?         Description   = null,
                      TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Filtered,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Filtered,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request failed.
@@ -374,16 +369,15 @@ namespace cloud.charging.open.protocols.WWCP
             Filtered(DateTime            Timestamp,
                      ChargeDetailRecord  ChargeDetailRecord,
                      Warning             Warning,
-                     I18NString          Description   = null,
+                     I18NString?         Description   = null,
                      TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Filtered,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Filtered,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -399,16 +393,15 @@ namespace cloud.charging.open.protocols.WWCP
             Filtered(DateTime              Timestamp,
                      ChargeDetailRecord    ChargeDetailRecord,
                      IEnumerable<Warning>  Warnings,
-                     I18NString            Description   = null,
+                     I18NString?           Description   = null,
                      TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Filtered,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Filtered,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -425,16 +418,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             InvalidSessionId(DateTime            Timestamp,
                              ChargeDetailRecord  ChargeDetailRecord,
-                             I18NString          Description   = null,
+                             I18NString?         Description   = null,
                              TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.InvalidSessionId,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.InvalidSessionId,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request failed.
@@ -449,16 +441,15 @@ namespace cloud.charging.open.protocols.WWCP
             InvalidSessionId(DateTime            Timestamp,
                              ChargeDetailRecord  ChargeDetailRecord,
                              Warning             Warning,
-                             I18NString          Description   = null,
+                             I18NString?         Description   = null,
                              TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.InvalidSessionId,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.InvalidSessionId,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -474,16 +465,15 @@ namespace cloud.charging.open.protocols.WWCP
             InvalidSessionId(DateTime              Timestamp,
                              ChargeDetailRecord    ChargeDetailRecord,
                              IEnumerable<Warning>  Warnings,
-                             I18NString            Description   = null,
+                             I18NString?           Description   = null,
                              TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.InvalidSessionId,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.InvalidSessionId,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -500,16 +490,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             UnknownSessionId(DateTime            Timestamp,
                              ChargeDetailRecord  ChargeDetailRecord,
-                             I18NString          Description   = null,
+                             I18NString?         Description   = null,
                              TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.UnknownSessionId,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.UnknownSessionId,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request failed.
@@ -524,16 +513,15 @@ namespace cloud.charging.open.protocols.WWCP
             UnknownSessionId(DateTime            Timestamp,
                              ChargeDetailRecord  ChargeDetailRecord,
                              Warning             Warning,
-                             I18NString          Description   = null,
+                             I18NString?         Description   = null,
                              TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.UnknownSessionId,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.UnknownSessionId,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -549,16 +537,15 @@ namespace cloud.charging.open.protocols.WWCP
             UnknownSessionId(DateTime              Timestamp,
                              ChargeDetailRecord    ChargeDetailRecord,
                              IEnumerable<Warning>  Warnings,
-                             I18NString            Description   = null,
+                             I18NString?           Description   = null,
                              TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.UnknownSessionId,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.UnknownSessionId,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -575,16 +562,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             CouldNotConvertCDRFormat(DateTime            Timestamp,
                                      ChargeDetailRecord  ChargeDetailRecord,
-                                     I18NString          Description   = null,
+                                     I18NString?         Description   = null,
                                      TimeSpan?           Runtime       = null)
-
 
                 => new SendCDRResult(Timestamp,
                                      ChargeDetailRecord,
                                      SendCDRResultTypes.CouldNotConvertCDRFormat,
                                      Description,
-                                     new Warning[0],
-                                     Runtime);
+                                     Runtime: Runtime);
+
 
         /// <summary>
         /// The request failed.
@@ -599,16 +585,15 @@ namespace cloud.charging.open.protocols.WWCP
             CouldNotConvertCDRFormat(DateTime            Timestamp,
                                      ChargeDetailRecord  ChargeDetailRecord,
                                      Warning             Warning,
-                                     I18NString          Description   = null,
+                                     I18NString?         Description   = null,
                                      TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.CouldNotConvertCDRFormat,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -624,16 +609,15 @@ namespace cloud.charging.open.protocols.WWCP
             CouldNotConvertCDRFormat(DateTime              Timestamp,
                                      ChargeDetailRecord    ChargeDetailRecord,
                                      IEnumerable<Warning>  Warnings,
-                                     I18NString            Description   = null,
+                                     I18NString?           Description   = null,
                                      TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.CouldNotConvertCDRFormat,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.CouldNotConvertCDRFormat,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -650,16 +634,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             Enqueued(DateTime            Timestamp,
                      ChargeDetailRecord  ChargeDetailRecord,
-                     I18NString          Description   = null,
+                     I18NString?         Description   = null,
                      TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Enqueued,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Enqueued,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request completed successfully.
@@ -674,16 +657,15 @@ namespace cloud.charging.open.protocols.WWCP
             Enqueued(DateTime            Timestamp,
                      ChargeDetailRecord  ChargeDetailRecord,
                      Warning             Warning,
-                     I18NString          Description   = null,
+                     I18NString?         Description   = null,
                      TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Enqueued,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Enqueued,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -699,16 +681,15 @@ namespace cloud.charging.open.protocols.WWCP
             Enqueued(DateTime              Timestamp,
                      ChargeDetailRecord    ChargeDetailRecord,
                      IEnumerable<Warning>  Warnings,
-                     I18NString            Description   = null,
+                     I18NString?           Description   = null,
                      TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Enqueued,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Enqueued,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -725,16 +706,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             Timeout(DateTime            Timestamp,
                     ChargeDetailRecord  ChargeDetailRecord,
-                    I18NString          Description   = null,
+                    I18NString?         Description   = null,
                     TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Timeout,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Timeout,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request completed successfully.
@@ -749,16 +729,15 @@ namespace cloud.charging.open.protocols.WWCP
             Timeout(DateTime            Timestamp,
                     ChargeDetailRecord  ChargeDetailRecord,
                     Warning             Warning,
-                    I18NString          Description   = null,
+                    I18NString?         Description   = null,
                     TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Timeout,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Timeout,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -774,16 +753,15 @@ namespace cloud.charging.open.protocols.WWCP
             Timeout(DateTime              Timestamp,
                     ChargeDetailRecord    ChargeDetailRecord,
                     IEnumerable<Warning>  Warnings,
-                    I18NString            Description   = null,
+                    I18NString?           Description   = null,
                     TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Timeout,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Timeout,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -795,21 +773,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
             Success(DateTime            Timestamp,
                     ChargeDetailRecord  ChargeDetailRecord,
-                    I18NString          Description   = null,
+                    I18NString?         Description   = null,
+                    URL?                Location      = null,
                     TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Success,
+                        Description,
+                        Array.Empty<Warning>(),
+                        Location,
+                        Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Success,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request completed successfully.
@@ -818,22 +799,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Warning">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
             Success(DateTime            Timestamp,
                     ChargeDetailRecord  ChargeDetailRecord,
                     Warning             Warning,
-                    I18NString          Description   = null,
+                    I18NString?         Description   = null,
+                    URL?                Location      = null,
                     TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Success,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Success,
+                        Description,
+                        new Warning[] { Warning },
+                        Location,
+                        Runtime);
 
 
         /// <summary>
@@ -843,22 +826,24 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Description">An optional multi-language description of the result.</param>
+        /// <param name="Location">An optional URL for locating the charge detail record as defined e.g. in OCPI.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRResult
 
             Success(DateTime              Timestamp,
                     ChargeDetailRecord    ChargeDetailRecord,
                     IEnumerable<Warning>  Warnings,
-                    I18NString            Description   = null,
+                    I18NString?           Description   = null,
+                    URL?                  Location      = null,
                     TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Success,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Success,
+                        Description,
+                        Warnings,
+                        Location,
+                        Runtime);
 
         #endregion
 
@@ -875,16 +860,15 @@ namespace cloud.charging.open.protocols.WWCP
 
             Error(DateTime            Timestamp,
                   ChargeDetailRecord  ChargeDetailRecord,
-                  I18NString          Description   = null,
+                  I18NString?         Description   = null,
                   TimeSpan?           Runtime       = null)
 
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Error,
+                        Description,
+                        Runtime: Runtime);
 
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Error,
-                                     Description,
-                                     new Warning[0],
-                                     Runtime);
 
         /// <summary>
         /// The request failed.
@@ -899,16 +883,15 @@ namespace cloud.charging.open.protocols.WWCP
             Error(DateTime            Timestamp,
                   ChargeDetailRecord  ChargeDetailRecord,
                   Warning             Warning,
-                  I18NString          Description   = null,
+                  I18NString?         Description   = null,
                   TimeSpan?           Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Error,
-                                     Description,
-                                     new Warning[] { Warning },
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Error,
+                        Description,
+                        new Warning[] { Warning },
+                        Runtime: Runtime);
 
 
         /// <summary>
@@ -924,16 +907,15 @@ namespace cloud.charging.open.protocols.WWCP
             Error(DateTime              Timestamp,
                   ChargeDetailRecord    ChargeDetailRecord,
                   IEnumerable<Warning>  Warnings,
-                  I18NString            Description   = null,
+                  I18NString?           Description   = null,
                   TimeSpan?             Runtime       = null)
 
-
-                => new SendCDRResult(Timestamp,
-                                     ChargeDetailRecord,
-                                     SendCDRResultTypes.Error,
-                                     Description,
-                                     Warnings,
-                                     Runtime);
+                => new (Timestamp,
+                        ChargeDetailRecord,
+                        SendCDRResultTypes.Error,
+                        Description,
+                        Warnings,
+                        Runtime: Runtime);
 
         #endregion
 
@@ -947,44 +929,48 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="IncludeCDR">Whether to include the embedded charge detail record.</param>
         /// <param name="CustomChargeDetailRecordSerializer">A custom charge detail record serializer.</param>
         /// <param name="CustomSendCDRResultSerializer">A custom send charge detail record result serializer.</param>
-        public JObject ToJSON(Boolean                                           Embedded                             = false,
-                              Boolean                                           IncludeCDR                           = true,
-                              CustomJObjectSerializerDelegate<ChargeDetailRecord>  CustomChargeDetailRecordSerializer   = null,
-                              CustomJObjectSerializerDelegate<SendCDRResult>       CustomSendCDRResultSerializer        = null)
+        public JObject ToJSON(Boolean                                               Embedded                             = false,
+                              Boolean                                               IncludeCDR                           = true,
+                              CustomJObjectSerializerDelegate<ChargeDetailRecord>?  CustomChargeDetailRecordSerializer   = null,
+                              CustomJObjectSerializerDelegate<SendCDRResult>?       CustomSendCDRResultSerializer        = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            !Embedded
-                               ? new JProperty("@context",            JSONLDContext)
+                               ? new JProperty("@context",             JSONLDContext)
                                : null,
 
-                           new JProperty("timestamp",                 Timestamp.ToIso8601()),
+                                 new JProperty("timestamp",            Timestamp.ToIso8601()),
 
-                           new JProperty("result",                    Result.ToString()),
+                                 new JProperty("result",               Result.   ToString()),
 
                            Description.IsNeitherNullNorEmpty()
-                               ? new JProperty("description",         Description)
+                               ? new JProperty("description",          Description)
                                : null,
 
                            Warnings.SafeAny()
-                               ? new JProperty("warnings",            new JArray(Warnings.Select(waring => waring.ToJSON())))
+                               ? new JProperty("warnings",             new JArray(Warnings.Select(waring => waring.ToJSON())))
+                               : null,
+
+                           Location.HasValue
+                               ? new JProperty("location",             Location.Value.ToString())
                                : null,
 
                            Runtime.HasValue
-                               ? new JProperty("runtime",             Runtime.Value.TotalMilliseconds)
+                               ? new JProperty("runtime",              Runtime. Value.TotalMilliseconds)
                                : null,
 
-                           IncludeCDR && ChargeDetailRecord != null
-                               ? new JProperty("chargeDetailRecord",  ChargeDetailRecord.ToJSON(Embedded:                           true,
-                                                                                                CustomChargeDetailRecordSerializer: CustomChargeDetailRecordSerializer))
+                           IncludeCDR && ChargeDetailRecord is not null
+                               ? new JProperty("chargeDetailRecord",   ChargeDetailRecord.ToJSON(Embedded:                            true,
+                                                                                                 CustomChargeDetailRecordSerializer:  CustomChargeDetailRecordSerializer))
                                : null
 
                        );
 
             return CustomSendCDRResultSerializer != null
-                       ? CustomSendCDRResultSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSendCDRResultSerializer(this, json)
+                       : json;
 
         }
 
@@ -1071,6 +1057,34 @@ namespace cloud.charging.open.protocols.WWCP
 
                 #endregion
 
+                #region Parse Description    [optional]
+
+                if (JSONObject.ParseOptionalJSON("description",
+                                                 "description or warnings",
+                                                 Warning.TryParse,
+                                                 out IEnumerable<Warning> Warnings,
+                                                 out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse Location       [optional]
+
+                if (JSONObject.ParseOptional("location",
+                                             "location URL",
+                                             URL.TryParse,
+                                             out URL? Location,
+                                             out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse Runtime        [optional]
 
                 if (JSONObject.ParseOptional("runtime",
@@ -1089,7 +1103,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                   null,
                                                   Result,
                                                   Description,
-                                                  null,
+                                                  Warnings,
+                                                  Location,
                                                   Runtime);
 
                 ErrorResponse = null;
@@ -1165,6 +1180,11 @@ namespace cloud.charging.open.protocols.WWCP
         /// The charging location is unknown.
         /// </summary>
         UnknownLocation,
+
+        /// <summary>
+        /// The given token is unknown or invalid.
+        /// </summary>
+        InvalidToken,
 
         /// <summary>
         /// A data format error occured.

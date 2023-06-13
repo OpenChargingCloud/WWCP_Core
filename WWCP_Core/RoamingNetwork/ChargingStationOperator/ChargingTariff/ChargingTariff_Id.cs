@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingTariff_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out ChargingTariff_Id chargingTariffId))
+            if (TryParse(Text, out var chargingTariffId))
                 return chargingTariffId;
 
             throw new ArgumentException("Invalid text representation of a charging tariff identification: '" + Text + "'!",
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingTariff_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingTariff_Id chargingTariffId))
+            if (TryParse(Text, out var chargingTariffId))
                 return chargingTariffId;
 
             return null;

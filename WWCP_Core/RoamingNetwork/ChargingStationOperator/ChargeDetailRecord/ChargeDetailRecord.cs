@@ -98,6 +98,13 @@ namespace cloud.charging.open.protocols.WWCP
         [Mandatory]
         public ChargeDetailRecord_Id    Id              { get; }
 
+        /// <summary>
+        /// The creation timestamp of the charge detail record.
+        /// </summary>
+        [Mandatory]
+        public DateTime                 Created         { get; }
+
+
         #region Session
 
         /// <summary>
@@ -176,13 +183,13 @@ namespace cloud.charging.open.protocols.WWCP
         /// The connector used for charging.
         /// </summary>
         [Optional]
-        public IChargingConnector?          Connector                    { get; }
+        public IChargingConnector?          ChargingConnector            { get; }
 
         /// <summary>
         /// The identification of the connector used for charging.
         /// </summary>
         [Optional]
-        public ChargingConnector_Id?        ConnectorId                  { get; }
+        public ChargingConnector_Id?        ChargingConnectorId          { get; }
 
         #endregion
 
@@ -405,6 +412,8 @@ namespace cloud.charging.open.protocols.WWCP
                                   StartEndDateTime                   SessionTime,
                                   TimeSpan?                          Duration                    = null,
 
+                                  IChargingConnector?                ChargingConnector           = null,
+                                  ChargingConnector_Id?              ChargingConnectorId         = null,
                                   IEVSE?                             EVSE                        = null,
                                   EVSE_Id?                           EVSEId                      = null,
                                   IChargingStation?                  ChargingStation             = null,
@@ -446,10 +455,14 @@ namespace cloud.charging.open.protocols.WWCP
                                   UserDefinedDictionary?             InternalData                = null,
 
                                   ECPublicKeyParameters?             PublicKey                   = null,
-                                  IEnumerable<String>?               Signatures                  = null)
+                                  IEnumerable<String>?               Signatures                  = null,
+
+                                  DateTime?                          Created                     = null,
+                                  DateTime?                          LastChange                  = null)
 
             : base(CustomData,
-                   InternalData)
+                   InternalData,
+                   LastChange ?? Timestamp.Now)
 
         {
 
@@ -458,7 +471,9 @@ namespace cloud.charging.open.protocols.WWCP
             this.SessionTime                 = SessionTime;
             this.Duration                    = Duration                  ?? SessionTime.Duration;
 
-            this.EVSE                        = EVSE;
+            this.ChargingConnector           = ChargingConnector;
+            this.ChargingConnectorId         = ChargingConnectorId       ?? this.ChargingConnector?.      Id;
+            this.EVSE                        = EVSE                      ?? this.ChargingConnector?.      EVSE;
             this.EVSEId                      = EVSEId                    ?? this.EVSE?.                   Id;
             this.ChargingStation             = ChargingStation           ?? this.EVSE?.                   ChargingStation;
             this.ChargingStationId           = ChargingStationId         ?? this.ChargingStation?.        Id;
@@ -505,6 +520,8 @@ namespace cloud.charging.open.protocols.WWCP
                                                    ? new HashSet<String>(Signatures)
                                                    : new HashSet<String>();
 
+            this.Created                     = Created                  ?? Timestamp.Now;
+
         }
 
         #endregion
@@ -523,8 +540,8 @@ namespace cloud.charging.open.protocols.WWCP
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("@id",       Id.       ToString()),
-                           new JProperty("sessionId", SessionId.ToString()),
+                                 new JProperty("@id",                         Id.       ToString()),
+                                 new JProperty("sessionId",                   SessionId.ToString()),
 
                            Embedded
                                ? null
@@ -586,13 +603,16 @@ namespace cloud.charging.open.protocols.WWCP
 
                            ChargingProduct is not null
                                ? new JProperty("chargingProduct",             ChargingProduct.          ToJSON())
-                               : null
+                               : null,
 
 
-                       //new JProperty("userId",         UserId),
-                       //new JProperty("publicKey",      PublicKey.KeyId),
-                       //new JProperty("lastSignature",  lastSignature),
-                       //new JProperty("signature",      Signature)
+                                 //new JProperty("userId",         UserId),
+                                 //new JProperty("publicKey",      PublicKey.KeyId),
+                                 //new JProperty("lastSignature",  lastSignature),
+                                 //new JProperty("signature",      Signature)
+
+                                 new JProperty("created",                     Created.   ToIso8601()),
+                                 new JProperty("lastChange",                  LastChange.ToIso8601())
 
                        );
 
@@ -955,6 +975,7 @@ namespace cloud.charging.open.protocols.WWCP
             => Id.ToString();
 
         #endregion
+
 
     }
 

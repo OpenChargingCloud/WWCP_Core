@@ -806,7 +806,8 @@ namespace cloud.charging.open.protocols.WWCP
                                UserDefinedDictionary?  InternalData   = null)
 
             : base(CustomData,
-                   InternalData)
+                   InternalData,
+                   org.GraphDefined.Vanaheimr.Illias.Timestamp.Now)
 
         {
 

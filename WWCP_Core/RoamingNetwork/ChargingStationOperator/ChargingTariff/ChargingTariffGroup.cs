@@ -195,6 +195,7 @@ namespace cloud.charging.open.protocols.WWCP
                 #endregion
 
                 var _ChargingTariff = new ChargingTariff(Id,
+                                                         null,
                                                          Name,
                                                          Description,
                                                          TariffElements,

@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections;
+using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
@@ -48,16 +49,16 @@ namespace cloud.charging.open.protocols.WWCP
         /// <summary>
         /// The internal data store.
         /// </summary>
-        protected      readonly  Dictionary<TId, TData>                                                     InternalData;
+        protected      readonly  ConcurrentDictionary<TId, TData>                                                     InternalData = new ConcurrentDictionary<TId, TData>();
 
-        private        readonly  Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>  CommandProcessor;
+        private        readonly  Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>  CommandProcessor;
 
-        private        readonly  Object                                                                     Lock  = new Object();
+        private        readonly  Object                                                                               Lock  = new ();
 
-        private static readonly  Char                                                                       RS    = (Char) 30;
+        private static readonly  Char                                                                                 RS    = (Char) 30;
 
 
-        private TCPServer Server;
+        private        readonly  TCPServer                                                                            Server;
 
         #endregion
 
@@ -103,13 +104,13 @@ namespace cloud.charging.open.protocols.WWCP
 
         public Node_Id                           NodeId                  { get; }
 
-        private readonly List<RoamingNetworkInfo> _RoamingNetworkInfos;
+        private readonly List<RoamingNetworkInfo> roamingNetworkInfos;
 
         /// <summary>
         /// Roaming network informations.
         /// </summary>
         public IEnumerable<RoamingNetworkInfo>   RoamingNetworkInfos
-            => _RoamingNetworkInfos;
+            => roamingNetworkInfos;
 
 
         public RoamingNetworkInfo RoamingNetworkInfo
@@ -129,27 +130,25 @@ namespace cloud.charging.open.protocols.WWCP
         /// Create a generic data store.
         /// </summary>
         /// <param name="DNSClient">The DNS client defines which DNS servers to use.</param>
-        public ADataStore(Func<String, IPSocket?, String, JObject, Dictionary<TId, TData>, Boolean>?  CommandProcessor       = null,
+        public ADataStore(Func<String, IPSocket?, String, JObject, ConcurrentDictionary<TId, TData>, Boolean>?  CommandProcessor       = null,
 
-                          Boolean                                                                     DisableLogfiles        = false,
-                          Func<RoamingNetwork_Id?, String>?                                           LogFilePathCreator     = null,
-                          Func<RoamingNetwork_Id?, String>?                                           LogFileNameCreator     = null,
-                          Boolean                                                                     ReloadDataOnStart      = true,
-                          Func<RoamingNetwork_Id?, String>?                                           LogfileSearchPattern   = null,
+                          Boolean                                                                               DisableLogfiles        = false,
+                          Func<RoamingNetwork_Id?, String>?                                                     LogFilePathCreator     = null,
+                          Func<RoamingNetwork_Id?, String>?                                                     LogFileNameCreator     = null,
+                          Boolean                                                                               ReloadDataOnStart      = true,
+                          Func<RoamingNetwork_Id?, String>?                                                     LogfileSearchPattern   = null,
 
-                          RoamingNetwork_Id?                                                          RoamingNetworkId       = null,
-                          IEnumerable<RoamingNetworkInfo>?                                            RoamingNetworkInfos    = null,
-                          Boolean                                                                     DisableNetworkSync     = false,
-                          DNSClient?                                                                  DNSClient              = null)
+                          RoamingNetwork_Id?                                                                    RoamingNetworkId       = null,
+                          IEnumerable<RoamingNetworkInfo>?                                                      RoamingNetworkInfos    = null,
+                          Boolean                                                                               DisableNetworkSync     = false,
+                          DNSClient?                                                                            DNSClient              = null)
 
         {
 
             this.NodeId                        = Node_Id.Parse(Environment.MachineName);
 
-            this.InternalData                  = new Dictionary<TId, TData>();
-
             this.RoamingNetworkId              = RoamingNetworkId;
-            this._RoamingNetworkInfos          = RoamingNetworkInfos != null
+            this.roamingNetworkInfos           = RoamingNetworkInfos != null
                                                      ? new List<RoamingNetworkInfo>(RoamingNetworkInfos)
                                                      : new List<RoamingNetworkInfo>();
 
@@ -280,8 +279,18 @@ namespace cloud.charging.open.protocols.WWCP
         public Boolean ContainsKey(TId Id)
             => InternalData.ContainsKey(Id);
 
-        public Boolean TryGet(TId Id, out TData Data)
+        public Boolean TryGet(TId Id, out TData? Data)
             => InternalData.TryGetValue(Id, out Data);
+
+        public TData? Get(TId Id)
+        {
+
+            if (InternalData.TryGetValue(Id, out var data))
+                return data;
+
+            return default;
+
+        }
 
         #endregion
 
@@ -385,7 +394,7 @@ namespace cloud.charging.open.protocols.WWCP
         private void LogToNetwork(String data)
         {
 
-            if (!DisableNetworkSync && _RoamingNetworkInfos.SafeAny() && data?.Trim().IsNotNullOrEmpty() == true)
+            if (!DisableNetworkSync && roamingNetworkInfos.SafeAny() && data?.Trim().IsNotNullOrEmpty() == true)
             {
                 lock (Lock)
                 {

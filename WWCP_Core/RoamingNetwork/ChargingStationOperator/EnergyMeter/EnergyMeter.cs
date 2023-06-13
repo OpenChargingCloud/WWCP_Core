@@ -203,7 +203,8 @@ namespace cloud.charging.open.protocols.WWCP
                            DateTime?                                 LastUpdate                  = null)
 
             : base(CustomData,
-                   InternalData)
+                   InternalData,
+                   Timestamp.Now)
 
         {
 

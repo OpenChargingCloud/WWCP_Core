@@ -76,16 +76,13 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Initial checks
 
-            if (ChargingPriceComponents is null)
-                throw new ArgumentNullException(nameof(ChargingPriceComponents),  "The given parameter must not be null!");
-
             if (!ChargingPriceComponents.Any())
                 throw new ArgumentNullException(nameof(ChargingPriceComponents),  "The given enumeration must not be empty!");
 
             #endregion
 
             this.ChargingPriceComponents     = ChargingPriceComponents;
-            this.ChargingTariffRestrictions  = ChargingTariffRestrictions;
+            this.ChargingTariffRestrictions  = ChargingTariffRestrictions ?? Array.Empty<ChargingTariffRestriction>();
 
         }
 
@@ -102,15 +99,8 @@ namespace cloud.charging.open.protocols.WWCP
                                      ChargingTariffRestriction  ChargingTariffRestriction)
         {
 
-            #region Initial checks
-
-            if (ChargingTariffRestriction is null)
-                throw new ArgumentNullException(nameof(ChargingTariffRestriction),  "The given enumeration must not be empty!");
-
-            #endregion
-
-            this.ChargingPriceComponents     = new ChargingPriceComponent[]    { ChargingPriceComponent };
-            this.ChargingTariffRestrictions  = new ChargingTariffRestriction[] { ChargingTariffRestriction };
+            this.ChargingPriceComponents     = new[] { ChargingPriceComponent };
+            this.ChargingTariffRestrictions  = new[] { ChargingTariffRestriction };
 
         }
 
@@ -128,7 +118,7 @@ namespace cloud.charging.open.protocols.WWCP
 
             => JSONObject.Create(
 
-                   new JProperty("price_components",
+                   new JProperty("priceComponents",
                                  new JArray(ChargingPriceComponents.
                                                 Select(component => component.ToJSON()))),
 
@@ -139,6 +129,18 @@ namespace cloud.charging.open.protocols.WWCP
                        : null
 
                );
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public ChargingTariffElement Clone()
+
+            => new (ChargingPriceComponents.   Select(chargingPriceComponents    => chargingPriceComponents.   Clone()),
+                    ChargingTariffRestrictions.Select(chargingTariffRestrictions => chargingTariffRestrictions.Clone()));
 
         #endregion
 

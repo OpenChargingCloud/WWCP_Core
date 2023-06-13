@@ -191,14 +191,14 @@ namespace cloud.charging.open.protocols.WWCP
                    //new JProperty("type", _Type.ToString()),
                    //new JProperty("price",      _Price.   ToString()),
 
-                   Time. HasValue && Time. Value.StartTime.HasValue ? new JProperty("start_time",  Time. Value.StartTime.Value.ToString())       : null,
-                   Time. HasValue && Time. Value.EndTime.  HasValue ? new JProperty("end_time",    Time. Value.EndTime.  Value.ToString())       : null,
+                   Time. HasValue && Time. Value.StartTime.HasValue ? new JProperty("startTime",  Time. Value.StartTime.Value.ToString())       : null,
+                   Time. HasValue && Time. Value.EndTime.  HasValue ? new JProperty("endTime",    Time. Value.EndTime.  Value.ToString())       : null,
 
-                   kWh.  HasValue && kWh.  Value.Min.      HasValue ? new JProperty("min_kWh",     kWh.  Value.Min.      Value.ToString("0.00")) : null,
-                   kWh.  HasValue && kWh.  Value.Max.      HasValue ? new JProperty("max_kWh",     kWh.  Value.Max.      Value.ToString("0.00")) : null,
+                   kWh.  HasValue && kWh.  Value.Min.      HasValue ? new JProperty("minkWh",     kWh.  Value.Min.      Value.ToString("0.00")) : null,
+                   kWh.  HasValue && kWh.  Value.Max.      HasValue ? new JProperty("maxkWh",     kWh.  Value.Max.      Value.ToString("0.00")) : null,
 
-                   Power.HasValue && Power.Value.Min.      HasValue ? new JProperty("min_power",   Power.Value.Min.      Value.ToString("0.00")) : null,
-                   Power.HasValue && Power.Value.Max.      HasValue ? new JProperty("max_power",   Power.Value.Max.      Value.ToString("0.00")) : null,
+                   Power.HasValue && Power.Value.Min.      HasValue ? new JProperty("minPower",   Power.Value.Min.      Value.ToString("0.00")) : null,
+                   Power.HasValue && Power.Value.Max.      HasValue ? new JProperty("maxPower",   Power.Value.Max.      Value.ToString("0.00")) : null,
 
                    DayOfWeek.Any()
                        ? new JProperty("day_of_week",
@@ -206,6 +206,22 @@ namespace cloud.charging.open.protocols.WWCP
                        : null
 
                );
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public ChargingTariffRestriction Clone()
+
+            => new (Time,
+                    Date,
+                    kWh,
+                    Power,
+                    Duration,
+                    DayOfWeek);
 
         #endregion
 

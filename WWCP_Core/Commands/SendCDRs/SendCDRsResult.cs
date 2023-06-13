@@ -18,7 +18,7 @@
 #region Usings
 
 using System.Collections;
-
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -26,63 +26,129 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.WWCP
 {
 
+    /// <summary>
+    /// Extension methods for SendCDRsResults.
+    /// </summary>
     public static class SendCDRResultTypesExtensions
     {
 
-        public static SendCDRsResultTypes Convert(this SendCDRResultTypes result)
+        #region Convert(this SendCDRResultType)
+
+        public static SendCDRsResultTypes Convert(this SendCDRResultTypes SendCDRResultType)
+
+            => SendCDRResultType switch {
+                   SendCDRResultTypes.Unspecified               => SendCDRsResultTypes.Unspecified,
+                   SendCDRResultTypes.NoOperation               => SendCDRsResultTypes.NoOperation,
+                   SendCDRResultTypes.AdminDown                 => SendCDRsResultTypes.AdminDown,
+                   SendCDRResultTypes.OutOfService              => SendCDRsResultTypes.OutOfService,
+                   SendCDRResultTypes.Filtered                  => SendCDRsResultTypes.Filtered,
+                   SendCDRResultTypes.InvalidSessionId          => SendCDRsResultTypes.InvalidSessionId,
+                   SendCDRResultTypes.UnknownSessionId          => SendCDRsResultTypes.UnknownSessionId,
+                   SendCDRResultTypes.UnknownLocation           => SendCDRsResultTypes.UnknownLocation,
+                   SendCDRResultTypes.InvalidToken              => SendCDRsResultTypes.InvalidToken,
+                   SendCDRResultTypes.CouldNotConvertCDRFormat  => SendCDRsResultTypes.CouldNotConvertCDRFormat,
+                   SendCDRResultTypes.Enqueued                  => SendCDRsResultTypes.Enqueued,
+                   SendCDRResultTypes.Success                   => SendCDRsResultTypes.Success,
+                   SendCDRResultTypes.Timeout                   => SendCDRsResultTypes.Timeout,
+                   SendCDRResultTypes.Error                     => SendCDRsResultTypes.Error,
+                   _                                            => SendCDRsResultTypes.Error
+               };
+
+        #endregion
+
+        #region Combine(SendCDRResults, AuthorizatorId, ..., Description = null, Warnings = null)
+
+        public static SendCDRsResult Combine(this IEnumerable<SendCDRResult>  SendCDRResults,
+                                             IId                              AuthorizatorId,
+                                             ISendChargeDetailRecords         ISendChargeDetailRecords,
+                                             I18NString?                      Description   = null,
+                                             IEnumerable<Warning>?            Warnings      = null)
         {
 
-            switch (result)
-            {
-
-                case SendCDRResultTypes.NoOperation:
-                    return SendCDRsResultTypes.NoOperation;
-
-                case SendCDRResultTypes.AdminDown:
-                    return SendCDRsResultTypes.AdminDown;
-
-                case SendCDRResultTypes.OutOfService:
-                    return SendCDRsResultTypes.OutOfService;
-
-                case SendCDRResultTypes.Filtered:
-                    return SendCDRsResultTypes.Filtered;
-
-                case SendCDRResultTypes.InvalidSessionId:
-                    return SendCDRsResultTypes.InvalidSessionId;
-
-                case SendCDRResultTypes.UnknownSessionId:
-                    return SendCDRsResultTypes.UnknownSessionId;
-
-                case SendCDRResultTypes.UnknownLocation:
-                    return SendCDRsResultTypes.UnknownLocation;
-
-                case SendCDRResultTypes.CouldNotConvertCDRFormat:
-                    return SendCDRsResultTypes.CouldNotConvertCDRFormat;
+            if (!SendCDRResults.Any())
+                return SendCDRsResult.Error(Timestamp.Now,
+                                            AuthorizatorId,
+                                            ISendChargeDetailRecords,
+                                            ChargeDetailRecord:  null,
+                                            Description:         Description,
+                                            Warnings:            Warnings,
+                                            Runtime:             TimeSpan.Zero);
 
 
-                case SendCDRResultTypes.Enqueued:
-                    return SendCDRsResultTypes.Enqueued;
+            var analysis  = SendCDRResults.GroupBy(sendCDRResult => sendCDRResult.Result).    ToArray();
+            var oldest    = SendCDRResults.MinBy  (sendCDRResult => sendCDRResult.Timestamp)!.Timestamp;
+            var newest    = SendCDRResults.MaxBy  (sendCDRResult => sendCDRResult.Timestamp)!.Timestamp;
 
-                case SendCDRResultTypes.Success:
-                    return SendCDRsResultTypes.Success;
+            if (analysis.Length == 1)
+                return new SendCDRsResult(newest,
+                                          AuthorizatorId,
+                                          ISendChargeDetailRecords,
+                                          analysis.First().Key.Convert(),
+                                          SendCDRResults,
+                                          Description ?? SendCDRResults.First().Description,
+                                          Warnings,
+                                          newest - oldest);
 
-                case SendCDRResultTypes.Timeout:
-                    return SendCDRsResultTypes.Timeout;
-
-
-
-                case SendCDRResultTypes.Error:
-                    return SendCDRsResultTypes.Error;
-
-                default:
-                    return SendCDRsResultTypes.Unspecified;
-
-            }
+            return new SendCDRsResult(newest,
+                                      AuthorizatorId,
+                                      ISendChargeDetailRecords,
+                                      SendCDRsResultTypes.Mixed,
+                                      SendCDRResults,
+                                      Description,
+                                      Warnings,
+                                      newest - oldest);
 
         }
 
-    }
+        #endregion
 
+        #region Combine(SendCDRResults, AuthorizatorId, ..., Description = null, Warnings = null)
+
+        public static SendCDRsResult Combine(this IEnumerable<SendCDRResult>  SendCDRResults,
+                                             IId                              AuthorizatorId,
+                                             IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                                             I18NString?                      Description   = null,
+                                             IEnumerable<Warning>?            Warnings      = null)
+        {
+
+            if (!SendCDRResults.Any())
+                return SendCDRsResult.Error(Timestamp.Now,
+                                            AuthorizatorId,
+                                            IReceiveChargeDetailRecords,
+                                            ChargeDetailRecord:  null,
+                                            Description:         Description,
+                                            Warnings:            Warnings,
+                                            Runtime:             TimeSpan.Zero);
+
+
+            var analysis  = SendCDRResults.GroupBy(sendCDRResult => sendCDRResult.Result).    ToArray();
+            var oldest    = SendCDRResults.MinBy  (sendCDRResult => sendCDRResult.Timestamp)!.Timestamp;
+            var newest    = SendCDRResults.MaxBy  (sendCDRResult => sendCDRResult.Timestamp)!.Timestamp;
+
+            if (analysis.Length == 1)
+                return new SendCDRsResult(newest,
+                                          AuthorizatorId,
+                                          IReceiveChargeDetailRecords,
+                                          analysis.First().Key.Convert(),
+                                          SendCDRResults,
+                                          Description ?? SendCDRResults.First().Description,
+                                          Warnings,
+                                          newest - oldest);
+
+            return new SendCDRsResult(newest,
+                                      AuthorizatorId,
+                                      IReceiveChargeDetailRecords,
+                                      SendCDRsResultTypes.Mixed,
+                                      SendCDRResults,
+                                      Description,
+                                      Warnings,
+                                      newest - oldest);
+
+        }
+
+        #endregion
+
+    }
 
 
     /// <summary>
@@ -717,7 +783,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="ChargeDetailRecord">A charge detail records.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -726,17 +792,21 @@ namespace cloud.charging.open.protocols.WWCP
             Error(DateTime                  Timestamp,
                   IId                       AuthorizatorId,
                   ISendChargeDetailRecords  ISendChargeDetailRecords,
-                  ChargeDetailRecord        ChargeDetailRecord,
-                  I18NString?               Description   = null,
-                  IEnumerable<Warning>?     Warnings      = null,
-                  TimeSpan?                 Runtime       = null)
+                  ChargeDetailRecord?       ChargeDetailRecord   = null,
+                  I18NString?               Description          = null,
+                  IEnumerable<Warning>?     Warnings             = null,
+                  TimeSpan?                 Runtime              = null)
 
 
                 => new (Timestamp,
                         AuthorizatorId,
                         ISendChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        new SendCDRResult[] { SendCDRResult.Error(Timestamp, ChargeDetailRecord) },
+                        ChargeDetailRecord is not null
+                            ? new SendCDRResult[] {
+                                  SendCDRResult.Error(Timestamp, ChargeDetailRecord)
+                              }
+                            : Array.Empty<SendCDRResult>(),
                         Description,
                         Warnings,
                         Runtime);
@@ -809,7 +879,7 @@ namespace cloud.charging.open.protocols.WWCP
         /// <param name="Timestamp">The timestamp of the charge detail record result.</param>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="ChargeDetailRecord">A charge detail records.</param>
+        /// <param name="ChargeDetailRecord">An optional charge detail record.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -818,17 +888,21 @@ namespace cloud.charging.open.protocols.WWCP
             Error(DateTime                     Timestamp,
                   IId                          AuthorizatorId,
                   IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                  ChargeDetailRecord           ChargeDetailRecord,
-                  I18NString?                  Description   = null,
-                  IEnumerable<Warning>?        Warnings      = null,
-                  TimeSpan?                    Runtime       = null)
+                  ChargeDetailRecord?          ChargeDetailRecord   = null,
+                  I18NString?                  Description          = null,
+                  IEnumerable<Warning>?        Warnings             = null,
+                  TimeSpan?                    Runtime              = null)
 
 
                 => new (Timestamp,
                         AuthorizatorId,
                         IReceiveChargeDetailRecords,
                         SendCDRsResultTypes.Success,
-                        new SendCDRResult[] { SendCDRResult.Error(Timestamp, ChargeDetailRecord) },
+                        ChargeDetailRecord is not null
+                            ? new SendCDRResult[] {
+                                  SendCDRResult.Error(Timestamp, ChargeDetailRecord)
+                              }
+                            : Array.Empty<SendCDRResult>(),
                         Description,
                         Warnings,
                         Runtime);
@@ -1029,12 +1103,15 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
+        #region GetEnumerator()
 
         public IEnumerator<SendCDRResult> GetEnumerator()
             => ResultMap.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
             => ResultMap.GetEnumerator();
+
+        #endregion
 
 
         #region (override) ToString()

@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using social.OpenData.UsersAPI;
+using System.Configuration;
 
 #endregion
 
@@ -40,7 +41,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// Extension methods for the commom charging pool interface.
+    /// Extension methods for the common charging pool interface.
     /// </summary>
     public static partial class ChargingPoolExtensions
     {
@@ -97,7 +98,7 @@ namespace cloud.charging.open.protocols.WWCP
                                                                         Action<IChargingStation>?                                       Configurator                   = null,
                                                                         RemoteChargingStationCreatorDelegate?                           RemoteChargingStationCreator   = null,
 
-                                                                        Action<IChargingStation, EventTracking_Id>?                     OnSuccess                      = null,
+                                                                        Action<IChargingStation,                EventTracking_Id>?      OnSuccess                      = null,
                                                                         Action<IChargingPool, IChargingStation, EventTracking_Id>?      OnError                        = null,
 
                                                                         Boolean                                                         SkipAddedNotifications         = false,
@@ -536,7 +537,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
     /// <summary>
-    /// The commom charging pool interface.
+    /// The common interface of all charging pools.
     /// </summary>
     public interface IChargingPool : IEntity<ChargingPool_Id>,
                                      IAdminStatus<ChargingPoolAdminStatusTypes>,
@@ -995,7 +996,7 @@ namespace cloud.charging.open.protocols.WWCP
 
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this charging pool.
         /// </summary>
         ChargingPool Clone();
 
