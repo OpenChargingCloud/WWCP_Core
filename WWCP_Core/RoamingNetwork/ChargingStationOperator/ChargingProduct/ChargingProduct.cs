@@ -117,21 +117,7 @@ namespace cloud.charging.open.protocols.WWCP
         #endregion
 
 
-        #region FromId(ChargingProductId)
-
-        ///// <summary>
-        ///// Parse the given string as a charging product identification.
-        ///// </summary>
-        ///// <param name="ChargingProductId">A text representation of a charging product identification.</param>
-        //public static ChargingProduct? FromId(String ChargingProductId)
-        //{
-
-        //    if (ChargingProductId?.Trim().IsNullOrEmpty() == true)
-        //        return null;
-
-        //    return FromId(ChargingProduct_Id.Parse(ChargingProductId!));
-
-        //}
+        #region (static) FromId(ChargingProductId)
 
         /// <summary>
         /// Create a charging product based on the given charging product identification.
@@ -140,6 +126,28 @@ namespace cloud.charging.open.protocols.WWCP
         public static ChargingProduct FromId(ChargingProduct_Id ChargingProductId)
 
             => new (ChargingProductId);
+
+        #endregion
+
+        #region Static defaults
+
+        /// <summary>
+        /// AC1
+        /// </summary>
+        public static ChargingProduct AC1
+            => FromId(ChargingProduct_Id.AC1);
+
+        /// <summary>
+        /// AC3
+        /// </summary>
+        public static ChargingProduct AC3
+            => FromId(ChargingProduct_Id.AC3);
+
+        /// <summary>
+        /// DC
+        /// </summary>
+        public static ChargingProduct DC
+            => FromId(ChargingProduct_Id.DC);
 
         #endregion
 
