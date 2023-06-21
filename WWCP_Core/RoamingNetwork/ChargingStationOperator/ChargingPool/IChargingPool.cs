@@ -609,6 +609,12 @@ namespace cloud.charging.open.protocols.WWCP
         GeoCoordinate?                          GeoLocation                 { get; set; }
 
         /// <summary>
+        /// The time zone of this charging pool.
+        /// </summary>
+        [Optional]
+        Time_Zone?                              TimeZone                    { get; set; }
+
+        /// <summary>
         /// The address of the entrance to this charging pool.
         /// (If different from 'Address').
         /// </summary>

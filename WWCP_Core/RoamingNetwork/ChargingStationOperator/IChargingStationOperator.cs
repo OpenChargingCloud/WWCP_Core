@@ -74,6 +74,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                   Address?                                                            Address                        = null,
                                                                   GeoCoordinate?                                                      GeoLocation                    = null,
+                                                                  Time_Zone?                                                          TimeZone                       = null,
                                                                   OpeningTimes?                                                       OpeningTimes                   = null,
                                                                   Boolean?                                                            ChargingWhenClosed             = null,
                                                                   AccessibilityTypes?                                                 Accessibility                  = null,
@@ -111,6 +112,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                            Address,
                                                            GeoLocation,
+                                                           TimeZone,
                                                            OpeningTimes,
                                                            ChargingWhenClosed,
                                                            Accessibility,
@@ -163,6 +165,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                              Address?                                                     Address                        = null,
                                                                              GeoCoordinate?                                               GeoLocation                    = null,
+                                                                             Time_Zone?                                                   TimeZone                       = null,
                                                                              OpeningTimes?                                                OpeningTimes                   = null,
                                                                              Boolean?                                                     ChargingWhenClosed             = null,
                                                                              AccessibilityTypes?                                          Accessibility                  = null,
@@ -199,6 +202,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                       Address,
                                                                       GeoLocation,
+                                                                      TimeZone,
                                                                       OpeningTimes,
                                                                       ChargingWhenClosed,
                                                                       Accessibility,
@@ -252,6 +256,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                                   Address?                                                            Address                                = null,
                                                                                   GeoCoordinate?                                                      GeoLocation                            = null,
+                                                                                  Time_Zone?                                                          TimeZone                               = null,
                                                                                   OpeningTimes?                                                       OpeningTimes                           = null,
                                                                                   Boolean?                                                            ChargingWhenClosed                     = null,
                                                                                   AccessibilityTypes?                                                 Accessibility                          = null,
@@ -290,6 +295,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                    Address,
                                                                    GeoLocation,
+                                                                   TimeZone,
                                                                    OpeningTimes,
                                                                    ChargingWhenClosed,
                                                                    Accessibility,
@@ -344,6 +350,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                         Address?                                                            Address                        = null,
                                                                         GeoCoordinate?                                                      GeoLocation                    = null,
+                                                                        Time_Zone?                                                          TimeZone                       = null,
                                                                         OpeningTimes?                                                       OpeningTimes                   = null,
                                                                         Boolean?                                                            ChargingWhenClosed             = null,
                                                                         AccessibilityTypes?                                                 Accessibility                  = null,
@@ -352,8 +359,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                                         Timestamped<ChargingPoolAdminStatusTypes>?                          InitialAdminStatus             = null,
                                                                         Timestamped<ChargingPoolStatusTypes>?                               InitialStatus                  = null,
-                                                                        UInt16?                                                             MaxAdminStatusScheduleSize         = null,
-                                                                        UInt16?                                                             MaxStatusScheduleSize              = null,
+                                                                        UInt16?                                                             MaxAdminStatusScheduleSize     = null,
+                                                                        UInt16?                                                             MaxStatusScheduleSize          = null,
 
                                                                         String?                                                             DataSource                     = null,
                                                                         DateTime?                                                           LastChange                     = null,
@@ -381,6 +388,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                                                               Address,
                                                               GeoLocation,
+                                                              TimeZone,
                                                               OpeningTimes,
                                                               ChargingWhenClosed,
                                                               Accessibility,

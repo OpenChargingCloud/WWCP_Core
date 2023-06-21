@@ -229,6 +229,34 @@ namespace cloud.charging.open.protocols.WWCP
 
         #endregion
 
+        #region TimeZone
+
+        private Time_Zone? timeZone;
+
+        /// <summary>
+        /// The time zone of this charging pool.
+        /// </summary>
+        [Mandatory]
+        public Time_Zone? TimeZone
+        {
+
+            get
+            {
+                return timeZone;
+            }
+
+            set
+            {
+                if (value != timeZone)
+                {
+                    SetProperty(ref timeZone, value);
+                }
+            }
+
+        }
+
+        #endregion
+
         #region OpeningTimes
 
         private OpeningTimes openingTimes;
@@ -1005,6 +1033,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                             Address?                                    Address                          = null,
                             GeoCoordinate?                              GeoLocation                      = null,
+                            Time_Zone?                                  TimeZone                         = null,
                             OpeningTimes?                               OpeningTimes                     = null,
                             Boolean?                                    ChargingWhenClosed               = null,
                             AccessibilityTypes?                         Accessibility                    = null,
@@ -1041,11 +1070,12 @@ namespace cloud.charging.open.protocols.WWCP
 
             #region Init data and properties
 
-            this.Address                           = Address;
-            this.GeoLocation                       = GeoLocation;
+            this.address                           = Address;
+            this.geoLocation                       = GeoLocation;
+            this.timeZone                          = TimeZone;
             this.openingTimes                      = OpeningTimes ?? OpeningTimes.Open24Hours;
             this.ChargingWhenClosed                = ChargingWhenClosed;
-            this.Accessibility                     = Accessibility;
+            this.accessibility                     = Accessibility;
             this.locationLanguage                  = LocationLanguage;
             this.hotlinePhoneNumber                = HotlinePhoneNumber;
 
@@ -3857,6 +3887,7 @@ namespace cloud.charging.open.protocols.WWCP
 
                     Address,
                     GeoLocation,
+                    TimeZone,
                     OpeningTimes,
                     ChargingWhenClosed,
                     Accessibility,
@@ -3900,6 +3931,7 @@ namespace cloud.charging.open.protocols.WWCP
             LocationLanguage          = OtherChargingPool.LocationLanguage;
             Address                   = OtherChargingPool.Address;
             GeoLocation               = OtherChargingPool.GeoLocation;
+            TimeZone                  = OtherChargingPool.TimeZone;
             EntranceAddress           = OtherChargingPool.EntranceAddress;
             EntranceLocation          = OtherChargingPool.EntranceLocation;
             ArrivalInstructions.    Set(OtherChargingPool.ArrivalInstructions);

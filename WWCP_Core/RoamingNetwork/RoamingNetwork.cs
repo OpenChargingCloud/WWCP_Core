@@ -7197,7 +7197,8 @@ namespace cloud.charging.open.protocols.WWCP
 
                     #region ...we lookup the EMP roaming provider via the authorization within the charging sessions
 
-                    else if (SessionsStore.TryGet(cdr.SessionId, out var chargingSession))
+                    else if (SessionsStore.TryGet(cdr.SessionId, out var chargingSession) &&
+                             chargingSession is not null)
                     {
 
                         // Might occur when the software had been restarted
@@ -7211,7 +7212,7 @@ namespace cloud.charging.open.protocols.WWCP
                         //    ChargeDetailRecordsToProcess.Remove(cdr);
                         //}
 
-                        if (chargingSession.EMPRoamingProviderStart is null &&
+                        if (chargingSession.EMPRoamingProviderStart   is null &&
                             chargingSession.EMPRoamingProviderIdStart is not null)
                             chargingSession.EMPRoamingProviderStart = _IRemoteSendChargeDetailRecord.FirstOrDefault(iSendChargeDetailRecords => iSendChargeDetailRecords.SendChargeDetailRecordsId.ToString() == chargingSession.EMPRoamingProviderIdStart.ToString()) as IEMPRoamingProvider;
 

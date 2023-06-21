@@ -61,6 +61,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                                                          Address?                                                            Address                           = null,
                                                                          GeoCoordinate?                                                      GeoLocation                       = null,
+                                                                         Time_Zone?                                                          TimeZone                          = null,
                                                                          OpeningTimes?                                                       OpeningTimes                      = null,
                                                                          Boolean?                                                            ChargingWhenClosed                = null,
                                                                          AccessibilityTypes?                                                 Accessibility                     = null,
@@ -101,6 +102,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                    Address,
                    GeoLocation,
+                   TimeZone,
                    OpeningTimes,
                    ChargingWhenClosed,
                    Accessibility,
@@ -131,6 +133,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                              Address,
                                              GeoLocation,
+                                             TimeZone,
                                              OpeningTimes,
                                              ChargingWhenClosed,
 
@@ -336,6 +339,34 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                 }
 
+            }
+
+        }
+
+        #endregion
+
+        #region TimeZone
+
+        private Time_Zone? timeZone;
+
+        /// <summary>
+        /// The time zone of this charging pool.
+        /// </summary>
+        [Mandatory]
+        public Time_Zone? TimeZone
+        {
+
+            get
+            {
+                return timeZone;
+            }
+
+            set
+            {
+                if (value != timeZone)
+                {
+                    SetProperty(ref timeZone, value);
+                }
             }
 
         }
@@ -1090,6 +1121,7 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
 
                                    Address?                                    Address                      = null,
                                    GeoCoordinate?                              GeoLocation                  = null,
+                                   Time_Zone?                                  TimeZone                     = null,
                                    OpeningTimes?                               OpeningTimes                 = null,
                                    Boolean?                                    ChargingWhenClosed           = null,
 
@@ -1129,7 +1161,8 @@ namespace cloud.charging.open.protocols.WWCP.Virtual
             this.chargingStations     = new HashSet<IChargingStation>();
 
             this.Address              = Address;
-            this.GeoLocation          = GeoLocation;
+            this.geoLocation          = GeoLocation;
+            this.timeZone             = TimeZone;
             this.openingTimes         = OpeningTimes ?? OpeningTimes.Open24Hours;
             this.ChargingWhenClosed   = ChargingWhenClosed;
 
